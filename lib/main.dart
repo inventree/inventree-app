@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'settings.dart';
+import 'api.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -57,6 +60,10 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void _login() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeSettingsWidget()));
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -89,8 +96,9 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               new Divider(),
               new ListTile(
-                title: new Text("Log In"),
-                leading: new Icon(Icons.security),
+                title: new Text("Settings"),
+                leading: new Icon(Icons.settings),
+                onTap: _login,
               ),
             ],
           )
