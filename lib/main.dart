@@ -70,6 +70,30 @@ class _MyHomePageState extends State<MyHomePage> {
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
+        /*
+        leading: IconButton(
+          icon: Icon(Icons.menu),
+          tooltip: "Menu",
+          onPressed: null,
+        )
+        */
+      ),
+      drawer: new Drawer(
+          child: new ListView(
+            children: <Widget>[
+              new ListTile(
+                leading: new Image.asset("assets/image/icon.png",
+                  fit: BoxFit.scaleDown,
+                 ),
+                  title: new Text("InvenTree"),
+              ),
+              new Divider(),
+              new ListTile(
+                title: new Text("Log In"),
+                leading: new Icon(Icons.security),
+              ),
+            ],
+          )
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
