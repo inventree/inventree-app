@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 
 class InvenTreeLoginSettingsWidget extends StatefulWidget {
 
@@ -42,7 +42,15 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
   }
 
   @override
+  void initState() {
+    load();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    print("here we are");
+
+    print("Server: " + _addr);
 
     final Size screenSize = MediaQuery.of(context).size;
 
@@ -58,6 +66,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
             children: <Widget>[
               Text("Server"),
               new TextFormField(
+                initialValue: _addr,
                 decoration: InputDecoration(
                   hintText: "127.0.0.1:8000",
                   labelText: "Server:Port",
@@ -69,6 +78,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
               ),
               Text("Login Details"),
               TextFormField(
+                initialValue: _user,
                 decoration: InputDecoration(
                   hintText: "Username",
                   labelText: "Username",
@@ -79,6 +89,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
                 }
               ),
               TextFormField(
+                initialValue: _pass,
                 obscureText: true,
                 decoration: InputDecoration(
                   hintText: "Password",
@@ -103,11 +114,27 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     );
   }
 
-  void save() {
+  void load() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    _addr = prefs.getString('server');
+    _user = prefs.getString('username');
+    _pass = prefs.getString('password');
+
+    // Refresh the widget
+    setState(() {
+    });
+  }
+
+  void save() async {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
 
-      // TODO - Save the login settings
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      await prefs.setString('server', _addr);
+      await prefs.setString('username', _user);
+      await prefs.setString('password', _pass);
     }
   }
 }
