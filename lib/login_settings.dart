@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'api.dart';
+import 'preferences.dart';
 
 class InvenTreeLoginSettingsWidget extends StatefulWidget {
 
@@ -133,13 +134,9 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
 
-      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await InvenTreeUserPreferences().saveLoginDetails(_addr, _user, _pass);
 
-      await prefs.setString('server', _addr);
-      await prefs.setString('username', _user);
-      await prefs.setString('password', _pass);
-
-      InvenTreeAPI().connect(_addr, _user, _pass);
+      print("Saved");
     }
   }
 }
