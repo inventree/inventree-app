@@ -6,14 +6,47 @@ import 'package:path/path.dart' as path;
 import 'package:http/http.dart' as http;
 
 
-class InventreeAPI {
+class InvenTreeAPI {
 
-  InventreeAPI(this._username, this._password) {
-    _secureToken();
+  // Ensure we only ever create a single instance of the API class
+  static final InvenTreeAPI _api = new InvenTreeAPI._internal();
+
+  factory InvenTreeAPI() {
+    return _api;
   }
 
+  InvenTreeAPI._internal();
+
+  void connect(String address, String username, String password) async {
+
+    address = address.trim();
+    username = username.trim();
+
+    if (!address.endsWith("api/") || !address.endsWith("api")) {
+      address = path.join(address, "api");
+    }
+
+    if (!address.endsWith('/')) {
+      address = address + '/';
+    }
+
+    _base_url = address;
+    _username = username;
+    _password = password;
+
+    _connected = false;
+
+    print("Connecting to " + address + " -> " + username + ":" + password);
+
+    await _tryConnection();
+
+    await _secureToken();
+  }
+
+  bool _connected = false;
+
   // Base URL for InvenTree API
-  String _base_url = "http://10.0.0.7:8000/api/";
+  String _base_url = "http://127.0.0.1:8000/api/";
 
   String _username = "";
   String _password = "";
@@ -30,9 +63,18 @@ class InventreeAPI {
     return _token.isNotEmpty;
   }
 
+  // Request the raw /api/ endpoing to see if there is an InvenTree server listening
+  void _tryConnection() async {
+    final response = get("");
+  }
+
   // Request an API token from the server.
   // A valid username/password combination must be provided
   void _secureToken() async {
+
+    if (_token.isNotEmpty) {
+      print("Discarding old token - " + _token);
+    }
     _token = "";
 
     var _url = _makeUrl("user/token/");

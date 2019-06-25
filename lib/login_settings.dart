@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'api.dart';
+
 class InvenTreeLoginSettingsWidget extends StatefulWidget {
 
   @override
@@ -20,6 +22,10 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
 
     if (value.isEmpty) {
       return 'Server cannot be empty';
+    }
+
+    if (!value.startsWith("http:") && !value.startsWith("https:")) {
+      return 'Server must start with http[s]';
     }
 
     return null;
@@ -48,9 +54,6 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    print("here we are");
-
-    print("Server: " + _addr);
 
     final Size screenSize = MediaQuery.of(context).size;
 
@@ -135,6 +138,8 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
       await prefs.setString('server', _addr);
       await prefs.setString('username', _user);
       await prefs.setString('password', _pass);
+
+      InvenTreeAPI().connect(_addr, _user, _pass);
     }
   }
 }
