@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'login_settings.dart';
+
 class InvenTreeSettingsWidget extends StatefulWidget {
   // InvenTree settings view
 
@@ -31,6 +33,6 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
   }
 
   void _editServerSettings() {
-
+    Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeLoginSettingsWidget()));
   }
 }
