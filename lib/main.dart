@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:preferences/preferences.dart';
 
 import 'settings.dart';
 import 'api.dart';
 import 'preferences.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+
+  await PrefService.init(prefix: "inventree_");
+
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
