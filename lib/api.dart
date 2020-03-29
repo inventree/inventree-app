@@ -94,7 +94,7 @@ class InvenTreeAPI {
       final data = json.decode(response.body);
 
       // We expect certain response from the server
-      if (!data.containsKey("sedrver") || !data.containsKey("version")) {
+      if (!data.containsKey("server") || !data.containsKey("version")) {
         print("Incorrect keys in server response");
         return false;
       }
@@ -106,7 +106,7 @@ class InvenTreeAPI {
       print("Error trying connection");
       print(error);
 
-      return;
+      return false;
     });
 
     // Here we have received a response object which is valid
@@ -200,10 +200,24 @@ class InvenTreeAPI {
   }
 
   // Perform a GET request
-  Future<http.Response> get(String url) async {
+  Future<http.Response> get(String url, {Map<String, String> params}) async {
 
     var _url = _makeUrl(url);
     var _headers = _defaultHeaders();
+
+    // If query parameters are supplied, form a query string
+    if (params != null && params.isNotEmpty) {
+      String query = '?';
+
+      params.forEach((K, V) => query += K + '=' + V + '&');
+
+      _url += query;
+    }
+
+    // Remove extraneous character if present
+    if (_url.endsWith('&')) {
+      _url = _url.substring(0, _url.length - 1);
+    }
 
     print("GET: " + _url);
 
