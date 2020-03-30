@@ -6,16 +6,24 @@ import 'package:path/path.dart' as path;
 import 'package:http/http.dart' as http;
 
 
+/**
+ * InvenTree API - Access to the InvenTree REST interface.
+ *
+ * InvenTree implements token-based authentication, which is
+ * initialised using a username:password combination.
+ */
+
+
 class InvenTreeAPI {
 
+  // Endpoint for requesting an API token
   static const _URL_GET_TOKEN = "user/token/";
+  static const _URL_GET_VERSION = "";
 
   // Ensure we only ever create a single instance of the API class
   static final InvenTreeAPI _api = new InvenTreeAPI._internal();
 
-  factory InvenTreeAPI() {
-    return _api;
-  }
+  factory InvenTreeAPI() { return _api; }
 
   InvenTreeAPI._internal();
 
@@ -76,6 +84,8 @@ class InvenTreeAPI {
     if (url.startsWith('/')) {
       url = url.substring(1);
     }
+
+
 
     return path.join(_base_url, url);
   }
