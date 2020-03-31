@@ -62,29 +62,30 @@ class InvenTreeObject {
     // TODO - Add "timeout"
     // TODO - Add error catching
 
+    var response = await InvenTreeAPI().get(_URL, params:filters);
 
-    InvenTreeAPI().get(_URL, params:filters).then((http.Response response) {
+    // A list of "InvenTreeObject" items
+    List<InvenTreeObject> results = new List<InvenTreeObject>();
 
-      // A list of "InvenTreeObject" items
-      List<InvenTreeObject> results = new List<InvenTreeObject>();
+    if (response.statusCode != 200) {
+      print("Error retreiving data");
+      return results;
+    }
 
-     final data = json.decode(response.body);
+    final data = json.decode(response.body);
 
-     for (var d in data) {
-       print(d);
+    for (var d in data) {
+      print(d);
 
-       // Create a new object (of the current class type
-       InvenTreeObject obj = _createFromJson(d);
+      // Create a new object (of the current class type
+      InvenTreeObject obj = _createFromJson(d);
 
-       if (obj != null) {
-         results.add(obj);
-       }
-     }
+      if (obj != null) {
+        results.add(obj);
+      }
+    }
 
-
-     return results;
-
-    });
+    return results;
   }
 
 
