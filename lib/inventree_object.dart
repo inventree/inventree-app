@@ -34,9 +34,14 @@ class InvenTreeObject {
 
   }
 
-  int get pk {
-    return _data['pk'] ?? -1;
-  }
+  int get pk => _data['pk'] ?? -1;
+
+  // Some common accessors
+  String get name => _data['name'] ?? '';
+
+  String get description => _data['description'] ?? '';
+
+  int get parentId => _data['parent'] ?? -1;
 
   // Create a new object from JSON data (not a constructor!)
   InvenTreeObject _createFromJson(Map<String, dynamic> json) {
@@ -102,6 +107,8 @@ class InvenTreePartCategory extends InvenTreeObject {
   @override
   String _URL = "part/category/";
 
+  String get pathstring => _data['pathstring'] ?? '';
+
   InvenTreePartCategory() : super();
 
   InvenTreePartCategory.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
@@ -126,21 +133,9 @@ class InvenTreePart extends InvenTreeObject {
   @override
   String _URL = "part/";
 
-  String get name {
-    return _data['name'] ?? '';
-  }
+  int get categoryId => _data['category'] as int ?? -1;
 
-  String get description {
-    return _data['description'] ?? '';
-  }
-
-  int get categoryId {
-    return _data['category'] as int ?? -1;
-  }
-
-  String get categoryName {
-    return _data['category__name'] ?? '';
-  }
+  String get categoryName => _data['category__name'] ?? '';
 
   InvenTreePart() : super();
 
