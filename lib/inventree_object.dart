@@ -51,7 +51,7 @@ class InvenTreeObject {
   String get url{ return path.join(_URL, pk.toString()); }
 
   // Return list of objects from the database, with optional filters
-  Future<http.Response> list({Map<String, String> filters}) async {
+  Future<List<InvenTreeObject>> list({Map<String, String> filters}) async {
 
     if (filters == null) {
       filters = {};
@@ -62,24 +62,27 @@ class InvenTreeObject {
     // TODO - Add "timeout"
     // TODO - Add error catching
 
+
     InvenTreeAPI().get(_URL, params:filters).then((http.Response response) {
+
+      // A list of "InvenTreeObject" items
+      List<InvenTreeObject> results = new List<InvenTreeObject>();
 
      final data = json.decode(response.body);
 
      for (var d in data) {
        print(d);
 
-       var obj = _createFromJson(d);
+       // Create a new object (of the current class type
+       InvenTreeObject obj = _createFromJson(d);
 
-       if (obj is InvenTreePart) {
-         print("Part -> " + obj.name + obj.description);
-       } else {
-         print("Not part :'(");
-         print(obj.runtimeType);
+       if (obj != null) {
+         results.add(obj);
        }
      }
 
-     // var obj = _createFromJson(data);
+
+     return results;
 
     });
   }
