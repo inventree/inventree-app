@@ -14,7 +14,6 @@ class InvenTreeObject {
 
   // Override the endpoint URL for each subclass
   String _URL = "";
-  String _name = "InvenTree";
 
   // JSON data which defines this object
   Map<String, dynamic> _data = {};
@@ -75,7 +74,6 @@ class InvenTreeObject {
     final data = json.decode(response.body);
 
     for (var d in data) {
-      print(d);
 
       // Create a new object (of the current class type
       InvenTreeObject obj = _createFromJson(d);
@@ -100,13 +98,33 @@ class InvenTreeObject {
 }
 
 
+class InvenTreePartCategory extends InvenTreeObject {
+  @override
+  String _URL = "part/category/";
+
+  InvenTreePartCategory() : super();
+
+  InvenTreePartCategory.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+
+  }
+
+  @override
+  InvenTreeObject _createFromJson(Map<String, dynamic> json) {
+    var cat = InvenTreePartCategory.fromJson(json);
+
+    // TODO ?
+
+    print("creating new category");
+
+    return cat;
+  }
+}
+
+
 class InvenTreePart extends InvenTreeObject {
 
   @override
   String _URL = "part/";
-
-  @override
-  String _name = "part";
 
   String get name {
     return _data['name'] ?? '';
@@ -127,7 +145,7 @@ class InvenTreePart extends InvenTreeObject {
   InvenTreePart() : super();
 
   InvenTreePart.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
-
+    // TODO
   }
 
   @override
@@ -136,13 +154,8 @@ class InvenTreePart extends InvenTreeObject {
     var part = InvenTreePart.fromJson(json);
 
     print("creating new part!");
-    print(json);
 
     return part;
 
   }
-
-  // TODO - Is there a way of making this "list" function generic to the InvenTreeObject class?
-  // In an ideal world it would return a list of
-  //List<InvenTreePart> list()
 }
