@@ -1,13 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:preferences/preferences.dart';
+// import 'package:preferences/preferences.dart';
 
 import 'settings.dart';
 import 'api.dart';
 import 'preferences.dart';
+import 'inventree_object.dart';
 
 void main() async {
 
-  await PrefService.init(prefix: "inventree_");
+  // await PrefService.init(prefix: "inventree_");
+
+  String username = "username";
+  String password = "password";
+  String server = "http://127.0.0.1:8000";
+
+  await InvenTreeAPI().connect(server, username, password);
+
+  print("Connected! Requesting data");
+
+  InvenTreePart().list(filters: {"category": "2"}).then((var parts) {
+
+    print("Received list");
+
+    print("Found " + parts.length.toString() + " parts");
+
+    for (var part in parts) {
+      if (part is InvenTreePart) {
+        print("Part: " + part.name + ", " + part.description);
+      }
+    }
+  });
 
   runApp(MyApp());
 }
@@ -69,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _login() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeSettingsWidget()));
+    //Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeSettingsWidget()));
   }
 
   @override

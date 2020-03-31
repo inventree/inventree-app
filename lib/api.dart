@@ -55,16 +55,8 @@ class InvenTreeAPI {
 
     print("Connecting to " + address + " -> " + username + ":" + password);
 
-    bool result = false;
+    await _testConnection();
 
-    result = await _testConnection();
-
-    if (!result) {
-      print("Could not connect to server");
-      return;
-    }
-
-    result = await _getToken();
   }
 
   bool _connected = false;
@@ -95,40 +87,34 @@ class InvenTreeAPI {
   }
 
   // Request the raw /api/ endpoint to see if there is an InvenTree server listening
-  Future<bool> _testConnection() async {
+  Future<void> _testConnection() async {
 
     print("Testing connection to server");
 
-    final response = await get("").then((http.Response response) {
+    await get("").then((http.Response response) {
 
       final data = json.decode(response.body);
 
       // We expect certain response from the server
       if (!data.containsKey("server") || !data.containsKey("version")) {
         print("Incorrect keys in server response");
-        return false;
       }
 
       print("Server: " + data["server"]);
       print("Version: " + data["version"]);
 
+      // Ok, server is good. Request token!
+      _getToken();
+
     }).catchError((error) {
       print("Error trying connection");
       print(error);
-
-      return false;
     });
-
-    // Here we have received a response object which is valid
-
-    // TODO - Add timeout handler
-
-    return true;
   }
 
   // Request an API token from the server.
   // A valid username/password combination must be provided
-  Future<bool> _getToken() async {
+  Future<String> _getToken() async {
 
     print("Requesting API token from server");
 
@@ -145,6 +131,7 @@ class InvenTreeAPI {
         });
 
     response.then((http.Response response) {
+
       if (response.statusCode != 200) {
         print("Invalid status code: " + response.statusCode.toString());
         return false;
@@ -153,19 +140,19 @@ class InvenTreeAPI {
 
         if (!data.containsKey("token")) {
           print("No token provided in response");
-          return false;
+          return "";
         }
 
-        // Save the received token
-        _token = data["token"];
-        print("Received token: " + _token);
+        // Return the received token
+        String token = data["token"];
+        print("Received token: " + token);
 
-        return true;
+        return token;
       }
     }).catchError((error) {
       print("Error retrieving token:");
       print(error);
-      return false;
+      return "";
     });
   }
 
@@ -231,11 +218,7 @@ class InvenTreeAPI {
 
     print("GET: " + _url);
 
-    final response = await http.get(_url,
-      headers: _headers,
-    );
-
-    return response;
+    return http.get(_url, headers: _headers);
   }
 
   Map<String, String> _defaultHeaders() {
