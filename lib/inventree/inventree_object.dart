@@ -1,4 +1,4 @@
-import 'api.dart';
+import 'package:InvenTree/api.dart';
 
 import 'dart:convert';
 
@@ -121,8 +121,6 @@ class InvenTreePartCategory extends InvenTreeObject {
 
     // TODO ?
 
-    print("creating new category");
-
     return cat;
   }
 }
@@ -147,8 +145,6 @@ class InvenTreePart extends InvenTreeObject {
   InvenTreeObject _createFromJson(Map<String, dynamic> json) {
 
     var part = InvenTreePart.fromJson(json);
-
-    print("creating new part!");
 
     return part;
 
