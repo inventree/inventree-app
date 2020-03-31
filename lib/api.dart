@@ -20,6 +20,22 @@ class InvenTreeAPI {
   static const _URL_GET_TOKEN = "user/token/";
   static const _URL_GET_VERSION = "";
 
+  // Base URL for InvenTree API
+  String _base_url = "";
+
+  String _username = "";
+  String _password = "";
+
+  // Authentication token (initially empty, must be requested)
+  String _token = "";
+
+  // Connection status flag - set once connection has been validated
+  bool _connected = false;
+
+  bool get connected {
+    return _connected && _base_url.isNotEmpty && _token.isNotEmpty;
+  }
+
   // Ensure we only ever create a single instance of the API class
   static final InvenTreeAPI _api = new InvenTreeAPI._internal();
 
@@ -27,11 +43,23 @@ class InvenTreeAPI {
 
   InvenTreeAPI._internal();
 
-  void connect(String address, String username, String password) async {
+  void disconnected() {
+    _connected = false;
+
+    // Clear token
+    _token = "";
+  }
+
+  Future<bool> connect(String address, String username, String password) async {
+
+    /* Address is the base address for the InvenTree server,
+     * e.g. http://127.0.0.1:8000
+     */
 
     address = address.trim();
     username = username.trim();
 
+    // Ensure we are pointing to the correct endpoint
     if (!address.endsWith("api/") || !address.endsWith("api")) {
       address = path.join(address, "api");
     }
@@ -55,20 +83,66 @@ class InvenTreeAPI {
 
     print("Connecting to " + address + " -> " + username + ":" + password);
 
-    await _testConnection();
+    // TODO - Add connection timeout
 
+    var response = await get("").catchError((error) {
+      print("Error connecting to server:");
+      print(error);
+      return false;
+    });
+
+    if (response.statusCode != 200) {
+      print("Invalid status code: " + response.statusCode.toString());
+      return false;
+    }
+
+    var data = json.decode(response.body);
+
+    print("Response from server: $data");
+
+    // We expect certain response from the server
+    if (!data.containsKey("server") || !data.containsKey("version")) {
+      print("Incorrect keys in server response");
+      return false;
+    }
+
+    print("Server: " + data["server"]);
+    print("Version: " + data["version"]);
+
+    // Request token from the server
+    if (_token.isNotEmpty) {
+      print("Discarding old token - $_token");
+    }
+
+    // Clear out the token
+    _token = "";
+
+    response = await post(_URL_GET_TOKEN, body: {"username": _username, "password": _password}).catchError((error) {
+      print("Error requesting token:");
+      print(error);
+      return false;
+    });
+
+    if (response.statusCode != 200) {
+      print("Invalid status code: " + response.statusCode.toString());
+      return false;
+    } else {
+      var data = json.decode(response.body);
+
+      if (!data.containsKey("token")) {
+        print("No token provided in response");
+        return false;
+      }
+
+      // Return the received token
+      _token = data["token"];
+      print("Received token - $_token");
+
+      _connected = true;
+
+      return true;
+    };
   }
-
-  bool _connected = false;
-
-  // Base URL for InvenTree API
-  String _base_url = "http://127.0.0.1:8000/api/";
-
-  String _username = "";
-  String _password = "";
-
-  // Authentication token (initially empty, must be requested)
-  String _token = "";
 
   // Construct an API URL
   String _makeUrl(String url) {
@@ -80,80 +154,6 @@ class InvenTreeAPI {
 
 
     return path.join(_base_url, url);
-  }
-
-  bool _hasToken() {
-    return _token.isNotEmpty;
-  }
-
-  // Request the raw /api/ endpoint to see if there is an InvenTree server listening
-  Future<void> _testConnection() async {
-
-    print("Testing connection to server");
-
-    await get("").then((http.Response response) {
-
-      final data = json.decode(response.body);
-
-      // We expect certain response from the server
-      if (!data.containsKey("server") || !data.containsKey("version")) {
-        print("Incorrect keys in server response");
-      }
-
-      print("Server: " + data["server"]);
-      print("Version: " + data["version"]);
-
-      // Ok, server is good. Request token!
-      _getToken();
-
-    }).catchError((error) {
-      print("Error trying connection");
-      print(error);
-    });
-  }
-
-  // Request an API token from the server.
-  // A valid username/password combination must be provided
-  Future<String> _getToken() async {
-
-    print("Requesting API token from server");
-
-    if (_token.isNotEmpty) {
-      print("Discarding old token - " + _token);
-    }
-
-    _token = "";
-
-    var response = post(_URL_GET_TOKEN,
-        body: {
-          "username": _username,
-          "password": _password,
-        });
-
-    response.then((http.Response response) {
-
-      if (response.statusCode != 200) {
-        print("Invalid status code: " + response.statusCode.toString());
-        return false;
-      } else {
-        var data = json.decode(response.body);
-
-        if (!data.containsKey("token")) {
-          print("No token provided in response");
-          return "";
-        }
-
-        // Return the received token
-        String token = data["token"];
-        print("Received token: " + token);
-
-        return token;
-      }
-    }).catchError((error) {
-      print("Error retrieving token:");
-      print(error);
-      return "";
-    });
   }
 
   // Perform a PATCH request
@@ -188,12 +188,10 @@ class InvenTreeAPI {
 
     print("POST: " + _url);
 
-    final response = await http.post(_url,
+    return http.post(_url,
       headers: _headers,
       body: _body,
     );
-
-    return response;
   }
 
   // Perform a GET request
