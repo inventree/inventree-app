@@ -19,7 +19,7 @@ class InvenTreePartCategory extends InvenTreeObject {
   }
 
   @override
-  InvenTreeObject _createFromJson(Map<String, dynamic> json) {
+  InvenTreeObject createFromJson(Map<String, dynamic> json) {
     var cat = InvenTreePartCategory.fromJson(json);
 
     // TODO ?
@@ -45,7 +45,7 @@ class InvenTreePart extends InvenTreeObject {
   }
 
   @override
-  InvenTreeObject _createFromJson(Map<String, dynamic> json) {
+  InvenTreeObject createFromJson(Map<String, dynamic> json) {
 
     var part = InvenTreePart.fromJson(json);
 

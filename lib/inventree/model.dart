@@ -44,8 +44,7 @@ class InvenTreeObject {
   int get parentId => jsondata['parent'] ?? -1;
 
   // Create a new object from JSON data (not a constructor!)
-  InvenTreeObject _createFromJson(Map<String, dynamic> json) {
-      print("creating new object");
+  InvenTreeObject createFromJson(Map<String, dynamic> json) {
 
       var obj = InvenTreeObject.fromJson(json);
 
@@ -85,7 +84,7 @@ class InvenTreeObject {
     for (var d in data) {
 
       // Create a new object (of the current class type
-      InvenTreeObject obj = _createFromJson(d);
+      InvenTreeObject obj = createFromJson(d);
 
       if (obj != null) {
         results.add(obj);
