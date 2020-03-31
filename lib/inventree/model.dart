@@ -7,10 +7,10 @@ import 'package:http/http.dart' as http;
 
 
 /**
- * The InvenTreeObject class provides a base-level object
+ * The InvenTreeModel class provides a base-level object
  * for interacting with InvenTree data.
  */
-class InvenTreeObject {
+class InvenTreeModel {
 
   // Override the endpoint URL for each subclass
   String URL = "";
@@ -22,12 +22,12 @@ class InvenTreeObject {
   var api = InvenTreeAPI();
 
   // Default empty object constructor
-  InvenTreeObject() {
+  InvenTreeModel() {
     jsondata.clear();
   }
 
-  // Construct an InvenTreeObject from a JSON data object
-  InvenTreeObject.fromJson(Map<String, dynamic> json) {
+  // Construct an InvenTreeModel from a JSON data object
+  InvenTreeModel.fromJson(Map<String, dynamic> json) {
 
     // Store the json object
     jsondata = json;
@@ -44,31 +44,47 @@ class InvenTreeObject {
   int get parentId => jsondata['parent'] ?? -1;
 
   // Create a new object from JSON data (not a constructor!)
-  InvenTreeObject createFromJson(Map<String, dynamic> json) {
+  InvenTreeModel createFromJson(Map<String, dynamic> json) {
 
-      var obj = InvenTreeObject.fromJson(json);
+      var obj = InvenTreeModel.fromJson(json);
 
       return obj;
   }
 
   String get url{ return path.join(URL, pk.toString()); }
 
+  /*
+  // Search this Model type in the database
+  Future<List<InvenTreeModel>> search(String searchTerm) async {
+
+    String addr = url + "?search=" + search;
+
+    print("Searching endpoint: $url");
+
+    // TODO - Add "timeout"
+    // TODO - Add error catching
+
+    var response =
+
+  }
+  */
+
   // Return list of objects from the database, with optional filters
-  Future<List<InvenTreeObject>> list({Map<String, String> filters}) async {
+  Future<List<InvenTreeModel>> list({Map<String, String> filters}) async {
 
     if (filters == null) {
       filters = {};
     }
 
-    print("Listing endpoint: " + URL);
+    print("Listing endpoint: $URL");
 
     // TODO - Add "timeout"
     // TODO - Add error catching
 
     var response = await InvenTreeAPI().get(URL, params:filters);
 
-    // A list of "InvenTreeObject" items
-    List<InvenTreeObject> results = new List<InvenTreeObject>();
+    // A list of "InvenTreeModel" items
+    List<InvenTreeModel> results = new List<InvenTreeModel>();
 
     if (response.statusCode != 200) {
       print("Error retreiving data");
@@ -84,7 +100,7 @@ class InvenTreeObject {
     for (var d in data) {
 
       // Create a new object (of the current class type
-      InvenTreeObject obj = createFromJson(d);
+      InvenTreeModel obj = createFromJson(d);
 
       if (obj != null) {
         results.add(obj);

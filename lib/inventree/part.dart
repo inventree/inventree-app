@@ -6,7 +6,7 @@ import 'dart:convert';
 import 'package:path/path.dart' as path;
 import 'package:http/http.dart' as http;
 
-class InvenTreePartCategory extends InvenTreeObject {
+class InvenTreePartCategory extends InvenTreeModel {
   @override
   String URL = "part/category/";
 
@@ -19,7 +19,7 @@ class InvenTreePartCategory extends InvenTreeObject {
   }
 
   @override
-  InvenTreeObject createFromJson(Map<String, dynamic> json) {
+  InvenTreeModel createFromJson(Map<String, dynamic> json) {
     var cat = InvenTreePartCategory.fromJson(json);
 
     // TODO ?
@@ -29,7 +29,7 @@ class InvenTreePartCategory extends InvenTreeObject {
 }
 
 
-class InvenTreePart extends InvenTreeObject {
+class InvenTreePart extends InvenTreeModel {
 
   @override
   String URL = "part/";
@@ -45,7 +45,7 @@ class InvenTreePart extends InvenTreeObject {
   }
 
   @override
-  InvenTreeObject createFromJson(Map<String, dynamic> json) {
+  InvenTreeModel createFromJson(Map<String, dynamic> json) {
 
     var part = InvenTreePart.fromJson(json);
 
