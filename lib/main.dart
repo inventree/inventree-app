@@ -1,10 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // import 'package:preferences/preferences.dart';
 
 import 'settings.dart';
 import 'api.dart';
 import 'preferences.dart';
-import 'inventree_object.dart';
+
+import 'package:InvenTree/inventree/part.dart';
 
 void main() async {
 
@@ -14,22 +16,7 @@ void main() async {
   String password = "password";
   String server = "http://127.0.0.1:8000";
 
-  await InvenTreeAPI().connect(server, username, password);
-
-  print("Connected! Requesting data");
-
-  InvenTreePart().list(filters: {"category": "2"}).then((var parts) {
-
-    print("Received list");
-
-    print("Found " + parts.length.toString() + " parts");
-
-    for (var part in parts) {
-      if (part is InvenTreePart) {
-        print("Part: " + part.name + ", " + part.description);
-      }
-    }
-  });
+  InvenTreeAPI().connect(server, username, password);
 
   runApp(MyApp());
 }
@@ -58,8 +45,38 @@ class MyApp extends StatelessWidget {
   }
 }
 
+
+class ProductList extends StatelessWidget {
+  final List<InvenTreePart> _parts;
+
+  ProductList(this._parts);
+
+  Widget _buildPart(BuildContext context, int index) {
+    InvenTreePart part;
+
+    if (index < _parts.length) {
+      part = _parts[index];
+    }
+
+    return Card(
+        child: Column(
+            children: <Widget>[
+              Text('${part.name} - ${part.description}'),
+            ]
+        )
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(itemBuilder: _buildPart, itemCount: _parts.length);
+  }
+}
+
+
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
+
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -78,6 +95,69 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+
+  // List of parts
+  List<InvenTreePart> _parts = List<InvenTreePart>();
+
+  String _filter = '';
+
+  void _filterParts(String text) {
+    // Filtering is case-insensitive
+    _filter = text.trim().toLowerCase();
+
+    // Update state
+    setState(() {});
+  }
+
+  List<InvenTreePart> get parts {
+
+    if (_filter.isNotEmpty) {
+
+      List<InvenTreePart> filtered = List<InvenTreePart>();
+      for (var part in _parts) {
+
+        var name = part.name.toLowerCase() + ' ' + part.description.toLowerCase();
+
+        bool match = true;
+
+        for (var txt in _filter.split(' ')) {
+          if (!name.contains(txt)) {
+            match = false;
+            break;
+          }
+        }
+
+        if (match) {
+          filtered.add(part);
+        }
+      }
+
+      return filtered;
+    } else {
+
+      // No filtering
+      return _parts;
+    }
+  }
+
+  _MyHomePageState() : super() {
+
+    // Request list of parts from the server,
+    // and display the results when they are received
+    InvenTreePart().list(filters: {"search": "0805"}).then((var parts) {
+      _parts.clear();
+
+      for (var part in parts) {
+        if (part is InvenTreePart) {
+          _parts.add(part);
+        }
+
+        // Update state!
+        setState(() {
+        });
+      }
+    });
+  }
 
   void _incrementCounter() {
     setState(() {
@@ -153,6 +233,14 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            TextField(
+              decoration: InputDecoration(
+                hintText: 'Filter Results',
+              ),
+              onChanged: (text) {
+                _filterParts(text);
+              },
+            ),
             Text(
               'You have pushed the button this many times:',
             ),
@@ -160,6 +248,10 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.display1,
             ),
+            Text(
+              'hello world',
+            ),
+            Expanded(child: ProductList(parts)),
           ],
         ),
       ),
