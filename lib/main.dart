@@ -101,14 +101,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   String _filter = '';
 
-  void _filterParts(String text) {
-    // Filtering is case-insensitive
-    _filter = text.trim().toLowerCase();
-
-    // Update state
-    setState(() {});
-  }
-
   List<InvenTreePart> get parts {
 
     if (_filter.isNotEmpty) {
@@ -238,7 +230,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 hintText: 'Filter Results',
               ),
               onChanged: (text) {
-                _filterParts(text);
+                setState(() {
+                  _filter = text.trim().toLowerCase();
+                });
               },
             ),
             Text(
