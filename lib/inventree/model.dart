@@ -69,6 +69,24 @@ class InvenTreeModel {
   }
   */
 
+  // Return the detail view for the associated pk
+  Future<InvenTreeModel> get(int pk) async {
+
+    // TODO - Add "timeout"
+    // TODO - Add error catching
+
+    var response = await InvenTreeAPI().get(path.join(URL, pk.toString()));
+
+    if (response.statusCode != 200) {
+      print("Error retrieving data");
+      return null;
+    }
+
+    final data = json.decode(response.body);
+
+    return createFromJson(data);
+  }
+
   // Return list of objects from the database, with optional filters
   Future<List<InvenTreeModel>> list({Map<String, String> filters}) async {
 

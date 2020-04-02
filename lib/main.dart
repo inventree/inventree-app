@@ -1,3 +1,4 @@
+import 'package:InvenTree/widget/category_display.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // import 'package:preferences/preferences.dart';
@@ -166,6 +167,10 @@ class _MyHomePageState extends State<MyHomePage> {
     //Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeSettingsWidget()));
   }
 
+  void _showParts() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(-1)));
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -195,6 +200,17 @@ class _MyHomePageState extends State<MyHomePage> {
                   fit: BoxFit.scaleDown,
                  ),
                   title: new Text("InvenTree"),
+              ),
+              new Divider(),
+              new ListTile(
+                title: new Text("Scan"),
+              ),
+              new ListTile(
+                title: new Text("Parts"),
+                onTap: _showParts,
+              ),
+              new ListTile(
+                title: new Text("Stock"),
               ),
               new Divider(),
               new ListTile(
