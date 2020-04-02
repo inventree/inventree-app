@@ -30,9 +30,9 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
   // The local InvenTreePartCategory object
   InvenTreePartCategory category = null;
 
-  List<InvenTreePartCategory> subcategories = List<InvenTreePartCategory>();
+  List<InvenTreePartCategory> _subcategories = List<InvenTreePartCategory>();
 
-  List<InvenTreePart> parts = List<InvenTreePart>();
+  List<InvenTreePart> _parts = List<InvenTreePart>();
 
   String get _titleString {
 
@@ -50,13 +50,13 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
 
     // Request a list of sub-categories under this one
     InvenTreePartCategory().list(filters: {"parent": "$categoryId"}).then((var cats) {
-      subcategories.clear();
+      _subcategories.clear();
 
       print("Returned categories: ${cats.length}");
 
       for (var cat in cats) {
         if (cat is InvenTreePartCategory) {
-          subcategories.add(cat);
+          _subcategories.add(cat);
         }
       }
 
@@ -66,13 +66,13 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
 
     // Request a list of parts under this category
     InvenTreePart().list(filters: {"category": "$categoryId"}).then((var parts) {
-      parts.clear();
+      _parts.clear();
 
       print("Returned parts: ${parts.length}");
 
       for (var part in parts) {
         if (part is InvenTreePart) {
-          parts.add(part);
+          _parts.add(part);
           print("Adding part: ${part.name}");
         }
       }
@@ -95,10 +95,10 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
             Text(
               "Subcategories",
             ),
-            Expanded(child: SubcategoryList(subcategories)),
+            Expanded(child: SubcategoryList(_subcategories)),
             Divider(),
             Text("Parts"),
-            Expanded(child: PartList(parts)),
+            Expanded(child: PartList(_parts)),
             Spacer(),
           ]
         )
