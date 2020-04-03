@@ -95,8 +95,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
   // List of parts
   List<InvenTreePart> _parts = List<InvenTreePart>();
 
@@ -133,42 +131,19 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  _MyHomePageState() : super() {
-
-    // Request list of parts from the server,
-    // and display the results when they are received
-    InvenTreePart().list(filters: {"search": "0805"}).then((var parts) {
-      _parts.clear();
-
-      for (var part in parts) {
-        if (part is InvenTreePart) {
-          _parts.add(part);
-        }
-
-        // Update state!
-        setState(() {
-        });
-      }
-    });
-  }
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+  _MyHomePageState() : super();
 
   void _login() {
     //Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeSettingsWidget()));
   }
 
   void _showParts() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(-1)));
+    // Construct a top-level category display (initialize with a null category)
+    Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));
+  }
+
+  void _showStock() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(null)));
   }
 
   @override
@@ -211,6 +186,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               new ListTile(
                 title: new Text("Stock"),
+                onTap: _showStock,
               ),
               new Divider(),
               new ListTile(
@@ -252,24 +228,12 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-            Text(
               'hello world',
             ),
             Expanded(child: ProductList(parts)),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

@@ -11,6 +11,12 @@ class InvenTreeStockItem extends InvenTreeModel {
     // TODO
   }
 
+  String get partName => jsondata['part_name'] as String ?? '';
+
+  double get quantity => jsondata['quantity'] as double ?? 0.0;
+
+  int get locationId => jsondata['location'] as int ?? -1;
+
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) {
     var item = InvenTreeStockItem.fromJson(json);
