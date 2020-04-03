@@ -1,7 +1,9 @@
 
 import 'package:InvenTree/inventree/stock.dart';
+import 'package:InvenTree/widget/stock_display.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 class LocationDisplayWidget extends StatefulWidget {
 
@@ -29,8 +31,12 @@ class _LocationDisplayState extends State<LocationDisplayWidget> {
   List<InvenTreeStockItem> _items = List<InvenTreeStockItem>();
 
   String get _title {
-    // TODO
-    return "Location:";
+
+    if (location == null) {
+      return "Location:";
+    } else {
+      return "Stock Location '${location.name}'";
+    }
   }
 
   void _requestData() {
@@ -63,8 +69,6 @@ class _LocationDisplayState extends State<LocationDisplayWidget> {
     });
 
     });
-
-    // TODO
   }
 
   @override
@@ -82,15 +86,92 @@ class _LocationDisplayState extends State<LocationDisplayWidget> {
               textAlign: TextAlign.left,
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
+            Expanded(child: SublocationList(_sublocations)),
             Divider(),
             Text(
               "Stock Items - ${_items.length}",
               textAlign: TextAlign.left,
               style: TextStyle(fontWeight: FontWeight.bold),
-            )
+            ),
+            Expanded(child: StockList(_items)),
           ],
         )
       ),
     );
+  }
+}
+
+
+class SublocationList extends StatelessWidget {
+  final List<InvenTreeStockLocation> _locations;
+
+  SublocationList(this._locations);
+
+  void _openLocation(BuildContext context, int pk) {
+
+    InvenTreeStockLocation().get(pk).then((var loc) {
+      if (loc is InvenTreeStockLocation) {
+
+        Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(loc)));
+      }
+    });
+  }
+
+  Widget _build(BuildContext context, int index) {
+    InvenTreeStockLocation loc = _locations[index];
+
+    return Card(
+      child: InkWell(
+        child: Column(
+          children: <Widget>[
+            Text('${loc.name} - ${loc.description}'),
+          ],
+        ),
+        onTap: () {
+          _openLocation(context, loc.pk);
+        },
+      )
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(itemBuilder: _build, itemCount: _locations.length);
+  }
+}
+
+class StockList extends StatelessWidget {
+  final List<InvenTreeStockItem> _items;
+
+  StockList(this._items);
+
+  void _openItem(BuildContext context, int pk) {
+    InvenTreeStockItem().get(pk).then((var item) {
+      if (item is InvenTreeStockItem) {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => StockItemDisplayWidget(item)));
+      }
+    });
+  }
+
+  Widget _build(BuildContext context, int index) {
+    InvenTreeStockItem item = _items[index];
+
+    return Card(
+      child: InkWell(
+        child: Column(
+          children: <Widget>[
+            Text('${item.quantity.toString()} x ${item.partName}')
+          ]
+        ),
+        onTap: () {
+          _openItem(context, item.pk);
+        },
+      )
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(itemBuilder: _build, itemCount: _items.length);
   }
 }

@@ -126,11 +126,7 @@ class SubcategoryList extends StatelessWidget {
   }
 
   Widget _build(BuildContext context, int index) {
-    InvenTreePartCategory cat;
-
-    if (index < _categories.length) {
-      cat = _categories[index];
-    }
+    InvenTreePartCategory cat = _categories[index];
 
     return Card(
       child: InkWell(
