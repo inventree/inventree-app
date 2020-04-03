@@ -59,6 +59,11 @@ class InvenTreeAPI {
     address = address.trim();
     username = username.trim();
 
+    if (address.isEmpty || username.isEmpty || password.isEmpty) {
+      print("Server error: Empty details supplied");
+      return false;
+    }
+
     // Ensure we are pointing to the correct endpoint
     if (!address.endsWith("api/") || !address.endsWith("api")) {
       address = path.join(address, "api");

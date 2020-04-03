@@ -19,16 +19,24 @@ class InvenTreeUserPreferences {
 
   // Load saved login details, and attempt connection
   void loadLoginDetails() async {
+
+    print("Loading login details");
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    var server = prefs.getString(_SERVER);
-    var username = prefs.getString(_USERNAME);
-    var password = prefs.getString(_PASSWORD);
+    print("Done!");
+
+    var server = prefs.getString(_SERVER) ?? '';
+    var username = prefs.getString(_USERNAME) ?? '';
+    var password = prefs.getString(_PASSWORD) ?? '';
+
+    print("Connecting to server");
 
     await InvenTreeAPI().connect(server, username, password);
   }
 
   void saveLoginDetails(String server, String username, String password) async {
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     await prefs.setString(_SERVER, server);

@@ -1,6 +1,8 @@
 import 'package:InvenTree/widget/category_display.dart';
+import 'package:InvenTree/widget/location_display.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:preferences/preferences.dart';
 
 import 'settings.dart';
@@ -13,11 +15,10 @@ void main() async {
 
   // await PrefService.init(prefix: "inventree_");
 
-  String username = "username";
-  String password = "password";
-  String server = "http://127.0.0.1:8000";
+  WidgetsFlutterBinding.ensureInitialized();
 
-  InvenTreeAPI().connect(server, username, password);
+  // Load login details
+  InvenTreeUserPreferences().loadLoginDetails();
 
   runApp(MyApp());
 }
@@ -95,46 +96,16 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  // List of parts
-  List<InvenTreePart> _parts = List<InvenTreePart>();
-
-  String _filter = '';
-
-  List<InvenTreePart> get parts {
-
-    if (_filter.isNotEmpty) {
-
-      List<InvenTreePart> filtered = List<InvenTreePart>();
-      for (var part in _parts) {
-
-        var name = part.name.toLowerCase() + ' ' + part.description.toLowerCase();
-
-        bool match = true;
-
-        for (var txt in _filter.split(' ')) {
-          if (!name.contains(txt)) {
-            match = false;
-            break;
-          }
-        }
-
-        if (match) {
-          filtered.add(part);
-        }
-      }
-
-      return filtered;
-    } else {
-
-      // No filtering
-      return _parts;
-    }
-  }
 
   _MyHomePageState() : super();
 
   void _login() {
-    //Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeSettingsWidget()));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeSettingsWidget()));
+  }
+
+  void _goHome() {
+    // Reset the stack, go to "home"
+    Navigator.pushNamed(context, "/");
   }
 
   void _showParts() {
@@ -175,6 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   fit: BoxFit.scaleDown,
                  ),
                   title: new Text("InvenTree"),
+                  onTap: _goHome,
               ),
               new Divider(),
               new ListTile(
@@ -217,20 +189,9 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            TextField(
-              decoration: InputDecoration(
-                hintText: 'Filter Results',
-              ),
-              onChanged: (text) {
-                setState(() {
-                  _filter = text.trim().toLowerCase();
-                });
-              },
-            ),
             Text(
-              'hello world',
+              'InvenTree',
             ),
-            Expanded(child: ProductList(parts)),
           ],
         ),
       ),
