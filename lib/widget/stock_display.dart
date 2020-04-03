@@ -27,7 +27,6 @@ class _StockItemDisplayState extends State<StockItemDisplayWidget> {
     if (item == null) {
       return "Stock Item";
     } else {
-      print(item.jsondata);
       return "Item: x ${item.partName}";
     }
   }

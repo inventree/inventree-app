@@ -142,6 +142,25 @@ class InvenTreeModel {
 
   // TODO - Define a 'save' / 'update' function
 
+  // Override this function for each sub-class
+  bool matchAgainstString(String filter) => false;
+
+  // Filter this item against a list of provided filters
+  // Each filter must be matched
+  // Used for (e.g.) filtering returned results
+  bool filter(String filterString) {
+
+    List<String> filters = filterString.trim().toLowerCase().split(" ");
+
+    for (var f in filters) {
+      if (!matchAgainstString(f)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
 
 }
 

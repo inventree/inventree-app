@@ -28,6 +28,17 @@ class _LocationDisplayState extends State<LocationDisplayWidget> {
 
   List<InvenTreeStockLocation> _sublocations = List<InvenTreeStockLocation>();
 
+  String _locationFilter = '';
+
+  List<InvenTreeStockLocation> get sublocations {
+    
+    if (_locationFilter.isEmpty || _sublocations.isEmpty) {
+      return _sublocations;
+    } else {
+      return _sublocations.where((loc) => loc.filter(_locationFilter)).toList();
+    }
+  }
+
   List<InvenTreeStockItem> _items = List<InvenTreeStockItem>();
 
   String get _title {
@@ -86,7 +97,17 @@ class _LocationDisplayState extends State<LocationDisplayWidget> {
               textAlign: TextAlign.left,
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            Expanded(child: SublocationList(_sublocations)),
+            TextField(
+              decoration: InputDecoration(
+                hintText: "Filter locations",
+              ),
+              onChanged: (text) {
+                setState(() {
+                  _locationFilter = text.trim().toLowerCase();
+                });
+              },
+            ),
+            Expanded(child: SublocationList(sublocations)),
             Divider(),
             Text(
               "Stock Items - ${_items.length}",
