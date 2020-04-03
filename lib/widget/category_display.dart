@@ -6,29 +6,25 @@ import 'package:flutter/material.dart';
 
 class CategoryDisplayWidget extends StatefulWidget {
 
-  CategoryDisplayWidget(int catId, {this.category, Key key}) : categoryId = catId, super(key: key);
+  CategoryDisplayWidget(this.category, {Key key}) : super(key: key);
 
-  InvenTreePartCategory category = null;
+  final InvenTreePartCategory category;
 
   final String title = "Category";
 
-  final int categoryId;
-
   @override
-  _CategoryDisplayState createState() => _CategoryDisplayState(categoryId, category: category);
+  _CategoryDisplayState createState() => _CategoryDisplayState(category);
 }
 
 
 class _CategoryDisplayState extends State<CategoryDisplayWidget> {
 
-  _CategoryDisplayState(int id, {this.category}) : categoryId = id {
+  _CategoryDisplayState(this.category) {
     _requestData();
   }
 
-  final int categoryId;
-
   // The local InvenTreePartCategory object
-  InvenTreePartCategory category = null;
+  final InvenTreePartCategory category;
 
   List<InvenTreePartCategory> _subcategories = List<InvenTreePartCategory>();
 
@@ -48,11 +44,11 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
    */
   void _requestData() {
 
-    // Request a list of sub-categories under this one
-    InvenTreePartCategory().list(filters: {"parent": "$categoryId"}).then((var cats) {
-      _subcategories.clear();
+    int pk = category?.pk ?? -1;
 
-      print("Returned categories: ${cats.length}");
+    // Request a list of sub-categories under this one
+    InvenTreePartCategory().list(filters: {"parent": "$pk"}).then((var cats) {
+      _subcategories.clear();
 
       for (var cat in cats) {
         if (cat is InvenTreePartCategory) {
@@ -65,15 +61,12 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
     });
 
     // Request a list of parts under this category
-    InvenTreePart().list(filters: {"category": "$categoryId"}).then((var parts) {
+    InvenTreePart().list(filters: {"category": "$pk"}).then((var parts) {
       _parts.clear();
-
-      print("Returned parts: ${parts.length}");
 
       for (var part in parts) {
         if (part is InvenTreePart) {
           _parts.add(part);
-          print("Adding part: ${part.name}");
         }
       }
 
@@ -93,11 +86,11 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              "Subcategories",
+              "Subcategories - ${_subcategories.length}",
             ),
             Expanded(child: SubcategoryList(_subcategories)),
             Divider(),
-            Text("Parts"),
+            Text("Parts - ${_parts.length}"),
             Expanded(child: PartList(_parts)),
             Spacer(),
           ]
@@ -123,7 +116,7 @@ class SubcategoryList extends StatelessWidget {
       if (cat is InvenTreePartCategory) {
         print("Found cat: <${cat.pk}> : ${cat.name} - ${cat.description}");
 
-        Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(pk, category: cat)));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(cat)));
       }
     });
   }
