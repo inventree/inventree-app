@@ -1,5 +1,6 @@
 
 import 'package:InvenTree/inventree/part.dart';
+import 'package:InvenTree/widget/part_display.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -87,10 +88,15 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
           children: <Widget>[
             Text(
               "Subcategories - ${_subcategories.length}",
+              textAlign: TextAlign.left,
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
             Expanded(child: SubcategoryList(_subcategories)),
             Divider(),
-            Text("Parts - ${_parts.length}"),
+            Text("Parts - ${_parts.length}",
+              textAlign: TextAlign.left,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             Expanded(child: PartList(_parts)),
             Spacer(),
           ]
@@ -114,7 +120,6 @@ class SubcategoryList extends StatelessWidget {
     // Attempt to load the sub-category.
     InvenTreePartCategory().get(pk).then((var cat) {
       if (cat is InvenTreePartCategory) {
-        print("Found cat: <${cat.pk}> : ${cat.name} - ${cat.description}");
 
         Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(cat)));
       }
@@ -157,6 +162,16 @@ class PartList extends StatelessWidget {
 
   PartList(this._parts);
 
+  void _openPart(BuildContext context, int pk) {
+    // Attempt to load the part information
+    InvenTreePart().get(pk).then((var part) {
+      if (part is InvenTreePart) {
+
+        Navigator.push(context, MaterialPageRoute(builder: (context) => PartDisplayWidget(part)));
+      }
+    });
+  }
+
   Widget _build(BuildContext context, int index) {
     InvenTreePart part;
 
@@ -165,10 +180,15 @@ class PartList extends StatelessWidget {
     }
 
     return Card(
-      child: Column(
-        children: <Widget> [
-          Text('${part.name} - ${part.description}'),
-        ]
+      child: InkWell(
+        child: Column(
+          children: <Widget> [
+            Text('${part.name} - ${part.description}'),
+          ]
+        ),
+        onTap: () {
+          _openPart(context, part.pk);
+        },
       )
     );
   }

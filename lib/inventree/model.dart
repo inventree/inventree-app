@@ -75,7 +75,13 @@ class InvenTreeModel {
     // TODO - Add "timeout"
     // TODO - Add error catching
 
-    var response = await InvenTreeAPI().get(path.join(URL, pk.toString()));
+    var addr = path.join(URL, pk.toString());
+
+    if (!addr.endsWith("/")) {
+      addr += "/";
+    }
+
+    var response = await InvenTreeAPI().get(addr);
 
     if (response.statusCode != 200) {
       print("Error retrieving data");
