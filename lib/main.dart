@@ -3,7 +3,8 @@ import 'package:InvenTree/widget/location_display.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:preferences/preferences.dart';
+
+import 'package:qr_utils/qr_utils.dart';
 
 import 'settings.dart';
 import 'api.dart';
@@ -113,6 +114,12 @@ class _MyHomePageState extends State<MyHomePage> {
     Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));
   }
 
+  void _scanCode() async {
+    QrUtils.scanQR.then((String result) {
+      print("Scanned: $result");
+    });
+  }
+
   void _showStock() {
     Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(null)));
   }
@@ -151,6 +158,7 @@ class _MyHomePageState extends State<MyHomePage> {
               new Divider(),
               new ListTile(
                 title: new Text("Scan"),
+                onTap: _scanCode,
               ),
               new ListTile(
                 title: new Text("Parts"),
