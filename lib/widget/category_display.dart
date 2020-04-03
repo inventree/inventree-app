@@ -98,7 +98,6 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             Expanded(child: PartList(_parts)),
-            Spacer(),
           ]
         )
       )
