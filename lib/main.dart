@@ -1,10 +1,13 @@
+import 'package:InvenTree/inventree/stock.dart';
 import 'package:InvenTree/widget/category_display.dart';
 import 'package:InvenTree/widget/location_display.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:qr_utils/qr_utils.dart';
+import 'barcode.dart';
+
+import 'dart:convert';
 
 import 'settings.dart';
 import 'api.dart';
@@ -115,9 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _scanCode() async {
-    QrUtils.scanQR.then((String result) {
-      print("Scanned: $result");
-    });
+    scanQrCode(context);
   }
 
   void _showStock() {
