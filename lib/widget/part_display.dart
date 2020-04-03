@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'package:InvenTree/widget/drawer.dart';
+
 class PartDisplayWidget extends StatefulWidget {
 
   PartDisplayWidget(this.part, {Key key}) : super(key: key);
@@ -38,6 +40,7 @@ class _PartDisplayState extends State<PartDisplayWidget> {
       appBar: AppBar(
         title: Text(_title),
       ),
+      drawer: new InvenTreeDrawer(context),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

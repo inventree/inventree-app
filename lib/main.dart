@@ -1,6 +1,7 @@
 import 'package:InvenTree/inventree/stock.dart';
 import 'package:InvenTree/widget/category_display.dart';
 import 'package:InvenTree/widget/location_display.dart';
+import 'package:InvenTree/widget/drawer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -103,28 +104,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   _MyHomePageState() : super();
 
-  void _login() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeSettingsWidget()));
-  }
-
-  void _goHome() {
-    // Reset the stack, go to "home"
-    Navigator.pushNamedAndRemoveUntil(context, "/", (r) => false);
-  }
-
-  void _showParts() {
-    // Construct a top-level category display (initialize with a null category)
-    Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));
-  }
-
-  void _scanCode() async {
-    scanQrCode(context);
-  }
-
-  void _showStock() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(null)));
-  }
-
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -138,46 +117,15 @@ class _MyHomePageState extends State<MyHomePage> {
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
-        /*
-        leading: IconButton(
-          icon: Icon(Icons.menu),
-          tooltip: "Menu",
-          onPressed: null,
-        )
-        */
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.search),
+            tooltip: 'Search',
+            onPressed: null,
+          ),
+        ],
       ),
-      drawer: new Drawer(
-          child: new ListView(
-            children: <Widget>[
-              new ListTile(
-                leading: new Image.asset("assets/image/icon.png",
-                  fit: BoxFit.scaleDown,
-                 ),
-                  title: new Text("InvenTree"),
-                  onTap: _goHome,
-              ),
-              new Divider(),
-              new ListTile(
-                title: new Text("Scan"),
-                onTap: _scanCode,
-              ),
-              new ListTile(
-                title: new Text("Parts"),
-                onTap: _showParts,
-              ),
-              new ListTile(
-                title: new Text("Stock"),
-                onTap: _showStock,
-              ),
-              new Divider(),
-              new ListTile(
-                title: new Text("Settings"),
-                leading: new Icon(Icons.settings),
-                onTap: _login,
-              ),
-            ],
-          )
-      ),
+      drawer: new InvenTreeDrawer(context),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.

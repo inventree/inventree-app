@@ -1,5 +1,6 @@
 
 import 'package:InvenTree/inventree/stock.dart';
+import 'package:InvenTree/widget/drawer.dart';
 import 'package:InvenTree/widget/stock_display.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -88,6 +89,7 @@ class _LocationDisplayState extends State<LocationDisplayWidget> {
       appBar: AppBar(
         title: Text(_title),
       ),
+      drawer: new InvenTreeDrawer(context),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

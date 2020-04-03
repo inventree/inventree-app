@@ -1,6 +1,9 @@
 
 import 'package:InvenTree/inventree/part.dart';
+
 import 'package:InvenTree/widget/part_display.dart';
+import 'package:InvenTree/widget/drawer.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -82,6 +85,7 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
       appBar: AppBar(
         title: Text(_titleString),
       ),
+      drawer: new InvenTreeDrawer(context),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

@@ -4,6 +4,8 @@ import 'package:InvenTree/inventree/stock.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'package:InvenTree/widget/drawer.dart';
+
 class StockItemDisplayWidget extends StatefulWidget {
 
   StockItemDisplayWidget(this.item, {Key key}) : super(key: key);
@@ -37,6 +39,7 @@ class _StockItemDisplayState extends State<StockItemDisplayWidget> {
       appBar: AppBar(
         title: Text(_title),
       ),
+      drawer: new InvenTreeDrawer(context),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
