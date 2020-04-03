@@ -106,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _goHome() {
     // Reset the stack, go to "home"
-    Navigator.pushNamed(context, "/");
+    Navigator.pushNamedAndRemoveUntil(context, "/", (r) => false);
   }
 
   void _showParts() {
