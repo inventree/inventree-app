@@ -30,6 +30,8 @@ dependencies:
 
   qr_utils: ^0.1.4
 
+  package_info: ^0.4.0+16
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
