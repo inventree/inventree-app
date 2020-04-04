@@ -143,17 +143,12 @@ class SublocationList extends StatelessWidget {
   Widget _build(BuildContext context, int index) {
     InvenTreeStockLocation loc = _locations[index];
 
-    return Card(
-      child: InkWell(
-        child: Column(
-          children: <Widget>[
-            Text('${loc.name} - ${loc.description}'),
-          ],
-        ),
-        onTap: () {
-          _openLocation(context, loc.pk);
-        },
-      )
+    return ListTile(
+      title: Text('${loc.name}'),
+      subtitle: Text("${loc.description}"),
+      onTap: () {
+        _openLocation(context, loc.pk);
+      },
     );
   }
 
@@ -179,17 +174,12 @@ class StockList extends StatelessWidget {
   Widget _build(BuildContext context, int index) {
     InvenTreeStockItem item = _items[index];
 
-    return Card(
-      child: InkWell(
-        child: Column(
-          children: <Widget>[
-            Text('${item.quantity.toString()} x ${item.partName}')
-          ]
-        ),
-        onTap: () {
-          _openItem(context, item.pk);
-        },
-      )
+    return ListTile(
+      title: Text("${item.quantity.toString()} x ${item.partName}"),
+      subtitle: Text("${item.description}"),
+      onTap: () {
+        _openItem(context, item.pk);
+      },
     );
   }
 
