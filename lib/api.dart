@@ -72,6 +72,12 @@ class InvenTreeAPI {
   // Authentication token (initially empty, must be requested)
   String _token = "";
 
+  // Server version information
+  String _version;
+
+  // Getter for server version information
+  String get version => _version;
+
   // Connection status flag - set once connection has been validated
   bool _connected = false;
 
@@ -85,13 +91,6 @@ class InvenTreeAPI {
   factory InvenTreeAPI() { return _api; }
 
   InvenTreeAPI._internal();
-
-  void disconnected() {
-    _connected = false;
-
-    // Clear token
-    _token = "";
-  }
 
   Future<bool> connect() async {
 
@@ -172,6 +171,8 @@ class InvenTreeAPI {
 
     print("Server: " + data["server"]);
     print("Version: " + data["version"]);
+
+    _version = data["version"];
 
     // Request token from the server if we do not already have one
     if (_token.isNotEmpty) {
