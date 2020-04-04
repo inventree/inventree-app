@@ -42,25 +42,20 @@ class InvenTreePart extends InvenTreeModel {
 
   String get _thumbnail => jsondata['thumbnail'] ?? '';
 
-  // Return a fully-qualified path to the image for this Part
+  // Return a path to the image for this Part
   String get image {
+    // Use thumbnail as a backup
     String img = _image.isNotEmpty ? _image : _thumbnail;
 
-    if (img.isEmpty) {
-      return InvenTreeAPI().makeUrl('/static/img/blank_image.png');
-    } else {
-      return InvenTreeAPI().makeUrl(img);
-    }
+    return img.isNotEmpty ? img : InvenTreeAPI.staticImage;
   }
 
+  // Return a path to the thumbnail for this part
   String get thumbnail {
+    // Use image as a backup
     String img = _thumbnail.isNotEmpty ? _thumbnail : _image;
 
-    if (img.isEmpty) {
-      return InvenTreeAPI().makeUrl('/static/img/blank_image.thumbnail.png');
-    } else {
-      return InvenTreeAPI().makeUrl(img);
-    }
+    return img.isNotEmpty ? img : InvenTreeAPI.staticThumb;
   }
 
   InvenTreePart() : super();

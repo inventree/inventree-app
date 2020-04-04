@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:image/image.dart';
 
 import 'package:path/path.dart' as path;
@@ -286,5 +288,21 @@ class InvenTreeAPI {
     } else {
       return "Basic " + base64Encode(utf8.encode('$_username:$_password'));
     }
+  }
+
+  static String get staticImage => "/static/img/blank_image.png";
+
+  static String get staticThumb => "/static/img/blank_image.thumbnail.png";
+
+  /*
+   * Get an image from the server (or, from cache)
+   */
+  AdvancedNetworkImage getImage(String imageUrl) {
+
+    return new AdvancedNetworkImage(makeUrl(imageUrl),
+      header: defaultHeaders(),
+      useDiskCache: true,
+      cacheRule: CacheRule(maxAge: const Duration(days: 5)),
+    );
   }
 }

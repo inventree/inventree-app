@@ -180,12 +180,7 @@ class PartList extends StatelessWidget {
       title: Text("${part.name}"),
       subtitle: Text("${part.description}"),
       leading: Image(
-        image: AdvancedNetworkImage(
-          part.thumbnail,
-          header: InvenTreeAPI().defaultHeaders(),
-          useDiskCache: true,
-          cacheRule: CacheRule(maxAge: const Duration(days: 1)),
-        ),
+        image: InvenTreeAPI().getImage(part.thumbnail),
         width: 48,
       ),
       onTap: () {
