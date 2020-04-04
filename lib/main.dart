@@ -146,6 +146,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
     }).catchError((e) {
       _serverConnection = false;
+      _serverStatusColor = Color.fromARGB(255, 250, 50, 50);
+
+      _serverStatus = "Error connecting to $_serverAddress";
 
       if (e is TimeoutException) {
         _serverMessage = "No response from server";
@@ -282,10 +285,13 @@ class _MyHomePageState extends State<MyHomePage> {
                     children: <Widget>[
                       Text('$_serverStatus',
                         style: TextStyle(
-                        color: _serverStatusColor,
+                          color: _serverStatusColor,
+                          ),
                         ),
-                      ),
-                      Text('$_serverMessage'
+                      Text('$_serverMessage',
+                        style: TextStyle(
+                          color: _serverStatusColor,
+                        ),
                       ),
                     ],
                     ),
