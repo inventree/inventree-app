@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:image/image.dart';
+
 import 'package:path/path.dart' as path;
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,21 +28,40 @@ class InvenTreeAPI {
 
   // Accessors for various url endpoints
   String get baseUrl {
-    return _BASE_URL;
-  }
-
-  String get apiUrl {
-    return path.join(baseUrl, 'api');
-  }
-
-  String getApiUrl(String endpoint) {
-    String url = path.join(apiUrl, endpoint);
+    String url = _BASE_URL;
 
     if (!url.endsWith("/")) {
       url += "/";
     }
 
     return url;
+  }
+
+  String _makeUrl(String url) {
+    if (url.startsWith('/')) {
+      url = url.substring(1, url.length);
+    }
+
+    url = url.replaceAll('//', '/');
+
+    return baseUrl + url;
+  }
+
+  String get apiUrl {
+    return _makeUrl("/api/");
+  }
+
+  String get imageUrl {
+    return _makeUrl("/image/");
+  }
+
+  String makeApiUrl(String endpoint) {
+
+    return apiUrl + endpoint;
+  }
+
+  String makeUrl(String endpoint) {
+    return _makeUrl(endpoint);
   }
 
   String _username = "";
@@ -189,7 +210,7 @@ class InvenTreeAPI {
   // Perform a PATCH request
   Future<http.Response> patch(String url, {Map<String, String> body}) async {
 
-    var _url = getApiUrl(url);
+    var _url = makeApiUrl(url);
     var _headers = _defaultHeaders();
     var _body = Map<String, String>();
 
@@ -209,7 +230,7 @@ class InvenTreeAPI {
   // Perform a POST request
   Future<http.Response> post(String url, {Map<String, String> body}) async {
 
-    var _url = getApiUrl(url);
+    var _url = makeApiUrl(url);
     var _headers = _defaultHeaders();
     var _body = Map<String, String>();
 
@@ -227,7 +248,7 @@ class InvenTreeAPI {
   // Perform a GET request
   Future<http.Response> get(String url, {Map<String, String> params}) async {
 
-    var _url = getApiUrl(url);
+    var _url = makeApiUrl(url);
     var _headers = _defaultHeaders();
 
     // If query parameters are supplied, form a query string
