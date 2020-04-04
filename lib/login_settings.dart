@@ -58,6 +58,8 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
 
     final Size screenSize = MediaQuery.of(context).size;
 
+    load();
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Login Settings"),
@@ -136,7 +138,6 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
 
       await InvenTreeUserPreferences().saveLoginDetails(_addr, _user, _pass);
 
-      print("Saved");
     }
   }
 }

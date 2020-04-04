@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:path/path.dart' as path;
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 /**
@@ -50,18 +51,32 @@ class InvenTreeAPI {
     _token = "";
   }
 
-  Future<bool> connect(String address, String username, String password) async {
+  Future<bool> connect() async {
+
+    var prefs = await SharedPreferences.getInstance();
+
+    String server = prefs.getString("server");
+    String username = prefs.getString("username");
+    String password = prefs.getString("password");
+
+    return connectToServer(server, username, password);
+  }
+
+  Future<bool> connectToServer(String address, String username, String password) async {
 
     /* Address is the base address for the InvenTree server,
      * e.g. http://127.0.0.1:8000
      */
 
+    String errorMessage = "";
+
     address = address.trim();
     username = username.trim();
 
     if (address.isEmpty || username.isEmpty || password.isEmpty) {
-      print("Server error: Empty details supplied");
-      return false;
+      errorMessage = "Server Error: Empty details supplied";
+      print(errorMessage);
+      throw errorMessage;
     }
 
     // Ensure we are pointing to the correct endpoint
@@ -90,10 +105,16 @@ class InvenTreeAPI {
 
     // TODO - Add connection timeout
 
-    var response = await get("").catchError((error) {
-      print("Error connecting to server:");
-      print(error);
-      return false;
+    var response = await get("").timeout(Duration(seconds: 10)).catchError((error) {
+
+      if (error is SocketException) {
+        errorMessage = "Could not connect to server.";
+        print(errorMessage);
+        throw errorMessage;
+      } else {
+        // Unknown error type, re-throw error
+        throw error;
+      }
     });
 
     if (response.statusCode != 200) {
@@ -107,16 +128,18 @@ class InvenTreeAPI {
 
     // We expect certain response from the server
     if (!data.containsKey("server") || !data.containsKey("version")) {
-      print("Incorrect keys in server response");
-      return false;
+      errorMessage = "Server resonse contained incorrect data";
+      print(errorMessage);
+      throw errorMessage;
     }
 
     print("Server: " + data["server"]);
     print("Version: " + data["version"]);
 
-    // Request token from the server
+    // Request token from the server if we do not already have one
     if (_token.isNotEmpty) {
-      print("Discarding old token - $_token");
+      print("Already have token - $_token");
+      return true;
     }
 
     // Clear out the token

@@ -88,6 +88,7 @@ class InvenTreeDrawer extends StatelessWidget {
               new Divider(),
               new ListTile(
                 title: new Text("Parts"),
+                leading: new Icon(Icons.category),
                 onTap: _showParts,
               ),
               new ListTile(
