@@ -21,8 +21,27 @@ class InvenTreeAPI {
   static const _URL_GET_TOKEN = "user/token/";
   static const _URL_GET_VERSION = "";
 
-  // Base URL for InvenTree API
-  String _base_url = "";
+  // Base URL for InvenTree API e.g. http://192.168.120.10:8000
+  String _BASE_URL = "";
+
+  // Accessors for various url endpoints
+  String get baseUrl {
+    return _BASE_URL;
+  }
+
+  String get apiUrl {
+    return path.join(baseUrl, 'api');
+  }
+
+  String getApiUrl(String endpoint) {
+    String url = path.join(apiUrl, endpoint);
+
+    if (!url.endsWith("/")) {
+      url += "/";
+    }
+
+    return url;
+  }
 
   String _username = "";
   String _password = "";
@@ -34,7 +53,7 @@ class InvenTreeAPI {
   bool _connected = false;
 
   bool get connected {
-    return _connected && _base_url.isNotEmpty && _token.isNotEmpty;
+    return _connected && baseUrl.isNotEmpty && _token.isNotEmpty;
   }
 
   // Ensure we only ever create a single instance of the API class
@@ -79,11 +98,6 @@ class InvenTreeAPI {
       throw errorMessage;
     }
 
-    // Ensure we are pointing to the correct endpoint
-    if (!address.endsWith("api/") || !address.endsWith("api")) {
-      address = path.join(address, "api");
-    }
-
     if (!address.endsWith('/')) {
       address = address + '/';
     }
@@ -95,13 +109,13 @@ class InvenTreeAPI {
      * - If no port supplied, append a default port
      */
 
-    _base_url = address;
+    _BASE_URL = address;
     _username = username;
     _password = password;
 
     _connected = false;
 
-    print("Connecting to " + address + " -> " + username + ":" + password);
+    print("Connecting to " + apiUrl + " -> " + username + ":" + password);
 
     // TODO - Add connection timeout
 
@@ -172,22 +186,10 @@ class InvenTreeAPI {
     };
   }
 
-  // Construct an API URL
-  String _makeUrl(String url) {
-
-    if (url.startsWith('/')) {
-      url = url.substring(1);
-    }
-
-
-
-    return path.join(_base_url, url);
-  }
-
   // Perform a PATCH request
   Future<http.Response> patch(String url, {Map<String, String> body}) async {
 
-    var _url = _makeUrl(url);
+    var _url = getApiUrl(url);
     var _headers = _defaultHeaders();
     var _body = Map<String, String>();
 
@@ -207,7 +209,7 @@ class InvenTreeAPI {
   // Perform a POST request
   Future<http.Response> post(String url, {Map<String, String> body}) async {
 
-    var _url = _makeUrl(url);
+    var _url = getApiUrl(url);
     var _headers = _defaultHeaders();
     var _body = Map<String, String>();
 
@@ -225,7 +227,7 @@ class InvenTreeAPI {
   // Perform a GET request
   Future<http.Response> get(String url, {Map<String, String> params}) async {
 
-    var _url = _makeUrl(url);
+    var _url = getApiUrl(url);
     var _headers = _defaultHeaders();
 
     // If query parameters are supplied, form a query string
