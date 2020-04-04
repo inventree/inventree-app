@@ -1,4 +1,5 @@
 
+import 'package:InvenTree/api.dart';
 import 'package:InvenTree/inventree/part.dart';
 
 import 'package:InvenTree/widget/part_display.dart';
@@ -7,6 +8,8 @@ import 'package:InvenTree/widget/drawer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
+import 'package:flutter_advanced_networkimage/provider.dart';
 
 class CategoryDisplayWidget extends StatefulWidget {
 
@@ -176,14 +179,15 @@ class PartList extends StatelessWidget {
     return ListTile(
       title: Text("${part.name}"),
       subtitle: Text("${part.description}"),
-
-      /*
-      leading: CachedNetworkImage(
-        imageUrl: part.imageurl,
-        placeholder: (context, url) => CircularProgressIndicator(),
-        errorWidget: (context, url, error) => Icon(Icons.error),
+      leading: Image(
+        image: AdvancedNetworkImage(
+          part.thumbnail,
+          header: InvenTreeAPI().defaultHeaders(),
+          useDiskCache: true,
+          cacheRule: CacheRule(maxAge: const Duration(days: 1)),
+        ),
+        width: 48,
       ),
-      */
       onTap: () {
         _openPart(context, part.pk);
       },

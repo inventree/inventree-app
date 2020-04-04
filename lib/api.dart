@@ -211,7 +211,7 @@ class InvenTreeAPI {
   Future<http.Response> patch(String url, {Map<String, String> body}) async {
 
     var _url = makeApiUrl(url);
-    var _headers = _defaultHeaders();
+    var _headers = defaultHeaders();
     var _body = Map<String, String>();
 
     // Copy across provided data
@@ -231,7 +231,7 @@ class InvenTreeAPI {
   Future<http.Response> post(String url, {Map<String, String> body}) async {
 
     var _url = makeApiUrl(url);
-    var _headers = _defaultHeaders();
+    var _headers = defaultHeaders();
     var _body = Map<String, String>();
 
     // Copy across provided data
@@ -249,7 +249,7 @@ class InvenTreeAPI {
   Future<http.Response> get(String url, {Map<String, String> params}) async {
 
     var _url = makeApiUrl(url);
-    var _headers = _defaultHeaders();
+    var _headers = defaultHeaders();
 
     // If query parameters are supplied, form a query string
     if (params != null && params.isNotEmpty) {
@@ -270,18 +270,21 @@ class InvenTreeAPI {
     return http.get(_url, headers: _headers);
   }
 
-  Map<String, String> _defaultHeaders() {
+  Map<String, String> defaultHeaders() {
 
     var headers = Map<String, String>();
 
-    // Preference authentication token if available
-    if (_token.isNotEmpty) {
-      headers[HttpHeaders.authorizationHeader] = "Token " + _token;
-    } else {
-      headers[HttpHeaders.authorizationHeader] = 'Basic ' + base64Encode(utf8.encode('$_username:$_password'));
-    }
+    headers[HttpHeaders.authorizationHeader] = _authorizationHeader();
+    //headers['Authorization'] = _authorizationHeader();
 
     return headers;
   }
 
+  String _authorizationHeader () {
+    if (_token.isNotEmpty) {
+      return "Token $_token";
+    } else {
+      return "Basic " + base64Encode(utf8.encode('$_username:$_password'));
+    }
+  }
 }
