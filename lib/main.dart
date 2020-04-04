@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:InvenTree/inventree/stock.dart';
 import 'package:InvenTree/widget/category_display.dart';
 import 'package:InvenTree/widget/location_display.dart';
@@ -102,7 +104,80 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  _MyHomePageState() : super();
+  _MyHomePageState() : super() {
+    _checkServerConnection();
+  }
+
+  String _serverAddress = "";
+
+  String _serverStatus = "Connecting to server";
+
+  String _serverMessage = "";
+
+  bool _serverConnection = false;
+
+  Color _serverStatusColor = Color.fromARGB(255, 50, 50, 250);
+
+  /*
+   * Test the server connection
+   */
+  void _checkServerConnection() async {
+
+    var prefs = await SharedPreferences.getInstance();
+
+    print("Checking server connection");
+
+    _serverAddress = prefs.getString("server");
+
+    InvenTreeAPI().connect().then((bool result) {
+      print("Connection status: $result");
+      _serverConnection = result;
+
+      if (_serverConnection) {
+        _serverStatus = "Connected to server: $_serverAddress";
+        _serverMessage = "";
+        _serverStatusColor = Color.fromARGB(255, 50, 250, 50);
+      } else {
+        _serverStatus = "Could not connect to server: $_serverAddress";
+        _serverStatusColor = Color.fromARGB(255, 250, 50, 50);
+      }
+
+      setState(() {});
+
+    }).catchError((e) {
+      _serverConnection = false;
+
+      if (e is TimeoutException) {
+        _serverMessage = "No response from server";
+      } else {
+        _serverMessage = e.toString();
+      }
+
+      print("Server error: $_serverMessage");
+
+      setState(() {});
+    });
+  }
+
+  void _search() {
+    // TODO
+  }
+
+  void _scan() {
+    scanQrCode(context);
+  }
+
+  void _parts() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));
+  }
+
+  void _stock() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(null)));
+  }
+
+  void _suppliers() {
+    // TODO
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -130,24 +205,93 @@ class _MyHomePageState extends State<MyHomePage> {
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         child: Column(
-          // Column is also layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'InvenTree',
+            Spacer(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Column(
+                  children: <Widget>[
+                   IconButton(
+                     icon: new Icon(Icons.search),
+                     tooltip: 'Search',
+                     onPressed: _search,
+                   ),
+                   Text("Search"),
+                  ],
+                ),
+                Column(
+                  children: <Widget>[
+                    IconButton(
+                      icon: new Icon(Icons.search),
+                      tooltip: 'Scan Barcode',
+                      onPressed: _scan,
+                    ),
+                    Text("Scan Barcode"),
+                  ],
+                ),
+              ],
+            ),
+            Spacer(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Column(
+                  children: <Widget>[
+                    IconButton(
+                      icon: new Icon(Icons.category),
+                      tooltip: 'Parts',
+                      onPressed: _parts,
+                    ),
+                    Text("Parts"),
+                  ],
+                ),
+                Column(
+                  children: <Widget>[
+                    IconButton(
+                      icon: new Icon(Icons.map),
+                      tooltip: 'Stock',
+                      onPressed: _stock,
+                    ),
+                    Text('Stock'),
+                  ],
+                ),
+                Column(
+                  children: <Widget>[
+                    IconButton(
+                      icon: new Icon(Icons.business),
+                      tooltip: 'Suppliers',
+                      onPressed: _suppliers,
+                    ),
+                    Text("Suppliers"),
+                  ]
+                )
+              ],
+            ),
+            Spacer(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Expanded(
+                  child: Card(
+                    child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Text('$_serverStatus',
+                        style: TextStyle(
+                        color: _serverStatusColor,
+                        ),
+                      ),
+                      Text('$_serverMessage'
+                      ),
+                    ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

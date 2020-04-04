@@ -84,6 +84,7 @@ class InvenTreeDrawer extends StatelessWidget {
               new ListTile(
                 title: new Text("Scan"),
                 onTap: _scan,
+                leading: new Icon(Icons.search),
               ),
               new Divider(),
               new ListTile(
@@ -97,6 +98,7 @@ class InvenTreeDrawer extends StatelessWidget {
               ),
               new ListTile(
                 title: new Text("Suppliers"),
+                leading: new Icon(Icons.business),
                 onTap: null,
               ),
               new Divider(),
