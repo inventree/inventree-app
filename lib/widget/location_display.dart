@@ -1,4 +1,4 @@
-
+import 'package:InvenTree/api.dart';
 import 'package:InvenTree/inventree/stock.dart';
 import 'package:InvenTree/widget/drawer.dart';
 import 'package:InvenTree/widget/stock_display.dart';
@@ -175,8 +175,15 @@ class StockList extends StatelessWidget {
     InvenTreeStockItem item = _items[index];
 
     return ListTile(
-      title: Text("${item.quantity.toString()} x ${item.partName}"),
-      subtitle: Text("${item.description}"),
+      title: Text("${item.partName}"),
+      subtitle: Text("${item.partDescription}"),
+      leading: Image(
+        image: InvenTreeAPI().getImage(item.partThumbnail),
+        width: 48,
+      ),
+      trailing: Text("${item.displayQuantity}",
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
       onTap: () {
         _openItem(context, item.pk);
       },

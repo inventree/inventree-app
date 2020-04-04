@@ -300,6 +300,10 @@ class InvenTreeAPI {
    */
   AdvancedNetworkImage getImage(String imageUrl) {
 
+    if (imageUrl.isEmpty) {
+      imageUrl = staticImage;
+    }
+
     return new AdvancedNetworkImage(makeUrl(imageUrl),
       header: defaultHeaders(),
       useDiskCache: true,
