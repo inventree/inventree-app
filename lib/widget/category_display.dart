@@ -132,17 +132,12 @@ class SubcategoryList extends StatelessWidget {
   Widget _build(BuildContext context, int index) {
     InvenTreePartCategory cat = _categories[index];
 
-    return Card(
-      child: InkWell(
-        child: Column(
-          children: <Widget>[
-            Text('${cat.name} - ${cat.description}'),
-          ],
-        ),
-        onTap: () {
-          _openCategory(context, cat.pk);
-        }
-      ),
+    return ListTile(
+      title: Text("${cat.name}"),
+      subtitle: Text("${cat.description}"),
+      onTap: () {
+        _openCategory(context, cat.pk);
+      }
     );
   }
 
@@ -178,18 +173,22 @@ class PartList extends StatelessWidget {
       part = _parts[index];
     }
 
-    return Card(
-      child: InkWell(
-        child: Column(
-          children: <Widget> [
-            Text('${part.name} - ${part.description}'),
-          ]
-        ),
-        onTap: () {
-          _openPart(context, part.pk);
-        },
-      )
+    return ListTile(
+      title: Text("${part.name}"),
+      subtitle: Text("${part.description}"),
+
+      /*
+      leading: CachedNetworkImage(
+        imageUrl: part.imageurl,
+        placeholder: (context, url) => CircularProgressIndicator(),
+        errorWidget: (context, url, error) => Icon(Icons.error),
+      ),
+      */
+      onTap: () {
+        _openPart(context, part.pk);
+      },
     );
+
   }
 
   @override
