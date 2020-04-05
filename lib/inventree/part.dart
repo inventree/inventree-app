@@ -14,6 +14,8 @@ class InvenTreePartCategory extends InvenTreeModel {
 
   String get pathstring => jsondata['pathstring'] ?? '';
 
+  int get partcount => jsondata['parts'] ?? 0;
+
   InvenTreePartCategory() : super();
 
   InvenTreePartCategory.fromJson(Map<String, dynamic> json) : super.fromJson(json) {

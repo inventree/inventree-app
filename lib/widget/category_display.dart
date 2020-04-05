@@ -202,6 +202,7 @@ class SubcategoryList extends StatelessWidget {
     return ListTile(
       title: Text("${cat.name}"),
       subtitle: Text("${cat.description}"),
+      trailing: Text("${cat.partcount}"),
       onTap: () {
         _openCategory(context, cat.pk);
       }
