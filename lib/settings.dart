@@ -52,22 +52,26 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
         child: new SimpleDialog(
             title: new Text("About InvenTree"),
             children: <Widget>[
-                ListTile(
-                  title: Text("App Name"),
-                  subtitle: Text("${info.appName}"),
-                ),
-                ListTile(
-                  title: Text("App Version"),
-                  subtitle: Text("${info.version}"),
-                ),
-                ListTile(
-                  title: Text("Package Name"),
-                  subtitle: Text("${info.packageName}"),
-                ),
-                ListTile(
-                  title: Text("Build Number"),
-                  subtitle: Text("${info.buildNumber}")
-                ),
+              ListTile(
+                title: Text("App Name"),
+                subtitle: Text("${info.appName}"),
+              ),
+              ListTile(
+                title: Text("Package Name"),
+                subtitle: Text("${info.packageName}"),
+              ),
+              ListTile(
+                title: Text("App Version"),
+                subtitle: Text("${info.version}"),
+              ),
+              ListTile(
+                title: Text("Build Number"),
+                subtitle: Text("${info.buildNumber}")
+              ),
+              ListTile(
+                title: Text("Submit Bug Report"),
+                subtitle: Text("Submit a bug report or feature request at:\n https://github.com/inventree/inventree-app/issues/"),
+              )
             ]
         ),
       );
