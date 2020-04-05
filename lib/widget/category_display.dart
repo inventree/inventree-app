@@ -169,7 +169,7 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
                     );
                   },
                   body: SubcategoryList(_subcategories),
-                  isExpanded: _subcategoriesExpanded,
+                  isExpanded: _subcategoriesExpanded && _subcategories.length > 0,
                 ),
                 ExpansionPanel(
                   headerBuilder: (BuildContext context, bool isExpanded) {
@@ -185,7 +185,7 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
                     );
                   },
                   body: PartList(_parts),
-                  isExpanded: _partListExpanded,
+                  isExpanded: _partListExpanded && _parts.length > 0,
                 )
               ],
             ),
