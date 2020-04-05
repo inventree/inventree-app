@@ -5,6 +5,7 @@ import 'package:InvenTree/widget/category_display.dart';
 import 'package:InvenTree/widget/location_display.dart';
 
 import 'package:InvenTree/settings.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class InvenTreeDrawer extends StatelessWidget {
 
@@ -78,13 +79,13 @@ class InvenTreeDrawer extends StatelessWidget {
               new Divider(),
               new ListTile(
                 title: new Text("Search"),
-                leading: new Icon(Icons.search),
+                leading: new FaIcon(FontAwesomeIcons.search),
                 onTap: null,
               ),
               new ListTile(
-                title: new Text("Scan"),
+                title: new Text("Scan Barcode"),
                 onTap: _scan,
-                leading: new Icon(Icons.search),
+                leading: new FaIcon(FontAwesomeIcons.barcode),
               ),
               new Divider(),
               new ListTile(
@@ -94,11 +95,12 @@ class InvenTreeDrawer extends StatelessWidget {
               ),
               new ListTile(
                 title: new Text("Stock"),
+                leading: new FaIcon(FontAwesomeIcons.boxes),
                 onTap: _showStock,
               ),
               new ListTile(
                 title: new Text("Suppliers"),
-                leading: new Icon(Icons.business),
+                leading: new FaIcon(FontAwesomeIcons.industry),
                 onTap: null,
               ),
               new Divider(),

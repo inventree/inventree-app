@@ -8,6 +8,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'barcode.dart';
 
 import 'dart:convert';
@@ -217,7 +219,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 Column(
                   children: <Widget>[
                    IconButton(
-                     icon: new Icon(Icons.search),
+                     icon: new FaIcon(FontAwesomeIcons.search),
                      tooltip: 'Search',
                      onPressed: _search,
                    ),
@@ -227,7 +229,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 Column(
                   children: <Widget>[
                     IconButton(
-                      icon: new Icon(Icons.search),
+                      icon: new FaIcon(FontAwesomeIcons.barcode),
                       tooltip: 'Scan Barcode',
                       onPressed: _scan,
                     ),
@@ -253,7 +255,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 Column(
                   children: <Widget>[
                     IconButton(
-                      icon: new Icon(Icons.map),
+                      icon: new FaIcon(FontAwesomeIcons.boxes),
                       tooltip: 'Stock',
                       onPressed: _stock,
                     ),
@@ -263,7 +265,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 Column(
                   children: <Widget>[
                     IconButton(
-                      icon: new Icon(Icons.business),
+                      icon: new FaIcon(FontAwesomeIcons.industry),
                       tooltip: 'Suppliers',
                       onPressed: _suppliers,
                     ),
