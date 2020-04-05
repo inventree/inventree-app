@@ -246,7 +246,7 @@ class _MyHomePageState extends State<MyHomePage> {
                    IconButton(
                      icon: new FaIcon(FontAwesomeIcons.search),
                      tooltip: 'Search',
-                     onPressed: _search,
+                     onPressed: _unsupported,
                    ),
                    Text("Search"),
                   ],
