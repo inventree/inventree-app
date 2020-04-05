@@ -44,7 +44,7 @@ class _PartDisplayState extends State<PartDisplayWidget> {
             image: InvenTreeAPI().getImage(part.image)
         ),
         trailing: IconButton(
-          icon:  FaIcon(FontAwesomeIcons.edit),
+          icon: FaIcon(FontAwesomeIcons.edit),
           onPressed: null,
         ),
       )
@@ -73,7 +73,8 @@ class _PartDisplayState extends State<PartDisplayWidget> {
       tiles.add(
         Card(
           child: ListTile(
-            title: Text("${part.categoryName}"),
+            title: Text("Part Category"),
+            subtitle: Text("${part.categoryName}"),
             leading: FaIcon(FontAwesomeIcons.stream),
             onTap: () {
               InvenTreePartCategory().get(part.categoryId).then((var cat) {
@@ -92,6 +93,8 @@ class _PartDisplayState extends State<PartDisplayWidget> {
           child: ListTile(
             title: Text("${part.link}"),
             leading: FaIcon(FontAwesomeIcons.link),
+            trailing: Text(""),
+            onTap: null,
           )
         )
       );
@@ -103,10 +106,9 @@ class _PartDisplayState extends State<PartDisplayWidget> {
         child: ListTile(
           title: Text("In Stock"),
           leading: FaIcon(FontAwesomeIcons.boxes),
-          trailing: FlatButton(
-              child: Text("${part.inStock}")
-          ),
-        )
+          trailing: Text("${part.inStock}"),
+          onTap: null,
+        ),
       )
     );
 
@@ -118,6 +120,7 @@ class _PartDisplayState extends State<PartDisplayWidget> {
             title: Text("On Order"),
             leading: FaIcon(FontAwesomeIcons.shoppingCart),
             trailing: Text("${part.onOrder}"),
+            onTap: null,
           )
         )
       );
@@ -125,12 +128,52 @@ class _PartDisplayState extends State<PartDisplayWidget> {
 
     // Parts being built
     if (part.isAssembly) {
+
+      tiles.add(
+        Card(
+          child: ListTile(
+            title: Text("Bill of Materials"),
+            leading: FaIcon(FontAwesomeIcons.thList),
+            trailing: Text("${part.bomItemCount}"),
+            onTap: null,
+          )
+        )
+      );
+
       tiles.add(
         Card(
           child: ListTile(
             title: Text("Building"),
             leading: FaIcon(FontAwesomeIcons.tools),
             trailing: Text("${part.building}"),
+            onTap: null,
+          )
+        )
+      );
+    }
+
+    if (part.isComponent) {
+      tiles.add(
+        Card(
+          child: ListTile(
+            title: Text("Used In"),
+            leading: FaIcon(FontAwesomeIcons.sitemap),
+            trailing: Text("${part.usedInCount}"),
+            onTap: null,
+          )
+        )
+      );
+    }
+
+    // Notes field?
+    if (part.notes.isNotEmpty) {
+      tiles.add(
+        Card(
+          child: ListTile(
+            title: Text("Notes"),
+            leading: FaIcon(FontAwesomeIcons.stickyNote),
+            trailing: Text(""),
+            onTap: null,
           )
         )
       );
@@ -152,7 +195,7 @@ class _PartDisplayState extends State<PartDisplayWidget> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: MainAxisSize.max,
           children: partTiles(),
         ),
       )

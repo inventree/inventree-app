@@ -10,6 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_advanced_networkimage/provider.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class CategoryDisplayWidget extends StatefulWidget {
 
@@ -42,7 +43,7 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
     if (category == null) {
       return "Part Categories";
     } else {
-      return "Part Category '${category.name}'";
+      return "Part Category - ${category.name}";
     }
   }
 
@@ -82,6 +83,28 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
     });
   }
 
+  Widget getCategoryDescriptionCard() {
+    if (category == null) {
+      return Card(
+        child: ListTile(
+          title: Text("Part Categories"),
+          subtitle: Text("Top level part category"),
+        )
+      );
+    } else {
+      return Card(
+          child: ListTile(
+            title: Text("${category.name}"),
+            subtitle: Text("${category.description}"),
+            trailing: IconButton(
+              icon: FaIcon(FontAwesomeIcons.edit),
+              onPressed: null,
+            ),
+          )
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,8 +114,10 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
       drawer: new InvenTreeDrawer(context),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
           children: <Widget>[
+            getCategoryDescriptionCard(),
             Text(
               "Subcategories - ${_subcategories.length}",
               textAlign: TextAlign.left,

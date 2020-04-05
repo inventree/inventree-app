@@ -41,6 +41,8 @@ class InvenTreeModel {
 
   String get description => jsondata['description'] ?? '';
 
+  String get notes => jsondata['notes'] ?? '';
+
   int get parentId => jsondata['parent'] ?? -1;
 
   String get link => jsondata['URL'] ?? '';
