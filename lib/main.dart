@@ -326,11 +326,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 Column(
                   children: <Widget>[
                     IconButton(
-                      icon: new FaIcon(FontAwesomeIcons.shippingFast),
-                      tooltip: "Sell",
+                      icon: new FaIcon(FontAwesomeIcons.truck),
+                      tooltip: "Ship",
                       onPressed: _unsupported,
                     ),
-                    Text("Sell"),
+                    Text("Ship"),
                   ]
                 )
               ],

@@ -15,6 +15,7 @@ class InvenTreePartCategory extends InvenTreeModel {
   String get pathstring => jsondata['pathstring'] ?? '';
 
   String get parentpathstring {
+    // TODO - Drive the refactor tractor through this
     List<String> psplit = pathstring.split("/");
 
     if (psplit.length > 0) {
@@ -24,7 +25,7 @@ class InvenTreePartCategory extends InvenTreeModel {
     String p = psplit.join("/");
 
     if (p.isEmpty) {
-      p = "Top level parts category";
+      p = "Top level part category";
     }
 
     return p;

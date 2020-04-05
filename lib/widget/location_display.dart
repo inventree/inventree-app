@@ -5,6 +5,7 @@ import 'package:InvenTree/widget/stock_display.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LocationDisplayWidget extends StatefulWidget {
 
@@ -45,12 +46,19 @@ class _LocationDisplayState extends State<LocationDisplayWidget> {
   String get _title {
 
     if (location == null) {
-      return "Location:";
+      return "Stock Locations";
     } else {
-      return "Stock Location '${location.name}'";
+      return "Stock Location - ${location.name}";
     }
   }
 
+  /*
+   * Request data from the server.
+   * It will be displayed once loaded
+   *
+   * - List of sublocations under this one
+   * - List of stock items at this location
+   */
   void _requestData() {
 
     int pk = location?.pk ?? -1;
@@ -83,6 +91,50 @@ class _LocationDisplayState extends State<LocationDisplayWidget> {
     });
   }
 
+  bool _locationListExpanded = false;
+  bool _stockListExpanded = true;
+
+  Widget locationDescriptionCard() {
+    if (location == null) {
+      return Card(
+        child: ListTile(
+          title: Text("Stock Locations"),
+          subtitle: Text("Top level stock location")
+        )
+      );
+    } else {
+      return Card(
+        child: Column(
+          children: <Widget> [
+            ListTile(
+              title: Text("${location.name}"),
+              subtitle: Text("${location.description}"),
+              trailing: IconButton(
+                icon: FaIcon(FontAwesomeIcons.edit),
+                onPressed: null,
+              ),
+            ),
+            ListTile(
+              title: Text("Parent Category"),
+              subtitle: Text("${location.parentpathstring}"),
+              onTap: () {
+                if (location.parentId < 0) {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(null)));
+                } else {
+                  InvenTreeStockLocation().get(location.parentId).then((var loc) {
+                    if (loc is InvenTreeStockLocation) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(loc)));
+                    }
+                  });
+                }
+              },
+            )
+          ]
+        )
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,36 +142,62 @@ class _LocationDisplayState extends State<LocationDisplayWidget> {
         title: Text(_title),
       ),
       drawer: new InvenTreeDrawer(context),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              "Sublocations - ${_sublocations.length}",
-              textAlign: TextAlign.left,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            TextField(
-              decoration: InputDecoration(
-                hintText: "Filter locations",
+      body: ListView(
+        children: <Widget> [
+          locationDescriptionCard(),
+          ExpansionPanelList(
+            expansionCallback: (int index, bool isExpanded) {
+              setState(() {
+                switch (index) {
+                  case 0:
+                    _locationListExpanded = !isExpanded;
+                    break;
+                  case 1:
+                    _stockListExpanded = !isExpanded;
+                    break;
+                  default:
+                    break;
+                }
+              });
+
+            },
+            children: <ExpansionPanel> [
+              ExpansionPanel(
+                headerBuilder: (BuildContext context, bool isExpanded) {
+                  return ListTile(
+                    title: Text("Sublocations"),
+                    leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
+                    trailing: Text("${_sublocations.length}"),
+                    onTap: () {
+                      setState(() {
+                        _locationListExpanded = !_locationListExpanded;
+                      });
+                    },
+                  );
+                },
+                body: SublocationList(_sublocations),
+                isExpanded: _locationListExpanded,
               ),
-              onChanged: (text) {
-                setState(() {
-                  _locationFilter = text.trim().toLowerCase();
-                });
-              },
-            ),
-            Expanded(child: SublocationList(sublocations)),
-            Divider(),
-            Text(
-              "Stock Items - ${_items.length}",
-              textAlign: TextAlign.left,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Expanded(child: StockList(_items)),
-          ],
-        )
-      ),
+              ExpansionPanel(
+                headerBuilder: (BuildContext context, bool isExpanded) {
+                  return ListTile(
+                    title: Text("Stock Items"),
+                    leading: FaIcon(FontAwesomeIcons.boxes),
+                    trailing: Text("${_items.length}"),
+                    onTap: () {
+                      setState(() {
+                        _stockListExpanded = !_stockListExpanded;
+                      });
+                    },
+                  );
+                },
+                body: StockList(_items),
+                isExpanded: _stockListExpanded,
+              )
+            ]
+          ),
+        ]
+      )
     );
   }
 }
@@ -146,6 +224,7 @@ class SublocationList extends StatelessWidget {
     return ListTile(
       title: Text('${loc.name}'),
       subtitle: Text("${loc.description}"),
+      trailing: Text("${loc.itemcount}"),
       onTap: () {
         _openLocation(context, loc.pk);
       },
@@ -154,7 +233,10 @@ class SublocationList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(itemBuilder: _build, itemCount: _locations.length);
+    return ListView.builder(
+        shrinkWrap: true,
+        physics: ClampingScrollPhysics(),
+        itemBuilder: _build, itemCount: _locations.length);
   }
 }
 
@@ -192,6 +274,9 @@ class StockList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(itemBuilder: _build, itemCount: _items.length);
+    return ListView.builder(
+        shrinkWrap: true,
+        physics: ClampingScrollPhysics(),
+        itemBuilder: _build, itemCount: _items.length);
   }
 }

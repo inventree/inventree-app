@@ -114,11 +114,9 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));
                 } else {
                   // TODO - Refactor this code into the InvenTreePart class
-                  InvenTreePartCategory().get(category.parentId).then((
-                      var cat) {
+                  InvenTreePartCategory().get(category.parentId).then((var cat) {
                     if (cat is InvenTreePartCategory) {
-                      Navigator.push(context, MaterialPageRoute(builder: (
-                          context) => CategoryDisplayWidget(cat)));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(cat)));
                     }
                   });
                 }
@@ -138,13 +136,10 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
       ),
       drawer: new InvenTreeDrawer(context),
       body: ListView(
-          //mainAxisAlignment: MainAxisAlignment.start,
-          //mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             getCategoryDescriptionCard(),
             ExpansionPanelList(
               expansionCallback: (int index, bool isExpanded) {
-                print("callback!");
                 setState(() {
 
                   switch (index) {
