@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:InvenTree/api.dart';
 
 import 'model.dart';
@@ -34,13 +36,62 @@ class InvenTreePart extends InvenTreeModel {
   @override
   String URL = "part/";
 
-  int get categoryId => jsondata['category'] as int ?? -1;
+  // Get the number of stock on order for this Part
+  double get onOrder => double.tryParse(jsondata['on_order'].toString() ?? '0');
 
-  String get categoryName => jsondata['category__name'] ?? '';
+  // Get the stock count for this Part
+  double get inStock => double.tryParse(jsondata['total_stock'].toString() ?? '0');
 
+  // Get the number of units being build for this Part
+  double get building => double.tryParse(jsondata['building'].toString() ?? '0');
+
+  bool get isAssembly => jsondata['assembly'] ?? false;
+
+  bool get isComponent => jsondata['component'] ?? false;
+
+  bool get isPurchaseable => jsondata['purchaseable'] ?? false;
+
+  bool get isSaleable => jsondata['saleable'] ?? false;
+
+  bool get isActive => jsondata['active'] ?? false;
+
+  bool get isVirtual => jsondata['virtual'] ?? false;
+
+  // Get the IPN (internal part number) for the Part instance
+  String get IPN => jsondata['IPN'] as String ?? '';
+
+  // Get the revision string for the Part instance
+  String get revision => jsondata['revision'] as String ?? '';
+
+  // Get the category ID for the Part instance (or 'null' if does not exist)
+  int get categoryId => jsondata['category'] as int ?? null;
+
+  // Get the category name for the Part instance
+  String get categoryName => jsondata['category_name'] ?? '';
+
+  // Get the image URL for the Part instance
   String get _image  => jsondata['image'] ?? '';
 
+  // Get the thumbnail URL for the Part instance
   String get _thumbnail => jsondata['thumbnail'] ?? '';
+
+  // Return the fully-qualified name for the Part instance
+  String get fullname {
+
+    String fn = jsondata['full_name'] ?? '';
+
+    if (fn.isNotEmpty) return fn;
+
+    List<String> elements = List<String>();
+
+    if (IPN.isNotEmpty) elements.add(IPN);
+
+    elements.add(name);
+
+    if (revision.isNotEmpty) elements.add(revision);
+
+    return elements.join(" | ");
+  }
 
   // Return a path to the image for this Part
   String get image {

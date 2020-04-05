@@ -43,6 +43,8 @@ class InvenTreeModel {
 
   int get parentId => jsondata['parent'] ?? -1;
 
+  String get link => jsondata['URL'] ?? '';
+
   // Create a new object from JSON data (not a constructor!)
   InvenTreeModel createFromJson(Map<String, dynamic> json) {
 
