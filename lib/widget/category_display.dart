@@ -213,6 +213,7 @@ class SubcategoryList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
         shrinkWrap: true,
+        physics: ClampingScrollPhysics(),
         itemBuilder: _build, itemCount: _categories.length);
   }
 }
@@ -261,6 +262,7 @@ class PartList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
         shrinkWrap: true,
+        physics: ClampingScrollPhysics(),
         itemBuilder: _build, itemCount: _parts.length);
   }
 }
