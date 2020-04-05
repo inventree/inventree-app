@@ -6,8 +6,12 @@ import 'preferences.dart';
 
 class InvenTreeLoginSettingsWidget extends StatefulWidget {
 
+  final SharedPreferences _preferences;
+
+  InvenTreeLoginSettingsWidget(this._preferences) : super();
+
   @override
-  _InvenTreeLoginSettingsState createState() => _InvenTreeLoginSettingsState();
+  _InvenTreeLoginSettingsState createState() => _InvenTreeLoginSettingsState(_preferences);
 }
 
 
@@ -15,9 +19,18 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
 
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
-  String _addr;
-  String _user;
-  String _pass;
+  final SharedPreferences _preferences;
+
+  String _server = '';
+  String _username = '';
+  String _password = '';
+
+  _InvenTreeLoginSettingsState(this._preferences) : super() {
+    _server = _preferences.getString('server') ?? '';
+    _username = _preferences.getString('username') ?? '';
+    _password = _preferences.getString('password') ?? '';
+  }
+
 
   String _validateServer(String value) {
 
@@ -49,16 +62,9 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
   }
 
   @override
-  void initState() {
-    load();
-  }
-
-  @override
   Widget build(BuildContext context) {
 
     final Size screenSize = MediaQuery.of(context).size;
-
-    load();
 
     return Scaffold(
       appBar: AppBar(
@@ -70,32 +76,33 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
           key: _formKey,
           child: new ListView(
             children: <Widget>[
-              Text("Server"),
+              Text("Server Address"),
               new TextFormField(
-                initialValue: _addr,
+                initialValue: _server,
                 decoration: InputDecoration(
                   hintText: "127.0.0.1:8000",
                   labelText: "Server:Port",
                 ),
                 validator: _validateServer,
                 onSaved: (String value) {
-                  _addr = value;
+                  _server = value;
                 },
               ),
+              Divider(),
               Text("Login Details"),
               TextFormField(
-                initialValue: _user,
+                initialValue: _username,
                 decoration: InputDecoration(
                   hintText: "Username",
                   labelText: "Username",
                 ),
                 validator: _validateUsername,
                 onSaved: (String value) {
-                  _user = value;
+                  _username = value;
                 }
               ),
               TextFormField(
-                initialValue: _pass,
+                initialValue: _password,
                 obscureText: true,
                 decoration: InputDecoration(
                   hintText: "Password",
@@ -103,13 +110,13 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
                 ),
                 validator: _validatePassword,
                 onSaved: (String value) {
-                  _pass = value;
+                  _password = value;
                 },
               ),
               Container(
                 width: screenSize.width,
                 child: RaisedButton(
-                  child: Text("Login"),
+                  child: Text("Save"),
                   onPressed: this.save,
                 )
               )
@@ -120,23 +127,11 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     );
   }
 
-  void load() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    _addr = prefs.getString('server');
-    _user = prefs.getString('username');
-    _pass = prefs.getString('password');
-
-    // Refresh the widget
-    setState(() {
-    });
-  }
-
   void save() async {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
 
-      await InvenTreeUserPreferences().saveLoginDetails(_addr, _user, _pass);
+      await InvenTreeUserPreferences().saveLoginDetails(_server, _username, _password);
 
     }
   }
