@@ -8,6 +8,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'barcode.dart';
 
 import 'dart:convert';
@@ -116,7 +118,29 @@ class _MyHomePageState extends State<MyHomePage> {
 
   bool _serverConnection = false;
 
+  FaIcon _serverIcon = new FaIcon(FontAwesomeIcons.spinner);
+
   Color _serverStatusColor = Color.fromARGB(255, 50, 50, 250);
+  
+  void onConnectSuccess(String msg) {
+    _serverConnection = true;
+    _serverMessage = msg;
+    _serverStatus = "Connected to $_serverAddress";
+    _serverStatusColor = Color.fromARGB(255, 50, 250, 50);
+    _serverIcon = new FaIcon(FontAwesomeIcons.checkCircle, color: _serverStatusColor);
+
+    setState(() {});
+  }
+  
+  void onConnectFailure(String msg) {
+    _serverConnection = false;
+    _serverMessage = msg;
+    _serverStatus = "Could not connect to $_serverAddress";
+    _serverStatusColor = Color.fromARGB(255, 250, 50, 50);
+    _serverIcon = new FaIcon(FontAwesomeIcons.timesCircle, color: _serverStatusColor);
+
+    setState(() {});
+  }
 
   /*
    * Test the server connection
@@ -125,40 +149,32 @@ class _MyHomePageState extends State<MyHomePage> {
 
     var prefs = await SharedPreferences.getInstance();
 
-    print("Checking server connection");
-
     _serverAddress = prefs.getString("server");
 
     InvenTreeAPI().connect().then((bool result) {
-      print("Connection status: $result");
-      _serverConnection = result;
 
-      if (_serverConnection) {
-        _serverStatus = "Connected to server: $_serverAddress";
-        _serverMessage = "";
-        _serverStatusColor = Color.fromARGB(255, 50, 250, 50);
+      if (result) {
+        onConnectSuccess("");
       } else {
-        _serverStatus = "Could not connect to server: $_serverAddress";
-        _serverStatusColor = Color.fromARGB(255, 250, 50, 50);
+        onConnectFailure("Could not connect to server");
       }
 
-      setState(() {});
-
     }).catchError((e) {
+
+      String fault = "Connection error";
+
       _serverConnection = false;
       _serverStatusColor = Color.fromARGB(255, 250, 50, 50);
 
       _serverStatus = "Error connecting to $_serverAddress";
 
       if (e is TimeoutException) {
-        _serverMessage = "No response from server";
+        fault = "Timeout: No response from server";
       } else {
-        _serverMessage = e.toString();
+        fault = e.toString();
       }
 
-      print("Server error: $_serverMessage");
-
-      setState(() {});
+      onConnectFailure(fault);
     });
   }
 
@@ -217,7 +233,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 Column(
                   children: <Widget>[
                    IconButton(
-                     icon: new Icon(Icons.search),
+                     icon: new FaIcon(FontAwesomeIcons.search),
                      tooltip: 'Search',
                      onPressed: _search,
                    ),
@@ -227,7 +243,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 Column(
                   children: <Widget>[
                     IconButton(
-                      icon: new Icon(Icons.search),
+                      icon: new FaIcon(FontAwesomeIcons.barcode),
                       tooltip: 'Scan Barcode',
                       onPressed: _scan,
                     ),
@@ -253,7 +269,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 Column(
                   children: <Widget>[
                     IconButton(
-                      icon: new Icon(Icons.map),
+                      icon: new FaIcon(FontAwesomeIcons.boxes),
                       tooltip: 'Stock',
                       onPressed: _stock,
                     ),
@@ -263,7 +279,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 Column(
                   children: <Widget>[
                     IconButton(
-                      icon: new Icon(Icons.business),
+                      icon: new FaIcon(FontAwesomeIcons.industry),
                       tooltip: 'Suppliers',
                       onPressed: _suppliers,
                     ),
@@ -278,23 +294,14 @@ class _MyHomePageState extends State<MyHomePage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Expanded(
-                  child: Card(
-                    child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Text('$_serverStatus',
-                        style: TextStyle(
-                          color: _serverStatusColor,
-                          ),
-                        ),
-                      Text('$_serverMessage',
-                        style: TextStyle(
-                          color: _serverStatusColor,
-                        ),
+                  child: ListTile(
+                    title: Text("$_serverStatus",
+                      style: TextStyle(color: _serverStatusColor),
                       ),
-                    ],
+                    subtitle: Text("$_serverMessage",
+                      style: TextStyle(color: _serverStatusColor),
                     ),
+                    leading: _serverIcon,
                   ),
                 ),
               ],
