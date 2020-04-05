@@ -110,12 +110,18 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
               title: Text("Parent Category"),
               subtitle: Text("${category.parentpathstring}"),
               onTap: () {
-                // TODO - Refactor this code into the InvenTreePart class
-                InvenTreePartCategory().get(category.parentId).then((var cat) {
-                  if (cat is InvenTreePartCategory) {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(cat)));
-                  }
-                });
+                if (category.parentId < 0) {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));
+                } else {
+                  // TODO - Refactor this code into the InvenTreePart class
+                  InvenTreePartCategory().get(category.parentId).then((
+                      var cat) {
+                    if (cat is InvenTreePartCategory) {
+                      Navigator.push(context, MaterialPageRoute(builder: (
+                          context) => CategoryDisplayWidget(cat)));
+                    }
+                  });
+                }
               },
             )
           ]
@@ -158,6 +164,7 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
                   headerBuilder: (BuildContext context, bool isExpanded) {
                     return ListTile(
                       title: Text("Subcategories"),
+                      leading: FaIcon(FontAwesomeIcons.stream),
                       trailing: Text("${_subcategories.length}"),
                       onTap: () {
                         setState(() {
@@ -173,6 +180,7 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
                   headerBuilder: (BuildContext context, bool isExpanded) {
                     return ListTile(
                       title: Text("Parts"),
+                      leading: FaIcon(FontAwesomeIcons.shapes),
                       trailing: Text("${_parts.length}"),
                       onTap: () {
                         setState(() {
