@@ -83,6 +83,9 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
     });
   }
 
+  bool _subcategoriesExpanded = false;
+  bool _partListExpanded = true;
+
   Widget getCategoryDescriptionCard() {
     if (category == null) {
       return Card(
@@ -112,27 +115,63 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
         title: Text(_titleString),
       ),
       drawer: new InvenTreeDrawer(context),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
+      body: ListView(
+          //mainAxisAlignment: MainAxisAlignment.start,
+          //mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             getCategoryDescriptionCard(),
-            Text(
-              "Subcategories - ${_subcategories.length}",
-              textAlign: TextAlign.left,
-              style: TextStyle(fontWeight: FontWeight.bold),
+            ExpansionPanelList(
+              expansionCallback: (int index, bool isExpanded) {
+                print("callback!");
+                setState(() {
+
+                  switch (index) {
+                    case 0:
+                      _subcategoriesExpanded = !isExpanded;
+                      break;
+                    case 1:
+                      _partListExpanded = !isExpanded;
+                      break;
+                    default:
+                      break;
+                  }
+                });
+              },
+              children: <ExpansionPanel> [
+                ExpansionPanel(
+                  headerBuilder: (BuildContext context, bool isExpanded) {
+                    return ListTile(
+                      title: Text("Subcategories"),
+                      trailing: Text("${_subcategories.length}"),
+                      onTap: () {
+                        setState(() {
+                          _subcategoriesExpanded = !_subcategoriesExpanded;
+                        });
+                      },
+                    );
+                  },
+                  body: SubcategoryList(_subcategories),
+                  isExpanded: _subcategoriesExpanded,
+                ),
+                ExpansionPanel(
+                  headerBuilder: (BuildContext context, bool isExpanded) {
+                    return ListTile(
+                      title: Text("Parts"),
+                      trailing: Text("${_parts.length}"),
+                      onTap: () {
+                        setState(() {
+                          _partListExpanded = !_partListExpanded;
+                        });
+                      },
+                    );
+                  },
+                  body: PartList(_parts),
+                  isExpanded: _partListExpanded,
+                )
+              ],
             ),
-            Expanded(child: SubcategoryList(_subcategories)),
-            Divider(),
-            Text("Parts - ${_parts.length}",
-              textAlign: TextAlign.left,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Expanded(child: PartList(_parts)),
           ]
         )
-      )
     );
   }
 }
@@ -171,7 +210,9 @@ class SubcategoryList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(itemBuilder: _build, itemCount: _categories.length);
+    return ListView.builder(
+        shrinkWrap: true,
+        itemBuilder: _build, itemCount: _categories.length);
   }
 }
 
@@ -217,6 +258,8 @@ class PartList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(itemBuilder: _build, itemCount: _parts.length);
+    return ListView.builder(
+        shrinkWrap: true,
+        itemBuilder: _build, itemCount: _parts.length);
   }
 }
