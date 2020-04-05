@@ -194,8 +194,19 @@ class _MyHomePageState extends State<MyHomePage> {
     Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(null)));
   }
 
-  void _suppliers() {
-    // TODO
+  void _unsupported() {
+    showDialog(
+      context:  context,
+      child: new SimpleDialog(
+        title: new Text("Unsupported"),
+        children: <Widget>[
+          ListTile(
+            title: Text("This feature is not yet supported"),
+            subtitle: Text("It will be supported in an upcoming release"),
+          )
+        ],
+      )
+    );
   }
 
   @override
@@ -259,7 +270,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 Column(
                   children: <Widget>[
                     IconButton(
-                      icon: new Icon(Icons.category),
+                      icon: new FaIcon(FontAwesomeIcons.shapes),
                       tooltip: 'Parts',
                       onPressed: _parts,
                     ),
@@ -281,9 +292,45 @@ class _MyHomePageState extends State<MyHomePage> {
                     IconButton(
                       icon: new FaIcon(FontAwesomeIcons.industry),
                       tooltip: 'Suppliers',
-                      onPressed: _suppliers,
+                      onPressed: _unsupported,
                     ),
                     Text("Suppliers"),
+                  ]
+                )
+              ],
+            ),
+            Spacer(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Column(
+                  children: <Widget>[
+                    IconButton(
+                      icon: new FaIcon(FontAwesomeIcons.tools),
+                      tooltip: "Build",
+                      onPressed: _unsupported,
+                    ),
+                    Text("Build"),
+                  ],
+                ),
+                Column(
+                  children: <Widget>[
+                    IconButton(
+                      icon: new FaIcon(FontAwesomeIcons.shoppingCart),
+                      tooltip: "Order",
+                      onPressed: _unsupported,
+                    ),
+                    Text("Order"),
+                  ]
+                ),
+                Column(
+                  children: <Widget>[
+                    IconButton(
+                      icon: new FaIcon(FontAwesomeIcons.shippingFast),
+                      tooltip: "Sell",
+                      onPressed: _unsupported,
+                    ),
+                    Text("Sell"),
                   ]
                 )
               ],
