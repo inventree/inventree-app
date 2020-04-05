@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:InvenTree/api.dart';
 import 'login_settings.dart';
 
 import 'package:package_info/package_info.dart';
@@ -57,6 +58,11 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
             title: new Text("About InvenTree"),
             children: <Widget>[
               ListTile(
+                title: Text("Server Version"),
+                subtitle: Text(InvenTreeAPI().version.isNotEmpty ? InvenTreeAPI().version : "Not connected"),
+              ),
+              Divider(),
+              ListTile(
                 title: Text("App Name"),
                 subtitle: Text("${info.appName}"),
               ),
@@ -72,6 +78,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
                 title: Text("Build Number"),
                 subtitle: Text("${info.buildNumber}")
               ),
+              Divider(),
               ListTile(
                 title: Text("Submit Bug Report"),
                 subtitle: Text("Submit a bug report or feature request at:\n https://github.com/inventree/inventree-app/issues/"),

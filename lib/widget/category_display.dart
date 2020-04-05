@@ -10,6 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_advanced_networkimage/provider.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class CategoryDisplayWidget extends StatefulWidget {
 
@@ -42,7 +43,7 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
     if (category == null) {
       return "Part Categories";
     } else {
-      return "Part Category '${category.name}'";
+      return "Part Category - ${category.name}";
     }
   }
 
@@ -82,6 +83,51 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
     });
   }
 
+  bool _subcategoriesExpanded = false;
+  bool _partListExpanded = true;
+
+  Widget getCategoryDescriptionCard() {
+    if (category == null) {
+      return Card(
+        child: ListTile(
+          title: Text("Part Categories"),
+          subtitle: Text("Top level part category"),
+        )
+      );
+    } else {
+      return Card(
+        child: Column(
+          children: <Widget>[
+            ListTile(
+              title: Text("${category.name}"),
+              subtitle: Text("${category.description}"),
+              trailing: IconButton(
+                icon: FaIcon(FontAwesomeIcons.edit),
+                onPressed: null,
+              ),
+            ),
+            ListTile(
+              title: Text("Parent Category"),
+              subtitle: Text("${category.parentpathstring}"),
+              onTap: () {
+                if (category.parentId < 0) {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));
+                } else {
+                  // TODO - Refactor this code into the InvenTreePart class
+                  InvenTreePartCategory().get(category.parentId).then((var cat) {
+                    if (cat is InvenTreePartCategory) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(cat)));
+                    }
+                  });
+                }
+              },
+            )
+          ]
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -89,25 +135,62 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
         title: Text(_titleString),
       ),
       drawer: new InvenTreeDrawer(context),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+      body: ListView(
           children: <Widget>[
-            Text(
-              "Subcategories - ${_subcategories.length}",
-              textAlign: TextAlign.left,
-              style: TextStyle(fontWeight: FontWeight.bold),
+            getCategoryDescriptionCard(),
+            ExpansionPanelList(
+              expansionCallback: (int index, bool isExpanded) {
+                setState(() {
+
+                  switch (index) {
+                    case 0:
+                      _subcategoriesExpanded = !isExpanded;
+                      break;
+                    case 1:
+                      _partListExpanded = !isExpanded;
+                      break;
+                    default:
+                      break;
+                  }
+                });
+              },
+              children: <ExpansionPanel> [
+                ExpansionPanel(
+                  headerBuilder: (BuildContext context, bool isExpanded) {
+                    return ListTile(
+                      title: Text("Subcategories"),
+                      leading: FaIcon(FontAwesomeIcons.stream),
+                      trailing: Text("${_subcategories.length}"),
+                      onTap: () {
+                        setState(() {
+                          _subcategoriesExpanded = !_subcategoriesExpanded;
+                        });
+                      },
+                    );
+                  },
+                  body: SubcategoryList(_subcategories),
+                  isExpanded: _subcategoriesExpanded,
+                ),
+                ExpansionPanel(
+                  headerBuilder: (BuildContext context, bool isExpanded) {
+                    return ListTile(
+                      title: Text("Parts"),
+                      leading: FaIcon(FontAwesomeIcons.shapes),
+                      trailing: Text("${_parts.length}"),
+                      onTap: () {
+                        setState(() {
+                          _partListExpanded = !_partListExpanded;
+                        });
+                      },
+                    );
+                  },
+                  body: PartList(_parts),
+                  isExpanded: _partListExpanded,
+                )
+              ],
             ),
-            Expanded(child: SubcategoryList(_subcategories)),
-            Divider(),
-            Text("Parts - ${_parts.length}",
-              textAlign: TextAlign.left,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Expanded(child: PartList(_parts)),
           ]
         )
-      )
     );
   }
 }
@@ -138,6 +221,7 @@ class SubcategoryList extends StatelessWidget {
     return ListTile(
       title: Text("${cat.name}"),
       subtitle: Text("${cat.description}"),
+      trailing: Text("${cat.partcount}"),
       onTap: () {
         _openCategory(context, cat.pk);
       }
@@ -146,7 +230,10 @@ class SubcategoryList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(itemBuilder: _build, itemCount: _categories.length);
+    return ListView.builder(
+        shrinkWrap: true,
+        physics: ClampingScrollPhysics(),
+        itemBuilder: _build, itemCount: _categories.length);
   }
 }
 
@@ -192,6 +279,9 @@ class PartList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(itemBuilder: _build, itemCount: _parts.length);
+    return ListView.builder(
+        shrinkWrap: true,
+        physics: ClampingScrollPhysics(),
+        itemBuilder: _build, itemCount: _parts.length);
   }
 }

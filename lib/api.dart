@@ -304,10 +304,17 @@ class InvenTreeAPI {
       imageUrl = staticImage;
     }
 
-    return new AdvancedNetworkImage(makeUrl(imageUrl),
+    String url = makeUrl(imageUrl);
+
+    return new AdvancedNetworkImage(url,
       header: defaultHeaders(),
       useDiskCache: true,
-      cacheRule: CacheRule(maxAge: const Duration(days: 5)),
+      //retryDuration: const Duration(seconds: 2),
+      //retryLimit: 3,
+      cacheRule: CacheRule(maxAge: const Duration(days: 1)),
+      loadFailedCallback: () {
+        DiskCache().evict(url);
+      }
     );
   }
 }

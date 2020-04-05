@@ -16,7 +16,13 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   String get partDescription => jsondata['part__description'] as String ?? '';
 
-  String get partThumbnail => jsondata['part__thumbnail'] as String ?? InvenTreeAPI.staticThumb;
+  String get partThumbnail {
+    String thumb = jsondata['part__thumbnail'] as String ?? '';
+
+    if (thumb.isEmpty) thumb = InvenTreeAPI.staticThumb;
+
+    return thumb;
+  }
 
   int get serialNumber => jsondata['serial'] as int ?? null;
 
@@ -49,10 +55,31 @@ class InvenTreeStockLocation extends InvenTreeModel {
   @override
   String URL = "stock/location/";
 
+  String get pathstring => jsondata['pathstring'] ?? '';
+
+  String get parentpathstring {
+    // TODO - Drive the refactor tractor through this
+    List<String> psplit = pathstring.split('/');
+
+    if (psplit.length > 0) {
+      psplit.removeLast();
+    }
+
+    String p = psplit.join('/');
+
+    if (p.isEmpty) {
+      p = "Top level stock location";
+    }
+
+    return p;
+  }
+
+  int get itemcount => jsondata['items'] ?? 0;
+
   InvenTreeStockLocation() : super();
 
   InvenTreeStockLocation.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
-
+    // TODO
   }
 
   @override

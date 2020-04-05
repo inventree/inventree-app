@@ -41,7 +41,12 @@ class InvenTreeModel {
 
   String get description => jsondata['description'] ?? '';
 
+  String get notes => jsondata['notes'] ?? '';
+
   int get parentId => jsondata['parent'] ?? -1;
+
+  // Legacy API provided external link as "URL", while newer API uses "link"
+  String get link => jsondata['link'] ?? jsondata['URL'] ?? '';
 
   // Create a new object from JSON data (not a constructor!)
   InvenTreeModel createFromJson(Map<String, dynamic> json) {
