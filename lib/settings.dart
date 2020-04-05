@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'login_settings.dart';
 
@@ -40,8 +41,11 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
     );
   }
 
-  void _editServerSettings() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeLoginSettingsWidget()));
+  void _editServerSettings() async {
+
+    var prefs = await SharedPreferences.getInstance();
+
+    Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeLoginSettingsWidget(prefs)));
   }
 
   void _about() async {
