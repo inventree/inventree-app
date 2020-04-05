@@ -57,7 +57,7 @@ class InvenTreePart extends InvenTreeModel {
 
   bool get isPurchaseable => jsondata['purchaseable'] ?? false;
 
-  bool get isSaleable => jsondata['saleable'] ?? false;
+  bool get isSalable => jsondata['salable'] ?? false;
 
   bool get isActive => jsondata['active'] ?? false;
 
