@@ -96,14 +96,30 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
       );
     } else {
       return Card(
-          child: ListTile(
-            title: Text("${category.name}"),
-            subtitle: Text("${category.description}"),
-            trailing: IconButton(
-              icon: FaIcon(FontAwesomeIcons.edit),
-              onPressed: null,
+        child: Column(
+          children: <Widget>[
+            ListTile(
+              title: Text("${category.name}"),
+              subtitle: Text("${category.description}"),
+              trailing: IconButton(
+                icon: FaIcon(FontAwesomeIcons.edit),
+                onPressed: null,
+              ),
             ),
-          )
+            ListTile(
+              title: Text("Parent Category"),
+              subtitle: Text("${category.parentpathstring}"),
+              onTap: () {
+                // TODO - Refactor this code into the InvenTreePart class
+                InvenTreePartCategory().get(category.parentId).then((var cat) {
+                  if (cat is InvenTreePartCategory) {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(cat)));
+                  }
+                });
+              },
+            )
+          ]
+        ),
       );
     }
   }

@@ -14,6 +14,22 @@ class InvenTreePartCategory extends InvenTreeModel {
 
   String get pathstring => jsondata['pathstring'] ?? '';
 
+  String get parentpathstring {
+    List<String> psplit = pathstring.split("/");
+
+    if (psplit.length > 0) {
+      psplit.removeLast();
+    }
+
+    String p = psplit.join("/");
+
+    if (p.isEmpty) {
+      p = "Top level parts category";
+    }
+
+    return p;
+  }
+
   int get partcount => jsondata['parts'] ?? 0;
 
   InvenTreePartCategory() : super();
