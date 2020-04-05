@@ -104,7 +104,7 @@ class _PartDisplayState extends State<PartDisplayWidget> {
     tiles.add(
       Card(
         child: ListTile(
-          title: Text("In Stock"),
+          title: Text("Stock"),
           leading: FaIcon(FontAwesomeIcons.boxes),
           trailing: Text("${part.inStock}"),
           onTap: null,
