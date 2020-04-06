@@ -216,7 +216,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _suppliers() {
     if (!InvenTreeAPI().checkConnection(context)) return;
 
-    Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyListWidget()));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => SupplierListWidget()));
   }
 
   void _unsupported() {
@@ -249,7 +249,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.search),
+            icon: FaIcon(FontAwesomeIcons.search),
             tooltip: 'Search',
             onPressed: null,
           ),

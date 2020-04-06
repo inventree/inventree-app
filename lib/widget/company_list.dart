@@ -5,12 +5,27 @@ import 'package:flutter/material.dart';
 import 'package:InvenTree/api.dart';
 import 'package:InvenTree/inventree/company.dart';
 import 'package:InvenTree/widget/drawer.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class CompanyListWidget extends StatefulWidget {
+abstract class CompanyListWidget extends StatefulWidget {
+
+  String title;
+  Map<String, String> filters;
 
   @override
-  _CompanyListState createState() => _CompanyListState();
+  _CompanyListState createState() => _CompanyListState(title, filters);
 
+}
+
+class SupplierListWidget extends CompanyListWidget {
+  @override
+  _CompanyListState createState() => _CompanyListState("Suppliers", {"is_supplier": "true"});
+}
+
+
+class CustomerListWidget extends CompanyListWidget {
+  @override
+  _CompanyListState createState() => _CompanyListState("Customers", {"is_customer": "true"});
 }
 
 
@@ -22,13 +37,15 @@ class _CompanyListState extends State<CompanyListWidget> {
 
   var _title = "Companies";
 
-  _CompanyListState() {
+  Map<String, String> _filters = Map<String, String>();
+
+  _CompanyListState(this._title, this._filters) {
     _requestData();
   }
 
   void _requestData() {
 
-    InvenTreeCompany().list().then((var companies) {
+    InvenTreeCompany().list(filters: _filters).then((var companies) {
 
       _companies.clear();
 
@@ -80,6 +97,13 @@ class _CompanyListState extends State<CompanyListWidget> {
     return Scaffold(
         appBar: AppBar(
           title: Text("$_title"),
+          actions: <Widget>[
+            IconButton(
+              icon: FaIcon(FontAwesomeIcons.plus),
+              tooltip: 'New',
+              onPressed: null,
+            )
+          ],
         ),
         drawer: new InvenTreeDrawer(context),
         body: ListView(
