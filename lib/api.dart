@@ -72,6 +72,41 @@ class InvenTreeAPI {
   // Authentication token (initially empty, must be requested)
   String _token = "";
 
+  bool isConnected() {
+    return _token.isNotEmpty;
+  }
+
+  /*
+   * Check server connection and display messages if not connected.
+   * Useful as a precursor check before performing operations.
+   */
+  bool checkConnection(BuildContext context) {
+
+    // Firstly, is the server connected?
+    if (!isConnected()) {
+      showDialog(
+          context: context,
+          child: new SimpleDialog(
+              title: new Text("Not Connected"),
+              children: <Widget> [
+                ListTile(
+                  title: Text("Server not connected"),
+                )
+              ]
+          )
+      );
+
+      return false;
+    }
+
+    // Is the server version too old?
+    // TODO
+
+    // Finally
+    return true;
+
+  }
+
   // Server instance information
   String instance = '';
 

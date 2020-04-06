@@ -1,5 +1,8 @@
+import 'package:InvenTree/api.dart';
 import 'package:InvenTree/barcode.dart';
 import 'package:flutter/material.dart';
+
+import 'package:InvenTree/api.dart';
 
 import 'package:InvenTree/widget/category_display.dart';
 import 'package:InvenTree/widget/location_display.dart';
@@ -33,6 +36,7 @@ class InvenTreeDrawer extends StatelessWidget {
    * Upon successful scan, data are passed off to be decoded.
    */
   void _scan() async {
+    if (!InvenTreeAPI().checkConnection(context)) return;
 
     _closeDrawer();
     scanQrCode(context);
@@ -42,6 +46,7 @@ class InvenTreeDrawer extends StatelessWidget {
    * Display the top-level PartCategory list
    */
   void _showParts() {
+    if (!InvenTreeAPI().checkConnection(context)) return;
 
     _closeDrawer();
     Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));
@@ -51,6 +56,7 @@ class InvenTreeDrawer extends StatelessWidget {
    * Display the top-level StockLocation list
    */
   void _showStock() {
+    if (!InvenTreeAPI().checkConnection(context)) return;
     _closeDrawer();
     Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(null)));
   }
@@ -72,6 +78,7 @@ class InvenTreeDrawer extends StatelessWidget {
                 leading: new Image.asset(
                   "assets/image/icon.png",
                   fit: BoxFit.scaleDown,
+                  width: 40,
                 ),
                 title: new Text("InvenTree"),
                 onTap: _home,

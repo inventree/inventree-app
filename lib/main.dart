@@ -179,18 +179,27 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _search() {
+    if (!InvenTreeAPI().checkConnection(context)) return;
+
     // TODO
   }
 
   void _scan() {
+    if (!InvenTreeAPI().checkConnection(context)) return;
+
     scanQrCode(context);
   }
 
   void _parts() {
+    if (!InvenTreeAPI().checkConnection(context)) return;
+
     Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));
   }
 
   void _stock() {
+
+    if (!InvenTreeAPI().checkConnection(context)) return;
+
     Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(null)));
   }
 
