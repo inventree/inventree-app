@@ -12,6 +12,15 @@ class InvenTreePartCategory extends InvenTreeModel {
   @override
   String URL = "part/category/";
 
+  @override
+  Map<String, String> defaultListFilters() {
+    var filters = new Map<String, String>();
+
+    filters["active"] = "true";
+
+    return filters;
+  }
+
   String get pathstring => jsondata['pathstring'] ?? '';
 
   String get parentpathstring {

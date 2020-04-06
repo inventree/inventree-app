@@ -33,6 +33,25 @@ class _StockItemDisplayState extends State<StockItemDisplayWidget> {
     }
   }
 
+  /*
+   * Construct a list of detail elements about this StockItem.
+   * The number of elements may vary depending on the StockItem details
+   */
+  List<Widget> stockTiles() {
+    List<Widget> tiles = [];
+
+    // Image / name / description
+    tiles.add(
+      Card(
+        child: ListTile(
+          title: Text("${item.partName}"),
+        )
+      )
+    );
+
+    return tiles;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

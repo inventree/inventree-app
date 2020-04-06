@@ -6,6 +6,17 @@ class InvenTreeStockItem extends InvenTreeModel {
   @override
   String URL = "stock/";
 
+  @override
+  Map<String, String> defaultGetFilters() {
+
+    var headers = new Map<String, String>();
+
+    headers["part_detail"] = "true";
+    headers["location_detail"] = "true";
+
+    return headers;
+  }
+
   InvenTreeStockItem() : super();
 
   InvenTreeStockItem.fromJson(Map<String, dynamic> json) : super.fromJson(json) {

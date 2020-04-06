@@ -34,8 +34,7 @@ class _PartDisplayState extends State<PartDisplayWidget> {
    */
   List<Widget> partTiles() {
 
-    List<Widget> tiles = [
-    ];
+    List<Widget> tiles = [];
 
     // Image / name / description
     tiles.add(

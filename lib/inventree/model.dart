@@ -74,8 +74,13 @@ class InvenTreeModel {
   }
   */
 
+  Map<String, String> defaultListFilters() { return Map<String, String>(); }
+
+  // A map of "default" headers to use when performing a GET request
+  Map<String, String> defaultGetFilters() { return Map<String, String>(); }
+
   // Return the detail view for the associated pk
-  Future<InvenTreeModel> get(int pk) async {
+  Future<InvenTreeModel> get(int pk, {Map<String, String> filters}) async {
 
     // TODO - Add "timeout"
     // TODO - Add error catching
@@ -86,7 +91,18 @@ class InvenTreeModel {
       addr += "/";
     }
 
-    var response = await InvenTreeAPI().get(addr);
+    var params = defaultGetFilters();
+
+    if (filters != null) {
+      // Override any default values
+      for (String key in filters.keys) {
+        params[key] = filters[key];
+      }
+    }
+
+    print("GET: $addr ${params.toString()}");
+
+    var response = await InvenTreeAPI().get(addr, params: params);
 
     if (response.statusCode != 200) {
       print("Error retrieving data");
@@ -105,12 +121,20 @@ class InvenTreeModel {
       filters = {};
     }
 
-    print("Listing endpoint: $URL");
+    var params = defaultListFilters();
+
+    if (filters != null) {
+      for (String key in filters.keys) {
+        params[key] = filters[key];
+      }
+    }
+
+    print("LIST: $URL ${params.toString()}");
 
     // TODO - Add "timeout"
     // TODO - Add error catching
 
-    var response = await InvenTreeAPI().get(URL, params:filters);
+    var response = await InvenTreeAPI().get(URL, params:params);
 
     // A list of "InvenTreeModel" items
     List<InvenTreeModel> results = new List<InvenTreeModel>();
