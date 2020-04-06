@@ -2,6 +2,7 @@ import 'package:InvenTree/settings/about.dart';
 import 'package:InvenTree/settings/login.dart';
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:InvenTree/api.dart';
@@ -31,12 +32,14 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
             ListTile(
                 title: Text("Server Settings"),
                 subtitle: Text("Configure server and login settings"),
+                leading: FaIcon(FontAwesomeIcons.server),
                 onTap: _editServerSettings,
             ),
             Divider(),
             ListTile(
               title: Text("About"),
               subtitle: Text("App details"),
+              leading: FaIcon(FontAwesomeIcons.infoCircle),
               onTap: _about,
             ),
           ],
