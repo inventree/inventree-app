@@ -14,7 +14,7 @@ import 'barcode.dart';
 
 import 'dart:convert';
 
-import 'settings.dart';
+import 'settings/settings.dart';
 import 'api.dart';
 import 'preferences.dart';
 
@@ -151,6 +151,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
     _serverAddress = prefs.getString("server");
 
+    // Reset the connection status variables
+    _serverStatus = "Connecting to server";
+    _serverMessage = "";
+    _serverConnection = false;
+    _serverIcon = new FaIcon(FontAwesomeIcons.spinner);
+    _serverStatusColor = Color.fromARGB(255, 50, 50, 250);
+
     InvenTreeAPI().connect().then((bool result) {
 
       if (result) {
@@ -176,21 +183,33 @@ class _MyHomePageState extends State<MyHomePage> {
 
       onConnectFailure(fault);
     });
+
+    // Update widget state
+    setState(() {});
   }
 
   void _search() {
+    if (!InvenTreeAPI().checkConnection(context)) return;
+
     // TODO
   }
 
   void _scan() {
+    if (!InvenTreeAPI().checkConnection(context)) return;
+
     scanQrCode(context);
   }
 
   void _parts() {
+    if (!InvenTreeAPI().checkConnection(context)) return;
+
     Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));
   }
 
   void _stock() {
+
+    if (!InvenTreeAPI().checkConnection(context)) return;
+
     Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(null)));
   }
 
@@ -349,6 +368,11 @@ class _MyHomePageState extends State<MyHomePage> {
                       style: TextStyle(color: _serverStatusColor),
                     ),
                     leading: _serverIcon,
+                    onTap: () {
+                      if (!_serverConnection) {
+                        _checkServerConnection();
+                      }
+                    },
                   ),
                 ),
               ],

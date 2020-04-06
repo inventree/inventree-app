@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'api.dart';
-import 'preferences.dart';
+import '../api.dart';
+import '../preferences.dart';
 
 class InvenTreeLoginSettingsWidget extends StatefulWidget {
 
@@ -81,7 +81,6 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
                 initialValue: _server,
                 decoration: InputDecoration(
                   hintText: "127.0.0.1:8000",
-                  labelText: "Server:Port",
                 ),
                 validator: _validateServer,
                 onSaved: (String value) {
@@ -89,7 +88,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
                 },
               ),
               Divider(),
-              Text("Login Details"),
+              Text("Account Details"),
               TextFormField(
                 initialValue: _username,
                 decoration: InputDecoration(

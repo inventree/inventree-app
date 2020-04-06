@@ -1,8 +1,12 @@
+import 'package:InvenTree/settings/about.dart';
+import 'package:InvenTree/settings/login.dart';
+
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:InvenTree/api.dart';
-import 'login_settings.dart';
+import 'login.dart';
 
 import 'package:package_info/package_info.dart';
 
@@ -28,12 +32,14 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
             ListTile(
                 title: Text("Server Settings"),
                 subtitle: Text("Configure server and login settings"),
+                leading: FaIcon(FontAwesomeIcons.server),
                 onTap: _editServerSettings,
             ),
             Divider(),
             ListTile(
               title: Text("About"),
               subtitle: Text("App details"),
+              leading: FaIcon(FontAwesomeIcons.infoCircle),
               onTap: _about,
             ),
           ],
@@ -52,40 +58,8 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
   void _about() async {
 
     PackageInfo.fromPlatform().then((PackageInfo info) {
-      showDialog(
-        context: context,
-        child: new SimpleDialog(
-            title: new Text("About InvenTree"),
-            children: <Widget>[
-              ListTile(
-                title: Text("Server Version"),
-                subtitle: Text(InvenTreeAPI().version.isNotEmpty ? InvenTreeAPI().version : "Not connected"),
-              ),
-              Divider(),
-              ListTile(
-                title: Text("App Name"),
-                subtitle: Text("${info.appName}"),
-              ),
-              ListTile(
-                title: Text("Package Name"),
-                subtitle: Text("${info.packageName}"),
-              ),
-              ListTile(
-                title: Text("App Version"),
-                subtitle: Text("${info.version}"),
-              ),
-              ListTile(
-                title: Text("Build Number"),
-                subtitle: Text("${info.buildNumber}")
-              ),
-              Divider(),
-              ListTile(
-                title: Text("Submit Bug Report"),
-                subtitle: Text("Submit a bug report or feature request at:\n https://github.com/inventree/inventree-app/issues/"),
-              )
-            ]
-        ),
-      );
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => InvenTreeAboutWidget(info)));
     });
   }
 }

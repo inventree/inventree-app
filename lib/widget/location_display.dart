@@ -176,7 +176,7 @@ class _LocationDisplayState extends State<LocationDisplayWidget> {
                   );
                 },
                 body: SublocationList(_sublocations),
-                isExpanded: _locationListExpanded,
+                isExpanded: _locationListExpanded && _sublocations.length > 0,
               ),
               ExpansionPanel(
                 headerBuilder: (BuildContext context, bool isExpanded) {
@@ -192,7 +192,7 @@ class _LocationDisplayState extends State<LocationDisplayWidget> {
                   );
                 },
                 body: StockList(_items),
-                isExpanded: _stockListExpanded,
+                isExpanded: _stockListExpanded && _items.length > 0,
               )
             ]
           ),
