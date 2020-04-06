@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'model.dart';
 
 import 'package:InvenTree/api.dart';
@@ -23,9 +25,50 @@ class InvenTreeStockItem extends InvenTreeModel {
     // TODO
   }
 
-  String get partName => jsondata['part__name'] as String ?? '';
+  String get partName {
 
-  String get partDescription => jsondata['part__description'] as String ?? '';
+    String nm = '';
+
+    // Use the detailed part information as priority
+    if (jsondata.containsKey('part_detail')) {
+      nm = jsondata['part_detail']['full_name'] ?? '';
+    }
+
+    if (nm.isEmpty) {
+      nm = jsondata['part__name'] ?? '';
+    }
+
+    return nm;
+  }
+
+  String get partDescription {
+    String desc = '';
+
+    // Use the detailed part description as priority
+    if (jsondata.containsKey('part_detail')) {
+      desc = jsondata['part_detail']['description'] ?? '';
+    }
+
+    if (desc.isEmpty) {
+      desc = jsondata['part__description'] ?? '';
+    }
+
+    return desc;
+  }
+
+  String get partImage {
+    String img = '';
+
+    if (jsondata.containsKey('part_detail')) {
+      img = jsondata['part_detail']['thumbnail'] ?? '';
+    }
+
+    if (img.isEmpty) {
+      img = jsondata['part__thumbnail'] ?? '';
+    }
+
+    return img;
+  }
 
   String get partThumbnail {
     String thumb = jsondata['part__thumbnail'] as String ?? '';

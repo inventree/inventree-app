@@ -4,7 +4,10 @@ import 'package:InvenTree/inventree/stock.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'package:InvenTree/api.dart';
+
 import 'package:InvenTree/widget/drawer.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class StockItemDisplayWidget extends StatefulWidget {
 
@@ -25,14 +28,6 @@ class _StockItemDisplayState extends State<StockItemDisplayWidget> {
 
   final InvenTreeStockItem item;
 
-  String get _title {
-    if (item == null) {
-      return "Stock Item";
-    } else {
-      return "Item: x ${item.partName}";
-    }
-  }
-
   /*
    * Construct a list of detail elements about this StockItem.
    * The number of elements may vary depending on the StockItem details
@@ -45,6 +40,14 @@ class _StockItemDisplayState extends State<StockItemDisplayWidget> {
       Card(
         child: ListTile(
           title: Text("${item.partName}"),
+          subtitle: Text("${item.partDescription}"),
+          leading: Image(
+            image: InvenTreeAPI().getImage(item.partImage),
+          ),
+          trailing: IconButton(
+            icon: FaIcon(FontAwesomeIcons.edit),
+            onPressed: null,
+          )
         )
       )
     );
@@ -56,15 +59,12 @@ class _StockItemDisplayState extends State<StockItemDisplayWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_title),
+        title: Text("Stock Item"),
       ),
       drawer: new InvenTreeDrawer(context),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text("Stock Item: hello"),
-          ],
+        child: ListView(
+          children: stockTiles(),
         )
       )
     );
