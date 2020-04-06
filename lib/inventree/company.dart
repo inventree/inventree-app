@@ -10,6 +10,8 @@ class InvenTreeCompany extends InvenTreeModel {
 
   InvenTreeCompany() : super();
 
+  String get image => jsondata['image'] ?? '';
+
   InvenTreeCompany.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     // TODO
   }

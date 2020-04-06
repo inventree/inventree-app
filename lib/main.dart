@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:InvenTree/inventree/stock.dart';
 import 'package:InvenTree/widget/category_display.dart';
+import 'package:InvenTree/widget/company_list.dart';
 import 'package:InvenTree/widget/location_display.dart';
 import 'package:InvenTree/widget/drawer.dart';
 import 'package:flutter/cupertino.dart';
@@ -207,10 +208,15 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _stock() {
-
     if (!InvenTreeAPI().checkConnection(context)) return;
 
     Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(null)));
+  }
+
+  void _suppliers() {
+    if (!InvenTreeAPI().checkConnection(context)) return;
+
+    Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyListWidget()));
   }
 
   void _unsupported() {
@@ -311,7 +317,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     IconButton(
                       icon: new FaIcon(FontAwesomeIcons.industry),
                       tooltip: 'Suppliers',
-                      onPressed: _unsupported,
+                      onPressed: _suppliers,
                     ),
                     Text("Suppliers"),
                   ]

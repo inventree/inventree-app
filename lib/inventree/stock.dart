@@ -195,13 +195,4 @@ class InvenTreeStockLocation extends InvenTreeModel {
     return loc;
   }
 
-  @override
-  bool matchAgainstString(String filter) {
-
-    if (name.toLowerCase().contains(filter)) return true;
-
-    if (description.toLowerCase().contains(filter)) return true;
-
-    return false;
-  }
 }

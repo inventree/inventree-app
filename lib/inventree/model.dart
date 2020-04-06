@@ -172,7 +172,16 @@ class InvenTreeModel {
   // TODO - Define a 'save' / 'update' function
 
   // Override this function for each sub-class
-  bool matchAgainstString(String filter) => false;
+  bool matchAgainstString(String filter) {
+    // Default implementation matches name and description
+    // Override this behaviour in sub-class if required
+
+    if (name.toLowerCase().contains(filter)) return true;
+    if (description.toLowerCase().contains(filter)) return true;
+
+    // No matches!
+    return false;
+  }
 
   // Filter this item against a list of provided filters
   // Each filter must be matched
