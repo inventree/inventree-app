@@ -10,6 +10,18 @@ class InvenTreeCompany extends InvenTreeModel {
 
   InvenTreeCompany() : super();
 
+  String get image => jsondata['image'] ?? '';
+
+  String get website => jsondata['website'] ?? '';
+
+  String get phone => jsondata['phone'] ?? '';
+
+  String get email => jsondata['email'] ?? '';
+
+  bool get isSupplier => jsondata['is_supplier'] ?? false;
+
+  bool get isCustomer => jsondata['is_customer'] ?? false;
+
   InvenTreeCompany.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     // TODO
   }

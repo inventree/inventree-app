@@ -130,7 +130,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
 
-      await InvenTreeUserPreferences().saveLoginDetails(_server, _username, _password);
+      await InvenTreePreferences().saveLoginDetails(_server, _username, _password);
 
     }
   }
