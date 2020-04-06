@@ -1,4 +1,5 @@
 
+import 'package:InvenTree/widget/company_detail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -85,7 +86,7 @@ class _CompanyListState extends State<CompanyListWidget> {
         onTap: () {
           if (company.pk > 0) {
             InvenTreeCompany().get(company.pk).then((var c) {
-              print("Retrieved company: ${c.name}");
+              Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyDetailWidget(c)));
             });
           }
         },
