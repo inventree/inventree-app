@@ -72,8 +72,11 @@ class InvenTreeAPI {
   // Authentication token (initially empty, must be requested)
   String _token = "";
 
+  // Server instance information
+  String instance = '';
+
   // Server version information
-  String _version;
+  String _version = '';
 
   // Getter for server version information
   String get version => _version;
@@ -173,6 +176,9 @@ class InvenTreeAPI {
     print("Version: " + data["version"]);
 
     _version = data["version"];
+
+    // Record the instance name of the server
+    instance = data['instance'] ?? '';
 
     // Request token from the server if we do not already have one
     if (_token.isNotEmpty) {

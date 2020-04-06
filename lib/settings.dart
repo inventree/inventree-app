@@ -61,6 +61,10 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
                 title: Text("Server Version"),
                 subtitle: Text(InvenTreeAPI().version.isNotEmpty ? InvenTreeAPI().version : "Not connected"),
               ),
+              ListTile(
+                title: Text("Server Instance"),
+                subtitle: Text(InvenTreeAPI().instance.isNotEmpty ? InvenTreeAPI().instance : "Not connected"),
+              ),
               Divider(),
               ListTile(
                 title: Text("App Name"),
