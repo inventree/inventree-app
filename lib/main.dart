@@ -27,7 +27,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Load login details
-  InvenTreeUserPreferences().loadLoginDetails();
+  InvenTreePreferences().loadLoginDetails();
 
   runApp(MyApp());
 }

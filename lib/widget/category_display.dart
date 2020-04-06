@@ -1,6 +1,7 @@
 
 import 'package:InvenTree/api.dart';
 import 'package:InvenTree/inventree/part.dart';
+import 'package:InvenTree/preferences.dart';
 
 import 'package:InvenTree/widget/part_display.dart';
 import 'package:InvenTree/widget/drawer.dart';
@@ -83,9 +84,6 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
     });
   }
 
-  bool _subcategoriesExpanded = false;
-  bool _partListExpanded = true;
-
   Widget getCategoryDescriptionCard() {
     if (category == null) {
       return Card(
@@ -144,10 +142,10 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
 
                   switch (index) {
                     case 0:
-                      _subcategoriesExpanded = !isExpanded;
+                      InvenTreePreferences().expandCategoryList = !isExpanded;
                       break;
                     case 1:
-                      _partListExpanded = !isExpanded;
+                      InvenTreePreferences().expandPartList = !isExpanded;
                       break;
                     default:
                       break;
@@ -163,13 +161,13 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
                       trailing: Text("${_subcategories.length}"),
                       onTap: () {
                         setState(() {
-                          _subcategoriesExpanded = !_subcategoriesExpanded;
+                          InvenTreePreferences().expandCategoryList = !InvenTreePreferences().expandCategoryList;
                         });
                       },
                     );
                   },
                   body: SubcategoryList(_subcategories),
-                  isExpanded: _subcategoriesExpanded && _subcategories.length > 0,
+                  isExpanded: InvenTreePreferences().expandCategoryList && _subcategories.length > 0,
                 ),
                 ExpansionPanel(
                   headerBuilder: (BuildContext context, bool isExpanded) {
@@ -179,13 +177,13 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
                       trailing: Text("${_parts.length}"),
                       onTap: () {
                         setState(() {
-                          _partListExpanded = !_partListExpanded;
+                          InvenTreePreferences().expandPartList = !InvenTreePreferences().expandPartList;
                         });
                       },
                     );
                   },
                   body: PartList(_parts),
-                  isExpanded: _partListExpanded && _parts.length > 0,
+                  isExpanded: InvenTreePreferences().expandPartList && _parts.length > 0,
                 )
               ],
             ),

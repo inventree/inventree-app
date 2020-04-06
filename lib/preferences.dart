@@ -2,20 +2,37 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'api.dart';
 
 
-class InvenTreeUserPreferences {
+class InvenTreePreferences {
 
   static const String _SERVER = 'server';
   static const String _USERNAME = 'username';
   static const String _PASSWORD = 'password';
 
-  // Ensure we only ever create a single instance of the preferences class
-  static final InvenTreeUserPreferences _api = new InvenTreeUserPreferences._internal();
+  /* The following settings are not stored to persistent storage,
+   * instead they are only used as 'session preferences'.
+   * They are kept here as a convenience only.
+   */
 
-  factory InvenTreeUserPreferences() {
+  // Expand subcategory list in PartCategory view
+  bool expandCategoryList = false;
+
+  // Expand part list in PartCategory view
+  bool expandPartList = true;
+
+  // Expand sublocation list in StockLocation view
+  bool expandLocationList = false;
+
+  // Expand item list in StockLocation view
+  bool expandStockList = true;
+
+  // Ensure we only ever create a single instance of the preferences class
+  static final InvenTreePreferences _api = new InvenTreePreferences._internal();
+
+  factory InvenTreePreferences() {
     return _api;
   }
 
-  InvenTreeUserPreferences._internal();
+  InvenTreePreferences._internal();
 
   // Load saved login details, and attempt connection
   void loadLoginDetails() async {

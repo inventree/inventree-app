@@ -1,5 +1,6 @@
 import 'package:InvenTree/api.dart';
 import 'package:InvenTree/inventree/stock.dart';
+import 'package:InvenTree/preferences.dart';
 import 'package:InvenTree/widget/drawer.dart';
 import 'package:InvenTree/widget/stock_display.dart';
 import 'package:flutter/cupertino.dart';
@@ -91,9 +92,6 @@ class _LocationDisplayState extends State<LocationDisplayWidget> {
     });
   }
 
-  bool _locationListExpanded = false;
-  bool _stockListExpanded = true;
-
   Widget locationDescriptionCard() {
     if (location == null) {
       return Card(
@@ -150,10 +148,10 @@ class _LocationDisplayState extends State<LocationDisplayWidget> {
               setState(() {
                 switch (index) {
                   case 0:
-                    _locationListExpanded = !isExpanded;
+                    InvenTreePreferences().expandLocationList = !isExpanded;
                     break;
                   case 1:
-                    _stockListExpanded = !isExpanded;
+                    InvenTreePreferences().expandStockList = !isExpanded;
                     break;
                   default:
                     break;
@@ -170,13 +168,13 @@ class _LocationDisplayState extends State<LocationDisplayWidget> {
                     trailing: Text("${_sublocations.length}"),
                     onTap: () {
                       setState(() {
-                        _locationListExpanded = !_locationListExpanded;
+                        InvenTreePreferences().expandLocationList = !InvenTreePreferences().expandLocationList;
                       });
                     },
                   );
                 },
                 body: SublocationList(_sublocations),
-                isExpanded: _locationListExpanded && _sublocations.length > 0,
+                isExpanded: InvenTreePreferences().expandLocationList && _sublocations.length > 0,
               ),
               ExpansionPanel(
                 headerBuilder: (BuildContext context, bool isExpanded) {
@@ -186,13 +184,13 @@ class _LocationDisplayState extends State<LocationDisplayWidget> {
                     trailing: Text("${_items.length}"),
                     onTap: () {
                       setState(() {
-                        _stockListExpanded = !_stockListExpanded;
+                        InvenTreePreferences().expandStockList = !InvenTreePreferences().expandStockList;
                       });
                     },
                   );
                 },
                 body: StockList(_items),
-                isExpanded: _stockListExpanded && _items.length > 0,
+                isExpanded: InvenTreePreferences().expandStockList && _items.length > 0,
               )
             ]
           ),
