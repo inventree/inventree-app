@@ -1,6 +1,9 @@
 
 
 import 'package:InvenTree/inventree/stock.dart';
+import 'package:InvenTree/inventree/part.dart';
+import 'package:InvenTree/widget/location_display.dart';
+import 'package:InvenTree/widget/part_display.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -51,6 +54,100 @@ class _StockItemDisplayState extends State<StockItemDisplayWidget> {
         )
       )
     );
+
+    tiles.add(
+      ListTile(
+        title: Text("Part"),
+        subtitle: Text("${item.partName}"),
+        leading: FaIcon(FontAwesomeIcons.shapes),
+        onTap: () {
+          if (item.partId > 0) {
+            InvenTreePart().get(item.partId).then((var part) {
+              if (part is InvenTreePart) {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => PartDisplayWidget(part)));
+              }
+            });
+          }
+        },
+      )
+    );
+
+    // Quantity information
+    tiles.add(
+      ListTile(
+        title: Text("Quantity"),
+        leading: FaIcon(FontAwesomeIcons.cubes),
+        trailing: Text("${item.quantity}"),
+      )
+    );
+
+    // Location information
+    if (item.locationName.isNotEmpty) {
+      tiles.add(
+        ListTile(
+          title: Text("Stock Location"),
+          subtitle: Text("${item.locationName}"),
+          leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
+          onTap: () {
+            if (item.locationId > 0) {
+              InvenTreeStockLocation().get(item.locationId).then((var loc) {
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => LocationDisplayWidget(loc)));
+              });
+            }
+          },
+        )
+      );
+    }
+
+    // Supplier part?
+    if (item.supplierPartId > 0) {
+      tiles.add(
+        ListTile(
+          title: Text("${item.supplierName}"),
+          subtitle: Text("${item.supplierSKU}"),
+          leading: FaIcon(FontAwesomeIcons.industry),
+          trailing: Image(
+            image: InvenTreeAPI().getImage(item.supplierImage),
+            height: 32,
+          ),
+          onTap: null,
+        )
+      );
+    }
+
+    if (item.link.isNotEmpty) {
+      tiles.add(
+        ListTile(
+          title: Text("${item.link}"),
+          leading: FaIcon(FontAwesomeIcons.link),
+          trailing: Text(""),
+          onTap: null,
+        )
+      );
+    }
+
+    if (item.trackingItemCount > 0) {
+      tiles.add(
+        ListTile(
+          title: Text("History"),
+          leading: FaIcon(FontAwesomeIcons.history),
+          trailing: Text("${item.trackingItemCount}"),
+          onTap: null,
+        )
+      );
+    }
+
+    if (item.notes.isNotEmpty) {
+      tiles.add(
+        ListTile(
+          title: Text("Notes"),
+          leading: FaIcon(FontAwesomeIcons.stickyNote),
+          trailing: Text(""),
+          onTap: null,
+        )
+      );
+    }
 
     return tiles;
   }

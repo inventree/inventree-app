@@ -15,6 +15,7 @@ class InvenTreeStockItem extends InvenTreeModel {
 
     headers["part_detail"] = "true";
     headers["location_detail"] = "true";
+    headers["supplier_detail"] = "true";
 
     return headers;
   }
@@ -24,6 +25,10 @@ class InvenTreeStockItem extends InvenTreeModel {
   InvenTreeStockItem.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     // TODO
   }
+
+  int get partId => jsondata['part'] ?? -1;
+
+  int get trackingItemCount => jsondata['tracking_items'] as int ?? 0;
 
   String get partName {
 
@@ -78,11 +83,57 @@ class InvenTreeStockItem extends InvenTreeModel {
     return thumb;
   }
 
+  int get supplierPartId => jsondata['supplier_part'] as int ?? -1;
+
+  String get supplierImage {
+    String thumb = '';
+
+    if (jsondata.containsKey("supplier_detail")) {
+      thumb = jsondata['supplier_detail']['supplier_logo'] ?? '';
+    }
+
+    return thumb;
+  }
+
+  String get supplierName {
+    String sname = '';
+
+    if (jsondata.containsKey("supplier_detail")) {
+      sname = jsondata["supplier_detail"]["supplier_name"] ?? '';
+    }
+
+    return sname;
+  }
+
+  String get supplierSKU {
+    String sku = '';
+
+    if (jsondata.containsKey("supplier_detail")) {
+      sku = jsondata["supplier_detail"]["SKU"] ?? '';
+    }
+
+    return sku;
+  }
+
   int get serialNumber => jsondata['serial'] as int ?? null;
 
-  double get quantity => jsondata['quantity'] as double ?? 0.0;
+  double get quantity => double.tryParse(jsondata['quantity'].toString() ?? '0');
 
   int get locationId => jsondata['location'] as int ?? -1;
+
+  String get locationName {
+    String loc = '';
+
+    if (jsondata.containsKey('location_detail')) {
+      loc = jsondata['location_detail']['name'] ?? '';
+    }
+
+    if (loc.isEmpty) {
+      loc = jsondata['location__name'] ?? '';
+    }
+
+    return loc;
+  }
 
   String get displayQuantity {
     // Display either quantity or serial number!
