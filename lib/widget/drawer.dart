@@ -1,5 +1,6 @@
 import 'package:InvenTree/api.dart';
 import 'package:InvenTree/barcode.dart';
+import 'package:InvenTree/widget/company_list.dart';
 import 'package:flutter/material.dart';
 
 import 'package:InvenTree/api.dart';
@@ -61,6 +62,20 @@ class InvenTreeDrawer extends StatelessWidget {
     Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(null)));
   }
 
+  void _showSuppliers() {
+    if (!InvenTreeAPI().checkConnection(context)) return;
+    _closeDrawer();
+
+    Navigator.push(context, MaterialPageRoute(builder: (context) => SupplierListWidget()));
+  }
+
+  void _showCustomers() {
+    if (!InvenTreeAPI().checkConnection(context)) return;
+    _closeDrawer();
+
+    Navigator.push(context, MaterialPageRoute(builder: (context) => CustomerListWidget()));
+  }
+
   /*
    * Load settings widget
    */
@@ -108,7 +123,12 @@ class InvenTreeDrawer extends StatelessWidget {
               new ListTile(
                 title: new Text("Suppliers"),
                 leading: new FaIcon(FontAwesomeIcons.industry),
-                onTap: null,
+                onTap: _showSuppliers,
+              ),
+              new ListTile(
+                title: new Text("Customers"),
+                leading: new FaIcon(FontAwesomeIcons.users),
+                onTap: _showCustomers,
               ),
               new Divider(),
               new ListTile(
