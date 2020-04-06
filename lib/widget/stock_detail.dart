@@ -3,7 +3,7 @@
 import 'package:InvenTree/inventree/stock.dart';
 import 'package:InvenTree/inventree/part.dart';
 import 'package:InvenTree/widget/location_display.dart';
-import 'package:InvenTree/widget/part_display.dart';
+import 'package:InvenTree/widget/part_detail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -12,9 +12,9 @@ import 'package:InvenTree/api.dart';
 import 'package:InvenTree/widget/drawer.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class StockItemDisplayWidget extends StatefulWidget {
+class StockDetailWidget extends StatefulWidget {
 
-  StockItemDisplayWidget(this.item, {Key key}) : super(key: key);
+  StockDetailWidget(this.item, {Key key}) : super(key: key);
 
   final InvenTreeStockItem item;
 
@@ -23,7 +23,7 @@ class StockItemDisplayWidget extends StatefulWidget {
 }
 
 
-class _StockItemDisplayState extends State<StockItemDisplayWidget> {
+class _StockItemDisplayState extends State<StockDetailWidget> {
 
   _StockItemDisplayState(this.item) {
     // TODO
@@ -64,7 +64,7 @@ class _StockItemDisplayState extends State<StockItemDisplayWidget> {
           if (item.partId > 0) {
             InvenTreePart().get(item.partId).then((var part) {
               if (part is InvenTreePart) {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => PartDisplayWidget(part)));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
               }
             });
           }

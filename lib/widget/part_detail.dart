@@ -9,9 +9,9 @@ import 'package:InvenTree/api.dart';
 import 'package:InvenTree/widget/drawer.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class PartDisplayWidget extends StatefulWidget {
+class PartDetailWidget extends StatefulWidget {
 
-  PartDisplayWidget(this.part, {Key key}) : super(key: key);
+  PartDetailWidget(this.part, {Key key}) : super(key: key);
 
   final InvenTreePart part;
 
@@ -21,7 +21,7 @@ class PartDisplayWidget extends StatefulWidget {
 }
 
 
-class _PartDisplayState extends State<PartDisplayWidget> {
+class _PartDisplayState extends State<PartDetailWidget> {
 
   _PartDisplayState(this.part) {
     // TODO

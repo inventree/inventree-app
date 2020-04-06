@@ -6,9 +6,9 @@ import 'package:InvenTree/inventree/stock.dart';
 import 'package:InvenTree/inventree/part.dart';
 
 import 'package:InvenTree/widget/location_display.dart';
-import 'package:InvenTree/widget/part_display.dart';
+import 'package:InvenTree/widget/part_detail.dart';
 import 'package:InvenTree/widget/category_display.dart';
-import 'package:InvenTree/widget/stock_display.dart';
+import 'package:InvenTree/widget/stock_detail.dart';
 
 import 'dart:convert';
 
@@ -59,12 +59,12 @@ void _handleInvenTreeBarcode(BuildContext context, Map<String, dynamic> data) {
 
   } else if (codeType == 'stockitem') {
     InvenTreeStockItem().get(pk).then((var item) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => StockItemDisplayWidget(item)));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => StockDetailWidget(item)));
     });
   } else if (codeType == 'part') {
     InvenTreePart().get(pk).then((var part) {
       Navigator.push(context,
-          MaterialPageRoute(builder: (context) => PartDisplayWidget(part)));
+          MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
     });
   }
 }

@@ -2,7 +2,7 @@ import 'package:InvenTree/api.dart';
 import 'package:InvenTree/inventree/stock.dart';
 import 'package:InvenTree/preferences.dart';
 import 'package:InvenTree/widget/drawer.dart';
-import 'package:InvenTree/widget/stock_display.dart';
+import 'package:InvenTree/widget/stock_detail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
@@ -246,7 +246,7 @@ class StockList extends StatelessWidget {
   void _openItem(BuildContext context, int pk) {
     InvenTreeStockItem().get(pk).then((var item) {
       if (item is InvenTreeStockItem) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => StockItemDisplayWidget(item)));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => StockDetailWidget(item)));
       }
     });
   }

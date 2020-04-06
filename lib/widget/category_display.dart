@@ -3,7 +3,7 @@ import 'package:InvenTree/api.dart';
 import 'package:InvenTree/inventree/part.dart';
 import 'package:InvenTree/preferences.dart';
 
-import 'package:InvenTree/widget/part_display.dart';
+import 'package:InvenTree/widget/part_detail.dart';
 import 'package:InvenTree/widget/drawer.dart';
 
 import 'package:flutter/cupertino.dart';
@@ -164,6 +164,9 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
                           InvenTreePreferences().expandCategoryList = !InvenTreePreferences().expandCategoryList;
                         });
                       },
+                      onLongPress: () {
+                        // TODO - Context menu for e.g. creating a new PartCategory
+                      },
                     );
                   },
                   body: SubcategoryList(_subcategories),
@@ -179,6 +182,9 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
                         setState(() {
                           InvenTreePreferences().expandPartList = !InvenTreePreferences().expandPartList;
                         });
+                      },
+                      onLongPress: () {
+                        // TODO - Context menu for e.g. creating a new Part
                       },
                     );
                   },
@@ -249,7 +255,7 @@ class PartList extends StatelessWidget {
     InvenTreePart().get(pk).then((var part) {
       if (part is InvenTreePart) {
 
-        Navigator.push(context, MaterialPageRoute(builder: (context) => PartDisplayWidget(part)));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
       }
     });
   }
