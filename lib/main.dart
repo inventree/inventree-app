@@ -14,7 +14,7 @@ import 'barcode.dart';
 
 import 'dart:convert';
 
-import 'settings.dart';
+import 'settings/settings.dart';
 import 'api.dart';
 import 'preferences.dart';
 

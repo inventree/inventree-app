@@ -7,7 +7,7 @@ import 'package:InvenTree/api.dart';
 import 'package:InvenTree/widget/category_display.dart';
 import 'package:InvenTree/widget/location_display.dart';
 
-import 'package:InvenTree/settings.dart';
+import 'package:InvenTree/settings/settings.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class InvenTreeDrawer extends StatelessWidget {
