@@ -159,6 +159,11 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
         title: Text("Stock Item"),
       ),
       drawer: new InvenTreeDrawer(context),
+      floatingActionButton: FloatingActionButton(
+        child: FaIcon(FontAwesomeIcons.ellipsisH),
+        // TODO: Add pop-up icons
+        // REF: https://stackoverflow.com/questions/46480221/flutter-floating-action-button-with-speed-dial#46480722
+      ),
       body: Center(
         child: ListView(
           children: stockTiles(),
