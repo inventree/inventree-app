@@ -11,6 +11,7 @@ import 'package:InvenTree/api.dart';
 
 import 'package:InvenTree/widget/drawer.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class StockDetailWidget extends StatefulWidget {
 
@@ -152,6 +153,43 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
     return tiles;
   }
 
+  /*
+   * Return a list of context-sensitive action buttons.
+   * Not all buttons will be avaialable for a given StockItem,
+   * depending on the properties of that StockItem
+   */
+  List<SpeedDialChild> actionButtons() {
+    var buttons = List<SpeedDialChild>();
+
+    buttons.add(SpeedDialChild(
+      child: Icon(Icons.add_circle),
+      label: "Add Stock",
+      onTap: null,
+      )
+    );
+
+    buttons.add(SpeedDialChild(
+      child: Icon(Icons.remove_circle),
+      label: "Remove Stock",
+      onTap: null,
+      ),
+    );
+
+    buttons.add(SpeedDialChild(
+      child: Icon(Icons.check_circle),
+      label: "Count Stock",
+      onTap: null,
+    ));
+
+    buttons.add(SpeedDialChild(
+      child: Icon(Icons.location_on),
+      label: "Transfer Stock",
+      onTap: null,
+    ));
+
+    return buttons;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -159,10 +197,11 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
         title: Text("Stock Item"),
       ),
       drawer: new InvenTreeDrawer(context),
-      floatingActionButton: FloatingActionButton(
-        child: FaIcon(FontAwesomeIcons.ellipsisH),
-        // TODO: Add pop-up icons
-        // REF: https://stackoverflow.com/questions/46480221/flutter-floating-action-button-with-speed-dial#46480722
+      floatingActionButton: SpeedDial(
+        visible: true,
+        animatedIcon: AnimatedIcons.menu_close,
+        heroTag: 'stock-item-fab',
+        children: actionButtons(),
       ),
       body: Center(
         child: ListView(
