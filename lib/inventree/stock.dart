@@ -121,6 +121,8 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   int get locationId => jsondata['location'] as int ?? -1;
 
+  bool isSerialized() => serialNumber != null && quantity.toInt() == 1;
+
   String get locationName {
     String loc = '';
 

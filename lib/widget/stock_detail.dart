@@ -74,13 +74,25 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
     );
 
     // Quantity information
-    tiles.add(
-      ListTile(
-        title: Text("Quantity"),
-        leading: FaIcon(FontAwesomeIcons.cubes),
-        trailing: Text("${item.quantity}"),
-      )
-    );
+    if (item.isSerialized()) {
+      tiles.add(
+          ListTile(
+            title: Text("Serial Number"),
+            leading: FaIcon(FontAwesomeIcons.hashtag),
+            trailing: Text("${item.serialNumber}"),
+          )
+      );
+    } else {
+      tiles.add(
+          ListTile(
+            title: Text("Quantity"),
+            leading: FaIcon(FontAwesomeIcons.cubes),
+            trailing: Text("${item.quantity}"),
+          )
+      );
+
+    }
+
 
     // Location information
     if (item.locationName.isNotEmpty) {
