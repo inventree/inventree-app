@@ -32,6 +32,26 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
 
   final InvenTreeStockItem item;
 
+  void _editStockItem() {
+    // TODO - Form for editing stock item
+  }
+
+  void _addStock() {
+    // TODO - Form for adding stock
+  }
+
+  void _removeStock() {
+    // TODO - Form for removing stock
+  }
+
+  void _countStock() {
+    // TODO - Form for counting stock
+  }
+
+  void _transferStock() {
+    // TODO - Form for transferring stock
+  }
+
   /*
    * Construct a list of detail elements about this StockItem.
    * The number of elements may vary depending on the StockItem details
@@ -50,7 +70,7 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
           ),
           trailing: IconButton(
             icon: FaIcon(FontAwesomeIcons.edit),
-            onPressed: null,
+            onPressed: _editStockItem,
           )
         )
       )
@@ -178,28 +198,28 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
       buttons.add(SpeedDialChild(
         child: Icon(Icons.add_circle),
         label: "Add Stock",
-        onTap: null,
+        onTap: _addStock,
       )
       );
 
       buttons.add(SpeedDialChild(
         child: Icon(Icons.remove_circle),
         label: "Remove Stock",
-        onTap: null,
+        onTap: _removeStock,
       ),
       );
 
       buttons.add(SpeedDialChild(
         child: Icon(Icons.check_circle),
         label: "Count Stock",
-        onTap: null,
+        onTap: _countStock,
       ));
     }
 
     buttons.add(SpeedDialChild(
       child: Icon(Icons.location_on),
       label: "Transfer Stock",
-      onTap: null,
+      onTap: _transferStock,
     ));
 
     return buttons;
