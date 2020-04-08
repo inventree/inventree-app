@@ -4,6 +4,7 @@ import 'package:InvenTree/inventree/stock.dart';
 import 'package:InvenTree/widget/category_display.dart';
 import 'package:InvenTree/widget/company_list.dart';
 import 'package:InvenTree/widget/location_display.dart';
+import 'package:InvenTree/widget/search.dart';
 import 'package:InvenTree/widget/drawer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -192,7 +193,8 @@ class _MyHomePageState extends State<MyHomePage> {
   void _search() {
     if (!InvenTreeAPI().checkConnection(context)) return;
 
-    // TODO
+    Navigator.push(context, MaterialPageRoute(builder: (context) => SearchWidget()));
+
   }
 
   void _scan() {
@@ -251,7 +253,7 @@ class _MyHomePageState extends State<MyHomePage> {
           IconButton(
             icon: FaIcon(FontAwesomeIcons.search),
             tooltip: 'Search',
-            onPressed: null,
+            onPressed: _search,
           ),
         ],
       ),
@@ -271,7 +273,7 @@ class _MyHomePageState extends State<MyHomePage> {
                    IconButton(
                      icon: new FaIcon(FontAwesomeIcons.search),
                      tooltip: 'Search',
-                     onPressed: _unsupported,
+                     onPressed: _search,
                    ),
                    Text("Search"),
                   ],

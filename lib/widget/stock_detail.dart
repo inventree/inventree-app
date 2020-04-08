@@ -196,28 +196,28 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
     // The following actions only apply if the StockItem is not serialized
     if (!item.isSerialized()) {
       buttons.add(SpeedDialChild(
-        child: Icon(Icons.add_circle),
+        child: Icon(FontAwesomeIcons.plusCircle),
         label: "Add Stock",
         onTap: _addStock,
       )
       );
 
       buttons.add(SpeedDialChild(
-        child: Icon(Icons.remove_circle),
+        child: Icon(FontAwesomeIcons.minusCircle),
         label: "Remove Stock",
         onTap: _removeStock,
       ),
       );
 
       buttons.add(SpeedDialChild(
-        child: Icon(Icons.check_circle),
+        child: Icon(FontAwesomeIcons.checkCircle),
         label: "Count Stock",
         onTap: _countStock,
       ));
     }
 
     buttons.add(SpeedDialChild(
-      child: Icon(Icons.location_on),
+      child: Icon(FontAwesomeIcons.exchangeAlt),
       label: "Transfer Stock",
       onTap: _transferStock,
     ));
