@@ -173,25 +173,28 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
   List<SpeedDialChild> actionButtons() {
     var buttons = List<SpeedDialChild>();
 
-    buttons.add(SpeedDialChild(
-      child: Icon(Icons.add_circle),
-      label: "Add Stock",
-      onTap: null,
+    // The following actions only apply if the StockItem is not serialized
+    if (!item.isSerialized()) {
+      buttons.add(SpeedDialChild(
+        child: Icon(Icons.add_circle),
+        label: "Add Stock",
+        onTap: null,
       )
-    );
+      );
 
-    buttons.add(SpeedDialChild(
-      child: Icon(Icons.remove_circle),
-      label: "Remove Stock",
-      onTap: null,
+      buttons.add(SpeedDialChild(
+        child: Icon(Icons.remove_circle),
+        label: "Remove Stock",
+        onTap: null,
       ),
-    );
+      );
 
-    buttons.add(SpeedDialChild(
-      child: Icon(Icons.check_circle),
-      label: "Count Stock",
-      onTap: null,
-    ));
+      buttons.add(SpeedDialChild(
+        child: Icon(Icons.check_circle),
+        label: "Count Stock",
+        onTap: null,
+      ));
+    }
 
     buttons.add(SpeedDialChild(
       child: Icon(Icons.location_on),
