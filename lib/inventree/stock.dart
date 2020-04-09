@@ -179,17 +179,21 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   Future<http.Response> addStock(double quan) async {
 
-    // Cannot add stock to a serialized StockItem
-    if (isSerialized()) {
-      return null;
-    }
-
-    // Cannot add negative stock
-    if (quan <= 0) {
-      return null;
-    }
+    if (isSerialized() || quan <= 0) return null;
 
     return api.post("/stock/add/", body: {
+      "item": {
+        "pk": "${pk}",
+        "quantity": "${quan}",
+      }
+    });
+  }
+
+  Future<http.Response> removeStock(double quan) async {
+
+    if (isSerialized() || quan <= 0) return null;
+
+    return api.post("/stock/remove/", body: {
       "item": {
         "pk": "${pk}",
         "quantity": "${quan}",

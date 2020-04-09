@@ -28,7 +28,7 @@ class StockDetailWidget extends StatefulWidget {
 class _StockItemDisplayState extends State<StockDetailWidget> {
 
   final _addStockKey = GlobalKey<FormState>();
-  final _takeStockKey = GlobalKey<FormState>();
+  final _removeStockKey = GlobalKey<FormState>();
   final _countStockKey = GlobalKey<FormState>();
   final _moveStockKey = GlobalKey<FormState>();
 
@@ -82,7 +82,7 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
                   decoration: InputDecoration(
                     labelText: "Add stock",
                   ),
-                  keyboardType: TextInputType.numberWithOptions(signed:false, decimal:true),
+                  keyboardType: TextInputType.numberWithOptions(signed: false, decimal: true),
                   validator: (value) {
                     if (value.isEmpty) return "Value cannot be empty";
 
@@ -104,8 +104,65 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
     // TODO - Form for adding stock
   }
 
-  void _removeStock() {
-    // TODO - Form for removing stock
+  void _removeStock(double quantity) async {
+    Navigator.of(context).pop();
+
+    var response = await item.removeStock(quantity);
+
+    // TODO - Handle error cases
+
+    await item.reload();
+
+    setState(() {});
+  }
+
+  void _removeStockDialog() {
+    showDialog(context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Remove Stock"),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Remove"),
+              onPressed: () {
+                _removeStockKey.currentState.validate();
+              },
+            )
+          ],
+          content: Form(
+            key: _removeStockKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text("Current quantity: ${item.quantity}"),
+                TextFormField(
+                  decoration: InputDecoration(
+                    labelText: "Remove stock",
+                  ),
+                  keyboardType: TextInputType.numberWithOptions(signed: false, decimal: true),
+                  validator: (value) {
+                    if (value.isEmpty) return "Value cannot be empty";
+
+                    double quantity = double.tryParse(value);
+
+                    if (quantity == null) return "Value cannot be converted to a number";
+                    if (quantity <= 0) return "Value must be positive";
+
+                    if (quantity > item.quantity) return "Cannot take more than current quantity";
+
+                    _removeStock(quantity);
+
+                    return null;
+                  },
+                )
+              ],
+            )
+          ),
+        );
+      }
+    );
   }
 
   void _countStock(double quantity) async {
@@ -169,7 +226,12 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
     );
   }
 
-  void _transferStock() {
+
+  void _transferStock(int location) {
+    // TODO
+  }
+
+  void _transferStockDialog() {
     // TODO - Form for transferring stock
   }
 
@@ -326,7 +388,7 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
       buttons.add(SpeedDialChild(
         child: Icon(FontAwesomeIcons.minusCircle),
         label: "Remove Stock",
-        onTap: _removeStock,
+        onTap: _removeStockDialog,
       ),
       );
 
@@ -340,7 +402,7 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
     buttons.add(SpeedDialChild(
       child: Icon(FontAwesomeIcons.exchangeAlt),
       label: "Transfer Stock",
-      onTap: _transferStock,
+      onTap: _transferStockDialog,
     ));
 
     return buttons;
