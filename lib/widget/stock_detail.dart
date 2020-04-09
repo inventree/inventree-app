@@ -34,6 +34,7 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
   final _removeStockKey = GlobalKey<FormState>();
   final _countStockKey = GlobalKey<FormState>();
   final _moveStockKey = GlobalKey<FormState>();
+  final _editStockKey = GlobalKey<FormState>();
 
   _StockItemDisplayState(this.item) {
     // TODO
@@ -45,7 +46,32 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
     // TODO - Form for editing stock item
   }
 
-  void _addStock(double quantity) async {
+  void _editStockItemDialog() {
+
+    return;
+    // TODO - Finish implementing this
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Edit Stock Item"),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Save"),
+              onPressed: () {
+                if (_editStockKey.currentState.validate()) {
+                  // TODO
+                }
+              },
+            )
+          ],
+        );
+      }
+    );
+  }
+
+  void _addStock() async {
 
     Navigator.of(context).pop();
 
