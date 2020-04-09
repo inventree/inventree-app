@@ -27,6 +27,9 @@ class StockDetailWidget extends StatefulWidget {
 
 class _StockItemDisplayState extends State<StockDetailWidget> {
 
+  // Single TextEditingController which can be shared between dialogs
+  final TextEditingController _notesController = TextEditingController();
+
   final _addStockKey = GlobalKey<FormState>();
   final _removeStockKey = GlobalKey<FormState>();
   final _countStockKey = GlobalKey<FormState>();
@@ -47,7 +50,8 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
     Navigator.of(context).pop();
 
     // Await response to prevent the button from being pressed multiple times
-    var response = await item.addStock(quantity);
+    var response = await item.addStock(quantity, notes: _notesController.text);
+    _notesController.clear();
 
     // TODO - Handle error cases
 
@@ -95,6 +99,12 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
                     return null;
                   },
                 ),
+                TextFormField(
+                  decoration: InputDecoration(
+                    labelText: "Notes",
+                  ),
+                  controller: _notesController,
+                )
               ],
             )
           ),
@@ -107,7 +117,8 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
   void _removeStock(double quantity) async {
     Navigator.of(context).pop();
 
-    var response = await item.removeStock(quantity);
+    var response = await item.removeStock(quantity, notes: _notesController.text);
+    _notesController.clear();
 
     // TODO - Handle error cases
 
@@ -156,7 +167,13 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
 
                     return null;
                   },
-                )
+                ),
+                TextFormField(
+                  decoration: InputDecoration(
+                    labelText: "Notes",
+                  ),
+                  controller: _notesController,
+                ),
               ],
             )
           ),
@@ -169,7 +186,8 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
 
     Navigator.of(context).pop();
 
-    var response = await item.countStock(quantity);
+    var response = await item.countStock(quantity, notes: _notesController.text);
+    _notesController.clear();
 
     // TODO - Handle error cases
 
@@ -217,6 +235,12 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
 
                     return null;
                   },
+                ),
+                TextFormField(
+                  decoration: InputDecoration(
+                    labelText: "Notes",
+                  ),
+                  controller: _notesController,
                 )
               ],
             )

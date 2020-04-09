@@ -157,7 +157,7 @@ class InvenTreeStockItem extends InvenTreeModel {
     return item;
   }
 
-  Future<http.Response> countStock(double quan) async {
+  Future<http.Response> countStock(double quan, {String notes}) async {
 
     // Cannot 'count' a serialized StockItem
     if (isSerialized()) {
@@ -172,12 +172,13 @@ class InvenTreeStockItem extends InvenTreeModel {
     return api.post("/stock/count/", body: {
       "item": {
         "pk": "${pk}",
-        "quantity": "${quan}"
-      }
+        "quantity": "${quan}",
+      },
+      "notes": notes ?? '',
     });
   }
 
-  Future<http.Response> addStock(double quan) async {
+  Future<http.Response> addStock(double quan, {String notes}) async {
 
     if (isSerialized() || quan <= 0) return null;
 
@@ -185,11 +186,12 @@ class InvenTreeStockItem extends InvenTreeModel {
       "item": {
         "pk": "${pk}",
         "quantity": "${quan}",
-      }
+      },
+      "notes": notes ?? '',
     });
   }
 
-  Future<http.Response> removeStock(double quan) async {
+  Future<http.Response> removeStock(double quan, {String notes}) async {
 
     if (isSerialized() || quan <= 0) return null;
 
@@ -197,7 +199,8 @@ class InvenTreeStockItem extends InvenTreeModel {
       "item": {
         "pk": "${pk}",
         "quantity": "${quan}",
-      }
+      },
+      "notes": notes ?? '',
     });
   }
 

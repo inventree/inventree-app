@@ -277,7 +277,7 @@ class InvenTreeAPI {
     var _url = makeApiUrl(url);
     var _headers = jsonHeaders();
 
-    print("POST: " + _url);
+    print("POST: ${_url} -> ${body.toString()}");
 
     var data = jsonEncode(body);
 

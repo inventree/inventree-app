@@ -85,8 +85,6 @@ class InvenTreeModel {
    */
   Future<bool> reload() async {
 
-    print("Reloading data from $url");
-
     var response = await api.get(url, params: defaultGetFilters());
 
     if (response.statusCode != 200) {
