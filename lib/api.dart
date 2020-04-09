@@ -59,7 +59,7 @@ class InvenTreeAPI {
 
   String makeApiUrl(String endpoint) {
 
-    return apiUrl + endpoint;
+    return _makeUrl("/api/" + endpoint);
   }
 
   String makeUrl(String endpoint) {
@@ -272,20 +272,18 @@ class InvenTreeAPI {
   }
 
   // Perform a POST request
-  Future<http.Response> post(String url, {Map<String, String> body}) async {
+  Future<http.Response> post(String url, {Map<String, dynamic> body}) async {
 
     var _url = makeApiUrl(url);
-    var _headers = defaultHeaders();
-    var _body = Map<String, String>();
+    var _headers = jsonHeaders();
 
-    // Copy across provided data
-    body.forEach((K, V) => _body[K] = V);
+    print("POST: ${_url} -> ${body.toString()}");
 
-    print("POST: " + _url);
+    var data = jsonEncode(body);
 
     return http.post(_url,
       headers: _headers,
-      body: _body,
+      body: data,
     );
   }
 
@@ -321,6 +319,13 @@ class InvenTreeAPI {
     headers[HttpHeaders.authorizationHeader] = _authorizationHeader();
     //headers['Authorization'] = _authorizationHeader();
 
+    return headers;
+  }
+
+  Map<String, String> jsonHeaders() {
+
+    var headers = defaultHeaders();
+    headers['Content-Type'] = 'application/json';
     return headers;
   }
 

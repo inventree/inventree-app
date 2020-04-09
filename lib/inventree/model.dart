@@ -56,7 +56,8 @@ class InvenTreeModel {
       return obj;
   }
 
-  String get url{ return path.join(URL, pk.toString()); }
+  // Return the API detail endpoint for this Model object
+  String get url => "${URL}/${pk}/";
 
   /*
   // Search this Model type in the database
@@ -78,6 +79,25 @@ class InvenTreeModel {
 
   // A map of "default" headers to use when performing a GET request
   Map<String, String> defaultGetFilters() { return Map<String, String>(); }
+
+  /*
+   * Reload this object, by requesting data from the server
+   */
+  Future<bool> reload() async {
+
+    var response = await api.get(url, params: defaultGetFilters());
+
+    if (response.statusCode != 200) {
+      print("Error retrieving data");
+      return false;
+    }
+
+    final Map<String, dynamic> data = json.decode(response.body);
+
+    jsondata = data;
+
+    return true;
+  }
 
   // Return the detail view for the associated pk
   Future<InvenTreeModel> get(int pk, {Map<String, String> filters}) async {
@@ -102,7 +122,7 @@ class InvenTreeModel {
 
     print("GET: $addr ${params.toString()}");
 
-    var response = await InvenTreeAPI().get(addr, params: params);
+    var response = await api.get(addr, params: params);
 
     if (response.statusCode != 200) {
       print("Error retrieving data");
@@ -134,7 +154,7 @@ class InvenTreeModel {
     // TODO - Add "timeout"
     // TODO - Add error catching
 
-    var response = await InvenTreeAPI().get(URL, params:params);
+    var response = await api.get(URL, params:params);
 
     // A list of "InvenTreeModel" items
     List<InvenTreeModel> results = new List<InvenTreeModel>();
