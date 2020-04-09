@@ -28,6 +28,9 @@ class StockDetailWidget extends StatefulWidget {
 class _StockItemDisplayState extends State<StockDetailWidget> {
 
   final _addStockKey = GlobalKey<FormState>();
+  final _takeStockKey = GlobalKey<FormState>();
+  final _countStockKey = GlobalKey<FormState>();
+  final _moveStockKey = GlobalKey<FormState>();
 
   _StockItemDisplayState(this.item) {
     // TODO
@@ -39,7 +42,22 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
     // TODO - Form for editing stock item
   }
 
-  void _addStock() {
+  void _addStock(double quantity) async {
+
+    Navigator.of(context).pop();
+
+    // Await response to prevent the button from being pressed multiple times
+    var response = await item.addStock(quantity);
+
+    // TODO - Handle error cases
+
+    await item.reload();
+
+    setState(() {});
+
+  }
+
+  void _addStockDialog() async {
     showDialog(context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -55,31 +73,26 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
           content: Form(
             key: _addStockKey,
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
+                Text("Current Quantity: ${item.quantity}"),
                 TextFormField(
-                  decoration: InputDecoration(labelText: "Stock Quantity"),
+                  decoration: InputDecoration(
+                    labelText: "Add stock",
+                  ),
                   keyboardType: TextInputType.numberWithOptions(signed:false, decimal:true),
                   validator: (value) {
-                    if (value.isEmpty) {
-                      return "Value cannot be empty";
-                    }
+                    if (value.isEmpty) return "Value cannot be empty";
 
                     double quantity = double.tryParse(value);
+                    if (quantity == null) return "Value cannot be converted to a number";
+                    if (quantity <= 0) return "Value must be positive";
 
-                    if (quantity == null) {
-                      return "Value cannot be converted to a number";
-                    }
+                    _addStock(quantity);
 
-                    if (quantity <= 0) {
-                      return "Value must be positive";
-                    }
-
-                    print("Adding stock!");
-
-                    item.addStock(quantity).then((var response) {
-                      print("added stock");
-                    });
+                    return null;
                   },
                 ),
               ],
@@ -95,8 +108,65 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
     // TODO - Form for removing stock
   }
 
-  void _countStock() {
-    // TODO - Form for counting stock
+  void _countStock(double quantity) async {
+
+    Navigator.of(context).pop();
+
+    var response = await item.countStock(quantity);
+
+    // TODO - Handle error cases
+
+    await item.reload();
+
+    setState(() {});
+
+  }
+
+  void _countStockDialog() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Count Stock"),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Count"),
+              onPressed: () {
+                _countStockKey.currentState.validate();
+              },
+            )
+          ],
+          content: Form(
+            key: _countStockKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                TextFormField(
+                  decoration: InputDecoration(
+                    labelText: "Count stock",
+                    hintText: "${item.quantity}",
+                  ),
+                  keyboardType: TextInputType.numberWithOptions(signed: false, decimal: true),
+                  validator: (value) {
+                    if (value.isEmpty) return "Value cannot be empty";
+
+                    double quantity = double.tryParse(value);
+                    if (quantity == null) return "Value cannot be converted to a number";
+                    if (quantity < 0) return "Value cannot be negative";
+
+                    _countStock(quantity);
+
+                    return null;
+                  },
+                )
+              ],
+            )
+          )
+        );
+      }
+    );
   }
 
   void _transferStock() {
@@ -249,7 +319,7 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
       buttons.add(SpeedDialChild(
         child: Icon(FontAwesomeIcons.plusCircle),
         label: "Add Stock",
-        onTap: _addStock,
+        onTap: _addStockDialog,
       )
       );
 
@@ -263,7 +333,7 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
       buttons.add(SpeedDialChild(
         child: Icon(FontAwesomeIcons.checkCircle),
         label: "Count Stock",
-        onTap: _countStock,
+        onTap: _countStockDialog,
       ));
     }
 

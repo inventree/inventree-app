@@ -83,20 +83,22 @@ class InvenTreeModel {
   /*
    * Reload this object, by requesting data from the server
    */
-  void reload() async {
+  Future<bool> reload() async {
 
     print("Reloading data from $url");
 
-    var response = await api.get(url);
+    var response = await api.get(url, params: defaultGetFilters());
 
     if (response.statusCode != 200) {
       print("Error retrieving data");
-      return;
+      return false;
     }
 
     final Map<String, dynamic> data = json.decode(response.body);
 
     jsondata = data;
+
+    return true;
   }
 
   // Return the detail view for the associated pk
