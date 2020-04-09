@@ -56,7 +56,8 @@ class InvenTreeModel {
       return obj;
   }
 
-  String get url{ return path.join(URL, pk.toString()); }
+  // Return the API detail endpoint for this Model object
+  String get url => "${URL}/${pk}/";
 
   /*
   // Search this Model type in the database
@@ -78,6 +79,25 @@ class InvenTreeModel {
 
   // A map of "default" headers to use when performing a GET request
   Map<String, String> defaultGetFilters() { return Map<String, String>(); }
+
+  /*
+   * Reload this object, by requesting data from the server
+   */
+  void reload() async {
+
+    print("Reloading data from $url");
+
+    var response = await api.get(url);
+
+    if (response.statusCode != 200) {
+      print("Error retrieving data");
+      return;
+    }
+
+    final Map<String, dynamic> data = json.decode(response.body);
+
+    jsondata = data;
+  }
 
   // Return the detail view for the associated pk
   Future<InvenTreeModel> get(int pk, {Map<String, String> filters}) async {
