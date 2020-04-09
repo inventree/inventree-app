@@ -27,7 +27,7 @@ class StockDetailWidget extends StatefulWidget {
 
 class _StockItemDisplayState extends State<StockDetailWidget> {
 
-  // Single TextEditingController which can be shared between dialogs
+  final TextEditingController _quantityController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
 
   final _addStockKey = GlobalKey<FormState>();
@@ -48,6 +48,9 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
   void _addStock(double quantity) async {
 
     Navigator.of(context).pop();
+
+    double quantity = double.parse(_quantityController.text);
+    _quantityController.clear();
 
     // Await response to prevent the button from being pressed multiple times
     var response = await item.addStock(quantity, notes: _notesController.text);
@@ -70,7 +73,7 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
             FlatButton(
               child: Text("Add"),
               onPressed: () {
-                _addStockKey.currentState.validate();
+                if (_addStockKey.currentState.validate()) _addStock();
               },
             )
           ],
@@ -87,14 +90,13 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
                     labelText: "Add stock",
                   ),
                   keyboardType: TextInputType.numberWithOptions(signed: false, decimal: true),
+                  controller: _quantityController,
                   validator: (value) {
                     if (value.isEmpty) return "Value cannot be empty";
 
                     double quantity = double.tryParse(value);
                     if (quantity == null) return "Value cannot be converted to a number";
                     if (quantity <= 0) return "Value must be positive";
-
-                    _addStock(quantity);
 
                     return null;
                   },
@@ -114,8 +116,11 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
     // TODO - Form for adding stock
   }
 
-  void _removeStock(double quantity) async {
+  void _removeStock() async {
     Navigator.of(context).pop();
+
+    double quantity = double.parse(_quantityController.text);
+    _quantityController.clear();
 
     var response = await item.removeStock(quantity, notes: _notesController.text);
     _notesController.clear();
@@ -136,7 +141,7 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
             FlatButton(
               child: Text("Remove"),
               onPressed: () {
-                _removeStockKey.currentState.validate();
+                if (_removeStockKey.currentState.validate()) _removeStock();
               },
             )
           ],
@@ -152,6 +157,7 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
                   decoration: InputDecoration(
                     labelText: "Remove stock",
                   ),
+                  controller: _quantityController,
                   keyboardType: TextInputType.numberWithOptions(signed: false, decimal: true),
                   validator: (value) {
                     if (value.isEmpty) return "Value cannot be empty";
@@ -162,8 +168,6 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
                     if (quantity <= 0) return "Value must be positive";
 
                     if (quantity > item.quantity) return "Cannot take more than current quantity";
-
-                    _removeStock(quantity);
 
                     return null;
                   },
@@ -182,9 +186,12 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
     );
   }
 
-  void _countStock(double quantity) async {
+  void _countStock() async {
 
     Navigator.of(context).pop();
+
+    double quantity = double.parse(_quantityController.text);
+    _quantityController.clear();
 
     var response = await item.countStock(quantity, notes: _notesController.text);
     _notesController.clear();
@@ -207,7 +214,7 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
             FlatButton(
               child: Text("Count"),
               onPressed: () {
-                _countStockKey.currentState.validate();
+                if (_countStockKey.currentState.validate()) _countStock();
               },
             )
           ],
@@ -223,6 +230,7 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
                     labelText: "Count stock",
                     hintText: "${item.quantity}",
                   ),
+                  controller: _quantityController,
                   keyboardType: TextInputType.numberWithOptions(signed: false, decimal: true),
                   validator: (value) {
                     if (value.isEmpty) return "Value cannot be empty";
@@ -230,8 +238,6 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
                     double quantity = double.tryParse(value);
                     if (quantity == null) return "Value cannot be converted to a number";
                     if (quantity < 0) return "Value cannot be negative";
-
-                    _countStock(quantity);
 
                     return null;
                   },
@@ -277,7 +283,7 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
           ),
           trailing: IconButton(
             icon: FaIcon(FontAwesomeIcons.edit),
-            onPressed: _editStockItem,
+            onPressed: _editStockItemDialog,
           )
         )
       )
