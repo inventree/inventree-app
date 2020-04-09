@@ -157,6 +157,26 @@ class InvenTreeStockItem extends InvenTreeModel {
     return item;
   }
 
+  Future<http.Response> countStock(double quan) async {
+
+    // Cannot 'count' a serialized StockItem
+    if (isSerialized()) {
+      return null;
+    }
+
+    // Cannot count negative stock
+    if (quan < 0) {
+      return null;
+    }
+
+    return api.post("/stock/count/", body: {
+      "item": {
+        "pk": "${pk}",
+        "quantity": "${quan}"
+      }
+    });
+  }
+
   Future<http.Response> addStock(double quan) async {
 
     // Cannot add stock to a serialized StockItem
@@ -169,14 +189,12 @@ class InvenTreeStockItem extends InvenTreeModel {
       return null;
     }
 
-    Map<String, dynamic> data = {
+    return api.post("/stock/add/", body: {
       "item": {
         "pk": "${pk}",
         "quantity": "${quan}",
       }
-    };
-
-    return api.post("/stock/add/", body: data);
+    });
   }
 
 }
