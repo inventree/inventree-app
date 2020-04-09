@@ -1,6 +1,7 @@
 import 'package:InvenTree/api.dart';
 import 'package:InvenTree/barcode.dart';
 import 'package:InvenTree/widget/company_list.dart';
+import 'package:InvenTree/widget/search.dart';
 import 'package:flutter/material.dart';
 
 import 'package:InvenTree/api.dart';
@@ -30,6 +31,11 @@ class InvenTreeDrawer extends StatelessWidget {
     _closeDrawer();
 
     Navigator.pushNamedAndRemoveUntil(context, "/", (r) => false);
+  }
+
+  void _search() {
+    _closeDrawer();
+    Navigator.push(context, MaterialPageRoute(builder: (context) => SearchWidget()));
   }
 
   /*
@@ -102,7 +108,7 @@ class InvenTreeDrawer extends StatelessWidget {
               new ListTile(
                 title: new Text("Search"),
                 leading: new FaIcon(FontAwesomeIcons.search),
-                onTap: null,
+                onTap: _search,
               ),
               new ListTile(
                 title: new Text("Scan Barcode"),

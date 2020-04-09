@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:http/http.dart' as http;
 import 'model.dart';
 
 import 'package:InvenTree/api.dart';
@@ -121,6 +122,8 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   int get locationId => jsondata['location'] as int ?? -1;
 
+  bool isSerialized() => serialNumber != null && quantity.toInt() == 1;
+
   String get locationName {
     String loc = '';
 
@@ -153,6 +156,54 @@ class InvenTreeStockItem extends InvenTreeModel {
 
     return item;
   }
+
+  Future<http.Response> countStock(double quan, {String notes}) async {
+
+    // Cannot 'count' a serialized StockItem
+    if (isSerialized()) {
+      return null;
+    }
+
+    // Cannot count negative stock
+    if (quan < 0) {
+      return null;
+    }
+
+    return api.post("/stock/count/", body: {
+      "item": {
+        "pk": "${pk}",
+        "quantity": "${quan}",
+      },
+      "notes": notes ?? '',
+    });
+  }
+
+  Future<http.Response> addStock(double quan, {String notes}) async {
+
+    if (isSerialized() || quan <= 0) return null;
+
+    return api.post("/stock/add/", body: {
+      "item": {
+        "pk": "${pk}",
+        "quantity": "${quan}",
+      },
+      "notes": notes ?? '',
+    });
+  }
+
+  Future<http.Response> removeStock(double quan, {String notes}) async {
+
+    if (isSerialized() || quan <= 0) return null;
+
+    return api.post("/stock/remove/", body: {
+      "item": {
+        "pk": "${pk}",
+        "quantity": "${quan}",
+      },
+      "notes": notes ?? '',
+    });
+  }
+
 }
 
 
@@ -194,5 +245,4 @@ class InvenTreeStockLocation extends InvenTreeModel {
 
     return loc;
   }
-
 }
