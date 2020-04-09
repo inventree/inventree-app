@@ -92,11 +92,7 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
     _notesController.clear();
 
     // TODO - Handle error cases
-
-    await item.reload();
-
-    setState(() {});
-
+    _refresh();
   }
 
   void _addStockDialog() async {
@@ -162,9 +158,7 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
 
     // TODO - Handle error cases
 
-    await item.reload();
-
-    setState(() {});
+    _refresh();
   }
 
   void _removeStockDialog() {
@@ -233,10 +227,7 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
 
     // TODO - Handle error cases
 
-    await item.reload();
-
-    setState(() {});
-
+    _refresh();
   }
 
   void _countStockDialog() async {
