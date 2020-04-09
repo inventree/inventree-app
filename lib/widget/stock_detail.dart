@@ -42,6 +42,15 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
 
   final InvenTreeStockItem item;
 
+  /**
+   * Function to reload the page data
+   */
+  Future<void> _refresh() async {
+
+    await item.reload();
+    setState(() {});
+  }
+
   void _editStockItem() {
     // TODO - Form for editing stock item
   }
@@ -478,8 +487,11 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
         children: actionButtons(),
       ),
       body: Center(
-        child: ListView(
-          children: stockTiles(),
+        child: new RefreshIndicator(
+          onRefresh: _refresh,
+          child: ListView(
+            children: stockTiles(),
+          )
         )
       )
     );
