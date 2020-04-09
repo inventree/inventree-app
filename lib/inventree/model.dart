@@ -102,7 +102,7 @@ class InvenTreeModel {
 
     print("GET: $addr ${params.toString()}");
 
-    var response = await InvenTreeAPI().get(addr, params: params);
+    var response = await api.get(addr, params: params);
 
     if (response.statusCode != 200) {
       print("Error retrieving data");
@@ -134,7 +134,7 @@ class InvenTreeModel {
     // TODO - Add "timeout"
     // TODO - Add error catching
 
-    var response = await InvenTreeAPI().get(URL, params:params);
+    var response = await api.get(URL, params:params);
 
     // A list of "InvenTreeModel" items
     List<InvenTreeModel> results = new List<InvenTreeModel>();

@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:InvenTree/api.dart';
 
 import 'package:InvenTree/widget/drawer.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
@@ -26,6 +27,8 @@ class StockDetailWidget extends StatefulWidget {
 
 class _StockItemDisplayState extends State<StockDetailWidget> {
 
+  final _addStockKey = GlobalKey<FormState>();
+
   _StockItemDisplayState(this.item) {
     // TODO
   }
@@ -37,6 +40,54 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
   }
 
   void _addStock() {
+    showDialog(context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Add Stock"),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Add"),
+              onPressed: () {
+                _addStockKey.currentState.validate();
+              },
+            )
+          ],
+          content: Form(
+            key: _addStockKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                TextFormField(
+                  decoration: InputDecoration(labelText: "Stock Quantity"),
+                  keyboardType: TextInputType.numberWithOptions(signed:false, decimal:true),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return "Value cannot be empty";
+                    }
+
+                    double quantity = double.tryParse(value);
+
+                    if (quantity == null) {
+                      return "Value cannot be converted to a number";
+                    }
+
+                    if (quantity <= 0) {
+                      return "Value must be positive";
+                    }
+
+                    print("Adding stock!");
+
+                    item.addStock(quantity).then((var response) {
+                      print("added stock");
+                    });
+                  },
+                ),
+              ],
+            )
+          ),
+        );
+      }
+    );
     // TODO - Form for adding stock
   }
 

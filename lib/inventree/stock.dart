@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:http/http.dart' as http;
 import 'model.dart';
 
 import 'package:InvenTree/api.dart';
@@ -155,6 +156,29 @@ class InvenTreeStockItem extends InvenTreeModel {
 
     return item;
   }
+
+  Future<http.Response> addStock(double quan) async {
+
+    // Cannot add stock to a serialized StockItem
+    if (isSerialized()) {
+      return null;
+    }
+
+    // Cannot add negative stock
+    if (quan <= 0) {
+      return null;
+    }
+
+    Map<String, dynamic> data = {
+      "item": {
+        "pk": "${pk}",
+        "quantity": "${quan}",
+      }
+    };
+
+    return api.post("/stock/add/", body: data);
+  }
+
 }
 
 
@@ -196,5 +220,4 @@ class InvenTreeStockLocation extends InvenTreeModel {
 
     return loc;
   }
-
 }
