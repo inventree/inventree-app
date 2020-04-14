@@ -30,8 +30,7 @@ Future<void> scanQrCode(BuildContext context) async {
      */
     InvenTreeAPI().post("barcode/", body: {"barcode": barcode}).then((var response) {
 
-      // Close the progress dialog
-      Navigator.pop(context);
+      hideProgressDialog(context);
 
       if (response.statusCode != 200) {
         showDialog(

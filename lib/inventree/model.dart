@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:InvenTree/api.dart';
 import 'package:InvenTree/widget/dialogs.dart';
 import 'package:flutter/cupertino.dart';
@@ -128,7 +130,23 @@ class InvenTreeModel {
 
     showProgressDialog(context, "Requesting Data", "Requesting ${NAME} data from server");
 
-    var response = await api.get(addr, params: params);
+    var response = await api.get(addr, params: params)
+        .timeout(Duration(seconds: 10))
+        .catchError((e) {
+
+          hideProgressDialog(context);
+
+          if (e is TimeoutException) {
+            showErrorDialog(context, "Timeout", "No response from server");
+          } else {
+            showErrorDialog(context, "Error", e.toString());
+          }
+          return null;
+      });
+
+    if (response == null) {
+      return null;
+    }
 
     hideProgressDialog(context);
 
@@ -143,7 +161,7 @@ class InvenTreeModel {
   }
 
   // Return list of objects from the database, with optional filters
-  Future<List<InvenTreeModel>> list({Map<String, String> filters}) async {
+  Future<List<InvenTreeModel>> list(BuildContext context, {Map<String, String> filters}) async {
 
     if (filters == null) {
       filters = {};
@@ -162,7 +180,26 @@ class InvenTreeModel {
     // TODO - Add "timeout"
     // TODO - Add error catching
 
-    var response = await api.get(URL, params:params);
+    showProgressDialog(context, "Requesting Data", "Requesting ${NAME} data from server");
+
+    var response = await api.get(URL, params:params)
+      .timeout(Duration(seconds: 10))
+      .catchError((e) {
+
+        hideProgressDialog(context);
+
+        if (e is TimeoutException) {
+          showErrorDialog(context, "Timeout", "No response from server");
+        } else {
+          showErrorDialog(context, "Error", e.toString());
+        }
+
+        return null;
+    });
+
+    if (response == null) {
+      return null;
+    }
 
     // A list of "InvenTreeModel" items
     List<InvenTreeModel> results = new List<InvenTreeModel>();
