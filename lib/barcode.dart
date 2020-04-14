@@ -1,3 +1,4 @@
+import 'package:InvenTree/widget/dialogs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_utils/qr_utils.dart';
@@ -23,7 +24,12 @@ Future<void> scanQrCode(BuildContext context) async {
     // Look for JSON data in the result...
     final data = json.decode(result);
 
+    showProgressDialog(context, "Querying Server", "Sending barcode data to server");
+
     InvenTreeAPI().post("barcode/", body: data).then((var response) {
+
+      // Close the progress dialog
+      Navigator.pop(context);
 
       if (response.statusCode != 200) {
         showDialog(
@@ -93,7 +99,13 @@ void _handleBarcode(BuildContext context, Map<String, dynamic> data) {
 
     if (id != null) {
       // Try to open a stock location...
+
+      showProgressDialog(context, "Loading data", "Requesting stock location information from server");
+
       InvenTreeStockLocation().get(id).then((var loc) {
+
+        hideProgressDialog(context);
+
         if (loc is InvenTreeStockLocation) {
           Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(loc)));
         }
@@ -105,7 +117,13 @@ void _handleBarcode(BuildContext context, Map<String, dynamic> data) {
     id = data['stockitem']['id'] ?? null;
 
     if (id != null) {
+
+      showProgressDialog(context, "Loading data", "Requesting stock item information from server");
+
       InvenTreeStockItem().get(id).then((var item) {
+
+        hideProgressDialog(context);
+
         Navigator.push(context, MaterialPageRoute(builder: (context) => StockDetailWidget(item)));
       });
     }
@@ -114,7 +132,13 @@ void _handleBarcode(BuildContext context, Map<String, dynamic> data) {
     id = data['part']['id'] ?? null;
 
     if (id != null) {
+
+      showProgressDialog(context, "Loading data", "Requesting part information from server");
+
       InvenTreePart().get(id).then((var part) {
+
+        hideProgressDialog(context);
+
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
       });
