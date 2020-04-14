@@ -5,6 +5,8 @@ import 'package:qr_utils/qr_utils.dart';
 import 'package:InvenTree/inventree/stock.dart';
 import 'package:InvenTree/inventree/part.dart';
 
+import 'package:InvenTree/api.dart';
+
 import 'package:InvenTree/widget/location_display.dart';
 import 'package:InvenTree/widget/part_detail.dart';
 import 'package:InvenTree/widget/category_display.dart';
@@ -12,7 +14,7 @@ import 'package:InvenTree/widget/stock_detail.dart';
 
 import 'dart:convert';
 
-void scanQrCode(BuildContext context) async {
+Future<void> scanQrCode(BuildContext context) async {
 
   QrUtils.scanQR.then((String result) {
 
@@ -21,6 +23,47 @@ void scanQrCode(BuildContext context) async {
     // Look for JSON data in the result...
     final data = json.decode(result);
 
+    InvenTreeAPI().post("barcode/", body: data).then((var response) {
+
+      if (response.statusCode != 200) {
+        showDialog(
+          context: context,
+          child: new SimpleDialog(
+            title: Text("Server Error"),
+            children: <Widget>[
+              ListTile(
+                title: Text("Error ${response.statusCode}"),
+                subtitle: Text("${response.body.toString().split("\n").first}"),
+              )
+            ],
+          ),
+        );
+
+        return;
+      }
+
+      final Map<String, dynamic> body = json.decode(response.body);
+
+      if (body.containsKey('error')) {
+        showDialog(
+          context: context,
+          child: new SimpleDialog(
+            title: Text("Barcode Error"),
+            children: <Widget>[
+              ListTile(
+                title: Text("${body['error']}"),
+                subtitle: Text("Plugin: ${body['plugin'] ?? '<no plugin information>'}"),
+              )
+            ],
+          )
+        );
+      }
+
+      print("body: ${body.toString()}");
+
+    });
+
+    /*
     // Look for an 'InvenTree' style barcode
     if ((data['tool'] ?? '').toString().toLowerCase() == 'inventree') {
       _handleInvenTreeBarcode(context, data);
@@ -38,6 +81,8 @@ void scanQrCode(BuildContext context) async {
        )
      );
     }
+
+  */
 
   });
 }
