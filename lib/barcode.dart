@@ -98,14 +98,7 @@ void _handleBarcode(BuildContext context, Map<String, dynamic> data) {
     id = data['stocklocation']['id'] ?? null;
 
     if (id != null) {
-      // Try to open a stock location...
-
-      showProgressDialog(context, "Loading data", "Requesting stock location information from server");
-
-      InvenTreeStockLocation().get(id).then((var loc) {
-
-        hideProgressDialog(context);
-
+      InvenTreeStockLocation().get(context, id).then((var loc) {
         if (loc is InvenTreeStockLocation) {
           Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(loc)));
         }
@@ -117,13 +110,7 @@ void _handleBarcode(BuildContext context, Map<String, dynamic> data) {
     id = data['stockitem']['id'] ?? null;
 
     if (id != null) {
-
-      showProgressDialog(context, "Loading data", "Requesting stock item information from server");
-
-      InvenTreeStockItem().get(id).then((var item) {
-
-        hideProgressDialog(context);
-
+      InvenTreeStockItem().get(context, id).then((var item) {
         Navigator.push(context, MaterialPageRoute(builder: (context) => StockDetailWidget(item)));
       });
     }
@@ -132,13 +119,7 @@ void _handleBarcode(BuildContext context, Map<String, dynamic> data) {
     id = data['part']['id'] ?? null;
 
     if (id != null) {
-
-      showProgressDialog(context, "Loading data", "Requesting part information from server");
-
-      InvenTreePart().get(id).then((var part) {
-
-        hideProgressDialog(context);
-
+      InvenTreePart().get(context, id).then((var part) {
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
       });

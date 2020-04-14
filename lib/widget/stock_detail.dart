@@ -322,7 +322,7 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
         leading: FaIcon(FontAwesomeIcons.shapes),
         onTap: () {
           if (item.partId > 0) {
-            InvenTreePart().get(item.partId).then((var part) {
+            InvenTreePart().get(context, item.partId).then((var part) {
               if (part is InvenTreePart) {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
               }
@@ -362,7 +362,7 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
           leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
           onTap: () {
             if (item.locationId > 0) {
-              InvenTreeStockLocation().get(item.locationId).then((var loc) {
+              InvenTreeStockLocation().get(context, item.locationId).then((var loc) {
                 Navigator.push(context, MaterialPageRoute(
                   builder: (context) => LocationDisplayWidget(loc)));
               });

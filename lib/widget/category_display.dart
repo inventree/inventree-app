@@ -112,7 +112,7 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));
                 } else {
                   // TODO - Refactor this code into the InvenTreePart class
-                  InvenTreePartCategory().get(category.parentId).then((var cat) {
+                  InvenTreePartCategory().get(context, category.parentId).then((var cat) {
                     if (cat is InvenTreePartCategory) {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(cat)));
                     }
@@ -211,7 +211,7 @@ class SubcategoryList extends StatelessWidget {
   void _openCategory(BuildContext context, int pk) {
 
     // Attempt to load the sub-category.
-    InvenTreePartCategory().get(pk).then((var cat) {
+    InvenTreePartCategory().get(context, pk).then((var cat) {
       if (cat is InvenTreePartCategory) {
 
         Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(cat)));
@@ -252,7 +252,7 @@ class PartList extends StatelessWidget {
 
   void _openPart(BuildContext context, int pk) {
     // Attempt to load the part information
-    InvenTreePart().get(pk).then((var part) {
+    InvenTreePart().get(context, pk).then((var part) {
       if (part is InvenTreePart) {
 
         Navigator.push(context, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));

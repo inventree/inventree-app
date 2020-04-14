@@ -85,7 +85,7 @@ class _CompanyListState extends State<CompanyListWidget> {
         ),
         onTap: () {
           if (company.pk > 0) {
-            InvenTreeCompany().get(company.pk).then((var c) {
+            InvenTreeCompany().get(context, company.pk).then((var c) {
               Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyDetailWidget(c)));
             });
           }

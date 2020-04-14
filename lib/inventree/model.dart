@@ -1,4 +1,6 @@
 import 'package:InvenTree/api.dart';
+import 'package:InvenTree/widget/dialogs.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'dart:convert';
 
@@ -14,6 +16,8 @@ class InvenTreeModel {
 
   // Override the endpoint URL for each subclass
   String URL = "";
+
+  String NAME = "Model";
 
   // JSON data which defines this object
   Map<String, dynamic> jsondata = {};
@@ -100,7 +104,7 @@ class InvenTreeModel {
   }
 
   // Return the detail view for the associated pk
-  Future<InvenTreeModel> get(int pk, {Map<String, String> filters}) async {
+  Future<InvenTreeModel> get(BuildContext context, int pk, {Map<String, String> filters}) async {
 
     // TODO - Add "timeout"
     // TODO - Add error catching
@@ -122,7 +126,11 @@ class InvenTreeModel {
 
     print("GET: $addr ${params.toString()}");
 
+    showProgressDialog(context, "Requesting Data", "Requesting ${NAME} data from server");
+
     var response = await api.get(addr, params: params);
+
+    hideProgressDialog(context);
 
     if (response.statusCode != 200) {
       print("Error retrieving data");

@@ -119,7 +119,7 @@ class _LocationDisplayState extends State<LocationDisplayWidget> {
                 if (location.parentId < 0) {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(null)));
                 } else {
-                  InvenTreeStockLocation().get(location.parentId).then((var loc) {
+                  InvenTreeStockLocation().get(context, location.parentId).then((var loc) {
                     if (loc is InvenTreeStockLocation) {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(loc)));
                     }
@@ -208,7 +208,7 @@ class SublocationList extends StatelessWidget {
 
   void _openLocation(BuildContext context, int pk) {
 
-    InvenTreeStockLocation().get(pk).then((var loc) {
+    InvenTreeStockLocation().get(context, pk).then((var loc) {
       if (loc is InvenTreeStockLocation) {
 
         Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(loc)));
@@ -244,7 +244,7 @@ class StockList extends StatelessWidget {
   StockList(this._items);
 
   void _openItem(BuildContext context, int pk) {
-    InvenTreeStockItem().get(pk).then((var item) {
+    InvenTreeStockItem().get(context, pk).then((var item) {
       if (item is InvenTreeStockItem) {
         Navigator.push(context, MaterialPageRoute(builder: (context) => StockDetailWidget(item)));
       }

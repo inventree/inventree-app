@@ -9,6 +9,10 @@ import 'package:path/path.dart' as path;
 import 'package:http/http.dart' as http;
 
 class InvenTreePartCategory extends InvenTreeModel {
+
+  @override
+  String NAME = "PartCategory";
+
   @override
   String URL = "part/category/";
 
@@ -60,6 +64,9 @@ class InvenTreePartCategory extends InvenTreeModel {
 
 
 class InvenTreePart extends InvenTreeModel {
+
+  @override
+  String Name = "Part";
 
   @override
   String URL = "part/";

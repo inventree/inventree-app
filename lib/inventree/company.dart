@@ -5,6 +5,10 @@ import 'model.dart';
  * The InvenTreeCompany class repreents the Company model in the InvenTree database.
  */
 class InvenTreeCompany extends InvenTreeModel {
+
+  @override
+  String NAME = "Company";
+
   @override
   String URL = "company/";
 

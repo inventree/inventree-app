@@ -62,7 +62,7 @@ class _PartDisplayState extends State<PartDetailWidget> {
             leading: FaIcon(FontAwesomeIcons.stream),
             onTap: () {
               if (part.categoryId > 0) {
-                InvenTreePartCategory().get(part.categoryId).then((var cat) {
+                InvenTreePartCategory().get(context, part.categoryId).then((var cat) {
                   Navigator.push(context, MaterialPageRoute(
                       builder: (context) => CategoryDisplayWidget(cat)));
                 });
