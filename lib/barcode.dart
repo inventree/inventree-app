@@ -26,6 +26,11 @@ Future<void> scanQrCode(BuildContext context) async {
 
     showProgressDialog(context, "Querying Server", "Sending barcode data to server");
 
+    /*
+     * POST the scanned barcode data to the server.
+     * It is the responsibility of the server to validate and sanitize the barcode data,
+     * and return a "common" response that we know how to deal with.
+     */
     InvenTreeAPI().post("barcode/", body: data).then((var response) {
 
       // Close the progress dialog
