@@ -17,20 +17,9 @@ import 'dart:convert';
 
 Future<void> scanQrCode(BuildContext context) async {
 
-  QrUtils.scanQR.then((String result) {
+  QrUtils.scanQR.then((String barcode) {
 
-    print("Scanned: $result");
-
-    Map<String, dynamic> data;
-
-    // Look for JSON data in the result...
-    try {
-      data = json.decode(result);
-    } on FormatException {
-      showErrorDialog(context, "Bad barcode data", result);
-
-      return;
-    }
+    print("Scanned: $barcode");
 
     showProgressDialog(context, "Querying Server", "Sending barcode data to server");
 
@@ -39,7 +28,7 @@ Future<void> scanQrCode(BuildContext context) async {
      * It is the responsibility of the server to validate and sanitize the barcode data,
      * and return a "common" response that we know how to deal with.
      */
-    InvenTreeAPI().post("barcode/", body: data).then((var response) {
+    InvenTreeAPI().post("barcode/", body: {"barcode": barcode}).then((var response) {
 
       // Close the progress dialog
       Navigator.pop(context);
