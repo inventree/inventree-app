@@ -57,59 +57,80 @@ Future<void> scanQrCode(BuildContext context) async {
             ],
           )
         );
+      } else if (body.containsKey('success')) {
+        // Decode the barcode!
+        // Ideally, the server has returned unto us something sensible...
+        _handleBarcode(context, body);
+      } else {
+        showDialog(
+          context: context,
+          child: new SimpleDialog(
+            title: Text("Unknown response"),
+            children: <Widget>[
+              ListTile(
+                title: Text("Response data"),
+                subtitle: Text("${body.toString()}"),
+              )
+            ],
+          )
+        );
       }
 
       print("body: ${body.toString()}");
 
     });
-
-    /*
-    // Look for an 'InvenTree' style barcode
-    if ((data['tool'] ?? '').toString().toLowerCase() == 'inventree') {
-      _handleInvenTreeBarcode(context, data);
-    }
-
-    // Unknown barcode style!
-    else {
-     showDialog(
-       context: context,
-       child: new SimpleDialog(
-         title: new Text("Unknown barcode"),
-         children: <Widget>[
-           Text("Data: $result"),
-         ]
-       )
-     );
-    }
-
-  */
-
   });
 }
 
-void _handleInvenTreeBarcode(BuildContext context, Map<String, dynamic> data) {
+void _handleBarcode(BuildContext context, Map<String, dynamic> data) {
 
-  final String codeType = (data['type'] ?? '').toString().toLowerCase();
+  int id;
 
-  final int pk = (data['id'] ?? -1) as int;
+  // A stocklocation has been passed?
+  if (data.containsKey('stocklocation')) {
 
-  if (codeType == 'stocklocation') {
+    id = data['stocklocation']['id'] ?? null;
 
-    // Try to open a stock location...
-    InvenTreeStockLocation().get(pk).then((var loc) {
-      if (loc is InvenTreeStockLocation) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(loc)));
-      }
-    });
+    if (id != null) {
+      // Try to open a stock location...
+      InvenTreeStockLocation().get(id).then((var loc) {
+        if (loc is InvenTreeStockLocation) {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(loc)));
+        }
+      });
+    }
 
-  } else if (codeType == 'stockitem') {
-    InvenTreeStockItem().get(pk).then((var item) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => StockDetailWidget(item)));
-    });
-  } else if (codeType == 'part') {
-    InvenTreePart().get(pk).then((var part) {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
-    });
+  } else if (data.containsKey('stockitem')) {
+
+    id = data['stockitem']['id'] ?? null;
+
+    if (id != null) {
+      InvenTreeStockItem().get(id).then((var item) {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => StockDetailWidget(item)));
+      });
+    }
+  } else if (data.containsKey('part')) {
+
+    id = data['part']['id'] ?? null;
+
+    if (id != null) {
+      InvenTreePart().get(id).then((var part) {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
+      });
+    }
+  } else {
+    showDialog(
+      context: context,
+      child: SimpleDialog(
+        title: Text("Unknown response"),
+        children: <Widget>[
+          ListTile(
+            title: Text("Response data"),
+            subtitle: Text(data.toString()),
+          )
+        ],
+      )
+    );
   }
 }
