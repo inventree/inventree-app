@@ -21,8 +21,16 @@ Future<void> scanQrCode(BuildContext context) async {
 
     print("Scanned: $result");
 
+    Map<String, dynamic> data;
+
     // Look for JSON data in the result...
-    final data = json.decode(result);
+    try {
+      data = json.decode(result);
+    } on FormatException {
+      showErrorDialog(context, "Bad barcode data", result);
+
+      return;
+    }
 
     showProgressDialog(context, "Querying Server", "Sending barcode data to server");
 
