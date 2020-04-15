@@ -28,7 +28,6 @@ class _LocationDisplayState extends State<LocationDisplayWidget> {
   BuildContext context;
 
   _LocationDisplayState(this.location) {
-
   }
 
   void initState() {
@@ -62,6 +61,10 @@ class _LocationDisplayState extends State<LocationDisplayWidget> {
     }
   }
 
+  Future<void> _refresh() async {
+    await _requestData(context);
+  }
+
   /*
    * Request data from the server.
    * It will be displayed once loaded
@@ -69,9 +72,7 @@ class _LocationDisplayState extends State<LocationDisplayWidget> {
    * - List of sublocations under this one
    * - List of stock items at this location
    */
-  void _requestData(BuildContext context) {
-
-    print("Requesting data!");
+  Future<void> _requestData(BuildContext context) async {
 
     int pk = location?.pk ?? -1;
 
@@ -150,68 +151,69 @@ class _LocationDisplayState extends State<LocationDisplayWidget> {
     // Save the context
     this.context = context;
 
-    print("Saved context!");
-
     return Scaffold(
       appBar: AppBar(
         title: Text(_title),
       ),
       drawer: new InvenTreeDrawer(context),
-      body: ListView(
-        children: <Widget> [
-          locationDescriptionCard(),
-          ExpansionPanelList(
-            expansionCallback: (int index, bool isExpanded) {
-              setState(() {
-                switch (index) {
-                  case 0:
-                    InvenTreePreferences().expandLocationList = !isExpanded;
-                    break;
-                  case 1:
-                    InvenTreePreferences().expandStockList = !isExpanded;
-                    break;
-                  default:
-                    break;
-                }
-              });
+      body: new RefreshIndicator(
+        onRefresh: _refresh,
+        child: ListView(
+          children: <Widget> [
+            locationDescriptionCard(),
+            ExpansionPanelList(
+              expansionCallback: (int index, bool isExpanded) {
+                setState(() {
+                  switch (index) {
+                    case 0:
+                      InvenTreePreferences().expandLocationList = !isExpanded;
+                      break;
+                    case 1:
+                      InvenTreePreferences().expandStockList = !isExpanded;
+                      break;
+                    default:
+                      break;
+                  }
+                });
 
-            },
-            children: <ExpansionPanel> [
-              ExpansionPanel(
-                headerBuilder: (BuildContext context, bool isExpanded) {
-                  return ListTile(
-                    title: Text("Sublocations"),
-                    leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
-                    trailing: Text("${_sublocations.length}"),
-                    onTap: () {
-                      setState(() {
-                        InvenTreePreferences().expandLocationList = !InvenTreePreferences().expandLocationList;
-                      });
-                    },
-                  );
-                },
-                body: SublocationList(_sublocations),
-                isExpanded: InvenTreePreferences().expandLocationList && _sublocations.length > 0,
-              ),
-              ExpansionPanel(
-                headerBuilder: (BuildContext context, bool isExpanded) {
-                  return ListTile(
-                    title: Text("Stock Items"),
-                    leading: FaIcon(FontAwesomeIcons.boxes),
-                    trailing: Text("${_items.length}"),
-                    onTap: () {
-                      setState(() {
-                        InvenTreePreferences().expandStockList = !InvenTreePreferences().expandStockList;
-                      });
-                    },
-                  );
-                },
-                body: StockList(_items),
-                isExpanded: InvenTreePreferences().expandStockList && _items.length > 0,
-              )
-            ]
-          ),
-        ]
+              },
+              children: <ExpansionPanel> [
+                ExpansionPanel(
+                  headerBuilder: (BuildContext context, bool isExpanded) {
+                    return ListTile(
+                      title: Text("Sublocations"),
+                      leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
+                      trailing: Text("${_sublocations.length}"),
+                      onTap: () {
+                        setState(() {
+                          InvenTreePreferences().expandLocationList = !InvenTreePreferences().expandLocationList;
+                        });
+                      },
+                    );
+                  },
+                  body: SublocationList(_sublocations),
+                  isExpanded: InvenTreePreferences().expandLocationList && _sublocations.length > 0,
+                ),
+                ExpansionPanel(
+                  headerBuilder: (BuildContext context, bool isExpanded) {
+                    return ListTile(
+                      title: Text("Stock Items"),
+                      leading: FaIcon(FontAwesomeIcons.boxes),
+                      trailing: Text("${_items.length}"),
+                      onTap: () {
+                        setState(() {
+                          InvenTreePreferences().expandStockList = !InvenTreePreferences().expandStockList;
+                        });
+                      },
+                    );
+                  },
+                  body: StockList(_items),
+                  isExpanded: InvenTreePreferences().expandStockList && _items.length > 0,
+                )
+              ]
+            ),
+          ]
+        )
       )
     );
   }
