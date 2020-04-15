@@ -5,6 +5,7 @@ import 'package:InvenTree/preferences.dart';
 
 import 'package:InvenTree/widget/part_detail.dart';
 import 'package:InvenTree/widget/drawer.dart';
+import 'package:InvenTree/widget/refreshable_state.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -26,11 +27,12 @@ class CategoryDisplayWidget extends StatefulWidget {
 }
 
 
-class _CategoryDisplayState extends State<CategoryDisplayWidget> {
+class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
-  _CategoryDisplayState(this.category) {
-    _requestData();
-  }
+  @override
+  String app_bar_title = "Part Category";
+
+  _CategoryDisplayState(this.category) {}
 
   // The local InvenTreePartCategory object
   final InvenTreePartCategory category;
@@ -39,19 +41,11 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
 
   List<InvenTreePart> _parts = List<InvenTreePart>();
 
-  String get _titleString {
-
-    if (category == null) {
-      return "Part Categories";
-    } else {
-      return "Part Category - ${category.name}";
-    }
-  }
-
   /*
    * Request data from the server
    */
-  void _requestData() {
+  @override
+  Future<void> request(BuildContext context) async {
 
     int pk = category?.pk ?? -1;
 
@@ -127,74 +121,68 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(_titleString),
-      ),
-      drawer: new InvenTreeDrawer(context),
-      body: ListView(
-          children: <Widget>[
-            getCategoryDescriptionCard(),
-            ExpansionPanelList(
-              expansionCallback: (int index, bool isExpanded) {
-                setState(() {
+  Widget getBody(BuildContext context) {
+    return ListView(
+      children: <Widget>[
+        getCategoryDescriptionCard(),
+        ExpansionPanelList(
+          expansionCallback: (int index, bool isExpanded) {
+            setState(() {
 
-                  switch (index) {
-                    case 0:
-                      InvenTreePreferences().expandCategoryList = !isExpanded;
-                      break;
-                    case 1:
-                      InvenTreePreferences().expandPartList = !isExpanded;
-                      break;
-                    default:
-                      break;
-                  }
-                });
+              switch (index) {
+                case 0:
+                  InvenTreePreferences().expandCategoryList = !isExpanded;
+                  break;
+                case 1:
+                  InvenTreePreferences().expandPartList = !isExpanded;
+                  break;
+                default:
+                  break;
+              }
+            });
+          },
+          children: <ExpansionPanel> [
+            ExpansionPanel(
+              headerBuilder: (BuildContext context, bool isExpanded) {
+                return ListTile(
+                  title: Text("Subcategories"),
+                  leading: FaIcon(FontAwesomeIcons.stream),
+                  trailing: Text("${_subcategories.length}"),
+                  onTap: () {
+                    setState(() {
+                      InvenTreePreferences().expandCategoryList = !InvenTreePreferences().expandCategoryList;
+                    });
+                  },
+                  onLongPress: () {
+                    // TODO - Context menu for e.g. creating a new PartCategory
+                  },
+                );
               },
-              children: <ExpansionPanel> [
-                ExpansionPanel(
-                  headerBuilder: (BuildContext context, bool isExpanded) {
-                    return ListTile(
-                      title: Text("Subcategories"),
-                      leading: FaIcon(FontAwesomeIcons.stream),
-                      trailing: Text("${_subcategories.length}"),
-                      onTap: () {
-                        setState(() {
-                          InvenTreePreferences().expandCategoryList = !InvenTreePreferences().expandCategoryList;
-                        });
-                      },
-                      onLongPress: () {
-                        // TODO - Context menu for e.g. creating a new PartCategory
-                      },
-                    );
-                  },
-                  body: SubcategoryList(_subcategories),
-                  isExpanded: InvenTreePreferences().expandCategoryList && _subcategories.length > 0,
-                ),
-                ExpansionPanel(
-                  headerBuilder: (BuildContext context, bool isExpanded) {
-                    return ListTile(
-                      title: Text("Parts"),
-                      leading: FaIcon(FontAwesomeIcons.shapes),
-                      trailing: Text("${_parts.length}"),
-                      onTap: () {
-                        setState(() {
-                          InvenTreePreferences().expandPartList = !InvenTreePreferences().expandPartList;
-                        });
-                      },
-                      onLongPress: () {
-                        // TODO - Context menu for e.g. creating a new Part
-                      },
-                    );
-                  },
-                  body: PartList(_parts),
-                  isExpanded: InvenTreePreferences().expandPartList && _parts.length > 0,
-                )
-              ],
+              body: SubcategoryList(_subcategories),
+              isExpanded: InvenTreePreferences().expandCategoryList && _subcategories.length > 0,
             ),
-          ]
-        )
+            ExpansionPanel(
+              headerBuilder: (BuildContext context, bool isExpanded) {
+                return ListTile(
+                  title: Text("Parts"),
+                  leading: FaIcon(FontAwesomeIcons.shapes),
+                  trailing: Text("${_parts.length}"),
+                  onTap: () {
+                    setState(() {
+                      InvenTreePreferences().expandPartList = !InvenTreePreferences().expandPartList;
+                    });
+                  },
+                  onLongPress: () {
+                    // TODO - Context menu for e.g. creating a new Part
+                  },
+                );
+              },
+              body: PartList(_parts),
+              isExpanded: InvenTreePreferences().expandPartList && _parts.length > 0,
+            )
+          ],
+        ),
+      ]
     );
   }
 }
