@@ -50,7 +50,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
   @override
   Future<void> request(BuildContext context) async {
-    await item.reload();
+    await item.reload(context);
   }
 
   void _editStockItem() {

@@ -89,9 +89,30 @@ class InvenTreeModel {
   /*
    * Reload this object, by requesting data from the server
    */
-  Future<bool> reload() async {
+  Future<bool> reload(BuildContext context) async {
 
-    var response = await api.get(url, params: defaultGetFilters());
+    showProgressDialog(context, "Refreshing data", "Refreshing data for ${NAME}");
+
+    var response = await api.get(url, params: defaultGetFilters())
+      .timeout(Duration(seconds: 10))
+      .catchError((e) {
+
+          hideProgressDialog(context);
+
+          if (e is TimeoutException) {
+            showErrorDialog(context, "Timeout", "No response from server");
+          } else {
+            showErrorDialog(context, "Error", e.toString());
+          }
+
+          return null;
+    });
+    
+    if (response == null) {
+      return false;
+    }
+    
+    hideProgressDialog(context);
 
     if (response.statusCode != 200) {
       print("Error retrieving data");
