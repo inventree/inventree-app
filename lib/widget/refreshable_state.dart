@@ -15,7 +15,12 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
 
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => request(context));
+    WidgetsBinding.instance.addPostFrameCallback((_) => onBuild(context));
+  }
+
+  // Function called after the widget is first build
+  Future<void> onBuild(BuildContext context) async {
+    return;
   }
 
   // Function to request data for this page

@@ -47,6 +47,11 @@ class _CompanyListState extends RefreshableState<CompanyListWidget> {
   _CompanyListState(this._title, this._filters) {}
 
   @override
+  Future<void> onBuild(BuildContext context) async {
+    refresh();
+  }
+
+  @override
   Future<void> request(BuildContext context) async {
 
     InvenTreeCompany().list(context, filters: _filters).then((var companies) {

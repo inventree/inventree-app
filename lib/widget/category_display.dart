@@ -41,9 +41,11 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
   List<InvenTreePart> _parts = List<InvenTreePart>();
 
-  /*
-   * Request data from the server
-   */
+  @override
+  Future<void> onBuild(BuildContext context) async {
+    refresh();
+  }
+
   @override
   Future<void> request(BuildContext context) async {
 

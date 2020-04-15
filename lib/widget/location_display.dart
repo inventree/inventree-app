@@ -47,6 +47,11 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
   List<InvenTreeStockItem> _items = List<InvenTreeStockItem>();
 
   @override
+  Future<void> onBuild(BuildContext context) async {
+    refresh();
+  }
+
+  @override
   Future<void> request(BuildContext context) async {
 
     int pk = location?.pk ?? -1;
