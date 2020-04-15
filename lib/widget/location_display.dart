@@ -10,6 +10,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LocationDisplayWidget extends StatefulWidget {
 
+
+
   LocationDisplayWidget(this.location, {Key key}) : super(key: key);
 
   final InvenTreeStockLocation location;
@@ -23,8 +25,15 @@ class LocationDisplayWidget extends StatefulWidget {
 
 class _LocationDisplayState extends State<LocationDisplayWidget> {
 
+  BuildContext context;
+
   _LocationDisplayState(this.location) {
-    _requestData();
+
+  }
+
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _requestData(context));
   }
 
   final InvenTreeStockLocation location;
@@ -60,12 +69,14 @@ class _LocationDisplayState extends State<LocationDisplayWidget> {
    * - List of sublocations under this one
    * - List of stock items at this location
    */
-  void _requestData() {
+  void _requestData(BuildContext context) {
+
+    print("Requesting data!");
 
     int pk = location?.pk ?? -1;
 
     // Request a list of sub-locations under this one
-    InvenTreeStockLocation().list(filters: {"parent": "$pk"}).then((var locs) {
+    InvenTreeStockLocation().list(context, filters: {"parent": "$pk"}).then((var locs) {
       _sublocations.clear();
 
       for (var loc in locs) {
@@ -76,18 +87,18 @@ class _LocationDisplayState extends State<LocationDisplayWidget> {
 
       setState(() {});
 
-    // Request a list of stock-items under this one
-    InvenTreeStockItem().list(filters: {"location": "$pk"}).then((var items) {
-      _items.clear();
+      // Request a list of stock-items under this one
+      InvenTreeStockItem().list(context, filters: {"location": "$pk"}).then((var items) {
+        _items.clear();
 
-      for (var item in items) {
-        if (item is InvenTreeStockItem) {
-          _items.add(item);
+        for (var item in items) {
+          if (item is InvenTreeStockItem) {
+            _items.add(item);
+          }
         }
-      }
 
-      setState(() {});
-    });
+        setState(() {});
+      });
 
     });
   }
@@ -135,6 +146,12 @@ class _LocationDisplayState extends State<LocationDisplayWidget> {
 
   @override
   Widget build(BuildContext context) {
+
+    // Save the context
+    this.context = context;
+
+    print("Saved context!");
+
     return Scaffold(
       appBar: AppBar(
         title: Text(_title),

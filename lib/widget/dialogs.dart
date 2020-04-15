@@ -22,6 +22,7 @@ void showErrorDialog(BuildContext context, String title, String description) {
 }
 
 void showProgressDialog(BuildContext context, String title, String description) {
+
   showDialog(
     context: context,
     barrierDismissible: false,

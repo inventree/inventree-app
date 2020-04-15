@@ -66,7 +66,7 @@ class InvenTreePartCategory extends InvenTreeModel {
 class InvenTreePart extends InvenTreeModel {
 
   @override
-  String Name = "Part";
+  String NAME = "Part";
 
   @override
   String URL = "part/";

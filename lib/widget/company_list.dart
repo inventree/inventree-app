@@ -46,7 +46,7 @@ class _CompanyListState extends State<CompanyListWidget> {
 
   void _requestData() {
 
-    InvenTreeCompany().list(filters: _filters).then((var companies) {
+    InvenTreeCompany().list(context, filters: _filters).then((var companies) {
 
       _companies.clear();
 

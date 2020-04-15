@@ -201,6 +201,8 @@ class InvenTreeModel {
       return null;
     }
 
+    hideProgressDialog(context);
+
     // A list of "InvenTreeModel" items
     List<InvenTreeModel> results = new List<InvenTreeModel>();
 

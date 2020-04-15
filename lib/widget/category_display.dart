@@ -56,7 +56,7 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
     int pk = category?.pk ?? -1;
 
     // Request a list of sub-categories under this one
-    InvenTreePartCategory().list(filters: {"parent": "$pk"}).then((var cats) {
+    InvenTreePartCategory().list(context, filters: {"parent": "$pk"}).then((var cats) {
       _subcategories.clear();
 
       for (var cat in cats) {
@@ -70,7 +70,7 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
     });
 
     // Request a list of parts under this category
-    InvenTreePart().list(filters: {"category": "$pk"}).then((var parts) {
+    InvenTreePart().list(context, filters: {"category": "$pk"}).then((var parts) {
       _parts.clear();
 
       for (var part in parts) {
