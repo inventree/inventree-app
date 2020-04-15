@@ -27,7 +27,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
   final InvenTreeStockLocation location;
 
   @override
-  String app_bar_title = "Stock Location";
+  String getAppBarTitle(BuildContext context) { return "Stock Location"; }
 
   _LocationDisplayState(this.location) {}
 

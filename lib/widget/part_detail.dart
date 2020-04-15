@@ -25,7 +25,7 @@ class PartDetailWidget extends StatefulWidget {
 class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   @override
-  String app_bar_title = "Part";
+  String getAppBarTitle(BuildContext context) { return "Part"; }
 
   _PartDisplayState(this.part) {
     // TODO

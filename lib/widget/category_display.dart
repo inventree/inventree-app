@@ -30,7 +30,7 @@ class CategoryDisplayWidget extends StatefulWidget {
 class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
   @override
-  String app_bar_title = "Part Category";
+  String getAppBarTitle(BuildContext context) { return "Part Category"; }
 
   _CategoryDisplayState(this.category) {}
 

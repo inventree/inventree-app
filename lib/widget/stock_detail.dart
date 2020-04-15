@@ -31,7 +31,7 @@ class StockDetailWidget extends StatefulWidget {
 class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
   @override
-  String app_bar_title = "Stock Item";
+  String getAppBarTitle(BuildContext context) { return "Stock Item"; }
 
   final TextEditingController _quantityController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
