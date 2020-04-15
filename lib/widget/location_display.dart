@@ -8,9 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'package:InvenTree/widget/refreshable_state.dart';
+
 class LocationDisplayWidget extends StatefulWidget {
-
-
 
   LocationDisplayWidget(this.location, {Key key}) : super(key: key);
 
@@ -22,20 +22,14 @@ class LocationDisplayWidget extends StatefulWidget {
   _LocationDisplayState createState() => _LocationDisplayState(location);
 }
 
-
-class _LocationDisplayState extends State<LocationDisplayWidget> {
-
-  BuildContext context;
-
-  _LocationDisplayState(this.location) {
-  }
-
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _requestData(context));
-  }
+class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
   final InvenTreeStockLocation location;
+
+  @override
+  String app_bar_title = "Stock Location";
+
+  _LocationDisplayState(this.location) {}
 
   List<InvenTreeStockLocation> _sublocations = List<InvenTreeStockLocation>();
 
@@ -52,27 +46,8 @@ class _LocationDisplayState extends State<LocationDisplayWidget> {
 
   List<InvenTreeStockItem> _items = List<InvenTreeStockItem>();
 
-  String get _title {
-
-    if (location == null) {
-      return "Stock Locations";
-    } else {
-      return "Stock Location - ${location.name}";
-    }
-  }
-
-  Future<void> _refresh() async {
-    await _requestData(context);
-  }
-
-  /*
-   * Request data from the server.
-   * It will be displayed once loaded
-   *
-   * - List of sublocations under this one
-   * - List of stock items at this location
-   */
-  Future<void> _requestData(BuildContext context) async {
+  @override
+  Future<void> request(BuildContext context) async {
 
     int pk = location?.pk ?? -1;
 
@@ -146,75 +121,63 @@ class _LocationDisplayState extends State<LocationDisplayWidget> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget getBody(BuildContext context) {
 
-    // Save the context
-    this.context = context;
+    return ListView(
+      children: <Widget> [
+      locationDescriptionCard(),
+      ExpansionPanelList(
+          expansionCallback: (int index, bool isExpanded) {
+            setState(() {
+              switch (index) {
+                case 0:
+                  InvenTreePreferences().expandLocationList = !isExpanded;
+                  break;
+                case 1:
+                  InvenTreePreferences().expandStockList = !isExpanded;
+                  break;
+                default:
+                  break;
+              }
+            });
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(_title),
-      ),
-      drawer: new InvenTreeDrawer(context),
-      body: new RefreshIndicator(
-        onRefresh: _refresh,
-        child: ListView(
-          children: <Widget> [
-            locationDescriptionCard(),
-            ExpansionPanelList(
-              expansionCallback: (int index, bool isExpanded) {
-                setState(() {
-                  switch (index) {
-                    case 0:
-                      InvenTreePreferences().expandLocationList = !isExpanded;
-                      break;
-                    case 1:
-                      InvenTreePreferences().expandStockList = !isExpanded;
-                      break;
-                    default:
-                      break;
-                  }
-                });
-
+          },
+          children: <ExpansionPanel> [
+            ExpansionPanel(
+              headerBuilder: (BuildContext context, bool isExpanded) {
+                return ListTile(
+                  title: Text("Sublocations"),
+                  leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
+                  trailing: Text("${_sublocations.length}"),
+                  onTap: () {
+                    setState(() {
+                      InvenTreePreferences().expandLocationList = !InvenTreePreferences().expandLocationList;
+                    });
+                  },
+                );
               },
-              children: <ExpansionPanel> [
-                ExpansionPanel(
-                  headerBuilder: (BuildContext context, bool isExpanded) {
-                    return ListTile(
-                      title: Text("Sublocations"),
-                      leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
-                      trailing: Text("${_sublocations.length}"),
-                      onTap: () {
-                        setState(() {
-                          InvenTreePreferences().expandLocationList = !InvenTreePreferences().expandLocationList;
-                        });
-                      },
-                    );
-                  },
-                  body: SublocationList(_sublocations),
-                  isExpanded: InvenTreePreferences().expandLocationList && _sublocations.length > 0,
-                ),
-                ExpansionPanel(
-                  headerBuilder: (BuildContext context, bool isExpanded) {
-                    return ListTile(
-                      title: Text("Stock Items"),
-                      leading: FaIcon(FontAwesomeIcons.boxes),
-                      trailing: Text("${_items.length}"),
-                      onTap: () {
-                        setState(() {
-                          InvenTreePreferences().expandStockList = !InvenTreePreferences().expandStockList;
-                        });
-                      },
-                    );
-                  },
-                  body: StockList(_items),
-                  isExpanded: InvenTreePreferences().expandStockList && _items.length > 0,
-                )
-              ]
+              body: SublocationList(_sublocations),
+              isExpanded: InvenTreePreferences().expandLocationList && _sublocations.length > 0,
             ),
+            ExpansionPanel(
+              headerBuilder: (BuildContext context, bool isExpanded) {
+                return ListTile(
+                  title: Text("Stock Items"),
+                  leading: FaIcon(FontAwesomeIcons.boxes),
+                  trailing: Text("${_items.length}"),
+                  onTap: () {
+                    setState(() {
+                      InvenTreePreferences().expandStockList = !InvenTreePreferences().expandStockList;
+                    });
+                  },
+                );
+              },
+              body: StockList(_items),
+              isExpanded: InvenTreePreferences().expandStockList && _items.length > 0,
+            )
           ]
-        )
-      )
+      ),
+    ]
     );
   }
 }
