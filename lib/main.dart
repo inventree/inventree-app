@@ -134,22 +134,6 @@ class _MyHomePageState extends State<MyHomePage> {
         onConnectFailure("Could not connect to server");
       }
 
-    }).catchError((e) {
-
-      String fault = "Connection error";
-
-      _serverConnection = false;
-      _serverStatusColor = Color.fromARGB(255, 250, 50, 50);
-
-      _serverStatus = "Error connecting to $_serverAddress";
-
-      if (e is TimeoutException) {
-        fault = "Timeout: No response from server";
-      } else {
-        fault = e.toString();
-      }
-
-      onConnectFailure(fault);
     });
 
     // Update widget state
