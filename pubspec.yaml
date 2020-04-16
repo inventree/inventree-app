@@ -31,7 +31,8 @@ dependencies:
   qr_utils: ^0.1.4                        # Barcode / QR-code support
   package_info: ^0.4.0+16                 # App information introspection
   font_awesome_flutter: ^8.8.1            # FontAwesome icon set
-  flutter_speed_dial: ^1.2.5               # FAB menu elements
+  flutter_speed_dial: ^1.2.5              # FAB menu elements
+  sentry: ^3.0.1                          # Error reporting
 
 dev_dependencies:
   flutter_test:

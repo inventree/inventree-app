@@ -1,0 +1,2 @@
+
+final String SENTRY_DSN_KEY = "SENTRY_DSN_KEY";
