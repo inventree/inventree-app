@@ -182,7 +182,7 @@ class InvenTreeModel {
   }
 
   // Return list of objects from the database, with optional filters
-  Future<List<InvenTreeModel>> list(BuildContext context, {Map<String, String> filters}) async {
+  Future<List<InvenTreeModel>> list(BuildContext context, {Map<String, String> filters, bool dialog=true}) async {
 
     if (filters == null) {
       filters = {};
@@ -201,18 +201,25 @@ class InvenTreeModel {
     // TODO - Add "timeout"
     // TODO - Add error catching
 
-    showProgressDialog(context, "Requesting Data", "Requesting ${NAME} data from server");
+    if (dialog) {
+      showProgressDialog(context, "Requesting Data", "Requesting ${NAME} data from server");
+    }
 
     var response = await api.get(URL, params:params)
       .timeout(Duration(seconds: 10))
       .catchError((e) {
 
-        hideProgressDialog(context);
+        if (dialog) {
+          hideProgressDialog(context);
+        }
 
         if (e is TimeoutException) {
-          showErrorDialog(context, "Timeout", "No response from server");
+          if (dialog) {
+            showErrorDialog(context, "Timeout", "No response from server");
+          }
         } else {
-          showErrorDialog(context, "Error", e.toString());
+          // Re-throw the error
+          throw e;
         }
 
         return null;
@@ -222,7 +229,9 @@ class InvenTreeModel {
       return null;
     }
 
-    hideProgressDialog(context);
+    if (dialog) {
+      hideProgressDialog(context);
+    }
 
     // A list of "InvenTreeModel" items
     List<InvenTreeModel> results = new List<InvenTreeModel>();

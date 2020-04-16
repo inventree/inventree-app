@@ -1,7 +1,6 @@
 import 'package:InvenTree/api.dart';
 import 'package:InvenTree/inventree/stock.dart';
 import 'package:InvenTree/preferences.dart';
-import 'package:InvenTree/widget/drawer.dart';
 import 'package:InvenTree/widget/stock_detail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
