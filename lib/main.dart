@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:InvenTree/inventree/stock.dart';
 import 'package:InvenTree/widget/category_display.dart';
 import 'package:InvenTree/widget/company_list.dart';
 import 'package:InvenTree/widget/location_display.dart';
@@ -20,6 +19,7 @@ import 'preferences.dart';
 
 import 'package:sentry/sentry.dart';
 
+// Use the secret app key
 final SentryClient _sentry = SentryClient(dsn: SENTRY_DSN_KEY);
 
 bool isInDebugMode() {
