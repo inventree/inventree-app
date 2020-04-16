@@ -75,6 +75,13 @@ class InvenTreeDrawer extends StatelessWidget {
     Navigator.push(context, MaterialPageRoute(builder: (context) => SupplierListWidget()));
   }
 
+  void _showManufacturers() {
+    if (!InvenTreeAPI().checkConnection(context)) return;
+    _closeDrawer();
+
+    Navigator.push(context, MaterialPageRoute(builder: (context) => ManufacturerListWidget()));
+  }
+
   void _showCustomers() {
     if (!InvenTreeAPI().checkConnection(context)) return;
     _closeDrawer();
@@ -128,8 +135,13 @@ class InvenTreeDrawer extends StatelessWidget {
               ),
               new ListTile(
                 title: new Text("Suppliers"),
-                leading: new FaIcon(FontAwesomeIcons.industry),
+                leading: new FaIcon(FontAwesomeIcons.building),
                 onTap: _showSuppliers,
+              ),
+              new ListTile(
+                title: Text("Manufacturers"),
+                leading: new FaIcon(FontAwesomeIcons.industry),
+                  onTap: _showManufacturers,
               ),
               new ListTile(
                 title: new Text("Customers"),

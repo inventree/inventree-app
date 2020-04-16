@@ -25,6 +25,12 @@ class SupplierListWidget extends CompanyListWidget {
 }
 
 
+class ManufacturerListWidget extends CompanyListWidget {
+  @override
+  _CompanyListState createState() => _CompanyListState("Manufacturers", {"is_manufacturer": "true"});
+}
+
+
 class CustomerListWidget extends CompanyListWidget {
   @override
   _CompanyListState createState() => _CompanyListState("Customers", {"is_customer": "true"});
