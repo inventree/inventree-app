@@ -49,6 +49,10 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
           image: InvenTreeAPI().getImage(company.image),
           width: 48,
         ),
+        trailing: IconButton(
+          icon: FaIcon(FontAwesomeIcons.edit),
+          onPressed: null,
+        ),
       ),
     ));
 
