@@ -182,14 +182,21 @@ class InvenTreeAPI {
     var response = await get("").timeout(Duration(seconds: 10)).catchError((error) {
 
       if (error is SocketException) {
-        errorMessage = "Could not connect to server.";
-        print(errorMessage);
-        throw errorMessage;
+        print("Could not connect to server");
+        return null;
+      } else if (error is TimeoutException) {
+        print("Server timeout");
+        return null;
       } else {
         // Unknown error type, re-throw error
+        print("Unknown error: ${error.toString()}");
         throw error;
       }
     });
+
+    if (response == null) {
+      return false;
+    }
 
     if (response.statusCode != 200) {
       print("Invalid status code: " + response.statusCode.toString());

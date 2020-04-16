@@ -22,6 +22,8 @@ import 'preferences.dart';
 
 import 'package:InvenTree/inventree/part.dart';
 
+
+
 void main() async {
 
   // await PrefService.init(prefix: "inventree_");
@@ -31,10 +33,10 @@ void main() async {
   // Load login details
   InvenTreePreferences().loadLoginDetails();
 
-  runApp(MyApp());
+  runApp(InvenTreeApp());
 }
 
-class MyApp extends StatelessWidget {
+class InvenTreeApp extends StatelessWidget {
   // This widget is the root of your application.
 
   @override
@@ -42,47 +44,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'InvenTree',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.lightGreen,
+        primarySwatch: Colors.lightBlue,
+        secondaryHeaderColor: Colors.blueGrey,
       ),
       home: MyHomePage(title: 'InvenTree'),
     );
-  }
-}
-
-
-class ProductList extends StatelessWidget {
-  final List<InvenTreePart> _parts;
-
-  ProductList(this._parts);
-
-  Widget _buildPart(BuildContext context, int index) {
-    InvenTreePart part;
-
-    if (index < _parts.length) {
-      part = _parts[index];
-    }
-
-    return Card(
-        child: Column(
-            children: <Widget>[
-              Text('${part.name} - ${part.description}'),
-            ]
-        )
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(itemBuilder: _buildPart, itemCount: _parts.length);
   }
 }
 
@@ -168,22 +134,6 @@ class _MyHomePageState extends State<MyHomePage> {
         onConnectFailure("Could not connect to server");
       }
 
-    }).catchError((e) {
-
-      String fault = "Connection error";
-
-      _serverConnection = false;
-      _serverStatusColor = Color.fromARGB(255, 250, 50, 50);
-
-      _serverStatus = "Error connecting to $_serverAddress";
-
-      if (e is TimeoutException) {
-        fault = "Timeout: No response from server";
-      } else {
-        fault = e.toString();
-      }
-
-      onConnectFailure(fault);
     });
 
     // Update widget state

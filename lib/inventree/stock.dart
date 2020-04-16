@@ -6,6 +6,10 @@ import 'model.dart';
 import 'package:InvenTree/api.dart';
 
 class InvenTreeStockItem extends InvenTreeModel {
+
+  @override
+  String NAME = "StockItem";
+
   @override
   String URL = "stock/";
 
@@ -208,6 +212,10 @@ class InvenTreeStockItem extends InvenTreeModel {
 
 
 class InvenTreeStockLocation extends InvenTreeModel {
+
+  @override
+  String NAME = "StockLocation";
+
   @override
   String URL = "stock/location/";
 

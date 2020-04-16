@@ -2,6 +2,7 @@
 import 'package:InvenTree/api.dart';
 import 'package:InvenTree/inventree/company.dart';
 import 'package:InvenTree/widget/drawer.dart';
+import 'package:InvenTree/widget/refreshable_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -18,9 +19,17 @@ class CompanyDetailWidget extends StatefulWidget {
 }
 
 
-class _CompanyDetailState extends State<CompanyDetailWidget> {
+class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
 
   final InvenTreeCompany company;
+
+  @override
+  String getAppBarTitle(BuildContext context) { return "Company"; }
+
+  @override
+  Future<void> request(BuildContext context) async {
+    await company.reload(context);
+  }
 
   _CompanyDetailState(this.company) {
     // TODO
@@ -122,17 +131,11 @@ class _CompanyDetailState extends State<CompanyDetailWidget> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget getBody(BuildContext context) {
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("${company.name}"),
-      ),
-      drawer: new InvenTreeDrawer(context),
-      body: Center(
-        child: ListView(
-          children: _companyTiles(),
-        )
+    return Center(
+      child: ListView(
+        children: _companyTiles(),
       )
     );
   }

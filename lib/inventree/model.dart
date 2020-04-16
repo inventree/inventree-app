@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:InvenTree/api.dart';
+import 'package:InvenTree/widget/dialogs.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'dart:convert';
 
@@ -14,6 +18,8 @@ class InvenTreeModel {
 
   // Override the endpoint URL for each subclass
   String URL = "";
+
+  String NAME = "Model";
 
   // JSON data which defines this object
   Map<String, dynamic> jsondata = {};
@@ -83,9 +89,30 @@ class InvenTreeModel {
   /*
    * Reload this object, by requesting data from the server
    */
-  Future<bool> reload() async {
+  Future<bool> reload(BuildContext context) async {
 
-    var response = await api.get(url, params: defaultGetFilters());
+    showProgressDialog(context, "Refreshing data", "Refreshing data for ${NAME}");
+
+    var response = await api.get(url, params: defaultGetFilters())
+      .timeout(Duration(seconds: 10))
+      .catchError((e) {
+
+          hideProgressDialog(context);
+
+          if (e is TimeoutException) {
+            showErrorDialog(context, "Timeout", "No response from server");
+          } else {
+            showErrorDialog(context, "Error", e.toString());
+          }
+
+          return null;
+    });
+    
+    if (response == null) {
+      return false;
+    }
+    
+    hideProgressDialog(context);
 
     if (response.statusCode != 200) {
       print("Error retrieving data");
@@ -100,7 +127,7 @@ class InvenTreeModel {
   }
 
   // Return the detail view for the associated pk
-  Future<InvenTreeModel> get(int pk, {Map<String, String> filters}) async {
+  Future<InvenTreeModel> get(BuildContext context, int pk, {Map<String, String> filters}) async {
 
     // TODO - Add "timeout"
     // TODO - Add error catching
@@ -122,7 +149,27 @@ class InvenTreeModel {
 
     print("GET: $addr ${params.toString()}");
 
-    var response = await api.get(addr, params: params);
+    showProgressDialog(context, "Requesting Data", "Requesting ${NAME} data from server");
+
+    var response = await api.get(addr, params: params)
+        .timeout(Duration(seconds: 10))
+        .catchError((e) {
+
+          hideProgressDialog(context);
+
+          if (e is TimeoutException) {
+            showErrorDialog(context, "Timeout", "No response from server");
+          } else {
+            showErrorDialog(context, "Error", e.toString());
+          }
+          return null;
+      });
+
+    if (response == null) {
+      return null;
+    }
+
+    hideProgressDialog(context);
 
     if (response.statusCode != 200) {
       print("Error retrieving data");
@@ -135,7 +182,7 @@ class InvenTreeModel {
   }
 
   // Return list of objects from the database, with optional filters
-  Future<List<InvenTreeModel>> list({Map<String, String> filters}) async {
+  Future<List<InvenTreeModel>> list(BuildContext context, {Map<String, String> filters}) async {
 
     if (filters == null) {
       filters = {};
@@ -154,7 +201,28 @@ class InvenTreeModel {
     // TODO - Add "timeout"
     // TODO - Add error catching
 
-    var response = await api.get(URL, params:params);
+    showProgressDialog(context, "Requesting Data", "Requesting ${NAME} data from server");
+
+    var response = await api.get(URL, params:params)
+      .timeout(Duration(seconds: 10))
+      .catchError((e) {
+
+        hideProgressDialog(context);
+
+        if (e is TimeoutException) {
+          showErrorDialog(context, "Timeout", "No response from server");
+        } else {
+          showErrorDialog(context, "Error", e.toString());
+        }
+
+        return null;
+    });
+
+    if (response == null) {
+      return null;
+    }
+
+    hideProgressDialog(context);
 
     // A list of "InvenTreeModel" items
     List<InvenTreeModel> results = new List<InvenTreeModel>();

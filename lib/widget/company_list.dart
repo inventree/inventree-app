@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:InvenTree/api.dart';
 import 'package:InvenTree/inventree/company.dart';
 import 'package:InvenTree/widget/drawer.dart';
+import 'package:InvenTree/widget/refreshable_state.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 abstract class CompanyListWidget extends StatefulWidget {
@@ -30,23 +31,30 @@ class CustomerListWidget extends CompanyListWidget {
 }
 
 
-class _CompanyListState extends State<CompanyListWidget> {
+class _CompanyListState extends RefreshableState<CompanyListWidget> {
 
   var _companies = new List<InvenTreeCompany>();
 
   var _filteredCompanies = new List<InvenTreeCompany>();
 
-  var _title = "Companies";
+  String _title = "Companies";
+
+  @override
+  String getAppBarTitle(BuildContext context) { return _title; }
 
   Map<String, String> _filters = Map<String, String>();
 
-  _CompanyListState(this._title, this._filters) {
-    _requestData();
+  _CompanyListState(this._title, this._filters) {}
+
+  @override
+  Future<void> onBuild(BuildContext context) async {
+    refresh();
   }
 
-  void _requestData() {
+  @override
+  Future<void> request(BuildContext context) async {
 
-    InvenTreeCompany().list(filters: _filters).then((var companies) {
+    InvenTreeCompany().list(context, filters: _filters).then((var companies) {
 
       _companies.clear();
 
@@ -85,7 +93,7 @@ class _CompanyListState extends State<CompanyListWidget> {
         ),
         onTap: () {
           if (company.pk > 0) {
-            InvenTreeCompany().get(company.pk).then((var c) {
+            InvenTreeCompany().get(context, company.pk).then((var c) {
               Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyDetailWidget(c)));
             });
           }
@@ -94,38 +102,24 @@ class _CompanyListState extends State<CompanyListWidget> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text("$_title"),
-          actions: <Widget>[
-            IconButton(
-              icon: FaIcon(FontAwesomeIcons.plus),
-              tooltip: 'New',
-              onPressed: null,
-            )
-          ],
+  Widget getBody(BuildContext context) {
+    return ListView(
+      children: <Widget>[
+        TextField(
+          decoration: InputDecoration(
+          hintText: 'Filter results',
+          ),
+          onChanged: (String text) {
+            setState(() {
+              _filterResults(text);
+            });
+          },
         ),
-        drawer: new InvenTreeDrawer(context),
-        body: ListView(
-          children: <Widget>[
-            TextField(
-              decoration: InputDecoration(
-              hintText: 'Filter results',
-              ),
-              onChanged: (String text) {
-                setState(() {
-                  _filterResults(text);
-                });
-              },
-            ),
-            ListView.builder(
-              shrinkWrap: true,
-                physics: ClampingScrollPhysics(),
-                itemBuilder: _showCompany, itemCount: _filteredCompanies.length)
-          ],
-        )
+        ListView.builder(
+          shrinkWrap: true,
+            physics: ClampingScrollPhysics(),
+            itemBuilder: _showCompany, itemCount: _filteredCompanies.length)
+      ],
     );
   }
-
 }

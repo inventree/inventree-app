@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:InvenTree/api.dart';
+import 'package:InvenTree/widget/refreshable_state.dart';
 import 'package:InvenTree/widget/drawer.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -21,13 +22,21 @@ class PartDetailWidget extends StatefulWidget {
 }
 
 
-class _PartDisplayState extends State<PartDetailWidget> {
+class _PartDisplayState extends RefreshableState<PartDetailWidget> {
+
+  @override
+  String getAppBarTitle(BuildContext context) { return "Part"; }
 
   _PartDisplayState(this.part) {
     // TODO
   }
 
   InvenTreePart part;
+
+  @override
+  Future<void> request(BuildContext context) async {
+    await part.reload(context);
+  }
 
   /*
    * Build a list of tiles to display under the part description
@@ -62,7 +71,7 @@ class _PartDisplayState extends State<PartDetailWidget> {
             leading: FaIcon(FontAwesomeIcons.stream),
             onTap: () {
               if (part.categoryId > 0) {
-                InvenTreePartCategory().get(part.categoryId).then((var cat) {
+                InvenTreePartCategory().get(context, part.categoryId).then((var cat) {
                   Navigator.push(context, MaterialPageRoute(
                       builder: (context) => CategoryDisplayWidget(cat)));
                 });
@@ -154,22 +163,11 @@ class _PartDisplayState extends State<PartDetailWidget> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Part Details"),
+  Widget getBody(BuildContext context) {
+    return Center(
+      child: ListView(
+        children: partTiles(),
       ),
-      drawer: new InvenTreeDrawer(context),
-      floatingActionButton: FloatingActionButton(
-        child: FaIcon(FontAwesomeIcons.ellipsisH),
-        // TODO - Add pop-up icons
-        // Ref: https://stackoverflow.com/questions/46480221/flutter-floating-action-button-with-speed-dial#46480722
-      ),
-      body: Center(
-        child: ListView(
-          children: partTiles(),
-        ),
-      )
     );
   }
 }

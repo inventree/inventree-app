@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'package:InvenTree/widget/refreshable_state.dart';
+
 class LocationDisplayWidget extends StatefulWidget {
 
   LocationDisplayWidget(this.location, {Key key}) : super(key: key);
@@ -20,14 +22,14 @@ class LocationDisplayWidget extends StatefulWidget {
   _LocationDisplayState createState() => _LocationDisplayState(location);
 }
 
-
-class _LocationDisplayState extends State<LocationDisplayWidget> {
-
-  _LocationDisplayState(this.location) {
-    _requestData();
-  }
+class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
   final InvenTreeStockLocation location;
+
+  @override
+  String getAppBarTitle(BuildContext context) { return "Stock Location"; }
+
+  _LocationDisplayState(this.location) {}
 
   List<InvenTreeStockLocation> _sublocations = List<InvenTreeStockLocation>();
 
@@ -44,28 +46,18 @@ class _LocationDisplayState extends State<LocationDisplayWidget> {
 
   List<InvenTreeStockItem> _items = List<InvenTreeStockItem>();
 
-  String get _title {
-
-    if (location == null) {
-      return "Stock Locations";
-    } else {
-      return "Stock Location - ${location.name}";
-    }
+  @override
+  Future<void> onBuild(BuildContext context) async {
+    refresh();
   }
 
-  /*
-   * Request data from the server.
-   * It will be displayed once loaded
-   *
-   * - List of sublocations under this one
-   * - List of stock items at this location
-   */
-  void _requestData() {
+  @override
+  Future<void> request(BuildContext context) async {
 
     int pk = location?.pk ?? -1;
 
     // Request a list of sub-locations under this one
-    InvenTreeStockLocation().list(filters: {"parent": "$pk"}).then((var locs) {
+    InvenTreeStockLocation().list(context, filters: {"parent": "$pk"}).then((var locs) {
       _sublocations.clear();
 
       for (var loc in locs) {
@@ -76,18 +68,18 @@ class _LocationDisplayState extends State<LocationDisplayWidget> {
 
       setState(() {});
 
-    // Request a list of stock-items under this one
-    InvenTreeStockItem().list(filters: {"location": "$pk"}).then((var items) {
-      _items.clear();
+      // Request a list of stock-items under this one
+      InvenTreeStockItem().list(context, filters: {"location": "$pk"}).then((var items) {
+        _items.clear();
 
-      for (var item in items) {
-        if (item is InvenTreeStockItem) {
-          _items.add(item);
+        for (var item in items) {
+          if (item is InvenTreeStockItem) {
+            _items.add(item);
+          }
         }
-      }
 
-      setState(() {});
-    });
+        setState(() {});
+      });
 
     });
   }
@@ -119,7 +111,7 @@ class _LocationDisplayState extends State<LocationDisplayWidget> {
                 if (location.parentId < 0) {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(null)));
                 } else {
-                  InvenTreeStockLocation().get(location.parentId).then((var loc) {
+                  InvenTreeStockLocation().get(context, location.parentId).then((var loc) {
                     if (loc is InvenTreeStockLocation) {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(loc)));
                     }
@@ -134,68 +126,63 @@ class _LocationDisplayState extends State<LocationDisplayWidget> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(_title),
-      ),
-      drawer: new InvenTreeDrawer(context),
-      body: ListView(
-        children: <Widget> [
-          locationDescriptionCard(),
-          ExpansionPanelList(
-            expansionCallback: (int index, bool isExpanded) {
-              setState(() {
-                switch (index) {
-                  case 0:
-                    InvenTreePreferences().expandLocationList = !isExpanded;
-                    break;
-                  case 1:
-                    InvenTreePreferences().expandStockList = !isExpanded;
-                    break;
-                  default:
-                    break;
-                }
-              });
+  Widget getBody(BuildContext context) {
 
-            },
-            children: <ExpansionPanel> [
-              ExpansionPanel(
-                headerBuilder: (BuildContext context, bool isExpanded) {
-                  return ListTile(
-                    title: Text("Sublocations"),
-                    leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
-                    trailing: Text("${_sublocations.length}"),
-                    onTap: () {
-                      setState(() {
-                        InvenTreePreferences().expandLocationList = !InvenTreePreferences().expandLocationList;
-                      });
-                    },
-                  );
-                },
-                body: SublocationList(_sublocations),
-                isExpanded: InvenTreePreferences().expandLocationList && _sublocations.length > 0,
-              ),
-              ExpansionPanel(
-                headerBuilder: (BuildContext context, bool isExpanded) {
-                  return ListTile(
-                    title: Text("Stock Items"),
-                    leading: FaIcon(FontAwesomeIcons.boxes),
-                    trailing: Text("${_items.length}"),
-                    onTap: () {
-                      setState(() {
-                        InvenTreePreferences().expandStockList = !InvenTreePreferences().expandStockList;
-                      });
-                    },
-                  );
-                },
-                body: StockList(_items),
-                isExpanded: InvenTreePreferences().expandStockList && _items.length > 0,
-              )
-            ]
-          ),
-        ]
-      )
+    return ListView(
+      children: <Widget> [
+      locationDescriptionCard(),
+      ExpansionPanelList(
+          expansionCallback: (int index, bool isExpanded) {
+            setState(() {
+              switch (index) {
+                case 0:
+                  InvenTreePreferences().expandLocationList = !isExpanded;
+                  break;
+                case 1:
+                  InvenTreePreferences().expandStockList = !isExpanded;
+                  break;
+                default:
+                  break;
+              }
+            });
+
+          },
+          children: <ExpansionPanel> [
+            ExpansionPanel(
+              headerBuilder: (BuildContext context, bool isExpanded) {
+                return ListTile(
+                  title: Text("Sublocations"),
+                  leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
+                  trailing: Text("${_sublocations.length}"),
+                  onTap: () {
+                    setState(() {
+                      InvenTreePreferences().expandLocationList = !InvenTreePreferences().expandLocationList;
+                    });
+                  },
+                );
+              },
+              body: SublocationList(_sublocations),
+              isExpanded: InvenTreePreferences().expandLocationList && _sublocations.length > 0,
+            ),
+            ExpansionPanel(
+              headerBuilder: (BuildContext context, bool isExpanded) {
+                return ListTile(
+                  title: Text("Stock Items"),
+                  leading: FaIcon(FontAwesomeIcons.boxes),
+                  trailing: Text("${_items.length}"),
+                  onTap: () {
+                    setState(() {
+                      InvenTreePreferences().expandStockList = !InvenTreePreferences().expandStockList;
+                    });
+                  },
+                );
+              },
+              body: StockList(_items),
+              isExpanded: InvenTreePreferences().expandStockList && _items.length > 0,
+            )
+          ]
+      ),
+    ]
     );
   }
 }
@@ -208,7 +195,7 @@ class SublocationList extends StatelessWidget {
 
   void _openLocation(BuildContext context, int pk) {
 
-    InvenTreeStockLocation().get(pk).then((var loc) {
+    InvenTreeStockLocation().get(context, pk).then((var loc) {
       if (loc is InvenTreeStockLocation) {
 
         Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(loc)));
@@ -244,7 +231,7 @@ class StockList extends StatelessWidget {
   StockList(this._items);
 
   void _openItem(BuildContext context, int pk) {
-    InvenTreeStockItem().get(pk).then((var item) {
+    InvenTreeStockItem().get(context, pk).then((var item) {
       if (item is InvenTreeStockItem) {
         Navigator.push(context, MaterialPageRoute(builder: (context) => StockDetailWidget(item)));
       }

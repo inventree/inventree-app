@@ -4,12 +4,15 @@ import 'package:InvenTree/inventree/stock.dart';
 import 'package:InvenTree/inventree/part.dart';
 import 'package:InvenTree/widget/location_display.dart';
 import 'package:InvenTree/widget/part_detail.dart';
+import 'package:InvenTree/widget/refreshable_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:InvenTree/api.dart';
 
 import 'package:InvenTree/widget/drawer.dart';
+import 'package:InvenTree/widget/refreshable_state.dart';
+
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -25,7 +28,10 @@ class StockDetailWidget extends StatefulWidget {
 }
 
 
-class _StockItemDisplayState extends State<StockDetailWidget> {
+class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
+
+  @override
+  String getAppBarTitle(BuildContext context) { return "Stock Item"; }
 
   final TextEditingController _quantityController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
@@ -42,13 +48,9 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
 
   final InvenTreeStockItem item;
 
-  /**
-   * Function to reload the page data
-   */
-  Future<void> _refresh() async {
-
-    await item.reload();
-    setState(() {});
+  @override
+  Future<void> request(BuildContext context) async {
+    await item.reload(context);
   }
 
   void _editStockItem() {
@@ -92,7 +94,7 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
     _notesController.clear();
 
     // TODO - Handle error cases
-    _refresh();
+    refresh();
   }
 
   void _addStockDialog() async {
@@ -158,7 +160,7 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
 
     // TODO - Handle error cases
 
-    _refresh();
+    refresh();
   }
 
   void _removeStockDialog() {
@@ -227,7 +229,7 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
 
     // TODO - Handle error cases
 
-    _refresh();
+    refresh();
   }
 
   void _countStockDialog() async {
@@ -322,7 +324,7 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
         leading: FaIcon(FontAwesomeIcons.shapes),
         onTap: () {
           if (item.partId > 0) {
-            InvenTreePart().get(item.partId).then((var part) {
+            InvenTreePart().get(context, item.partId).then((var part) {
               if (part is InvenTreePart) {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
               }
@@ -362,7 +364,7 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
           leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
           onTap: () {
             if (item.locationId > 0) {
-              InvenTreeStockLocation().get(item.locationId).then((var loc) {
+              InvenTreeStockLocation().get(context, item.locationId).then((var loc) {
                 Navigator.push(context, MaterialPageRoute(
                   builder: (context) => LocationDisplayWidget(loc)));
               });
@@ -465,25 +467,29 @@ class _StockItemDisplayState extends State<StockDetailWidget> {
   }
 
   @override
+  Widget getBody(BuildContext context) {
+    return ListView(
+      children: stockTiles()
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
+
+    this.context = context;
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Stock Item"),
-      ),
-      drawer: new InvenTreeDrawer(context),
+      appBar: getAppBar(context),
+      drawer: getDrawer(context),
       floatingActionButton: SpeedDial(
         visible: true,
         animatedIcon: AnimatedIcons.menu_close,
         heroTag: 'stock-item-fab',
         children: actionButtons(),
       ),
-      body: Center(
-        child: new RefreshIndicator(
-          onRefresh: _refresh,
-          child: ListView(
-            children: stockTiles(),
-          )
-        )
+      body: RefreshIndicator(
+        onRefresh: refresh,
+        child: getBody(context)
       )
     );
   }

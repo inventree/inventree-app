@@ -5,6 +5,7 @@ import 'package:InvenTree/preferences.dart';
 
 import 'package:InvenTree/widget/part_detail.dart';
 import 'package:InvenTree/widget/drawer.dart';
+import 'package:InvenTree/widget/refreshable_state.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -26,11 +27,12 @@ class CategoryDisplayWidget extends StatefulWidget {
 }
 
 
-class _CategoryDisplayState extends State<CategoryDisplayWidget> {
+class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
-  _CategoryDisplayState(this.category) {
-    _requestData();
-  }
+  @override
+  String getAppBarTitle(BuildContext context) { return "Part Category"; }
+
+  _CategoryDisplayState(this.category) {}
 
   // The local InvenTreePartCategory object
   final InvenTreePartCategory category;
@@ -39,24 +41,18 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
 
   List<InvenTreePart> _parts = List<InvenTreePart>();
 
-  String get _titleString {
-
-    if (category == null) {
-      return "Part Categories";
-    } else {
-      return "Part Category - ${category.name}";
-    }
+  @override
+  Future<void> onBuild(BuildContext context) async {
+    refresh();
   }
 
-  /*
-   * Request data from the server
-   */
-  void _requestData() {
+  @override
+  Future<void> request(BuildContext context) async {
 
     int pk = category?.pk ?? -1;
 
     // Request a list of sub-categories under this one
-    InvenTreePartCategory().list(filters: {"parent": "$pk"}).then((var cats) {
+    InvenTreePartCategory().list(context, filters: {"parent": "$pk"}).then((var cats) {
       _subcategories.clear();
 
       for (var cat in cats) {
@@ -70,7 +66,7 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
     });
 
     // Request a list of parts under this category
-    InvenTreePart().list(filters: {"category": "$pk"}).then((var parts) {
+    InvenTreePart().list(context, filters: {"category": "$pk"}).then((var parts) {
       _parts.clear();
 
       for (var part in parts) {
@@ -112,7 +108,7 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));
                 } else {
                   // TODO - Refactor this code into the InvenTreePart class
-                  InvenTreePartCategory().get(category.parentId).then((var cat) {
+                  InvenTreePartCategory().get(context, category.parentId).then((var cat) {
                     if (cat is InvenTreePartCategory) {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(cat)));
                     }
@@ -127,74 +123,68 @@ class _CategoryDisplayState extends State<CategoryDisplayWidget> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(_titleString),
-      ),
-      drawer: new InvenTreeDrawer(context),
-      body: ListView(
-          children: <Widget>[
-            getCategoryDescriptionCard(),
-            ExpansionPanelList(
-              expansionCallback: (int index, bool isExpanded) {
-                setState(() {
+  Widget getBody(BuildContext context) {
+    return ListView(
+      children: <Widget>[
+        getCategoryDescriptionCard(),
+        ExpansionPanelList(
+          expansionCallback: (int index, bool isExpanded) {
+            setState(() {
 
-                  switch (index) {
-                    case 0:
-                      InvenTreePreferences().expandCategoryList = !isExpanded;
-                      break;
-                    case 1:
-                      InvenTreePreferences().expandPartList = !isExpanded;
-                      break;
-                    default:
-                      break;
-                  }
-                });
+              switch (index) {
+                case 0:
+                  InvenTreePreferences().expandCategoryList = !isExpanded;
+                  break;
+                case 1:
+                  InvenTreePreferences().expandPartList = !isExpanded;
+                  break;
+                default:
+                  break;
+              }
+            });
+          },
+          children: <ExpansionPanel> [
+            ExpansionPanel(
+              headerBuilder: (BuildContext context, bool isExpanded) {
+                return ListTile(
+                  title: Text("Subcategories"),
+                  leading: FaIcon(FontAwesomeIcons.stream),
+                  trailing: Text("${_subcategories.length}"),
+                  onTap: () {
+                    setState(() {
+                      InvenTreePreferences().expandCategoryList = !InvenTreePreferences().expandCategoryList;
+                    });
+                  },
+                  onLongPress: () {
+                    // TODO - Context menu for e.g. creating a new PartCategory
+                  },
+                );
               },
-              children: <ExpansionPanel> [
-                ExpansionPanel(
-                  headerBuilder: (BuildContext context, bool isExpanded) {
-                    return ListTile(
-                      title: Text("Subcategories"),
-                      leading: FaIcon(FontAwesomeIcons.stream),
-                      trailing: Text("${_subcategories.length}"),
-                      onTap: () {
-                        setState(() {
-                          InvenTreePreferences().expandCategoryList = !InvenTreePreferences().expandCategoryList;
-                        });
-                      },
-                      onLongPress: () {
-                        // TODO - Context menu for e.g. creating a new PartCategory
-                      },
-                    );
-                  },
-                  body: SubcategoryList(_subcategories),
-                  isExpanded: InvenTreePreferences().expandCategoryList && _subcategories.length > 0,
-                ),
-                ExpansionPanel(
-                  headerBuilder: (BuildContext context, bool isExpanded) {
-                    return ListTile(
-                      title: Text("Parts"),
-                      leading: FaIcon(FontAwesomeIcons.shapes),
-                      trailing: Text("${_parts.length}"),
-                      onTap: () {
-                        setState(() {
-                          InvenTreePreferences().expandPartList = !InvenTreePreferences().expandPartList;
-                        });
-                      },
-                      onLongPress: () {
-                        // TODO - Context menu for e.g. creating a new Part
-                      },
-                    );
-                  },
-                  body: PartList(_parts),
-                  isExpanded: InvenTreePreferences().expandPartList && _parts.length > 0,
-                )
-              ],
+              body: SubcategoryList(_subcategories),
+              isExpanded: InvenTreePreferences().expandCategoryList && _subcategories.length > 0,
             ),
-          ]
-        )
+            ExpansionPanel(
+              headerBuilder: (BuildContext context, bool isExpanded) {
+                return ListTile(
+                  title: Text("Parts"),
+                  leading: FaIcon(FontAwesomeIcons.shapes),
+                  trailing: Text("${_parts.length}"),
+                  onTap: () {
+                    setState(() {
+                      InvenTreePreferences().expandPartList = !InvenTreePreferences().expandPartList;
+                    });
+                  },
+                  onLongPress: () {
+                    // TODO - Context menu for e.g. creating a new Part
+                  },
+                );
+              },
+              body: PartList(_parts),
+              isExpanded: InvenTreePreferences().expandPartList && _parts.length > 0,
+            )
+          ],
+        ),
+      ]
     );
   }
 }
@@ -211,7 +201,7 @@ class SubcategoryList extends StatelessWidget {
   void _openCategory(BuildContext context, int pk) {
 
     // Attempt to load the sub-category.
-    InvenTreePartCategory().get(pk).then((var cat) {
+    InvenTreePartCategory().get(context, pk).then((var cat) {
       if (cat is InvenTreePartCategory) {
 
         Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(cat)));
@@ -252,7 +242,7 @@ class PartList extends StatelessWidget {
 
   void _openPart(BuildContext context, int pk) {
     // Attempt to load the part information
-    InvenTreePart().get(pk).then((var part) {
+    InvenTreePart().get(context, pk).then((var part) {
       if (part is InvenTreePart) {
 
         Navigator.push(context, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
