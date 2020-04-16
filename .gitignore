@@ -9,6 +9,9 @@
 .history
 .svn/
 
+# Sentry API key
+lib/dsn.dart
+
 # IntelliJ related
 *.iml
 *.ipr
