@@ -14,26 +14,55 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'barcode.dart';
 
-import 'dart:convert';
-
-import 'settings/settings.dart';
 import 'api.dart';
+import 'dsn.dart';
 import 'preferences.dart';
 
-import 'package:InvenTree/inventree/part.dart';
+import 'package:sentry/sentry.dart';
 
+final SentryClient _sentry = SentryClient(dsn: SENTRY_DSN_KEY);
 
+bool isInDebugMode() {
+  bool inDebugMode = false;
+
+  assert(inDebugMode = true);
+
+  return inDebugMode;
+}
+
+Future<void> _reportError(dynamic error, dynamic stackTrace) async {
+  // Print the exception to the console.
+  print('Caught error: $error');
+  if (isInDebugMode()) {
+    // Print the full stacktrace in debug mode.
+    print(stackTrace);
+    return;
+  } else {
+    // Send the Exception and Stacktrace to Sentry in Production mode.
+    _sentry.captureException(
+      exception: error,
+      stackTrace: stackTrace,
+    );
+
+    print("Sending error to sentry.io");
+  }
+}
 
 void main() async {
-
-  // await PrefService.init(prefix: "inventree_");
 
   WidgetsFlutterBinding.ensureInitialized();
 
   // Load login details
   InvenTreePreferences().loadLoginDetails();
 
-  runApp(InvenTreeApp());
+  runZoned<Future<void>>(() async {
+    runApp(InvenTreeApp());
+  }, onError: (error, stackTrace) {
+    // Whenever an error occurs, call the `_reportError` function. This sends
+    // Dart errors to the dev console or Sentry depending on the environment.
+    _reportError(error, stackTrace);
+  });
+
 }
 
 class InvenTreeApp extends StatelessWidget {
