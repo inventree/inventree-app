@@ -51,6 +51,11 @@ Future<void> scanQrCode(BuildContext context) async {
 
       final Map<String, dynamic> body = json.decode(response.body);
 
+      // TODO - Handle potential error decoding response
+
+      print("Barcode response:");
+      print(body.toString());
+
       if (body.containsKey('error')) {
         showDialog(
           context: context,
@@ -91,39 +96,45 @@ Future<void> scanQrCode(BuildContext context) async {
 
 void _handleBarcode(BuildContext context, Map<String, dynamic> data) {
 
-  int id;
+  int pk;
 
   // A stocklocation has been passed?
   if (data.containsKey('stocklocation')) {
 
-    id = data['stocklocation']['id'] ?? null;
+    pk = data['stocklocation']['pk'] as int ?? null;
 
-    if (id != null) {
-      InvenTreeStockLocation().get(context, id).then((var loc) {
+    if (pk != null) {
+      InvenTreeStockLocation().get(context, pk).then((var loc) {
         if (loc is InvenTreeStockLocation) {
           Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(loc)));
         }
       });
+    } else {
+      // TODO - Show an error here!
     }
 
   } else if (data.containsKey('stockitem')) {
 
-    id = data['stockitem']['id'] ?? null;
+    pk = data['stockitem']['pk'] as int ?? null;
 
-    if (id != null) {
-      InvenTreeStockItem().get(context, id).then((var item) {
+    if (pk != null) {
+      InvenTreeStockItem().get(context, pk).then((var item) {
         Navigator.push(context, MaterialPageRoute(builder: (context) => StockDetailWidget(item)));
       });
+    } else {
+      // TODO - Show an error here!
     }
   } else if (data.containsKey('part')) {
 
-    id = data['part']['id'] ?? null;
+    pk = data['part']['pk'] as int ?? null;
 
-    if (id != null) {
-      InvenTreePart().get(context, id).then((var part) {
+    if (pk != null) {
+      InvenTreePart().get(context, pk).then((var part) {
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
       });
+    } else {
+      // TODO - Show an error here!
     }
   } else {
     showDialog(
