@@ -2,6 +2,7 @@
 import 'package:InvenTree/inventree/part.dart';
 import 'package:InvenTree/widget/category_display.dart';
 import 'package:InvenTree/widget/dialogs.dart';
+import 'package:InvenTree/widget/fields.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -85,38 +86,22 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         ),
       ],
       fields: <Widget>[
-        TextFormField(
-          decoration: InputDecoration(
-            labelText: "Part Name",
-            hintText: "Enter part name",
-          ),
-          initialValue: part.name,
-          validator: (value) {
-            if (value.isEmpty) return "Name cannot be empty";
-            return null;
-          },
+        StringField(
+          label: "Part Name",
+          initial: part.name,
           onSaved: (value) => _name = value,
         ),
-        TextFormField(
-          decoration: InputDecoration(
-            labelText: "Part Description",
-            hintText: "Enter part description",
-          ),
-          initialValue: part.description,
-          validator: (value) {
-            if (value.isEmpty) return "Description cannot be empty";
-            return null;
-          },
+        StringField(
+          label: "Part Description",
+          initial: part.description,
           onSaved: (value) => _description = value,
         ),
-        TextFormField(
-          decoration: InputDecoration(
-            labelText: "Internal Part Number",
-            hintText: "Enter internal part number",
-          ),
-          initialValue: part.IPN,
+        StringField(
+          label: "Internal Part Number",
+          initial: part.IPN,
           onSaved: (value) => _ipn = value,
         )
+
       ]
     );
 
