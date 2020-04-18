@@ -33,6 +33,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   InvenTreePart part;
 
+  int _tabIndex = 0;
+
   @override
   Future<void> request(BuildContext context) async {
     await part.reload(context);
@@ -162,12 +164,56 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   }
 
+  void _onTabSelectionChanged(int index) {
+    setState(() {
+      _tabIndex = index;
+    });
+  }
+
+  Widget getSelectedWidget(int index) {
+    switch (index) {
+      case 0:
+        return Center(
+          child: ListView(
+          children: partTiles(),
+        ),
+      );
+      case 1:
+        return Center(
+          child: ListView(
+            children: <Widget>[
+              ListTile(
+                title: Text("Stock"),
+                subtitle: Text("Stock info goes here!"),
+              )
+            ],
+          )
+        );
+      default:
+        return null;
+    }
+  }
+
+  @override
+  Widget getBottomNavBar(BuildContext context) {
+    return BottomNavigationBar(
+      currentIndex: _tabIndex,
+      onTap: _onTabSelectionChanged,
+      items: const <BottomNavigationBarItem> [
+        BottomNavigationBarItem(
+          icon: FaIcon(FontAwesomeIcons.infoCircle),
+          title: Text("Details"),
+        ),
+        BottomNavigationBarItem(
+          icon: FaIcon(FontAwesomeIcons.boxes),
+          title: Text("Stock"),
+        ),
+      ]
+    );
+  }
+
   @override
   Widget getBody(BuildContext context) {
-    return Center(
-      child: ListView(
-        children: partTiles(),
-      ),
-    );
+    return getSelectedWidget(_tabIndex);
   }
 }

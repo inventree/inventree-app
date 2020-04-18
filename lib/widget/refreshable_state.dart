@@ -46,7 +46,13 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
   }
 
   // Function to construct a body (MUST BE PROVIDED)
-  Widget getBody(BuildContext context);
+  Widget getBody(BuildContext context) {
+    return null;
+  }
+
+  Widget getBottomNavBar(BuildContext context) {
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +66,8 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
       body: RefreshIndicator(
         onRefresh: refresh,
         child: getBody(context)
-      )
+      ),
+      bottomNavigationBar: getBottomNavBar(context),
     );
   }
 }
