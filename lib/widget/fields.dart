@@ -1,6 +1,36 @@
 
 import 'package:flutter/material.dart';
 
+
+class StringField extends TextFormField {
+
+  StringField({String label, String hint, String initial, Function onSaved, Function validator, bool allowEmpty = false}) :
+      super(
+        decoration: InputDecoration(
+          labelText: label,
+          hintText: hint
+        ),
+        initialValue: initial,
+        onSaved: onSaved,
+        validator: (value) {
+          print("Value: ${value}");
+          if (!allowEmpty && value.isEmpty) {
+            return "Value cannot be empty";
+          }
+
+          if (validator != null) {
+            return validator(value);
+          }
+
+          return null;
+        }
+      );
+}
+
+
+/*
+ * Helper class for quantity values
+ */
 class QuantityField extends TextFormField {
 
   QuantityField({String label = "", String hint = "", String initial = "", double max = null, TextEditingController controller}) :
