@@ -68,9 +68,13 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
       appBar: getAppBar(context),
       drawer: getDrawer(context),
       floatingActionButton: getFab(context),
-      body: RefreshIndicator(
-        onRefresh: refresh,
-        child: getBody(context)
+      body: Builder(
+        builder: (BuildContext context) {
+          return RefreshIndicator(
+              onRefresh: refresh,
+              child: getBody(context)
+          );
+        }
       ),
       bottomNavigationBar: getBottomNavBar(context),
     );

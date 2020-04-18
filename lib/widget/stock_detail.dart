@@ -97,6 +97,8 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     // TODO - Handle error cases
     refresh();
+
+    // TODO - Display a snackbar here indicating the action was successful (or otherwise)
   }
 
   void _addStockDialog() async {
@@ -141,6 +143,8 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     // TODO - Handle error cases
 
     refresh();
+
+    // TODO - Display a snackbar here indicating the action was successful (or otherwise)
   }
 
   void _removeStockDialog() {
@@ -187,6 +191,8 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     // TODO - Handle error cases, timeout, etc
 
     refresh();
+
+    // TODO - Display a snackbar here indicating the action was successful (or otherwise)
   }
 
   void _countStockDialog() async {
@@ -218,7 +224,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   }
 
 
-  void _transferStock(int location) async {
+  void _transferStock(BuildContext context, InvenTreeStockLocation location) async {
     Navigator.of(context).pop();
 
     double quantity = double.parse(_quantityController.text);
@@ -227,10 +233,12 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     _quantityController.clear();
     _notesController.clear();
 
-    var response = await item.transferStock(quantity, location, notes: notes);
+    var response = await item.transferStock(quantity, location.pk, notes: notes);
 
-    // TODO - Error handling
+    // TODO - Error handling (potentially return false?)
     refresh();
+
+    // TODO - Display a snackbar here indicating the action was successful (or otherwise)
 
   }
 
@@ -293,7 +301,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
                 _selectedController.text = selectedLocation.pathstring;
               },
               onSaved: (value) {
-                _transferStock(selectedLocation.pk);
+                _transferStock(context, selectedLocation);
               },
               itemBuilder: (context, suggestion) {
                 var location = suggestion as InvenTreeStockLocation;
