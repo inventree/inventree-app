@@ -184,7 +184,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     var response = await item.countStock(quantity, notes: _notesController.text);
     _notesController.clear();
 
-    // TODO - Handle error cases
+    // TODO - Handle error cases, timeout, etc
 
     refresh();
   }
@@ -218,8 +218,20 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   }
 
 
-  void _transferStock(int location) {
-    // TODO
+  void _transferStock(int location) async {
+    Navigator.of(context).pop();
+
+    double quantity = double.parse(_quantityController.text);
+    String notes = _notesController.text;
+
+    _quantityController.clear();
+    _notesController.clear();
+
+    var response = await item.transferStock(quantity, location, notes: notes);
+
+    // TODO - Error handling
+    refresh();
+
   }
 
   void _transferStockDialog() async {
@@ -238,7 +250,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
             child: Text("Transfer"),
             onPressed: () {
               if (_moveStockKey.currentState.validate()) {
-                // TODO - Transfer!
+                _moveStockKey.currentState.save();
               }
             },
           )
@@ -279,6 +291,9 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
               onSuggestionSelected: (suggestion) {
                 selectedLocation = suggestion as InvenTreeStockLocation;
                 _selectedController.text = selectedLocation.pathstring;
+              },
+              onSaved: (value) {
+                _transferStock(selectedLocation.pk);
               },
               itemBuilder: (context, suggestion) {
                 var location = suggestion as InvenTreeStockLocation;

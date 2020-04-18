@@ -218,6 +218,20 @@ class InvenTreeStockItem extends InvenTreeModel {
     });
   }
 
+  Future<http.Response> transferStock(double q, int location, {String notes}) async {
+
+    if ((q == null) || (q > quantity)) q = quantity;
+
+    return api.post("/stock/transfer/", body: {
+      "item": {
+        "pk": "${pk}",
+        "quantity": "${q}",
+        },
+      "location": "${location}",
+      "notes": notes ?? '',
+    });
+  }
+
 }
 
 
