@@ -200,6 +200,18 @@ class _MyHomePageState extends State<MyHomePage> {
     Navigator.push(context, MaterialPageRoute(builder: (context) => SupplierListWidget()));
   }
 
+  void _manufacturers() {
+    if (!InvenTreeAPI().checkConnection(context)) return;
+
+    Navigator.push(context, MaterialPageRoute(builder: (context) => ManufacturerListWidget()));
+  }
+
+  void _customers() {
+    if (!InvenTreeAPI().checkConnection(context)) return;
+
+    Navigator.push(context, MaterialPageRoute(builder: (context) => CustomerListWidget()));
+  }
+
   void _unsupported() {
     showDialog(
       context:  context,
@@ -293,14 +305,40 @@ class _MyHomePageState extends State<MyHomePage> {
                     Text('Stock'),
                   ],
                 ),
+              ],
+            ),
+            Spacer(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
                 Column(
                   children: <Widget>[
                     IconButton(
-                      icon: new FaIcon(FontAwesomeIcons.industry),
-                      tooltip: 'Suppliers',
-                      onPressed: _suppliers,
+                      icon: new FaIcon(FontAwesomeIcons.building),
+                      tooltip: "Suppliers",
+                        onPressed: _suppliers,
                     ),
                     Text("Suppliers"),
+                  ],
+                ),
+                Column(
+                  children: <Widget>[
+                    IconButton(
+                      icon: FaIcon(FontAwesomeIcons.industry),
+                      tooltip: "Manufacturers",
+                      onPressed: _manufacturers,
+                    ),
+                    Text("Manufacturers")
+                  ],
+                ),
+                Column(
+                  children: <Widget>[
+                    IconButton(
+                      icon: FaIcon(FontAwesomeIcons.userTie),
+                      tooltip: "Customers",
+                      onPressed: _customers,
+                    ),
+                    Text("Customers"),
                   ]
                 )
               ],
