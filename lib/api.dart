@@ -231,7 +231,7 @@ class InvenTreeAPI {
     // Clear out the token
     _token = "";
 
-    response = await post(_URL_GET_TOKEN, body: {"username": _username, "password": _password}).catchError((error) {
+    response = await get(_URL_GET_TOKEN).timeout(Duration(seconds: 10)).catchError((error) {
       print("Error requesting token:");
       print(error);
       return false;
