@@ -270,12 +270,10 @@ class InvenTreeAPI {
 
     print("PATCH: " + _url);
 
-    final response = await http.patch(_url,
+    return http.patch(_url,
       headers: _headers,
       body: _body,
     );
-
-    return response;
   }
 
   // Perform a POST request

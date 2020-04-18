@@ -126,6 +126,45 @@ class InvenTreeModel {
     return true;
   }
 
+  // POST data to update the model
+  Future<bool> update(BuildContext context, {Map<String, String> values}) async {
+
+    var addr = path.join(URL, pk.toString());
+
+    if (!addr.endsWith("/")) {
+      addr += "/";
+    }
+
+    showProgressDialog(context, "Updating ${NAME}", "Sending data to server");
+
+    var response = await api.patch(addr, body: values)
+        .timeout(Duration(seconds: 10))
+        .catchError((e) {
+
+          hideProgressDialog(context);
+
+          if (e is TimeoutException) {
+            showErrorDialog(context, "Timeout", "No response from server");
+          } else {
+            showErrorDialog(context, "Error", e.toString());
+          }
+
+          return null;
+    });
+
+    if (response == null) return false;
+
+    hideProgressDialog(context);
+
+    if (response.statusCode != 200) {
+      print("Error updating ${NAME}: Status code ${response.statusCode}");
+      return false;
+    }
+
+    return true;
+
+  }
+
   // Return the detail view for the associated pk
   Future<InvenTreeModel> get(BuildContext context, int pk, {Map<String, String> filters}) async {
 

@@ -1,6 +1,7 @@
 
 import 'package:InvenTree/inventree/part.dart';
 import 'package:InvenTree/widget/category_display.dart';
+import 'package:InvenTree/widget/dialogs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,8 @@ class PartDetailWidget extends StatefulWidget {
 
 class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
+  final _editPartKey = GlobalKey<FormState>();
+
   @override
   String getAppBarTitle(BuildContext context) { return "Part"; }
 
@@ -38,6 +41,85 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   @override
   Future<void> request(BuildContext context) async {
     await part.reload(context);
+  }
+
+  void _savePart(Map<String, String> values) async {
+
+    Navigator.of(context).pop();
+
+    var response = await part.update(context, values: values);
+
+    refresh();
+  }
+
+  void _editPartDialog() {
+
+    // Values which can be edited
+    var _name;
+    var _description;
+    var _ipn;
+    var _revision;
+
+    showFormDialog(context, "Edit Part",
+      key: _editPartKey,
+      actions: <Widget>[
+        FlatButton(
+          child: Text("Cancel"),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        FlatButton(
+          child: Text("Save"),
+          onPressed: () {
+            if (_editPartKey.currentState.validate()) {
+              _editPartKey.currentState.save();
+
+              _savePart({
+                "name": _name,
+                "description": _description,
+                "IPN": _ipn,
+              });
+            }
+          },
+        ),
+      ],
+      fields: <Widget>[
+        TextFormField(
+          decoration: InputDecoration(
+            labelText: "Part Name",
+            hintText: "Enter part name",
+          ),
+          initialValue: part.name,
+          validator: (value) {
+            if (value.isEmpty) return "Name cannot be empty";
+            return null;
+          },
+          onSaved: (value) => _name = value,
+        ),
+        TextFormField(
+          decoration: InputDecoration(
+            labelText: "Part Description",
+            hintText: "Enter part description",
+          ),
+          initialValue: part.description,
+          validator: (value) {
+            if (value.isEmpty) return "Description cannot be empty";
+            return null;
+          },
+          onSaved: (value) => _description = value,
+        ),
+        TextFormField(
+          decoration: InputDecoration(
+            labelText: "Internal Part Number",
+            hintText: "Enter internal part number",
+          ),
+          initialValue: part.IPN,
+          onSaved: (value) => _ipn = value,
+        )
+      ]
+    );
+
   }
 
   /*
@@ -58,7 +140,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           ),
           trailing: IconButton(
             icon: FaIcon(FontAwesomeIcons.edit),
-            onPressed: null,
+            onPressed: _editPartDialog,
           ),
         )
       )

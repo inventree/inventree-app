@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 
 class QuantityField extends TextFormField {
 
-  QuantityField({String label = "", String hint = "", double max = null, TextEditingController controller}) :
+  QuantityField({String label = "", String hint = "", String initial = "", double max = null, TextEditingController controller}) :
       super(
         decoration: InputDecoration(
           labelText: label,
           hintText: hint,
         ),
+        initialValue: initial,
         controller: controller,
         keyboardType: TextInputType.numberWithOptions(signed: false, decimal: true),
         validator: (value) {
