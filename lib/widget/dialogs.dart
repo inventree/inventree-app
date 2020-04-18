@@ -39,3 +39,26 @@ void showProgressDialog(BuildContext context, String title, String description) 
 void hideProgressDialog(BuildContext context) {
   Navigator.pop(context);
 }
+
+void showFormDialog(BuildContext context, String title, {GlobalKey<FormState> key, List<Widget> fields, List<Widget> actions}) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+          title: Text(title),
+          actions: actions,
+          content: Form(
+              key: key,
+              child: SingleChildScrollView(
+                  child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: fields
+                  )
+              )
+          )
+      );
+    }
+  );
+}

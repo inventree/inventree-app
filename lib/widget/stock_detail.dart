@@ -2,6 +2,7 @@
 
 import 'package:InvenTree/inventree/stock.dart';
 import 'package:InvenTree/inventree/part.dart';
+import 'package:InvenTree/widget/dialogs.dart';
 import 'package:InvenTree/widget/fields.dart';
 import 'package:InvenTree/widget/location_display.dart';
 import 'package:InvenTree/widget/part_detail.dart';
@@ -102,43 +103,30 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     _quantityController.clear();
 
-    showDialog(context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Add Stock"),
-          actions: <Widget>[
-            FlatButton(
-              child: Text("Add"),
-              onPressed: () {
-                if (_addStockKey.currentState.validate()) _addStock();
-              },
-            )
-          ],
-          content: Form(
-            key: _addStockKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text("Current stock: ${item.quantity}"),
-                QuantityField(
-                  label: "Add Stock",
-                  controller: _quantityController,
-                ),
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: "Notes",
-                  ),
-                  controller: _notesController,
-                )
-              ],
-            )
+    showFormDialog(context, "Add Stock",
+      key: _addStockKey,
+      actions: <Widget>[
+        FlatButton(
+          child: Text("Add"),
+            onPressed: () {
+              if (_addStockKey.currentState.validate()) _addStock();
+            },
+        )
+      ],
+      fields: <Widget> [
+        Text("Current stock: ${item.quantity}"),
+        QuantityField(
+          label: "Add Stock",
+          controller: _quantityController,
+        ),
+        TextFormField(
+          decoration: InputDecoration(
+            labelText: "Notes",
           ),
-        );
-      }
+          controller: _notesController,
+        )
+      ],
     );
-    // TODO - Form for adding stock
   }
 
   void _removeStock() async {
@@ -159,42 +147,30 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     _quantityController.clear();
 
-    showDialog(context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Remove Stock"),
-          actions: <Widget>[
-            FlatButton(
-              child: Text("Remove"),
-              onPressed: () {
-                if (_removeStockKey.currentState.validate()) _removeStock();
-              },
-            )
-          ],
-          content: Form(
-            key: _removeStockKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text("Current stock: ${item.quantity}"),
-                QuantityField(
-                  label: "Remove stock",
-                  controller: _quantityController,
-                  max: item.quantity,
-                ),
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: "Notes",
-                  ),
-                  controller: _notesController,
-                ),
-              ],
-            )
+    showFormDialog(context, "Remove Stock",
+        key: _removeStockKey,
+        actions: <Widget>[
+          FlatButton(
+            child: Text("Remove"),
+            onPressed: () {
+              if (_removeStockKey.currentState.validate()) _removeStock();
+            },
+          )
+        ],
+        fields: <Widget>[
+          Text("Current stock: ${item.quantity}"),
+          QuantityField(
+            label: "Remove stock",
+            controller: _quantityController,
+            max: item.quantity,
           ),
-        );
-      }
+          TextFormField(
+            decoration: InputDecoration(
+              labelText: "Notes",
+            ),
+            controller: _notesController,
+          ),
+        ],
     );
   }
 
@@ -214,42 +190,30 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   }
 
   void _countStockDialog() async {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Count Stock"),
-          actions: <Widget>[
-            FlatButton(
-              child: Text("Count"),
-              onPressed: () {
-                if (_countStockKey.currentState.validate()) _countStock();
-              },
-            )
-          ],
-          content: Form(
-            key: _countStockKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                QuantityField(
-                  label: "Count Stock",
-                  hint: "${item.quantity}",
-                  controller: _quantityController,
-                ),
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: "Notes",
-                  ),
-                  controller: _notesController,
-                )
-              ],
-            )
-          )
-        );
-      }
+
+    showFormDialog(context, "Count Stock",
+      key: _countStockKey,
+      actions: <Widget> [
+        FlatButton(
+          child: Text("Count"),
+          onPressed: () {
+            if (_countStockKey.currentState.validate()) _countStock();
+          },
+        )
+      ],
+      fields: <Widget> [
+        QuantityField(
+          label: "Count Stock",
+          hint: "${item.quantity}",
+          controller: _quantityController,
+        ),
+        TextFormField(
+          decoration: InputDecoration(
+            labelText: "Notes",
+          ),
+          controller: _notesController,
+        )
+      ]
     );
   }
 
@@ -258,8 +222,75 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     // TODO
   }
 
-  void _transferStockDialog() {
-    // TODO - Form for transferring stock
+  void _transferStockDialog() async {
+
+    var locations = await InvenTreeStockLocation().list(context);
+    final _selectedController = TextEditingController();
+
+    InvenTreeStockLocation selectedLocation;
+
+    _quantityController.text = "${item.quantity}";
+
+    showFormDialog(context, "Transfer Stock",
+        key: _moveStockKey,
+        actions: <Widget>[
+          FlatButton(
+            child: Text("Transfer"),
+            onPressed: () {
+              if (_moveStockKey.currentState.validate()) {
+                // TODO - Transfer!
+              }
+            },
+          )
+        ],
+        fields: <Widget>[
+          QuantityField(
+            label: "Quantity",
+            controller: _quantityController,
+            max: item.quantity,
+          ),
+          TypeAheadFormField(
+              textFieldConfiguration: TextFieldConfiguration(
+                  controller: _selectedController,
+                  autofocus: true,
+                  decoration: InputDecoration(
+                      hintText: "Search for location",
+                      border: OutlineInputBorder()
+                  )
+              ),
+              suggestionsCallback: (pattern) async {
+                var suggestions = List<InvenTreeStockLocation>();
+
+                for (var loc in locations) {
+                  if (loc.matchAgainstString(pattern)) {
+                    suggestions.add(loc as InvenTreeStockLocation);
+                  }
+                }
+
+                return suggestions;
+              },
+              validator: (value) {
+                if (selectedLocation == null) {
+                  return "Select a location";
+                }
+
+                return null;
+              },
+              onSuggestionSelected: (suggestion) {
+                selectedLocation = suggestion as InvenTreeStockLocation;
+                _selectedController.text = selectedLocation.pathstring;
+              },
+              itemBuilder: (context, suggestion) {
+                var location = suggestion as InvenTreeStockLocation;
+
+                return ListTile(
+                  title: Text("${location.pathstring}"),
+                  subtitle: Text("${location.description}"),
+                );
+              }
+          ),
+        ],
+    );
   }
 
   /*
