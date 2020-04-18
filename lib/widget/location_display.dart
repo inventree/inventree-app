@@ -129,8 +129,8 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
     return ListView(
       children: <Widget> [
-      locationDescriptionCard(),
-      ExpansionPanelList(
+        locationDescriptionCard(),
+        ExpansionPanelList(
           expansionCallback: (int index, bool isExpanded) {
             setState(() {
               switch (index) {

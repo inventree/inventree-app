@@ -54,6 +54,10 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
     return null;
   }
 
+  Widget getFab(BuildContext context) {
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -63,6 +67,7 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
     return Scaffold(
       appBar: getAppBar(context),
       drawer: getDrawer(context),
+      floatingActionButton: getFab(context),
       body: RefreshIndicator(
         onRefresh: refresh,
         child: getBody(context)

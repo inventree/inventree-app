@@ -33,6 +33,7 @@ dependencies:
   font_awesome_flutter: ^8.8.1            # FontAwesome icon set
   flutter_speed_dial: ^1.2.5              # FAB menu elements
   sentry: ^3.0.1                          # Error reporting
+  flutter_typeahead: ^1.8.0               # Auto-complete input field
 
 dev_dependencies:
   flutter_test:

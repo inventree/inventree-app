@@ -142,6 +142,16 @@ class InvenTreeStockItem extends InvenTreeModel {
     return loc;
   }
 
+  String get locationPathString {
+    String path = '';
+
+    if (jsondata.containsKey('location_detail')) {
+      path = jsondata['location_detail']['pathstring'] ?? '';
+    }
+
+    return path;
+  }
+
   String get displayQuantity {
     // Display either quantity or serial number!
 

@@ -2,6 +2,7 @@
 
 import 'package:InvenTree/inventree/stock.dart';
 import 'package:InvenTree/inventree/part.dart';
+import 'package:InvenTree/widget/fields.dart';
 import 'package:InvenTree/widget/location_display.dart';
 import 'package:InvenTree/widget/part_detail.dart';
 import 'package:InvenTree/widget/refreshable_state.dart';
@@ -12,7 +13,7 @@ import 'package:InvenTree/api.dart';
 
 import 'package:InvenTree/widget/drawer.dart';
 import 'package:InvenTree/widget/refreshable_state.dart';
-
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -98,6 +99,9 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   }
 
   void _addStockDialog() async {
+
+    _quantityController.clear();
+
     showDialog(context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -117,22 +121,10 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Text("Current Quantity: ${item.quantity}"),
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: "Add stock",
-                  ),
-                  keyboardType: TextInputType.numberWithOptions(signed: false, decimal: true),
+                Text("Current stock: ${item.quantity}"),
+                QuantityField(
+                  label: "Add Stock",
                   controller: _quantityController,
-                  validator: (value) {
-                    if (value.isEmpty) return "Value cannot be empty";
-
-                    double quantity = double.tryParse(value);
-                    if (quantity == null) return "Value cannot be converted to a number";
-                    if (quantity <= 0) return "Value must be positive";
-
-                    return null;
-                  },
                 ),
                 TextFormField(
                   decoration: InputDecoration(
@@ -164,6 +156,9 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   }
 
   void _removeStockDialog() {
+
+    _quantityController.clear();
+
     showDialog(context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -183,25 +178,11 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text("Current quantity: ${item.quantity}"),
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: "Remove stock",
-                  ),
+                Text("Current stock: ${item.quantity}"),
+                QuantityField(
+                  label: "Remove stock",
                   controller: _quantityController,
-                  keyboardType: TextInputType.numberWithOptions(signed: false, decimal: true),
-                  validator: (value) {
-                    if (value.isEmpty) return "Value cannot be empty";
-
-                    double quantity = double.tryParse(value);
-
-                    if (quantity == null) return "Value cannot be converted to a number";
-                    if (quantity <= 0) return "Value must be positive";
-
-                    if (quantity > item.quantity) return "Cannot take more than current quantity";
-
-                    return null;
-                  },
+                  max: item.quantity,
                 ),
                 TextFormField(
                   decoration: InputDecoration(
@@ -253,22 +234,10 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: "Count stock",
-                    hintText: "${item.quantity}",
-                  ),
+                QuantityField(
+                  label: "Count Stock",
+                  hint: "${item.quantity}",
                   controller: _quantityController,
-                  keyboardType: TextInputType.numberWithOptions(signed: false, decimal: true),
-                  validator: (value) {
-                    if (value.isEmpty) return "Value cannot be empty";
-
-                    double quantity = double.tryParse(value);
-                    if (quantity == null) return "Value cannot be converted to a number";
-                    if (quantity < 0) return "Value cannot be negative";
-
-                    return null;
-                  },
                 ),
                 TextFormField(
                   decoration: InputDecoration(
@@ -354,13 +323,12 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     }
 
-
     // Location information
     if (item.locationName.isNotEmpty) {
       tiles.add(
         ListTile(
           title: Text("Stock Location"),
-          subtitle: Text("${item.locationName}"),
+          subtitle: Text("${item.locationPathString}"),
           leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
           onTap: () {
             if (item.locationId > 0) {
@@ -467,6 +435,24 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   }
 
   @override
+  Widget getBottomNavBar(BuildContext context) {
+    return BottomNavigationBar(
+      currentIndex: 0,
+      onTap: null,
+      items: const <BottomNavigationBarItem> [
+        BottomNavigationBarItem(
+          icon: FaIcon(FontAwesomeIcons.infoCircle),
+          title: Text("Details"),
+        ),
+        BottomNavigationBarItem(
+          icon: FaIcon(FontAwesomeIcons.history),
+          title: Text("History"),
+        )
+      ]
+    );
+  }
+
+  @override
   Widget getBody(BuildContext context) {
     return ListView(
       children: stockTiles()
@@ -474,23 +460,12 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   }
 
   @override
-  Widget build(BuildContext context) {
-
-    this.context = context;
-
-    return Scaffold(
-      appBar: getAppBar(context),
-      drawer: getDrawer(context),
-      floatingActionButton: SpeedDial(
+  Widget getFab(BuildContext context) {
+    return SpeedDial(
         visible: true,
         animatedIcon: AnimatedIcons.menu_close,
         heroTag: 'stock-item-fab',
         children: actionButtons(),
-      ),
-      body: RefreshIndicator(
-        onRefresh: refresh,
-        child: getBody(context)
-      )
-    );
+      );
   }
 }

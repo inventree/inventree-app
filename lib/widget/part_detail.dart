@@ -205,6 +205,10 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           title: Text("Details"),
         ),
         BottomNavigationBarItem(
+          icon: FaIcon(FontAwesomeIcons.thList),
+          title: Text("BOM"),
+        ),
+        BottomNavigationBarItem(
           icon: FaIcon(FontAwesomeIcons.boxes),
           title: Text("Stock"),
         ),
