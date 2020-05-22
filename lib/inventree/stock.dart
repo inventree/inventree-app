@@ -25,6 +25,18 @@ class InvenTreeStockItem extends InvenTreeModel {
     return headers;
   }
 
+  @override
+  Map<String, String> defaultListFilters() {
+
+    var headers = new Map<String, String>();
+
+    headers["part_detail"] = "true";
+    headers["location_detail"] = "true";
+    headers["supplier_detail"] = "true";
+
+    return headers;
+  }
+
   InvenTreeStockItem() : super();
 
   InvenTreeStockItem.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
@@ -42,10 +54,6 @@ class InvenTreeStockItem extends InvenTreeModel {
     // Use the detailed part information as priority
     if (jsondata.containsKey('part_detail')) {
       nm = jsondata['part_detail']['full_name'] ?? '';
-    }
-
-    if (nm.isEmpty) {
-      nm = jsondata['part__name'] ?? '';
     }
 
     return nm;
