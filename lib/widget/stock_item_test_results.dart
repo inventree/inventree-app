@@ -31,10 +31,22 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
 
   _StockItemTestResultDisplayState(this.item);
 
+  // Squish together templates and results
+
+  List<Widget> resultsList() {
+    List<Widget> items = [];
+
+    items.add(ListTile(
+        title: Text("Test results"),
+    ));
+
+    return items;
+  }
+
   @override
   Widget getBody(BuildContext context) {
     return ListView(
-
+      children: resultsList(),
     );
   }
 }

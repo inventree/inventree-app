@@ -72,6 +72,18 @@ class InvenTreePartTestTemplate extends InvenTreeModel {
   @override
   String URL = "part/test-template/";
 
+  String get key => jsondata['key'] ?? '';
+
+  String get testName => jsondata['test_name'] ?? '';
+
+  String get description => jsondata['description'] ?? '';
+
+  bool get required => jsondata['required'] ?? false;
+
+  bool get requiresValue => jsondata['requires_value'] ?? false;
+
+  bool get requiresAttachment => jsondata['requires_attachment'] ?? false;
+
   InvenTreePartTestTemplate() : super();
 
   InvenTreePartTestTemplate.fromJson(Map<String, dynamic> json) : super.fromJson(json) {

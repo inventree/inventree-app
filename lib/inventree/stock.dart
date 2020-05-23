@@ -16,6 +16,20 @@ class InvenTreeStockItemTestResult extends InvenTreeModel {
   @override
   String URL = "stock/test/";
 
+  String get key => jsondata['key'] ?? '';
+
+  String get test_name => jsondata['test'] ?? '';
+
+  bool get result => jsondata['result'] ?? false;
+
+  String get value => jsondata['value'] ?? '';
+
+  String get notes => jsondata['notes'] ?? '';
+
+  String get attachment => jsondata['attachment'] ?? '';
+
+  String get date => jsondata['date'] ?? '';
+
   InvenTreeStockItemTestResult() : super();
 
   InvenTreeStockItemTestResult.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
