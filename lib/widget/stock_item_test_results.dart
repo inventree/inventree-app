@@ -2,6 +2,8 @@ import 'package:InvenTree/inventree/part.dart';
 import 'package:InvenTree/inventree/stock.dart';
 import 'package:InvenTree/inventree/model.dart';
 import 'package:InvenTree/api.dart';
+import 'package:InvenTree/widget/dialogs.dart';
+import 'package:InvenTree/widget/fields.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +24,8 @@ class StockItemTestResultsWidget extends StatefulWidget {
 
 class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestResultsWidget> {
 
+  final _addResultKey = GlobalKey<FormState>();
+
   @override
   String getAppBarTitle(BuildContext context) { return "Test Results"; }
 
@@ -34,6 +38,57 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
   final InvenTreeStockItem item;
 
   _StockItemTestResultDisplayState(this.item);
+
+  void addTestResult({String name = '', bool nameIsEditable = true, bool result = false, String value = '', bool valueRequired = false, bool attachmentRequired = false}) {
+
+    showFormDialog(context, "Add Test Data",
+      key: _addResultKey,
+      actions: <Widget>[
+        FlatButton(
+          child: Text("Cancel"),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        FlatButton(
+          child: Text("Save"),
+          onPressed: () {
+            if (_addResultKey.currentState.validate()) {
+              // TODO
+            }
+          },
+        )
+      ],
+      fields: <Widget>[
+        StringField(
+          label: "Test Name",
+          initial: name,
+          isEnabled: nameIsEditable,
+        ),
+        CheckBoxField(
+          label: "Result",
+          hint: "Test passed or failed",
+          initial: true,
+        ),
+        StringField(
+          label: "Value",
+          initial: value,
+          allowEmpty: true,
+          validator: (String value) {
+            print("Value: " + value);
+            if (valueRequired && (value == null || value.isEmpty)) {
+              return "Value required for this test";
+            }
+            return null;
+          },
+        ),
+        StringField(
+          allowEmpty: true,
+          label: "Notes",
+        ),
+      ]
+    );
+  }
 
   // Squish together templates and results
   List<InvenTreeModel> getTestResults() {
@@ -117,6 +172,14 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
           ),
           subtitle: Text(subtitle),
           trailing: icon,
+          onLongPress: () {
+            addTestResult(
+                name: template.testName,
+                nameIsEditable: false,
+                valueRequired: template.requiresValue,
+                attachmentRequired: template.requiresAttachment,
+            );
+          }
         ));
       }
 
@@ -139,6 +202,14 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
           title: Text("${result.testName}"),
           subtitle: Text("${result.value}"),
           trailing: icon,
+          onLongPress: () {
+            addTestResult(
+                name: result.testName,
+                nameIsEditable: false,
+                valueRequired: false,
+                attachmentRequired: false
+            );
+          }
         ));
 
       }
@@ -167,7 +238,9 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
     buttons.add(SpeedDialChild(
       child: Icon(FontAwesomeIcons.plusCircle),
       label: "Add Test Result",
-      onTap: null,
+      onTap: () {
+        addTestResult();
+      },
     ));
 
     return buttons;

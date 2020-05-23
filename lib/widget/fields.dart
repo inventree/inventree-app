@@ -22,7 +22,7 @@ class CheckBoxField extends FormField<bool> {
 
 class StringField extends TextFormField {
 
-  StringField({String label, String hint, String initial, Function onSaved, Function validator, bool allowEmpty = false}) :
+  StringField({String label, String hint, String initial, Function onSaved, Function validator, bool allowEmpty = false, bool isEnabled = true}) :
       super(
         decoration: InputDecoration(
           labelText: label,
@@ -30,8 +30,8 @@ class StringField extends TextFormField {
         ),
         initialValue: initial,
         onSaved: onSaved,
+        enabled: isEnabled,
         validator: (value) {
-          print("Value: ${value}");
           if (!allowEmpty && value.isEmpty) {
             return "Value cannot be empty";
           }
