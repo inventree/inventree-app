@@ -2,6 +2,24 @@
 import 'package:flutter/material.dart';
 
 
+class CheckBoxField extends FormField<bool> {
+  CheckBoxField({String label, String hint, bool initial = false, Function onSaved}) :
+      super(
+        onSaved: onSaved,
+        initialValue: initial,
+        builder: (FormFieldState<bool> state) {
+          return CheckboxListTile(
+            //dense: state.hasError,
+            title: label == null ? null : Text(label),
+            value: state.value,
+            onChanged: state.didChange,
+            subtitle: hint == null ? null : Text(hint),
+          );
+        }
+      );
+}
+
+
 class StringField extends TextFormField {
 
   StringField({String label, String hint, String initial, Function onSaved, Function validator, bool allowEmpty = false}) :
