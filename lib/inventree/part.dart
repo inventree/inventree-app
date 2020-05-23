@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:InvenTree/api.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'model.dart';
 import 'dart:io';
@@ -63,6 +64,28 @@ class InvenTreePartCategory extends InvenTreeModel {
 }
 
 
+class InvenTreePartTestTemplate extends InvenTreeModel {
+
+  @override
+  String NAME = "PartTestTemplate";
+
+  @override
+  String URL = "part/test-template/";
+
+  InvenTreePartTestTemplate() : super();
+
+  InvenTreePartTestTemplate.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+  }
+
+  @override
+  InvenTreeModel createFromJson(Map<String, dynamic> json) {
+    var template = InvenTreePartTestTemplate.fromJson(json);
+
+    return template;
+  }
+}
+
+
 class InvenTreePart extends InvenTreeModel {
 
   @override
@@ -71,115 +94,112 @@ class InvenTreePart extends InvenTreeModel {
   @override
   String URL = "part/";
 
-  List<dynamic> testTemplates;
+  List<InvenTreePartTestTemplate> testingTemplates = List<InvenTreePartTestTemplate>();
 
-  int get testTemplateCount {
-    if (testTemplates == null) {
-      return 0;
-    } else {
-      return testTemplates.length;
-    }
-  }
+  int get testTemplateCount => testingTemplates.length;
 
-  Future<void> getTestTemplates() async {
+  Future<void> getTestTemplates(BuildContext context, {bool showDialog=false}) async {
 
-    var response = await api.get("/part/test-template/", params: {
-      "part": "${pk}",
-    })
-    .timeout(Duration(seconds: 10))
-    .catchError((e) {
-      return;
+    InvenTreePartTestTemplate().list(
+      context,
+      filters: {
+        "part": "${pk}",
+      },
+      dialog: showDialog,
+    ).then((var templates) {
+
+      testingTemplates.clear();
+
+      for (var t in templates) {
+        if (t is InvenTreePartTestTemplate) {
+          testingTemplates.add(t);
+        }
+      }
     });
-
-    print("Status: " + response.statusCode.toString());
-
-    testTemplates = json.decode(response.body);
-
-    return;
   }
 
-  // Get the number of stock on order for this Part
-  double get onOrder => double.tryParse(jsondata['ordering'].toString() ?? '0');
+    // Get the number of stock on order for this Part
+    double get onOrder => double.tryParse(jsondata['ordering'].toString() ?? '0');
 
-  // Get the stock count for this Part
-  double get inStock => double.tryParse(jsondata['in_stock'].toString() ?? '0');
+    // Get the stock count for this Part
+    double get inStock => double.tryParse(jsondata['in_stock'].toString() ?? '0');
 
-  // Get the number of units being build for this Part
-  double get building => double.tryParse(jsondata['building'].toString() ?? '0');
+    // Get the number of units being build for this Part
+    double get building => double.tryParse(jsondata['building'].toString() ?? '0');
 
-  // Get the number of BOM items in this Part (if it is an assembly)
-  int get bomItemCount => jsondata['bom_items'] as int ?? 0;
+    // Get the number of BOM items in this Part (if it is an assembly)
+    int get bomItemCount => jsondata['bom_items'] as int ?? 0;
 
-  // Get the number of BOMs this Part is used in (if it is a component)
-  int get usedInCount => jsondata['used_in'] as int ?? 0;
+    // Get the number of BOMs this Part is used in (if it is a component)
+    int get usedInCount => jsondata['used_in'] as int ?? 0;
 
-  bool get isAssembly => jsondata['assembly'] ?? false;
+    bool get isAssembly => jsondata['assembly'] ?? false;
 
-  bool get isComponent => jsondata['component'] ?? false;
+    bool get isComponent => jsondata['component'] ?? false;
 
-  bool get isPurchaseable => jsondata['purchaseable'] ?? false;
+    bool get isPurchaseable => jsondata['purchaseable'] ?? false;
 
-  bool get isSalable => jsondata['salable'] ?? false;
+    bool get isSalable => jsondata['salable'] ?? false;
 
-  bool get isActive => jsondata['active'] ?? false;
+    bool get isActive => jsondata['active'] ?? false;
 
-  bool get isVirtual => jsondata['virtual'] ?? false;
+    bool get isVirtual => jsondata['virtual'] ?? false;
 
-  bool get isTrackable => jsondata['trackable'] ?? false;
+    bool get isTrackable => jsondata['trackable'] ?? false;
 
-  // Get the IPN (internal part number) for the Part instance
-  String get IPN => jsondata['IPN'] as String ?? '';
+    // Get the IPN (internal part number) for the Part instance
+    String get IPN => jsondata['IPN'] as String ?? '';
 
-  // Get the revision string for the Part instance
-  String get revision => jsondata['revision'] as String ?? '';
+    // Get the revision string for the Part instance
+    String get revision => jsondata['revision'] as String ?? '';
 
-  // Get the category ID for the Part instance (or 'null' if does not exist)
-  int get categoryId => jsondata['category'] as int ?? null;
+    // Get the category ID for the Part instance (or 'null' if does not exist)
+    int get categoryId => jsondata['category'] as int ?? null;
 
-  // Get the category name for the Part instance
-  String get categoryName => jsondata['category_name'] ?? '';
+    // Get the category name for the Part instance
+    String get categoryName => jsondata['category_name'] ?? '';
 
-  // Get the image URL for the Part instance
-  String get _image  => jsondata['image'] ?? '';
+    // Get the image URL for the Part instance
+    String get _image  => jsondata['image'] ?? '';
 
-  // Get the thumbnail URL for the Part instance
-  String get _thumbnail => jsondata['thumbnail'] ?? '';
+    // Get the thumbnail URL for the Part instance
+    String get _thumbnail => jsondata['thumbnail'] ?? '';
 
-  // Return the fully-qualified name for the Part instance
-  String get fullname {
+    // Return the fully-qualified name for the Part instance
+    String get fullname {
 
-    String fn = jsondata['full_name'] ?? '';
+      String fn = jsondata['full_name'] ?? '';
 
-    if (fn.isNotEmpty) return fn;
+      if (fn.isNotEmpty) return fn;
 
-    List<String> elements = List<String>();
+      List<String> elements = List<String>();
 
-    if (IPN.isNotEmpty) elements.add(IPN);
+      if (IPN.isNotEmpty) elements.add(IPN);
 
-    elements.add(name);
+      elements.add(name);
 
-    if (revision.isNotEmpty) elements.add(revision);
+      if (revision.isNotEmpty) elements.add(revision);
 
-    return elements.join(" | ");
-  }
+      return elements.join(" | ");
+    }
 
-  // Return a path to the image for this Part
-  String get image {
-    // Use thumbnail as a backup
-    String img = _image.isNotEmpty ? _image : _thumbnail;
+    // Return a path to the image for this Part
+    String get image {
+      // Use thumbnail as a backup
+      String img = _image.isNotEmpty ? _image : _thumbnail;
 
-    return img.isNotEmpty ? img : InvenTreeAPI.staticImage;
-  }
+      return img.isNotEmpty ? img : InvenTreeAPI.staticImage;
+    }
 
-  // Return a path to the thumbnail for this part
-  String get thumbnail {
-    // Use image as a backup
-    String img = _thumbnail.isNotEmpty ? _thumbnail : _image;
+    // Return a path to the thumbnail for this part
+    String get thumbnail {
+      // Use image as a backup
+      String img = _thumbnail.isNotEmpty ? _thumbnail : _image;
 
-    return img.isNotEmpty ? img : InvenTreeAPI.staticThumb;
-  }
+      return img.isNotEmpty ? img : InvenTreeAPI.staticThumb;
+    }
 
-  InvenTreePart() : super();
+    InvenTreePart() : super();
 
   InvenTreePart.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     // TODO

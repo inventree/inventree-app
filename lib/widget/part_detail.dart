@@ -42,7 +42,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   @override
   Future<void> request(BuildContext context) async {
     await part.reload(context);
-    await part.getTestTemplates();
+    await part.getTestTemplates(context);
   }
 
   void _savePart(Map<String, String> values) async {
