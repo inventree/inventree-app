@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:InvenTree/inventree/part.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'model.dart';
@@ -65,6 +66,29 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   InvenTreeStockItem.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     // TODO
+  }
+
+  List<InvenTreePartTestTemplate> testTemplates = List<InvenTreePartTestTemplate>();
+
+  int get testTemplateCount => testTemplates.length;
+
+  // Get all the test templates associated with this StockItem
+  Future<void> getTestTemplates(BuildContext context, {bool showDialog=false}) async {
+    InvenTreePartTestTemplate().list(
+      context,
+      filters: {
+        "part": "${partId}",
+      },
+      dialog: showDialog,
+    ).then((var templates) {
+      testTemplates.clear();
+
+      for (var t in templates) {
+        if (t is InvenTreePartTestTemplate) {
+          testTemplates.add(t);
+        }
+      }
+    });
   }
 
   List<InvenTreeStockItemTestResult> testResults = List<InvenTreeStockItemTestResult>();

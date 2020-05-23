@@ -7,6 +7,7 @@ import 'package:InvenTree/widget/fields.dart';
 import 'package:InvenTree/widget/location_display.dart';
 import 'package:InvenTree/widget/part_detail.dart';
 import 'package:InvenTree/widget/refreshable_state.dart';
+import 'package:InvenTree/widget/stock_item_test_results.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -429,7 +430,9 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           title: Text("Test Results"),
           leading: FaIcon(FontAwesomeIcons.tasks),
           trailing: Text("${item.testResultCount}"),
-          onTap: null,
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => StockItemTestResultsWidget(item)));
+          }
         )
     );
 
