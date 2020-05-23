@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:InvenTree/api.dart';
+import 'package:InvenTree/inventree/stock.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'model.dart';
 import 'dart:io';
@@ -95,6 +97,29 @@ class InvenTreePartTestTemplate extends InvenTreeModel {
 
     return template;
   }
+
+  bool passFailStatus() {
+    var result = latestResult();
+
+    if (result == null) {
+      return null;
+    }
+
+    return result.result;
+  }
+
+  // List of test results associated with this template
+  List<InvenTreeStockItemTestResult> results = [];
+
+  // Return the most recent test result recorded against this template
+  InvenTreeStockItemTestResult latestResult() {
+    if (results.isEmpty) {
+      return null;
+    }
+
+    return results.last;
+  }
+
 }
 
 

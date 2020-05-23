@@ -18,7 +18,7 @@ class InvenTreeStockItemTestResult extends InvenTreeModel {
 
   String get key => jsondata['key'] ?? '';
 
-  String get test_name => jsondata['test'] ?? '';
+  String get testName => jsondata['test'] ?? '';
 
   bool get result => jsondata['result'] ?? false;
 
