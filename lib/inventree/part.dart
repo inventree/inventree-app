@@ -98,6 +98,8 @@ class InvenTreePart extends InvenTreeModel {
 
   bool get isVirtual => jsondata['virtual'] ?? false;
 
+  bool get isTrackable => jsondata['trackable'] ?? false;
+
   // Get the IPN (internal part number) for the Part instance
   String get IPN => jsondata['IPN'] as String ?? '';
 

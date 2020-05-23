@@ -215,6 +215,16 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       );
     }
 
+    if (part.isTrackable) {
+      tiles.add(ListTile(
+          title: Text("Required Tests"),
+          leading: FaIcon(FontAwesomeIcons.tasks),
+          trailing: Text(""),
+          onTap: null,
+        )
+      );
+    }
+
     // Notes field?
     if (part.notes.isNotEmpty) {
       tiles.add(
