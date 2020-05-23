@@ -1,7 +1,8 @@
 import 'package:InvenTree/widget/dialogs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:qr_utils/qr_utils.dart';
+
+//import 'package:qr_utils/qr_utils.dart';
 
 import 'package:InvenTree/inventree/stock.dart';
 import 'package:InvenTree/inventree/part.dart';
@@ -17,6 +18,8 @@ import 'dart:convert';
 
 Future<void> scanQrCode(BuildContext context) async {
 
+  return;
+  /*
   QrUtils.scanQR.then((String barcode) {
 
     print("Scanned: $barcode");
@@ -92,6 +95,7 @@ Future<void> scanQrCode(BuildContext context) async {
 
     });
   });
+  */
 }
 
 void _handleBarcode(BuildContext context, Map<String, dynamic> data) {

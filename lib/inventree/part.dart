@@ -72,10 +72,10 @@ class InvenTreePart extends InvenTreeModel {
   String URL = "part/";
 
   // Get the number of stock on order for this Part
-  double get onOrder => double.tryParse(jsondata['on_order'].toString() ?? '0');
+  double get onOrder => double.tryParse(jsondata['ordering'].toString() ?? '0');
 
   // Get the stock count for this Part
-  double get inStock => double.tryParse(jsondata['total_stock'].toString() ?? '0');
+  double get inStock => double.tryParse(jsondata['in_stock'].toString() ?? '0');
 
   // Get the number of units being build for this Part
   double get building => double.tryParse(jsondata['building'].toString() ?? '0');
