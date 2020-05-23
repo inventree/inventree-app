@@ -42,6 +42,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   @override
   Future<void> request(BuildContext context) async {
     await part.reload(context);
+    await part.getTestTemplates();
   }
 
   void _savePart(Map<String, String> values) async {
@@ -219,7 +220,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       tiles.add(ListTile(
           title: Text("Required Tests"),
           leading: FaIcon(FontAwesomeIcons.tasks),
-          trailing: Text(""),
+          trailing: Text("${part.testTemplateCount}"),
           onTap: null,
         )
       );

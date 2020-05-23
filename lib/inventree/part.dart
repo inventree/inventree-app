@@ -71,6 +71,33 @@ class InvenTreePart extends InvenTreeModel {
   @override
   String URL = "part/";
 
+  List<dynamic> testTemplates;
+
+  int get testTemplateCount {
+    if (testTemplates == null) {
+      return 0;
+    } else {
+      return testTemplates.length;
+    }
+  }
+
+  Future<void> getTestTemplates() async {
+
+    var response = await api.get("/part/test-template/", params: {
+      "part": "${pk}",
+    })
+    .timeout(Duration(seconds: 10))
+    .catchError((e) {
+      return;
+    });
+
+    print("Status: " + response.statusCode.toString());
+
+    testTemplates = json.decode(response.body);
+
+    return;
+  }
+
   // Get the number of stock on order for this Part
   double get onOrder => double.tryParse(jsondata['ordering'].toString() ?? '0');
 
