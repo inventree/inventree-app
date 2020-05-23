@@ -20,7 +20,7 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
 
   // Function called after the widget is first build
   Future<void> onBuild(BuildContext context) async {
-    return;
+    refresh();
   }
 
   // Function to request data for this page

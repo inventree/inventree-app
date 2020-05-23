@@ -53,6 +53,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   @override
   Future<void> request(BuildContext context) async {
     await item.reload(context);
+    await item.getTestResults(context);
   }
 
   void _editStockItem() {
@@ -422,6 +423,15 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         )
       );
     }
+
+    tiles.add(
+        ListTile(
+          title: Text("Test Results"),
+          leading: FaIcon(FontAwesomeIcons.tasks),
+          trailing: Text("${item.testResultCount}"),
+          onTap: null,
+        )
+    );
 
     if (item.trackingItemCount > 0) {
       tiles.add(

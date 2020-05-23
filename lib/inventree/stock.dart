@@ -1,9 +1,33 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'model.dart';
 
 import 'package:InvenTree/api.dart';
+
+
+class InvenTreeStockItemTestResult extends InvenTreeModel {
+
+  @override
+  String NAME = "StockItemTestResult";
+
+  @override
+  String URL = "stock/test/";
+
+  InvenTreeStockItemTestResult() : super();
+
+  InvenTreeStockItemTestResult.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+  }
+
+  @override
+  InvenTreeStockItemTestResult createFromJson(Map<String, dynamic> json) {
+    var result = InvenTreeStockItemTestResult.fromJson(json);
+    return result;
+  }
+
+}
+
 
 class InvenTreeStockItem extends InvenTreeModel {
 
@@ -41,6 +65,29 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   InvenTreeStockItem.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     // TODO
+  }
+
+  List<InvenTreeStockItemTestResult> testResults = List<InvenTreeStockItemTestResult>();
+
+  int get testResultCount => testResults.length;
+
+  Future<void> getTestResults(BuildContext context, {bool showDialog=false}) async {
+    InvenTreeStockItemTestResult().list(
+      context,
+      filters: {
+        "stock_item": "${pk}",
+        "user_detail": "true",
+      },
+      dialog: showDialog,
+    ).then((var results) {
+      testResults.clear();
+
+      for (var r in results) {
+        if (r is InvenTreeStockItemTestResult) {
+          testResults.add(r);
+        }
+      }
+    });
   }
 
   int get partId => jsondata['part'] ?? -1;
