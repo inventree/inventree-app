@@ -34,6 +34,12 @@ dependencies:
   flutter_speed_dial: ^1.2.5              # FAB menu elements
   sentry: ^3.0.1                          # Error reporting
   flutter_typeahead: ^1.8.1               # Auto-complete input field
+  image_picker: ^0.6.6                    # Select or take photos
+  #flutter_form_builder:
+
+  camera:
+  path_provider:
+  path:
 
 dev_dependencies:
   flutter_test:
