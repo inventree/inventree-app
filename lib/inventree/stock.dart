@@ -88,7 +88,7 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   // Get all the test templates associated with this StockItem
   Future<void> getTestTemplates(BuildContext context, {bool showDialog=false}) async {
-    InvenTreePartTestTemplate().list(
+    await InvenTreePartTestTemplate().list(
       context,
       filters: {
         "part": "${partId}",
@@ -110,7 +110,8 @@ class InvenTreeStockItem extends InvenTreeModel {
   int get testResultCount => testResults.length;
 
   Future<void> getTestResults(BuildContext context, {bool showDialog=false}) async {
-    InvenTreeStockItemTestResult().list(
+
+    await InvenTreeStockItemTestResult().list(
       context,
       filters: {
         "stock_item": "${pk}",
@@ -143,7 +144,6 @@ class InvenTreeStockItem extends InvenTreeModel {
     if (notes != null && !notes.isEmpty) {
       data["notes"] = notes;
     }
-
 
     bool _result = false;
 

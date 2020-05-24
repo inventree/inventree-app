@@ -5,6 +5,8 @@ import 'package:InvenTree/api.dart';
 import 'package:InvenTree/widget/dialogs.dart';
 import 'package:InvenTree/widget/fields.dart';
 
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:InvenTree/widget/refreshable_state.dart';
@@ -39,7 +41,25 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
 
   _StockItemTestResultDisplayState(this.item);
 
-  void addTestResult({String name = '', bool nameIsEditable = true, bool result = false, String value = '', bool valueRequired = false, bool attachmentRequired = false}) {
+  void uploadTestResult(String name, bool result, String value, String notes) async {
+
+    item.uploadTestResult(
+      context,
+      name,
+      result,
+      value: value,
+      notes: notes,
+    ).then((bool success) {
+      if (success) {
+        // TODO - Show a SnackBar here!
+        refresh();
+      } else {
+        showErrorDialog(context, "Error", "Could not upload test result to server");
+      }
+    });
+  }
+
+  void addTestResult({String name = '', bool nameIsEditable = true, bool result = false, String value = '', bool valueRequired = false, bool attachmentRequired = false}) async  {
 
     String _name;
     bool _result;
@@ -59,16 +79,9 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
           child: Text("Save"),
           onPressed: () {
             if (_addResultKey.currentState.validate()) {
-
               _addResultKey.currentState.save();
-
-              item.uploadTestResult(
-                  context,
-                  _name,
-                  _result,
-                  value: _value,
-                  notes: _notes,
-              );
+              Navigator.pop(context);
+              uploadTestResult(_name, _result, _value, _notes);
             }
           },
         )
@@ -92,7 +105,6 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
           allowEmpty: true,
           onSaved: (value) => _value = value,
           validator: (String value) {
-            print("Value: " + value);
             if (valueRequired && (value == null || value.isEmpty)) {
               return "Value required for this test";
             }

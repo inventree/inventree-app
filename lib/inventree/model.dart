@@ -242,8 +242,14 @@ class InvenTreeModel {
       return null;
     })
     .then((http.Response response) {
-      var decoded = json.decode(response.body);
-      _model = createFromJson(decoded);
+      // Server should return HTTP_201_CREATED
+      if (response.statusCode == 201) {
+        var decoded = json.decode(response.body);
+        _model = createFromJson(decoded);
+      } else {
+        print("Error creating object: Status Code ${response.statusCode}");
+        print(response.body);
+      }
     });
 
     return _model;
