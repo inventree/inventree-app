@@ -220,6 +220,35 @@ class InvenTreeModel {
     return createFromJson(data);
   }
 
+  Future<InvenTreeModel> create(BuildContext context, Map<String, dynamic> data) async {
+
+    print("CREATE: ${URL} ${data.toString()}");
+
+    if (data.containsKey('pk')) {
+      data.remove('pk');
+    }
+
+    if (data.containsKey('id')) {
+      data.remove('id');
+    }
+
+    api.post(URL, body: data)
+    .timeout(Duration(seconds: 5))
+    .catchError((e) {
+      print("Error creating new ${NAME}:");
+      print(e.toString());
+      return null;
+    })
+    .then((http.Response response) {
+      var decoded = json.decode(response.body);
+      var model = createFromJson(decoded);
+      
+      return model;
+    });
+
+    return null;
+  }
+
   // Return list of objects from the database, with optional filters
   Future<List<InvenTreeModel>> list(BuildContext context, {Map<String, String> filters, bool dialog=true}) async {
 
