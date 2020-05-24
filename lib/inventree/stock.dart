@@ -144,7 +144,16 @@ class InvenTreeStockItem extends InvenTreeModel {
       data["notes"] = notes;
     }
 
-    InvenTreeStockItemTestResult().create(context, data);
+
+    bool _result = false;
+
+    await InvenTreeStockItemTestResult().create(context, data).then((InvenTreeModel model) {
+
+      _result = model != null && model is InvenTreeStockItemTestResult;
+
+    });
+
+    return _result;
   }
 
   int get partId => jsondata['part'] ?? -1;

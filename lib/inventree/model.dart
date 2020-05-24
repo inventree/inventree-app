@@ -232,7 +232,9 @@ class InvenTreeModel {
       data.remove('id');
     }
 
-    api.post(URL, body: data)
+    InvenTreeModel _model;
+
+    await api.post(URL, body: data)
     .timeout(Duration(seconds: 5))
     .catchError((e) {
       print("Error creating new ${NAME}:");
@@ -241,12 +243,10 @@ class InvenTreeModel {
     })
     .then((http.Response response) {
       var decoded = json.decode(response.body);
-      var model = createFromJson(decoded);
-      
-      return model;
+      _model = createFromJson(decoded);
     });
 
-    return null;
+    return _model;
   }
 
   // Return list of objects from the database, with optional filters
