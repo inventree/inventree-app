@@ -128,6 +128,25 @@ class InvenTreeStockItem extends InvenTreeModel {
     });
   }
 
+  Future<bool> uploadTestResult(BuildContext context, String testName, bool result, {String value, String notes}) async {
+
+    Map<String, dynamic> data = {
+      "stock_item": pk,
+      "test": testName,
+      "result": result,
+    };
+
+    if (value != null && !value.isEmpty) {
+      data["value"] = value;
+    }
+
+    if (notes != null && !notes.isEmpty) {
+      data["notes"] = notes;
+    }
+
+    InvenTreeStockItemTestResult().create(context, data);
+  }
+
   int get partId => jsondata['part'] ?? -1;
 
   int get trackingItemCount => jsondata['tracking_items'] as int ?? 0;
