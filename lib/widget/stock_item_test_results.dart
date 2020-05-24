@@ -41,6 +41,11 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
 
   void addTestResult({String name = '', bool nameIsEditable = true, bool result = false, String value = '', bool valueRequired = false, bool attachmentRequired = false}) {
 
+    String _name;
+    bool _result;
+    String _value;
+    String _notes;
+
     showFormDialog(context, "Add Test Data",
       key: _addResultKey,
       actions: <Widget>[
@@ -54,7 +59,16 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
           child: Text("Save"),
           onPressed: () {
             if (_addResultKey.currentState.validate()) {
-              // TODO
+
+              _addResultKey.currentState.save();
+
+              item.uploadTestResult(
+                  context,
+                  _name,
+                  _result,
+                  value: _value,
+                  notes: _notes,
+              );
             }
           },
         )
@@ -64,16 +78,19 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
           label: "Test Name",
           initial: name,
           isEnabled: nameIsEditable,
+          onSaved: (value) => _name = value,
         ),
         CheckBoxField(
           label: "Result",
           hint: "Test passed or failed",
           initial: true,
+          onSaved: (value) => _result = value,
         ),
         StringField(
           label: "Value",
           initial: value,
           allowEmpty: true,
+          onSaved: (value) => _value = value,
           validator: (String value) {
             print("Value: " + value);
             if (valueRequired && (value == null || value.isEmpty)) {
@@ -85,6 +102,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
         StringField(
           allowEmpty: true,
           label: "Notes",
+          onSaved: (value) => _notes = value,
         ),
       ]
     );
