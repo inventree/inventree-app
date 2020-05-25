@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:InvenTree/widget/refreshable_state.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 
 class StockItemTestResultsWidget extends StatefulWidget {
 
@@ -41,7 +42,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
 
   _StockItemTestResultDisplayState(this.item);
 
-  void uploadTestResult(String name, bool result, String value, String notes) async {
+  void uploadTestResult(String name, bool result, String value, String notes, File attachment) async {
 
     item.uploadTestResult(
       context,
@@ -49,6 +50,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
       result,
       value: value,
       notes: notes,
+      attachment: attachment
     ).then((bool success) {
       if (success) {
         // TODO - Show a SnackBar here!
@@ -65,6 +67,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
     bool _result;
     String _value;
     String _notes;
+    File _attachment;
 
     showFormDialog(context, "Add Test Data",
       key: _addResultKey,
@@ -81,7 +84,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
             if (_addResultKey.currentState.validate()) {
               _addResultKey.currentState.save();
               Navigator.pop(context);
-              uploadTestResult(_name, _result, _value, _notes);
+              uploadTestResult(_name, _result, _value, _notes, _attachment);
             }
           },
         )
@@ -110,6 +113,11 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
             }
             return null;
           },
+        ),
+        ImagePickerField(
+          label: "Attach Image",
+          required: attachmentRequired,
+          onSaved: (attachment) => _attachment = attachment,
         ),
         StringField(
           allowEmpty: true,

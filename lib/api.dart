@@ -297,7 +297,6 @@ class InvenTreeAPI {
     var response = await request.send();
 
     return response;
-
   }
 
   // Perform a POST request

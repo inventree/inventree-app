@@ -5,6 +5,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'model.dart';
 
+import 'dart:async';
+import 'dart:io';
+
 import 'package:InvenTree/api.dart';
 
 
@@ -129,12 +132,12 @@ class InvenTreeStockItem extends InvenTreeModel {
     });
   }
 
-  Future<bool> uploadTestResult(BuildContext context, String testName, bool result, {String value, String notes}) async {
+  Future<bool> uploadTestResult(BuildContext context, String testName, bool result, {String value, String notes, File attachment}) async {
 
-    Map<String, dynamic> data = {
-      "stock_item": pk,
+    Map<String, String> data = {
+      "stock_item": pk.toString(),
       "test": testName,
-      "result": result,
+      "result": result.toString(),
     };
 
     if (value != null && !value.isEmpty) {
@@ -145,15 +148,23 @@ class InvenTreeStockItem extends InvenTreeModel {
       data["notes"] = notes;
     }
 
-    bool _result = false;
+    /*
+     * Upload is performed in different ways, depending if an attachment is provided.
+     * TODO: Is there a nice way to refactor this one?
+     */
+    if (attachment == null) {
+      var _result = await InvenTreeStockItemTestResult().create(context, data);
 
-    await InvenTreeStockItemTestResult().create(context, data).then((InvenTreeModel model) {
+      return (_result != null) && (_result is InvenTreeStockItemTestResult);
+    } else {
+      var url = InvenTreeStockItemTestResult().URL;
+      http.StreamedResponse _uploadResponse = await InvenTreeAPI().uploadFile(url, attachment, fields: data);
 
-      _result = model != null && model is InvenTreeStockItemTestResult;
+      // Check that the HTTP status code is HTTP_201_CREATED
+      return _uploadResponse.statusCode == 201;
+    }
 
-    });
-
-    return _result;
+    return false;
   }
 
   int get partId => jsondata['part'] ?? -1;
