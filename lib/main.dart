@@ -254,7 +254,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // in the middle of the parent.
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          children: (<Widget>[
             Spacer(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -308,6 +308,8 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             ),
             Spacer(),
+            // TODO - Re-add these when the features actually do something..
+            /*
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
@@ -402,7 +404,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ],
             ),
-          ],
+            */
+          ]),
         ),
       ),
     );

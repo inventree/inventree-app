@@ -133,6 +133,7 @@ class InvenTreeDrawer extends StatelessWidget {
                 leading: new FaIcon(FontAwesomeIcons.boxes),
                 onTap: _showStock,
               ),
+              /*
               new ListTile(
                 title: new Text("Suppliers"),
                 leading: new FaIcon(FontAwesomeIcons.building),
@@ -148,6 +149,7 @@ class InvenTreeDrawer extends StatelessWidget {
                 leading: new FaIcon(FontAwesomeIcons.users),
                 onTap: _showCustomers,
               ),
+              */
               new Divider(),
               new ListTile(
                 title: new Text("Settings"),
