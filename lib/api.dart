@@ -21,6 +21,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class InvenTreeAPI {
 
+  // Minimum supported InvenTree server version is 0.1.1
+  static const List<int> MIN_SUPPORTED_VERSION = [0, 1, 1];
+
+  bool _checkServerVersion(String version) {
+    // TODO - Decode the provided version string and determine if the server is "new" enough
+    return false;
+  }
+
   // Endpoint for requesting an API token
   static const _URL_GET_TOKEN = "user/token/";
   static const _URL_GET_VERSION = "";
@@ -218,6 +226,10 @@ class InvenTreeAPI {
     print("Version: " + data["version"]);
 
     _version = data["version"];
+
+    if (!_checkServerVersion(_version)) {
+      // TODO - Something?
+    }
 
     // Record the instance name of the server
     instance = data['instance'] ?? '';
