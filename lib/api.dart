@@ -276,6 +276,30 @@ class InvenTreeAPI {
     );
   }
 
+  /*
+   * Upload a file to the given URL
+   */
+  Future<http.StreamedResponse> uploadFile(String url, File f, {String name = "attachment", Map<String, String> fields}) async {
+    var _url = makeApiUrl(url);
+
+    var request = http.MultipartRequest('POST', Uri.parse(_url));
+
+    request.headers.addAll(defaultHeaders());
+
+    fields.forEach((String key, String value) {
+      request.fields[key] = value;
+    });
+
+    var _file = await http.MultipartFile.fromPath(name, f.path);
+
+    request.files.add(_file);
+
+    var response = await request.send();
+
+    return response;
+
+  }
+
   // Perform a POST request
   Future<http.Response> post(String url, {Map<String, dynamic> body}) async {
 
@@ -322,7 +346,6 @@ class InvenTreeAPI {
     var headers = Map<String, String>();
 
     headers[HttpHeaders.authorizationHeader] = _authorizationHeader();
-    //headers['Authorization'] = _authorizationHeader();
 
     return headers;
   }
