@@ -181,76 +181,55 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
     var results = getTestResults();
 
     for (var item in results) {
+
+      bool _required = false;
+      String _test;
+      bool _result = null;
+      String _value;
+      String _notes;
+      FaIcon _icon = FaIcon(FontAwesomeIcons.questionCircle, color: Color.fromRGBO(0, 0, 250, 1));
+      bool _valueRequired = false;
+      bool _attachmentRequired = false;
+
       if (item is InvenTreePartTestTemplate) {
-        var template = item as InvenTreePartTestTemplate;
-
-        var status = template.passFailStatus();
-
-        FaIcon icon;
-
-        if (status == null) {
-          icon = FaIcon(FontAwesomeIcons.questionCircle,
-              color: Color.fromRGBO(0, 0, 250, 0.8)
-          );
-        } else if (status == true) {
-          icon = FaIcon(FontAwesomeIcons.checkCircle,
-            color: Color.fromRGBO(0, 250, 0, 0.8)
-          );
-        } else {
-          icon = FaIcon(FontAwesomeIcons.timesCircle,
-            color: Color.fromRGBO(250, 0, 0, 0.8)
-          );
-        }
-
-        String subtitle = template.latestResult()?.value ?? '';
-
-        tiles.add(ListTile(
-          title: Text("${template.testName}",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          subtitle: Text(subtitle),
-          trailing: icon,
-          onLongPress: () {
-            addTestResult(
-                name: template.testName,
-                nameIsEditable: false,
-                valueRequired: template.requiresValue,
-                attachmentRequired: template.requiresAttachment,
-            );
-          }
-        ));
+        _result = item.passFailStatus();
+        _test = item.testName;
+        _required = item.required;
+        _value = item.latestResult()?.value ?? '';
+        _notes = item.latestResult()?.notes ?? '';
+        _valueRequired = item.requiresValue;
+        _attachmentRequired = item.requiresAttachment;
+      } else if (item is InvenTreeStockItemTestResult) {
+        _result = item.result;
+        _test = item.testName;
+        _required = false;
+        _value = item.value;
+        _notes = item.notes;
       }
 
-      else if (item is InvenTreeStockItemTestResult) {
-        var result = item as InvenTreeStockItemTestResult;
+      if (_result == true) {
+        _icon = FaIcon(FontAwesomeIcons.checkCircle,
+          color: Color.fromRGBO(0, 250, 0, 0.8)
+        );
+      } else if (_result == false) {
+        _icon = FaIcon(FontAwesomeIcons.timesCircle,
+          color: Color.fromRGBO(250, 0, 0, 0.8)
+        );
+      }
 
-        FaIcon icon;
-
-        if (result.result == true) {
-          icon = FaIcon(FontAwesomeIcons.checkCircle,
-              color: Color.fromRGBO(0, 250, 0, 0.8)
-          );
-        } else {
-          icon = FaIcon(FontAwesomeIcons.timesCircle,
-              color: Color.fromRGBO(250, 0, 0, 0.8)
+      tiles.add(ListTile(
+        title: Text(_test, style: TextStyle(fontWeight: _required ? FontWeight.bold : FontWeight.normal)),
+        subtitle: Text(_value),
+        trailing: _icon,
+        onLongPress: () {
+          addTestResult(
+              name: _test,
+              nameIsEditable: !_required,
+              valueRequired: _valueRequired,
+              attachmentRequired: _attachmentRequired
           );
         }
-
-        tiles.add(ListTile(
-          title: Text("${result.testName}"),
-          subtitle: Text("${result.value}"),
-          trailing: icon,
-          onLongPress: () {
-            addTestResult(
-                name: result.testName,
-                nameIsEditable: false,
-                valueRequired: false,
-                attachmentRequired: false
-            );
-          }
-        ));
-
-      }
+      ));
     }
 
     if (tiles.isEmpty) {
