@@ -9,12 +9,12 @@ void showMessage(BuildContext context, String message) {
   ));
 }
 
-void showErrorDialog(BuildContext context, String title, String description) {
+Future<void> showErrorDialog(BuildContext context, String title, String description, {String error = "Error", Function onDismissed}) async {
   showDialog(
     context: context,
     child: SimpleDialog(
       title: ListTile(
-        title: Text("Error"),
+        title: Text(error),
         leading: FaIcon(FontAwesomeIcons.exclamationCircle),
       ),
       children: <Widget>[
@@ -24,7 +24,11 @@ void showErrorDialog(BuildContext context, String title, String description) {
         )
       ]
     )
-  );
+  ).then((value) {
+    if (onDismissed != null) {
+      onDismissed();
+    }
+  });
 }
 
 void showProgressDialog(BuildContext context, String title, String description) {
