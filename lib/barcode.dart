@@ -55,17 +55,14 @@ class _QRViewState extends State<InvenTreeQRView> {
       print(response.body);
 
       if (response.statusCode != 200) {
-        showDialog(
-          context: context,
-          child: new SimpleDialog(
-            title: Text("Server Error"),
-            children: <Widget>[
-              ListTile(
-                title: Text("Error ${response.statusCode}"),
-                subtitle: Text("${response.body.toString().split("\n").first}"),
-              )
-            ],
-          ),
+
+        showErrorDialog(
+          context,
+          "Server Error: ${response.statusCode}",
+          "${response.body.toString().split('\n').first}",
+          onDismissed: () {
+            _controller.resumeCamera();
+          }
         );
 
         return;
@@ -76,37 +73,31 @@ class _QRViewState extends State<InvenTreeQRView> {
 
       // "Error" contained in response
       if (body.containsKey('error')) {
-        showDialog(
-            context: context,
-            child: new SimpleDialog(
-              title: Text("Barcode Error"),
-              children: <Widget>[
-                ListTile(
-                  title: Text("${body['error']}"),
-                  subtitle: Text(
-                      "Plugin: ${body['plugin'] ?? '<no plugin information>'}"),
-                )
-              ],
-            )
-        );
 
+        showErrorDialog(
+          context,
+          body['error'] ?? '',
+          body['plugin'] ?? 'No barcode plugin information',
+          error: "Barcode Error",
+          onDismissed: () {
+            _controller.resumeCamera();
+          }
+        );
         return;
       } else if (body.containsKey('success')) {
         // Decode the barcode!
         // Ideally, the server has returned unto us something sensible...
         _handleBarcode(context, body);
       } else {
-        showDialog(
-            context: context,
-            child: new SimpleDialog(
-              title: Text("Unknown response"),
-              children: <Widget>[
-                ListTile(
-                  title: Text("Response data"),
-                  subtitle: Text("${body.toString()}"),
-                )
-              ],
-            )
+
+        showErrorDialog(
+          context,
+          "Response Data",
+          body.toString(),
+          error: "Unknown Response",
+          onDismissed: () {
+            _controller.resumeCamera();
+          }
         );
       }
 
@@ -114,22 +105,24 @@ class _QRViewState extends State<InvenTreeQRView> {
         Duration(seconds: 5)
     ).catchError((error) {
       hideProgressDialog(context);
-      showErrorDialog(context, "Error", error.toString());
+      showErrorDialog(
+        context,
+        "Error",
+        error.toString(),
+        onDismissed: () {
+          _controller.resumeCamera();
+        }
+      );
       return;
     });
 
-  }
-
-  Future<void> _doProcessBarcode(String barcode) async {
-    await processBarcode(barcode);
   }
 
   void _onViewCreated(QRViewController controller) {
     _controller = controller;
     controller.scannedDataStream.listen((scandata) {
       _controller?.pauseCamera();
-      _doProcessBarcode(scandata);
-      _controller?.resumeCamera();
+      processBarcode(scandata);
     });
   }
 
