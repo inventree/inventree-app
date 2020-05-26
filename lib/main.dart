@@ -382,6 +382,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             ),
             Spacer(),
+            */
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -404,7 +405,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ],
             ),
-            */
           ]),
         ),
       ),

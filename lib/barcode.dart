@@ -53,6 +53,63 @@ class _QRViewState extends State<InvenTreeQRView> {
 
       print("Response:");
       print(response.body);
+
+      if (response.statusCode != 200) {
+        showDialog(
+          context: context,
+          child: new SimpleDialog(
+            title: Text("Server Error"),
+            children: <Widget>[
+              ListTile(
+                title: Text("Error ${response.statusCode}"),
+                subtitle: Text("${response.body.toString().split("\n").first}"),
+              )
+            ],
+          ),
+        );
+
+        return;
+      }
+
+      // Decode the response
+      final Map<String, dynamic> body = json.decode(response.body);
+
+      // "Error" contained in response
+      if (body.containsKey('error')) {
+        showDialog(
+            context: context,
+            child: new SimpleDialog(
+              title: Text("Barcode Error"),
+              children: <Widget>[
+                ListTile(
+                  title: Text("${body['error']}"),
+                  subtitle: Text(
+                      "Plugin: ${body['plugin'] ?? '<no plugin information>'}"),
+                )
+              ],
+            )
+        );
+
+        return;
+      } else if (body.containsKey('success')) {
+        // Decode the barcode!
+        // Ideally, the server has returned unto us something sensible...
+        _handleBarcode(context, body);
+      } else {
+        showDialog(
+            context: context,
+            child: new SimpleDialog(
+              title: Text("Unknown response"),
+              children: <Widget>[
+                ListTile(
+                  title: Text("Response data"),
+                  subtitle: Text("${body.toString()}"),
+                )
+              ],
+            )
+        );
+      }
+
     }).timeout(
         Duration(seconds: 5)
     ).catchError((error) {
@@ -63,10 +120,16 @@ class _QRViewState extends State<InvenTreeQRView> {
 
   }
 
+  Future<void> _doProcessBarcode(String barcode) async {
+    await processBarcode(barcode);
+  }
+
   void _onViewCreated(QRViewController controller) {
     _controller = controller;
     controller.scannedDataStream.listen((scandata) {
-      processBarcode(scandata);
+      _controller?.pauseCamera();
+      _doProcessBarcode(scandata);
+      _controller?.resumeCamera();
     });
   }
 
@@ -207,6 +270,7 @@ void _handleBarcode(BuildContext context, Map<String, dynamic> data) {
     if (pk != null) {
       InvenTreeStockLocation().get(context, pk).then((var loc) {
         if (loc is InvenTreeStockLocation) {
+          Navigator.of(context).pop();
           Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(loc)));
         }
       });
@@ -220,6 +284,7 @@ void _handleBarcode(BuildContext context, Map<String, dynamic> data) {
 
     if (pk != null) {
       InvenTreeStockItem().get(context, pk).then((var item) {
+        Navigator.of(context).pop();
         Navigator.push(context, MaterialPageRoute(builder: (context) => StockDetailWidget(item)));
       });
     } else {
@@ -231,8 +296,8 @@ void _handleBarcode(BuildContext context, Map<String, dynamic> data) {
 
     if (pk != null) {
       InvenTreePart().get(context, pk).then((var part) {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
+        Navigator.of(context).pop();
+        Navigator.push(context, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
       });
     } else {
       // TODO - Show an error here!
