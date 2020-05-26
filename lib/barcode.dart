@@ -1,6 +1,7 @@
 import 'package:InvenTree/widget/dialogs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 //import 'package:qr_utils/qr_utils.dart';
 //import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
@@ -58,11 +59,13 @@ class _QRViewState extends State<InvenTreeQRView> {
 
         showErrorDialog(
           context,
-          "Server Error: ${response.statusCode}",
+          "Status Code: ${response.statusCode}",
           "${response.body.toString().split('\n').first}",
           onDismissed: () {
             _controller.resumeCamera();
-          }
+          },
+          error: "Server Error",
+          icon: FontAwesomeIcons.server,
         );
 
         return;
@@ -79,6 +82,7 @@ class _QRViewState extends State<InvenTreeQRView> {
           body['error'] ?? '',
           body['plugin'] ?? 'No barcode plugin information',
           error: "Barcode Error",
+          icon: FontAwesomeIcons.barcode,
           onDismissed: () {
             _controller.resumeCamera();
           }

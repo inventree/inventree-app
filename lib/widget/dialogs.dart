@@ -9,13 +9,13 @@ void showMessage(BuildContext context, String message) {
   ));
 }
 
-Future<void> showErrorDialog(BuildContext context, String title, String description, {String error = "Error", Function onDismissed}) async {
+Future<void> showErrorDialog(BuildContext context, String title, String description, {IconData icon = FontAwesomeIcons.exclamationCircle, String error = "Error", Function onDismissed}) async {
   showDialog(
     context: context,
     child: SimpleDialog(
       title: ListTile(
         title: Text(error),
-        leading: FaIcon(FontAwesomeIcons.exclamationCircle),
+        leading: FaIcon(icon),
       ),
       children: <Widget>[
         ListTile(
