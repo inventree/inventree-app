@@ -267,6 +267,7 @@ class InvenTreeStockItem extends InvenTreeModel {
       loc = jsondata['location_detail']['name'] ?? '';
     }
 
+    // Old-style name
     if (loc.isEmpty) {
       loc = jsondata['location__name'] ?? '';
     }

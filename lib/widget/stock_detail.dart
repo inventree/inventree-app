@@ -380,7 +380,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     }
 
     // Location information
-    if (item.locationName.isNotEmpty) {
+    if ((item.locationId > 0) && (item.locationName != null) && (item.locationName.isNotEmpty)) {
       tiles.add(
         ListTile(
           title: Text("Stock Location"),
