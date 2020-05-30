@@ -396,6 +396,14 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           },
         )
       );
+    } else {
+      tiles.add(
+        ListTile(
+          title: Text("Stock Location"),
+          leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
+          subtitle: Text("No location set"),
+        )
+      );
     }
 
     // Supplier part?
