@@ -24,6 +24,7 @@ class InvenTreePartCategory extends InvenTreeModel {
     var filters = new Map<String, String>();
 
     filters["active"] = "true";
+    filters["cascade"] = "false";
 
     return filters;
   }
