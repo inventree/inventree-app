@@ -133,7 +133,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     );
 
     // Category information
-    if (part.categoryName.isNotEmpty) {
+    if (part.categoryName != null && part.categoryName.isNotEmpty) {
       tiles.add(
         ListTile(
             title: Text("Part Category"),
@@ -148,6 +148,14 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
               }
             },
           )
+      );
+    } else {
+      tiles.add(
+        ListTile(
+          title: Text("Part Category"),
+          subtitle: Text("No category set"),
+          leading: FaIcon(FontAwesomeIcons.stream),
+        )
       );
     }
 
