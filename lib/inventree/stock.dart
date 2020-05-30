@@ -180,6 +180,11 @@ class InvenTreeStockItem extends InvenTreeModel {
       nm = jsondata['part_detail']['full_name'] ?? '';
     }
 
+    // Backup if first value fails
+    if (nm.isEmpty) {
+      nm = jsondata['part__name'] ?? '';
+    }
+
     return nm;
   }
 
@@ -212,9 +217,23 @@ class InvenTreeStockItem extends InvenTreeModel {
     return img;
   }
 
+  /**
+   * Return the Part thumbnail for this stock item.
+   */
   String get partThumbnail {
-    String thumb = jsondata['part__thumbnail'] as String ?? '';
 
+    String thumb;
+
+    if (jsondata.containsKey('part_detail')) {
+      thumb = jsondata['part_detail']['thumbnail'] as String ?? '';
+    }
+
+    // Try a different approach
+    if (thumb.isEmpty) {
+      jsondata['part__thumbnail'] as String ?? '';
+    }
+
+    // Still no thumbnail? Use the 'no image' image
     if (thumb.isEmpty) thumb = InvenTreeAPI.staticThumb;
 
     return thumb;
