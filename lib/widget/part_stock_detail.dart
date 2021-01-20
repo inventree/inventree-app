@@ -91,7 +91,7 @@ class PartStockList extends StatelessWidget {
     return ListTile(
       title: Text("${item.locationName}"),
       subtitle: Text("${item.locationPathString}"),
-      trailing: Text("${item.quantity}"),
+      trailing: Text(item.serialOrQuantityDisplay()),
       leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
       onTap: () {
         _openItem(context, item.pk);

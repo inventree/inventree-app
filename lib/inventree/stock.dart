@@ -280,6 +280,14 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   bool isSerialized() => serialNumber != null && quantity.toInt() == 1;
 
+  String serialOrQuantityDisplay() {
+    if (isSerialized()) {
+      return 'SN ${serialNumber}';
+    }
+
+    return '${quantity}';
+  }
+
   String get locationName {
     String loc = '';
 
