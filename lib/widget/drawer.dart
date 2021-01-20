@@ -112,11 +112,14 @@ class InvenTreeDrawer extends StatelessWidget {
                 onTap: _home,
               ),
               new Divider(),
+              /*
+              // TODO - Add search functionality!
               new ListTile(
                 title: new Text("Search"),
                 leading: new FaIcon(FontAwesomeIcons.search),
                 onTap: _search,
               ),
+              */
               new ListTile(
                 title: new Text("Scan Barcode"),
                 onTap: _scan,

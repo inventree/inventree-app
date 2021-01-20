@@ -241,11 +241,13 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
         actions: <Widget>[
+          /*
           IconButton(
             icon: FaIcon(FontAwesomeIcons.search),
             tooltip: 'Search',
             onPressed: _search,
           ),
+           */
         ],
       ),
       drawer: new InvenTreeDrawer(context),
@@ -259,8 +261,10 @@ class _MyHomePageState extends State<MyHomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
+                /*
                 Column(
                   children: <Widget>[
+
                    IconButton(
                      icon: new FaIcon(FontAwesomeIcons.search),
                      tooltip: 'Search',
@@ -269,6 +273,7 @@ class _MyHomePageState extends State<MyHomePage> {
                    Text("Search"),
                   ],
                 ),
+                */
                 Column(
                   children: <Widget>[
                     IconButton(
