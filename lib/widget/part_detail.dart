@@ -194,8 +194,9 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       );
     }
 
+    // TODO
     // Parts being built
-    if (part.isAssembly) {
+    if (false && part.isAssembly) {
 
       tiles.add(ListTile(
             title: Text("Bill of Materials"),
@@ -215,7 +216,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       );
     }
 
-    if (part.isComponent) {
+    // TODO - Do we want to use the app to display "used in"?
+    if (false && part.isComponent) {
       tiles.add(ListTile(
             title: Text("Used In"),
             leading: FaIcon(FontAwesomeIcons.sitemap),
