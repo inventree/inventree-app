@@ -272,7 +272,7 @@ class InvenTreeStockItem extends InvenTreeModel {
     return sku;
   }
 
-  int get serialNumber => jsondata['serial'] as int ?? null;
+  String get serialNumber => jsondata['serial'] as String ?? null;
 
   double get quantity => double.tryParse(jsondata['quantity'].toString() ?? '0');
 
