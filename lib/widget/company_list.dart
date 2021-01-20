@@ -93,10 +93,7 @@ class _CompanyListState extends RefreshableState<CompanyListWidget> {
       return ListTile(
         title: Text("${company.name}"),
         subtitle: Text("${company.description}"),
-        leading: Image(
-            image: InvenTreeAPI().getImage(company.image),
-            width: 40,
-        ),
+        leading: InvenTreeAPI().getImage(company.image),
         onTap: () {
           if (company.pk > 0) {
             InvenTreeCompany().get(context, company.pk).then((var c) {

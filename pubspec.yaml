@@ -26,9 +26,8 @@ dependencies:
   http: ^0.12.1
   shared_preferences: ^0.5.7
 
-  flutter_advanced_networkimage: ^0.7.0   # Pull image from network or cache
+  cached_network_image: ^2.5.0
   preferences: ^5.2.0                     # Persistent settings storage
-  #barcode_scan: ^3.0.1                    # Barcode / QR code scanning
   qr_code_scanner: ^0.0.13
   package_info: ^0.4.0                    # App information introspection
   font_awesome_flutter: ^8.8.1            # FontAwesome icon set

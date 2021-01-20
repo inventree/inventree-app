@@ -2,8 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_advanced_networkimage/provider.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image/image.dart';
 
 import 'package:path/path.dart' as path;
@@ -66,7 +67,6 @@ class InvenTreeAPI {
   }
 
   String makeApiUrl(String endpoint) {
-
     return _makeUrl("/api/" + endpoint);
   }
 
@@ -89,14 +89,13 @@ class InvenTreeAPI {
    * Useful as a precursor check before performing operations.
    */
   bool checkConnection(BuildContext context) {
-
     // Firstly, is the server connected?
     if (!isConnected()) {
       showDialog(
           context: context,
           child: new SimpleDialog(
               title: new Text("Not Connected"),
-              children: <Widget> [
+              children: <Widget>[
                 ListTile(
                   title: Text("Server not connected"),
                 )
@@ -112,7 +111,6 @@ class InvenTreeAPI {
 
     // Finally
     return true;
-
   }
 
   // Server instance information
@@ -134,12 +132,13 @@ class InvenTreeAPI {
   // Ensure we only ever create a single instance of the API class
   static final InvenTreeAPI _api = new InvenTreeAPI._internal();
 
-  factory InvenTreeAPI() { return _api; }
+  factory InvenTreeAPI() {
+    return _api;
+  }
 
   InvenTreeAPI._internal();
 
   Future<bool> connect() async {
-
     var prefs = await SharedPreferences.getInstance();
 
     String server = prefs.getString("server");
@@ -149,7 +148,8 @@ class InvenTreeAPI {
     return connectToServer(server, username, password);
   }
 
-  Future<bool> connectToServer(String address, String username, String password) async {
+  Future<bool> connectToServer(String address, String username,
+      String password) async {
 
     /* Address is the base address for the InvenTree server,
      * e.g. http://127.0.0.1:8000
@@ -272,7 +272,6 @@ class InvenTreeAPI {
 
   // Perform a PATCH request
   Future<http.Response> patch(String url, {Map<String, String> body}) async {
-
     var _url = makeApiUrl(url);
     var _headers = defaultHeaders();
     var _body = Map<String, String>();
@@ -291,7 +290,8 @@ class InvenTreeAPI {
   /*
    * Upload a file to the given URL
    */
-  Future<http.StreamedResponse> uploadFile(String url, File f, {String name = "attachment", Map<String, String> fields}) async {
+  Future<http.StreamedResponse> uploadFile(String url, File f,
+      {String name = "attachment", Map<String, String> fields}) async {
     var _url = makeApiUrl(url);
 
     var request = http.MultipartRequest('POST', Uri.parse(_url));
@@ -313,7 +313,6 @@ class InvenTreeAPI {
 
   // Perform a POST request
   Future<http.Response> post(String url, {Map<String, dynamic> body}) async {
-
     var _url = makeApiUrl(url);
     var _headers = jsonHeaders();
 
@@ -329,7 +328,6 @@ class InvenTreeAPI {
 
   // Perform a GET request
   Future<http.Response> get(String url, {Map<String, String> params}) async {
-
     var _url = makeApiUrl(url);
     var _headers = defaultHeaders();
 
@@ -353,7 +351,6 @@ class InvenTreeAPI {
   }
 
   Map<String, String> defaultHeaders() {
-
     var headers = Map<String, String>();
 
     headers[HttpHeaders.authorizationHeader] = _authorizationHeader();
@@ -362,13 +359,12 @@ class InvenTreeAPI {
   }
 
   Map<String, String> jsonHeaders() {
-
     var headers = defaultHeaders();
     headers['Content-Type'] = 'application/json';
     return headers;
   }
 
-  String _authorizationHeader () {
+  String _authorizationHeader() {
     if (_token.isNotEmpty) {
       return "Token $_token";
     } else {
@@ -380,26 +376,22 @@ class InvenTreeAPI {
 
   static String get staticThumb => "/static/img/blank_image.thumbnail.png";
 
-  /*
-   * Get an image from the server (or, from cache)
+  /**
+   * Load image from the InvenTree server,
+   * or from local cache (if it has been cached!)
    */
-  AdvancedNetworkImage getImage(String imageUrl) {
-
+  CachedNetworkImage getImage(String imageUrl) {
     if (imageUrl.isEmpty) {
       imageUrl = staticImage;
     }
 
     String url = makeUrl(imageUrl);
 
-    return new AdvancedNetworkImage(url,
-      header: defaultHeaders(),
-      useDiskCache: true,
-      //retryDuration: const Duration(seconds: 2),
-      //retryLimit: 3,
-      cacheRule: CacheRule(maxAge: const Duration(days: 1)),
-      loadFailedCallback: () {
-        DiskCache().evict(url);
-      }
+    return new CachedNetworkImage(
+      imageUrl: url,
+      placeholder: (context, url) => CircularProgressIndicator(),
+      errorWidget: (context, url, error) => Icon(FontAwesomeIcons.exclamation),
+      httpHeaders: defaultHeaders(),
     );
   }
 }

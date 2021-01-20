@@ -243,10 +243,7 @@ class StockList extends StatelessWidget {
     return ListTile(
       title: Text("${item.partName}"),
       subtitle: Text("${item.partDescription}"),
-      leading: Image(
-        image: InvenTreeAPI().getImage(item.partThumbnail),
-        width: 48,
-      ),
+      leading: InvenTreeAPI().getImage(item.partThumbnail),
       trailing: Text("${item.displayQuantity}",
         style: TextStyle(fontWeight: FontWeight.bold),
       ),

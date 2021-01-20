@@ -331,9 +331,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         child: ListTile(
           title: Text("${item.partName}"),
           subtitle: Text("${item.partDescription}"),
-          leading: Image(
-            image: InvenTreeAPI().getImage(item.partImage),
-          ),
+          leading: InvenTreeAPI().getImage(item.partImage),
           trailing: IconButton(
             icon: FaIcon(FontAwesomeIcons.edit),
             onPressed: _editStockItemDialog,
@@ -413,10 +411,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           title: Text("${item.supplierName}"),
           subtitle: Text("${item.supplierSKU}"),
           leading: FaIcon(FontAwesomeIcons.industry),
-          trailing: Image(
-            image: InvenTreeAPI().getImage(item.supplierImage),
-            height: 32,
-          ),
+          trailing: InvenTreeAPI().getImage(item.supplierImage),
           onTap: null,
         )
       );

@@ -11,7 +11,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class CategoryDisplayWidget extends StatefulWidget {
@@ -260,10 +259,7 @@ class PartList extends StatelessWidget {
     return ListTile(
       title: Text("${part.name}"),
       subtitle: Text("${part.description}"),
-      leading: Image(
-        image: InvenTreeAPI().getImage(part.thumbnail),
-        width: 48,
-      ),
+      leading: InvenTreeAPI().getImage(part.thumbnail),
       onTap: () {
         _openPart(context, part.pk);
       },

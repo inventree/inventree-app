@@ -115,10 +115,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
       child: ListTile(
         title: Text("${company.name}"),
         subtitle: Text("${company.description}"),
-        leading: Image(
-          image: InvenTreeAPI().getImage(company.image),
-          width: 48,
-        ),
+        leading: InvenTreeAPI().getImage(company.image),
         trailing: IconButton(
           icon: FaIcon(FontAwesomeIcons.edit),
           onPressed: editCompanyDialog,

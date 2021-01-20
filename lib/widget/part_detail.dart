@@ -121,9 +121,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         child: ListTile(
           title: Text("${part.fullname}"),
           subtitle: Text("${part.description}"),
-          leading: Image(
-            image: InvenTreeAPI().getImage(part.image)
-          ),
+          leading: InvenTreeAPI().getImage(part.image),
           trailing: IconButton(
             icon: FaIcon(FontAwesomeIcons.edit),
             onPressed: _editPartDialog,
