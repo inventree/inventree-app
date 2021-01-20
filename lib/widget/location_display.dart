@@ -220,7 +220,9 @@ class SublocationList extends StatelessWidget {
     return ListView.builder(
         shrinkWrap: true,
         physics: ClampingScrollPhysics(),
-        itemBuilder: _build, itemCount: _locations.length);
+        itemBuilder: _build,
+        itemCount: _locations.length
+    );
   }
 }
 

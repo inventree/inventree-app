@@ -147,10 +147,38 @@ class InvenTreePart extends InvenTreeModel {
     };
   }
 
+  // Cached list of stock items
+  List<InvenTreeStockItem> stockItems = List<InvenTreeStockItem>();
+
+  int get stockItemCount => stockItems.length;
+
+  // Request stock items for this part
+  Future<void> getStockItems(BuildContext context, {bool showDialog=false}) async {
+
+    InvenTreeStockItem().list(
+      context,
+      filters: {
+        "part": "${pk}",
+        "in_stock": "true",
+      },
+      dialog: showDialog,
+    ).then((var items) {
+      stockItems.clear();
+
+      for (var item in items) {
+        if (item is InvenTreeStockItem) {
+          stockItems.add(item);
+        }
+      }
+    });
+  }
+
+  // Cached list of test templates
   List<InvenTreePartTestTemplate> testingTemplates = List<InvenTreePartTestTemplate>();
 
   int get testTemplateCount => testingTemplates.length;
 
+  // Request test templates from the serve
   Future<void> getTestTemplates(BuildContext context, {bool showDialog=false}) async {
 
     InvenTreePartTestTemplate().list(

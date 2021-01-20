@@ -3,6 +3,7 @@ import 'package:InvenTree/inventree/part.dart';
 import 'package:InvenTree/widget/category_display.dart';
 import 'package:InvenTree/widget/dialogs.dart';
 import 'package:InvenTree/widget/fields.dart';
+import 'package:InvenTree/widget/part_stock_detail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -40,9 +41,22 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   int _tabIndex = 0;
 
   @override
+  Future<void> onBuild(BuildContext context) async {
+    refresh();
+
+    setState(() {
+
+    });
+  }
+
+  @override
   Future<void> request(BuildContext context) async {
     await part.reload(context);
     await part.getTestTemplates(context);
+
+    setState(() {
+
+    });
   }
 
   void _savePart(Map<String, String> values) async {
@@ -121,7 +135,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         child: ListTile(
           title: Text("${part.fullname}"),
           subtitle: Text("${part.description}"),
-          leading: InvenTreeAPI().getImage(part.image),
+          leading: InvenTreeAPI().getImage(part.thumbnail),
           trailing: IconButton(
             icon: FaIcon(FontAwesomeIcons.edit),
             onPressed: _editPartDialog,
@@ -178,7 +192,12 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           title: Text("Stock"),
           leading: FaIcon(FontAwesomeIcons.boxes),
           trailing: Text("${part.inStock}"),
-          onTap: null,
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => PartStockDetailWidget(part))
+            );
+          },
         ),
     );
 
