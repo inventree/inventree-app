@@ -136,7 +136,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         ListTile(
             title: Text("Part Category"),
             subtitle: Text("${part.categoryName}"),
-            leading: FaIcon(FontAwesomeIcons.stream),
+            leading: FaIcon(FontAwesomeIcons.sitemap),
             onTap: () {
               if (part.categoryId > 0) {
                 InvenTreePartCategory().get(context, part.categoryId).then((var cat) {
@@ -151,8 +151,11 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       tiles.add(
         ListTile(
           title: Text("Part Category"),
-          subtitle: Text("No category set"),
-          leading: FaIcon(FontAwesomeIcons.stream),
+          subtitle: Text("Top level part category"),
+          leading: FaIcon(FontAwesomeIcons.sitemap),
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));
+          },
         )
       );
     }

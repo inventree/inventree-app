@@ -133,6 +133,14 @@ class InvenTreePart extends InvenTreeModel {
   String URL = "part/";
 
   @override
+  Map<String, String> defaultListFilters() {
+    return {
+      "cascade": "false",
+      "active": "true",
+    };
+  }
+
+  @override
   Map<String, String> defaultGetFilters() {
     return {
       "category_detail": "1",   // Include category detail information
@@ -202,11 +210,20 @@ class InvenTreePart extends InvenTreeModel {
     int get categoryId => jsondata['category'] as int ?? null;
 
     // Get the category name for the Part instance
-    String get categoryName => jsondata['category_detail']['name'] as String ?? '';
+    String get categoryName {
+      if (categoryId == null) return '';
+      if (!jsondata.containsKey('category_detail')) return '';
+
+      return jsondata['category_detail']['name'] as String ?? '';
+    }
 
     // Get the category description for the Part instance
-    String get categoryDescription => jsondata['category_detail']['description'] as String ?? '';
+    String get categoryDescription {
+      if (categoryId == null) return '';
+      if (!jsondata.containsKey('category_detail')) return '';
 
+      return jsondata['category_detail']['description'] as String ?? '';
+    }
     // Get the image URL for the Part instance
     String get _image  => jsondata['image'] ?? '';
 
