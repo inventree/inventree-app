@@ -102,6 +102,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
             ListTile(
               title: Text("Parent Category"),
               subtitle: Text("${category.parentpathstring}"),
+              leading: FaIcon(FontAwesomeIcons.sitemap),
               onTap: () {
                 if (category.parentId < 0) {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));

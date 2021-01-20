@@ -36,7 +36,7 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
   // Function to construct an appbar (override if needed)
   AppBar getAppBar(BuildContext context) {
     return AppBar(
-      title: Text(getAppBarTitle(context))
+      title: Text(getAppBarTitle(context)),
     );
   }
 
