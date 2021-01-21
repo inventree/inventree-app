@@ -168,6 +168,8 @@ class InvenTreeStockItem extends InvenTreeModel {
     return false;
   }
 
+  String get uid => jsondata['uid'] ?? '';
+
   int get partId => jsondata['part'] ?? -1;
 
   int get trackingItemCount => jsondata['tracking_items'] as int ?? 0;

@@ -9,6 +9,28 @@ void showMessage(BuildContext context, String message) {
   ));
 }
 
+Future<void> showInfoDialog(BuildContext context, String title, String description, {IconData icon = FontAwesomeIcons.info, String info = "Info", Function onDismissed}) async {
+  showDialog(
+    context: context,
+    child: SimpleDialog(
+      title: ListTile(
+        title: Text(info),
+        leading: FaIcon(icon),
+      ),
+      children: <Widget>[
+        ListTile(
+          title: Text(title),
+          subtitle: Text(description)
+        )
+      ]
+    )
+  ).then((value) {
+    if (onDismissed != null) {
+      onDismissed();
+    }
+  });
+}
+
 Future<void> showErrorDialog(BuildContext context, String title, String description, {IconData icon = FontAwesomeIcons.exclamationCircle, String error = "Error", Function onDismissed}) async {
   showDialog(
     context: context,

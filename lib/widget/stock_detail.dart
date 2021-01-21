@@ -1,5 +1,6 @@
 
 
+import 'package:InvenTree/barcode.dart';
 import 'package:InvenTree/inventree/stock.dart';
 import 'package:InvenTree/inventree/part.dart';
 import 'package:InvenTree/widget/dialogs.dart';
@@ -374,8 +375,21 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
             trailing: Text("${item.quantity}"),
           )
       );
-
     }
+
+    tiles.add(
+      ListTile(
+        title: Text("Add Barcode"),
+        leading: FaIcon(FontAwesomeIcons.qrcode),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => InvenTreeQRView(StockItemBarcodeAssignmentHandler(item)))  
+          );
+          //Navigator.push(context, MaterialPageRoute(builder: (context) => AssignBarcodeToStockItemView(item)));
+        },
+      )
+    );
 
     // Location information
     if ((item.locationId > 0) && (item.locationName != null) && (item.locationName.isNotEmpty)) {
