@@ -1,17 +1,18 @@
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import 'package:InvenTree/inventree/part.dart';
 import 'package:InvenTree/widget/category_display.dart';
 import 'package:InvenTree/widget/dialogs.dart';
 import 'package:InvenTree/widget/fields.dart';
 import 'package:InvenTree/widget/part_stock_detail.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-
 import 'package:InvenTree/api.dart';
 import 'package:InvenTree/widget/refreshable_state.dart';
-import 'package:InvenTree/widget/drawer.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class PartDetailWidget extends StatefulWidget {
 
@@ -268,7 +269,9 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
             title: Text("${part.link}"),
             leading: FaIcon(FontAwesomeIcons.link),
             trailing: Text(""),
-            onTap: null,
+            onTap: () {
+              part.openLink();
+            },
           )
       );
     }

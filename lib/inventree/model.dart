@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:InvenTree/api.dart';
 import 'package:InvenTree/widget/dialogs.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'dart:convert';
 
@@ -53,6 +54,19 @@ class InvenTreeModel {
 
   // Legacy API provided external link as "URL", while newer API uses "link"
   String get link => jsondata['link'] ?? jsondata['URL'] ?? '';
+
+  void openLink() async {
+
+    if (link.isNotEmpty) {
+      print("Opening link: ${link}");
+
+      if (await canLaunch(link)) {
+        await launch(url);
+      } else {
+        // TODO
+      }
+    }
+  }
 
   String get keywords => jsondata['keywords'] as String ?? '';
 
