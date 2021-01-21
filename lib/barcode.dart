@@ -41,6 +41,96 @@ class _QRViewState extends State<InvenTreeQRView> {
 
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
+  // Callback when the server repsonds with a match for the barcode
+  Future<void> onBarcodeMatched(Map<String, dynamic> response) {
+    int pk;
+
+    print("Handle barcode:");
+    print(response);
+
+    // A stocklocation has been passed?
+    if (response.containsKey('stocklocation')) {
+
+      pk = response['stocklocation']['pk'] as int ?? null;
+
+      if (pk != null) {
+        InvenTreeStockLocation().get(context, pk).then((var loc) {
+          if (loc is InvenTreeStockLocation) {
+            Navigator.of(context).pop();
+            Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(loc)));
+          }
+        });
+      } else {
+        // TODO - Show an error here!
+      }
+
+    } else if (response.containsKey('stockitem')) {
+
+      pk = response['stockitem']['pk'] as int ?? null;
+
+      if (pk != null) {
+        InvenTreeStockItem().get(context, pk).then((var item) {
+          Navigator.of(context).pop();
+          Navigator.push(context, MaterialPageRoute(builder: (context) => StockDetailWidget(item)));
+        });
+      } else {
+        // TODO - Show an error here!
+      }
+    } else if (response.containsKey('part')) {
+
+      pk = response['part']['pk'] as int ?? null;
+
+      if (pk != null) {
+        InvenTreePart().get(context, pk).then((var part) {
+          Navigator.of(context).pop();
+          Navigator.push(context, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
+        });
+      } else {
+        // TODO - Show an error here!
+      }
+    } else {
+      showDialog(
+          context: context,
+          child: SimpleDialog(
+            title: Text("Unknown response"),
+            children: <Widget>[
+              ListTile(
+                title: Text("Response data"),
+                subtitle: Text(response.toString()),
+              )
+            ],
+          )
+      );
+    }
+  }
+
+  // Callback when the server responds with no match for the barcode
+  Future<void> onBarcodeUnknown(Map<String, dynamic> response) {
+    showErrorDialog(
+        context,
+        response['error'] ?? '',
+        response['plugin'] ?? 'No barcode plugin information',
+        error: "Barcode Error",
+        icon: FontAwesomeIcons.barcode,
+        onDismissed: () {
+          _controller.resumeCamera();
+        }
+    );
+  }
+
+  // Callback when the server responds with an unhandled response
+  Future<void> onBarcodeUnhandled(Map<String, dynamic> response) {
+    showErrorDialog(
+        context,
+        "Response Data",
+        response.toString(),
+        error: "Unknown Response",
+        onDismissed: () {
+        _controller.resumeCamera();
+        }
+    );
+  }
+
   Future<void> processBarcode(String barcode) async {
     if (barcode == null || barcode.isEmpty) {
       return;
@@ -76,33 +166,11 @@ class _QRViewState extends State<InvenTreeQRView> {
 
       // "Error" contained in response
       if (body.containsKey('error')) {
-
-        showErrorDialog(
-          context,
-          body['error'] ?? '',
-          body['plugin'] ?? 'No barcode plugin information',
-          error: "Barcode Error",
-          icon: FontAwesomeIcons.barcode,
-          onDismissed: () {
-            _controller.resumeCamera();
-          }
-        );
-        return;
+        onBarcodeUnknown(body);
       } else if (body.containsKey('success')) {
-        // Decode the barcode!
-        // Ideally, the server has returned unto us something sensible...
-        _handleBarcode(context, body);
+        onBarcodeMatched(body);
       } else {
-
-        showErrorDialog(
-          context,
-          "Response Data",
-          body.toString(),
-          error: "Unknown Response",
-          onDismissed: () {
-            _controller.resumeCamera();
-          }
-        );
+        onBarcodeUnhandled(body);
       }
 
     }).timeout(
@@ -171,65 +239,4 @@ Future<void> scanQrCode(BuildContext context) async {
   Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeQRView()));
 
   return;
-
-}
-
-void _handleBarcode(BuildContext context, Map<String, dynamic> data) {
-
-  int pk;
-
-  // A stocklocation has been passed?
-  if (data.containsKey('stocklocation')) {
-
-    pk = data['stocklocation']['pk'] as int ?? null;
-
-    if (pk != null) {
-      InvenTreeStockLocation().get(context, pk).then((var loc) {
-        if (loc is InvenTreeStockLocation) {
-          Navigator.of(context).pop();
-          Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(loc)));
-        }
-      });
-    } else {
-      // TODO - Show an error here!
-    }
-
-  } else if (data.containsKey('stockitem')) {
-
-    pk = data['stockitem']['pk'] as int ?? null;
-
-    if (pk != null) {
-      InvenTreeStockItem().get(context, pk).then((var item) {
-        Navigator.of(context).pop();
-        Navigator.push(context, MaterialPageRoute(builder: (context) => StockDetailWidget(item)));
-      });
-    } else {
-      // TODO - Show an error here!
-    }
-  } else if (data.containsKey('part')) {
-
-    pk = data['part']['pk'] as int ?? null;
-
-    if (pk != null) {
-      InvenTreePart().get(context, pk).then((var part) {
-        Navigator.of(context).pop();
-        Navigator.push(context, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
-      });
-    } else {
-      // TODO - Show an error here!
-    }
-  } else {
-    showDialog(
-      context: context,
-      child: SimpleDialog(
-        title: Text("Unknown response"),
-        children: <Widget>[
-          ListTile(
-            title: Text("Response data"),
-            subtitle: Text(data.toString()),
-          )
-        ],
-      )
-    );
-  }
 }
