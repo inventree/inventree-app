@@ -28,6 +28,18 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
   @override
   String getAppBarTitle(BuildContext context) { return "Stock Location"; }
 
+  @override
+  List<Widget> getAppBarActions(BuildContext context) {
+    return <Widget>[
+      IconButton(
+        icon: FaIcon(FontAwesomeIcons.edit),
+        tooltip: "Edit",
+        // TODO - Edit stock location
+        onPressed: null,
+      )
+    ];
+  }
+
   _LocationDisplayState(this.location) {}
 
   List<InvenTreeStockLocation> _sublocations = List<InvenTreeStockLocation>();
@@ -98,10 +110,6 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
             ListTile(
               title: Text("${location.name}"),
               subtitle: Text("${location.description}"),
-              trailing: IconButton(
-                icon: FaIcon(FontAwesomeIcons.edit),
-                onPressed: null,
-              ),
             ),
             ListTile(
               title: Text("Parent Category"),
@@ -245,7 +253,11 @@ class StockList extends StatelessWidget {
     return ListTile(
       title: Text("${item.partName}"),
       subtitle: Text("${item.partDescription}"),
-      leading: InvenTreeAPI().getImage(item.partThumbnail),
+      leading: InvenTreeAPI().getImage(
+        item.partThumbnail,
+        width: 40,
+        height: 40,
+      ),
       trailing: Text("${item.displayQuantity}",
         style: TextStyle(fontWeight: FontWeight.bold),
       ),

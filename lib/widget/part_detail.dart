@@ -87,6 +87,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     var _description;
     var _ipn;
     var _revision;
+    var _keywords;
 
     showFormDialog(context, "Edit Part",
       key: _editPartKey,
@@ -107,6 +108,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
                 "name": _name,
                 "description": _description,
                 "IPN": _ipn,
+                "keywords": _keywords,
               });
             }
           },
@@ -128,6 +130,12 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           initial: part.IPN,
           allowEmpty: true,
           onSaved: (value) => _ipn = value,
+        ),
+        StringField(
+          label: "Keywords",
+          initial: part.keywords,
+          allowEmpty: true,
+          onSaved: (value) => _keywords = value,
         )
 
       ]
@@ -183,37 +191,25 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       );
     }
 
-    // External link?
-    if (part.link.isNotEmpty) {
-      tiles.add(
-        ListTile(
-            title: Text("${part.link}"),
-            leading: FaIcon(FontAwesomeIcons.link),
-            trailing: Text(""),
-            onTap: null,
-          )
-      );
-    }
-
     // Stock information
     tiles.add(
-        ListTile(
-          title: Text("Stock"),
-          leading: FaIcon(FontAwesomeIcons.boxes),
-          trailing: Text("${part.inStock}"),
-          onTap: () {
-            Navigator.push(
+      ListTile(
+        title: Text("Stock"),
+        leading: FaIcon(FontAwesomeIcons.boxes),
+        trailing: Text("${part.inStock}"),
+        onTap: () {
+          Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => PartStockDetailWidget(part))
-            );
-          },
-        ),
+          );
+        },
+      ),
     );
 
     // Parts on order
     if (part.isPurchaseable) {
       tiles.add(
-        ListTile(
+          ListTile(
             title: Text("On Order"),
             leading: FaIcon(FontAwesomeIcons.shoppingCart),
             trailing: Text("${part.onOrder}"),
@@ -227,11 +223,11 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     if (false && part.isAssembly) {
 
       tiles.add(ListTile(
-            title: Text("Bill of Materials"),
-            leading: FaIcon(FontAwesomeIcons.thList),
-            trailing: Text("${part.bomItemCount}"),
-            onTap: null,
-          )
+        title: Text("Bill of Materials"),
+        leading: FaIcon(FontAwesomeIcons.thList),
+        trailing: Text("${part.bomItemCount}"),
+        onTap: null,
+      )
       );
 
       tiles.add(
@@ -247,9 +243,31 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     // TODO - Do we want to use the app to display "used in"?
     if (false && part.isComponent) {
       tiles.add(ListTile(
-            title: Text("Used In"),
-            leading: FaIcon(FontAwesomeIcons.sitemap),
-            trailing: Text("${part.usedInCount}"),
+        title: Text("Used In"),
+        leading: FaIcon(FontAwesomeIcons.sitemap),
+        trailing: Text("${part.usedInCount}"),
+        onTap: null,
+      )
+      );
+    }
+
+    // Keywords?
+    if (part.keywords.isNotEmpty) {
+      tiles.add(
+        ListTile(
+          title: Text("${part.keywords}"),
+          leading: FaIcon(FontAwesomeIcons.key),
+        )
+      );
+    }
+
+    // External link?
+    if (part.link.isNotEmpty) {
+      tiles.add(
+        ListTile(
+            title: Text("${part.link}"),
+            leading: FaIcon(FontAwesomeIcons.link),
+            trailing: Text(""),
             onTap: null,
           )
       );
