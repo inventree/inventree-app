@@ -366,6 +366,33 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       )
     );
 
+    // Location information
+    if ((item.locationId > 0) && (item.locationName != null) && (item.locationName.isNotEmpty)) {
+      tiles.add(
+          ListTile(
+            title: Text("Stock Location"),
+            subtitle: Text("${item.locationPathString}"),
+            leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
+            onTap: () {
+              if (item.locationId > 0) {
+                InvenTreeStockLocation().get(context, item.locationId).then((var loc) {
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => LocationDisplayWidget(loc)));
+                });
+              }
+            },
+          )
+      );
+    } else {
+      tiles.add(
+          ListTile(
+            title: Text("Stock Location"),
+            leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
+            subtitle: Text("No location set"),
+          )
+      );
+    }
+
     // Quantity information
     if (item.isSerialized()) {
       tiles.add(
@@ -398,33 +425,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         },
       )
     );
-
-    // Location information
-    if ((item.locationId > 0) && (item.locationName != null) && (item.locationName.isNotEmpty)) {
-      tiles.add(
-        ListTile(
-          title: Text("Stock Location"),
-          subtitle: Text("${item.locationPathString}"),
-          leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
-          onTap: () {
-            if (item.locationId > 0) {
-              InvenTreeStockLocation().get(context, item.locationId).then((var loc) {
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => LocationDisplayWidget(loc)));
-              });
-            }
-          },
-        )
-      );
-    } else {
-      tiles.add(
-        ListTile(
-          title: Text("Stock Location"),
-          leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
-          subtitle: Text("No location set"),
-        )
-      );
-    }
 
     // Supplier part?
     if (item.supplierPartId > 0) {
