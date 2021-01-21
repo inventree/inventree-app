@@ -11,6 +11,10 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
   // Storage for context once "Build" is called
   BuildContext context;
 
+  List<Widget> getAppBarActions(BuildContext context) {
+    return [];
+  }
+
   String getAppBarTitle(BuildContext context) { return "App Bar Title"; }
 
   void initState() {
@@ -37,6 +41,7 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
   AppBar getAppBar(BuildContext context) {
     return AppBar(
       title: Text(getAppBarTitle(context)),
+      actions: getAppBarActions(context),
     );
   }
 

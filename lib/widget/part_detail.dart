@@ -32,6 +32,18 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   @override
   String getAppBarTitle(BuildContext context) { return "Part"; }
 
+  @override
+  List<Widget> getAppBarActions(BuildContext context) {
+    return <Widget>[
+      // TODO: Hide the 'edit' button if the user does not have permission!!
+      IconButton(
+        icon: FaIcon(FontAwesomeIcons.edit),
+        tooltip: 'Edit',
+        onPressed: _editPartDialog,
+      )
+    ];
+  }
+
   _PartDisplayState(this.part) {
     // TODO
   }
@@ -114,6 +126,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         StringField(
           label: "Internal Part Number",
           initial: part.IPN,
+          allowEmpty: true,
           onSaved: (value) => _ipn = value,
         )
 
@@ -136,10 +149,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           title: Text("${part.fullname}"),
           subtitle: Text("${part.description}"),
           leading: InvenTreeAPI().getImage(part.thumbnail),
-          trailing: IconButton(
-            icon: FaIcon(FontAwesomeIcons.edit),
-            onPressed: _editPartDialog,
-          ),
         )
       )
     );
