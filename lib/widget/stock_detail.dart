@@ -37,6 +37,18 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   @override
   String getAppBarTitle(BuildContext context) { return "Stock Item"; }
 
+  @override
+  List<Widget> getAppBarActions(BuildContext context) {
+    return <Widget>[
+      // TODO: Hide the 'edit' button if the user does not have permission!!
+      IconButton(
+        icon: FaIcon(FontAwesomeIcons.edit),
+        tooltip: "Edit",
+        onPressed: _editStockItemDialog,
+      )
+    ];
+  }
+
   final TextEditingController _quantityController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
 
@@ -333,10 +345,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           title: Text("${item.partName}"),
           subtitle: Text("${item.partDescription}"),
           leading: InvenTreeAPI().getImage(item.partImage),
-          trailing: IconButton(
-            icon: FaIcon(FontAwesomeIcons.edit),
-            onPressed: _editStockItemDialog,
-          )
         )
       )
     );
@@ -357,6 +365,33 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         },
       )
     );
+
+    // Location information
+    if ((item.locationId > 0) && (item.locationName != null) && (item.locationName.isNotEmpty)) {
+      tiles.add(
+          ListTile(
+            title: Text("Stock Location"),
+            subtitle: Text("${item.locationPathString}"),
+            leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
+            onTap: () {
+              if (item.locationId > 0) {
+                InvenTreeStockLocation().get(context, item.locationId).then((var loc) {
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => LocationDisplayWidget(loc)));
+                });
+              }
+            },
+          )
+      );
+    } else {
+      tiles.add(
+          ListTile(
+            title: Text("Stock Location"),
+            leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
+            subtitle: Text("No location set"),
+          )
+      );
+    }
 
     // Quantity information
     if (item.isSerialized()) {
@@ -390,33 +425,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         },
       )
     );
-
-    // Location information
-    if ((item.locationId > 0) && (item.locationName != null) && (item.locationName.isNotEmpty)) {
-      tiles.add(
-        ListTile(
-          title: Text("Stock Location"),
-          subtitle: Text("${item.locationPathString}"),
-          leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
-          onTap: () {
-            if (item.locationId > 0) {
-              InvenTreeStockLocation().get(context, item.locationId).then((var loc) {
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => LocationDisplayWidget(loc)));
-              });
-            }
-          },
-        )
-      );
-    } else {
-      tiles.add(
-        ListTile(
-          title: Text("Stock Location"),
-          leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
-          subtitle: Text("No location set"),
-        )
-      );
-    }
 
     // Supplier part?
     if (item.supplierPartId > 0) {

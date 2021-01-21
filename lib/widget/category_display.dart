@@ -31,6 +31,17 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
   @override
   String getAppBarTitle(BuildContext context) { return "Part Category"; }
 
+  @override
+  List<Widget> getAppBarActions(BuildContext context) {
+    return <Widget>[
+      IconButton(
+        icon: FaIcon(FontAwesomeIcons.edit),
+        tooltip: 'Edit',
+        onPressed: null,
+      )
+    ];
+  }
+
   _CategoryDisplayState(this.category) {}
 
   // The local InvenTreePartCategory object
@@ -94,10 +105,6 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
             ListTile(
               title: Text("${category.name}"),
               subtitle: Text("${category.description}"),
-              trailing: IconButton(
-                icon: FaIcon(FontAwesomeIcons.edit),
-                onPressed: null,
-              ),
             ),
             ListTile(
               title: Text("Parent Category"),
@@ -260,7 +267,11 @@ class PartList extends StatelessWidget {
     return ListTile(
       title: Text("${part.name}"),
       subtitle: Text("${part.description}"),
-      leading: InvenTreeAPI().getImage(part.thumbnail),
+      leading: InvenTreeAPI().getImage(
+        part.thumbnail,
+        width: 40,
+        height: 40,
+      ),
       onTap: () {
         _openPart(context, part.pk);
       },

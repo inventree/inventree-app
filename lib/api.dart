@@ -380,7 +380,7 @@ class InvenTreeAPI {
    * Load image from the InvenTree server,
    * or from local cache (if it has been cached!)
    */
-  CachedNetworkImage getImage(String imageUrl) {
+  CachedNetworkImage getImage(String imageUrl, {double height, double width}) {
     if (imageUrl.isEmpty) {
       imageUrl = staticImage;
     }
@@ -392,6 +392,8 @@ class InvenTreeAPI {
       placeholder: (context, url) => CircularProgressIndicator(),
       errorWidget: (context, url, error) => Icon(FontAwesomeIcons.exclamation),
       httpHeaders: defaultHeaders(),
+      height: height,
+      width: width,
     );
   }
 }
