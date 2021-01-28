@@ -339,6 +339,40 @@ class _QRViewState extends State<InvenTreeQRView> {
 }
 
 
+class StockItemScanIntoLocationHandler extends BarcodeHandler {
+  /**
+   * Barcode handler for scanning a provided StockItem into a scanned StockLocation
+   */
+
+  final InvenTreeStockItem item;
+
+  StockItemScanIntoLocationHandler(this.item);
+
+  @override
+  Future<void> onBarcodeMatched(Map<String, dynamic> data) {
+    // If the barcode points to a 'stocklocation', great!
+    if (!data.containsKey('stocklocation')) {
+      showErrorDialog(
+          _context,
+          "Invalid Barcode",
+          "Barcode does not match a Stock Location",
+          onDismissed: _controller.resumeCamera,
+      );
+     } else {
+      // Extract location information
+      int location = data['stocklocation']['pk'] as int;
+
+      // Transfer stock to specified location
+      item.transferStock(location).then((response) {
+        print("Response: ${response.statusCode}");
+        _controller.dispose();
+        Navigator.of(_context).pop();
+      });
+    }
+  }
+}
+
+
 Future<void> scanQrCode(BuildContext context) async {
 
   Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeQRView(BarcodeScanHandler())));

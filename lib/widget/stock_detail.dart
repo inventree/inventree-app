@@ -253,7 +253,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     _quantityController.clear();
     _notesController.clear();
 
-    var response = await item.transferStock(quantity, location.pk, notes: notes);
+    var response = await item.transferStock(location.pk, quantity: quantity, notes: notes);
 
     // TODO - Error handling (potentially return false?)
     refresh();
@@ -525,6 +525,10 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         leading: FaIcon(FontAwesomeIcons.exchangeAlt),
         trailing: FaIcon(FontAwesomeIcons.qrcode),
         onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => InvenTreeQRView(StockItemScanIntoLocationHandler(item)))
+          );
         },
       )
     );
