@@ -119,6 +119,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   void _addStockDialog() async {
 
     _quantityController.clear();
+    _notesController.clear();
 
     showFormDialog(context, "Add Stock",
       key: _addStockKey,
@@ -165,6 +166,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   void _removeStockDialog() {
 
     _quantityController.clear();
+    _notesController.clear();
 
     showFormDialog(context, "Remove Stock",
         key: _removeStockKey,
@@ -211,6 +213,9 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   }
 
   void _countStockDialog() async {
+
+    _quantityController.text = item.quantity.toString();
+    _notesController.clear();
 
     showFormDialog(context, "Count Stock",
       key: _countStockKey,
@@ -331,23 +336,25 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     );
   }
 
+  Widget headerTile() {
+    return Card(
+      child: ListTile(
+        title: Text("${item.partName}"),
+        subtitle: Text("${item.partDescription}"),
+        leading: InvenTreeAPI().getImage(item.partImage),
+      )
+    );
+  }
+
   /*
    * Construct a list of detail elements about this StockItem.
    * The number of elements may vary depending on the StockItem details
    */
-  List<Widget> stockTiles() {
+  List<Widget> detailTiles() {
     List<Widget> tiles = [];
 
     // Image / name / description
-    tiles.add(
-      Card(
-        child: ListTile(
-          title: Text("${item.partName}"),
-          subtitle: Text("${item.partDescription}"),
-          leading: InvenTreeAPI().getImage(item.partImage),
-        )
-      )
-    );
+    tiles.add(headerTile());
 
     tiles.add(
       ListTile(
@@ -412,20 +419,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     }
 
-    tiles.add(
-      ListTile(
-        title: Text("Add Barcode"),
-        leading: FaIcon(FontAwesomeIcons.qrcode),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => InvenTreeQRView(StockItemBarcodeAssignmentHandler(item)))  
-          );
-          //Navigator.push(context, MaterialPageRoute(builder: (context) => AssignBarcodeToStockItemView(item)));
-        },
-      )
-    );
-
     // Supplier part?
     if (item.supplierPartId > 0) {
       tiles.add(
@@ -486,11 +479,83 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     return tiles;
   }
 
+  List<Widget> actionTiles() {
+    List<Widget> tiles = [];
+
+    tiles.add(headerTile());
+
+    if (!item.isSerialized()) {
+      tiles.add(
+          ListTile(
+              title: Text("Count Stock"),
+              leading: FaIcon(FontAwesomeIcons.checkCircle),
+              onTap: _countStockDialog,
+          )
+      );
+
+      tiles.add(
+          ListTile(
+              title: Text("Remove Stock"),
+              leading: FaIcon(FontAwesomeIcons.minusCircle),
+              onTap: _removeStockDialog,
+          )
+      );
+
+      tiles.add(
+          ListTile(
+              title: Text("Add Stock"),
+              leading: FaIcon(FontAwesomeIcons.plusCircle),
+              onTap: _addStockDialog,
+          )
+      );
+    }
+
+    tiles.add(
+      ListTile(
+        title: Text("Transfer Stock"),
+        leading: FaIcon(FontAwesomeIcons.exchangeAlt),
+        onTap: _transferStockDialog,
+      )
+    );
+
+    // Scan item into a location
+    tiles.add(
+      ListTile(
+        title: Text("Scan Into Location"),
+        leading: FaIcon(FontAwesomeIcons.exchangeAlt),
+        trailing: FaIcon(FontAwesomeIcons.qrcode),
+        onTap: () {
+        },
+      )
+    );
+
+    // Add or remove custom barcode
+    if (item.uid.isEmpty) {
+      tiles.add(
+        ListTile(
+          title: Text("Assign Barcode"),
+          leading: FaIcon(FontAwesomeIcons.barcode),
+          trailing: FaIcon(FontAwesomeIcons.qrcode),
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => InvenTreeQRView(StockItemBarcodeAssignmentHandler(item)))
+            );
+          }
+        )
+      );
+    }
+
+    return tiles;
+  }
+
   /*
    * Return a list of context-sensitive action buttons.
    * Not all buttons will be avaialable for a given StockItem,
    * depending on the properties of that StockItem
    */
+
+  /*
   List<SpeedDialChild> actionButtons() {
     var buttons = List<SpeedDialChild>();
 
@@ -525,32 +590,47 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     return buttons;
   }
+   */
 
   @override
   Widget getBottomNavBar(BuildContext context) {
     return BottomNavigationBar(
-      currentIndex: 0,
-      onTap: null,
+      currentIndex: tabIndex,
+      onTap: onTabSelectionChanged,
       items: const <BottomNavigationBarItem> [
         BottomNavigationBarItem(
           icon: FaIcon(FontAwesomeIcons.infoCircle),
           title: Text("Details"),
         ),
         BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.history),
-          title: Text("History"),
-        )
+          icon: FaIcon(FontAwesomeIcons.wrench),
+          title: Text("Actions"),
+        ),
       ]
     );
   }
 
-  @override
-  Widget getBody(BuildContext context) {
-    return ListView(
-      children: stockTiles()
-    );
+  Widget getSelectedWidget(int index) {
+    switch (index) {
+      case 0:
+        return ListView(
+          children: detailTiles(),
+        );
+      case 1:
+        return ListView(
+          children: actionTiles(),
+        );
+      default:
+        return null;
+    }
   }
 
+  @override
+  Widget getBody(BuildContext context) {
+    return getSelectedWidget(tabIndex);
+  }
+
+  /*
   @override
   Widget getFab(BuildContext context) {
     return SpeedDial(
@@ -560,4 +640,5 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         children: actionButtons(),
       );
   }
+   */
 }
