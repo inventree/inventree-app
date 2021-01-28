@@ -11,6 +11,16 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
   // Storage for context once "Build" is called
   BuildContext context;
 
+  // Current tab index (used for widgets which display bottom tabs)
+  int tabIndex = 0;
+
+  // Update current tab selection
+  void onTabSelectionChanged(int index) {
+    setState(() {
+      tabIndex = index;
+    });
+  }
+
   List<Widget> getAppBarActions(BuildContext context) {
     return [];
   }

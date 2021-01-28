@@ -141,7 +141,6 @@ class QuantityField extends TextFormField {
           labelText: label,
           hintText: hint,
         ),
-        initialValue: initial,
         controller: controller,
         keyboardType: TextInputType.numberWithOptions(signed: false, decimal: true),
         validator: (value) {

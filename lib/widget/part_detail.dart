@@ -51,8 +51,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   InvenTreePart part;
 
-  int _tabIndex = 0;
-
   @override
   Future<void> onBuild(BuildContext context) async {
     refresh();
@@ -302,12 +300,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   }
 
-  void _onTabSelectionChanged(int index) {
-    setState(() {
-      _tabIndex = index;
-    });
-  }
-
   Widget getSelectedWidget(int index) {
     switch (index) {
       case 0:
@@ -335,8 +327,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   @override
   Widget getBottomNavBar(BuildContext context) {
     return BottomNavigationBar(
-      currentIndex: _tabIndex,
-      onTap: _onTabSelectionChanged,
+      currentIndex: tabIndex,
+      onTap: onTabSelectionChanged,
       items: const <BottomNavigationBarItem> [
         BottomNavigationBarItem(
           icon: FaIcon(FontAwesomeIcons.infoCircle),
@@ -356,6 +348,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   @override
   Widget getBody(BuildContext context) {
-    return getSelectedWidget(_tabIndex);
+    return getSelectedWidget(tabIndex);
   }
 }

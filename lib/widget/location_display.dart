@@ -133,11 +133,87 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
   }
 
   @override
-  Widget getBody(BuildContext context) {
+  Widget getBottomNavBar(BuildContext context) {
+    return BottomNavigationBar(
+        currentIndex: tabIndex,
+        onTap: onTabSelectionChanged,
+        items: const <BottomNavigationBarItem> [
+          BottomNavigationBarItem(
+            icon: FaIcon(FontAwesomeIcons.boxes),
+            title: Text("Stock"),
+          ),
+          BottomNavigationBarItem(
+            icon: FaIcon(FontAwesomeIcons.wrench),
+            title: Text("Actions"),
+          )
+        ]
+    );
+  }
 
-    return ListView(
-      children: <Widget> [
-        locationDescriptionCard(),
+  Widget getSelectedWidget(int index) {
+    switch (index) {
+      case 0:
+        return ListView(
+          children: detailTiles(),
+        );
+      case 1:
+        return ListView(
+          children: actionTiles(),
+        );
+      default:
+        return null;
+    }
+  }
+
+  @override
+  Widget getBody(BuildContext context) {
+    return getSelectedWidget(tabIndex);
+  }
+
+
+List<Widget> detailTiles() {
+    List<Widget> tiles = [];
+
+    // Location description
+    tiles.add(locationDescriptionCard());
+
+    // Sublocation panel
+    ExpansionPanel sublocations = ExpansionPanel(
+      headerBuilder: (BuildContext context, bool isExpanded) {
+        return ListTile(
+          title: Text("Sublocations"),
+          leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
+          trailing: Text("${_sublocations.length}"),
+          onTap: () {
+            setState(() {
+              InvenTreePreferences().expandLocationList = !InvenTreePreferences().expandLocationList;
+            });
+          },
+        );
+      },
+      body: SublocationList(_sublocations),
+      isExpanded: InvenTreePreferences().expandLocationList && _sublocations.length > 0,
+    );
+
+    ExpansionPanel subitems = ExpansionPanel(
+      headerBuilder: (BuildContext context, bool isExpanded) {
+        return ListTile(
+          title: Text("Stock Items"),
+          leading: FaIcon(FontAwesomeIcons.boxes),
+          trailing: Text("${_items.length}"),
+          onTap: () {
+            setState(() {
+              InvenTreePreferences().expandStockList = !InvenTreePreferences().expandStockList;
+            });
+          },
+        );
+      },
+      body: StockList(_items),
+      isExpanded: InvenTreePreferences().expandStockList && _items.length > 0,
+    );
+
+    // Sublocations and items
+    tiles.add(
         ExpansionPanelList(
           expansionCallback: (int index, bool isExpanded) {
             setState(() {
@@ -152,47 +228,46 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
                   break;
               }
             });
-
           },
           children: <ExpansionPanel> [
-            ExpansionPanel(
-              headerBuilder: (BuildContext context, bool isExpanded) {
-                return ListTile(
-                  title: Text("Sublocations"),
-                  leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
-                  trailing: Text("${_sublocations.length}"),
-                  onTap: () {
-                    setState(() {
-                      InvenTreePreferences().expandLocationList = !InvenTreePreferences().expandLocationList;
-                    });
-                  },
-                );
-              },
-              body: SublocationList(_sublocations),
-              isExpanded: InvenTreePreferences().expandLocationList && _sublocations.length > 0,
-            ),
-            ExpansionPanel(
-              headerBuilder: (BuildContext context, bool isExpanded) {
-                return ListTile(
-                  title: Text("Stock Items"),
-                  leading: FaIcon(FontAwesomeIcons.boxes),
-                  trailing: Text("${_items.length}"),
-                  onTap: () {
-                    setState(() {
-                      InvenTreePreferences().expandStockList = !InvenTreePreferences().expandStockList;
-                    });
-                  },
-                );
-              },
-              body: StockList(_items),
-              isExpanded: InvenTreePreferences().expandStockList && _items.length > 0,
-            )
+            sublocations,
+            subitems,
           ]
-      ),
-    ]
+      )
     );
+
+    return tiles;
   }
+
+  List<Widget> actionTiles() {
+    List<Widget> tiles = [];
+
+    tiles.add(locationDescriptionCard());
+
+    // Scan items into location
+    tiles.add(
+      ListTile(
+        title: Text("Scan in Stock Item"),
+        leading: FaIcon(FontAwesomeIcons.exchangeAlt),
+        trailing: FaIcon(FontAwesomeIcons.qrcode),
+        onTap: null,
+      )
+    );
+
+    // Move location into another location
+    tiles.add(
+      ListTile(
+        title: Text("Move Stock Location"),
+        leading: FaIcon(FontAwesomeIcons.sitemap),
+        trailing: FaIcon(FontAwesomeIcons.qrcode),
+      )
+    );
+
+    return tiles;
+  }
+
 }
+
 
 
 class SublocationList extends StatelessWidget {

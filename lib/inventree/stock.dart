@@ -379,20 +379,26 @@ class InvenTreeStockItem extends InvenTreeModel {
     });
   }
 
-  Future<http.Response> transferStock(double q, int location, {String notes}) async {
+  Future<http.Response> transferStock(int location, {double quantity, String notes}) async {
+    if (quantity == null) {} else
+    if ((quantity < 0) || (quantity > this.quantity)) {
+      quantity = this.quantity;
+    }
 
-    if ((q == null) || (q > quantity)) q = quantity;
-
-    return api.post("/stock/transfer/", body: {
+    Map<String, dynamic> data = {
       "item": {
         "pk": "${pk}",
-        "quantity": "${q}",
-        },
+      },
       "location": "${location}",
       "notes": notes ?? '',
-    });
-  }
+    };
 
+    if (quantity != null) {
+      data["item"]["quantity"] = "${quantity}";
+    }
+
+    return api.post("/stock/transfer/", body: data);
+  }
 }
 
 
