@@ -41,6 +41,16 @@ class BarcodeHandler {
     Future<void> onBarcodeUnknown(Map<String, dynamic> data) {
       // Called when the server does not know about a barcode
       // Override this function
+      showErrorDialog(
+        _context,
+        "Invalid Barcode",
+        "Barcode does not match any known item",
+        error: "Barcode Error",
+        icon: FontAwesomeIcons.barcode,
+        onDismissed: () {
+          _controller.resumeCamera();
+        }
+      );
     }
 
     Future<void> onBarcodeUnhandled(Map<String, dynamic> data) {
