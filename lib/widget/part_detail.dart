@@ -142,6 +142,16 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   }
 
+  Widget headerTile() {
+    return Card(
+        child: ListTile(
+          title: Text("${part.fullname}"),
+          subtitle: Text("${part.description}"),
+          leading: InvenTreeAPI().getImage(part.thumbnail),
+        )
+    );
+  }
+
   /*
    * Build a list of tiles to display under the part description
    */
@@ -151,13 +161,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
     // Image / name / description
     tiles.add(
-      Card(
-        child: ListTile(
-          title: Text("${part.fullname}"),
-          subtitle: Text("${part.description}"),
-          leading: InvenTreeAPI().getImage(part.thumbnail),
-        )
-      )
+      headerTile()
     );
 
     // Category information
@@ -274,7 +278,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       );
     }
 
-    if (part.isTrackable) {
+    // TODO - Add request tests?
+    if (false && part.isTrackable) {
       tiles.add(ListTile(
           title: Text("Required Tests"),
           leading: FaIcon(FontAwesomeIcons.tasks),
@@ -300,6 +305,32 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   }
 
+  List<Widget> actionTiles() {
+    List<Widget> tiles = [];
+
+    tiles.add(headerTile());
+
+    tiles.add(
+      ListTile(
+        title: Text("Create Stock Item"),
+        leading: FaIcon(FontAwesomeIcons.box),
+        onTap: null,
+      )
+    );
+
+    tiles.add(
+      ListTile(
+        title: Text("Scan New Stock Item"),
+        leading: FaIcon(FontAwesomeIcons.box),
+        trailing: FaIcon(FontAwesomeIcons.qrcode),
+        onTap: null,
+      ),
+    );
+
+    return tiles;
+  }
+
+
   Widget getSelectedWidget(int index) {
     switch (index) {
       case 0:
@@ -311,12 +342,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       case 1:
         return Center(
           child: ListView(
-            children: <Widget>[
-              ListTile(
-                title: Text("Stock"),
-                subtitle: Text("Stock info goes here!"),
-              )
-            ],
+            children: actionTiles(),
           )
         );
       default:
@@ -335,12 +361,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           title: Text("Details"),
         ),
         BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.thList),
-          title: Text("BOM"),
-        ),
-        BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.boxes),
-          title: Text("Stock"),
+          icon: FaIcon(FontAwesomeIcons.wrench),
+          title: Text("Actions"),
         ),
       ]
     );
