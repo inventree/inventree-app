@@ -5,6 +5,8 @@ import 'package:InvenTree/api.dart';
 import 'package:InvenTree/widget/dialogs.dart';
 import 'package:InvenTree/widget/fields.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -30,7 +32,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
   final _addResultKey = GlobalKey<FormState>();
 
   @override
-  String getAppBarTitle(BuildContext context) { return "Test Results"; }
+  String getAppBarTitle(BuildContext context) => I18N.of(context).testResults;
 
   @override
   Future<void> request(BuildContext context) async {
@@ -56,7 +58,10 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
         // TODO - Show a SnackBar here!
         refresh();
       } else {
-        showErrorDialog(context, "Error", "Could not upload test result to server");
+        showErrorDialog(
+            context,
+            I18N.of(context).error,
+            "Could not upload test result to server");
       }
     });
   }
@@ -73,13 +78,13 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
       key: _addResultKey,
       actions: <Widget>[
         FlatButton(
-          child: Text("Cancel"),
+          child: Text(I18N.of(context).cancel),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
         FlatButton(
-          child: Text("Save"),
+          child: Text(I18N.of(context).save),
           onPressed: () {
             if (_addResultKey.currentState.validate()) {
               _addResultKey.currentState.save();
@@ -97,13 +102,13 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
           onSaved: (value) => _name = value,
         ),
         CheckBoxField(
-          label: "Result",
+          label: I18N.of(context).result,
           hint: "Test passed or failed",
           initial: true,
           onSaved: (value) => _result = value,
         ),
         StringField(
-          label: "Value",
+          label: I18N.of(context).value,
           initial: value,
           allowEmpty: true,
           onSaved: (value) => _value = value,
@@ -115,13 +120,14 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
           },
         ),
         ImagePickerField(
+          context,
           label: "Attach Image",
           required: attachmentRequired,
           onSaved: (attachment) => _attachment = attachment,
         ),
         StringField(
           allowEmpty: true,
-          label: "Notes",
+          label: I18N.of(context).notes,
           onSaved: (value) => _notes = value,
         ),
       ]
