@@ -2,7 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:InvenTree/widget/refreshable_state.dart';
 import 'package:InvenTree/inventree/part.dart';
 import 'package:InvenTree/inventree/stock.dart';
@@ -23,9 +23,7 @@ class _SearchState extends RefreshableState<SearchWidget> {
   List<InvenTreeStockItem> _stockItems = List<InvenTreeStockItem>();
 
   @override
-  String getAppBarTitle(BuildContext context) {
-    return "Search";
-  }
+  String getAppBarTitle(BuildContext context) => I18N.of(context).search;
 
   Future<void> _search(BuildContext context) {
     print("Search: $_searchText}");
@@ -76,14 +74,14 @@ class _SearchState extends RefreshableState<SearchWidget> {
         children: <Widget>[
           TextField(
             decoration: InputDecoration(
-              hintText: "Search"
+              hintText: I18N.of(context).search,
             ),
             onChanged: (String text) {
               _searchText = text;
             }
           ),
           RaisedButton(
-            child: Text("Search"),
+            child: Text(I18N.of(context).search),
             onPressed: () {
               _search(context);
             },

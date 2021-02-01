@@ -3,6 +3,8 @@ import 'package:InvenTree/api.dart';
 import 'package:InvenTree/inventree/part.dart';
 import 'package:InvenTree/preferences.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:InvenTree/widget/part_detail.dart';
 import 'package:InvenTree/widget/drawer.dart';
 import 'package:InvenTree/widget/refreshable_state.dart';
@@ -19,8 +21,6 @@ class CategoryDisplayWidget extends StatefulWidget {
 
   final InvenTreePartCategory category;
 
-  final String title = "Category";
-
   @override
   _CategoryDisplayState createState() => _CategoryDisplayState(category);
 }
@@ -29,14 +29,14 @@ class CategoryDisplayWidget extends StatefulWidget {
 class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
   @override
-  String getAppBarTitle(BuildContext context) { return "Part Category"; }
+  String getAppBarTitle(BuildContext context) => I18N.of(context).partCategory;
 
   @override
   List<Widget> getAppBarActions(BuildContext context) {
     return <Widget>[
       IconButton(
         icon: FaIcon(FontAwesomeIcons.edit),
-        tooltip: 'Edit',
+        tooltip: I18N.of(context).edit,
         onPressed: null,
       )
     ];
@@ -94,7 +94,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
     if (category == null) {
       return Card(
         child: ListTile(
-          title: Text("Part Categories"),
+          title: Text(I18N.of(context).partCategories),
           subtitle: Text("Top level part category"),
         )
       );
@@ -107,7 +107,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
               subtitle: Text("${category.description}"),
             ),
             ListTile(
-              title: Text("Parent Category"),
+              title: Text(I18N.of(context).parentCategory),
               subtitle: Text("${category.parentpathstring}"),
               leading: FaIcon(FontAwesomeIcons.sitemap),
               onTap: () {
@@ -154,7 +154,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
             ExpansionPanel(
               headerBuilder: (BuildContext context, bool isExpanded) {
                 return ListTile(
-                  title: Text("Subcategories"),
+                  title: Text(I18N.of(context).subcategories),
                   leading: FaIcon(FontAwesomeIcons.stream),
                   trailing: Text("${_subcategories.length}"),
                   onTap: () {
@@ -173,7 +173,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
             ExpansionPanel(
               headerBuilder: (BuildContext context, bool isExpanded) {
                 return ListTile(
-                  title: Text("Parts"),
+                  title: Text(I18N.of(context).parts),
                   leading: FaIcon(FontAwesomeIcons.shapes),
                   trailing: Text("${_parts.length}"),
                   onTap: () {

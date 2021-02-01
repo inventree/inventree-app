@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'dart:async';
 import 'dart:io';
 
@@ -44,12 +46,12 @@ class ImagePickerField extends FormField<File> {
     field.didChange(image);
   }
 
-  ImagePickerField({String label = "Attach Image", Function onSaved, bool required = false}) :
+  ImagePickerField(BuildContext context, {String label = "Attach Image", Function onSaved, bool required = false}) :
       super(
         onSaved: onSaved,
         validator: (File img) {
           if (required && (img == null)) {
-            return "Required";
+            return I18N.of(context).required;
           }
 
           return null;

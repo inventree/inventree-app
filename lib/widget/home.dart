@@ -197,10 +197,10 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
                   children: <Widget>[
                     IconButton(
                       icon: new FaIcon(FontAwesomeIcons.barcode),
-                      tooltip: 'Scan Barcode',
+                      tooltip: I18N.of(context).scanBarcode,
                       onPressed: _scan,
                     ),
-                    Text("Scan Barcode"),
+                    Text(I18N.of(context).scanBarcode),
                   ],
                 ),
               ],
@@ -213,20 +213,20 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
                   children: <Widget>[
                     IconButton(
                       icon: new FaIcon(FontAwesomeIcons.shapes),
-                      tooltip: 'Parts',
+                      tooltip: I18N.of(context).parts,
                       onPressed: _parts,
                     ),
-                    Text("Parts"),
+                    Text(I18N.of(context).parts),
                   ],
                 ),
                 Column(
                   children: <Widget>[
                     IconButton(
                       icon: new FaIcon(FontAwesomeIcons.boxes),
-                      tooltip: 'Stock',
+                      tooltip: I18N.of(context).stock,
                       onPressed: _stock,
                     ),
-                    Text('Stock'),
+                    Text(I18N.of(context).stock),
                   ],
                 ),
               ],

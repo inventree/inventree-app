@@ -3,7 +3,7 @@ import 'package:InvenTree/inventree/stock.dart';
 import 'package:InvenTree/widget/refreshable_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 // InvenTree packages
 import 'package:InvenTree/api.dart';
 import 'package:InvenTree/inventree/part.dart';
@@ -27,7 +27,7 @@ class PartStockDetailWidget extends StatefulWidget {
 class _PartStockDisplayState extends RefreshableState<PartStockDetailWidget> {
 
   @override
-  String getAppBarTitle(BuildContext context) { return "Part Stock"; }
+  String getAppBarTitle(BuildContext context) => I18N.of(context).partStock;
 
   _PartStockDisplayState(this.part) {
     // TODO

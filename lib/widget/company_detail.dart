@@ -8,6 +8,7 @@ import 'package:InvenTree/widget/refreshable_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CompanyDetailWidget extends StatefulWidget {
 
@@ -28,7 +29,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
   final _editCompanyKey = GlobalKey<FormState>();
 
   @override
-  String getAppBarTitle(BuildContext context) { return "Company"; }
+  String getAppBarTitle(BuildContext context) => I18N.of(context).company;
 
   @override
   Future<void> request(BuildContext context) async {
@@ -54,17 +55,17 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
     var _description;
     var _website;
 
-    showFormDialog(context, "Edit Company",
+    showFormDialog(context, I18N.of(context).edit,
         key: _editCompanyKey,
         actions: <Widget>[
           FlatButton(
-            child: Text("Cancel"),
+            child: Text(I18N.of(context).cancel),
             onPressed: () {
               Navigator.pop(context);
             },
           ),
           FlatButton(
-            child: Text("Save"),
+            child: Text(I18N.of(context).save),
             onPressed: () {
               if (_editCompanyKey.currentState.validate()) {
                 _editCompanyKey.currentState.save();
@@ -80,21 +81,21 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
         ],
         fields: <Widget>[
           StringField(
-            label: "Company Name",
+            label: I18N.of(context).name,
             initial: company.name,
             onSaved: (value) {
               _name = value;
             },
           ),
           StringField(
-            label: "Company Description",
+            label: I18N.of(context).description,
             initial: company.description,
             onSaved: (value) {
               _description = value;
             },
           ),
           StringField(
-            label: "Website",
+            label: I18N.of(context).website,
             initial: company.website,
             allowEmpty: true,
             onSaved: (value) {
@@ -192,7 +193,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
 
     if (company.notes.isNotEmpty) {
       tiles.add(ListTile(
-        title: Text("Notes"),
+        title: Text(I18N.of(context).notes),
         leading: FaIcon(FontAwesomeIcons.stickyNote),
         onTap: null,
       ));

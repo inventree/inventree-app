@@ -2,7 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -31,7 +31,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   final _editPartKey = GlobalKey<FormState>();
 
   @override
-  String getAppBarTitle(BuildContext context) { return "Part"; }
+  String getAppBarTitle(BuildContext context) => I18N.of(context).part;
 
   @override
   List<Widget> getAppBarActions(BuildContext context) {
@@ -39,7 +39,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       // TODO: Hide the 'edit' button if the user does not have permission!!
       IconButton(
         icon: FaIcon(FontAwesomeIcons.edit),
-        tooltip: 'Edit',
+        tooltip: I18N.of(context).edit,
         onPressed: _editPartDialog,
       )
     ];
@@ -88,17 +88,17 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     var _revision;
     var _keywords;
 
-    showFormDialog(context, "Edit Part",
+    showFormDialog(context, I18N.of(context).editPart,
       key: _editPartKey,
       actions: <Widget>[
         FlatButton(
-          child: Text("Cancel"),
+          child: Text(I18N.of(context).cancel),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
         FlatButton(
-          child: Text("Save"),
+          child: Text(I18N.of(context).save),
           onPressed: () {
             if (_editPartKey.currentState.validate()) {
               _editPartKey.currentState.save();
@@ -115,12 +115,12 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       ],
       fields: <Widget>[
         StringField(
-          label: "Part Name",
+          label: I18N.of(context).name,
           initial: part.name,
           onSaved: (value) => _name = value,
         ),
         StringField(
-          label: "Part Description",
+          label: I18N.of(context).description,
           initial: part.description,
           onSaved: (value) => _description = value,
         ),
