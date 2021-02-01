@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:flutter_localizations/flutter_localizations.dart';
+
 import 'package:InvenTree/widget/category_display.dart';
 import 'package:InvenTree/widget/company_list.dart';
 import 'package:InvenTree/widget/location_display.dart';
@@ -77,6 +79,20 @@ class InvenTreeApp extends StatelessWidget {
         secondaryHeaderColor: Colors.blueGrey,
       ),
       home: MyHomePage(title: 'InvenTree'),
+      localizationsDelegates: [
+        // ... app-specific localization delegate[s] here
+        // TODO: uncomment the line below after codegen
+        // AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale('en', ''), // English, no country code
+        const Locale('de', ''),
+        const Locale('fr', ''),
+        const Locale('it', ''),
+      ],
     );
   }
 }
