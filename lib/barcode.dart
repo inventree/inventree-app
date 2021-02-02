@@ -32,7 +32,6 @@ class BarcodeHandler {
     QRViewController _controller;
     BuildContext _context;
 
-
     Future<void> onBarcodeMatched(Map<String, dynamic> data) {
       // Called when the server "matches" a barcode
       // Override this function

@@ -25,7 +25,6 @@ class InvenTreeHomePage extends StatefulWidget {
 class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
 
   _InvenTreeHomePageState() : super() {
-    _checkServerConnection();
   }
 
   String _serverAddress = "";
@@ -63,7 +62,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
   /*
    * Test the server connection
    */
-  void _checkServerConnection() async {
+  void _checkServerConnection(BuildContext context) async {
 
     var prefs = await SharedPreferences.getInstance();
 
@@ -76,7 +75,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     _serverIcon = new FaIcon(FontAwesomeIcons.spinner);
     _serverStatusColor = Color.fromARGB(255, 50, 50, 250);
 
-    InvenTreeAPI().connect().then((bool result) {
+    InvenTreeAPI().connect(context).then((bool result) {
 
       if (result) {
         onConnectSuccess("");
@@ -322,7 +321,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
                     leading: _serverIcon,
                     onTap: () {
                       if (!_serverConnection) {
-                        _checkServerConnection();
+                        _checkServerConnection(context);
                       }
                     },
                   ),
