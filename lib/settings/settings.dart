@@ -1,7 +1,9 @@
 import 'package:InvenTree/settings/about.dart';
 import 'package:InvenTree/settings/login.dart';
+import 'package:InvenTree/settings/release.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -45,6 +47,12 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
               onTap: _about,
             ),
             ListTile(
+              title: Text("Release Notes"),
+              subtitle: Text("Display app release notes"),
+              leading: FaIcon(FontAwesomeIcons.fileAlt),
+              onTap: _releaseNotes,
+            ),
+            ListTile(
               title: Text("Report Bug"),
               subtitle: Text("Report bug or suggest new feature"),
               leading: FaIcon(FontAwesomeIcons.bug),
@@ -69,5 +77,16 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
       Navigator.push(context,
           MaterialPageRoute(builder: (context) => InvenTreeAboutWidget(info)));
     });
+  }
+
+  void _releaseNotes() async {
+
+    // Load release notes from external file
+    String notes = await rootBundle.loadString("assets/release_notes.md");
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ReleaseNotesWidget(notes))
+    );
   }
 }
