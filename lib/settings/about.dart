@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info/package_info.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class InvenTreeAboutWidget extends StatelessWidget {
 
@@ -21,11 +22,14 @@ class InvenTreeAboutWidget extends StatelessWidget {
       body: ListView(
         children: <Widget>[
           ListTile(
-            title: Text("Server Address"),
+            title: Text(I18N.of(context).serverDetails),
+          ),
+          ListTile(
+            title: Text(I18N.of(context).address),
             subtitle: Text(InvenTreeAPI().baseUrl.isNotEmpty ? InvenTreeAPI().baseUrl : "Not connected"),
           ),
           ListTile(
-            title: Text("Server Version"),
+            title: Text(I18N.of(context).version),
             subtitle: Text(InvenTreeAPI().version.isNotEmpty ? InvenTreeAPI().version : "Not connected"),
           ),
           ListTile(
@@ -34,7 +38,10 @@ class InvenTreeAboutWidget extends StatelessWidget {
           ),
           Divider(),
           ListTile(
-            title: Text("App Name"),
+            title: Text(I18N.of(context).appDetails),
+          ),
+          ListTile(
+            title: Text(I18N.of(context).name),
             subtitle: Text("${info.appName}"),
           ),
           ListTile(
@@ -42,20 +49,12 @@ class InvenTreeAboutWidget extends StatelessWidget {
             subtitle: Text("${info.packageName}"),
           ),
           ListTile(
-            title: Text("App Version"),
+            title: Text(I18N.of(context).version),
             subtitle: Text("${info.version}"),
           ),
           ListTile(
-              title: Text("Build Number"),
-              subtitle: Text("${info.buildNumber}")
-          ),
-          Divider(),
-          ListTile(
-            title: Text("Submit Bug Report"),
-            subtitle: Text("https://github.com/inventree/inventree-app/issues/"),
-            onTap: () {
-              // TODO - Open the URL in an external webpage?
-            },
+              title: Text(I18N.of(context).build),
+              subtitle: Text("${info.buildNumber}"),
           )
         ],
       )

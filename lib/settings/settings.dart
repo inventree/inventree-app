@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:InvenTree/api.dart';
 import 'login.dart';
 
@@ -37,10 +39,16 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
             ),
             Divider(),
             ListTile(
-              title: Text("About"),
-              subtitle: Text("App details"),
+              title: Text(I18N.of(context).about),
+              subtitle: Text(I18N.of(context).appDetails),
               leading: FaIcon(FontAwesomeIcons.infoCircle),
               onTap: _about,
+            ),
+            ListTile(
+              title: Text("Report Bug"),
+              subtitle: Text("Report bug or suggest new feature"),
+              leading: FaIcon(FontAwesomeIcons.bug),
+              onTap: null,
             ),
           ],
         )
