@@ -98,7 +98,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
                 },
               ),
               Divider(),
-              Text("Account Details"),
+              Text(I18N.of(context).accountDetails),
               TextFormField(
                 initialValue: _username,
                 decoration: InputDecoration(

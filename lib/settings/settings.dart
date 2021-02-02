@@ -34,7 +34,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
         child: ListView(
           children: <Widget>[
             ListTile(
-                title: Text("Server Settings"),
+                title: Text(I18N.of(context).serverSettings),
                 subtitle: Text("Configure server and login settings"),
                 leading: FaIcon(FontAwesomeIcons.server),
                 onTap: _editServerSettings,
@@ -47,13 +47,13 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
               onTap: _about,
             ),
             ListTile(
-              title: Text("Release Notes"),
+              title: Text(I18N.of(context).releaseNotes),
               subtitle: Text("Display app release notes"),
               leading: FaIcon(FontAwesomeIcons.fileAlt),
               onTap: _releaseNotes,
             ),
             ListTile(
-              title: Text("Report Bug"),
+              title: Text(I18N.of(context).reportBug),
               subtitle: Text("Report bug or suggest new feature"),
               leading: FaIcon(FontAwesomeIcons.bug),
               onTap: null,
