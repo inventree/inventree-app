@@ -2,10 +2,14 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image/image.dart';
+
+import 'package:InvenTree/widget/dialogs.dart';
 
 import 'package:path/path.dart' as path;
 import 'package:http/http.dart' as http;
@@ -22,17 +26,55 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class InvenTreeAPI {
 
-  // Minimum supported InvenTree server version is 0.1.1
-  static const List<int> MIN_SUPPORTED_VERSION = [0, 1, 1];
+  // Minimum supported InvenTree server version is
+  static const List<int> MIN_SUPPORTED_VERSION = [0, 1, 5];
+
+  String get _requiredVersionString => "${MIN_SUPPORTED_VERSION[0]}.${MIN_SUPPORTED_VERSION[1]}.${MIN_SUPPORTED_VERSION[2]}";
 
   bool _checkServerVersion(String version) {
-    // TODO - Decode the provided version string and determine if the server is "new" enough
-    return false;
+
+    // Provided version string should be of the format "x.y.z [...]"
+    List<String> versionSplit = version.split(' ').first.split('.');
+
+    // Extract the version number <major>.<minor>.<sub> from the string
+    if (versionSplit.length != 3) {
+      return false;
+    }
+
+    // Cast the server version to an explicit integer
+    int server_version_code = 0;
+
+    print("server version: ${version}");
+
+    server_version_code += (int.tryParse(versionSplit[0]) ?? 0) * 100 * 100;
+    server_version_code += (int.tryParse(versionSplit[1]) ?? 0) * 100;
+    server_version_code += (int.tryParse(versionSplit[2]));
+
+    print("server version code: ${server_version_code}");
+
+    int required_version_code = 0;
+
+    required_version_code += MIN_SUPPORTED_VERSION[0] * 100 * 100;
+    required_version_code += MIN_SUPPORTED_VERSION[1] * 100;
+    required_version_code += MIN_SUPPORTED_VERSION[2];
+
+    print("required version code: ${required_version_code}");
+
+    return server_version_code >= required_version_code;
   }
 
   // Endpoint for requesting an API token
   static const _URL_GET_TOKEN = "user/token/";
   static const _URL_GET_VERSION = "";
+
+  Future<void> showServerError(BuildContext context, String description) async {
+    showErrorDialog(
+      context,
+      I18N.of(context).serverError,
+      description,
+      icon: FontAwesomeIcons.server
+    );
+  }
 
   // Base URL for InvenTree API e.g. http://192.168.120.10:8000
   String _BASE_URL = "";
@@ -58,21 +100,13 @@ class InvenTreeAPI {
     return baseUrl + url;
   }
 
-  String get apiUrl {
-    return _makeUrl("/api/");
-  }
+  String get apiUrl => _makeUrl("/api/");
 
-  String get imageUrl {
-    return _makeUrl("/image/");
-  }
+  String get imageUrl => _makeUrl("/image/");
 
-  String makeApiUrl(String endpoint) {
-    return _makeUrl("/api/" + endpoint);
-  }
+  String makeApiUrl(String endpoint) => _makeUrl("/api/" + endpoint);
 
-  String makeUrl(String endpoint) {
-    return _makeUrl(endpoint);
-  }
+  String makeUrl(String endpoint) => _makeUrl(endpoint);
 
   String _username = "";
   String _password = "";
@@ -80,9 +114,7 @@ class InvenTreeAPI {
   // Authentication token (initially empty, must be requested)
   String _token = "";
 
-  bool isConnected() {
-    return _token.isNotEmpty;
-  }
+  bool isConnected() => _token.isNotEmpty;
 
   /*
    * Check server connection and display messages if not connected.
@@ -105,9 +137,6 @@ class InvenTreeAPI {
 
       return false;
     }
-
-    // Is the server version too old?
-    // TODO
 
     // Finally
     return true;
@@ -138,18 +167,17 @@ class InvenTreeAPI {
 
   InvenTreeAPI._internal();
 
-  Future<bool> connect() async {
+  Future<bool> connect(BuildContext context) async {
     var prefs = await SharedPreferences.getInstance();
 
     String server = prefs.getString("server");
     String username = prefs.getString("username");
     String password = prefs.getString("password");
 
-    return connectToServer(server, username, password);
+    return connectToServer(context, server, username, password);
   }
 
-  Future<bool> connectToServer(String address, String username,
-      String password) async {
+  Future<bool> connectToServer(BuildContext context, String address, String username, String password) async {
 
     /* Address is the base address for the InvenTree server,
      * e.g. http://127.0.0.1:8000
@@ -161,9 +189,14 @@ class InvenTreeAPI {
     username = username.trim();
 
     if (address.isEmpty || username.isEmpty || password.isEmpty) {
-      errorMessage = "Server Error: Empty details supplied";
-      print(errorMessage);
-      throw errorMessage;
+      await showErrorDialog(
+        context,
+        I18N.of(context).error,
+        "Incomplete server details",
+        icon: FontAwesomeIcons.server
+      );
+
+      return false;
     }
 
     if (!address.endsWith('/')) {
@@ -185,29 +218,34 @@ class InvenTreeAPI {
 
     print("Connecting to " + apiUrl + " -> " + username + ":" + password);
 
-    // TODO - Add connection timeout
-
     var response = await get("").timeout(Duration(seconds: 10)).catchError((error) {
 
       if (error is SocketException) {
-        print("Could not connect to server");
+        errorMessage = "Could not connect to server";
         return null;
       } else if (error is TimeoutException) {
-        print("Server timeout");
+        errorMessage = "Server timeout";
         return null;
       } else {
+        // Unknown error type
+        errorMessage = error.toString();
         // Unknown error type, re-throw error
-        print("Unknown error: ${error.toString()}");
-        throw error;
+        return null;
       }
     });
 
     if (response == null) {
+      // Null (or error) response: Show dialog and exit
+
+      await showServerError(context, errorMessage);
       return false;
     }
 
     if (response.statusCode != 200) {
-      print("Invalid status code: " + response.statusCode.toString());
+      // Any status code other than 200!
+
+      // TODO: Interpret the error codes and show custom message?
+      await showServerError(context, "Invalid response code: ${response.statusCode.toString()}");
       return false;
     }
 
@@ -217,9 +255,9 @@ class InvenTreeAPI {
 
     // We expect certain response from the server
     if (!data.containsKey("server") || !data.containsKey("version")) {
-      errorMessage = "Server resonse contained incorrect data";
-      print(errorMessage);
-      throw errorMessage;
+
+      await showServerError(context, "Server response missing required fields");
+      return false;
     }
 
     print("Server: " + data["server"]);
@@ -228,35 +266,43 @@ class InvenTreeAPI {
     _version = data["version"];
 
     if (!_checkServerVersion(_version)) {
-      // TODO - Something?
+      await showServerError(context, "Server version is too old.\n\nServer Version: ${_version}\n\nRequired version: ${_requiredVersionString}");
+      return false;
     }
 
     // Record the instance name of the server
     instance = data['instance'] ?? '';
 
     // Request token from the server if we do not already have one
-    if (_token.isNotEmpty) {
+    if (false && _token.isNotEmpty) {
       print("Already have token - $_token");
       return true;
     }
 
-    // Clear out the token
+    // Clear the existing token value
     _token = "";
+
+    print("Requesting token from server");
 
     response = await get(_URL_GET_TOKEN).timeout(Duration(seconds: 10)).catchError((error) {
       print("Error requesting token:");
       print(error);
-      return false;
+      return null;
     });
 
+    if (response == null) {
+      await showServerError(context, "Error requesting access token");
+      return false;
+    }
+
     if (response.statusCode != 200) {
-      print("Invalid status code: " + response.statusCode.toString());
+      await showServerError(context, "Invalid status code: ${response.statusCode.toString()}");
       return false;
     } else {
       var data = json.decode(response.body);
 
       if (!data.containsKey("token")) {
-        print("No token provided in response");
+        await showServerError(context, "No token provided in response");
         return false;
       }
 

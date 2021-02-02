@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void showMessage(BuildContext context, String message) {
   Scaffold.of(context).showSnackBar(SnackBar(
@@ -9,7 +10,12 @@ void showMessage(BuildContext context, String message) {
   ));
 }
 
-Future<void> showInfoDialog(BuildContext context, String title, String description, {IconData icon = FontAwesomeIcons.info, String info = "Info", Function onDismissed}) async {
+Future<void> showInfoDialog(BuildContext context, String title, String description, {IconData icon = FontAwesomeIcons.info, String info, Function onDismissed}) async {
+
+  if (info == null || info.isEmpty) {
+    info = I18N.of(context).info;
+  }
+
   showDialog(
     context: context,
     child: SimpleDialog(
@@ -31,7 +37,12 @@ Future<void> showInfoDialog(BuildContext context, String title, String descripti
   });
 }
 
-Future<void> showErrorDialog(BuildContext context, String title, String description, {IconData icon = FontAwesomeIcons.exclamationCircle, String error = "Error", Function onDismissed}) async {
+Future<void> showErrorDialog(BuildContext context, String title, String description, {IconData icon = FontAwesomeIcons.exclamationCircle, String error, Function onDismissed}) async {
+
+  if (error == null || error.isEmpty) {
+    error = I18N.of(context).error;
+  }
+
   showDialog(
     context: context,
     child: SimpleDialog(

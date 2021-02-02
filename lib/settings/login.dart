@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../api.dart';
 import '../preferences.dart';
@@ -61,6 +62,15 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     return null;
   }
 
+  void _save(BuildContext context) async {
+    if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
+
+      await InvenTreePreferences().saveLoginDetails(context, _server, _username, _password);
+
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -76,7 +86,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
           key: _formKey,
           child: new ListView(
             children: <Widget>[
-              Text("Server Address"),
+              Text(I18N.of(context).serverAddress),
               new TextFormField(
                 initialValue: _server,
                 decoration: InputDecoration(
@@ -88,12 +98,12 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
                 },
               ),
               Divider(),
-              Text("Account Details"),
+              Text(I18N.of(context).accountDetails),
               TextFormField(
                 initialValue: _username,
                 decoration: InputDecoration(
-                  hintText: "Username",
-                  labelText: "Username",
+                  hintText: I18N.of(context).username,
+                  labelText: I18N.of(context).username,
                 ),
                 validator: _validateUsername,
                 onSaved: (String value) {
@@ -104,8 +114,8 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
                 initialValue: _password,
                 obscureText: true,
                 decoration: InputDecoration(
-                  hintText: "Password",
-                  labelText: "Password",
+                  hintText: I18N.of(context).password,
+                  labelText: I18N.of(context).password,
                 ),
                 validator: _validatePassword,
                 onSaved: (String value) {
@@ -115,8 +125,10 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
               Container(
                 width: screenSize.width,
                 child: RaisedButton(
-                  child: Text("Save"),
-                  onPressed: this.save,
+                  child: Text(I18N.of(context).save),
+                  onPressed: () {
+                    _save(context);
+                  }
                 )
               )
             ],
@@ -124,14 +136,5 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
         )
       )
     );
-  }
-
-  void save() async {
-    if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
-
-      await InvenTreePreferences().saveLoginDetails(_server, _username, _password);
-
-    }
   }
 }

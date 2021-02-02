@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'api.dart';
 
@@ -35,7 +36,7 @@ class InvenTreePreferences {
   InvenTreePreferences._internal();
 
   // Load saved login details, and attempt connection
-  void loadLoginDetails() async {
+  void loadLoginDetails(BuildContext context) async {
 
     print("Loading login details");
 
@@ -45,10 +46,10 @@ class InvenTreePreferences {
     var username = prefs.getString(_USERNAME) ?? '';
     var password = prefs.getString(_PASSWORD) ?? '';
 
-    await InvenTreeAPI().connectToServer(server, username, password);
+    await InvenTreeAPI().connectToServer(context, server, username, password);
   }
 
-  void saveLoginDetails(String server, String username, String password) async {
+  void saveLoginDetails(BuildContext context, String server, String username, String password) async {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -57,6 +58,6 @@ class InvenTreePreferences {
     await prefs.setString(_PASSWORD, password);
 
     // Reconnect the API
-    await InvenTreeAPI().connectToServer(server, username, password);
+    await InvenTreeAPI().connectToServer(context, server, username, password);
   }
 }

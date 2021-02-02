@@ -45,9 +45,6 @@ void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Load login details
-  InvenTreePreferences().loadLoginDetails();
-
   runZoned<Future<void>>(() async {
     runApp(InvenTreeApp());
   }, onError: (error, stackTrace) {
@@ -63,6 +60,7 @@ class InvenTreeApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       onGenerateTitle: (BuildContext context) => I18N.of(context).appTitle,
       theme: ThemeData(
