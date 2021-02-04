@@ -105,15 +105,19 @@ class InvenTreeModel {
   /*
    * Reload this object, by requesting data from the server
    */
-  Future<bool> reload(BuildContext context) async {
+  Future<bool> reload(BuildContext context, {bool dialog = false}) async {
 
-    showProgressDialog(context, "Refreshing data", "Refreshing data for ${NAME}");
+    if (dialog) {
+      showProgressDialog(context, "Refreshing data", "Refreshing data for ${NAME}");
+    }
 
     var response = await api.get(url, params: defaultGetFilters())
       .timeout(Duration(seconds: 10))
       .catchError((e) {
 
-          hideProgressDialog(context);
+          if (dialog) {
+            hideProgressDialog(context);
+          }
 
           if (e is TimeoutException) {
             showErrorDialog(context, "Timeout", "No response from server");
@@ -127,8 +131,10 @@ class InvenTreeModel {
     if (response == null) {
       return false;
     }
-    
-    hideProgressDialog(context);
+
+    if (dialog) {
+      hideProgressDialog(context);
+    }
 
     if (response.statusCode != 200) {
       print("Error retrieving data");
@@ -182,7 +188,7 @@ class InvenTreeModel {
   }
 
   // Return the detail view for the associated pk
-  Future<InvenTreeModel> get(BuildContext context, int pk, {Map<String, String> filters}) async {
+  Future<InvenTreeModel> get(BuildContext context, int pk, {Map<String, String> filters, bool dialog = false}) async {
 
     // TODO - Add "timeout"
     // TODO - Add error catching
@@ -204,13 +210,17 @@ class InvenTreeModel {
 
     print("GET: $addr ${params.toString()}");
 
-    showProgressDialog(context, "Requesting Data", "Requesting ${NAME} data from server");
+    if (dialog) {
+      showProgressDialog(context, "Requesting Data", "Requesting ${NAME} data from server");
+    }
 
     var response = await api.get(addr, params: params)
         .timeout(Duration(seconds: 10))
         .catchError((e) {
 
-          hideProgressDialog(context);
+          if (dialog) {
+            hideProgressDialog(context);
+          }
 
           if (e is TimeoutException) {
             showErrorDialog(context, "Timeout", "No response from server");
@@ -272,7 +282,7 @@ class InvenTreeModel {
   }
 
   // Return list of objects from the database, with optional filters
-  Future<List<InvenTreeModel>> list(BuildContext context, {Map<String, String> filters, bool dialog=true}) async {
+  Future<List<InvenTreeModel>> list(BuildContext context, {Map<String, String> filters, bool dialog=false}) async {
 
     if (filters == null) {
       filters = {};
@@ -304,9 +314,7 @@ class InvenTreeModel {
         }
 
         if (e is TimeoutException) {
-          if (dialog) {
-            showErrorDialog(context, "Timeout", "No response from server");
-          }
+          showErrorDialog(context, "Timeout", "No response from server");
         } else {
           // Re-throw the error
           throw e;
