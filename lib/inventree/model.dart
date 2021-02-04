@@ -149,7 +149,7 @@ class InvenTreeModel {
   }
 
   // POST data to update the model
-  Future<bool> update(BuildContext context, {Map<String, String> values}) async {
+  Future<bool> update(BuildContext context, {Map<String, String> values, bool show_dialog = false}) async {
 
     var addr = path.join(URL, pk.toString());
 
@@ -157,13 +157,17 @@ class InvenTreeModel {
       addr += "/";
     }
 
-    showProgressDialog(context, "Updating ${NAME}", "Sending data to server");
+    if (show_dialog) {
+      showProgressDialog(context, "Updating ${NAME}", "Sending data to server");
+    }
 
     var response = await api.patch(addr, body: values)
         .timeout(Duration(seconds: 10))
         .catchError((e) {
 
-          hideProgressDialog(context);
+          if (show_dialog) {
+            hideProgressDialog(context);
+          }
 
           if (e is TimeoutException) {
             showErrorDialog(context, "Timeout", "No response from server");
@@ -176,7 +180,9 @@ class InvenTreeModel {
 
     if (response == null) return false;
 
-    hideProgressDialog(context);
+    if (show_dialog) {
+      hideProgressDialog(context);
+    }
 
     if (response.statusCode != 200) {
       print("Error updating ${NAME}: Status code ${response.statusCode}");

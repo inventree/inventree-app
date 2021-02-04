@@ -65,21 +65,26 @@ class BarcodeHandler {
       );
     }
 
-    Future<void> processBarcode(BuildContext context, QRViewController _controller, String barcode) {
+    Future<void> processBarcode(BuildContext context, QRViewController _controller, String barcode, {String url = "barcode/", bool show_dialog = false}) {
       this._context = context;
       this._controller = _controller;
 
       print("Scanned barcode data: ${barcode}");
-      showProgressDialog(context, "Scanning", "Sending barcode data to server");
+      if (show_dialog) {
+        showProgressDialog(context, "Scanning", "Sending barcode data to server");
+      }
 
       // Send barcode request to server
       InvenTreeAPI().post(
-          "barcode/",
+          url,
           body: {
             "barcode": barcode
           }
       ).then((var response) {
-        hideProgressDialog(context);
+
+        if (show_dialog) {
+          hideProgressDialog(context);
+        }
 
         if (response.statusCode != 200) {
           showErrorDialog(
@@ -112,7 +117,11 @@ class BarcodeHandler {
       }).timeout(
           Duration(seconds: 5)
       ).catchError((error) {
-        hideProgressDialog(context);
+
+        if (show_dialog) {
+          hideProgressDialog(context);
+        }
+
         showErrorDialog(
             context,
             "Error",
