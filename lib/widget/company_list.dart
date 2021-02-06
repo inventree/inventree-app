@@ -60,7 +60,7 @@ class _CompanyListState extends RefreshableState<CompanyListWidget> {
   @override
   Future<void> request(BuildContext context) async {
 
-    InvenTreeCompany().list(context, filters: _filters).then((var companies) {
+    await InvenTreeCompany().list(context, filters: _filters).then((var companies) {
 
       _companies.clear();
 

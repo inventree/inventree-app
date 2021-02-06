@@ -46,7 +46,6 @@ class _PartStockDisplayState extends RefreshableState<PartStockDetailWidget> {
     await part.reload(context);
     await part.getStockItems(context);
 
-    print("request");
     setState(() {
     });
   }

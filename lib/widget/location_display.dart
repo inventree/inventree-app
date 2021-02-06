@@ -68,7 +68,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     int pk = location?.pk ?? -1;
 
     // Request a list of sub-locations under this one
-    InvenTreeStockLocation().list(context, filters: {"parent": "$pk"}).then((var locs) {
+    await InvenTreeStockLocation().list(context, filters: {"parent": "$pk"}).then((var locs) {
       _sublocations.clear();
 
       for (var loc in locs) {
@@ -76,23 +76,21 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
           _sublocations.add(loc);
         }
       }
-
-      setState(() {});
-
-      // Request a list of stock-items under this one
-      InvenTreeStockItem().list(context, filters: {"location": "$pk"}).then((var items) {
-        _items.clear();
-
-        for (var item in items) {
-          if (item is InvenTreeStockItem) {
-            _items.add(item);
-          }
-        }
-
-        setState(() {});
-      });
-
     });
+
+    setState(() {});
+
+    await InvenTreeStockItem().list(context, filters: {"location": "$pk"}).then((var items) {
+      _items.clear();
+
+      for (var item in items) {
+        if (item is InvenTreeStockItem) {
+          _items.add(item);
+        }
+      }
+    });
+
+    setState(() {});
   }
 
   Widget locationDescriptionCard() {

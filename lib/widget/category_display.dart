@@ -62,7 +62,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
     int pk = category?.pk ?? -1;
 
     // Request a list of sub-categories under this one
-    InvenTreePartCategory().list(context, filters: {"parent": "$pk"}).then((var cats) {
+    await InvenTreePartCategory().list(context, filters: {"parent": "$pk"}).then((var cats) {
       _subcategories.clear();
 
       for (var cat in cats) {
@@ -76,7 +76,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
     });
 
     // Request a list of parts under this category
-    InvenTreePart().list(context, filters: {"category": "$pk"}).then((var parts) {
+    await InvenTreePart().list(context, filters: {"category": "$pk"}).then((var parts) {
       _parts.clear();
 
       for (var part in parts) {
