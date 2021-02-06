@@ -39,18 +39,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   @override
   String getAppBarTitle(BuildContext context) => I18N.of(context).stockItem;
 
-  @override
-  List<Widget> getAppBarActions(BuildContext context) {
-    return <Widget>[
-      // TODO: Hide the 'edit' button if the user does not have permission!!
-      IconButton(
-        icon: FaIcon(FontAwesomeIcons.edit),
-        tooltip: I18N.of(context).edit,
-        onPressed: _editStockItemDialog,
-      )
-    ];
-  }
-
   final TextEditingController _quantityController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
 
@@ -70,35 +58,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   Future<void> request(BuildContext context) async {
     await item.reload(context);
     await item.getTestResults(context);
-  }
-
-  void _editStockItem() {
-    // TODO - Form for editing stock item
-  }
-
-  void _editStockItemDialog() {
-
-    return;
-    // TODO - Finish implementing this
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Edit Stock Item"),
-          actions: <Widget>[
-            FlatButton(
-              child: Text("Save"),
-              onPressed: () {
-                if (_editStockKey.currentState.validate()) {
-                  // TODO
-                }
-              },
-            )
-          ],
-        );
-      }
-    );
   }
 
   void _addStock() async {
