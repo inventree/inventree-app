@@ -80,6 +80,14 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     refresh();
   }
 
+  void _showStock(BuildContext context) async {
+    await part.getStockItems(context);
+    Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => PartStockDetailWidget(part))
+    );
+  }
+
   void _editPartDialog() {
 
     // Values which can be edited
@@ -209,10 +217,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         leading: FaIcon(FontAwesomeIcons.boxes),
         trailing: Text("${part.inStock}"),
         onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => PartStockDetailWidget(part))
-          );
+          _showStock(context);
         },
       ),
     );
