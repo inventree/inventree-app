@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:InvenTree/inventree/part.dart';
+import 'package:InvenTree/widget/full_screen_image.dart';
 import 'package:InvenTree/widget/category_display.dart';
 import 'package:InvenTree/widget/dialogs.dart';
 import 'package:InvenTree/widget/fields.dart';
@@ -147,7 +148,14 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         child: ListTile(
           title: Text("${part.fullname}"),
           subtitle: Text("${part.description}"),
-          leading: InvenTreeAPI().getImage(part.thumbnail),
+          leading: GestureDetector(
+            child: InvenTreeAPI().getImage(part.thumbnail),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => FullScreenWidget(part.name, part.image))
+              );
+            }),
         )
     );
   }
