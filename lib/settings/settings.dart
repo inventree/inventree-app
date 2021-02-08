@@ -72,7 +72,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
 
     List<UserProfile> profiles = await UserProfileDBManager().getAllProfiles();
 
-    Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeLoginSettingsWidget(profiles)));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeLoginSettingsWidget()));
   }
 
   void _about() async {

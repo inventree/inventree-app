@@ -9,6 +9,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:InvenTree/barcode.dart';
 import 'package:InvenTree/api.dart';
 
+import 'package:InvenTree/settings/login.dart';
+
 import 'package:InvenTree/widget/category_display.dart';
 import 'package:InvenTree/widget/company_list.dart';
 import 'package:InvenTree/widget/location_display.dart';
@@ -25,6 +27,8 @@ class InvenTreeHomePage extends StatefulWidget {
 class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
 
   _InvenTreeHomePageState() : super() {
+
+    _loadProfile();
   }
 
   String _serverStatus = "Connecting to server";
@@ -36,6 +40,59 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
   FaIcon _serverIcon = new FaIcon(FontAwesomeIcons.spinner);
 
   Color _serverStatusColor = Color.fromARGB(255, 50, 50, 250);
+
+  // Selected user profile
+  UserProfile _profile;
+
+  void _loadProfile() async {
+
+    final profile = await UserProfileDBManager().getSelectedProfile();
+
+    print("Loaded selected profile");
+
+    // If a different profile is selected, re-connect
+    if (_profile == null || (_profile.key != profile.key)) {
+      // TODO
+    }
+
+    _profile = profile;
+
+    setState(() {
+
+    });
+  }
+
+  ListTile _serverTile() {
+
+    // No profile selected
+    // Tap to select / create a profile
+    if (_profile == null) {
+      return ListTile(
+        title: Text("No Profile Selected"),
+        subtitle: Text("Tap to create or select a profile"),
+        leading: FaIcon(FontAwesomeIcons.user),
+        onTap: () {
+          _selectProfile();
+        },
+      );
+    }
+
+    // Profile is selected ...
+    if (InvenTreeAPI().isConnected()) {
+      return ListTile(
+        title: Text("Connected to ${_profile.server}"),
+      );
+    } else {
+      return ListTile(
+        title: Text("Could not connect to server"),
+        subtitle: Text("Error connecting to ${_profile.server}"),
+        leading: FaIcon(FontAwesomeIcons.times),
+        onTap: () {
+          _selectProfile();
+        },
+      );
+    }
+  }
 
   void onConnectSuccess(String msg) async {
 
@@ -132,6 +189,10 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     if (!InvenTreeAPI().checkConnection(context)) return;
 
     Navigator.push(context, MaterialPageRoute(builder: (context) => CustomerListWidget()));
+  }
+
+  void _selectProfile() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeLoginSettingsWidget()));
   }
 
   void _unsupported() {
@@ -313,20 +374,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Expanded(
-                  child: ListTile(
-                    title: Text("$_serverStatus",
-                      style: TextStyle(color: _serverStatusColor),
-                    ),
-                    subtitle: Text("$_serverMessage",
-                      style: TextStyle(color: _serverStatusColor),
-                    ),
-                    leading: _serverIcon,
-                    onTap: () {
-                      if (!_serverConnection) {
-                        _checkServerConnection(context);
-                      }
-                    },
-                  ),
+                  child: _serverTile(),
                 ),
               ],
             ),

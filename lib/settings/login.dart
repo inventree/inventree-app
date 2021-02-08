@@ -10,12 +10,8 @@ import '../user_profile.dart';
 
 class InvenTreeLoginSettingsWidget extends StatefulWidget {
 
-  final List<UserProfile> _profiles;
-
-  InvenTreeLoginSettingsWidget(this._profiles) : super();
-
   @override
-  _InvenTreeLoginSettingsState createState() => _InvenTreeLoginSettingsState(_profiles);
+  _InvenTreeLoginSettingsState createState() => _InvenTreeLoginSettingsState();
 }
 
 
@@ -27,7 +23,9 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
 
   List<UserProfile> profiles;
 
-  _InvenTreeLoginSettingsState(this.profiles);
+  _InvenTreeLoginSettingsState() {
+    _reload();
+  }
 
   void _reload() async {
 
