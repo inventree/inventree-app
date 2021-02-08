@@ -166,7 +166,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     return null;
   }
 
-  void _selectProfile(UserProfile profile) async {
+  void _selectProfile(BuildContext context, UserProfile profile) async {
 
     // Mark currently selected profile as unselected
     final selected = await UserProfileDBManager().getSelectedProfile();
@@ -180,6 +180,9 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     await UserProfileDBManager().updateProfile(profile);
 
     _reload();
+
+    // Attempt server login (this will load the newly selected profile
+    InvenTreeAPI().connect(context);
   }
 
   void _deleteProfile(UserProfile profile) async {
@@ -219,60 +222,78 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
 
     List<Widget> children = [];
 
-    for (int idx = 0; idx < profiles.length; idx++) {
+    if (profiles.length > 0) {
+      for (int idx = 0; idx < profiles.length; idx++) {
+        UserProfile profile = profiles[idx];
 
-      UserProfile profile = profiles[idx];
-
-      children.add(ListTile(
-        title: Text(
+        children.add(ListTile(
+          title: Text(
             profile.name,
-        ),
-        subtitle: Text(profile.server),
-        trailing: profile.selected ? FaIcon(FontAwesomeIcons.checkCircle) : null,
-        onLongPress: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return SimpleDialog(
-                title: Text(profile.name),
-                children: <Widget> [
-                  SimpleDialogOption(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      _selectProfile(profile);
-                    },
-                    child: Text(I18N.of(context).profileSelect),
-                  ),
-                  SimpleDialogOption(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      _editProfile(context, userProfile: profile);
-                    },
-                    child: Text(I18N.of(context).profileEdit),
-                  ),
-                  SimpleDialogOption(
-                    onPressed: () {
-                      // Navigator.of(context, rootNavigator: true).pop();
-                      confirmationDialog(
-                          context,
-                          I18N.of(context).delete,
-                          "Delete this profile?",
-                          onAccept: () {
-                            _deleteProfile(profile);
-                          }
-                      );
-                    },
-                    child: Text(I18N.of(context).profileDelete),
-                  )
-                ],
-              );
-            }
-          );
-        },
-        onTap: () {
+          ),
+          subtitle: Text(profile.server),
+          trailing: profile.selected
+              ? FaIcon(FontAwesomeIcons.checkCircle)
+              : null,
+          onLongPress: () {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return SimpleDialog(
+                    title: Text(profile.name),
+                    children: <Widget>[
+                      SimpleDialogOption(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          _selectProfile(context, profile);
+                        },
+                        child: Text(I18N
+                            .of(context)
+                            .profileSelect),
+                      ),
+                      SimpleDialogOption(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          _editProfile(context, userProfile: profile);
+                        },
+                        child: Text(I18N
+                            .of(context)
+                            .profileEdit),
+                      ),
+                      SimpleDialogOption(
+                        onPressed: () {
+                          // Navigator.of(context, rootNavigator: true).pop();
+                          confirmationDialog(
+                              context,
+                              I18N
+                                  .of(context)
+                                  .delete,
+                              "Delete this profile?",
+                              onAccept: () {
+                                _deleteProfile(profile);
+                              }
+                          );
+                        },
+                        child: Text(I18N
+                            .of(context)
+                            .profileDelete),
+                      )
+                    ],
+                  );
+                }
+            );
+          },
+          onTap: () {
 
-        },
-      ));
+          },
+        ));
+      }
+    } else {
+      // No profile available!
+      children.add(
+        ListTile(
+          title: Text("No profiles available"),
+        )
+      );
     }
 
     return Scaffold(

@@ -83,24 +83,4 @@ class InvenTreePreferences {
   }
 
   InvenTreePreferences._internal();
-
-  // Load saved login details, and attempt connection
-  void loadLoginDetails(BuildContext context) async {
-
-    print("Loading login details");
-
-    await InvenTreeAPI().connectToServer(context);
-  }
-
-  void saveLoginDetails(BuildContext context, String server, String username, String password) async {
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    await prefs.setString(_SERVER, server);
-    await prefs.setString(_USERNAME, username);
-    await prefs.setString(_PASSWORD, password);
-
-    // Reconnect the API
-    await InvenTreeAPI().connectToServer(context);
-  }
 }

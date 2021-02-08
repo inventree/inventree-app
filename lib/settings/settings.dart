@@ -30,15 +30,15 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("InvenTree Settings"),
+        title: Text(I18N.of(context).settings),
       ),
       body: Center(
         child: ListView(
           children: <Widget>[
             ListTile(
-                title: Text(I18N.of(context).serverSettings),
-                subtitle: Text("Configure server and login settings"),
-                leading: FaIcon(FontAwesomeIcons.server),
+                title: Text(I18N.of(context).profile),
+                subtitle: Text("Configure user profile settings"),
+                leading: FaIcon(FontAwesomeIcons.user),
                 onTap: _editServerSettings,
             ),
             Divider(),

@@ -3,6 +3,7 @@ import 'package:InvenTree/barcode.dart';
 import 'package:InvenTree/widget/company_list.dart';
 import 'package:InvenTree/widget/search.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:InvenTree/api.dart';
 
@@ -155,7 +156,7 @@ class InvenTreeDrawer extends StatelessWidget {
               */
               new Divider(),
               new ListTile(
-                title: new Text("Settings"),
+                title: new Text(I18N.of(context).settings),
                 leading: new Icon(Icons.settings),
                 onTap: _settings,
               ),
