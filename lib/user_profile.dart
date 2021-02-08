@@ -8,11 +8,15 @@ import 'preferences.dart';
 class UserProfile {
 
   UserProfile({
+    this.key,
     this.name,
     this.server,
     this.username,
     this.password
   });
+
+  // ID of the profile
+  int key;
 
   // Name of the user profile
   String name;
@@ -29,7 +33,8 @@ class UserProfile {
   // User ID (will be provided by the server on log-in)
   int user_id;
 
-  factory UserProfile.fromJson(Map<String, dynamic> json) => UserProfile(
+  factory UserProfile.fromJson(int key, Map<String, dynamic> json) => UserProfile(
+    key: key,
     name: json['name'],
     server: json['server'],
     username: json['username'],
@@ -66,16 +71,32 @@ class UserProfileDBManager {
       return;
     }
 
-    await _folder.add(await _db, profile.toJson());
+    int key = await _folder.add(await _db, profile.toJson());
 
-    print("Added user profile '${profile.name}'");
+    print("Added user profile <${key}> - '${profile.name}'");
+
+    // Record the key
+    profile.key = key;
+  }
+  
+  Future updateProfile(UserProfile profile) async {
+    
+    if (profile.key == null) {
+      addProfile(profile);
+      return;
+    }
+
+    final finder = Finder(filter: Filter.byKey(profile.key));
+    await _folder.update(await _db, profile.toJson(), finder: finder);
+
+    print("Updated user profile <%{profile.key}> - '${profile.name}");
   }
 
   Future deleteProfile(UserProfile profile) async {
     final finder = Finder(filter: Filter.equals("name", profile.name));
     await _folder.delete(await _db, finder: finder);
 
-    print("Deleted user profile ${profile.name}");
+    print("Deleted user profile <${profile.key}> - '${profile.name}'");
   }
 
   Future<UserProfile> getProfile(String name) async {
@@ -89,7 +110,7 @@ class UserProfileDBManager {
     }
 
     // Return the first matching profile object
-    return UserProfile.fromJson(profiles[0].value);
+    return UserProfile.fromJson(profiles[0].key, profiles[0].value);
   }
 
   /*
@@ -101,7 +122,7 @@ class UserProfileDBManager {
     List<UserProfile> profileList = new List<UserProfile>();
 
     for (int idx = 0; idx < profiles.length; idx++) {
-      profileList.add(UserProfile.fromJson(profiles[idx].value));
+      profileList.add(UserProfile.fromJson(profiles[idx].key, profiles[idx].value));
     }
 
     return profileList;
