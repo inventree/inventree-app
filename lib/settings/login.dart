@@ -29,7 +29,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
 
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
-  final _addProfileKey = new GlobalKey<FormState>();
+  final GlobalKey<FormState> _addProfileKey = new GlobalKey<FormState>();
 
   final SharedPreferences _preferences;
 
@@ -45,7 +45,20 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     _password = _preferences.getString('password') ?? '';
   }
 
+  void _reload() async {
+
+    profiles = await UserProfileDBManager().getAllProfiles();
+
+    setState(() {
+    });
+  }
+
   void _createProfile(BuildContext context) {
+
+    var _name;
+    var _server;
+    var _username;
+    var _password;
 
     showFormDialog(
       context,
@@ -61,7 +74,19 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
         FlatButton(
           child: Text(I18N.of(context).save),
           onPressed: () {
-            // TODO
+            if (_addProfileKey.currentState.validate()) {
+              _addProfileKey.currentState.save();
+
+              // TODO - create the new profile...
+              UserProfile profile = UserProfile(
+                name: _name,
+                server: _server,
+                username: _username,
+                password: _password
+              );
+
+              _addProfile(profile);
+            }
           }
         )
       ],
@@ -69,21 +94,40 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
         StringField(
           label: I18N.of(context).name,
           initial: "profile",
+          onSaved: (value) => _name = value,
+          validator: _validateProfileName,
         ),
         StringField(
           label: "Server",
           initial: "http://127.0.0.1:8000",
+          hint: "http[s]://<server>:<port>",
+          validator: _validateServer,
+          onSaved: (value) => _server = value,
         ),
         StringField(
           label: "Username",
+          onSaved: (value) => _username = value,
+          validator: _validateUsername,
         ),
         StringField(
-          label: "Password"
+          label: "Password",
+          onSaved: (value) => _password = value,
+          validator: _validatePassword,
         )
       ]
     );
   }
 
+  String _validateProfileName(String value) {
+
+    if (value.isEmpty) {
+      return 'Profile name cannot be empty';
+    }
+
+    // TODO: Check if a profile already exists with ths name
+
+    return null;
+  }
 
   String _validateServer(String value) {
 
@@ -94,6 +138,8 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     if (!value.startsWith("http:") && !value.startsWith("https:")) {
       return 'Server must start with http[s]';
     }
+
+    // TODO: URL validator
 
     return null;
   }
@@ -118,20 +164,46 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
 
+      // TODO
       await InvenTreePreferences().saveLoginDetails(context, _server, _username, _password);
 
     }
+  }
+
+  void _selectProfile(UserProfile profile) async {
+
+    // Mark currently selected profile as unselected
+    final selected = await UserProfileDBManager().getSelectedProfile();
+
+    selected.selected = false;
+
+    await UserProfileDBManager().updateProfile(selected);
+
+    profile.selected = true;
+
+    await UserProfileDBManager().updateProfile(profile);
+
+    _reload();
   }
 
   void _deleteProfile(UserProfile profile) async {
 
     await UserProfileDBManager().deleteProfile(profile);
 
-    // Reload profiles
-    profiles = await UserProfileDBManager().getAllProfiles();
+    // Close the dialog
+    Navigator.of(context).pop();
 
-    setState(() {
-    });
+    _reload();
+  }
+
+  void _addProfile(UserProfile profile) async {
+
+    await UserProfileDBManager().addProfile(profile);
+
+    // Dismiss the create dialog
+    Navigator.of(context).pop();
+
+    _reload();
   }
 
   @override
@@ -146,9 +218,11 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
       UserProfile profile = profiles[idx];
 
       children.add(ListTile(
-        title: Text(profile.name),
+        title: Text(
+            profile.name,
+        ),
         subtitle: Text(profile.server),
-        trailing: FaIcon(FontAwesomeIcons.checkCircle),
+        trailing: profile.selected ? FaIcon(FontAwesomeIcons.checkCircle) : null,
         onLongPress: () {
           showDialog(
             context: context,
@@ -159,7 +233,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
                   SimpleDialogOption(
                     onPressed: () {
                       Navigator.of(context).pop();
-                      // TODO - Mark profile as selected
+                      _selectProfile(profile);
                     },
                     child: Text(I18N.of(context).profileSelect),
                   ),

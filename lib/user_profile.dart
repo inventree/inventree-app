@@ -12,7 +12,8 @@ class UserProfile {
     this.name,
     this.server,
     this.username,
-    this.password
+    this.password,
+    this.selected,
   });
 
   // ID of the profile
@@ -30,6 +31,8 @@ class UserProfile {
   // Password
   String password;
 
+  bool selected = false;
+
   // User ID (will be provided by the server on log-in)
   int user_id;
 
@@ -39,6 +42,7 @@ class UserProfile {
     server: json['server'],
     username: json['username'],
     password: json['password'],
+    selected: json['selected'] ?? false,
   );
 
   Map<String, dynamic> toJson() => {
@@ -46,6 +50,7 @@ class UserProfile {
     "server": server,
     "username": username,
     "password": password,
+    "selected": selected,
   };
 
   @override
@@ -89,7 +94,7 @@ class UserProfileDBManager {
     final finder = Finder(filter: Filter.byKey(profile.key));
     await _folder.update(await _db, profile.toJson(), finder: finder);
 
-    print("Updated user profile <%{profile.key}> - '${profile.name}");
+    print("Updated user profile <${profile.key}> - '${profile.name}");
   }
 
   Future deleteProfile(UserProfile profile) async {
@@ -99,13 +104,65 @@ class UserProfileDBManager {
     print("Deleted user profile <${profile.key}> - '${profile.name}'");
   }
 
+  Future<UserProfile> getSelectedProfile() async {
+    /*
+     * Return the currently selected profile.
+     *
+     * If multiple profiles are selected,
+     * mark all but the first as unselected
+     *
+     * If no profile is currently selected,
+     * then force the first profile to be selected.
+     */
+
+    final selected_finder = Finder(filter: Filter.equals("selected", true));
+
+    final selected_profiles = await _folder.find(await _db, finder: selected_finder);
+
+    if (selected_profiles.length == 1) {
+      // A single profile is selected
+      return UserProfile.fromJson(selected_profiles[0].key, selected_profiles[0].value);
+    } else if (selected_profiles.length > 1) {
+      // Multiple selected profiles - de-select others
+      for (int idx = 1; idx < selected_profiles.length; idx++) {
+        UserProfile profile = UserProfile.fromJson(selected_profiles[idx].key, selected_profiles[idx].value);
+
+        profile.selected = false;
+        updateProfile(profile);
+      }
+
+      // And return the first profile
+      return UserProfile.fromJson(selected_profiles[0].key, selected_profiles[0].value);
+    } else {
+      // No profiles selected!
+
+      final all_profiles = await getAllProfiles();
+
+      if (all_profiles.length == 0) {
+        // No profiles available
+        return null;
+      } else {
+        UserProfile prf = all_profiles[0];
+        prf.selected = true;
+        updateProfile(prf);
+
+        // Return the selected profile
+        return prf;
+      }
+    }
+  }
+
   Future<UserProfile> getProfile(String name) async {
+
+    print("Looking for user profile '${name}'");
+
     // Lookup profile by name (or return null if does not exist)
     final finder = Finder(filter: Filter.equals("name", name));
 
     final profiles = await _folder.find(await _db, finder: finder);
 
     if (profiles.length == 0) {
+      print("No matching profiles found");
       return null;
     }
 
