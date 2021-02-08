@@ -227,10 +227,8 @@ class InvenTreeAPI {
         errorMessage = "Server timeout";
         return null;
       } else {
-        // Unknown error type
-        errorMessage = error.toString();
-        // Unknown error type, re-throw error
-        return null;
+        // Unknown error type - re-throw the error and Sentry will catch it
+        throw error;
       }
     });
 

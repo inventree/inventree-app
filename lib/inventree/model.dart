@@ -5,6 +5,9 @@ import 'package:InvenTree/widget/dialogs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'dart:convert';
 
 import 'package:path/path.dart' as path;
@@ -108,7 +111,7 @@ class InvenTreeModel {
   Future<bool> reload(BuildContext context, {bool dialog = false}) async {
 
     if (dialog) {
-      showProgressDialog(context, "Refreshing data", "Refreshing data for ${NAME}");
+      showProgressDialog(context, I18N.of(context).refreshing, "Refreshing data for ${NAME}");
     }
 
     var response = await api.get(url, params: defaultGetFilters())
@@ -120,9 +123,10 @@ class InvenTreeModel {
           }
 
           if (e is TimeoutException) {
-            showErrorDialog(context, "Timeout", "No response from server");
+            showTimeoutDialog(context);
           } else {
-            showErrorDialog(context, "Error", e.toString());
+            // Re-throw the error (Sentry will catch)
+            throw e;
           }
 
           return null;
@@ -137,6 +141,12 @@ class InvenTreeModel {
     }
 
     if (response.statusCode != 200) {
+      showErrorDialog(
+        context,
+        I18N.of(context).serverError,
+        "${I18N.of(context).statusCode}: ${response.statusCode}"
+      );
+
       print("Error retrieving data");
       return false;
     }
@@ -170,9 +180,10 @@ class InvenTreeModel {
           }
 
           if (e is TimeoutException) {
-            showErrorDialog(context, "Timeout", "No response from server");
+            showTimeoutDialog(context);
           } else {
-            showErrorDialog(context, "Error", e.toString());
+            // Re-throw the error, let Sentry report it
+            throw e;
           }
 
           return null;
@@ -185,7 +196,7 @@ class InvenTreeModel {
     }
 
     if (response.statusCode != 200) {
-      print("Error updating ${NAME}: Status code ${response.statusCode}");
+      showErrorDialog(context, I18N.of(context).serverError, "${I18N.of(context).statusCode}: ${response.statusCode}");
       return false;
     }
 
@@ -217,7 +228,7 @@ class InvenTreeModel {
     print("GET: $addr ${params.toString()}");
 
     if (dialog) {
-      showProgressDialog(context, "Requesting Data", "Requesting ${NAME} data from server");
+      showProgressDialog(context, I18N.of(context).requestingData, "Requesting ${NAME} data from server");
     }
 
     var response = await api.get(addr, params: params)
@@ -229,9 +240,10 @@ class InvenTreeModel {
           }
 
           if (e is TimeoutException) {
-            showErrorDialog(context, "Timeout", "No response from server");
+            showTimeoutDialog(context);
           } else {
-            showErrorDialog(context, "Error", e.toString());
+            // Re-throw the error (handled by Sentry)
+            throw e;
           }
           return null;
       });
@@ -243,7 +255,7 @@ class InvenTreeModel {
     hideProgressDialog(context);
 
     if (response.statusCode != 200) {
-      print("Error retrieving data");
+      showErrorDialog(context, I18N.of(context).serverError, "${I18N.of(context).statusCode}: ${response.statusCode}");
       return null;
     }
 
@@ -269,8 +281,12 @@ class InvenTreeModel {
     await api.post(URL, body: data)
     .timeout(Duration(seconds: 5))
     .catchError((e) {
-      print("Error creating new ${NAME}:");
       print(e.toString());
+      showErrorDialog(
+        context,
+        I18N.of(context).serverError,
+        e.toString()
+      );
       return null;
     })
     .then((http.Response response) {
@@ -279,8 +295,11 @@ class InvenTreeModel {
         var decoded = json.decode(response.body);
         _model = createFromJson(decoded);
       } else {
-        print("Error creating object: Status Code ${response.statusCode}");
-        print(response.body);
+        showErrorDialog(
+          context,
+          I18N.of(context).serverError,
+          "${I18N.of(context).statusCode}: ${response.statusCode}"
+        );
       }
     });
 
@@ -308,7 +327,7 @@ class InvenTreeModel {
     // TODO - Add error catching
 
     if (dialog) {
-      showProgressDialog(context, "Requesting Data", "Requesting ${NAME} data from server");
+      showProgressDialog(context, I18N.of(context).requestingData, "Requesting ${NAME} data from server");
     }
 
     var response = await api.get(URL, params:params)
@@ -320,7 +339,7 @@ class InvenTreeModel {
         }
 
         if (e is TimeoutException) {
-          showErrorDialog(context, "Timeout", "No response from server");
+          showTimeoutDialog(context);
         } else {
           // Re-throw the error
           throw e;

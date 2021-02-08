@@ -4,6 +4,53 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+
+Future<void> confirmationDialog(BuildContext context, String title, String text, {String acceptText, String rejectText, Function onAccept, Function onReject}) async {
+
+  if (acceptText == null || acceptText.isEmpty) {
+    acceptText = I18N.of(context).ok;
+  }
+
+  if (rejectText == null || rejectText.isEmpty) {
+    rejectText = I18N.of(context).cancel;
+  }
+
+  AlertDialog dialog = AlertDialog(
+    title: ListTile(
+      title: Text(title),
+      leading: FaIcon(FontAwesomeIcons.questionCircle),
+    ),
+    content: Text(text),
+    actions: [
+      FlatButton(
+        child: Text(rejectText),
+        onPressed: () {
+          Navigator.of(context, rootNavigator: true).pop();
+          if (onReject != null) {
+            onReject();
+          }
+        }
+      ),
+      FlatButton(
+        child: Text(acceptText),
+        onPressed: () {
+          Navigator.of(context, rootNavigator: true).pop();
+          if (onAccept != null) {
+            onAccept();
+          }
+        }
+      )
+    ],
+  );
+
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return dialog;
+    }
+  );
+}
+
 void showMessage(BuildContext context, String message) {
   Scaffold.of(context).showSnackBar(SnackBar(
     content: Text(message),
@@ -62,6 +109,18 @@ Future<void> showErrorDialog(BuildContext context, String title, String descript
       onDismissed();
     }
   });
+}
+
+void showTimeoutDialog(BuildContext context) {
+  /*
+  Show a server timeout dialog
+   */
+
+  showErrorDialog(
+      context,
+      I18N.of(context).timeout,
+      I18N.of(context).noResponse
+  );
 }
 
 void showProgressDialog(BuildContext context, String title, String description) {
