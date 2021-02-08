@@ -93,24 +93,26 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
       fields: <Widget> [
         StringField(
           label: I18N.of(context).name,
-          initial: "profile",
+          hint: "Enter profile name",
           onSaved: (value) => _name = value,
           validator: _validateProfileName,
         ),
         StringField(
-          label: "Server",
+          label: I18N.of(context).server,
           initial: "http://127.0.0.1:8000",
           hint: "http[s]://<server>:<port>",
           validator: _validateServer,
           onSaved: (value) => _server = value,
         ),
         StringField(
-          label: "Username",
+          label: I18N.of(context).username,
+          hint: "Enter username",
           onSaved: (value) => _username = value,
           validator: _validateUsername,
         ),
         StringField(
-          label: "Password",
+          label: I18N.of(context).password,
+          hint: "Enter password",
           onSaved: (value) => _password = value,
           validator: _validatePassword,
         )
