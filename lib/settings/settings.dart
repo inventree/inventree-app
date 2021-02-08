@@ -60,25 +60,6 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
               leading: FaIcon(FontAwesomeIcons.bug),
               onTap: null,
             ),
-            ListTile(
-              title: Text("Throw Error"),
-              onTap: () {
-                throw("My custom error");
-              },
-            ),
-            ListTile(
-              title: Text("add profile"),
-              onTap: () {
-                UserProfileDBManager().addProfile(
-                  UserProfile(
-                    name: "My Profile",
-                    server: "https://127.0.0.1:8000",
-                    username: "Oliver",
-                    password: "hunter2",
-                  )
-                );
-              },
-            )
           ],
         )
       )
@@ -91,7 +72,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
 
     List<UserProfile> profiles = await UserProfileDBManager().getAllProfiles();
 
-    Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeLoginSettingsWidget(profiles, prefs)));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeLoginSettingsWidget(profiles)));
   }
 
   void _about() async {

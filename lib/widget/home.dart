@@ -1,10 +1,10 @@
+import 'package:InvenTree/user_profile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:InvenTree/barcode.dart';
 import 'package:InvenTree/api.dart';
@@ -27,8 +27,6 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
   _InvenTreeHomePageState() : super() {
   }
 
-  String _serverAddress = "";
-
   String _serverStatus = "Connecting to server";
 
   String _serverMessage = "";
@@ -39,20 +37,28 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
 
   Color _serverStatusColor = Color.fromARGB(255, 50, 50, 250);
 
-  void onConnectSuccess(String msg) {
+  void onConnectSuccess(String msg) async {
+
+    final profile = await UserProfileDBManager().getSelectedProfile();
+
+    String address = profile?.server ?? 'unknown server address';
+
     _serverConnection = true;
     _serverMessage = msg;
-    _serverStatus = "Connected to $_serverAddress";
+    _serverStatus = "Connected to ${address}";
     _serverStatusColor = Color.fromARGB(255, 50, 250, 50);
     _serverIcon = new FaIcon(FontAwesomeIcons.checkCircle, color: _serverStatusColor);
 
     setState(() {});
   }
 
-  void onConnectFailure(String msg) {
+  void onConnectFailure(String msg) async {
+
+    final profile = await UserProfileDBManager().getSelectedProfile();
+
     _serverConnection = false;
     _serverMessage = msg;
-    _serverStatus = "Could not connect to $_serverAddress";
+    _serverStatus = "Could not connect to ${profile?.server}";
     _serverStatusColor = Color.fromARGB(255, 250, 50, 50);
     _serverIcon = new FaIcon(FontAwesomeIcons.timesCircle, color: _serverStatusColor);
 
@@ -63,10 +69,6 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
    * Test the server connection
    */
   void _checkServerConnection(BuildContext context) async {
-
-    var prefs = await SharedPreferences.getInstance();
-
-    _serverAddress = prefs.getString("server");
 
     // Reset the connection status variables
     _serverStatus = "Connecting to server";

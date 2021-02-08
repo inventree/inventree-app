@@ -1,10 +1,6 @@
-import 'dart:ffi';
-
 import 'package:InvenTree/widget/dialogs.dart';
 import 'package:InvenTree/widget/fields.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -14,14 +10,12 @@ import '../user_profile.dart';
 
 class InvenTreeLoginSettingsWidget extends StatefulWidget {
 
-  final SharedPreferences _preferences;
-
   final List<UserProfile> _profiles;
 
-  InvenTreeLoginSettingsWidget(this._profiles, this._preferences) : super();
+  InvenTreeLoginSettingsWidget(this._profiles) : super();
 
   @override
-  _InvenTreeLoginSettingsState createState() => _InvenTreeLoginSettingsState(_profiles, _preferences);
+  _InvenTreeLoginSettingsState createState() => _InvenTreeLoginSettingsState(_profiles);
 }
 
 
@@ -31,18 +25,10 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
 
   final GlobalKey<FormState> _addProfileKey = new GlobalKey<FormState>();
 
-  final SharedPreferences _preferences;
-
   List<UserProfile> profiles;
 
-  String _server = '';
-  String _username = '';
-  String _password = '';
+  _InvenTreeLoginSettingsState(this.profiles) {
 
-  _InvenTreeLoginSettingsState(this.profiles, this._preferences) : super() {
-    _server = _preferences.getString('server') ?? '';
-    _username = _preferences.getString('username') ?? '';
-    _password = _preferences.getString('password') ?? '';
   }
 
   void _reload() async {
@@ -99,7 +85,6 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
         ),
         StringField(
           label: I18N.of(context).server,
-          initial: "http://127.0.0.1:8000",
           hint: "http[s]://<server>:<port>",
           validator: _validateServer,
           onSaved: (value) => _server = value,
@@ -160,16 +145,6 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     }
 
     return null;
-  }
-
-  void _save(BuildContext context) async {
-    if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
-
-      // TODO
-      await InvenTreePreferences().saveLoginDetails(context, _server, _username, _password);
-
-    }
   }
 
   void _selectProfile(UserProfile profile) async {
@@ -285,67 +260,6 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
         onPressed: () {
           _createProfile(context);
         },
-      )
-    );
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Login Settings"),
-      ),
-      body: new Container(
-        padding: new EdgeInsets.all(20.0),
-        child: new Form(
-          key: _formKey,
-          child: new ListView(
-            children: <Widget>[
-              Text(I18N.of(context).serverAddress),
-              new TextFormField(
-                initialValue: _server,
-                decoration: InputDecoration(
-                  hintText: "127.0.0.1:8000",
-                ),
-                validator: _validateServer,
-                onSaved: (String value) {
-                  _server = value;
-                },
-              ),
-              Divider(),
-              Text(I18N.of(context).accountDetails),
-              TextFormField(
-                initialValue: _username,
-                decoration: InputDecoration(
-                  hintText: I18N.of(context).username,
-                  labelText: I18N.of(context).username,
-                ),
-                validator: _validateUsername,
-                onSaved: (String value) {
-                  _username = value;
-                }
-              ),
-              TextFormField(
-                initialValue: _password,
-                obscureText: true,
-                decoration: InputDecoration(
-                  hintText: I18N.of(context).password,
-                  labelText: I18N.of(context).password,
-                ),
-                validator: _validatePassword,
-                onSaved: (String value) {
-                  _password = value;
-                },
-              ),
-              Container(
-                width: screenSize.width,
-                child: RaisedButton(
-                  child: Text(I18N.of(context).save),
-                  onPressed: () {
-                    _save(context);
-                  }
-                )
-              )
-            ],
-          )
-        )
       )
     );
   }

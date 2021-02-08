@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:InvenTree/user_profile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -108,8 +109,7 @@ class InvenTreeAPI {
 
   String makeUrl(String endpoint) => _makeUrl(endpoint);
 
-  String _username = "";
-  String _password = "";
+  UserProfile _profile;
 
   // Authentication token (initially empty, must be requested)
   String _token = "";
@@ -168,25 +168,34 @@ class InvenTreeAPI {
   InvenTreeAPI._internal();
 
   Future<bool> connect(BuildContext context) async {
-    var prefs = await SharedPreferences.getInstance();
 
-    String server = prefs.getString("server");
-    String username = prefs.getString("username");
-    String password = prefs.getString("password");
+    _profile = await UserProfileDBManager().getSelectedProfile();
 
-    return connectToServer(context, server, username, password);
+    if (_profile == null) {
+      await showErrorDialog(
+          context,
+          "Select Profile",
+          "User profile not selected"
+      );
+      return false;
+    }
+
+    return connectToServer(context);
   }
 
-  Future<bool> connectToServer(BuildContext context, String address, String username, String password) async {
+  Future<bool> connectToServer(BuildContext context) async {
 
     /* Address is the base address for the InvenTree server,
      * e.g. http://127.0.0.1:8000
      */
 
+    if (_profile == null) return false;
+
     String errorMessage = "";
 
-    address = address.trim();
-    username = username.trim();
+    String address = _profile.server.trim();
+    String username = _profile.username.trim();
+    String password = _profile.password.trim();
 
     if (address.isEmpty || username.isEmpty || password.isEmpty) {
       await showErrorDialog(
@@ -211,14 +220,13 @@ class InvenTreeAPI {
      */
 
     _BASE_URL = address;
-    _username = username;
-    _password = password;
-
     _connected = false;
 
     print("Connecting to " + apiUrl + " -> " + username + ":" + password);
 
-    var response = await get("").timeout(Duration(seconds: 10)).catchError((error) {
+    var response = await get("").timeout(Duration(seconds: 5)).catchError((error) {
+
+      print("Error connecting to server: ${error.toString()}");
 
       if (error is SocketException) {
         errorMessage = "Could not connect to server";
@@ -397,7 +405,7 @@ class InvenTreeAPI {
   Map<String, String> defaultHeaders() {
     var headers = Map<String, String>();
 
-    headers[HttpHeaders.authorizationHeader] = _authorizationHeader();
+    headers[HttpHeaders.authorizationHeader] = _authorizationHeader(_profile.username, _profile.password);
 
     return headers;
   }
@@ -408,11 +416,11 @@ class InvenTreeAPI {
     return headers;
   }
 
-  String _authorizationHeader() {
+  String _authorizationHeader(String username, String password) {
     if (_token.isNotEmpty) {
       return "Token $_token";
     } else {
-      return "Basic " + base64Encode(utf8.encode('$_username:$_password'));
+      return "Basic " + base64Encode(utf8.encode('${username}:${password}'));
     }
   }
 

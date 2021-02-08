@@ -89,13 +89,7 @@ class InvenTreePreferences {
 
     print("Loading login details");
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    var server = prefs.getString(_SERVER) ?? '';
-    var username = prefs.getString(_USERNAME) ?? '';
-    var password = prefs.getString(_PASSWORD) ?? '';
-
-    await InvenTreeAPI().connectToServer(context, server, username, password);
+    await InvenTreeAPI().connectToServer(context);
   }
 
   void saveLoginDetails(BuildContext context, String server, String username, String password) async {
@@ -107,6 +101,6 @@ class InvenTreePreferences {
     await prefs.setString(_PASSWORD, password);
 
     // Reconnect the API
-    await InvenTreeAPI().connectToServer(context, server, username, password);
+    await InvenTreeAPI().connectToServer(context);
   }
 }
