@@ -231,9 +231,10 @@ class SubcategoryList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    return ListView.separated(
         shrinkWrap: true,
         physics: ClampingScrollPhysics(),
+        separatorBuilder: (_, __) => const Divider(),
         itemBuilder: _build, itemCount: _categories.length);
   }
 }
@@ -282,9 +283,10 @@ class PartList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    return ListView.separated(
         shrinkWrap: true,
         physics: ClampingScrollPhysics(),
+        separatorBuilder: (_, __) => const Divider(height: 1),
         itemBuilder: _build, itemCount: _parts.length);
   }
 }

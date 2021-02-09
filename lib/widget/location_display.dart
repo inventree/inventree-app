@@ -156,7 +156,10 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
         );
       case 1:
         return ListView(
-          children: actionTiles(),
+          children: ListTile.divideTiles(
+            context: context,
+            tiles: actionTiles()
+          ).toList()
         );
       default:
         return null;
@@ -298,10 +301,11 @@ class SublocationList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    return ListView.separated(
         shrinkWrap: true,
         physics: ClampingScrollPhysics(),
         itemBuilder: _build,
+        separatorBuilder: (_, __) => const Divider(),
         itemCount: _locations.length
     );
   }
@@ -342,9 +346,10 @@ class StockList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    return ListView.separated(
         shrinkWrap: true,
         physics: ClampingScrollPhysics(),
+        separatorBuilder: (_, __) => const Divider(),
         itemBuilder: _build, itemCount: _items.length);
   }
 }

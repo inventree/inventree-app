@@ -250,7 +250,10 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
   @override
   Widget getBody(BuildContext context) {
     return ListView(
-      children: resultsList(),
+      children: ListTile.divideTiles(
+        context: context,
+        tiles: resultsList()
+      ).toList()
     );
   }
 

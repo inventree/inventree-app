@@ -34,33 +34,35 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
       ),
       body: Center(
         child: ListView(
-          children: <Widget>[
-            ListTile(
-                title: Text(I18N.of(context).profile),
-                subtitle: Text("Configure user profile settings"),
-                leading: FaIcon(FontAwesomeIcons.user),
-                onTap: _editServerSettings,
-            ),
-            Divider(),
-            ListTile(
-              title: Text(I18N.of(context).about),
-              subtitle: Text(I18N.of(context).appDetails),
-              leading: FaIcon(FontAwesomeIcons.infoCircle),
-              onTap: _about,
-            ),
-            ListTile(
-              title: Text(I18N.of(context).releaseNotes),
-              subtitle: Text("Display app release notes"),
-              leading: FaIcon(FontAwesomeIcons.fileAlt),
-              onTap: _releaseNotes,
-            ),
-            ListTile(
-              title: Text(I18N.of(context).reportBug),
-              subtitle: Text("Report bug or suggest new feature"),
-              leading: FaIcon(FontAwesomeIcons.bug),
-              onTap: null,
-            ),
-          ],
+          children: ListTile.divideTiles(
+            context: context,
+            tiles: <Widget>[
+              ListTile(
+                  title: Text(I18N.of(context).profile),
+                  subtitle: Text("Configure user profile settings"),
+                  leading: FaIcon(FontAwesomeIcons.user),
+                  onTap: _editServerSettings,
+              ),
+              ListTile(
+                title: Text(I18N.of(context).about),
+                subtitle: Text(I18N.of(context).appDetails),
+                leading: FaIcon(FontAwesomeIcons.infoCircle),
+                onTap: _about,
+              ),
+              ListTile(
+                title: Text(I18N.of(context).releaseNotes),
+                subtitle: Text("Display app release notes"),
+                leading: FaIcon(FontAwesomeIcons.fileAlt),
+                onTap: _releaseNotes,
+              ),
+              ListTile(
+                title: Text(I18N.of(context).reportBug),
+                subtitle: Text("Report bug or suggest new feature"),
+                leading: FaIcon(FontAwesomeIcons.bug),
+                onTap: null,
+              ),
+            ]
+          ).toList()
         )
       )
     );

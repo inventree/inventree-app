@@ -579,11 +579,17 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     switch (index) {
       case 0:
         return ListView(
-          children: detailTiles(),
+          children: ListTile.divideTiles(
+            context: context,
+            tiles: detailTiles()
+          ).toList(),
         );
       case 1:
         return ListView(
-          children: actionTiles(),
+          children: ListTile.divideTiles(
+            context: context,
+            tiles: actionTiles()
+          ).toList()
         );
       default:
         return null;

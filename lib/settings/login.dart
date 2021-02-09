@@ -300,7 +300,10 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
       ),
       body: Container(
         child: ListView(
-          children: children,
+          children: ListTile.divideTiles(
+            context: context,
+            tiles: children
+          ).toList(),
         )
       ),
       floatingActionButton: FloatingActionButton(

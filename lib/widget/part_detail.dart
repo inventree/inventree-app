@@ -82,6 +82,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   void _showStock(BuildContext context) async {
     await part.getStockItems(context);
+
     Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => PartStockDetailWidget(part))
@@ -349,13 +350,19 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       case 0:
         return Center(
           child: ListView(
-          children: partTiles(),
+            children: ListTile.divideTiles(
+              context: context,
+              tiles: partTiles()
+            ).toList()
         ),
       );
       case 1:
         return Center(
           child: ListView(
-            children: actionTiles(),
+            children: ListTile.divideTiles(
+              context: context,
+              tiles: actionTiles()
+            ).toList()
           )
         );
       default:

@@ -100,10 +100,11 @@ class PartStockList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    return ListView.separated(
       shrinkWrap: true,
       physics: ClampingScrollPhysics(),
       itemBuilder: _build,
+      separatorBuilder: (_, __) => const Divider(height: 1),
       itemCount: _items.length
     );
   }
