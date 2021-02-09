@@ -109,12 +109,10 @@ class InvenTreeAPI {
 
   String makeUrl(String endpoint) => _makeUrl(endpoint);
 
-  UserProfile _profile;
+  UserProfile profile;
 
   // Authentication token (initially empty, must be requested)
   String _token = "";
-
-  bool isConnected() => _token.isNotEmpty;
 
   /*
    * Check server connection and display messages if not connected.
@@ -154,8 +152,14 @@ class InvenTreeAPI {
   // Connection status flag - set once connection has been validated
   bool _connected = false;
 
-  bool get connected {
-    return _connected && baseUrl.isNotEmpty && _token.isNotEmpty;
+  bool _connecting = true;
+
+  bool isConnected() {
+    return profile != null && _connected && baseUrl.isNotEmpty && _token.isNotEmpty;
+  }
+
+  bool isConnecting() {
+    return !isConnected() && _connecting;
   }
 
   // Ensure we only ever create a single instance of the API class
@@ -167,35 +171,15 @@ class InvenTreeAPI {
 
   InvenTreeAPI._internal();
 
-  Future<bool> connect(BuildContext context) async {
-
-    _profile = await UserProfileDBManager().getSelectedProfile();
-
-    if (_profile == null) {
-      await showErrorDialog(
-          context,
-          "Select Profile",
-          "User profile not selected"
-      );
-      return false;
-    }
-
-    return connectToServer(context);
-  }
-
-  Future<bool> connectToServer(BuildContext context) async {
+  Future<bool> _connect(BuildContext context) async {
 
     /* Address is the base address for the InvenTree server,
      * e.g. http://127.0.0.1:8000
      */
 
-    if (_profile == null) return false;
-
-    String errorMessage = "";
-
-    String address = _profile.server.trim();
-    String username = _profile.username.trim();
-    String password = _profile.password.trim();
+    String address = profile.server.trim();
+    String username = profile.username.trim();
+    String password = profile.password.trim();
 
     if (address.isEmpty || username.isEmpty || password.isEmpty) {
       await showErrorDialog(
@@ -220,19 +204,18 @@ class InvenTreeAPI {
      */
 
     _BASE_URL = address;
-    _connected = false;
 
-    print("Connecting to " + apiUrl + " -> " + username + ":" + password);
+    print("Connecting to ${apiUrl} -> ${username}:${password}");
 
     var response = await get("").timeout(Duration(seconds: 5)).catchError((error) {
 
       print("Error connecting to server: ${error.toString()}");
 
       if (error is SocketException) {
-        errorMessage = "Could not connect to server";
+        showServerError(context, "Connection Refused");
         return null;
       } else if (error is TimeoutException) {
-        errorMessage = "Server timeout";
+        showTimeoutDialog(context);
         return null;
       } else {
         // Unknown error type - re-throw the error and Sentry will catch it
@@ -242,8 +225,6 @@ class InvenTreeAPI {
 
     if (response == null) {
       // Null (or error) response: Show dialog and exit
-
-      await showServerError(context, errorMessage);
       return false;
     }
 
@@ -320,6 +301,38 @@ class InvenTreeAPI {
 
       return true;
     };
+  }
+
+  Future<bool> connectToServer(BuildContext context) async {
+    print("InvenTreeAPI().connectToServer()");
+
+    // Clear connection flag
+    _connected = false;
+
+    // Clear token
+    _token = '';
+
+    // Load selected profile
+    profile = await UserProfileDBManager().getSelectedProfile();
+
+    if (profile == null) {
+      await showErrorDialog(
+          context,
+          "Select Profile",
+          "User profile not selected"
+      );
+      return false;
+    }
+
+    _connecting = true;
+
+    _connect(context).then((result) {
+
+      print("_connect() returned result: ${result}");
+      _connecting = false;
+
+      return result;
+    });
   }
 
   // Perform a PATCH request
@@ -405,7 +418,9 @@ class InvenTreeAPI {
   Map<String, String> defaultHeaders() {
     var headers = Map<String, String>();
 
-    headers[HttpHeaders.authorizationHeader] = _authorizationHeader(_profile.username, _profile.password);
+    if (profile != null) {
+      headers[HttpHeaders.authorizationHeader] = _authorizationHeader(profile.username, profile.password);
+    }
 
     return headers;
   }

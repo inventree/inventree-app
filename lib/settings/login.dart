@@ -180,7 +180,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     _reload();
 
     // Attempt server login (this will load the newly selected profile
-    InvenTreeAPI().connect(context);
+    InvenTreeAPI().connectToServer(context);
   }
 
   void _deleteProfile(UserProfile profile) async {
@@ -220,7 +220,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
 
     List<Widget> children = [];
 
-    if (profiles.length > 0) {
+    if (profiles != null && profiles.length > 0) {
       for (int idx = 0; idx < profiles.length; idx++) {
         UserProfile profile = profiles[idx];
 
