@@ -6,7 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:InvenTree/widget/refreshable_state.dart';
 
 class LocationDisplayWidget extends StatefulWidget {
@@ -97,8 +97,8 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     if (location == null) {
       return Card(
         child: ListTile(
-          title: Text("Stock Locations"),
-          subtitle: Text("Top level stock location")
+          title: Text(I18N.of(context).stockLocations),
+          subtitle: Text(I18N.of(context).stockTopLevel),
         )
       );
     } else {
@@ -135,14 +135,14 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     return BottomNavigationBar(
         currentIndex: tabIndex,
         onTap: onTabSelectionChanged,
-        items: const <BottomNavigationBarItem> [
+        items: <BottomNavigationBarItem> [
           BottomNavigationBarItem(
             icon: FaIcon(FontAwesomeIcons.boxes),
-            title: Text("Stock"),
+            title: Text(I18N.of(context).stock),
           ),
           BottomNavigationBarItem(
             icon: FaIcon(FontAwesomeIcons.wrench),
-            title: Text("Actions"),
+            title: Text(I18N.of(context).actions),
           )
         ]
     );

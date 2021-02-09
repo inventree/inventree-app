@@ -43,16 +43,16 @@ class InvenTreeAboutWidget extends StatelessWidget {
 
       tiles.add(
         ListTile(
-          title: Text("Server Instance"),
+          title: Text(I18N.of(context).serverInstance),
           subtitle: Text(InvenTreeAPI().instance.isNotEmpty ? InvenTreeAPI().instance : "Not connected"),
         )
       );
     } else {
       tiles.add(
         ListTile(
-          title: Text("Not Connected"),
+          title: Text(I18N.of(context).notConnected),
           subtitle: Text(
-            "InvenTree server not connected",
+            I18N.of(context).serverNotConnected,
             style: TextStyle(fontStyle: FontStyle.italic),
           )
         )
@@ -77,7 +77,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
 
     tiles.add(
       ListTile(
-        title: Text("Package Name"),
+        title: Text(I18N.of(context).packageName),
         subtitle: Text("${info.packageName}"),
       )
     );
@@ -98,7 +98,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("About InvenTree"),
+        title: Text(I18N.of(context).appAbout),
       ),
       body: ListView(
         children: ListTile.divideTiles(

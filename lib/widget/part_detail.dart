@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:InvenTree/inventree/part.dart';
 import 'package:InvenTree/widget/full_screen_image.dart';
@@ -328,7 +329,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
     tiles.add(
       ListTile(
-        title: Text("Create Stock Item"),
+        title: Text(I18N.of(context).stockItemCreate),
         leading: FaIcon(FontAwesomeIcons.box),
         onTap: null,
       )
@@ -377,14 +378,14 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     return BottomNavigationBar(
       currentIndex: tabIndex,
       onTap: onTabSelectionChanged,
-      items: const <BottomNavigationBarItem> [
+      items: <BottomNavigationBarItem> [
         BottomNavigationBarItem(
           icon: FaIcon(FontAwesomeIcons.infoCircle),
-          title: Text("Details"),
+          title: Text(I18N.of(context).details),
         ),
         BottomNavigationBarItem(
           icon: FaIcon(FontAwesomeIcons.wrench),
-          title: Text("Actions"),
+          title: Text(I18N.of(context).actions),
         ),
       ]
     );

@@ -7,6 +7,7 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 import 'package:InvenTree/inventree/stock.dart';
 import 'package:InvenTree/inventree/part.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:InvenTree/api.dart';
 
@@ -207,7 +208,7 @@ class BarcodeScanHandler extends BarcodeHandler {
       showDialog(
           context: _context,
           child: SimpleDialog(
-            title: Text("Unknown response"),
+            title: Text(I18N.of(_context).unknownResponse),
             children: <Widget>[
               ListTile(
                 title: Text("Response data"),

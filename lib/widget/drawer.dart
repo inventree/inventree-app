@@ -111,7 +111,7 @@ class InvenTreeDrawer extends StatelessWidget {
                     fit: BoxFit.scaleDown,
                     width: 40,
                   ),
-                  title: new Text("InvenTree"),
+                  title: new Text(I18N.of(context).appTitle),
                   onTap: _home,
                 ),
                 /*

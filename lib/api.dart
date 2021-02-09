@@ -124,10 +124,10 @@ class InvenTreeAPI {
       showDialog(
           context: context,
           child: new SimpleDialog(
-              title: new Text("Not Connected"),
+              title: new Text(I18N.of(context).notConnected),
               children: <Widget>[
                 ListTile(
-                  title: Text("Server not connected"),
+                  title: Text(I18N.of(context).serverNotConnected),
                 )
               ]
           )
