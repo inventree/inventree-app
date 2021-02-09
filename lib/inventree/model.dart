@@ -252,7 +252,9 @@ class InvenTreeModel {
       return null;
     }
 
-    hideProgressDialog(context);
+    if (dialog) {
+      hideProgressDialog(context);
+    }
 
     if (response.statusCode != 200) {
       showErrorDialog(context, I18N.of(context).serverError, "${I18N.of(context).statusCode}: ${response.statusCode}");
