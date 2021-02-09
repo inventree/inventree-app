@@ -15,6 +15,7 @@ import 'package:InvenTree/widget/category_display.dart';
 import 'package:InvenTree/widget/company_list.dart';
 import 'package:InvenTree/widget/location_display.dart';
 import 'package:InvenTree/widget/search.dart';
+import 'package:InvenTree/widget/spinner.dart';
 import 'package:InvenTree/widget/drawer.dart';
 
 class InvenTreeHomePage extends StatefulWidget {
@@ -28,18 +29,9 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
 
   _InvenTreeHomePageState() : super() {
 
+    // Initially load the profile and attempt server connection
     _loadProfile();
   }
-
-  String _serverStatus = "Connecting to server";
-
-  String _serverMessage = "";
-
-  bool _serverConnection = false;
-
-  FaIcon _serverIcon = new FaIcon(FontAwesomeIcons.spinner);
-
-  Color _serverStatusColor = Color.fromARGB(255, 50, 50, 250);
 
   // Selected user profile
   UserProfile _profile;
@@ -111,30 +103,20 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
 
   void _loadProfile() async {
 
-    final profile = await UserProfileDBManager().getSelectedProfile();
+    _profile = await UserProfileDBManager().getSelectedProfile();
 
-    // If a different profile is selected, re-connect
-    if (_profile == null || (_profile.key != profile.key)) {
+    // A valid profile was loaded!
+    if (_profile != null) {
+      if (!InvenTreeAPI().isConnected() && !InvenTreeAPI().isConnecting()) {
 
-      if (_context != null) {
-        print("Connecting Profile: ${profile.name} - ${profile.server}");
-
+        print("Connect from C");
         InvenTreeAPI().connectToServer(_context).then((result) {
-          setState(() {
-
-          });
-        });
-
-        setState(() {
+          setState(() {});
         });
       }
     }
 
-    _profile = profile;
-
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   ListTile _serverTile() {
@@ -162,10 +144,13 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
         title: Text("Connecting to server..."),
         subtitle: Text("${InvenTreeAPI().baseUrl}"),
         leading: FaIcon(FontAwesomeIcons.server),
-        trailing: FaIcon(
-          FontAwesomeIcons.spinner,
+        trailing: Spinner(
+          icon: FontAwesomeIcons.spinner,
           color: Color.fromRGBO(50, 50, 250, 1),
-        )
+        ),
+        onTap: () {
+          _selectProfile();
+        }
       );
     } else if (InvenTreeAPI().isConnected()) {
       return ListTile(
@@ -196,41 +181,10 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     }
   }
 
-  void onConnectSuccess(String msg) async {
-
-    final profile = await UserProfileDBManager().getSelectedProfile();
-
-    String address = profile?.server ?? 'unknown server address';
-
-    _serverConnection = true;
-    _serverMessage = msg;
-    _serverStatus = "Connected to ${address}";
-    _serverStatusColor = Color.fromARGB(255, 50, 250, 50);
-    _serverIcon = new FaIcon(FontAwesomeIcons.checkCircle, color: _serverStatusColor);
-
-    setState(() {});
-  }
-
-  void onConnectFailure(String msg) async {
-
-    final profile = await UserProfileDBManager().getSelectedProfile();
-
-    _serverConnection = false;
-    _serverMessage = msg;
-    _serverStatus = "Could not connect to ${profile?.server}";
-    _serverStatusColor = Color.fromARGB(255, 250, 50, 50);
-    _serverIcon = new FaIcon(FontAwesomeIcons.timesCircle, color: _serverStatusColor);
-
-    setState(() {});
-  }
-
-
   @override
   Widget build(BuildContext context) {
 
     _context = context;
-
-    _loadProfile();
 
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.

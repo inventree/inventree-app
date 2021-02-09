@@ -1,5 +1,7 @@
 import 'package:InvenTree/widget/dialogs.dart';
 import 'package:InvenTree/widget/fields.dart';
+import 'package:InvenTree/widget/spinner.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -166,21 +168,20 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
 
   void _selectProfile(BuildContext context, UserProfile profile) async {
 
-    // Mark currently selected profile as unselected
-    final selected = await UserProfileDBManager().getSelectedProfile();
+    // Disconnect InvenTree
+    InvenTreeAPI().disconnectFromServer();
 
-    selected.selected = false;
-
-    await UserProfileDBManager().updateProfile(selected);
-
-    profile.selected = true;
-
-    await UserProfileDBManager().updateProfile(profile);
+    await UserProfileDBManager().selectProfile(profile.key);
 
     _reload();
 
+    print("CONNECT FROM A");
     // Attempt server login (this will load the newly selected profile
-    InvenTreeAPI().connectToServer(context);
+    InvenTreeAPI().connectToServer(context).then((result) {
+      _reload();
+    });
+
+    _reload();
   }
 
   void _deleteProfile(UserProfile profile) async {
@@ -191,6 +192,10 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     Navigator.of(context).pop();
 
     _reload();
+
+    if (InvenTreeAPI().isConnected() && profile.key == InvenTreeAPI().profile.key) {
+      InvenTreeAPI().disconnectFromServer();
+    }
   }
 
   void _updateProfile(UserProfile profile) async {
@@ -201,6 +206,15 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     Navigator.of(context).pop();
 
     _reload();
+
+    if (InvenTreeAPI().isConnected() && profile.key == InvenTreeAPI().profile.key) {
+      // Attempt server login (this will load the newly selected profile
+
+      print("Connect froM A");
+      InvenTreeAPI().connectToServer(context).then((result) {
+        _reload();
+      });
+    }
   }
 
   void _addProfile(UserProfile profile) async {
@@ -213,10 +227,44 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     _reload();
   }
 
+  Widget _getProfileIcon(UserProfile profile) {
+
+    // Not selected? No icon for you!
+    if (profile == null || !profile.selected) return null;
+
+    // Selected, but (for some reason) not the same as the API...
+    if (InvenTreeAPI().profile == null || InvenTreeAPI().profile.key != profile.key) {
+      return FaIcon(
+        FontAwesomeIcons.questionCircle,
+        color: Color.fromRGBO(250, 150, 50, 1)
+      );
+    }
+
+    // Reflect the connection status of the server
+    if (InvenTreeAPI().isConnected()) {
+      return FaIcon(
+        FontAwesomeIcons.checkCircle,
+        color: Color.fromRGBO(50, 250, 50, 1)
+      );
+    } else if (InvenTreeAPI().isConnecting()) {
+      return Spinner(
+        icon: FontAwesomeIcons.spinner,
+        color: Color.fromRGBO(50, 50, 250, 1),
+      );
+    } else {
+      return FaIcon(
+        FontAwesomeIcons.timesCircle,
+        color: Color.fromRGBO(250, 50, 50, 1),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
 
     final Size screenSize = MediaQuery.of(context).size;
+
+    print("Building!");
 
     List<Widget> children = [];
 
@@ -228,10 +276,12 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
           title: Text(
             profile.name,
           ),
-          subtitle: Text(profile.server),
-          trailing: profile.selected
-              ? FaIcon(FontAwesomeIcons.checkCircle)
-              : null,
+          tileColor: profile.selected ? Color.fromRGBO(0, 0, 0, 0.05) : null,
+          subtitle: Text("${profile.server}"),
+          trailing: _getProfileIcon(profile),
+          onTap: () {
+            _selectProfile(context, profile);
+          },
           onLongPress: () {
             showDialog(
                 context: context,
@@ -239,49 +289,39 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
                   return SimpleDialog(
                     title: Text(profile.name),
                     children: <Widget>[
+                      Divider(),
                       SimpleDialogOption(
                         onPressed: () {
                           Navigator.of(context).pop();
                           _selectProfile(context, profile);
                         },
-                        child: Text(I18N
-                            .of(context)
-                            .profileSelect),
+                        child: Text(I18N.of(context).profileSelect),
                       ),
                       SimpleDialogOption(
                         onPressed: () {
                           Navigator.of(context).pop();
                           _editProfile(context, userProfile: profile);
                         },
-                        child: Text(I18N
-                            .of(context)
-                            .profileEdit),
+                        child: Text(I18N.of(context).profileEdit),
                       ),
                       SimpleDialogOption(
                         onPressed: () {
                           // Navigator.of(context, rootNavigator: true).pop();
                           confirmationDialog(
                               context,
-                              I18N
-                                  .of(context)
-                                  .delete,
+                              I18N.of(context).delete,
                               "Delete this profile?",
                               onAccept: () {
                                 _deleteProfile(profile);
                               }
                           );
                         },
-                        child: Text(I18N
-                            .of(context)
-                            .profileDelete),
+                        child: Text(I18N.of(context).profileDelete),
                       )
                     ],
                   );
                 }
             );
-          },
-          onTap: () {
-
           },
         ));
       }

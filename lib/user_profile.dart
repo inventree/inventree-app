@@ -36,13 +36,13 @@ class UserProfile {
   // User ID (will be provided by the server on log-in)
   int user_id;
 
-  factory UserProfile.fromJson(int key, Map<String, dynamic> json) => UserProfile(
+  factory UserProfile.fromJson(int key, Map<String, dynamic> json, bool isSelected) => UserProfile(
     key: key,
     name: json['name'],
     server: json['server'],
     username: json['username'],
     password: json['password'],
-    selected: json['selected'] ?? false,
+    selected: isSelected,
   );
 
   Map<String, dynamic> toJson() => {
@@ -50,57 +50,75 @@ class UserProfile {
     "server": server,
     "username": username,
     "password": password,
-    "selected": selected,
   };
 
   @override
   String toString() {
-    return "${server} - ${username}:${password}";
+    return "<${key}> ${name} : ${server} - ${username}:${password}";
   }
 }
 
 class UserProfileDBManager {
 
-  static const String folder_name = "profiles";
-
-  final _folder = intMapStoreFactory.store(folder_name);
+  final store = StoreRef("profiles");
 
   Future<Database> get _db async => await InvenTreePreferencesDB.instance.database;
 
+  Future<bool> profileNameExists(String name) async {
+
+    final finder = Finder(filter: Filter.equals("name", name));
+
+    final profiles = await store.find(await _db, finder: finder);
+
+    return profiles.length > 0;
+  }
+
   Future addProfile(UserProfile profile) async {
 
-    UserProfile existingProfile = await getProfile(profile.name);
+    // Check if a profile already exists with the name
+    final bool exists = await profileNameExists(profile.name);
 
-    if (existingProfile != null) {
+    if (exists) {
       print("UserProfile '${profile.name}' already exists");
       return;
     }
 
-    int key = await _folder.add(await _db, profile.toJson());
+    int key = await store.add(await _db, profile.toJson());
 
     print("Added user profile <${key}> - '${profile.name}'");
 
     // Record the key
     profile.key = key;
   }
+
+  Future selectProfile(int key) async {
+    /*
+     * Mark the particular profile as selected
+     */
+
+    final result = await store.record("selected").put(await _db, key);
+
+    return result;
+  }
   
   Future updateProfile(UserProfile profile) async {
     
     if (profile.key == null) {
-      addProfile(profile);
+      await addProfile(profile);
       return;
     }
 
-    final finder = Finder(filter: Filter.byKey(profile.key));
-    await _folder.update(await _db, profile.toJson(), finder: finder);
+    final result = await store.record(profile.key).update(await _db, profile.toJson());
 
-    print("Updated user profile <${profile.key}> - '${profile.name}");
+    print("Updated user profile <${profile.key}> - '${profile.name}'");
+
+    return result;
   }
 
   Future deleteProfile(UserProfile profile) async {
     final finder = Finder(filter: Filter.equals("name", profile.name));
-    await _folder.delete(await _db, finder: finder);
 
+    await store.record(profile.key).delete(await _db);
     print("Deleted user profile <${profile.key}> - '${profile.name}'");
   }
 
@@ -108,78 +126,50 @@ class UserProfileDBManager {
     /*
      * Return the currently selected profile.
      *
-     * If multiple profiles are selected,
-     * mark all but the first as unselected
-     *
-     * If no profile is currently selected,
-     * then force the first profile to be selected.
+     * key should match the "selected" property
      */
 
-    final selected_finder = Finder(filter: Filter.equals("selected", true));
+    final selected = await store.record("selected").get(await _db);
 
-    final selected_profiles = await _folder.find(await _db, finder: selected_finder);
+    final profiles = await store.find(await _db);
 
-    if (selected_profiles.length == 1) {
-      // A single profile is selected
-      return UserProfile.fromJson(selected_profiles[0].key, selected_profiles[0].value);
-    } else if (selected_profiles.length > 1) {
-      // Multiple selected profiles - de-select others
-      for (int idx = 1; idx < selected_profiles.length; idx++) {
-        UserProfile profile = UserProfile.fromJson(selected_profiles[idx].key, selected_profiles[idx].value);
+    List<UserProfile> profileList = new List<UserProfile>();
 
-        profile.selected = false;
-        updateProfile(profile);
-      }
+    for (int idx = 0; idx < profiles.length; idx++) {
 
-      // And return the first profile
-      return UserProfile.fromJson(selected_profiles[0].key, selected_profiles[0].value);
-    } else {
-      // No profiles selected!
-
-      final all_profiles = await getAllProfiles();
-
-      if (all_profiles.length == 0) {
-        // No profiles available
-        return null;
-      } else {
-        UserProfile prf = all_profiles[0];
-        prf.selected = true;
-        updateProfile(prf);
-
-        // Return the selected profile
-        return prf;
+      if (profiles[idx].key is int && profiles[idx].key == selected) {
+        return UserProfile.fromJson(
+          profiles[idx].key,
+          profiles[idx].value,
+          profiles[idx].key == selected,
+        );
       }
     }
-  }
 
-  Future<UserProfile> getProfile(String name) async {
-
-    print("Looking for user profile '${name}'");
-
-    // Lookup profile by name (or return null if does not exist)
-    final finder = Finder(filter: Filter.equals("name", name));
-
-    final profiles = await _folder.find(await _db, finder: finder);
-
-    if (profiles.length == 0) {
-      print("No matching profiles found");
-      return null;
-    }
-
-    // Return the first matching profile object
-    return UserProfile.fromJson(profiles[0].key, profiles[0].value);
+    return null;
   }
 
   /*
    * Return all user profile objects
    */
   Future<List<UserProfile>> getAllProfiles() async {
-    final profiles = await _folder.find(await _db);
+
+    final selected = await store.record("selected").get(await _db);
+
+    final profiles = await store.find(await _db);
 
     List<UserProfile> profileList = new List<UserProfile>();
 
     for (int idx = 0; idx < profiles.length; idx++) {
-      profileList.add(UserProfile.fromJson(profiles[idx].key, profiles[idx].value));
+
+      if (profiles[idx].key is int) {
+        profileList.add(
+            UserProfile.fromJson(
+              profiles[idx].key,
+              profiles[idx].value,
+              profiles[idx].key == selected,
+            ));
+      }
     }
 
     return profileList;

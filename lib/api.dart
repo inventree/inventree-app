@@ -177,6 +177,8 @@ class InvenTreeAPI {
      * e.g. http://127.0.0.1:8000
      */
 
+    if (profile == null) return false;
+
     String address = profile.server.trim();
     String username = profile.username.trim();
     String password = profile.password.trim();
@@ -212,10 +214,13 @@ class InvenTreeAPI {
       print("Error connecting to server: ${error.toString()}");
 
       if (error is SocketException) {
-        showServerError(context, "Connection Refused");
+        print("Error: socket exception: ${error.toString()}");
+        // TODO - Display error dialog!!
+        //showServerError(context, "Connection Refused");
         return null;
       } else if (error is TimeoutException) {
-        showTimeoutDialog(context);
+        // TODO - Display timeout dialog here
+        //showTimeoutDialog(context);
         return null;
       } else {
         // Unknown error type - re-throw the error and Sentry will catch it
@@ -303,17 +308,24 @@ class InvenTreeAPI {
     };
   }
 
-  Future<bool> connectToServer(BuildContext context) async {
-    print("InvenTreeAPI().connectToServer()");
+  bool disconnectFromServer() {
+    print("InvenTreeAPI().disconnectFromServer()");
 
-    // Clear connection flag
     _connected = false;
-
-    // Clear token
+    _connecting = false;
     _token = '';
+    profile = null;
+  }
+
+  Future<bool> connectToServer(BuildContext context) async {
+
+    // Ensure server is first disconnected
+    disconnectFromServer();
 
     // Load selected profile
     profile = await UserProfileDBManager().getSelectedProfile();
+
+    print("API Profile: ${profile.toString()}");
 
     if (profile == null) {
       await showErrorDialog(
@@ -326,13 +338,13 @@ class InvenTreeAPI {
 
     _connecting = true;
 
-    _connect(context).then((result) {
+    bool result = await _connect(context);
 
-      print("_connect() returned result: ${result}");
-      _connecting = false;
+    print("_connect() returned result: ${result}");
 
-      return result;
-    });
+    _connecting = false;
+
+    return result;
   }
 
   // Perform a PATCH request
