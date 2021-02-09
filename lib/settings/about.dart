@@ -30,21 +30,21 @@ class InvenTreeAboutWidget extends StatelessWidget {
       tiles.add(
           ListTile(
             title: Text(I18N.of(context).address),
-            subtitle: Text(InvenTreeAPI().baseUrl.isNotEmpty ? InvenTreeAPI().baseUrl : "Not connected"),
+            subtitle: Text(InvenTreeAPI().baseUrl.isNotEmpty ? InvenTreeAPI().baseUrl : I18N.of(context).notConnected),
           )
       );
 
       tiles.add(
         ListTile(
           title: Text(I18N.of(context).version),
-          subtitle: Text(InvenTreeAPI().version.isNotEmpty ? InvenTreeAPI().version : "Not connected"),
+          subtitle: Text(InvenTreeAPI().version.isNotEmpty ? InvenTreeAPI().version : I18N.of(context).notConnected),
         )
       );
 
       tiles.add(
         ListTile(
           title: Text(I18N.of(context).serverInstance),
-          subtitle: Text(InvenTreeAPI().instance.isNotEmpty ? InvenTreeAPI().instance : "Not connected"),
+          subtitle: Text(InvenTreeAPI().instance.isNotEmpty ? InvenTreeAPI().instance : I18N.of(context).notConnected),
         )
       );
     } else {
