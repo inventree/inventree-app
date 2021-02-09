@@ -143,7 +143,7 @@ class InvenTreeAPI {
   // Connection status flag - set once connection has been validated
   bool _connected = false;
 
-  bool _connecting = true;
+  bool _connecting = false;
 
   bool isConnected() {
     return profile != null && _connected && baseUrl.isNotEmpty && _token.isNotEmpty;
