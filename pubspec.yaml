@@ -35,7 +35,7 @@ dependencies:
   device_info: ^1.0.0                     # Information about the device
   font_awesome_flutter: ^8.8.1            # FontAwesome icon set
   flutter_speed_dial: ^1.2.5              # FAB menu elements
-  sentry: ^4.0.4                          # Error reporting
+  sentry_flutter: ^4.0.4                  # Error reporting
   flutter_typeahead: ^1.8.1               # Auto-complete input field
   image_picker: ^0.6.6                    # Select or take photos
   url_launcher: ^5.7.10                   # Open link in system browser
