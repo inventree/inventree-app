@@ -175,7 +175,6 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
 
     _reload();
 
-    print("CONNECT FROM A");
     // Attempt server login (this will load the newly selected profile
     InvenTreeAPI().connectToServer(context).then((result) {
       _reload();
@@ -210,7 +209,6 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     if (InvenTreeAPI().isConnected() && profile.key == InvenTreeAPI().profile.key) {
       // Attempt server login (this will load the newly selected profile
 
-      print("Connect froM A");
       InvenTreeAPI().connectToServer(context).then((result) {
         _reload();
       });

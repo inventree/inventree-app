@@ -214,7 +214,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     // Stock information
     tiles.add(
       ListTile(
-        title: Text("Stock"),
+        title: Text(I18N.of(context).stock),
         leading: FaIcon(FontAwesomeIcons.boxes),
         trailing: Text("${part.inStock}"),
         onTap: () {
@@ -230,7 +230,9 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
             title: Text("On Order"),
             leading: FaIcon(FontAwesomeIcons.shoppingCart),
             trailing: Text("${part.onOrder}"),
-            onTap: null,
+            onTap: () {
+              // TODO: Click through to show items on order
+            },
           )
       );
     }

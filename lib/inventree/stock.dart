@@ -287,6 +287,11 @@ class InvenTreeStockItem extends InvenTreeModel {
       return 'SN ${serialNumber}';
     }
 
+    // Is an integer?
+    if (quantity.toInt() == quantity) {
+      return '${quantity.toInt()}';
+    }
+
     return '${quantity}';
   }
 

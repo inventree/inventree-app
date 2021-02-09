@@ -305,7 +305,7 @@ class SublocationList extends StatelessWidget {
         shrinkWrap: true,
         physics: ClampingScrollPhysics(),
         itemBuilder: _build,
-        separatorBuilder: (_, __) => const Divider(),
+        separatorBuilder: (_, __) => const Divider(height: 3),
         itemCount: _locations.length
     );
   }
@@ -349,7 +349,7 @@ class StockList extends StatelessWidget {
     return ListView.separated(
         shrinkWrap: true,
         physics: ClampingScrollPhysics(),
-        separatorBuilder: (_, __) => const Divider(),
+        separatorBuilder: (_, __) => const Divider(height: 3),
         itemBuilder: _build, itemCount: _items.length);
   }
 }

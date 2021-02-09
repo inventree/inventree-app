@@ -45,19 +45,19 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
 
   }
 
-  void _scan() {
+  void _scan(BuildContext context) {
     if (!InvenTreeAPI().checkConnection(context)) return;
 
     scanQrCode(context);
   }
 
-  void _parts() {
+  void _parts(BuildContext context) {
     if (!InvenTreeAPI().checkConnection(context)) return;
 
     Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));
   }
 
-  void _stock() {
+  void _stock(BuildContext context) {
     if (!InvenTreeAPI().checkConnection(context)) return;
 
     Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(null)));
@@ -82,7 +82,12 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
   }
 
   void _selectProfile() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeLoginSettingsWidget()));
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => InvenTreeLoginSettingsWidget())
+    ).then((context) {
+      // Once we return
+      _loadProfile();
+    });
   }
 
   void _unsupported() {
@@ -109,7 +114,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     if (_profile != null) {
       if (!InvenTreeAPI().isConnected() && !InvenTreeAPI().isConnecting()) {
 
-        print("Connect from C");
+        // Attempt server connection
         InvenTreeAPI().connectToServer(_context).then((result) {
           setState(() {});
         });
@@ -234,7 +239,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
                     IconButton(
                       icon: new FaIcon(FontAwesomeIcons.barcode),
                       tooltip: I18N.of(context).scanBarcode,
-                      onPressed: _scan,
+                      onPressed: () { _scan(context); },
                     ),
                     Text(I18N.of(context).scanBarcode),
                   ],
@@ -250,7 +255,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
                     IconButton(
                       icon: new FaIcon(FontAwesomeIcons.shapes),
                       tooltip: I18N.of(context).parts,
-                      onPressed: _parts,
+                      onPressed: () { _parts(context); },
                     ),
                     Text(I18N.of(context).parts),
                   ],
@@ -260,7 +265,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
                     IconButton(
                       icon: new FaIcon(FontAwesomeIcons.boxes),
                       tooltip: I18N.of(context).stock,
-                      onPressed: _stock,
+                      onPressed: () { _stock(context); },
                     ),
                     Text(I18N.of(context).stock),
                   ],

@@ -155,7 +155,7 @@ class InvenTreePart extends InvenTreeModel {
   // Request stock items for this part
   Future<void> getStockItems(BuildContext context, {bool showDialog=false}) async {
 
-    InvenTreeStockItem().list(
+    await InvenTreeStockItem().list(
       context,
       filters: {
         "part": "${pk}",

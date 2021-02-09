@@ -38,7 +38,6 @@ class _PartStockDisplayState extends RefreshableState<PartStockDetailWidget> {
   @override
   Future<void> onBuild(BuildContext context) async {
     refresh();
-    print("onBuild");
   }
 
   @override
@@ -104,7 +103,7 @@ class PartStockList extends StatelessWidget {
       shrinkWrap: true,
       physics: ClampingScrollPhysics(),
       itemBuilder: _build,
-      separatorBuilder: (_, __) => const Divider(height: 1),
+      separatorBuilder: (_, __) => const Divider(height: 3),
       itemCount: _items.length
     );
   }
