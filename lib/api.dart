@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:InvenTree/user_profile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -67,15 +68,6 @@ class InvenTreeAPI {
   static const _URL_GET_TOKEN = "user/token/";
   static const _URL_GET_VERSION = "";
 
-  Future<void> showServerError(BuildContext context, String description) async {
-    showErrorDialog(
-      context,
-      I18N.of(context).serverError,
-      description,
-      icon: FontAwesomeIcons.server
-    );
-  }
-
   // Base URL for InvenTree API e.g. http://192.168.120.10:8000
   String _BASE_URL = "";
 
@@ -108,13 +100,10 @@ class InvenTreeAPI {
 
   String makeUrl(String endpoint) => _makeUrl(endpoint);
 
-  String _username = "";
-  String _password = "";
+  UserProfile profile;
 
   // Authentication token (initially empty, must be requested)
   String _token = "";
-
-  bool isConnected() => _token.isNotEmpty;
 
   /*
    * Check server connection and display messages if not connected.
@@ -126,10 +115,10 @@ class InvenTreeAPI {
       showDialog(
           context: context,
           child: new SimpleDialog(
-              title: new Text("Not Connected"),
+              title: new Text(I18N.of(context).notConnected),
               children: <Widget>[
                 ListTile(
-                  title: Text("Server not connected"),
+                  title: Text(I18N.of(context).serverNotConnected),
                 )
               ]
           )
@@ -154,8 +143,14 @@ class InvenTreeAPI {
   // Connection status flag - set once connection has been validated
   bool _connected = false;
 
-  bool get connected {
-    return _connected && baseUrl.isNotEmpty && _token.isNotEmpty;
+  bool _connecting = true;
+
+  bool isConnected() {
+    return profile != null && _connected && baseUrl.isNotEmpty && _token.isNotEmpty;
+  }
+
+  bool isConnecting() {
+    return !isConnected() && _connecting;
   }
 
   // Ensure we only ever create a single instance of the API class
@@ -167,26 +162,17 @@ class InvenTreeAPI {
 
   InvenTreeAPI._internal();
 
-  Future<bool> connect(BuildContext context) async {
-    var prefs = await SharedPreferences.getInstance();
-
-    String server = prefs.getString("server");
-    String username = prefs.getString("username");
-    String password = prefs.getString("password");
-
-    return connectToServer(context, server, username, password);
-  }
-
-  Future<bool> connectToServer(BuildContext context, String address, String username, String password) async {
+  Future<bool> _connect(BuildContext context) async {
 
     /* Address is the base address for the InvenTree server,
      * e.g. http://127.0.0.1:8000
      */
 
-    String errorMessage = "";
+    if (profile == null) return false;
 
-    address = address.trim();
-    username = username.trim();
+    String address = profile.server.trim();
+    String username = profile.username.trim();
+    String password = profile.password.trim();
 
     if (address.isEmpty || username.isEmpty || password.isEmpty) {
       await showErrorDialog(
@@ -211,41 +197,39 @@ class InvenTreeAPI {
      */
 
     _BASE_URL = address;
-    _username = username;
-    _password = password;
 
-    _connected = false;
-
-    print("Connecting to " + apiUrl + " -> " + username + ":" + password);
+    print("Connecting to ${apiUrl} -> ${username}:${password}");
 
     var response = await get("").timeout(Duration(seconds: 10)).catchError((error) {
 
+      print("Error connecting to server: ${error.toString()}");
+
       if (error is SocketException) {
-        errorMessage = "Could not connect to server";
+        showServerError(
+            context,
+            I18N.of(context).connectionRefused,
+            error.toString());
         return null;
       } else if (error is TimeoutException) {
-        errorMessage = "Server timeout";
+        showTimeoutError(context);
         return null;
       } else {
-        // Unknown error type
-        errorMessage = error.toString();
-        // Unknown error type, re-throw error
-        return null;
+        // Unknown error type - re-throw the error and Sentry will catch it
+        throw error;
       }
     });
 
     if (response == null) {
       // Null (or error) response: Show dialog and exit
-
-      await showServerError(context, errorMessage);
       return false;
     }
 
     if (response.statusCode != 200) {
       // Any status code other than 200!
 
+      showStatusCodeError(context, response.statusCode);
+
       // TODO: Interpret the error codes and show custom message?
-      await showServerError(context, "Invalid response code: ${response.statusCode.toString()}");
       return false;
     }
 
@@ -254,29 +238,30 @@ class InvenTreeAPI {
     print("Response from server: $data");
 
     // We expect certain response from the server
-    if (!data.containsKey("server") || !data.containsKey("version")) {
+    if (!data.containsKey("server") || !data.containsKey("version") || !data.containsKey("instance")) {
 
-      await showServerError(context, "Server response missing required fields");
+      showServerError(
+        context,
+        "Missing Data",
+        "Server response missing required fields"
+      );
+
       return false;
     }
 
-    print("Server: " + data["server"]);
-    print("Version: " + data["version"]);
-
+    // Record server information
     _version = data["version"];
-
-    if (!_checkServerVersion(_version)) {
-      await showServerError(context, "Server version is too old.\n\nServer Version: ${_version}\n\nRequired version: ${_requiredVersionString}");
-      return false;
-    }
-
-    // Record the instance name of the server
     instance = data['instance'] ?? '';
 
-    // Request token from the server if we do not already have one
-    if (false && _token.isNotEmpty) {
-      print("Already have token - $_token");
-      return true;
+    // Check that the remote server version is *new* enough
+    if (!_checkServerVersion(_version)) {
+      showServerError(
+          context,
+          "Old Server Version",
+          "\n\nServer Version: ${_version}\n\nRequired version: ${_requiredVersionString}"
+      );
+
+      return false;
     }
 
     // Clear the existing token value
@@ -285,24 +270,33 @@ class InvenTreeAPI {
     print("Requesting token from server");
 
     response = await get(_URL_GET_TOKEN).timeout(Duration(seconds: 10)).catchError((error) {
+
       print("Error requesting token:");
       print(error);
-      return null;
+
     });
 
     if (response == null) {
-      await showServerError(context, "Error requesting access token");
+      showServerError(
+          context, "Token Error", "Error requesting access token from server"
+      );
+
       return false;
     }
 
     if (response.statusCode != 200) {
-      await showServerError(context, "Invalid status code: ${response.statusCode.toString()}");
+      showStatusCodeError(context, response.statusCode);
       return false;
     } else {
       var data = json.decode(response.body);
 
       if (!data.containsKey("token")) {
-        await showServerError(context, "No token provided in response");
+        showServerError(
+          context,
+          "Missing Token",
+          "Access token missing from response"
+        );
+
         return false;
       }
 
@@ -312,8 +306,48 @@ class InvenTreeAPI {
 
       _connected = true;
 
+      // Ok, probably pretty good...
       return true;
     };
+  }
+
+  bool disconnectFromServer() {
+    print("InvenTreeAPI().disconnectFromServer()");
+
+    _connected = false;
+    _connecting = false;
+    _token = '';
+    profile = null;
+  }
+
+  Future<bool> connectToServer(BuildContext context) async {
+
+    // Ensure server is first disconnected
+    disconnectFromServer();
+
+    // Load selected profile
+    profile = await UserProfileDBManager().getSelectedProfile();
+
+    print("API Profile: ${profile.toString()}");
+
+    if (profile == null) {
+      await showErrorDialog(
+          context,
+          "Select Profile",
+          "User profile not selected"
+      );
+      return false;
+    }
+
+    _connecting = true;
+
+    bool result = await _connect(context);
+
+    print("_connect() returned result: ${result}");
+
+    _connecting = false;
+
+    return result;
   }
 
   // Perform a PATCH request
@@ -399,7 +433,9 @@ class InvenTreeAPI {
   Map<String, String> defaultHeaders() {
     var headers = Map<String, String>();
 
-    headers[HttpHeaders.authorizationHeader] = _authorizationHeader();
+    if (profile != null) {
+      headers[HttpHeaders.authorizationHeader] = _authorizationHeader(profile.username, profile.password);
+    }
 
     return headers;
   }
@@ -410,11 +446,11 @@ class InvenTreeAPI {
     return headers;
   }
 
-  String _authorizationHeader() {
+  String _authorizationHeader(String username, String password) {
     if (_token.isNotEmpty) {
       return "Token $_token";
     } else {
-      return "Basic " + base64Encode(utf8.encode('$_username:$_password'));
+      return "Basic " + base64Encode(utf8.encode('${username}:${password}'));
     }
   }
 

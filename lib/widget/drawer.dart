@@ -3,6 +3,7 @@ import 'package:InvenTree/barcode.dart';
 import 'package:InvenTree/widget/company_list.dart';
 import 'package:InvenTree/widget/search.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:InvenTree/api.dart';
 
@@ -101,65 +102,65 @@ class InvenTreeDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return  Drawer(
         child: new ListView(
-            children: <Widget>[
-              new ListTile(
-                leading: new Image.asset(
-                  "assets/image/icon.png",
-                  fit: BoxFit.scaleDown,
-                  width: 40,
+            children: ListTile.divideTiles(
+              context: context,
+              tiles: <Widget>[
+                new ListTile(
+                  leading: new Image.asset(
+                    "assets/image/icon.png",
+                    fit: BoxFit.scaleDown,
+                    width: 40,
+                  ),
+                  title: new Text(I18N.of(context).appTitle),
+                  onTap: _home,
                 ),
-                title: new Text("InvenTree"),
-                onTap: _home,
-              ),
-              new Divider(),
-              /*
-              // TODO - Add search functionality!
-              new ListTile(
-                title: new Text("Search"),
-                leading: new FaIcon(FontAwesomeIcons.search),
-                onTap: _search,
-              ),
-              */
-              new ListTile(
-                title: new Text("Scan Barcode"),
-                onTap: _scan,
-                leading: new FaIcon(FontAwesomeIcons.barcode),
-              ),
-              new Divider(),
-              new ListTile(
-                title: new Text("Parts"),
-                leading: new Icon(Icons.category),
-                onTap: _showParts,
-              ),
-              new ListTile(
-                title: new Text("Stock"),
-                leading: new FaIcon(FontAwesomeIcons.boxes),
-                onTap: _showStock,
-              ),
-              /*
-              new ListTile(
-                title: new Text("Suppliers"),
-                leading: new FaIcon(FontAwesomeIcons.building),
-                onTap: _showSuppliers,
-              ),
-              new ListTile(
-                title: Text("Manufacturers"),
-                leading: new FaIcon(FontAwesomeIcons.industry),
-                  onTap: _showManufacturers,
-              ),
-              new ListTile(
-                title: new Text("Customers"),
-                leading: new FaIcon(FontAwesomeIcons.users),
-                onTap: _showCustomers,
-              ),
-              */
-              new Divider(),
-              new ListTile(
-                title: new Text("Settings"),
-                leading: new Icon(Icons.settings),
-                onTap: _settings,
-              ),
-            ]
+                /*
+                // TODO - Add search functionality!
+                new ListTile(
+                  title: new Text("Search"),
+                  leading: new FaIcon(FontAwesomeIcons.search),
+                  onTap: _search,
+                ),
+                */
+                new ListTile(
+                  title: new Text(I18N.of(context).scanBarcode),
+                  onTap: _scan,
+                  leading: new FaIcon(FontAwesomeIcons.barcode),
+                ),
+                new ListTile(
+                  title: new Text(I18N.of(context).parts),
+                  leading: new Icon(Icons.category),
+                  onTap: _showParts,
+                ),
+                new ListTile(
+                  title: new Text(I18N.of(context).stock),
+                  leading: new FaIcon(FontAwesomeIcons.boxes),
+                  onTap: _showStock,
+                ),
+                /*
+                new ListTile(
+                  title: new Text("Suppliers"),
+                  leading: new FaIcon(FontAwesomeIcons.building),
+                  onTap: _showSuppliers,
+                ),
+                new ListTile(
+                  title: Text("Manufacturers"),
+                  leading: new FaIcon(FontAwesomeIcons.industry),
+                    onTap: _showManufacturers,
+                ),
+                new ListTile(
+                  title: new Text("Customers"),
+                  leading: new FaIcon(FontAwesomeIcons.users),
+                  onTap: _showCustomers,
+                ),
+                */
+                new ListTile(
+                  title: new Text(I18N.of(context).settings),
+                  leading: new Icon(Icons.settings),
+                  onTap: _settings,
+                ),
+              ]
+            ).toList(),
         )
     );
   }

@@ -1,6 +1,8 @@
 import 'package:InvenTree/settings/about.dart';
 import 'package:InvenTree/settings/login.dart';
 import 'package:InvenTree/settings/release.dart';
+import 'package:InvenTree/user_profile.dart';
+import 'package:InvenTree/preferences.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,37 +30,39 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("InvenTree Settings"),
+        title: Text(I18N.of(context).settings),
       ),
       body: Center(
         child: ListView(
-          children: <Widget>[
-            ListTile(
-                title: Text(I18N.of(context).serverSettings),
-                subtitle: Text("Configure server and login settings"),
-                leading: FaIcon(FontAwesomeIcons.server),
-                onTap: _editServerSettings,
-            ),
-            Divider(),
-            ListTile(
-              title: Text(I18N.of(context).about),
-              subtitle: Text(I18N.of(context).appDetails),
-              leading: FaIcon(FontAwesomeIcons.infoCircle),
-              onTap: _about,
-            ),
-            ListTile(
-              title: Text(I18N.of(context).releaseNotes),
-              subtitle: Text("Display app release notes"),
-              leading: FaIcon(FontAwesomeIcons.fileAlt),
-              onTap: _releaseNotes,
-            ),
-            ListTile(
-              title: Text(I18N.of(context).reportBug),
-              subtitle: Text("Report bug or suggest new feature"),
-              leading: FaIcon(FontAwesomeIcons.bug),
-              onTap: null,
-            ),
-          ],
+          children: ListTile.divideTiles(
+            context: context,
+            tiles: <Widget>[
+              ListTile(
+                  title: Text(I18N.of(context).profile),
+                  subtitle: Text("Configure user profile settings"),
+                  leading: FaIcon(FontAwesomeIcons.user),
+                  onTap: _editServerSettings,
+              ),
+              ListTile(
+                title: Text(I18N.of(context).about),
+                subtitle: Text(I18N.of(context).appDetails),
+                leading: FaIcon(FontAwesomeIcons.infoCircle),
+                onTap: _about,
+              ),
+              ListTile(
+                title: Text(I18N.of(context).releaseNotes),
+                subtitle: Text("Display app release notes"),
+                leading: FaIcon(FontAwesomeIcons.fileAlt),
+                onTap: _releaseNotes,
+              ),
+              ListTile(
+                title: Text(I18N.of(context).reportBug),
+                subtitle: Text("Report bug or suggest new feature"),
+                leading: FaIcon(FontAwesomeIcons.bug),
+                onTap: null,
+              ),
+            ]
+          ).toList()
         )
       )
     );
@@ -68,7 +72,9 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
 
     var prefs = await SharedPreferences.getInstance();
 
-    Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeLoginSettingsWidget(prefs)));
+    List<UserProfile> profiles = await UserProfileDBManager().getAllProfiles();
+
+    Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeLoginSettingsWidget()));
   }
 
   void _about() async {

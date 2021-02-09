@@ -6,7 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:InvenTree/widget/refreshable_state.dart';
 
 class LocationDisplayWidget extends StatefulWidget {
@@ -97,8 +97,8 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     if (location == null) {
       return Card(
         child: ListTile(
-          title: Text("Stock Locations"),
-          subtitle: Text("Top level stock location")
+          title: Text(I18N.of(context).stockLocations),
+          subtitle: Text(I18N.of(context).stockTopLevel),
         )
       );
     } else {
@@ -135,14 +135,14 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     return BottomNavigationBar(
         currentIndex: tabIndex,
         onTap: onTabSelectionChanged,
-        items: const <BottomNavigationBarItem> [
+        items: <BottomNavigationBarItem> [
           BottomNavigationBarItem(
             icon: FaIcon(FontAwesomeIcons.boxes),
-            title: Text("Stock"),
+            title: Text(I18N.of(context).stock),
           ),
           BottomNavigationBarItem(
             icon: FaIcon(FontAwesomeIcons.wrench),
-            title: Text("Actions"),
+            title: Text(I18N.of(context).actions),
           )
         ]
     );
@@ -156,7 +156,10 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
         );
       case 1:
         return ListView(
-          children: actionTiles(),
+          children: ListTile.divideTiles(
+            context: context,
+            tiles: actionTiles()
+          ).toList()
         );
       default:
         return null;
@@ -298,10 +301,11 @@ class SublocationList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    return ListView.separated(
         shrinkWrap: true,
         physics: ClampingScrollPhysics(),
         itemBuilder: _build,
+        separatorBuilder: (_, __) => const Divider(height: 3),
         itemCount: _locations.length
     );
   }
@@ -342,9 +346,10 @@ class StockList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    return ListView.separated(
         shrinkWrap: true,
         physics: ClampingScrollPhysics(),
+        separatorBuilder: (_, __) => const Divider(height: 3),
         itemBuilder: _build, itemCount: _items.length);
   }
 }

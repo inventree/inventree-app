@@ -8,12 +8,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'dsn.dart';
-import 'preferences.dart';
 
 import 'package:sentry/sentry.dart';
 
 // Use the secret app key
-final SentryClient _sentry = SentryClient(dsn: SENTRY_DSN_KEY);
+final SentryClient _sentry = SentryClient(
+    SentryOptions(
+        dsn: SENTRY_DSN_KEY,
+    ));
 
 bool isInDebugMode() {
   bool inDebugMode = false;
@@ -31,13 +33,15 @@ Future<void> _reportError(dynamic error, dynamic stackTrace) async {
     print(stackTrace);
     return;
   } else {
-    // Send the Exception and Stacktrace to Sentry in Production mode.
-    _sentry.captureException(
-      exception: error,
-      stackTrace: stackTrace,
-    );
-
-    print("Sending error to sentry.io");
+    try {
+      await _sentry.captureException(
+        error,
+        stackTrace: stackTrace
+      );
+    } catch (e) {
+      print("Sending error report to sentry.io failed: ${e}");
+      print("Original error: ${error}");
+    }
   }
 }
 
@@ -47,12 +51,8 @@ void main() async {
 
   runZoned<Future<void>>(() async {
     runApp(InvenTreeApp());
-  }, onError: (error, stackTrace) {
-    // Whenever an error occurs, call the `_reportError` function. This sends
-    // Dart errors to the dev console or Sentry depending on the environment.
-    _reportError(error, stackTrace);
-  });
-
+    }, onError: _reportError
+  );
 }
 
 class InvenTreeApp extends StatelessWidget {

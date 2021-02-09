@@ -7,6 +7,7 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 import 'package:InvenTree/inventree/stock.dart';
 import 'package:InvenTree/inventree/part.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:InvenTree/api.dart';
 
@@ -65,14 +66,11 @@ class BarcodeHandler {
       );
     }
 
-    Future<void> processBarcode(BuildContext context, QRViewController _controller, String barcode, {String url = "barcode/", bool show_dialog = false}) {
+    Future<void> processBarcode(BuildContext context, QRViewController _controller, String barcode, {String url = "barcode/"}) {
       this._context = context;
       this._controller = _controller;
 
       print("Scanned barcode data: ${barcode}");
-      if (show_dialog) {
-        showProgressDialog(context, "Scanning", "Sending barcode data to server");
-      }
 
       // Send barcode request to server
       InvenTreeAPI().post(
@@ -81,10 +79,6 @@ class BarcodeHandler {
             "barcode": barcode
           }
       ).then((var response) {
-
-        if (show_dialog) {
-          hideProgressDialog(context);
-        }
 
         if (response.statusCode != 200) {
           showErrorDialog(
@@ -117,10 +111,6 @@ class BarcodeHandler {
       }).timeout(
           Duration(seconds: 5)
       ).catchError((error) {
-
-        if (show_dialog) {
-          hideProgressDialog(context);
-        }
 
         showErrorDialog(
             context,
@@ -207,7 +197,7 @@ class BarcodeScanHandler extends BarcodeHandler {
       showDialog(
           context: _context,
           child: SimpleDialog(
-            title: Text("Unknown response"),
+            title: Text(I18N.of(_context).unknownResponse),
             children: <Widget>[
               ListTile(
                 title: Text("Response data"),

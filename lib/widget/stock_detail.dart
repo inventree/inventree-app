@@ -303,6 +303,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         title: Text("${item.partName}"),
         subtitle: Text("${item.partDescription}"),
         leading: InvenTreeAPI().getImage(item.partImage),
+        trailing: Text(item.serialOrQuantityDisplay()),
       )
     );
   }
@@ -365,7 +366,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     if (item.isSerialized()) {
       tiles.add(
           ListTile(
-            title: Text("Serial Number"),
+            title: Text(I18N.of(context).serialNumber),
             leading: FaIcon(FontAwesomeIcons.hashtag),
             trailing: Text("${item.serialNumber}"),
           )
@@ -381,7 +382,8 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     }
 
     // Supplier part?
-    if (item.supplierPartId > 0) {
+    // TODO: Display supplier part info page?
+    if (false && item.supplierPartId > 0) {
       tiles.add(
         ListTile(
           title: Text("${item.supplierName}"),
@@ -410,7 +412,12 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           leading: FaIcon(FontAwesomeIcons.tasks),
           trailing: Text("${item.testResultCount}"),
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => StockItemTestResultsWidget(item)));
+            Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => StockItemTestResultsWidget(item))
+            ).then((context) {
+              refresh();
+            });
           }
         )
     );
@@ -421,7 +428,12 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           title: Text(I18N.of(context).history),
           leading: FaIcon(FontAwesomeIcons.history),
           trailing: Text("${item.trackingItemCount}"),
-          onTap: null,
+          onTap: () {
+            // TODO: Load tracking history
+
+            // TODO: Push tracking history page to the route
+
+          },
         )
       );
     }
@@ -432,7 +444,10 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           title: Text(I18N.of(context).notes),
           leading: FaIcon(FontAwesomeIcons.stickyNote),
           trailing: Text(""),
-          onTap: null,
+          onTap: () {
+            // TODO: Load notes in markdown viewer widget
+            // TODO: Make this widget editable?
+          }
         )
       );
     }
@@ -579,11 +594,17 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     switch (index) {
       case 0:
         return ListView(
-          children: detailTiles(),
+          children: ListTile.divideTiles(
+            context: context,
+            tiles: detailTiles()
+          ).toList(),
         );
       case 1:
         return ListView(
-          children: actionTiles(),
+          children: ListTile.divideTiles(
+            context: context,
+            tiles: actionTiles()
+          ).toList()
         );
       default:
         return null;

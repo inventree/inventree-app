@@ -1,18 +1,21 @@
+import 'package:InvenTree/user_profile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:InvenTree/barcode.dart';
 import 'package:InvenTree/api.dart';
+
+import 'package:InvenTree/settings/login.dart';
 
 import 'package:InvenTree/widget/category_display.dart';
 import 'package:InvenTree/widget/company_list.dart';
 import 'package:InvenTree/widget/location_display.dart';
 import 'package:InvenTree/widget/search.dart';
+import 'package:InvenTree/widget/spinner.dart';
 import 'package:InvenTree/widget/drawer.dart';
 
 class InvenTreeHomePage extends StatefulWidget {
@@ -24,70 +27,18 @@ class InvenTreeHomePage extends StatefulWidget {
 
 class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
 
+  final GlobalKey<_InvenTreeHomePageState> _homeKey = GlobalKey<_InvenTreeHomePageState>();
+
   _InvenTreeHomePageState() : super() {
+
+    // Initially load the profile and attempt server connection
+    _loadProfile();
   }
 
-  String _serverAddress = "";
+  // Selected user profile
+  UserProfile _profile;
 
-  String _serverStatus = "Connecting to server";
-
-  String _serverMessage = "";
-
-  bool _serverConnection = false;
-
-  FaIcon _serverIcon = new FaIcon(FontAwesomeIcons.spinner);
-
-  Color _serverStatusColor = Color.fromARGB(255, 50, 50, 250);
-
-  void onConnectSuccess(String msg) {
-    _serverConnection = true;
-    _serverMessage = msg;
-    _serverStatus = "Connected to $_serverAddress";
-    _serverStatusColor = Color.fromARGB(255, 50, 250, 50);
-    _serverIcon = new FaIcon(FontAwesomeIcons.checkCircle, color: _serverStatusColor);
-
-    setState(() {});
-  }
-
-  void onConnectFailure(String msg) {
-    _serverConnection = false;
-    _serverMessage = msg;
-    _serverStatus = "Could not connect to $_serverAddress";
-    _serverStatusColor = Color.fromARGB(255, 250, 50, 50);
-    _serverIcon = new FaIcon(FontAwesomeIcons.timesCircle, color: _serverStatusColor);
-
-    setState(() {});
-  }
-
-  /*
-   * Test the server connection
-   */
-  void _checkServerConnection(BuildContext context) async {
-
-    var prefs = await SharedPreferences.getInstance();
-
-    _serverAddress = prefs.getString("server");
-
-    // Reset the connection status variables
-    _serverStatus = "Connecting to server";
-    _serverMessage = "";
-    _serverConnection = false;
-    _serverIcon = new FaIcon(FontAwesomeIcons.spinner);
-    _serverStatusColor = Color.fromARGB(255, 50, 50, 250);
-
-    InvenTreeAPI().connect(context).then((bool result) {
-
-      if (result) {
-        onConnectSuccess("");
-      } else {
-        onConnectFailure("Could not connect to server");
-      }
-
-    });
-
-    // Update widget state
-    setState(() {});
-  }
+  BuildContext _context;
 
   void _search() {
     if (!InvenTreeAPI().checkConnection(context)) return;
@@ -96,19 +47,19 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
 
   }
 
-  void _scan() {
+  void _scan(BuildContext context) {
     if (!InvenTreeAPI().checkConnection(context)) return;
 
     scanQrCode(context);
   }
 
-  void _parts() {
+  void _parts(BuildContext context) {
     if (!InvenTreeAPI().checkConnection(context)) return;
 
     Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));
   }
 
-  void _stock() {
+  void _stock(BuildContext context) {
     if (!InvenTreeAPI().checkConnection(context)) return;
 
     Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(null)));
@@ -132,6 +83,15 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     Navigator.push(context, MaterialPageRoute(builder: (context) => CustomerListWidget()));
   }
 
+  void _selectProfile() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => InvenTreeLoginSettingsWidget())
+    ).then((context) {
+      // Once we return
+      _loadProfile();
+    });
+  }
+
   void _unsupported() {
     showDialog(
         context:  context,
@@ -147,8 +107,92 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     );
   }
 
+
+  void _loadProfile() async {
+
+    _profile = await UserProfileDBManager().getSelectedProfile();
+
+    // A valid profile was loaded!
+    if (_profile != null) {
+      if (!InvenTreeAPI().isConnected() && !InvenTreeAPI().isConnecting()) {
+
+        // Attempt server connection
+        InvenTreeAPI().connectToServer(_homeKey.currentContext).then((result) {
+          setState(() {});
+        });
+      }
+    }
+
+    setState(() {});
+  }
+
+  ListTile _serverTile() {
+
+    // No profile selected
+    // Tap to select / create a profile
+    if (_profile == null) {
+      return ListTile(
+        title: Text("No Profile Selected"),
+        subtitle: Text("Tap to create or select a profile"),
+        leading: FaIcon(FontAwesomeIcons.server),
+        trailing: FaIcon(
+          FontAwesomeIcons.user,
+          color: Color.fromRGBO(250, 50, 50, 1),
+        ),
+        onTap: () {
+          _selectProfile();
+        },
+      );
+    }
+
+    // Profile is selected ...
+    if (InvenTreeAPI().isConnecting()) {
+      return ListTile(
+        title: Text("Connecting to server..."),
+        subtitle: Text("${InvenTreeAPI().baseUrl}"),
+        leading: FaIcon(FontAwesomeIcons.server),
+        trailing: Spinner(
+          icon: FontAwesomeIcons.spinner,
+          color: Color.fromRGBO(50, 50, 250, 1),
+        ),
+        onTap: () {
+          _selectProfile();
+        }
+      );
+    } else if (InvenTreeAPI().isConnected()) {
+      return ListTile(
+        title: Text("Connected to server"),
+        subtitle: Text("${InvenTreeAPI().baseUrl}"),
+        leading: FaIcon(FontAwesomeIcons.server),
+        trailing: FaIcon(
+          FontAwesomeIcons.checkCircle,
+          color: Color.fromRGBO(50, 250, 50, 1)
+        ),
+        onTap: () {
+          _selectProfile();
+        },
+      );
+    } else {
+      return ListTile(
+        title: Text("Could not connect to server"),
+        subtitle: Text("${_profile.server}"),
+        leading: FaIcon(FontAwesomeIcons.server),
+        trailing: FaIcon(
+          FontAwesomeIcons.timesCircle,
+          color: Color.fromRGBO(250, 50, 50, 1),
+        ),
+        onTap: () {
+          _selectProfile();
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    _context = context;
+
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -156,6 +200,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
+      key: _homeKey,
       appBar: AppBar(
         title: Text(I18N.of(context).appTitle),
         actions: <Widget>[
@@ -197,7 +242,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
                     IconButton(
                       icon: new FaIcon(FontAwesomeIcons.barcode),
                       tooltip: I18N.of(context).scanBarcode,
-                      onPressed: _scan,
+                      onPressed: () { _scan(context); },
                     ),
                     Text(I18N.of(context).scanBarcode),
                   ],
@@ -213,7 +258,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
                     IconButton(
                       icon: new FaIcon(FontAwesomeIcons.shapes),
                       tooltip: I18N.of(context).parts,
-                      onPressed: _parts,
+                      onPressed: () { _parts(context); },
                     ),
                     Text(I18N.of(context).parts),
                   ],
@@ -223,7 +268,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
                     IconButton(
                       icon: new FaIcon(FontAwesomeIcons.boxes),
                       tooltip: I18N.of(context).stock,
-                      onPressed: _stock,
+                      onPressed: () { _stock(context); },
                     ),
                     Text(I18N.of(context).stock),
                   ],
@@ -306,25 +351,13 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
             ),
             Spacer(),
             */
+            Spacer(),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Expanded(
-                  child: ListTile(
-                    title: Text("$_serverStatus",
-                      style: TextStyle(color: _serverStatusColor),
-                    ),
-                    subtitle: Text("$_serverMessage",
-                      style: TextStyle(color: _serverStatusColor),
-                    ),
-                    leading: _serverIcon,
-                    onTap: () {
-                      if (!_serverConnection) {
-                        _checkServerConnection(context);
-                      }
-                    },
-                  ),
+                  child: _serverTile(),
                 ),
               ],
             ),

@@ -15,48 +15,96 @@ class InvenTreeAboutWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("About InvenTree"),
-      ),
-      body: ListView(
-        children: <Widget>[
-          ListTile(
-            title: Text(I18N.of(context).serverDetails),
-          ),
+    List<Widget> tiles = [];
+
+    tiles.add(
+      ListTile(
+        title: Text(
+          I18N.of(context).serverDetails,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+      )
+    );
+
+    if (InvenTreeAPI().isConnected()) {
+      tiles.add(
           ListTile(
             title: Text(I18N.of(context).address),
             subtitle: Text(InvenTreeAPI().baseUrl.isNotEmpty ? InvenTreeAPI().baseUrl : "Not connected"),
-          ),
-          ListTile(
-            title: Text(I18N.of(context).version),
-            subtitle: Text(InvenTreeAPI().version.isNotEmpty ? InvenTreeAPI().version : "Not connected"),
-          ),
-          ListTile(
-            title: Text("Server Instance"),
-            subtitle: Text(InvenTreeAPI().instance.isNotEmpty ? InvenTreeAPI().instance : "Not connected"),
-          ),
-          Divider(),
-          ListTile(
-            title: Text(I18N.of(context).appDetails),
-          ),
-          ListTile(
-            title: Text(I18N.of(context).name),
-            subtitle: Text("${info.appName}"),
-          ),
-          ListTile(
-            title: Text("Package Name"),
-            subtitle: Text("${info.packageName}"),
-          ),
-          ListTile(
-            title: Text(I18N.of(context).version),
-            subtitle: Text("${info.version}"),
-          ),
-          ListTile(
-              title: Text(I18N.of(context).build),
-              subtitle: Text("${info.buildNumber}"),
           )
-        ],
+      );
+
+      tiles.add(
+        ListTile(
+          title: Text(I18N.of(context).version),
+          subtitle: Text(InvenTreeAPI().version.isNotEmpty ? InvenTreeAPI().version : "Not connected"),
+        )
+      );
+
+      tiles.add(
+        ListTile(
+          title: Text(I18N.of(context).serverInstance),
+          subtitle: Text(InvenTreeAPI().instance.isNotEmpty ? InvenTreeAPI().instance : "Not connected"),
+        )
+      );
+    } else {
+      tiles.add(
+        ListTile(
+          title: Text(I18N.of(context).notConnected),
+          subtitle: Text(
+            I18N.of(context).serverNotConnected,
+            style: TextStyle(fontStyle: FontStyle.italic),
+          )
+        )
+      );
+    }
+
+    tiles.add(
+      ListTile(
+        title: Text(
+          I18N.of(context).appDetails,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+      )
+    );
+
+    tiles.add(
+      ListTile(
+      title: Text(I18N.of(context).name),
+      subtitle: Text("${info.appName}"),
+      )
+    );
+
+    tiles.add(
+      ListTile(
+        title: Text(I18N.of(context).packageName),
+        subtitle: Text("${info.packageName}"),
+      )
+    );
+
+    tiles.add(
+      ListTile(
+        title: Text(I18N.of(context).version),
+        subtitle: Text("${info.version}"),
+      )
+    );
+
+    tiles.add(
+      ListTile(
+        title: Text(I18N.of(context).build),
+        subtitle: Text("${info.buildNumber}"),
+      )
+    );
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(I18N.of(context).appAbout),
+      ),
+      body: ListView(
+        children: ListTile.divideTiles(
+          context: context,
+          tiles: tiles,
+        ).toList(),
       )
     );
   }

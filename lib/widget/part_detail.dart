@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:InvenTree/inventree/part.dart';
 import 'package:InvenTree/widget/full_screen_image.dart';
@@ -82,6 +83,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   void _showStock(BuildContext context) async {
     await part.getStockItems(context);
+
     Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => PartStockDetailWidget(part))
@@ -213,9 +215,9 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     // Stock information
     tiles.add(
       ListTile(
-        title: Text("Stock"),
+        title: Text(I18N.of(context).stock),
         leading: FaIcon(FontAwesomeIcons.boxes),
-        trailing: Text("${part.inStock}"),
+        trailing: Text("${part.inStockString}"),
         onTap: () {
           _showStock(context);
         },
@@ -229,7 +231,9 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
             title: Text("On Order"),
             leading: FaIcon(FontAwesomeIcons.shoppingCart),
             trailing: Text("${part.onOrder}"),
-            onTap: null,
+            onTap: () {
+              // TODO: Click through to show items on order
+            },
           )
       );
     }
@@ -325,7 +329,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
     tiles.add(
       ListTile(
-        title: Text("Create Stock Item"),
+        title: Text(I18N.of(context).stockItemCreate),
         leading: FaIcon(FontAwesomeIcons.box),
         onTap: null,
       )
@@ -349,13 +353,19 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       case 0:
         return Center(
           child: ListView(
-          children: partTiles(),
+            children: ListTile.divideTiles(
+              context: context,
+              tiles: partTiles()
+            ).toList()
         ),
       );
       case 1:
         return Center(
           child: ListView(
-            children: actionTiles(),
+            children: ListTile.divideTiles(
+              context: context,
+              tiles: actionTiles()
+            ).toList()
           )
         );
       default:
@@ -368,14 +378,14 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     return BottomNavigationBar(
       currentIndex: tabIndex,
       onTap: onTabSelectionChanged,
-      items: const <BottomNavigationBarItem> [
+      items: <BottomNavigationBarItem> [
         BottomNavigationBarItem(
           icon: FaIcon(FontAwesomeIcons.infoCircle),
-          title: Text("Details"),
+          title: Text(I18N.of(context).details),
         ),
         BottomNavigationBarItem(
           icon: FaIcon(FontAwesomeIcons.wrench),
-          title: Text("Actions"),
+          title: Text(I18N.of(context).actions),
         ),
       ]
     );

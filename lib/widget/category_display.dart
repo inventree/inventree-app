@@ -231,9 +231,10 @@ class SubcategoryList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    return ListView.separated(
         shrinkWrap: true,
         physics: ClampingScrollPhysics(),
+        separatorBuilder: (_, __) => const Divider(height: 3),
         itemBuilder: _build, itemCount: _categories.length);
   }
 }
@@ -267,7 +268,7 @@ class PartList extends StatelessWidget {
     return ListTile(
       title: Text("${part.name}"),
       subtitle: Text("${part.description}"),
-      trailing: Text("${part.inStock}"),
+      trailing: Text("${part.inStockString}"),
       leading: InvenTreeAPI().getImage(
         part.thumbnail,
         width: 40,
@@ -282,9 +283,10 @@ class PartList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    return ListView.separated(
         shrinkWrap: true,
         physics: ClampingScrollPhysics(),
+        separatorBuilder: (_, __) => const Divider(height: 3),
         itemBuilder: _build, itemCount: _parts.length);
   }
 }
