@@ -268,7 +268,7 @@ class PartList extends StatelessWidget {
     return ListTile(
       title: Text("${part.name}"),
       subtitle: Text("${part.description}"),
-      trailing: Text("${part.inStock}"),
+      trailing: Text("${part.inStockString}"),
       leading: InvenTreeAPI().getImage(
         part.thumbnail,
         width: 40,

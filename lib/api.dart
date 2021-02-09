@@ -68,15 +68,6 @@ class InvenTreeAPI {
   static const _URL_GET_TOKEN = "user/token/";
   static const _URL_GET_VERSION = "";
 
-  Future<void> showServerError(BuildContext context, String description) async {
-    showErrorDialog(
-      context,
-      I18N.of(context).serverError,
-      description,
-      icon: FontAwesomeIcons.server
-    );
-  }
-
   // Base URL for InvenTree API e.g. http://192.168.120.10:8000
   String _BASE_URL = "";
 
@@ -209,18 +200,18 @@ class InvenTreeAPI {
 
     print("Connecting to ${apiUrl} -> ${username}:${password}");
 
-    var response = await get("").timeout(Duration(seconds: 5)).catchError((error) {
+    var response = await get("").timeout(Duration(seconds: 10)).catchError((error) {
 
       print("Error connecting to server: ${error.toString()}");
 
       if (error is SocketException) {
-        print("Error: socket exception: ${error.toString()}");
-        // TODO - Display error dialog!!
-        //showServerError(context, "Connection Refused");
+        showServerError(
+            context,
+            I18N.of(context).connectionRefused,
+            error.toString());
         return null;
       } else if (error is TimeoutException) {
-        // TODO - Display timeout dialog here
-        //showTimeoutDialog(context);
+        showTimeoutError(context);
         return null;
       } else {
         // Unknown error type - re-throw the error and Sentry will catch it
@@ -236,8 +227,9 @@ class InvenTreeAPI {
     if (response.statusCode != 200) {
       // Any status code other than 200!
 
+      showStatusCodeError(context, response.statusCode);
+
       // TODO: Interpret the error codes and show custom message?
-      await showServerError(context, "Invalid response code: ${response.statusCode.toString()}");
       return false;
     }
 
@@ -246,29 +238,30 @@ class InvenTreeAPI {
     print("Response from server: $data");
 
     // We expect certain response from the server
-    if (!data.containsKey("server") || !data.containsKey("version")) {
+    if (!data.containsKey("server") || !data.containsKey("version") || !data.containsKey("instance")) {
 
-      await showServerError(context, "Server response missing required fields");
+      showServerError(
+        context,
+        "Missing Data",
+        "Server response missing required fields"
+      );
+
       return false;
     }
 
-    print("Server: " + data["server"]);
-    print("Version: " + data["version"]);
-
+    // Record server information
     _version = data["version"];
-
-    if (!_checkServerVersion(_version)) {
-      await showServerError(context, "Server version is too old.\n\nServer Version: ${_version}\n\nRequired version: ${_requiredVersionString}");
-      return false;
-    }
-
-    // Record the instance name of the server
     instance = data['instance'] ?? '';
 
-    // Request token from the server if we do not already have one
-    if (false && _token.isNotEmpty) {
-      print("Already have token - $_token");
-      return true;
+    // Check that the remote server version is *new* enough
+    if (!_checkServerVersion(_version)) {
+      showServerError(
+          context,
+          "Old Server Version",
+          "\n\nServer Version: ${_version}\n\nRequired version: ${_requiredVersionString}"
+      );
+
+      return false;
     }
 
     // Clear the existing token value
@@ -277,24 +270,33 @@ class InvenTreeAPI {
     print("Requesting token from server");
 
     response = await get(_URL_GET_TOKEN).timeout(Duration(seconds: 10)).catchError((error) {
+
       print("Error requesting token:");
       print(error);
-      return null;
+
     });
 
     if (response == null) {
-      await showServerError(context, "Error requesting access token");
+      showServerError(
+          context, "Token Error", "Error requesting access token from server"
+      );
+
       return false;
     }
 
     if (response.statusCode != 200) {
-      await showServerError(context, "Invalid status code: ${response.statusCode.toString()}");
+      showStatusCodeError(context, response.statusCode);
       return false;
     } else {
       var data = json.decode(response.body);
 
       if (!data.containsKey("token")) {
-        await showServerError(context, "No token provided in response");
+        showServerError(
+          context,
+          "Missing Token",
+          "Access token missing from response"
+        );
+
         return false;
       }
 
@@ -304,6 +306,7 @@ class InvenTreeAPI {
 
       _connected = true;
 
+      // Ok, probably pretty good...
       return true;
     };
   }

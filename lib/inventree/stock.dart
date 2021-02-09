@@ -97,7 +97,6 @@ class InvenTreeStockItem extends InvenTreeModel {
       filters: {
         "part": "${partId}",
       },
-      dialog: showDialog,
     ).then((var templates) {
       testTemplates.clear();
 
@@ -113,7 +112,7 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   int get testResultCount => testResults.length;
 
-  Future<void> getTestResults(BuildContext context, {bool showDialog=false}) async {
+  Future<void> getTestResults(BuildContext context) async {
 
     await InvenTreeStockItemTestResult().list(
       context,
@@ -121,7 +120,6 @@ class InvenTreeStockItem extends InvenTreeModel {
         "stock_item": "${pk}",
         "user_detail": "true",
       },
-      dialog: showDialog,
     ).then((var results) {
       testResults.clear();
 

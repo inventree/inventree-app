@@ -27,6 +27,8 @@ class InvenTreeHomePage extends StatefulWidget {
 
 class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
 
+  final GlobalKey<_InvenTreeHomePageState> _homeKey = GlobalKey<_InvenTreeHomePageState>();
+
   _InvenTreeHomePageState() : super() {
 
     // Initially load the profile and attempt server connection
@@ -115,7 +117,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
       if (!InvenTreeAPI().isConnected() && !InvenTreeAPI().isConnecting()) {
 
         // Attempt server connection
-        InvenTreeAPI().connectToServer(_context).then((result) {
+        InvenTreeAPI().connectToServer(_homeKey.currentContext).then((result) {
           setState(() {});
         });
       }
@@ -198,6 +200,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
+      key: _homeKey,
       appBar: AppBar(
         title: Text(I18N.of(context).appTitle),
         actions: <Widget>[

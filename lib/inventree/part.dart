@@ -161,7 +161,6 @@ class InvenTreePart extends InvenTreeModel {
         "part": "${pk}",
         "in_stock": "true",
       },
-      dialog: showDialog,
     ).then((var items) {
       stockItems.clear();
 
@@ -186,7 +185,6 @@ class InvenTreePart extends InvenTreeModel {
       filters: {
         "part": "${pk}",
       },
-      dialog: showDialog,
     ).then((var templates) {
 
       testingTemplates.clear();
@@ -204,6 +202,15 @@ class InvenTreePart extends InvenTreeModel {
 
     // Get the stock count for this Part
     double get inStock => double.tryParse(jsondata['in_stock'].toString() ?? '0');
+
+    String get inStockString {
+
+      if (inStock == inStock.toInt()) {
+        return inStock.toInt().toString();
+      } else {
+        return inStock.toString();
+      }
+    }
 
     // Get the number of units being build for this Part
     double get building => double.tryParse(jsondata['building'].toString() ?? '0');

@@ -217,7 +217,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       ListTile(
         title: Text(I18N.of(context).stock),
         leading: FaIcon(FontAwesomeIcons.boxes),
-        trailing: Text("${part.inStock}"),
+        trailing: Text("${part.inStockString}"),
         onTap: () {
           _showStock(context);
         },

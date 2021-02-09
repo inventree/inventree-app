@@ -19,6 +19,8 @@ class InvenTreeLoginSettingsWidget extends StatefulWidget {
 
 class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
 
+  final GlobalKey<_InvenTreeLoginSettingsState> _loginKey = GlobalKey<_InvenTreeLoginSettingsState>();
+
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
   final GlobalKey<FormState> _addProfileKey = new GlobalKey<FormState>();
@@ -176,7 +178,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     _reload();
 
     // Attempt server login (this will load the newly selected profile
-    InvenTreeAPI().connectToServer(context).then((result) {
+    InvenTreeAPI().connectToServer(_loginKey.currentContext).then((result) {
       _reload();
     });
 
@@ -209,7 +211,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     if (InvenTreeAPI().isConnected() && profile.key == InvenTreeAPI().profile.key) {
       // Attempt server login (this will load the newly selected profile
 
-      InvenTreeAPI().connectToServer(context).then((result) {
+      InvenTreeAPI().connectToServer(_loginKey.currentContext).then((result) {
         _reload();
       });
     }
@@ -261,8 +263,6 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
   Widget build(BuildContext context) {
 
     final Size screenSize = MediaQuery.of(context).size;
-
-    print("Building!");
 
     List<Widget> children = [];
 
@@ -333,6 +333,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     }
 
     return Scaffold(
+      key: _loginKey,
       appBar: AppBar(
         title: Text(I18N.of(context).profileSelect),
       ),

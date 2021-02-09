@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 Future<void> confirmationDialog(BuildContext context, String title, String text, {String acceptText, String rejectText, Function onAccept, Function onReject}) async {
@@ -92,35 +93,53 @@ Future<void> showErrorDialog(BuildContext context, String title, String descript
 
   showDialog(
     context: context,
-    child: SimpleDialog(
-      title: ListTile(
-        title: Text(error),
-        leading: FaIcon(icon),
-      ),
-      children: <Widget>[
-        ListTile(
-          title: Text(title),
-          subtitle: Text(description)
-        )
-      ]
-    )
-  ).then((value) {
-    if (onDismissed != null) {
-      onDismissed();
-    }
-  });
+    builder: (dialogContext) {
+      return SimpleDialog(
+          title: ListTile(
+            title: Text(error),
+            leading: FaIcon(icon),
+          ),
+          children: <Widget>[
+            ListTile(
+                title: Text(title),
+                subtitle: Text(description)
+            )
+          ]
+      );
+    }).then((value) {
+      if (onDismissed != null) {
+        onDismissed();
+      }
+    });
 }
 
-void showTimeoutDialog(BuildContext context) {
-  /*
-  Show a server timeout dialog
-   */
+Future<void> showServerError(BuildContext context, String title, String description) async {
 
-  showErrorDialog(
+  if (title == null || title.isEmpty) {
+    title = I18N.of(context).serverError;
+  }
+
+  await showErrorDialog(
       context,
-      I18N.of(context).timeout,
-      I18N.of(context).noResponse
+      title,
+      description,
+      error: I18N.of(context).serverError,
+      icon: FontAwesomeIcons.server
   );
+}
+
+Future<void> showStatusCodeError(BuildContext context, int status, {int expected = 200}) async {
+
+  await showServerError(
+    context,
+    "Invalid Response Code",
+    "Server responded with status code ${status}"
+  );
+}
+
+Future<void> showTimeoutError(BuildContext context) async {
+
+  await showServerError(context, I18N.of(context).timeout, I18N.of(context).noResponse);
 }
 
 void showProgressDialog(BuildContext context, String title, String description) {
