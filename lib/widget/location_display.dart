@@ -115,7 +115,9 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     int pk = location?.pk ?? -1;
 
     // Reload location information
-    await location.reload(context);
+    if (location != null) {
+      await location.reload(context);
+    }
 
     // Request a list of sub-locations under this one
     await InvenTreeStockLocation().list(context, filters: {"parent": "$pk"}).then((var locs) {

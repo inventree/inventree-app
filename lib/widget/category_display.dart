@@ -110,7 +110,9 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
     int pk = category?.pk ?? -1;
 
     // Update the category
-    await category.reload(context);
+    if (category != null) {
+      await category.reload(context);
+    }
 
     // Request a list of sub-categories under this one
     await InvenTreePartCategory().list(context, filters: {"parent": "$pk"}).then((var cats) {
@@ -317,7 +319,7 @@ class PartList extends StatelessWidget {
     }
 
     return ListTile(
-      title: Text("${part.name}"),
+      title: Text(part.fullname),
       subtitle: Text("${part.description}"),
       trailing: Text("${part.inStockString}"),
       leading: InvenTreeAPI().getImage(
