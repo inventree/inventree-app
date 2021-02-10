@@ -58,7 +58,7 @@ class _PartStockDisplayState extends RefreshableState<PartStockDetailWidget> {
             title: Text(part.fullname),
             subtitle: Text(part.description),
             leading: InvenTreeAPI().getImage(part.thumbnail),
-            trailing: Text('${part.inStock}'),
+            trailing: Text(part.inStockString),
           )
         ),
         PartStockList(part.stockItems),

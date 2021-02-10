@@ -1,4 +1,5 @@
 
+import 'dart:io';
 
 import 'package:InvenTree/barcode.dart';
 import 'package:InvenTree/inventree/stock.dart';
@@ -8,6 +9,7 @@ import 'package:InvenTree/widget/fields.dart';
 import 'package:InvenTree/widget/location_display.dart';
 import 'package:InvenTree/widget/part_detail.dart';
 import 'package:InvenTree/widget/refreshable_state.dart';
+import 'package:InvenTree/widget/snacks.dart';
 import 'package:InvenTree/widget/stock_item_test_results.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +24,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:http/http.dart';
 
 class StockDetailWidget extends StatefulWidget {
 
@@ -67,14 +70,12 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     double quantity = double.parse(_quantityController.text);
     _quantityController.clear();
 
-    // Await response to prevent the button from being pressed multiple times
-    var response = await item.addStock(quantity, notes: _notesController.text);
+    final bool result = await item.addStock(context, quantity, notes: _notesController.text);
     _notesController.clear();
 
-    // TODO - Handle error cases
-    refresh();
+    _stockUpdateMessage(result);
 
-    // TODO - Display a snackbar here indicating the action was successful (or otherwise)
+    refresh();
   }
 
   void _addStockDialog() async {
@@ -108,20 +109,27 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     );
   }
 
+  void _stockUpdateMessage(bool result) {
+
+    showSnackIcon(
+      refreshableKey,
+      result ? "Stock item updated" : "Stock item updated failed",
+      success: result
+    );
+  }
+
   void _removeStock() async {
     Navigator.of(context).pop();
 
     double quantity = double.parse(_quantityController.text);
     _quantityController.clear();
 
-    var response = await item.removeStock(quantity, notes: _notesController.text);
-    _notesController.clear();
+    final bool result = await item.removeStock(context, quantity, notes: _notesController.text);
 
-    // TODO - Handle error cases
+    _stockUpdateMessage(result);
 
     refresh();
 
-    // TODO - Display a snackbar here indicating the action was successful (or otherwise)
   }
 
   void _removeStockDialog() {
@@ -163,19 +171,16 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     double quantity = double.parse(_quantityController.text);
     _quantityController.clear();
 
-    var response = await item.countStock(quantity, notes: _notesController.text);
-    _notesController.clear();
+    final bool result = await item.countStock(context, quantity, notes: _notesController.text);
 
-    // TODO - Handle error cases, timeout, etc
+    _stockUpdateMessage(result);
 
     refresh();
-
-    // TODO - Display a snackbar here indicating the action was successful (or otherwise)
   }
 
   void _countStockDialog() async {
 
-    _quantityController.text = item.quantity.toString();
+    _quantityController.text = item.quantityString;
     _notesController.clear();
 
     showFormDialog(context, I18N.of(context).countStock,
@@ -191,7 +196,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       fields: <Widget> [
         QuantityField(
           label: I18N.of(context).countStock,
-          hint: "${item.quantity}",
+          hint: "${item.quantityString}",
           controller: _quantityController,
         ),
         TextFormField(
@@ -230,7 +235,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     InvenTreeStockLocation selectedLocation;
 
-    _quantityController.text = "${item.quantity}";
+    _quantityController.text = "${item.quantityString}";
 
     showFormDialog(context, I18N.of(context).transferStock,
         key: _moveStockKey,
@@ -382,7 +387,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           ListTile(
             title: Text(I18N.of(context).quantity),
             leading: FaIcon(FontAwesomeIcons.cubes),
-            trailing: Text("${item.quantity}"),
+            trailing: Text("${item.quantityString}"),
           )
       );
     }

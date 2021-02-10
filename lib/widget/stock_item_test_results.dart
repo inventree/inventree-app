@@ -4,6 +4,7 @@ import 'package:InvenTree/inventree/model.dart';
 import 'package:InvenTree/api.dart';
 import 'package:InvenTree/widget/dialogs.dart';
 import 'package:InvenTree/widget/fields.dart';
+import 'package:InvenTree/widget/snacks.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -46,24 +47,20 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
 
   void uploadTestResult(String name, bool result, String value, String notes, File attachment) async {
 
-    item.uploadTestResult(
-      context,
-      name,
-      result,
+    final success = await item.uploadTestResult(
+      context, name, result,
       value: value,
       notes: notes,
       attachment: attachment
-    ).then((bool success) {
-      if (success) {
-        // TODO - Show a SnackBar here!
-        refresh();
-      } else {
-        showErrorDialog(
-            context,
-            I18N.of(context).error,
-            "Could not upload test result to server");
-      }
-    });
+    );
+
+    showSnackIcon(
+      refreshableKey,
+      success ? "Test result uploaded" : "Could not upload test result",
+      success: success
+    );
+
+    refresh();
   }
 
   void addTestResult({String name = '', bool nameIsEditable = true, bool result = false, String value = '', bool valueRequired = false, bool attachmentRequired = false}) async  {
@@ -76,24 +73,9 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
 
     showFormDialog(context, "Add Test Data",
       key: _addResultKey,
-      actions: <Widget>[
-        FlatButton(
-          child: Text(I18N.of(context).cancel),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        FlatButton(
-          child: Text(I18N.of(context).save),
-          onPressed: () {
-            if (_addResultKey.currentState.validate()) {
-              _addResultKey.currentState.save();
-              Navigator.pop(context);
-              uploadTestResult(_name, _result, _value, _notes, _attachment);
-            }
-          },
-        )
-      ],
+      callback: () {
+        uploadTestResult(_name, _result, _value, _notes, _attachment);
+      },
       fields: <Widget>[
         StringField(
           label: "Test Name",

@@ -8,6 +8,8 @@ import 'package:InvenTree/widget/drawer.dart';
 
 abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
 
+  final refreshableKey = GlobalKey<ScaffoldState>();
+
   // Storage for context once "Build" is called
   BuildContext context;
 
@@ -80,6 +82,7 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
     this.context = context;
 
     return Scaffold(
+      key: refreshableKey,
       appBar: getAppBar(context),
       drawer: getDrawer(context),
       floatingActionButton: getFab(context),
