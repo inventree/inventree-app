@@ -19,7 +19,7 @@ void showSnackIcon(GlobalKey<ScaffoldState> key, String text, {IconData icon, bo
 
   // If icon not specified, use the success status
   if (icon == null) {
-    icon = (success == true) ? FontAwesomeIcons.checkCircle : FontAwesomeIcons.timesCircle;
+    icon = (success == false) ? FontAwesomeIcons.timesCircle : FontAwesomeIcons.checkCircle;
   }
 
   key.currentState.showSnackBar(
