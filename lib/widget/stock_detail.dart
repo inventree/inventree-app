@@ -1,4 +1,5 @@
 
+import 'dart:io';
 
 import 'package:InvenTree/barcode.dart';
 import 'package:InvenTree/inventree/stock.dart';
@@ -8,6 +9,7 @@ import 'package:InvenTree/widget/fields.dart';
 import 'package:InvenTree/widget/location_display.dart';
 import 'package:InvenTree/widget/part_detail.dart';
 import 'package:InvenTree/widget/refreshable_state.dart';
+import 'package:InvenTree/widget/snacks.dart';
 import 'package:InvenTree/widget/stock_item_test_results.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +24,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:http/http.dart';
 
 class StockDetailWidget extends StatefulWidget {
 
@@ -71,10 +74,10 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     var response = await item.addStock(quantity, notes: _notesController.text);
     _notesController.clear();
 
+    _stockUpdateMessage(response);
+
     // TODO - Handle error cases
     refresh();
-
-    // TODO - Display a snackbar here indicating the action was successful (or otherwise)
   }
 
   void _addStockDialog() async {

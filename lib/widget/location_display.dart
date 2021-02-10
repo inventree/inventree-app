@@ -1,13 +1,18 @@
 import 'package:InvenTree/api.dart';
 import 'package:InvenTree/inventree/stock.dart';
 import 'package:InvenTree/preferences.dart';
+
+import 'package:InvenTree/widget/refreshable_state.dart';
+import 'package:InvenTree/widget/fields.dart';
+import 'package:InvenTree/widget/dialogs.dart';
+import 'package:InvenTree/widget/snacks.dart';
 import 'package:InvenTree/widget/stock_detail.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:InvenTree/widget/refreshable_state.dart';
 
 class LocationDisplayWidget extends StatefulWidget {
 
@@ -25,6 +30,8 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
   final InvenTreeStockLocation location;
 
+  final _editLocationKey = GlobalKey<FormState>();
+
   @override
   String getAppBarTitle(BuildContext context) { return "Stock Location"; }
 
@@ -33,11 +40,51 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     return <Widget>[
       IconButton(
         icon: FaIcon(FontAwesomeIcons.edit),
-        tooltip: "Edit",
-        // TODO - Edit stock location
-        onPressed: null,
+        tooltip: I18N.of(context).edit,
+        onPressed: _editLocationDialog,
       )
     ];
+  }
+
+  void _editLocation(Map<String, String> values) async {
+
+    final bool result = await location.update(context, values: values);
+
+    showSnackIcon(
+      refreshableKey,
+      result ? "Location edited" : "Location editing failed",
+      success: result
+    );
+
+    refresh();
+  }
+
+  void _editLocationDialog() {
+    // Values which an be edited
+    var _name;
+    var _description;
+
+    showFormDialog(context, I18N.of(context).editLocation,
+      key: _editLocationKey,
+      callback: () {
+        _editLocation({
+          "name": _name,
+          "description": _description
+        });
+      },
+      fields: <Widget> [
+        StringField(
+          label: I18N.of(context).name,
+          initial: location.name,
+          onSaved: (value) => _name = value,
+        ),
+        StringField(
+          label: I18N.of(context).description,
+          initial: location.description,
+          onSaved: (value) => _description = value,
+        )
+      ]
+    );
   }
 
   _LocationDisplayState(this.location) {}
@@ -66,6 +113,9 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
   Future<void> request(BuildContext context) async {
 
     int pk = location?.pk ?? -1;
+
+    // Reload location information
+    await location.reload(context);
 
     // Request a list of sub-locations under this one
     await InvenTreeStockLocation().list(context, filters: {"parent": "$pk"}).then((var locs) {

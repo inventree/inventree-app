@@ -1,4 +1,6 @@
+import 'dart:io';
 
+import 'package:InvenTree/widget/snacks.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -74,9 +76,13 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   void _savePart(Map<String, String> values) async {
 
-    Navigator.of(context).pop();
+    final bool result = await part.update(context, values: values);
 
-    var response = await part.update(context, values: values);
+    showSnackIcon(
+      refreshableKey,
+      result ? "Part edited" : "Part editing failed",
+      success: result
+    );
 
     refresh();
   }
@@ -96,34 +102,18 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     var _name;
     var _description;
     var _ipn;
-    var _revision;
     var _keywords;
 
     showFormDialog(context, I18N.of(context).editPart,
       key: _editPartKey,
-      actions: <Widget>[
-        FlatButton(
-          child: Text(I18N.of(context).cancel),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        FlatButton(
-          child: Text(I18N.of(context).save),
-          onPressed: () {
-            if (_editPartKey.currentState.validate()) {
-              _editPartKey.currentState.save();
-
-              _savePart({
-                "name": _name,
-                "description": _description,
-                "IPN": _ipn,
-                "keywords": _keywords,
-              });
-            }
-          },
-        ),
-      ],
+      callback: () {
+        _savePart({
+          "name": _name,
+          "description": _description,
+          "IPN": _ipn,
+          "keywords": _keywords
+        });
+      },
       fields: <Widget>[
         StringField(
           label: I18N.of(context).name,
@@ -163,7 +153,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => FullScreenWidget(part.name, part.image))
+                MaterialPageRoute(builder: (context) => FullScreenWidget(part.fullname, part.image))
               );
             }),
         )

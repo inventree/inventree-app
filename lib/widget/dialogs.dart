@@ -161,7 +161,39 @@ void hideProgressDialog(BuildContext context) {
   Navigator.pop(context);
 }
 
-void showFormDialog(BuildContext context, String title, {GlobalKey<FormState> key, List<Widget> fields, List<Widget> actions}) {
+void showFormDialog(BuildContext context, String title, {GlobalKey<FormState> key, List<Widget> fields, List<Widget> actions, Function callback}) {
+
+  // Undefined actions = OK + Cancel
+  if (actions == null) {
+    actions = <Widget>[
+      FlatButton(
+        child: Text(I18N.of(context).cancel),
+        onPressed: () {
+          // Close the form
+          Navigator.pop(context);
+        }
+      ),
+      FlatButton(
+        child: Text(I18N.of(context).save),
+        onPressed: () {
+          if (key.currentState.validate()) {
+            key.currentState.save();
+
+            // Close the dialog
+            Navigator.pop(context);
+
+            // Callback
+            if (callback != null) {
+              callback();
+            }
+            
+
+          }
+        }
+      )
+    ];
+  }
+
   showDialog(
     context: context,
     builder: (BuildContext context) {

@@ -323,6 +323,15 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   double get quantity => double.tryParse(jsondata['quantity'].toString() ?? '0');
 
+  String get quantityString {
+
+    if (quantity.toInt() == quantity) {
+      return quantity.toInt().toString();
+    } else {
+      return quantity.toString();
+    }
+  }
+
   int get locationId => jsondata['location'] as int ?? -1;
 
   bool isSerialized() => serialNumber != null && quantity.toInt() == 1;
