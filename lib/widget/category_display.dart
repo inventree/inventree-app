@@ -147,8 +147,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
     if (category == null) {
       return Card(
         child: ListTile(
-          title: Text(I18N.of(context).partCategories),
-          subtitle: Text("Top level part category"),
+          title: Text("Top level part category"),
         )
       );
     } else {
@@ -183,69 +182,83 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
   }
 
   @override
-  Widget getBody(BuildContext context) {
-    return ListView(
-      children: <Widget>[
-        getCategoryDescriptionCard(),
-        ExpansionPanelList(
-          expansionCallback: (int index, bool isExpanded) {
-            setState(() {
-
-              switch (index) {
-                case 0:
-                  InvenTreePreferences().expandCategoryList = !isExpanded;
-                  break;
-                case 1:
-                  InvenTreePreferences().expandPartList = !isExpanded;
-                  break;
-                default:
-                  break;
-              }
-            });
-          },
-          children: <ExpansionPanel> [
-            ExpansionPanel(
-              headerBuilder: (BuildContext context, bool isExpanded) {
-                return ListTile(
-                  title: Text(I18N.of(context).subcategories),
-                  leading: FaIcon(FontAwesomeIcons.stream),
-                  trailing: Text("${_subcategories.length}"),
-                  onTap: () {
-                    setState(() {
-                      InvenTreePreferences().expandCategoryList = !InvenTreePreferences().expandCategoryList;
-                    });
-                  },
-                  onLongPress: () {
-                    // TODO - Context menu for e.g. creating a new PartCategory
-                  },
-                );
-              },
-              body: SubcategoryList(_subcategories),
-              isExpanded: InvenTreePreferences().expandCategoryList && _subcategories.length > 0,
-            ),
-            ExpansionPanel(
-              headerBuilder: (BuildContext context, bool isExpanded) {
-                return ListTile(
-                  title: Text(I18N.of(context).parts),
-                  leading: FaIcon(FontAwesomeIcons.shapes),
-                  trailing: Text("${_parts.length}"),
-                  onTap: () {
-                    setState(() {
-                      InvenTreePreferences().expandPartList = !InvenTreePreferences().expandPartList;
-                    });
-                  },
-                  onLongPress: () {
-                    // TODO - Context menu for e.g. creating a new Part
-                  },
-                );
-              },
-              body: PartList(_parts),
-              isExpanded: InvenTreePreferences().expandPartList && _parts.length > 0,
-            )
-          ],
+  Widget getBottomNavBar(BuildContext context) {
+    return BottomNavigationBar(
+      currentIndex: tabIndex,
+      onTap: onTabSelectionChanged,
+      items: <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: FaIcon(FontAwesomeIcons.sitemap),
+          label: I18N.of(context).details,
+        ),
+        BottomNavigationBarItem(
+          icon: FaIcon(FontAwesomeIcons.shapes),
+          label: I18N.of(context).parts,
+        ),
+        BottomNavigationBarItem(
+          icon: FaIcon(FontAwesomeIcons.wrench),
+          label: I18N.of(context).actions
         ),
       ]
     );
+  }
+
+  List<Widget> detailTiles() {
+    return <Widget>[
+      getCategoryDescriptionCard(),
+      Divider(),
+      ListTile(
+        title: Text(
+          I18N.of(context).subcategories,
+          style: TextStyle(fontWeight: FontWeight.bold)
+        )
+      ),
+      SubcategoryList(_subcategories),
+    ];
+  }
+
+  List<Widget> partTiles() {
+    return <Widget>[
+      getCategoryDescriptionCard(),
+      Divider(),
+      ListTile(
+        title: Text(
+          I18N.of(context).parts,
+          style: TextStyle(fontWeight: FontWeight.bold)
+        )
+      ),
+      PartList(_parts)
+    ];
+  }
+
+  List<Widget> actionTiles() {
+
+    List<Widget> tiles = [
+      getCategoryDescriptionCard()
+    ];
+
+    // TODO - Actions!
+
+    return tiles;
+  }
+
+  @override
+  Widget getBody(BuildContext context) {
+
+    switch (tabIndex) {
+      case 0:
+        return ListView(
+          children: detailTiles()
+        );
+      case 1:
+        return ListView(
+          children: partTiles()
+        );
+      case 2:
+        return ListView(
+          children: actionTiles()
+        );
+    }
   }
 }
 

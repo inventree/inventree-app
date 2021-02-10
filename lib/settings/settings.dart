@@ -7,7 +7,6 @@ import 'package:InvenTree/preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -69,8 +68,6 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
   }
 
   void _editServerSettings() async {
-
-    var prefs = await SharedPreferences.getInstance();
 
     List<UserProfile> profiles = await UserProfileDBManager().getAllProfiles();
 

@@ -149,9 +149,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     if (location == null) {
       return Card(
         child: ListTile(
-          title: Text(I18N.of(context).stockLocations),
-          subtitle: Text(I18N.of(context).stockTopLevel),
-          leading: FaIcon(FontAwesomeIcons.levelUpAlt),
+          title: Text(I18N.of(context).stockTopLevel),
         )
       );
     } else {
@@ -191,12 +189,16 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
         onTap: onTabSelectionChanged,
         items: <BottomNavigationBarItem> [
           BottomNavigationBarItem(
+            icon: FaIcon(FontAwesomeIcons.sitemap),
+            label: I18N.of(context).details,
+          ),
+          BottomNavigationBarItem(
             icon: FaIcon(FontAwesomeIcons.boxes),
-            title: Text(I18N.of(context).stock),
+            label: I18N.of(context).stock,
           ),
           BottomNavigationBarItem(
             icon: FaIcon(FontAwesomeIcons.wrench),
-            title: Text(I18N.of(context).actions),
+            label: I18N.of(context).actions,
           )
         ]
     );
@@ -207,6 +209,10 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       case 0:
         return ListView(
           children: detailTiles(),
+        );
+      case 1:
+        return ListView(
+          children: stockTiles(),
         );
       case 1:
         return ListView(
@@ -227,72 +233,38 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
 
 List<Widget> detailTiles() {
-    List<Widget> tiles = [];
-
-    // Location description
-    tiles.add(locationDescriptionCard());
-
-    // Sublocation panel
-    ExpansionPanel sublocations = ExpansionPanel(
-      headerBuilder: (BuildContext context, bool isExpanded) {
-        return ListTile(
-          title: Text("Sublocations"),
-          leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
-          trailing: Text("${_sublocations.length}"),
-          onTap: () {
-            setState(() {
-              InvenTreePreferences().expandLocationList = !InvenTreePreferences().expandLocationList;
-            });
-          },
-        );
-      },
-      body: SublocationList(_sublocations),
-      isExpanded: InvenTreePreferences().expandLocationList && _sublocations.length > 0,
-    );
-
-    ExpansionPanel subitems = ExpansionPanel(
-      headerBuilder: (BuildContext context, bool isExpanded) {
-        return ListTile(
-          title: Text("Stock Items"),
-          leading: FaIcon(FontAwesomeIcons.boxes),
-          trailing: Text("${_items.length}"),
-          onTap: () {
-            setState(() {
-              InvenTreePreferences().expandStockList = !InvenTreePreferences().expandStockList;
-            });
-          },
-        );
-      },
-      body: StockList(_items),
-      isExpanded: InvenTreePreferences().expandStockList && _items.length > 0,
-    );
-
-    // Sublocations and items
-    tiles.add(
-        ExpansionPanelList(
-          expansionCallback: (int index, bool isExpanded) {
-            setState(() {
-              switch (index) {
-                case 0:
-                  InvenTreePreferences().expandLocationList = !isExpanded;
-                  break;
-                case 1:
-                  InvenTreePreferences().expandStockList = !isExpanded;
-                  break;
-                default:
-                  break;
-              }
-            });
-          },
-          children: <ExpansionPanel> [
-            sublocations,
-            subitems,
-          ]
-      )
-    );
+    List<Widget> tiles = [
+      locationDescriptionCard(),
+      Divider(),
+      ListTile(
+        title: Text(
+          I18N.of(context).sublocations,
+          style: TextStyle(fontWeight: FontWeight.bold)
+        ),
+      ),
+      SublocationList(_sublocations)
+    ];
 
     return tiles;
   }
+
+
+  List<Widget> stockTiles() {
+    List<Widget> tiles = [
+      locationDescriptionCard(),
+      Divider(),
+      ListTile(
+        title: Text(
+            I18N.of(context).stockItems,
+            style: TextStyle(fontWeight: FontWeight.bold)
+        )
+      ),
+      StockList(_items),
+    ];
+
+    return tiles;
+  }
+
 
   List<Widget> actionTiles() {
     List<Widget> tiles = [];
