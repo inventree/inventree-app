@@ -8,13 +8,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:image/image.dart';
 
 import 'package:InvenTree/widget/dialogs.dart';
 
-import 'package:path/path.dart' as path;
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
 
 /**

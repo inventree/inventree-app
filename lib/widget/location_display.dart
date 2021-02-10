@@ -99,6 +99,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
         child: ListTile(
           title: Text(I18N.of(context).stockLocations),
           subtitle: Text(I18N.of(context).stockTopLevel),
+          leading: FaIcon(FontAwesomeIcons.levelUpAlt),
         )
       );
     } else {
@@ -112,6 +113,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
             ListTile(
               title: Text("Parent Category"),
               subtitle: Text("${location.parentpathstring}"),
+              leading: FaIcon(FontAwesomeIcons.levelUpAlt),
               onTap: () {
                 if (location.parentId < 0) {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(null)));

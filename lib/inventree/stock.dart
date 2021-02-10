@@ -1,13 +1,13 @@
-import 'dart:convert';
-
 import 'package:InvenTree/inventree/part.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'model.dart';
 
+
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:InvenTree/api.dart';
 
 
@@ -48,6 +48,51 @@ class InvenTreeStockItemTestResult extends InvenTreeModel {
 
 
 class InvenTreeStockItem extends InvenTreeModel {
+
+  // Stock status codes
+  static const int OK = 10;
+  static const int ATTENTION = 50;
+  static const int DAMAGED = 55;
+  static const int DESTROYED = 60;
+  static const int REJECTED = 65;
+  static const int LOST = 70;
+
+  String statusLabel(BuildContext context) {
+
+    switch (status) {
+      case OK:
+        return I18N.of(context).ok;
+      case ATTENTION:
+        return I18N.of(context).attention;
+      case DAMAGED:
+        return I18N.of(context).damaged;
+      case DESTROYED:
+        return I18N.of(context).destroyed;
+      case REJECTED:
+        return I18N.of(context).rejected;
+      case LOST:
+        return I18N.of(context).lost;
+      default:
+        return status.toString();
+    }
+  }
+
+  // Return color associated with stock status
+  Color get statusColor {
+    switch (status) {
+      case OK:
+        return Color(0xFF50aa51);
+      case ATTENTION:
+        return Color(0xFFfdc82a);
+      case DAMAGED:
+      case DESTROYED:
+      case REJECTED:
+        return Color(0xFFe35a57);
+      case LOST:
+      default:
+        return Color(0xFFAAAAAA);
+    }
+  }
 
   @override
   String NAME = "StockItem";
@@ -167,6 +212,8 @@ class InvenTreeStockItem extends InvenTreeModel {
   }
 
   String get uid => jsondata['uid'] ?? '';
+
+  int get status => jsondata['status'] ?? -1;
 
   int get partId => jsondata['part'] ?? -1;
 

@@ -303,7 +303,13 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         title: Text("${item.partName}"),
         subtitle: Text("${item.partDescription}"),
         leading: InvenTreeAPI().getImage(item.partImage),
-        trailing: Text(item.serialOrQuantityDisplay()),
+        trailing: Text(
+          item.statusLabel(context),
+          style: TextStyle(
+            color: item.statusColor
+          )
+        ),
+        //trailing: Text(item.serialOrQuantityDisplay()),
       )
     );
   }
