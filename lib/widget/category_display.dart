@@ -5,6 +5,9 @@ import 'package:InvenTree/preferences.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:InvenTree/widget/fields.dart';
+import 'package:InvenTree/widget/dialogs.dart';
+import 'package:InvenTree/widget/snacks.dart';
 import 'package:InvenTree/widget/part_detail.dart';
 import 'package:InvenTree/widget/drawer.dart';
 import 'package:InvenTree/widget/refreshable_state.dart';
@@ -28,6 +31,8 @@ class CategoryDisplayWidget extends StatefulWidget {
 
 class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
+  final _editCategoryKey = GlobalKey<FormState>();
+
   @override
   String getAppBarTitle(BuildContext context) => I18N.of(context).partCategory;
 
@@ -37,9 +42,52 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
       IconButton(
         icon: FaIcon(FontAwesomeIcons.edit),
         tooltip: I18N.of(context).edit,
-        onPressed: null,
+        onPressed: _editCategoryDialog,
       )
     ];
+  }
+
+  void _editCategory(Map<String, String> values) async {
+
+    final bool result = await category.update(context, values: values);
+
+    showSnackIcon(
+      refreshableKey,
+      result ? "Category edited" : "Category editing failed",
+      success: result
+    );
+
+    refresh();
+  }
+
+  void _editCategoryDialog() {
+
+    var _name;
+    var _description;
+
+    showFormDialog(
+      context,
+      I18N.of(context).editCategory,
+      key: _editCategoryKey,
+      callback: () {
+        _editCategory({
+          "name": _name,
+          "description": _description
+        });
+      },
+      fields: <Widget>[
+        StringField(
+          label: I18N.of(context).name,
+          initial: category.name,
+          onSaved: (value) => _name = value
+        ),
+        StringField(
+          label: I18N.of(context).description,
+          initial: category.description,
+          onSaved: (value) => _description = value
+        )
+      ]
+    );
   }
 
   _CategoryDisplayState(this.category) {}
@@ -60,6 +108,9 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
   Future<void> request(BuildContext context) async {
 
     int pk = category?.pk ?? -1;
+
+    // Update the category
+    await category.reload(context);
 
     // Request a list of sub-categories under this one
     await InvenTreePartCategory().list(context, filters: {"parent": "$pk"}).then((var cats) {
