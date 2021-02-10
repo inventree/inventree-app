@@ -1,4 +1,5 @@
 import 'package:InvenTree/inventree/part.dart';
+import 'package:InvenTree/widget/dialogs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'model.dart';
@@ -391,51 +392,81 @@ class InvenTreeStockItem extends InvenTreeModel {
     return item;
   }
 
-  Future<http.Response> countStock(double quan, {String notes}) async {
+  /*
+   * Perform stocktake action:
+   *
+   * - Add
+   * - Remove
+   * - Count
+   */
+  Future<bool> adjustStock(BuildContext context, String endpoint, double q, {String notes}) async {
 
-    // Cannot 'count' a serialized StockItem
+    // Serialized stock cannot be adjusted
     if (isSerialized()) {
-      return null;
+      return false;
     }
 
-    // Cannot count negative stock
-    if (quan < 0) {
-      return null;
+    // Cannot handle negative stock
+    if (q < 0) {
+      return false;
     }
 
-    return api.post("/stock/count/", body: {
-      "item": {
-        "pk": "${pk}",
-        "quantity": "${quan}",
-      },
-      "notes": notes ?? '',
+    var response = await api.post(
+      endpoint,
+      body: {
+        "item": {
+          "pk": "${pk}",
+          "quantity": "${q}",
+        },
+        "notes": notes ?? '',
+    }).timeout(Duration(seconds: 10)).catchError((error) {
+      if (error is TimeoutException) {
+        showTimeoutError(context);
+      } else if (error is SocketException) {
+        showServerError(
+            context,
+            I18N.of(context).connectionRefused,
+            error.toString()
+        );
+      } else {
+        // Re-throw the error, let sentry handle it!
+        throw error;
+      }
+
+      // Null response if error
+      return null;
     });
+
+    if (response == null) return false;
+
+    if (response.statusCode != 200) {
+      showStatusCodeError(context, response.statusCode);
+      return false;
+    }
+
+    // Stock adjustment succeeded!
+    return true;
   }
 
-  Future<http.Response> addStock(double quan, {String notes}) async {
+  Future<bool> countStock(BuildContext context, double q, {String notes}) async {
 
-    if (isSerialized() || quan <= 0) return null;
+    final bool result = await adjustStock(context, "/stock/count", q, notes: notes);
 
-    return api.post("/stock/add/", body: {
-      "item": {
-        "pk": "${pk}",
-        "quantity": "${quan}",
-      },
-      "notes": notes ?? '',
-    });
+    return result;
   }
 
-  Future<http.Response> removeStock(double quan, {String notes}) async {
+  Future<bool> addStock(BuildContext context, double q, {String notes}) async {
 
-    if (isSerialized() || quan <= 0) return null;
+    final bool result = await adjustStock(context,  "/stock/add/", q, notes: notes);
 
-    return api.post("/stock/remove/", body: {
-      "item": {
-        "pk": "${pk}",
-        "quantity": "${quan}",
-      },
-      "notes": notes ?? '',
-    });
+    return result;
+  }
+
+  Future<bool> removeStock(BuildContext context, double q, {String notes}) async {
+
+    final bool result = await adjustStock(context, "/stock/remove/", q, notes: notes);
+
+    return result;
   }
 
   Future<http.Response> transferStock(int location, {double quantity, String notes}) async {
