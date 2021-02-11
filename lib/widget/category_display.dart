@@ -2,6 +2,7 @@
 import 'package:InvenTree/api.dart';
 import 'package:InvenTree/inventree/part.dart';
 import 'package:InvenTree/preferences.dart';
+import 'package:InvenTree/widget/progress.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -155,13 +156,16 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
         child: Column(
           children: <Widget>[
             ListTile(
-              title: Text("${category.name}"),
+              title: Text("${category.name}",
+                  style: TextStyle(fontWeight: FontWeight.bold)
+              ),
               subtitle: Text("${category.description}"),
             ),
+            Divider(),
             ListTile(
               title: Text(I18N.of(context).parentCategory),
               subtitle: Text("${category.parentpathstring}"),
-              leading: FaIcon(FontAwesomeIcons.sitemap),
+              leading: FaIcon(FontAwesomeIcons.levelUpAlt),
               onTap: () {
                 if (category.parentId < 0) {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));
@@ -204,37 +208,64 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
   }
 
   List<Widget> detailTiles() {
-    return <Widget>[
+    List<Widget> tiles = <Widget>[
       getCategoryDescriptionCard(),
-      Divider(),
       ListTile(
         title: Text(
           I18N.of(context).subcategories,
           style: TextStyle(fontWeight: FontWeight.bold)
         )
       ),
-      SubcategoryList(_subcategories),
     ];
+
+    if (loading) {
+      tiles.add(progressIndicator());
+    } else if (_subcategories.length == 0) {
+      tiles.add(ListTile(
+        title: Text("No Subcategories"),
+        subtitle: Text("No subcategories available")
+      ));
+    } else {
+      tiles.add(SubcategoryList(_subcategories));
+    }
+
+    return tiles;
   }
 
   List<Widget> partTiles() {
-    return <Widget>[
+    List<Widget> tiles = <Widget>[
       getCategoryDescriptionCard(),
-      Divider(),
       ListTile(
         title: Text(
           I18N.of(context).parts,
           style: TextStyle(fontWeight: FontWeight.bold)
         )
       ),
-      PartList(_parts)
     ];
+
+    if (loading) {
+      tiles.add(progressIndicator());
+    } else if (_parts.length == 0) {
+        tiles.add(ListTile(
+          title: Text("No Parts"),
+          subtitle: Text("No parts available in this category")
+        ));
+    } else {
+        tiles.add(PartList(_parts));
+    }
+
+    return tiles;
   }
 
   List<Widget> actionTiles() {
 
     List<Widget> tiles = [
-      getCategoryDescriptionCard()
+      getCategoryDescriptionCard(),
+      ListTile(
+        title: Text(I18N.of(context).actions,
+          style: TextStyle(fontWeight: FontWeight.bold)
+        )
+      )
     ];
 
     // TODO - Actions!

@@ -4,6 +4,7 @@ import 'package:InvenTree/inventree/model.dart';
 import 'package:InvenTree/api.dart';
 import 'package:InvenTree/widget/dialogs.dart';
 import 'package:InvenTree/widget/fields.dart';
+import 'package:InvenTree/widget/progress.dart';
 import 'package:InvenTree/widget/snacks.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -166,7 +167,39 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
   List<Widget> resultsList() {
     List<Widget> tiles = [];
 
+    tiles.add(
+      Card(
+        child: ListTile(
+          title: Text(item.partName),
+          subtitle: Text(item.partDescription),
+          leading: InvenTreeAPI().getImage(item.partImage),
+        )
+      )
+    );
+
+    tiles.add(
+      ListTile(
+        title: Text("Test Results",
+          style: TextStyle(fontWeight: FontWeight.bold)
+        )
+      )
+    );
+
+    if (loading) {
+      tiles.add(progressIndicator());
+      return tiles;
+    }
+
     var results = getTestResults();
+
+    if (results.length == 0) {
+      tiles.add(ListTile(
+        title: Text("No Results"),
+        subtitle: Text("No test results available"),
+      ));
+
+      return tiles;
+    }
 
     for (var item in results) {
 
@@ -231,6 +264,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
 
   @override
   Widget getBody(BuildContext context) {
+
     return ListView(
       children: ListTile.divideTiles(
         context: context,
@@ -239,6 +273,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
     );
   }
 
+  /*
   List<SpeedDialChild> actionButtons() {
 
     var buttons = List<SpeedDialChild>();
@@ -253,14 +288,15 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
 
     return buttons;
   }
+   */
 
   @override
   Widget getFab(BuildContext context) {
-    return SpeedDial(
-      visible: true,
-      animatedIcon: AnimatedIcons.menu_close,
-      heroTag: 'stock-item-results-tab',
-      children: actionButtons(),
+    return FloatingActionButton(
+      child: Icon(FontAwesomeIcons.plus),
+      onPressed: () {
+        addTestResult();
+      },
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:InvenTree/widget/progress.dart';
 import 'package:InvenTree/widget/snacks.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -171,6 +172,11 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     tiles.add(
       headerTile()
     );
+
+    if (loading) {
+      tiles.add(progressIndicator());
+      return tiles;
+    }
 
     // Category information
     if (part.categoryName != null && part.categoryName.isNotEmpty) {

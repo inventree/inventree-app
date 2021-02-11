@@ -1,6 +1,7 @@
 import 'package:InvenTree/api.dart';
 import 'package:InvenTree/inventree/stock.dart';
 import 'package:InvenTree/preferences.dart';
+import 'package:InvenTree/widget/progress.dart';
 
 import 'package:InvenTree/widget/refreshable_state.dart';
 import 'package:InvenTree/widget/fields.dart';
@@ -235,15 +236,24 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 List<Widget> detailTiles() {
     List<Widget> tiles = [
       locationDescriptionCard(),
-      Divider(),
       ListTile(
         title: Text(
           I18N.of(context).sublocations,
           style: TextStyle(fontWeight: FontWeight.bold)
         ),
       ),
-      SublocationList(_sublocations)
     ];
+
+    if (loading) {
+      tiles.add(progressIndicator());
+    } else if (_sublocations.length > 0) {
+      tiles.add(SublocationList(_sublocations));
+    } else {
+      tiles.add(ListTile(
+        title: Text("No Sublocations"),
+        subtitle: Text("No sublocations available")
+      ));
+    }
 
     return tiles;
   }
@@ -252,15 +262,24 @@ List<Widget> detailTiles() {
   List<Widget> stockTiles() {
     List<Widget> tiles = [
       locationDescriptionCard(),
-      Divider(),
       ListTile(
         title: Text(
             I18N.of(context).stockItems,
             style: TextStyle(fontWeight: FontWeight.bold)
         )
-      ),
-      StockList(_items),
+      )
     ];
+
+    if (loading) {
+      tiles.add(progressIndicator());
+    } else if (_items.length > 0) {
+      tiles.add(StockList(_items));
+    } else {
+      tiles.add(ListTile(
+        title: Text("No Stock Items"),
+        subtitle: Text("No stock items available in this location")
+      ));
+    }
 
     return tiles;
   }

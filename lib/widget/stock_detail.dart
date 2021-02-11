@@ -8,6 +8,7 @@ import 'package:InvenTree/widget/dialogs.dart';
 import 'package:InvenTree/widget/fields.dart';
 import 'package:InvenTree/widget/location_display.dart';
 import 'package:InvenTree/widget/part_detail.dart';
+import 'package:InvenTree/widget/progress.dart';
 import 'package:InvenTree/widget/refreshable_state.dart';
 import 'package:InvenTree/widget/snacks.dart';
 import 'package:InvenTree/widget/stock_item_test_results.dart';
@@ -314,6 +315,15 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
             color: item.statusColor
           )
         ),
+        onTap: () {
+          if (item.partId > 0) {
+            InvenTreePart().get(context, item.partId).then((var part) {
+              if (part is InvenTreePart) {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
+              }
+            });
+          }
+        },
         //trailing: Text(item.serialOrQuantityDisplay()),
       )
     );
@@ -329,22 +339,29 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     // Image / name / description
     tiles.add(headerTile());
 
-    tiles.add(
-      ListTile(
-        title: Text(I18N.of(context).part),
-        subtitle: Text("${item.partName}"),
-        leading: FaIcon(FontAwesomeIcons.shapes),
-        onTap: () {
-          if (item.partId > 0) {
-            InvenTreePart().get(context, item.partId).then((var part) {
-              if (part is InvenTreePart) {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
-              }
-            });
-          }
-        },
-      )
-    );
+    if (loading) {
+      tiles.add(progressIndicator());
+      return tiles;
+    }
+
+    // Quantity information
+    if (item.isSerialized()) {
+      tiles.add(
+          ListTile(
+            title: Text(I18N.of(context).serialNumber),
+            leading: FaIcon(FontAwesomeIcons.hashtag),
+            trailing: Text("${item.serialNumber}"),
+          )
+      );
+    } else {
+      tiles.add(
+          ListTile(
+            title: Text(I18N.of(context).quantity),
+            leading: FaIcon(FontAwesomeIcons.cubes),
+            trailing: Text("${item.quantityString}"),
+          )
+      );
+    }
 
     // Location information
     if ((item.locationId > 0) && (item.locationName != null) && (item.locationName.isNotEmpty)) {
@@ -373,24 +390,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     }
 
-    // Quantity information
-    if (item.isSerialized()) {
-      tiles.add(
-          ListTile(
-            title: Text(I18N.of(context).serialNumber),
-            leading: FaIcon(FontAwesomeIcons.hashtag),
-            trailing: Text("${item.serialNumber}"),
-          )
-      );
-    } else {
-      tiles.add(
-          ListTile(
-            title: Text(I18N.of(context).quantity),
-            leading: FaIcon(FontAwesomeIcons.cubes),
-            trailing: Text("${item.quantityString}"),
-          )
-      );
-    }
+
 
     // Supplier part?
     // TODO: Display supplier part info page?

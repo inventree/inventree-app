@@ -16,6 +16,11 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
   // Current tab index (used for widgets which display bottom tabs)
   int tabIndex = 0;
 
+  // Bool indicator
+  bool loading = false;
+
+  bool get loaded => !loading;
+
   // Update current tab selection
   void onTabSelectionChanged(int index) {
     setState(() {
@@ -45,8 +50,16 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
   }
 
   Future<void> refresh() async {
+
+    setState(() {
+      loading = true;
+    });
+
     await request(context);
-    setState(() {});
+
+    setState(() {
+      loading = false;
+    });
   }
 
   // Function to construct an appbar (override if needed)
