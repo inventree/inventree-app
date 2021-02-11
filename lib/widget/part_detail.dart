@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:InvenTree/inventree/stock.dart';
 import 'package:InvenTree/widget/progress.dart';
 import 'package:InvenTree/widget/snacks.dart';
+import 'package:InvenTree/widget/stock_detail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +17,6 @@ import 'package:InvenTree/widget/full_screen_image.dart';
 import 'package:InvenTree/widget/category_display.dart';
 import 'package:InvenTree/widget/dialogs.dart';
 import 'package:InvenTree/widget/fields.dart';
-import 'package:InvenTree/widget/part_stock_detail.dart';
 import 'package:InvenTree/api.dart';
 import 'package:InvenTree/widget/refreshable_state.dart';
 
@@ -36,7 +37,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   final _editPartKey = GlobalKey<FormState>();
 
   @override
-  String getAppBarTitle(BuildContext context) => I18N.of(context).part;
+  String getAppBarTitle(BuildContext context) => I18N.of(context).partDetails;
 
   @override
   List<Widget> getAppBarActions(BuildContext context) {
@@ -68,11 +69,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   @override
   Future<void> request(BuildContext context) async {
     await part.reload(context);
+    await part.getStockItems(context);
     await part.getTestTemplates(context);
-
-    setState(() {
-
-    });
   }
 
   void _savePart(Map<String, String> values) async {
@@ -86,15 +84,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     );
 
     refresh();
-  }
-
-  void _showStock(BuildContext context) async {
-    await part.getStockItems(context);
-
-    Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => PartStockDetailWidget(part))
-    );
   }
 
   void _editPartDialog() {
@@ -157,7 +146,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
                 MaterialPageRoute(builder: (context) => FullScreenWidget(part.fullname, part.image))
               );
             }),
-        )
+        ),
     );
   }
 
@@ -215,13 +204,16 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         leading: FaIcon(FontAwesomeIcons.boxes),
         trailing: Text("${part.inStockString}"),
         onTap: () {
-          _showStock(context);
+          setState(() {
+            tabIndex = 1;
+          });
         },
       ),
     );
 
+    // TODO - Add link to parts on order
     // Parts on order
-    if (part.isPurchaseable) {
+    if (false && part.isPurchaseable) {
       tiles.add(
           ListTile(
             title: Text("On Order"),
@@ -318,6 +310,26 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   }
 
+  // Return tiles for each stock item
+  List<Widget> stockTiles() {
+    List<Widget> tiles = [];
+
+    tiles.add(headerTile());
+
+    if (loading) {
+      tiles.add(progressIndicator());
+    } else if (part.stockItems.length > 0) {
+      tiles.add(PartStockList(part.stockItems));
+    } else {
+      tiles.add(ListTile(
+        title: Text("No Stock"),
+        subtitle: Text("No stock items available")
+      ));
+    }
+
+    return tiles;
+  }
+
   List<Widget> actionTiles() {
     List<Widget> tiles = [];
 
@@ -360,6 +372,15 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           child: ListView(
             children: ListTile.divideTiles(
               context: context,
+              tiles: stockTiles()
+            ).toList()
+          )
+        );
+      case 2:
+        return Center(
+          child: ListView(
+            children: ListTile.divideTiles(
+              context: context,
               tiles: actionTiles()
             ).toList()
           )
@@ -377,11 +398,15 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       items: <BottomNavigationBarItem> [
         BottomNavigationBarItem(
           icon: FaIcon(FontAwesomeIcons.infoCircle),
-          title: Text(I18N.of(context).details),
+          label: I18N.of(context).details,
+        ),
+        BottomNavigationBarItem(
+          icon: FaIcon(FontAwesomeIcons.boxes),
+          label: I18N.of(context).stock
         ),
         BottomNavigationBarItem(
           icon: FaIcon(FontAwesomeIcons.wrench),
-          title: Text(I18N.of(context).actions),
+          label: I18N.of(context).actions,
         ),
       ]
     );
@@ -390,5 +415,46 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   @override
   Widget getBody(BuildContext context) {
     return getSelectedWidget(tabIndex);
+  }
+}
+
+class PartStockList extends StatelessWidget {
+  final List<InvenTreeStockItem> _items;
+
+  PartStockList(this._items);
+
+  void _openItem(BuildContext context, int pk) {
+    // Load detail view for stock item
+    InvenTreeStockItem().get(context, pk).then((var item) {
+      if (item is InvenTreeStockItem) {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => StockDetailWidget(item)));
+      }
+    });
+  }
+
+  Widget _build(BuildContext context, int index) {
+
+    InvenTreeStockItem item = _items[index];
+
+    return ListTile(
+      title: Text("${item.locationName}"),
+      subtitle: Text("${item.locationPathString}"),
+      trailing: Text(item.serialOrQuantityDisplay()),
+      leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
+      onTap: () {
+        _openItem(context, item.pk);
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.separated(
+        shrinkWrap: true,
+        physics: ClampingScrollPhysics(),
+        itemBuilder: _build,
+        separatorBuilder: (_, __) => const Divider(height: 3),
+        itemCount: _items.length
+    );
   }
 }
