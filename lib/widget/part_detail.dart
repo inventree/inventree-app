@@ -93,6 +93,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     var _description;
     var _ipn;
     var _keywords;
+    var _link;
 
     showFormDialog(context, I18N.of(context).editPart,
       key: _editPartKey,
@@ -101,7 +102,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           "name": _name,
           "description": _description,
           "IPN": _ipn,
-          "keywords": _keywords
+          "keywords": _keywords,
+          "link": _link
         });
       },
       fields: <Widget>[
@@ -116,18 +118,23 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           onSaved: (value) => _description = value,
         ),
         StringField(
-          label: "Internal Part Number",
+          label: I18N.of(context).internalPartNumber,
           initial: part.IPN,
           allowEmpty: true,
           onSaved: (value) => _ipn = value,
         ),
         StringField(
-          label: "Keywords",
+          label: I18N.of(context).keywords,
           initial: part.keywords,
           allowEmpty: true,
           onSaved: (value) => _keywords = value,
+        ),
+        StringField(
+          label: I18N.of(context).link,
+          initial: part.link,
+          allowEmpty: true,
+          onSaved: (value) => _link = value
         )
-
       ]
     );
 
@@ -404,10 +411,13 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           icon: FaIcon(FontAwesomeIcons.boxes),
           label: I18N.of(context).stock
         ),
+        // TODO - Add part actions
+        /*
         BottomNavigationBarItem(
           icon: FaIcon(FontAwesomeIcons.wrench),
           label: I18N.of(context).actions,
         ),
+         */
       ]
     );
   }
