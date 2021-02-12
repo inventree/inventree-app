@@ -36,7 +36,13 @@ class InvenTreeDrawer extends StatelessWidget {
 
   void _search() {
     _closeDrawer();
-    Navigator.push(context, MaterialPageRoute(builder: (context) => SearchWidget()));
+
+    showSearch(
+      context: context,
+      delegate: PartSearchDelegate()
+    );
+
+    //Navigator.push(context, MaterialPageRoute(builder: (context) => SearchWidget()));
   }
 
   /*
@@ -101,62 +107,59 @@ class InvenTreeDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  Drawer(
-        child: new ListView(
+        child: ListView(
             children: ListTile.divideTiles(
               context: context,
               tiles: <Widget>[
-                new ListTile(
-                  leading: new Image.asset(
+                ListTile(
+                  leading: Image.asset(
                     "assets/image/icon.png",
                     fit: BoxFit.scaleDown,
                     width: 40,
                   ),
-                  title: new Text(I18N.of(context).appTitle),
+                  title: Text(I18N.of(context).appTitle),
                   onTap: _home,
                 ),
-                /*
-                // TODO - Add search functionality!
-                new ListTile(
-                  title: new Text("Search"),
-                  leading: new FaIcon(FontAwesomeIcons.search),
+                ListTile(
+                  title: Text(I18N.of(context).scanBarcode),
+                  onTap: _scan,
+                  leading: FaIcon(FontAwesomeIcons.barcode),
+                ),
+                ListTile(
+                  title: Text(I18N.of(context).search),
+                  leading: FaIcon(FontAwesomeIcons.search),
                   onTap: _search,
                 ),
-                */
-                new ListTile(
-                  title: new Text(I18N.of(context).scanBarcode),
-                  onTap: _scan,
-                  leading: new FaIcon(FontAwesomeIcons.barcode),
-                ),
-                new ListTile(
-                  title: new Text(I18N.of(context).parts),
-                  leading: new Icon(Icons.category),
+                ListTile(
+                  title: Text(I18N.of(context).parts),
+                  leading: Icon(Icons.category),
                   onTap: _showParts,
                 ),
-                new ListTile(
-                  title: new Text(I18N.of(context).stock),
-                  leading: new FaIcon(FontAwesomeIcons.boxes),
+                ListTile(
+                  title: Text(I18N.of(context).stock),
+                  leading: FaIcon(FontAwesomeIcons.boxes),
                   onTap: _showStock,
                 ),
                 /*
-                new ListTile(
-                  title: new Text("Suppliers"),
-                  leading: new FaIcon(FontAwesomeIcons.building),
+                ListTile(
+                  title: Text("Suppliers"),
+                  leading: FaIcon(FontAwesomeIcons.building),
                   onTap: _showSuppliers,
                 ),
-                new ListTile(
+                ListTile(
                   title: Text("Manufacturers"),
-                  leading: new FaIcon(FontAwesomeIcons.industry),
+                  leading: FaIcon(FontAwesomeIcons.industry),
                     onTap: _showManufacturers,
                 ),
-                new ListTile(
-                  title: new Text("Customers"),
-                  leading: new FaIcon(FontAwesomeIcons.users),
+                ListTile(
+                  title: Text("Customers"),
+                  leading: FaIcon(FontAwesomeIcons.users),
                   onTap: _showCustomers,
                 ),
                 */
-                new ListTile(
-                  title: new Text(I18N.of(context).settings),
-                  leading: new Icon(Icons.settings),
+                ListTile(
+                  title: Text(I18N.of(context).settings),
+                  leading: Icon(Icons.settings),
                   onTap: _settings,
                 ),
               ]

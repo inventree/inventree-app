@@ -84,21 +84,15 @@ class InvenTreeModel {
   // Return the API detail endpoint for this Model object
   String get url => "${URL}/${pk}/";
 
-  /*
+
   // Search this Model type in the database
-  Future<List<InvenTreeModel>> search(String searchTerm) async {
+  Future<List<InvenTreeModel>> search(BuildContext context, String searchTerm) async {
 
-    String addr = url + "?search=" + search;
+    final results = list(context, filters: {"cascade": "true", "search": searchTerm});
 
-    print("Searching endpoint: $url");
-
-    // TODO - Add "timeout"
-    // TODO - Add error catching
-
-    var response =
+    return results;
 
   }
-  */
 
   Map<String, String> defaultListFilters() { return Map<String, String>(); }
 

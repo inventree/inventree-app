@@ -43,8 +43,10 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
   void _search() {
     if (!InvenTreeAPI().checkConnection(context)) return;
 
-    Navigator.push(context, MaterialPageRoute(builder: (context) => SearchWidget()));
-
+    showSearch(
+        context: context,
+        delegate: PartSearchDelegate()
+    );
   }
 
   void _scan(BuildContext context) {
@@ -204,13 +206,11 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
       appBar: AppBar(
         title: Text(I18N.of(context).appTitle),
         actions: <Widget>[
-          /*
           IconButton(
             icon: FaIcon(FontAwesomeIcons.search),
-            tooltip: 'Search',
+            tooltip: I18N.of(context).search,
             onPressed: _search,
           ),
-           */
         ],
       ),
       drawer: new InvenTreeDrawer(context),
