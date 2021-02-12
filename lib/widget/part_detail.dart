@@ -73,6 +73,11 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     await part.getTestTemplates(context);
   }
 
+  void _toggleStar() async {
+    await part.setStarred(context, !part.starred);
+    refresh();
+  }
+
   void _savePart(Map<String, String> values) async {
 
     final bool result = await part.update(context, values: values);
@@ -145,6 +150,10 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         child: ListTile(
           title: Text("${part.fullname}"),
           subtitle: Text("${part.description}"),
+          trailing: IconButton(
+            icon: FaIcon(part.starred ? FontAwesomeIcons.solidStar : FontAwesomeIcons.star),
+            onPressed: null, // TODO: _toggleStar,
+          ),
           leading: GestureDetector(
             child: InvenTreeAPI().getImage(part.thumbnail),
             onTap: () {

@@ -299,6 +299,15 @@ class InvenTreePart extends InvenTreeModel {
       return img.isNotEmpty ? img : InvenTreeAPI.staticThumb;
     }
 
+    // Return the "starred" status of this part
+    bool get starred => jsondata['starred'] as bool ?? false;
+
+    // Toggle the starred status
+    Future<void> setStarred(BuildContext context, bool status) async {
+      // TODO - Toggle the "starred" status of the part using the API
+      return;
+    }
+
     InvenTreePart() : super();
 
   InvenTreePart.fromJson(Map<String, dynamic> json) : super.fromJson(json) {

@@ -62,17 +62,17 @@ class PartSearchDelegate extends SearchDelegate<InvenTreePart> {
   List<Widget> buildActions(BuildContext context) {
     return [
       IconButton(
-          icon: FaIcon(FontAwesomeIcons.search),
-          onPressed: () {
-            search(context);
-          }
-      ),
-      IconButton(
         icon: FaIcon(FontAwesomeIcons.backspace),
         onPressed: () {
           query = '';
           search(context);
         },
+      ),
+      IconButton(
+        icon: FaIcon(FontAwesomeIcons.search),
+        onPressed: () {
+          search(context);
+        }
       ),
     ];
   }

@@ -1,4 +1,5 @@
 import 'package:InvenTree/user_profile.dart';
+import 'package:InvenTree/widget/starred_parts.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -224,19 +225,17 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                /*
                 Column(
                   children: <Widget>[
 
                    IconButton(
                      icon: new FaIcon(FontAwesomeIcons.search),
-                     tooltip: 'Search',
+                     tooltip: I18N.of(context).search,
                      onPressed: _search,
                    ),
-                   Text("Search"),
+                   Text(I18N.of(context).search),
                   ],
                 ),
-                */
                 Column(
                   children: <Widget>[
                     IconButton(
@@ -262,6 +261,17 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
                     ),
                     Text(I18N.of(context).parts),
                   ],
+                ),
+                Column(
+                  children: <Widget>[
+                    IconButton(
+                      icon: FaIcon(FontAwesomeIcons.solidStar),
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => StarredPartWidget()));
+                      },
+                    ),
+                    Text("Starred Parts"),
+                  ]
                 ),
                 Column(
                   children: <Widget>[
