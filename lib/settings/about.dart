@@ -89,12 +89,15 @@ class InvenTreeAboutWidget extends StatelessWidget {
       )
     );
 
+    // TODO: Do we really need build number?
+    /*
     tiles.add(
       ListTile(
         title: Text(I18N.of(context).build),
         subtitle: Text("${info.buildNumber}"),
       )
     );
+     */
 
     return Scaffold(
       appBar: AppBar(

@@ -239,8 +239,9 @@ List<Widget> detailTiles() {
       ListTile(
         title: Text(
           I18N.of(context).sublocations,
-          style: TextStyle(fontWeight: FontWeight.bold)
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        trailing: sublocations.length > 0 ? Text("${sublocations.length}") : null,
       ),
     ];
 
@@ -266,7 +267,8 @@ List<Widget> detailTiles() {
         title: Text(
             I18N.of(context).stockItems,
             style: TextStyle(fontWeight: FontWeight.bold)
-        )
+        ),
+        trailing: _items.length > 0 ? Text("${_items.length}") : null,
       )
     ];
 

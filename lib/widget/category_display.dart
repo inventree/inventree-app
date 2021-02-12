@@ -199,10 +199,13 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
           icon: FaIcon(FontAwesomeIcons.shapes),
           label: I18N.of(context).parts,
         ),
+        // TODO - Add the "actions" item back in
+        /*
         BottomNavigationBarItem(
           icon: FaIcon(FontAwesomeIcons.wrench),
           label: I18N.of(context).actions
         ),
+         */
       ]
     );
   }
@@ -214,7 +217,8 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
         title: Text(
           I18N.of(context).subcategories,
           style: TextStyle(fontWeight: FontWeight.bold)
-        )
+        ),
+        trailing: _subcategories.isNotEmpty ? Text("${_subcategories.length}") : null,
       ),
     ];
 
@@ -239,7 +243,8 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
         title: Text(
           I18N.of(context).parts,
           style: TextStyle(fontWeight: FontWeight.bold)
-        )
+        ),
+        trailing: _parts.isNotEmpty ? Text("${_parts.length}") : null,
       ),
     ];
 
