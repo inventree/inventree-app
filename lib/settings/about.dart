@@ -1,16 +1,31 @@
 import 'package:InvenTree/api.dart';
+import 'package:InvenTree/settings/release.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info/package_info.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:package_info/package_info.dart';
 
 class InvenTreeAboutWidget extends StatelessWidget {
 
   final PackageInfo info;
 
   InvenTreeAboutWidget(this.info) : super();
+
+  void _releaseNotes(BuildContext context) async {
+
+    // Load release notes from external file
+    String notes = await rootBundle.loadString("assets/release_notes.md");
+
+    Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ReleaseNotesWidget(notes))
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +46,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
           ListTile(
             title: Text(I18N.of(context).address),
             subtitle: Text(InvenTreeAPI().baseUrl.isNotEmpty ? InvenTreeAPI().baseUrl : I18N.of(context).notConnected),
+            leading: FaIcon(FontAwesomeIcons.globe),
           )
       );
 
@@ -38,6 +54,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
         ListTile(
           title: Text(I18N.of(context).version),
           subtitle: Text(InvenTreeAPI().version.isNotEmpty ? InvenTreeAPI().version : I18N.of(context).notConnected),
+          leading: FaIcon(FontAwesomeIcons.infoCircle),
         )
       );
 
@@ -45,6 +62,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
         ListTile(
           title: Text(I18N.of(context).serverInstance),
           subtitle: Text(InvenTreeAPI().instance.isNotEmpty ? InvenTreeAPI().instance : I18N.of(context).notConnected),
+          leading: FaIcon(FontAwesomeIcons.server),
         )
       );
     } else {
@@ -54,7 +72,8 @@ class InvenTreeAboutWidget extends StatelessWidget {
           subtitle: Text(
             I18N.of(context).serverNotConnected,
             style: TextStyle(fontStyle: FontStyle.italic),
-          )
+          ),
+          leading: FaIcon(FontAwesomeIcons.exclamationCircle)
         )
       );
     }
@@ -70,15 +89,9 @@ class InvenTreeAboutWidget extends StatelessWidget {
 
     tiles.add(
       ListTile(
-      title: Text(I18N.of(context).name),
-      subtitle: Text("${info.appName}"),
-      )
-    );
-
-    tiles.add(
-      ListTile(
         title: Text(I18N.of(context).packageName),
         subtitle: Text("${info.packageName}"),
+        leading: FaIcon(FontAwesomeIcons.box)
       )
     );
 
@@ -86,11 +99,23 @@ class InvenTreeAboutWidget extends StatelessWidget {
       ListTile(
         title: Text(I18N.of(context).version),
         subtitle: Text("${info.version}"),
+        leading: FaIcon(FontAwesomeIcons.infoCircle)
       )
     );
 
-    // TODO: Do we really need build number?
-    /*
+    tiles.add(
+      ListTile(
+        title: Text(I18N.of(context).releaseNotes),
+        subtitle: Text("Display app release notes"),
+        leading: FaIcon(FontAwesomeIcons.fileAlt),
+        onTap: () {
+          _releaseNotes(context);
+        },
+      )
+    );
+
+          // TODO: Do we really need build number?
+          /*
     tiles.add(
       ListTile(
         title: Text(I18N.of(context).build),
@@ -99,16 +124,16 @@ class InvenTreeAboutWidget extends StatelessWidget {
     );
      */
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(I18N.of(context).appAbout),
-      ),
-      body: ListView(
-        children: ListTile.divideTiles(
-          context: context,
-          tiles: tiles,
-        ).toList(),
-      )
-    );
+      return Scaffold(
+          appBar: AppBar(
+            title: Text(I18N.of(context).appAbout),
+          ),
+          body: ListView(
+            children: ListTile.divideTiles(
+              context: context,
+              tiles: tiles,
+            ).toList(),
+          )
+      );
   }
 }

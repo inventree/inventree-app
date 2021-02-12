@@ -48,12 +48,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
                 leading: FaIcon(FontAwesomeIcons.infoCircle),
                 onTap: _about,
               ),
-              ListTile(
-                title: Text(I18N.of(context).releaseNotes),
-                subtitle: Text("Display app release notes"),
-                leading: FaIcon(FontAwesomeIcons.fileAlt),
-                onTap: _releaseNotes,
-              ),
+
               ListTile(
                 title: Text(I18N.of(context).reportBug),
                 subtitle: Text("Report bug or suggest new feature"),
@@ -80,16 +75,5 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
       Navigator.push(context,
           MaterialPageRoute(builder: (context) => InvenTreeAboutWidget(info)));
     });
-  }
-
-  void _releaseNotes() async {
-
-    // Load release notes from external file
-    String notes = await rootBundle.loadString("assets/release_notes.md");
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => ReleaseNotesWidget(notes))
-    );
   }
 }
