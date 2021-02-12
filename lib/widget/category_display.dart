@@ -3,6 +3,7 @@ import 'package:InvenTree/api.dart';
 import 'package:InvenTree/inventree/part.dart';
 import 'package:InvenTree/preferences.dart';
 import 'package:InvenTree/widget/progress.dart';
+import 'package:InvenTree/widget/search.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -44,6 +45,15 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
         icon: FaIcon(FontAwesomeIcons.edit),
         tooltip: I18N.of(context).edit,
         onPressed: _editCategoryDialog,
+      ),
+      IconButton(
+        icon: FaIcon(FontAwesomeIcons.search),
+        onPressed: () {
+          showSearch(
+              context: context,
+              delegate: PartSearchDelegate(filters: {"category": "${category.pk}"})
+          );
+        }
       )
     ];
   }

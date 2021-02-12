@@ -19,6 +19,15 @@ class PartSearchDelegate extends SearchDelegate<InvenTreePart> {
 
   bool _searching = false;
 
+  // Custom filters for the part search
+  Map<String, String> filters = {};
+
+  PartSearchDelegate({this.filters}) {
+    if (filters == null) {
+      filters = {};
+    }
+  }
+
   // List of part results
   List<InvenTreePart> partResults = [];
 
@@ -37,7 +46,10 @@ class PartSearchDelegate extends SearchDelegate<InvenTreePart> {
 
     showResults(context);
 
-    final results = await InvenTreePart().search(context, query);
+    // Enable cascading part search by default
+    filters["cascade"] = "true";
+
+    final results = await InvenTreePart().search(context, query, filters: filters);
 
     partResults.clear();
 
@@ -157,90 +169,5 @@ class PartSearchDelegate extends SearchDelegate<InvenTreePart> {
     final ThemeData theme = Theme.of(context);
     assert(theme != null);
     return theme;
-  }
-}
-
-
-class SearchWidget extends StatefulWidget {
-
-  @override
-  _SearchState createState() => _SearchState();
-}
-
-
-class _SearchState extends RefreshableState<SearchWidget> {
-
-  String _searchText = "";
-
-  List<InvenTreePart> _parts = List<InvenTreePart>();
-  List<InvenTreeStockItem> _stockItems = List<InvenTreeStockItem>();
-
-  @override
-  String getAppBarTitle(BuildContext context) => I18N.of(context).search;
-
-  Future<void> _search(BuildContext context) {
-    print("Search: $_searchText}");
-
-    // Ignore if the search text is empty
-    if (_searchText.isNotEmpty) {
-
-      // Search for parts
-      InvenTreePart().list(context, filters: {"search": _searchText}).then((var parts) {
-        setState(() {
-          _parts.clear();
-          for (var part in parts) {
-            if (part is InvenTreePart) {
-              _parts.add(part);
-            }
-          }
-
-          print("Matched ${_parts.length} parts");
-        });
-      });
-
-      // Search for stock items
-      InvenTreeStockItem().list(context, filters: {"search": _searchText}).then((var items) {
-        setState(() {
-          _stockItems.clear();
-          for (var item in items) {
-            if (item is InvenTreeStockItem) {
-              _stockItems.add(item);
-            }
-          }
-
-          print("Matched ${_stockItems.length} stock items");
-        });
-      });
-    }
-  }
-
-  @override
-  Future<void> request(BuildContext context) async {
-    _search(context);
-  }
-
-  @override
-  Widget getBody(BuildContext context) {
-
-    return Center(
-      child: ListView(
-        children: <Widget>[
-          TextField(
-            decoration: InputDecoration(
-              hintText: I18N.of(context).search,
-            ),
-            onChanged: (String text) {
-              _searchText = text;
-            }
-          ),
-          RaisedButton(
-            child: Text(I18N.of(context).search),
-            onPressed: () {
-              _search(context);
-            },
-          ),
-        ]
-      )
-    );
   }
 }

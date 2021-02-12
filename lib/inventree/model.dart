@@ -86,9 +86,15 @@ class InvenTreeModel {
 
 
   // Search this Model type in the database
-  Future<List<InvenTreeModel>> search(BuildContext context, String searchTerm) async {
+  Future<List<InvenTreeModel>> search(BuildContext context, String searchTerm, {Map<String, String> filters}) async {
 
-    final results = list(context, filters: {"cascade": "true", "search": searchTerm});
+    if (filters == null) {
+      filters = {};
+    }
+
+    filters["search"] = searchTerm;
+
+    final results = list(context, filters: filters);
 
     return results;
 
