@@ -53,14 +53,31 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   final _editStockKey = GlobalKey<FormState>();
 
   _StockItemDisplayState(this.item) {
-    // TODO
   }
 
+  // StockItem object
   final InvenTreeStockItem item;
+
+  // Part object
+  InvenTreePart part;
+
+  @override
+  Future<void> onBuild(BuildContext context) async {
+
+    // Load part data if not already loaded
+    if (part == null) {
+      refresh();
+    }
+  }
 
   @override
   Future<void> request(BuildContext context) async {
     await item.reload(context);
+
+    // Request part information
+    part = await InvenTreePart().get(context, item.partId);
+
+    // Request test results...
     await item.getTestResults(context);
   }
 
@@ -417,23 +434,27 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     }
 
-    tiles.add(
-        ListTile(
-          title: Text(I18N.of(context).testResults),
-          leading: FaIcon(FontAwesomeIcons.tasks),
-          trailing: Text("${item.testResultCount}"),
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => StockItemTestResultsWidget(item))
-            ).then((context) {
-              refresh();
-            });
-          }
-        )
-    );
+    if ((item.testResultCount > 0) || (part != null && part.isTrackable)) {
+      tiles.add(
+          ListTile(
+              title: Text(I18N.of(context).testResults),
+              leading: FaIcon(FontAwesomeIcons.tasks),
+              trailing: Text("${item.testResultCount}"),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => StockItemTestResultsWidget(item))
+                ).then((context) {
+                  refresh();
+                });
+              }
+          )
+      );
+    }
 
-    if (item.trackingItemCount > 0) {
+    // TODO - Re-enable stock item history display
+    if (false && item.trackingItemCount > 0) {
       tiles.add(
         ListTile(
           title: Text(I18N.of(context).history),
