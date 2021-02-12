@@ -113,6 +113,7 @@ class PartSearchDelegate extends SearchDelegate<InvenTreePart> {
         width: 40,
         height: 40
       ),
+      trailing: Text(part.inStockString),
       onTap: () {
         InvenTreePart().get(context, part.pk).then((var prt) {
           if (prt is InvenTreePart) {
