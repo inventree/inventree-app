@@ -41,12 +41,21 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
 
   BuildContext _context;
 
-  void _search() {
+  void _searchParts() {
     if (!InvenTreeAPI().checkConnection(context)) return;
 
     showSearch(
         context: context,
         delegate: PartSearchDelegate()
+    );
+  }
+
+  void _searchStock() {
+    if (!InvenTreeAPI().checkConnection(context)) return;
+
+    showSearch(
+        context: context,
+        delegate: StockSearchDelegate()
     );
   }
 
@@ -207,11 +216,13 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
       appBar: AppBar(
         title: Text(I18N.of(context).appTitle),
         actions: <Widget>[
+          /*
           IconButton(
             icon: FaIcon(FontAwesomeIcons.search),
             tooltip: I18N.of(context).search,
-            onPressed: _search,
+            onPressed: _searchParts,
           ),
+          */
         ],
       ),
       drawer: new InvenTreeDrawer(context),
@@ -225,17 +236,6 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                Column(
-                  children: <Widget>[
-
-                   IconButton(
-                     icon: new FaIcon(FontAwesomeIcons.search),
-                     tooltip: I18N.of(context).search,
-                     onPressed: _search,
-                   ),
-                   Text(I18N.of(context).search),
-                  ],
-                ),
                 Column(
                   children: <Widget>[
                     IconButton(
@@ -264,6 +264,19 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
                 ),
                 Column(
                   children: <Widget>[
+
+                    IconButton(
+                      icon: new FaIcon(FontAwesomeIcons.search),
+                      tooltip: I18N.of(context).searchParts,
+                      onPressed: _searchParts,
+                    ),
+                    Text(I18N.of(context).searchParts),
+                  ],
+                ),
+                // TODO - Re-add starred parts link
+                /*
+                Column(
+                  children: <Widget>[
                     IconButton(
                       icon: FaIcon(FontAwesomeIcons.solidStar),
                       onPressed: () {
@@ -273,6 +286,13 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
                     Text("Starred Parts"),
                   ]
                 ),
+                 */
+              ],
+            ),
+            Spacer(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
                 Column(
                   children: <Widget>[
                     IconButton(
@@ -283,7 +303,17 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
                     Text(I18N.of(context).stock),
                   ],
                 ),
-              ],
+                Column(
+                  children: <Widget>[
+                    IconButton(
+                      icon: new FaIcon(FontAwesomeIcons.search),
+                      tooltip: I18N.of(context).searchStock,
+                      onPressed: _searchStock,
+                    ),
+                    Text(I18N.of(context).searchStock),
+                  ],
+                ),
+              ]
             ),
             Spacer(),
             // TODO - Re-add these when the features actually do something..

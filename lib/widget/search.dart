@@ -267,7 +267,7 @@ class StockSearchDelegate extends SearchDelegate<InvenTreeStockItem> {
 
     return ListTile(
       title: Text(item.partName),
-      subtitle: Text(item.partDescription),
+      subtitle: Text(item.locationName),
       leading: InvenTreeAPI().getImage(
         item.partThumbnail,
         width: 40,
