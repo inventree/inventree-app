@@ -419,7 +419,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     tiles.add(
         ListTile(
-          title: Text("Test Results"),
+          title: Text(I18N.of(context).testResults),
           leading: FaIcon(FontAwesomeIcons.tasks),
           trailing: Text("${item.testResultCount}"),
           onTap: () {
@@ -508,14 +508,16 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     // Scan item into a location
     tiles.add(
       ListTile(
-        title: Text("Scan Into Location"),
+        title: Text(I18N.of(context).scanIntoLocation),
         leading: FaIcon(FontAwesomeIcons.exchangeAlt),
         trailing: FaIcon(FontAwesomeIcons.qrcode),
         onTap: () {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => InvenTreeQRView(StockItemScanIntoLocationHandler(item)))
-          );
+          ).then((context) {
+            refresh();
+          });
         },
       )
     );
@@ -524,14 +526,16 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     if (item.uid.isEmpty) {
       tiles.add(
         ListTile(
-          title: Text("Assign Barcode"),
+          title: Text(I18N.of(context).assignBarcode),
           leading: FaIcon(FontAwesomeIcons.barcode),
           trailing: FaIcon(FontAwesomeIcons.qrcode),
           onTap: () {
             Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => InvenTreeQRView(StockItemBarcodeAssignmentHandler(item)))
-            );
+            ).then((context) {
+              refresh();
+            });
           }
         )
       );
@@ -539,49 +543,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     return tiles;
   }
-
-  /*
-   * Return a list of context-sensitive action buttons.
-   * Not all buttons will be avaialable for a given StockItem,
-   * depending on the properties of that StockItem
-   */
-
-  /*
-  List<SpeedDialChild> actionButtons() {
-    var buttons = List<SpeedDialChild>();
-
-    // The following actions only apply if the StockItem is not serialized
-    if (!item.isSerialized()) {
-      buttons.add(SpeedDialChild(
-        child: Icon(FontAwesomeIcons.plusCircle),
-        label: "Add Stock",
-        onTap: _addStockDialog,
-      )
-      );
-
-      buttons.add(SpeedDialChild(
-        child: Icon(FontAwesomeIcons.minusCircle),
-        label: "Remove Stock",
-        onTap: _removeStockDialog,
-      ),
-      );
-
-      buttons.add(SpeedDialChild(
-        child: Icon(FontAwesomeIcons.checkCircle),
-        label: "Count Stock",
-        onTap: _countStockDialog,
-      ));
-    }
-
-    buttons.add(SpeedDialChild(
-      child: Icon(FontAwesomeIcons.exchangeAlt),
-      label: "Transfer Stock",
-      onTap: _transferStockDialog,
-    ));
-
-    return buttons;
-  }
-   */
 
   @override
   Widget getBottomNavBar(BuildContext context) {
@@ -626,16 +587,4 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   Widget getBody(BuildContext context) {
     return getSelectedWidget(tabIndex);
   }
-
-  /*
-  @override
-  Widget getFab(BuildContext context) {
-    return SpeedDial(
-        visible: true,
-        animatedIcon: AnimatedIcons.menu_close,
-        heroTag: 'stock-item-fab',
-        children: actionButtons(),
-      );
-  }
-   */
 }
