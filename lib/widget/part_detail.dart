@@ -332,15 +332,21 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
     tiles.add(headerTile());
 
+    tiles.add(
+      ListTile(
+        title: Text(
+          I18N.of(context).stockItems,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        subtitle: part.stockItems.isEmpty ? Text("No stock items available") : null,
+        trailing: part.stockItems.isNotEmpty ? Text("${part.stockItems.length}") : null,
+      )
+    );
+
     if (loading) {
       tiles.add(progressIndicator());
     } else if (part.stockItems.length > 0) {
       tiles.add(PartStockList(part.stockItems));
-    } else {
-      tiles.add(ListTile(
-        title: Text("No Stock"),
-        subtitle: Text("No stock items available")
-      ));
     }
 
     return tiles;
