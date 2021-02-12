@@ -42,19 +42,19 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
   List<Widget> getAppBarActions(BuildContext context) {
     return <Widget>[
       IconButton(
+          icon: FaIcon(FontAwesomeIcons.search),
+          onPressed: () {
+            showSearch(
+                context: context,
+                delegate: PartSearchDelegate(filters: {"category": "${category.pk}"})
+            );
+          }
+      ),
+      IconButton(
         icon: FaIcon(FontAwesomeIcons.edit),
         tooltip: I18N.of(context).edit,
         onPressed: _editCategoryDialog,
       ),
-      IconButton(
-        icon: FaIcon(FontAwesomeIcons.search),
-        onPressed: () {
-          showSearch(
-              context: context,
-              delegate: PartSearchDelegate(filters: {"category": "${category.pk}"})
-          );
-        }
-      )
     ];
   }
 

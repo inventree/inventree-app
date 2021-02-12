@@ -6,6 +6,7 @@ import 'package:InvenTree/widget/progress.dart';
 import 'package:InvenTree/widget/refreshable_state.dart';
 import 'package:InvenTree/widget/fields.dart';
 import 'package:InvenTree/widget/dialogs.dart';
+import 'package:InvenTree/widget/search.dart';
 import 'package:InvenTree/widget/snacks.dart';
 import 'package:InvenTree/widget/stock_detail.dart';
 
@@ -39,6 +40,15 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
   @override
   List<Widget> getAppBarActions(BuildContext context) {
     return <Widget>[
+      IconButton(
+        icon: FaIcon(FontAwesomeIcons.search),
+        onPressed: () {
+          showSearch(
+            context: context,
+            delegate: StockSearchDelegate(filters: {"location": "${location.pk}"})
+          );
+        }
+      ),
       IconButton(
         icon: FaIcon(FontAwesomeIcons.edit),
         tooltip: I18N.of(context).edit,
