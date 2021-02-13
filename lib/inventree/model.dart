@@ -64,7 +64,7 @@ class InvenTreeModel {
       print("Opening link: ${link}");
 
       if (await canLaunch(link)) {
-        await launch(url);
+        await launch(link);
       } else {
         // TODO
       }
