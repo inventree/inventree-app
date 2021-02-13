@@ -1,16 +1,16 @@
+import 'package:InvenTree/inventree/sentry.dart';
 import 'package:InvenTree/settings/about.dart';
 import 'package:InvenTree/settings/login.dart';
-import 'package:InvenTree/settings/release.dart';
 import 'package:InvenTree/user_profile.dart';
-import 'package:InvenTree/preferences.dart';
+import 'package:InvenTree/widget/dialogs.dart';
+import 'package:InvenTree/widget/snacks.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:InvenTree/api.dart';
 import 'login.dart';
 
 import 'package:package_info/package_info.dart';
@@ -25,9 +25,14 @@ class InvenTreeSettingsWidget extends StatefulWidget {
 
 
 class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
+
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _bugKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(I18N.of(context).settings),
       ),
@@ -53,7 +58,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
                 title: Text(I18N.of(context).reportBug),
                 subtitle: Text("Report bug or suggest new feature"),
                 leading: FaIcon(FontAwesomeIcons.bug),
-                onTap: null,
+                onTap: _reportBug,
               ),
             ]
           ).toList()
@@ -75,5 +80,43 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
       Navigator.push(context,
           MaterialPageRoute(builder: (context) => InvenTreeAboutWidget(info)));
     });
+  }
+
+  void _sendReport(String message) async {
+
+    bool result = await sentryReportMessage(message);
+
+    if (result) {
+      showSnackIcon(_scaffoldKey, "Uploaded report", success: true);
+    } else {
+      showSnackIcon(_scaffoldKey, "Report upload failed", success: false);
+    }
+  }
+
+  void _reportBug() async {
+
+    TextEditingController _controller = TextEditingController();
+
+    _controller.clear();
+
+    showFormDialog(
+      context,
+      "Upload Bug Report",
+      key: _bugKey,
+      callback: () {
+        _sendReport(_controller.text);
+      },
+      fields: <Widget>[
+        TextField(
+          decoration: InputDecoration(
+            hintText: "Enter bug report details",
+          ),
+          keyboardType: TextInputType.multiline,
+          maxLines: null,
+          controller: _controller
+        ),
+      ]
+    );
+
   }
 }
