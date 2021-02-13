@@ -223,6 +223,21 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   int get trackingItemCount => jsondata['tracking_items'] as int ?? 0;
 
+  // Date of last update
+  String get updated => jsondata["updated"] ?? "";
+
+  DateTime get stocktakeDate {
+    if (jsondata.containsKey("stocktake_date")) {
+      if (jsondata["stocktake_date"] == null) {
+        return null;
+      }
+
+      return DateTime.tryParse(jsondata["stocktake_date"]) ?? null;
+    } else {
+      return null;
+    }
+  }
+
   String get partName {
 
     String nm = '';
