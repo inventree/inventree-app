@@ -42,6 +42,10 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   @override
   List<Widget> getAppBarActions(BuildContext context) {
     return <Widget>[
+      IconButton(
+        icon: FaIcon(FontAwesomeIcons.globe),
+        onPressed: _openInvenTreePage,
+      ),
       // TODO: Hide the 'edit' button if the user does not have permission!!
       IconButton(
         icon: FaIcon(FontAwesomeIcons.edit),
@@ -53,6 +57,10 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   _PartDisplayState(this.part) {
     // TODO
+  }
+
+  Future<void> _openInvenTreePage() async {
+    part.goToInvenTreePage();
   }
 
   InvenTreePart part;
@@ -291,7 +299,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         ListTile(
             title: Text("${part.link}"),
             leading: FaIcon(FontAwesomeIcons.link),
-            trailing: Text(""),
+            trailing: FaIcon(FontAwesomeIcons.externalLinkAlt),
             onTap: () {
               part.openLink();
             },

@@ -23,7 +23,30 @@ class InvenTreeModel {
   // Override the endpoint URL for each subclass
   String URL = "";
 
+  // Override the web URL for each subclass
+  // Note: If the WEB_URL is the same (except for /api/) as URL then just leave blank
+  String WEB_URL = "";
+
   String NAME = "Model";
+
+  String get webUrl {
+
+    if (api.isConnected()) {
+      String web = InvenTreeAPI().baseUrl;
+
+      web += WEB_URL.isNotEmpty ? WEB_URL : URL;
+
+      web += "/${pk}/";
+
+      web = web.replaceAll("//", "/");
+
+      return web;
+
+    } else {
+      return "";
+    }
+
+  }
 
   // JSON data which defines this object
   Map<String, dynamic> jsondata = {};
@@ -57,6 +80,15 @@ class InvenTreeModel {
 
   // Legacy API provided external link as "URL", while newer API uses "link"
   String get link => jsondata['link'] ?? jsondata['URL'] ?? '';
+
+  void goToInvenTreePage() async {
+
+    if (await canLaunch(webUrl)) {
+      await launch(webUrl);
+    } else {
+      // TODO
+    }
+  }
 
   void openLink() async {
 

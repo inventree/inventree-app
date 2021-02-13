@@ -55,6 +55,28 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   _StockItemDisplayState(this.item) {
   }
 
+  @override
+  List<Widget> getAppBarActions(BuildContext context) {
+    return <Widget>[
+      IconButton(
+        icon: FaIcon(FontAwesomeIcons.globe),
+        onPressed: _openInvenTreePage,
+      ),
+      // TODO: Hide the 'edit' button if the user does not have permission!!
+      /*
+      IconButton(
+        icon: FaIcon(FontAwesomeIcons.edit),
+        tooltip: I18N.of(context).edit,
+        onPressed: _editPartDialog,
+      )
+       */
+    ];
+  }
+
+  Future<void> _openInvenTreePage() async {
+    item.goToInvenTreePage();
+  }
+
   // StockItem object
   final InvenTreeStockItem item;
 
