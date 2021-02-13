@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:InvenTree/inventree/stock.dart';
+import 'package:InvenTree/widget/part_notes.dart';
 import 'package:InvenTree/widget/progress.dart';
 import 'package:InvenTree/widget/snacks.dart';
 import 'package:InvenTree/widget/stock_detail.dart';
@@ -9,8 +10,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:InvenTree/inventree/part.dart';
 import 'package:InvenTree/widget/full_screen_image.dart';
@@ -19,6 +18,7 @@ import 'package:InvenTree/widget/dialogs.dart';
 import 'package:InvenTree/widget/fields.dart';
 import 'package:InvenTree/api.dart';
 import 'package:InvenTree/widget/refreshable_state.dart';
+
 
 class PartDetailWidget extends StatefulWidget {
 
@@ -325,7 +325,13 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
             title: Text("Notes"),
             leading: FaIcon(FontAwesomeIcons.stickyNote),
             trailing: Text(""),
-            onTap: null,
+            onTap: () {
+              print("Hello");
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PartNotesWidget(part))
+              );
+            },
           )
       );
     }

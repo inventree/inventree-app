@@ -45,7 +45,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
         onPressed: () {
           showSearch(
             context: context,
-            delegate: StockSearchDelegate(filters: {"location": "${location.pk}"})
+            delegate: StockSearchDelegate(context, filters: {"location": "${location.pk}"})
           );
         }
       ),

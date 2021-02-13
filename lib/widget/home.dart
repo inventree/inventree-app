@@ -46,7 +46,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
 
     showSearch(
         context: context,
-        delegate: PartSearchDelegate()
+        delegate: PartSearchDelegate(context)
     );
   }
 
@@ -55,7 +55,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
 
     showSearch(
         context: context,
-        delegate: StockSearchDelegate()
+        delegate: StockSearchDelegate(context)
     );
   }
 

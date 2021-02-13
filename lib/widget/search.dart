@@ -1,13 +1,11 @@
 
 import 'package:InvenTree/widget/part_detail.dart';
 import 'package:InvenTree/widget/progress.dart';
-import 'package:InvenTree/widget/snacks.dart';
 import 'package:InvenTree/widget/stock_detail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:InvenTree/widget/refreshable_state.dart';
 import 'package:InvenTree/inventree/part.dart';
 import 'package:InvenTree/inventree/stock.dart';
 
@@ -19,16 +17,21 @@ class PartSearchDelegate extends SearchDelegate<InvenTreePart> {
 
   final key = GlobalKey<ScaffoldState>();
 
+  BuildContext context;
+
   bool _searching = false;
 
   // Custom filters for the part search
   Map<String, String> filters = {};
 
-  PartSearchDelegate({this.filters}) {
+  PartSearchDelegate(this.context, {this.filters}) {
     if (filters == null) {
       filters = {};
     }
   }
+
+  @override
+  String get searchFieldLabel => I18N.of(context).searchParts;
 
   // List of part results
   List<InvenTreePart> partResults = [];
@@ -184,16 +187,21 @@ class StockSearchDelegate extends SearchDelegate<InvenTreeStockItem> {
 
   final key = GlobalKey<ScaffoldState>();
 
+  final BuildContext context;
+
   bool _searching = false;
 
   // Custom filters for the stock item search
   Map<String, String> filters;
 
-  StockSearchDelegate({this.filters}) {
+  StockSearchDelegate(this.context, {this.filters}) {
     if (filters == null) {
       filters = {};
     }
   }
+
+  @override
+  String get searchFieldLabel => I18N.of(context).searchStock;
 
   // List of StockItem results
   List<InvenTreeStockItem> itemResults = [];

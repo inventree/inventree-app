@@ -102,6 +102,9 @@ class InvenTreeStockItem extends InvenTreeModel {
   String URL = "stock/";
 
   @override
+  String WEB_URL = "stock/item/";
+
+  @override
   Map<String, String> defaultGetFilters() {
 
     var headers = new Map<String, String>();

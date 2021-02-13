@@ -46,7 +46,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
           onPressed: () {
             showSearch(
                 context: context,
-                delegate: PartSearchDelegate(filters: {"category": "${category.pk}"})
+                delegate: PartSearchDelegate(context, filters: {"category": "${category.pk}"})
             );
           }
       ),

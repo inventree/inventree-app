@@ -39,7 +39,7 @@ class InvenTreeDrawer extends StatelessWidget {
 
     showSearch(
       context: context,
-      delegate: PartSearchDelegate()
+      delegate: PartSearchDelegate(context)
     );
 
     //Navigator.push(context, MaterialPageRoute(builder: (context) => SearchWidget()));
@@ -115,9 +115,12 @@ class InvenTreeDrawer extends StatelessWidget {
                   leading: Image.asset(
                     "assets/image/icon.png",
                     fit: BoxFit.scaleDown,
-                    width: 40,
+                    width: 30,
                   ),
-                  title: Text(I18N.of(context).appTitle),
+                  title: Text(
+                    I18N.of(context).appTitle,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   onTap: _home,
                 ),
                 ListTile(

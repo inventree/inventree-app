@@ -12,6 +12,7 @@ import 'package:InvenTree/widget/progress.dart';
 import 'package:InvenTree/widget/refreshable_state.dart';
 import 'package:InvenTree/widget/snacks.dart';
 import 'package:InvenTree/widget/stock_item_test_results.dart';
+import 'package:InvenTree/widget/stock_notes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -19,13 +20,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:InvenTree/api.dart';
 
-import 'package:InvenTree/widget/drawer.dart';
-import 'package:InvenTree/widget/refreshable_state.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:http/http.dart';
 
 class StockDetailWidget extends StatefulWidget {
 
@@ -429,7 +425,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     }
 
-
+    // Stocktake?
 
     // Supplier part?
     // TODO: Display supplier part info page?
@@ -499,6 +495,10 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           leading: FaIcon(FontAwesomeIcons.stickyNote),
           trailing: Text(""),
           onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => StockNotesWidget(item))
+            );
             // TODO: Load notes in markdown viewer widget
             // TODO: Make this widget editable?
           }
