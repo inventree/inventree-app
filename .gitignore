@@ -12,6 +12,9 @@
 # Sentry API key
 lib/dsn.dart
 
+# App signing key
+android/key.properties
+
 # IntelliJ related
 *.iml
 *.ipr
