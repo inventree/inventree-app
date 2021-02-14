@@ -1,6 +1,10 @@
 ## 0.1.0 - February 2021
 ---
-This is the initial release of the InvenTree app. Available features as described below:
+This is the initial release of the InvenTree app.
+
+InvenTree documentation available at https://inventree.rtfd.io
+
+Available features as described below:
 
 - Initial app version release
 - Navigate through Part tree

@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'login.dart';
 
@@ -28,6 +29,8 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _bugKey = GlobalKey<FormState>();
+
+  final String docsUrl = "https://inventree.rtfd.io";
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +58,15 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
               ),
 
               ListTile(
+                title: Text(I18N.of(context).documentation),
+                subtitle: Text(docsUrl),
+                leading: FaIcon(FontAwesomeIcons.book),
+                onTap: () {
+                  _openDocs();
+                },
+              ),
+
+              ListTile(
                 title: Text(I18N.of(context).reportBug),
                 subtitle: Text("Report bug or suggest new feature"),
                 leading: FaIcon(FontAwesomeIcons.bug),
@@ -65,6 +77,13 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
         )
       )
     );
+  }
+
+
+  void _openDocs() async {
+    if (await canLaunch(docsUrl)) {
+      await launch(docsUrl);
+    }
   }
 
   void _editServerSettings() async {
