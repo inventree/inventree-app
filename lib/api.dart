@@ -211,7 +211,7 @@ class InvenTreeAPI {
         showTimeoutError(context);
         return null;
       } else {
-        // Unknown error type - re-throw the error and Sentry will catch it
+        // Unknown error type - re-throw
         throw error;
       }
     });

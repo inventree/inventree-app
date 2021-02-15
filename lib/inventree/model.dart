@@ -156,7 +156,7 @@ class InvenTreeModel {
           else if (e is TimeoutException) {
             showTimeoutError(context);
           } else {
-            // Re-throw the error (Sentry will catch)
+            // Re-throw the error
             throw e;
           }
 
@@ -202,7 +202,7 @@ class InvenTreeModel {
           } else if (e is TimeoutException) {
             showTimeoutError(context);
           } else {
-            // Re-throw the error, let Sentry report it
+            // Re-throw the error
             throw e;
           }
 
@@ -253,7 +253,7 @@ class InvenTreeModel {
           else if (e is TimeoutException) {
             showTimeoutError(context);
           } else {
-            // Re-throw the error (handled by Sentry)
+            // Re-throw the error
             throw e;
           }
           return null;
@@ -301,7 +301,7 @@ class InvenTreeModel {
       else if (e is TimeoutException) {
         showTimeoutError(context);
       } else {
-        // Re-throw the error (Sentry will catch)
+        // Re-throw the error
         throw e;
       }
 
