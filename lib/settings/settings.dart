@@ -30,7 +30,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _bugKey = GlobalKey<FormState>();
 
-  final String docsUrl = "https://inventree.rtfd.io";
+  final String docsUrl = "https://inventree.readthedocs.io/en/latest/app/app/";
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +59,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
 
               ListTile(
                 title: Text(I18N.of(context).documentation),
-                subtitle: Text(docsUrl),
+                subtitle: Text("https://inventree.readthedocs.io"),
                 leading: FaIcon(FontAwesomeIcons.book),
                 onTap: () {
                   _openDocs();
