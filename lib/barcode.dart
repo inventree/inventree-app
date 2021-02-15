@@ -28,6 +28,8 @@ class BarcodeHandler {
    * based on the response returned from the InvenTree server
    */
 
+    String getOverlayText(BuildContext context) => "Barcode Overlay";
+
     BarcodeHandler();
 
     QRViewController _controller;
@@ -133,6 +135,9 @@ class BarcodeScanHandler extends BarcodeHandler {
    */
 
   @override
+  String getOverlayText(BuildContext context) => I18N.of(context).barcodeScanGeneral;
+
+  @override
   Future<void> onBarcodeUnknown(Map<String, dynamic> data) {
     showErrorDialog(
         _context,
@@ -219,6 +224,9 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
   final InvenTreeStockItem item;
 
   StockItemBarcodeAssignmentHandler(this.item);
+
+  @override
+  String getOverlayText(BuildContext context) => I18N.of(context).barcodeScanAssign;
 
   @override
   Future<void> onBarcodeMatched(Map<String, dynamic> data) {
@@ -324,7 +332,7 @@ class _QRViewState extends State<InvenTreeQRView> {
     this.context = context;
 
     return Scaffold(
-      body: Column(
+      body: Stack(
         children: <Widget>[
           Expanded(
             flex: 4,
@@ -338,6 +346,21 @@ class _QRViewState extends State<InvenTreeQRView> {
                 borderWidth: 10,
                 cutOutSize: 300,
               ),
+            )
+          ),
+          Center(
+            child: Column(
+              children: [
+                Spacer(),
+                Padding(
+                  child: Text(_handler.getOverlayText(context),
+                    style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+                  ),
+                  padding: EdgeInsets.all(20),
+                ),
+              ]
             )
           )
         ],
@@ -355,6 +378,9 @@ class StockItemScanIntoLocationHandler extends BarcodeHandler {
   final InvenTreeStockItem item;
 
   StockItemScanIntoLocationHandler(this.item);
+
+  @override
+  String getOverlayText(BuildContext context) => I18N.of(context).barcodeScanLocation;
 
   @override
   Future<void> onBarcodeMatched(Map<String, dynamic> data) {

@@ -207,10 +207,13 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
             icon: FaIcon(FontAwesomeIcons.boxes),
             label: I18N.of(context).stock,
           ),
+          // TODO - Add in actions when they are written...
+          /*
           BottomNavigationBarItem(
             icon: FaIcon(FontAwesomeIcons.wrench),
             label: I18N.of(context).actions,
           )
+           */
         ]
     );
   }
@@ -225,7 +228,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
         return ListView(
           children: stockTiles(),
         );
-      case 1:
+      case 2:
         return ListView(
           children: ListTile.divideTiles(
             context: context,
