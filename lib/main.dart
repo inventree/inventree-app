@@ -5,17 +5,14 @@ import 'package:InvenTree/inventree/sentry.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:InvenTree/api.dart';
 import 'package:InvenTree/widget/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:one_context/one_context.dart';
 
 import 'dsn.dart';
 
 import 'package:sentry_flutter/sentry_flutter.dart';
-
-
-
 
 
 void main() async {
@@ -58,6 +55,8 @@ class InvenTreeApp extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return MaterialApp(
+      builder: OneContext().builder,
+      navigatorKey: OneContext().key,
       onGenerateTitle: (BuildContext context) => I18N.of(context).appTitle,
       theme: ThemeData(
         primarySwatch: Colors.lightBlue,

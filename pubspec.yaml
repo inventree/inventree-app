@@ -7,7 +7,7 @@ description: InvenTree stock management
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 0.1.0
+version: 0.1.0+2
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -37,6 +37,7 @@ dependencies:
   camera:
   path_provider: ^1.6.27                  # Local file storage
   sembast: ^2.4.9                         # NoSQL data storage
+  one_context: ^0.5.0                     # Dialogs without requiring context
   path:
 
 dev_dependencies:

@@ -1,9 +1,12 @@
 import 'dart:io';
 
 import 'package:device_info/device_info.dart';
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info/package_info.dart';
-
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:one_context/one_context.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../api.dart';
 
@@ -81,22 +84,7 @@ bool isInDebugMode() {
   return inDebugMode;
 }
 
-
-Future<void> sentryReportError(dynamic error, dynamic stackTrace) async {
-
-  print('Caught error: $error');
-
-  // Errors thrown in development mode are unlikely to be interesting. You can
-  // check if you are running in dev mode using an assertion and omit sending
-  // the report.
-  if (isInDebugMode()) {
-    print(stackTrace);
-    print('In dev mode. Not sending report to Sentry.io.');
-    return;
-  }
-
-  print('Reporting to Sentry.io...');
-
+Future<void> _uploadErrorReport(dynamic error, dynamic stackTrace) async {
   final server_info = getServerInfo();
   final app_info = await getAppInfo();
   final device_info = await getDeviceInfo();
@@ -113,6 +101,45 @@ Future<void> sentryReportError(dynamic error, dynamic stackTrace) async {
   }).then((response) {
     print("Uploaded information to Sentry.io : ${response.toString()}");
   });
+}
+
+
+Future<void> sentryReportError(dynamic error, dynamic stackTrace) async {
+
+  print('Intercepted error: $error');
+  print(stackTrace);
+
+  // Errors thrown in development mode are unlikely to be interesting. You can
+  // check if you are running in dev mode using an assertion and omit sending
+  // the report.
+  if (isInDebugMode()) {
+
+    print('In dev mode. Not sending report to Sentry.io.');
+    return;
+  }
+
+  await OneContext().showDialog(
+    builder: (context) => AlertDialog(
+      title: ListTile(
+        title: Text(I18N.of(OneContext().context).error),
+        leading: FaIcon(FontAwesomeIcons.exclamationCircle),
+        subtitle: Text("An error occurred"),
+      ),
+      actions: [
+        FlatButton(
+          child: Text("Upload Error Report"),
+          onPressed: () {
+            _uploadErrorReport(error, stackTrace);
+            OneContext().pop();
+          },
+        )
+      ],
+      content: Text(error.toString()),
+    )
+  );
+
+  return;
+
 }
 
 
