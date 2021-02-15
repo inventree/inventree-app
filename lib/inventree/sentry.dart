@@ -85,6 +85,16 @@ bool isInDebugMode() {
 }
 
 Future<void> _uploadErrorReport(dynamic error, dynamic stackTrace) async {
+
+  // Errors thrown in development mode are unlikely to be interesting. You can
+  // check if you are running in dev mode using an assertion and omit sending
+  // the report.
+  if (isInDebugMode()) {
+
+    print('In dev mode. Not sending report to Sentry.io.');
+    return;
+  }
+
   final server_info = getServerInfo();
   final app_info = await getAppInfo();
   final device_info = await getDeviceInfo();
@@ -108,15 +118,6 @@ Future<void> sentryReportError(dynamic error, dynamic stackTrace) async {
 
   print('Intercepted error: $error');
   print(stackTrace);
-
-  // Errors thrown in development mode are unlikely to be interesting. You can
-  // check if you are running in dev mode using an assertion and omit sending
-  // the report.
-  if (isInDebugMode()) {
-
-    print('In dev mode. Not sending report to Sentry.io.');
-    return;
-  }
 
   await OneContext().showDialog(
     builder: (context) => AlertDialog(

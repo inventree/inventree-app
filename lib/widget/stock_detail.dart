@@ -119,7 +119,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     _quantityController.clear();
     _notesController.clear();
 
-    showFormDialog(context, I18N.of(context).addStock,
+    showFormDialog( I18N.of(context).addStock,
       key: _addStockKey,
       actions: <Widget>[
         FlatButton(
@@ -173,7 +173,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     _quantityController.clear();
     _notesController.clear();
 
-    showFormDialog(context, I18N.of(context).removeStock,
+    showFormDialog(I18N.of(context).removeStock,
         key: _removeStockKey,
         actions: <Widget>[
           FlatButton(
@@ -219,7 +219,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     _quantityController.text = item.quantityString;
     _notesController.clear();
 
-    showFormDialog(context, I18N.of(context).countStock,
+    showFormDialog(I18N.of(context).countStock,
       key: _countStockKey,
       actions: <Widget> [
         FlatButton(
@@ -273,7 +273,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     _quantityController.text = "${item.quantityString}";
 
-    showFormDialog(context, I18N.of(context).transferStock,
+    showFormDialog(I18N.of(context).transferStock,
         key: _moveStockKey,
         actions: <Widget>[
           FlatButton(

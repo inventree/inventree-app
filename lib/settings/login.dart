@@ -53,7 +53,6 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     }
 
     showFormDialog(
-      context,
       I18N.of(context).profileAdd,
       key: _addProfileKey,
       actions: <Widget> [

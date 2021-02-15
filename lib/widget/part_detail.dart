@@ -108,7 +108,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     var _keywords;
     var _link;
 
-    showFormDialog(context, I18N.of(context).editPart,
+    showFormDialog(I18N.of(context).editPart,
       key: _editPartKey,
       callback: () {
         _savePart({

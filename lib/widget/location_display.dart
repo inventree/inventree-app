@@ -75,7 +75,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     var _name;
     var _description;
 
-    showFormDialog(context, I18N.of(context).editLocation,
+    showFormDialog(I18N.of(context).editLocation,
       key: _editLocationKey,
       callback: () {
         _editLocation({

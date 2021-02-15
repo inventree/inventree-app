@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
+import 'package:one_context/one_context.dart';
 
 Future<void> confirmationDialog(BuildContext context, String title, String text, {String acceptText, String rejectText, Function onAccept, Function onReject}) async {
 
@@ -56,6 +56,7 @@ void showMessage(BuildContext context, String message) {
     content: Text(message),
   ));
 }
+
 
 Future<void> showInfoDialog(BuildContext context, String title, String description, {IconData icon = FontAwesomeIcons.info, String info, Function onDismissed}) async {
 
@@ -160,42 +161,42 @@ void hideProgressDialog(BuildContext context) {
   Navigator.pop(context);
 }
 
-void showFormDialog(BuildContext context, String title, {GlobalKey<FormState> key, List<Widget> fields, List<Widget> actions, Function callback}) {
+void showFormDialog(String title, {GlobalKey<FormState> key, List<Widget> fields, List<Widget> actions, Function callback}) {
+
+  BuildContext dialogContext;
 
   // Undefined actions = OK + Cancel
   if (actions == null) {
     actions = <Widget>[
       FlatButton(
-        child: Text(I18N.of(context).cancel),
+        child: Text(I18N.of(OneContext().context).cancel),
         onPressed: () {
           // Close the form
-          Navigator.pop(context);
+          Navigator.of(OneContext().context).pop();
         }
       ),
       FlatButton(
-        child: Text(I18N.of(context).save),
+        child: Text(I18N.of(OneContext().context).save),
         onPressed: () {
           if (key.currentState.validate()) {
             key.currentState.save();
 
             // Close the dialog
-            Navigator.pop(context);
+            Navigator.pop(OneContext().context);
 
             // Callback
             if (callback != null) {
               callback();
             }
-            
-
           }
         }
       )
     ];
   }
 
-  showDialog(
-    context: context,
+  OneContext().showDialog(
     builder: (BuildContext context) {
+      dialogContext = context;
       return AlertDialog(
           title: Text(title),
           actions: actions,

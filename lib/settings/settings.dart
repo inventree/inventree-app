@@ -119,7 +119,6 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
     _controller.clear();
 
     showFormDialog(
-      context,
       "Upload Bug Report",
       key: _bugKey,
       callback: () {

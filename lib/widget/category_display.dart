@@ -77,7 +77,6 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
     var _description;
 
     showFormDialog(
-      context,
       I18N.of(context).editCategory,
       key: _editCategoryKey,
       callback: () {

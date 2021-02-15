@@ -55,7 +55,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
     var _description;
     var _website;
 
-    showFormDialog(context, I18N.of(context).edit,
+    showFormDialog(I18N.of(context).edit,
         key: _editCompanyKey,
         actions: <Widget>[
           FlatButton(
