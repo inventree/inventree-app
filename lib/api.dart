@@ -111,16 +111,11 @@ class InvenTreeAPI {
   bool checkConnection(BuildContext context) {
     // Firstly, is the server connected?
     if (!isConnected()) {
-      showDialog(
-          context: context,
-          child: new SimpleDialog(
-              title: new Text(I18N.of(context).notConnected),
-              children: <Widget>[
-                ListTile(
-                  title: Text(I18N.of(context).serverNotConnected),
-                )
-              ]
-          )
+
+      showSnackIcon(
+        I18N.of(context).notConnected,
+        success: false,
+        icon: FontAwesomeIcons.server
       );
 
       return false;
