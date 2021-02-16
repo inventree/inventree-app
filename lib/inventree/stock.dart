@@ -447,7 +447,7 @@ class InvenTreeStockItem extends InvenTreeModel {
             error.toString()
         );
       } else {
-        // Re-throw the error, let sentry handle it!
+        // Re-throw the error
         throw error;
       }
 
