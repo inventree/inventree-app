@@ -53,12 +53,6 @@ Future<void> confirmationDialog(String title, String text, {String acceptText, S
   );
 }
 
-void showMessage(BuildContext context, String message) {
-  Scaffold.of(context).showSnackBar(SnackBar(
-    content: Text(message),
-  ));
-}
-
 
 Future<void> showInfoDialog(BuildContext context, String title, String description, {IconData icon = FontAwesomeIcons.info, String info, Function onDismissed}) async {
 
@@ -145,25 +139,6 @@ Future<void> showStatusCodeError(int status, {int expected = 200}) async {
 Future<void> showTimeoutError(BuildContext context) async {
 
   await showServerError(I18N.of(context).timeout, I18N.of(context).noResponse);
-}
-
-void showProgressDialog(BuildContext context, String title, String description) {
-
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    child: SimpleDialog(
-      title: Text(title),
-      children: <Widget>[
-        CircularProgressIndicator(),
-        Text(description),
-      ],
-    )
-  );
-}
-
-void hideProgressDialog(BuildContext context) {
-  Navigator.pop(context);
 }
 
 void showFormDialog(String title, {GlobalKey<FormState> key, List<Widget> fields, List<Widget> actions, Function callback}) {
