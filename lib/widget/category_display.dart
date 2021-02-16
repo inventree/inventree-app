@@ -40,22 +40,40 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
   @override
   List<Widget> getAppBarActions(BuildContext context) {
-    return <Widget>[
-      IconButton(
+
+    List<Widget> actions = [];
+
+    actions.add(
+        IconButton(
           icon: FaIcon(FontAwesomeIcons.search),
           onPressed: () {
+
+            Map<String, String> filters = {};
+
+            if (category != null) {
+              filters["category"] = "${category.pk}";
+            }
+
             showSearch(
                 context: context,
-                delegate: PartSearchDelegate(context, filters: {"category": "${category.pk}"})
+                delegate: PartSearchDelegate(context, filters: filters)
             );
           }
-      ),
-      IconButton(
-        icon: FaIcon(FontAwesomeIcons.edit),
-        tooltip: I18N.of(context).edit,
-        onPressed: _editCategoryDialog,
-      ),
-    ];
+        )
+    );
+
+    if (category != null) {
+      actions.add(
+        IconButton(
+          icon: FaIcon(FontAwesomeIcons.edit),
+          tooltip: I18N.of(context).edit,
+          onPressed: _editCategoryDialog,
+        )
+      );
+    }
+
+    return actions;
+
   }
 
   void _editCategory(Map<String, String> values) async {
@@ -63,7 +81,6 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
     final bool result = await category.update(context, values: values);
 
     showSnackIcon(
-      refreshableKey,
       result ? "Category edited" : "Category editing failed",
       success: result
     );

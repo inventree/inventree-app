@@ -39,22 +39,39 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
   @override
   List<Widget> getAppBarActions(BuildContext context) {
-    return <Widget>[
+
+    List<Widget> actions = [];
+
+    actions.add(
       IconButton(
         icon: FaIcon(FontAwesomeIcons.search),
         onPressed: () {
+
+          Map<String, String> filters = {};
+
+          if (location != null) {
+            filters["location"] = "${location.pk}";
+          }
+
           showSearch(
             context: context,
-            delegate: StockSearchDelegate(context, filters: {"location": "${location.pk}"})
+            delegate: StockSearchDelegate(context, filters: filters)
           );
         }
       ),
-      IconButton(
-        icon: FaIcon(FontAwesomeIcons.edit),
-        tooltip: I18N.of(context).edit,
-        onPressed: _editLocationDialog,
-      )
-    ];
+    );
+
+    if (location != null) {
+      actions.add(
+        IconButton(
+          icon: FaIcon(FontAwesomeIcons.edit),
+          tooltip: I18N.of(context).edit,
+          onPressed: _editLocationDialog,
+        )
+      );
+    }
+
+    return actions;
   }
 
   void _editLocation(Map<String, String> values) async {
@@ -62,7 +79,6 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     final bool result = await location.update(context, values: values);
 
     showSnackIcon(
-      refreshableKey,
       result ? "Location edited" : "Location editing failed",
       success: result
     );
