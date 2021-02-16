@@ -5,48 +5,49 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:one_context/one_context.dart';
 
-Future<void> confirmationDialog(BuildContext context, String title, String text, {String acceptText, String rejectText, Function onAccept, Function onReject}) async {
+Future<void> confirmationDialog(String title, String text, {String acceptText, String rejectText, Function onAccept, Function onReject}) async {
 
   if (acceptText == null || acceptText.isEmpty) {
-    acceptText = I18N.of(context).ok;
+    acceptText = I18N.of(OneContext().context).ok;
   }
 
   if (rejectText == null || rejectText.isEmpty) {
-    rejectText = I18N.of(context).cancel;
+    rejectText = I18N.of(OneContext().context).cancel;
   }
 
-  AlertDialog dialog = AlertDialog(
-    title: ListTile(
-      title: Text(title),
-      leading: FaIcon(FontAwesomeIcons.questionCircle),
-    ),
-    content: Text(text),
-    actions: [
-      FlatButton(
-        child: Text(rejectText),
-        onPressed: () {
-          Navigator.of(context, rootNavigator: true).pop();
-          if (onReject != null) {
-            onReject();
-          }
-        }
-      ),
-      FlatButton(
-        child: Text(acceptText),
-        onPressed: () {
-          Navigator.of(context, rootNavigator: true).pop();
-          if (onAccept != null) {
-            onAccept();
-          }
-        }
-      )
-    ],
-  );
-
-  showDialog(
-    context: context,
+  OneContext().showDialog(
     builder: (BuildContext context) {
-      return dialog;
+      return AlertDialog(
+        title: ListTile(
+          title: Text(title),
+          leading: FaIcon(FontAwesomeIcons.questionCircle),
+        ),
+        content: Text(text),
+        actions: [
+          FlatButton(
+            child: Text(rejectText),
+            onPressed: () {
+              // Close this dialog
+              Navigator.pop(context);
+
+              if (onReject != null) {
+                onReject();
+              }
+            }
+          ),
+          FlatButton(
+            child: Text(acceptText),
+            onPressed: () {
+              // Close this dialog
+              Navigator.pop(context);
+
+              if (onAccept != null) {
+                onAccept();
+              }
+            },
+          )
+        ]
+      );
     }
   );
 }
@@ -171,8 +172,10 @@ void showFormDialog(String title, {GlobalKey<FormState> key, List<Widget> fields
       FlatButton(
         child: Text(I18N.of(OneContext().context).cancel),
         onPressed: () {
+
+          print("cancel and close the dialog");
           // Close the form
-          Navigator.of(OneContext().context).pop();
+          Navigator.pop(dialogContext);
         }
       ),
       FlatButton(
@@ -181,8 +184,10 @@ void showFormDialog(String title, {GlobalKey<FormState> key, List<Widget> fields
           if (key.currentState.validate()) {
             key.currentState.save();
 
+            print("Saving and closing the dialog");
+
             // Close the dialog
-            Navigator.pop(OneContext().context);
+            Navigator.pop(dialogContext);
 
             // Callback
             if (callback != null) {

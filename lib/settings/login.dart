@@ -55,43 +55,28 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     showFormDialog(
       I18N.of(context).profileAdd,
       key: _addProfileKey,
-      actions: <Widget> [
-        FlatButton(
-          child: Text(I18N.of(context).cancel),
-          onPressed: () {
-            Navigator.of(context).pop();
+      callback: () {
+          if (createNew) {
+            // TODO - create the new profile...
+            UserProfile profile = UserProfile(
+              name: _name,
+              server: _server,
+              username: _username,
+              password: _password
+            );
+
+            _addProfile(profile);
+          } else {
+
+            profile.name = _name;
+            profile.server = _server;
+            profile.username = _username;
+            profile.password = _password;
+
+            _updateProfile(profile);
+
           }
-        ),
-        FlatButton(
-          child: Text(I18N.of(context).save),
-          onPressed: () {
-            if (_addProfileKey.currentState.validate()) {
-              _addProfileKey.currentState.save();
-
-              if (createNew) {
-                // TODO - create the new profile...
-                UserProfile profile = UserProfile(
-                  name: _name,
-                  server: _server,
-                  username: _username,
-                  password: _password
-                );
-
-                _addProfile(profile);
-              } else {
-
-                profile.name = _name;
-                profile.server = _server;
-                profile.username = _username;
-                profile.password = _password;
-
-                _updateProfile(profile);
-
-              }
-            }
-          }
-        )
-      ],
+      },
       fields: <Widget> [
         StringField(
           label: I18N.of(context).name,
@@ -188,9 +173,6 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
 
     await UserProfileDBManager().deleteProfile(profile);
 
-    // Close the dialog
-    Navigator.of(context).pop();
-
     _reload();
 
     if (InvenTreeAPI().isConnected() && profile.key == InvenTreeAPI().profile.key) {
@@ -201,9 +183,6 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
   void _updateProfile(UserProfile profile) async {
 
     await UserProfileDBManager().updateProfile(profile);
-
-    // Dismiss the dialog
-    Navigator.of(context).pop();
 
     _reload();
 
@@ -219,9 +198,6 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
   void _addProfile(UserProfile profile) async {
 
     await UserProfileDBManager().addProfile(profile);
-
-    // Dismiss the create dialog
-    Navigator.of(context).pop();
 
     _reload();
   }
@@ -303,9 +279,9 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
                       ),
                       SimpleDialogOption(
                         onPressed: () {
+                          Navigator.of(context).pop();
                           // Navigator.of(context, rootNavigator: true).pop();
                           confirmationDialog(
-                              context,
                               I18N.of(context).delete,
                               "Delete this profile?",
                               onAccept: () {
