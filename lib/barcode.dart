@@ -1,7 +1,9 @@
 import 'package:InvenTree/widget/dialogs.dart';
+import 'package:InvenTree/widget/snacks.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:one_context/one_context.dart';
 
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
@@ -139,6 +141,19 @@ class BarcodeScanHandler extends BarcodeHandler {
 
   @override
   Future<void> onBarcodeUnknown(Map<String, dynamic> data) {
+
+    showSnackIcon(
+        "No barcode",
+        icon: FontAwesomeIcons.exclamationCircle,
+        onTap: () {
+          print("Tappity");
+        },
+        success: true,
+    );
+
+    _controller.resumeCamera();
+
+    /*
     showErrorDialog(
         _context,
         data['error'] ?? '',
@@ -149,6 +164,8 @@ class BarcodeScanHandler extends BarcodeHandler {
           _controller.resumeCamera();
         }
     );
+
+     */
   }
 
   @override
@@ -385,14 +402,7 @@ class StockItemScanIntoLocationHandler extends BarcodeHandler {
   @override
   Future<void> onBarcodeMatched(Map<String, dynamic> data) {
     // If the barcode points to a 'stocklocation', great!
-    if (!data.containsKey('stocklocation')) {
-      showErrorDialog(
-          _context,
-          "Invalid Barcode",
-          "Barcode does not match a Stock Location",
-          onDismissed: _controller.resumeCamera,
-      );
-     } else {
+    if (data.containsKey('stocklocation')) {
       // Extract location information
       int location = data['stocklocation']['pk'] as int;
 
@@ -402,7 +412,31 @@ class StockItemScanIntoLocationHandler extends BarcodeHandler {
         _controller.dispose();
         Navigator.of(_context).pop();
       });
+    } else {
+      // Display a snack bar with the error
+      OneContext().showSnackBar(builder: (context) => SnackBar(
+        content: Text("This was not a stock item!")
+      ));
     }
+  }
+}
+
+
+class StockLocationScanInItemsHandler extends BarcodeHandler {
+  /**
+   * Barcode handler for scanning stock item(s) into the specified StockLocation
+   */
+  
+  final InvenTreeStockLocation location;
+  
+  StockLocationScanInItemsHandler(this.location);
+  
+  @override
+  String getOverlayText(BuildContext context) => I18N.of(context).barcodeScanItem;
+  
+  @override
+  Future<void> onBarcodeMatched(Map<String, dynamic> data) {
+    print("TODO, YO!");
   }
 }
 

@@ -91,7 +91,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     final bool result = await part.update(context, values: values);
 
     showSnackIcon(
-      refreshableKey,
       result ? "Part edited" : "Part editing failed",
       success: result
     );

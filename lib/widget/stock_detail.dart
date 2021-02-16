@@ -148,7 +148,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   void _stockUpdateMessage(bool result) {
 
     showSnackIcon(
-      refreshableKey,
       result ? "Stock item updated" : "Stock item updated failed",
       success: result
     );

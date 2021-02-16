@@ -56,7 +56,6 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
     );
 
     showSnackIcon(
-      refreshableKey,
       success ? "Test result uploaded" : "Could not upload test result",
       success: success
     );
