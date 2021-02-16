@@ -486,7 +486,7 @@ class InvenTreeStockItem extends InvenTreeModel {
     return result;
   }
 
-  Future<http.Response> transferStock(int location, {double quantity, String notes}) async {
+  Future<bool> transferStock(int location, {double quantity, String notes}) async {
     if (quantity == null) {} else
     if ((quantity < 0) || (quantity > this.quantity)) {
       quantity = this.quantity;
@@ -504,7 +504,9 @@ class InvenTreeStockItem extends InvenTreeModel {
       data["item"]["quantity"] = "${quantity}";
     }
 
-    return api.post("/stock/transfer/", body: data);
+    final response = await api.post("/stock/transfer/", body: data);
+
+    return (response.statusCode == 200);
   }
 }
 

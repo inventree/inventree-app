@@ -267,6 +267,116 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
 }
 
 
+
+
+
+class StockItemScanIntoLocationHandler extends BarcodeHandler {
+  /**
+   * Barcode handler for scanning a provided StockItem into a scanned StockLocation
+   */
+
+  final InvenTreeStockItem item;
+
+  StockItemScanIntoLocationHandler(this.item);
+
+  @override
+  String getOverlayText(BuildContext context) => I18N.of(context).barcodeScanLocation;
+
+  @override
+  Future<void> onBarcodeMatched(Map<String, dynamic> data) async {
+    // If the barcode points to a 'stocklocation', great!
+    if (data.containsKey('stocklocation')) {
+      // Extract location information
+      int location = data['stocklocation']['pk'] as int;
+
+      // Transfer stock to specified location
+      final result = await item.transferStock(location);
+
+      if (result) {
+        // Close the scanner
+        _controller.dispose();
+        Navigator.of(_context).pop();
+
+        showSnackIcon(
+          I18N.of(OneContext().context).barcodeScanIntoLocationSuccess,
+          success: true,
+        );
+      } else {
+        showSnackIcon(
+          I18N.of(OneContext().context).barcodeScanIntoLocationFailure,
+          success: false
+        );
+      }
+    } else {
+      showSnackIcon(
+        I18N.of(OneContext().context).invalidStockLocation,
+        success: false,
+      );
+    }
+  }
+}
+
+
+class StockLocationScanInItemsHandler extends BarcodeHandler {
+  /**
+   * Barcode handler for scanning stock item(s) into the specified StockLocation
+   */
+  
+  final InvenTreeStockLocation location;
+  
+  StockLocationScanInItemsHandler(this.location);
+  
+  @override
+  String getOverlayText(BuildContext context) => I18N.of(context).barcodeScanItem;
+
+  @override
+  Future<void> onBarcodeMatched(Map<String, dynamic> data) async {
+
+    // Returned barcode must match a stock item
+    if (data.containsKey('stockitem')) {
+
+      int item_id = data['stockitem']['pk'] as int;
+
+      final InvenTreeStockItem item = await InvenTreeStockItem().get(_context, item_id);
+
+      if (item == null) {
+        showSnackIcon(
+          I18N.of(OneContext().context).invalidStockItem,
+          success: false,
+        );
+      } else if (item.locationId == location.pk) {
+        showSnackIcon(
+          I18N.of(OneContext().context).itemInLocation,
+          success: true
+        );
+      }
+
+      else {
+        final result = await item.transferStock(location.pk);
+
+        if (result) {
+          showSnackIcon(
+            I18N.of(OneContext().context).barcodeScanIntoLocationSuccess,
+            success: true
+          );
+        } else {
+          showSnackIcon(
+            I18N.of(OneContext().context).barcodeScanIntoLocationFailure,
+            success: false
+          );
+        }
+      }
+    } else {
+      // Does not match a valid stock item!
+      showSnackIcon(
+        I18N.of(OneContext().context).invalidStockItem,
+        success: false,
+      );
+    }
+  }
+}
+
+
 class InvenTreeQRView extends StatefulWidget {
 
   final BarcodeHandler _handler;
@@ -311,106 +421,42 @@ class _QRViewState extends State<InvenTreeQRView> {
     this.context = context;
 
     return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          Expanded(
-            flex: 4,
-            child: QRView(
-              key: qrKey,
-              onQRViewCreated: _onViewCreated,
-              overlay: QrScannerOverlayShape(
-                borderColor: Colors.red,
-                borderRadius: 10,
-                borderLength: 30,
-                borderWidth: 10,
-                cutOutSize: 300,
-              ),
-            )
-          ),
-          Center(
-            child: Column(
-              children: [
-                Spacer(),
-                Padding(
-                  child: Text(_handler.getOverlayText(context),
-                    style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
+        body: Stack(
+          children: <Widget>[
+            Expanded(
+                flex: 4,
+                child: QRView(
+                  key: qrKey,
+                  onQRViewCreated: _onViewCreated,
+                  overlay: QrScannerOverlayShape(
+                    borderColor: Colors.red,
+                    borderRadius: 10,
+                    borderLength: 30,
+                    borderWidth: 10,
+                    cutOutSize: 300,
                   ),
-                  padding: EdgeInsets.all(20),
-                ),
-              ]
+                )
+            ),
+            Center(
+                child: Column(
+                    children: [
+                      Spacer(),
+                      Padding(
+                        child: Text(_handler.getOverlayText(context),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                        padding: EdgeInsets.all(20),
+                      ),
+                    ]
+                )
             )
-          )
-        ],
-      )
+          ],
+        )
     );
   }
 }
-
-
-class StockItemScanIntoLocationHandler extends BarcodeHandler {
-  /**
-   * Barcode handler for scanning a provided StockItem into a scanned StockLocation
-   */
-
-  final InvenTreeStockItem item;
-
-  StockItemScanIntoLocationHandler(this.item);
-
-  @override
-  String getOverlayText(BuildContext context) => I18N.of(context).barcodeScanLocation;
-
-  @override
-  Future<void> onBarcodeMatched(Map<String, dynamic> data) {
-    // If the barcode points to a 'stocklocation', great!
-    if (data.containsKey('stocklocation')) {
-      // Extract location information
-      int location = data['stocklocation']['pk'] as int;
-
-      // Transfer stock to specified location
-      item.transferStock(location).then((response) {
-        print("Response: ${response.statusCode}");
-
-        // Close the scanner
-        _controller.dispose();
-        Navigator.of(_context).pop();
-
-        showSnackIcon(
-          I18N.of(OneContext().context).barcodeScanIntoLocationSuccess,
-          success: true,
-        );
-
-      });
-    } else {
-      showSnackIcon(
-        I18N.of(OneContext().context).invalidStockLocation,
-        success: false,
-      );
-
-    }
-  }
-}
-
-
-class StockLocationScanInItemsHandler extends BarcodeHandler {
-  /**
-   * Barcode handler for scanning stock item(s) into the specified StockLocation
-   */
-  
-  final InvenTreeStockLocation location;
-  
-  StockLocationScanInItemsHandler(this.location);
-  
-  @override
-  String getOverlayText(BuildContext context) => I18N.of(context).barcodeScanItem;
-  
-  @override
-  Future<void> onBarcodeMatched(Map<String, dynamic> data) {
-    print("TODO, YO!");
-  }
-}
-
 
 Future<void> scanQrCode(BuildContext context) async {
 

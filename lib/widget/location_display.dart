@@ -1,4 +1,5 @@
 import 'package:InvenTree/api.dart';
+import 'package:InvenTree/barcode.dart';
 import 'package:InvenTree/inventree/stock.dart';
 import 'package:InvenTree/preferences.dart';
 import 'package:InvenTree/widget/progress.dart';
@@ -224,12 +225,10 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
             label: I18N.of(context).stock,
           ),
           // TODO - Add in actions when they are written...
-          /*
           BottomNavigationBarItem(
             icon: FaIcon(FontAwesomeIcons.wrench),
             label: I18N.of(context).actions,
           )
-           */
         ]
     );
   }
@@ -324,14 +323,23 @@ List<Widget> detailTiles() {
     // Scan items into location
     tiles.add(
       ListTile(
-        title: Text("Scan in Stock Item"),
+        title: Text(I18N.of(context).barcodeScanInItems),
         leading: FaIcon(FontAwesomeIcons.exchangeAlt),
         trailing: FaIcon(FontAwesomeIcons.qrcode),
-        onTap: null,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => InvenTreeQRView(StockLocationScanInItemsHandler(location)))
+          ).then((context) {
+            refresh();
+          });
+        },
       )
     );
 
     // Move location into another location
+    // TODO: Implement this!
+    /*
     tiles.add(
       ListTile(
         title: Text("Move Stock Location"),
@@ -339,6 +347,7 @@ List<Widget> detailTiles() {
         trailing: FaIcon(FontAwesomeIcons.qrcode),
       )
     );
+     */
 
     return tiles;
   }
