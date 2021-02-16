@@ -46,7 +46,6 @@ class BarcodeHandler {
       // Called when the server does not know about a barcode
       // Override this function
       showErrorDialog(
-        _context,
         "Invalid Barcode",
         "Barcode does not match any known item",
         error: "Barcode Error",
@@ -60,7 +59,6 @@ class BarcodeHandler {
     Future<void> onBarcodeUnhandled(Map<String, dynamic> data) {
       // Called when the server returns an unhandled response
       showErrorDialog(
-          _context,
           "Response Data",
           data.toString(),
           error: "Unknown Response",
@@ -85,19 +83,8 @@ class BarcodeHandler {
       ).then((var response) {
 
         if (response.statusCode != 200) {
-          showErrorDialog(
-            context,
-            "Status Code: ${response.statusCode}",
-            "${response.body
-                .toString()
-                .split('\n')
-                .first}",
-            onDismissed: () {
-              _controller.resumeCamera();
-            },
-            error: "Server Error",
-            icon: FontAwesomeIcons.server,
-          );
+          showStatusCodeError(response.statusCode);
+          _controller.resumeCamera();
 
           return;
         }
@@ -117,8 +104,7 @@ class BarcodeHandler {
       ).catchError((error) {
 
         showErrorDialog(
-            context,
-            "Error",
+          I18N.of(OneContext().context).error,
             error.toString(),
             onDismissed: () {
               _controller.resumeCamera();
@@ -145,8 +131,9 @@ class BarcodeScanHandler extends BarcodeHandler {
     showSnackIcon(
         "No barcode",
         icon: FontAwesomeIcons.exclamationCircle,
-        onTap: () {
-          print("Tappity");
+        actionText: "Details",
+        onAction: () {
+          print("Action!");
         },
         success: true,
     );
@@ -249,7 +236,6 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
   Future<void> onBarcodeMatched(Map<String, dynamic> data) {
     // If the barcode is known, we can't asisgn it to the stock item!
     showErrorDialog(
-      _context,
       "Barcode in Use",
       "Barcode is already known",
       onDismissed: () {
@@ -264,7 +250,6 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
 
     if (!data.containsKey("hash")) {
       showErrorDialog(
-        _context,
         "Missing Data",
         "Missing hash data from server",
         onDismissed: () {
@@ -291,7 +276,6 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
           );
         } else {
           showErrorDialog(
-            _context,
             "Server Error",
             "Could not assign barcode",
             onDismissed: () {

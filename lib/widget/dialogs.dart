@@ -1,4 +1,5 @@
 
+import 'package:InvenTree/widget/snacks.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -86,61 +87,64 @@ Future<void> showInfoDialog(BuildContext context, String title, String descripti
   });
 }
 
-Future<void> showErrorDialog(BuildContext context, String title, String description, {IconData icon = FontAwesomeIcons.exclamationCircle, String error, Function onDismissed}) async {
+Future<void> showErrorDialog(String title, String description, {IconData icon = FontAwesomeIcons.exclamationCircle, String error, Function onDismissed}) async {
 
   if (error == null || error.isEmpty) {
-    error = I18N.of(context).error;
+    error = I18N.of(OneContext().context).error;
   }
 
-  showDialog(
-    context: context,
-    builder: (dialogContext) {
-      return SimpleDialog(
-          title: ListTile(
-            title: Text(error),
-            leading: FaIcon(icon),
-          ),
-          children: <Widget>[
-            ListTile(
-                title: Text(title),
-                subtitle: Text(description)
-            )
-          ]
-      );
-    }).then((value) {
-      if (onDismissed != null) {
-        onDismissed();
-      }
-    });
+  OneContext().showDialog(
+    builder: (context) => SimpleDialog(
+      title: ListTile(
+        title: Text(error),
+        leading: FaIcon(icon),
+      ),
+      children: [
+        ListTile(
+          title: Text(title),
+          subtitle: Text(description),
+        )
+      ],
+    )
+  ).then((value) {
+    if (onDismissed != null) {
+      onDismissed();
+    }
+  });
 }
 
-Future<void> showServerError(BuildContext context, String title, String description) async {
+Future<void> showServerError(String title, String description) async {
 
   if (title == null || title.isEmpty) {
-    title = I18N.of(context).serverError;
+    title = I18N.of(OneContext().context).serverError;
   }
 
-  await showErrorDialog(
-      context,
-      title,
-      description,
-      error: I18N.of(context).serverError,
-      icon: FontAwesomeIcons.server
+  showSnackIcon(
+    title,
+    success: false,
+    actionText: I18N.of(OneContext().context).details,
+    onAction: () {
+      showErrorDialog(
+          title,
+          description,
+          error: I18N.of(OneContext().context).serverError,
+          icon: FontAwesomeIcons.server
+      );
+    }
   );
 }
 
-Future<void> showStatusCodeError(BuildContext context, int status, {int expected = 200}) async {
+Future<void> showStatusCodeError(int status, {int expected = 200}) async {
 
-  await showServerError(
-    context,
-    "Invalid Response Code",
+  showServerError(
+    I18N.of(OneContext().context).responseInvalid,
     "Server responded with status code ${status}"
   );
 }
 
 Future<void> showTimeoutError(BuildContext context) async {
 
-  await showServerError(context, I18N.of(context).timeout, I18N.of(context).noResponse);
+  await showServerError(I18N.of(context).timeout, I18N.of(context).noResponse);
 }
 
 void showProgressDialog(BuildContext context, String title, String description) {

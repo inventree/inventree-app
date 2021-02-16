@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:InvenTree/user_profile.dart';
+import 'package:InvenTree/widget/snacks.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -12,6 +13,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:InvenTree/widget/dialogs.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:one_context/one_context.dart';
 
 
 /**
@@ -172,13 +174,11 @@ class InvenTreeAPI {
     String password = profile.password.trim();
 
     if (address.isEmpty || username.isEmpty || password.isEmpty) {
-      await showErrorDialog(
-        context,
-        I18N.of(context).error,
+      showSnackIcon(
         "Incomplete server details",
-        icon: FontAwesomeIcons.server
+        icon: FontAwesomeIcons.exclamationCircle,
+        success: false
       );
-
       return false;
     }
 
@@ -203,7 +203,6 @@ class InvenTreeAPI {
 
       if (error is SocketException) {
         showServerError(
-            context,
             I18N.of(context).connectionRefused,
             error.toString());
         return null;
@@ -224,7 +223,7 @@ class InvenTreeAPI {
     if (response.statusCode != 200) {
       // Any status code other than 200!
 
-      showStatusCodeError(context, response.statusCode);
+      showStatusCodeError(response.statusCode);
 
       // TODO: Interpret the error codes and show custom message?
       return false;
@@ -238,7 +237,6 @@ class InvenTreeAPI {
     if (!data.containsKey("server") || !data.containsKey("version") || !data.containsKey("instance")) {
 
       showServerError(
-        context,
         "Missing Data",
         "Server response missing required fields"
       );
@@ -253,9 +251,8 @@ class InvenTreeAPI {
     // Check that the remote server version is *new* enough
     if (!_checkServerVersion(_version)) {
       showServerError(
-          context,
-          "Old Server Version",
-          "\n\nServer Version: ${_version}\n\nRequired version: ${_requiredVersionString}"
+        I18N.of(OneContext().context).serverOld,
+        "\n\nServer Version: ${_version}\n\nRequired version: ${_requiredVersionString}"
       );
 
       return false;
@@ -275,22 +272,22 @@ class InvenTreeAPI {
 
     if (response == null) {
       showServerError(
-          context, "Token Error", "Error requesting access token from server"
+          I18N.of(OneContext().context).tokenError,
+          "Error requesting access token from server"
       );
 
       return false;
     }
 
     if (response.statusCode != 200) {
-      showStatusCodeError(context, response.statusCode);
+      showStatusCodeError(response.statusCode);
       return false;
     } else {
       var data = json.decode(response.body);
 
       if (!data.containsKey("token")) {
         showServerError(
-          context,
-          "Missing Token",
+          I18N.of(OneContext().context).tokenMissing,
           "Access token missing from response"
         );
 
@@ -328,10 +325,10 @@ class InvenTreeAPI {
     print("API Profile: ${profile.toString()}");
 
     if (profile == null) {
-      await showErrorDialog(
-          context,
-          "Select Profile",
-          "User profile not selected"
+      showSnackIcon(
+          I18N.of(OneContext().context).profileSelect,
+          success: false,
+          icon: FontAwesomeIcons.exclamationCircle
       );
       return false;
     }
@@ -343,6 +340,14 @@ class InvenTreeAPI {
     print("_connect() returned result: ${result}");
 
     _connecting = false;
+
+    if (result) {
+      showSnackIcon(
+        I18N.of(OneContext().context).serverConnected,
+        icon: FontAwesomeIcons.server,
+        success: true,
+      );
+    }
 
     return result;
   }

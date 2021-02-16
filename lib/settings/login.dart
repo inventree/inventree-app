@@ -283,7 +283,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
                           // Navigator.of(context, rootNavigator: true).pop();
                           confirmationDialog(
                               I18N.of(context).delete,
-                              "Delete this profile?",
+                              I18N.of(context).profileDelete + "?",
                               onAccept: () {
                                 _deleteProfile(profile);
                               }

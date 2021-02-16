@@ -148,7 +148,6 @@ class InvenTreeModel {
 
           if (e is SocketException) {
             showServerError(
-              context,
               I18N.of(context).connectionRefused,
               e.toString()
             );
@@ -168,7 +167,7 @@ class InvenTreeModel {
     }
 
     if (response.statusCode != 200) {
-      showStatusCodeError(context, response.statusCode);
+      showStatusCodeError(response.statusCode);
       print("Error retrieving data");
       return false;
     }
@@ -195,7 +194,6 @@ class InvenTreeModel {
 
           if (e is SocketException) {
             showServerError(
-              context,
               I18N.of(context).connectionRefused,
               e.toString()
             );
@@ -212,7 +210,7 @@ class InvenTreeModel {
     if (response == null) return false;
 
     if (response.statusCode != 200) {
-      showStatusCodeError(context, response.statusCode);
+      showStatusCodeError(response.statusCode);
       return false;
     }
 
@@ -248,7 +246,7 @@ class InvenTreeModel {
         .catchError((e) {
 
           if (e is SocketException) {
-            showServerError(context, I18N.of(context).connectionRefused, e.toString());
+            showServerError(I18N.of(context).connectionRefused, e.toString());
           }
           else if (e is TimeoutException) {
             showTimeoutError(context);
@@ -264,7 +262,7 @@ class InvenTreeModel {
     }
 
     if (response.statusCode != 200) {
-      showStatusCodeError(context, response.statusCode);
+      showStatusCodeError(response.statusCode);
       return null;
     }
 
@@ -293,7 +291,6 @@ class InvenTreeModel {
 
       if (e is SocketException) {
         showServerError(
-            context,
             I18N.of(context).connectionRefused,
             e.toString()
         );
@@ -313,7 +310,7 @@ class InvenTreeModel {
         var decoded = json.decode(response.body);
         _model = createFromJson(decoded);
       } else {
-        showStatusCodeError(context, response.statusCode);
+        showStatusCodeError(response.statusCode);
       }
     });
 
@@ -346,7 +343,6 @@ class InvenTreeModel {
 
         if (e is SocketException) {
           showServerError(
-              context,
               I18N.of(context).connectionRefused,
               e.toString()
           );
@@ -369,7 +365,7 @@ class InvenTreeModel {
     List<InvenTreeModel> results = new List<InvenTreeModel>();
 
     if (response.statusCode != 200) {
-      showStatusCodeError(context, response.statusCode);
+      showStatusCodeError(response.statusCode);
 
       // Return empty list
       return results;

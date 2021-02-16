@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:one_context/one_context.dart';
 
-void showSnackIcon(String text, {IconData icon, Function onTap, bool success}) {
+void showSnackIcon(String text, {IconData icon, Function onAction, bool success, String actionText}) {
 
   OneContext().hideCurrentSnackBar();
 
@@ -23,32 +23,35 @@ void showSnackIcon(String text, {IconData icon, Function onTap, bool success}) {
   if (success == true) {
     backgroundColor = Colors.lightGreen;
 
-    // Unspecified icon?
-    if (icon == null) {
-      icon = FontAwesomeIcons.checkCircle;
-    }
-
   } else if (success == false) {
     backgroundColor = Colors.deepOrange;
+  }
 
-    if (icon == null) {
-      icon = FontAwesomeIcons.timesCircle;
-    }
+  SnackBarAction action;
 
+  if (onAction != null && actionText != null) {
+    action = SnackBarAction(
+      label: actionText,
+      onPressed: onAction,
+    );
+  }
+
+  List<Widget> childs = [
+    Text(text),
+    Spacer(),
+  ];
+
+  if (icon != null) {
+    childs.add(FaIcon(icon));
   }
 
   OneContext().showSnackBar(builder: (context) => SnackBar(
-    content: GestureDetector(
-      child: Row(
-        children: [
-          Text(text),
-          Spacer(),
-          FaIcon(icon)
-        ],
-      ),
-      onTap: onTap,
+    content: Row(
+        children: childs
     ),
     backgroundColor: backgroundColor,
-  ));
+    action: action
+    )
+  );
 
 }

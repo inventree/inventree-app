@@ -442,7 +442,6 @@ class InvenTreeStockItem extends InvenTreeModel {
         showTimeoutError(context);
       } else if (error is SocketException) {
         showServerError(
-            context,
             I18N.of(context).connectionRefused,
             error.toString()
         );
@@ -458,7 +457,7 @@ class InvenTreeStockItem extends InvenTreeModel {
     if (response == null) return false;
 
     if (response.statusCode != 200) {
-      showStatusCodeError(context, response.statusCode);
+      showStatusCodeError(response.statusCode);
       return false;
     }
 
