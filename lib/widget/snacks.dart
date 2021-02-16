@@ -12,6 +12,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:one_context/one_context.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void showSnackIcon(String text, {IconData icon, Function onAction, bool success, String actionText}) {
 
@@ -29,7 +30,13 @@ void showSnackIcon(String text, {IconData icon, Function onAction, bool success,
 
   SnackBarAction action;
 
-  if (onAction != null && actionText != null) {
+  if (onAction != null) {
+
+    if (actionText == null) {
+      // Default action text
+      actionText = I18N.of(OneContext().context).details;
+    }
+
     action = SnackBarAction(
       label: actionText,
       onPressed: onAction,
