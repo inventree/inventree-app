@@ -45,27 +45,18 @@ class BarcodeHandler {
     Future<void> onBarcodeUnknown(Map<String, dynamic> data) {
       // Called when the server does not know about a barcode
       // Override this function
-      showErrorDialog(
-        "Invalid Barcode",
-        "Barcode does not match any known item",
-        error: "Barcode Error",
-        icon: FontAwesomeIcons.barcode,
-        onDismissed: () {
-          _controller.resumeCamera();
-        }
+      showSnackIcon(
+        I18N.of(OneContext().context).barcodeNoMatch,
+        success: false,
+        icon: FontAwesomeIcons.qrcode
       );
     }
 
     Future<void> onBarcodeUnhandled(Map<String, dynamic> data) {
       // Called when the server returns an unhandled response
-      showErrorDialog(
-          "Response Data",
-          data.toString(),
-          error: "Unknown Response",
-          onDismissed: () {
-            _controller.resumeCamera();
-          }
-      );
+      showServerError(I18N.of(OneContext().context).responseUnknown, data.toString());
+
+      _controller.resumeCamera();
     }
 
     Future<void> processBarcode(BuildContext context, QRViewController _controller, String barcode, {String url = "barcode/"}) {
@@ -93,23 +84,22 @@ class BarcodeHandler {
         final Map<String, dynamic> data = json.decode(response.body);
 
         if (data.containsKey('error')) {
+          _controller.resumeCamera();
           onBarcodeUnknown(data);
         } else if (data.containsKey('success')) {
+          _controller.resumeCamera();
           onBarcodeMatched(data);
         } else {
+          _controller.resumeCamera();
           onBarcodeUnhandled(data);
         }
       }).timeout(
           Duration(seconds: 5)
       ).catchError((error) {
 
-        showErrorDialog(
-          I18N.of(OneContext().context).error,
-            error.toString(),
-            onDismissed: () {
-              _controller.resumeCamera();
-            }
-        );
+        showServerError(I18N.of(OneContext().context).error, error.toString());
+        _controller.resumeCamera();
+
         return;
       });
     }
@@ -129,30 +119,10 @@ class BarcodeScanHandler extends BarcodeHandler {
   Future<void> onBarcodeUnknown(Map<String, dynamic> data) {
 
     showSnackIcon(
-        "No barcode",
+        I18N.of(OneContext().context).barcodeNoMatch,
         icon: FontAwesomeIcons.exclamationCircle,
-        actionText: "Details",
-        onAction: () {
-          print("Action!");
-        },
-        success: true,
+        success: false,
     );
-
-    _controller.resumeCamera();
-
-    /*
-    showErrorDialog(
-        _context,
-        data['error'] ?? '',
-        data['plugin'] ?? 'No barcode plugin information',
-        error: "Barcode Error",
-        icon: FontAwesomeIcons.barcode,
-        onDismissed: () {
-          _controller.resumeCamera();
-        }
-    );
-
-     */
   }
 
   @override
@@ -175,7 +145,10 @@ class BarcodeScanHandler extends BarcodeHandler {
           }
         });
       } else {
-        // TODO - Show an error here!
+        showSnackIcon(
+          I18N.of(OneContext().context).invalidStockLocation,
+          success: false
+        );
       }
 
     } else if (data.containsKey('stockitem')) {
@@ -188,7 +161,10 @@ class BarcodeScanHandler extends BarcodeHandler {
           Navigator.push(_context, MaterialPageRoute(builder: (context) => StockDetailWidget(item)));
         });
       } else {
-        // TODO - Show an error here!
+        showSnackIcon(
+            I18N.of(OneContext().context).invalidStockItem,
+            success: false
+        );
       }
     } else if (data.containsKey('part')) {
 
@@ -200,20 +176,29 @@ class BarcodeScanHandler extends BarcodeHandler {
           Navigator.push(_context, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
         });
       } else {
-        // TODO - Show an error here!
+        showSnackIcon(
+            I18N.of(OneContext().context).invalidPart,
+            success: false
+        );
       }
     } else {
-      showDialog(
-          context: _context,
-          child: SimpleDialog(
-            title: Text(I18N.of(_context).unknownResponse),
-            children: <Widget>[
-              ListTile(
-                title: Text("Response data"),
-                subtitle: Text(data.toString()),
+      showSnackIcon(
+        I18N.of(OneContext().context).barcodeUnknown,
+        success: false,
+        onAction: () {
+          showDialog(
+              context: _context,
+              child: SimpleDialog(
+                title: Text(I18N.of(_context).unknownResponse),
+                children: <Widget>[
+                  ListTile(
+                    title: Text("Response data"),
+                    subtitle: Text(data.toString()),
+                  )
+                ],
               )
-            ],
-          )
+          );
+        }
       );
     }
   }
@@ -235,12 +220,10 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
   @override
   Future<void> onBarcodeMatched(Map<String, dynamic> data) {
     // If the barcode is known, we can't asisgn it to the stock item!
-    showErrorDialog(
-      "Barcode in Use",
-      "Barcode is already known",
-      onDismissed: () {
-        _controller.resumeCamera();
-      }
+    showSnackIcon(
+      I18N.of(OneContext().context).barcodeInUse,
+      icon: FontAwesomeIcons.qrcode,
+      success: false
     );
   }
 
@@ -249,14 +232,9 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
     // If the barcode is unknown, we *can* assign it to the stock item!
 
     if (!data.containsKey("hash")) {
-      showErrorDialog(
-        "Missing Data",
-        "Missing hash data from server",
-        onDismissed: () {
-          _controller.resumeCamera();
-        }
-      );
+      showServerError("Missing data", "Barcode hash data missing from response");
     } else {
+
       // Send the 'hash' code as the UID for the stock item
       item.update(
         _context,
@@ -265,22 +243,22 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
         }
       ).then((result) {
         if (result) {
-          showInfoDialog(
-              _context,
-              "Barcode Set",
-              "Barcode assigned to stock item",
-              onDismissed: () {
-                _controller.dispose();
-                Navigator.of(_context).pop();
-              }
+
+          // Close the barcode scanner
+          _controller.dispose();
+          Navigator.of(_context).pop();
+
+          showSnackIcon(
+            I18N.of(OneContext().context).barcodeAssigned,
+            success: true,
+            icon: FontAwesomeIcons.qrcode
           );
         } else {
-          showErrorDialog(
-            "Server Error",
-            "Could not assign barcode",
-            onDismissed: () {
-              _controller.resumeCamera();
-            }
+
+          showSnackIcon(
+              I18N.of(OneContext().context).barcodeNotAssigned,
+              success: false,
+              icon: FontAwesomeIcons.qrcode
           );
         }
       });
@@ -393,14 +371,23 @@ class StockItemScanIntoLocationHandler extends BarcodeHandler {
       // Transfer stock to specified location
       item.transferStock(location).then((response) {
         print("Response: ${response.statusCode}");
+
+        // Close the scanner
         _controller.dispose();
         Navigator.of(_context).pop();
+
+        showSnackIcon(
+          I18N.of(OneContext().context).barcodeScanIntoLocationSuccess,
+          success: true,
+        );
+
       });
     } else {
-      // Display a snack bar with the error
-      OneContext().showSnackBar(builder: (context) => SnackBar(
-        content: Text("This was not a stock item!")
-      ));
+      showSnackIcon(
+        I18N.of(OneContext().context).invalidStockLocation,
+        success: false,
+      );
+
     }
   }
 }

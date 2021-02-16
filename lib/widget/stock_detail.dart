@@ -245,6 +245,26 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   }
 
 
+  void _unassignBarcode(BuildContext context) async {
+
+    final bool result = await item.update(context, values: {'uid': ''});
+
+    if (result) {
+      showSnackIcon(
+        I18N.of(context).stockItemUpdateSuccess,
+        success: true
+      );
+    } else {
+      showSnackIcon(
+        I18N.of(context).stockItemUpdateFailure,
+        success: false,
+      );
+    }
+
+    refresh();
+  }
+
+
   void _transferStock(BuildContext context, InvenTreeStockLocation location) async {
     Navigator.of(context).pop();
 
@@ -568,7 +588,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     if (item.uid.isEmpty) {
       tiles.add(
         ListTile(
-          title: Text(I18N.of(context).assignBarcode),
+          title: Text(I18N.of(context).barcodeAssign),
           leading: FaIcon(FontAwesomeIcons.barcode),
           trailing: FaIcon(FontAwesomeIcons.qrcode),
           onTap: () {
@@ -578,6 +598,16 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
             ).then((context) {
               refresh();
             });
+          }
+        )
+      );
+    } else {
+      tiles.add(
+        ListTile(
+          title: Text(I18N.of(context).barcodeUnassign),
+          leading: FaIcon(FontAwesomeIcons.barcode),
+          onTap: () {
+            _unassignBarcode(context);
           }
         )
       );

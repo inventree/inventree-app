@@ -24,8 +24,18 @@ void showSnackIcon(String text, {IconData icon, Function onAction, bool success,
   if (success == true) {
     backgroundColor = Colors.lightGreen;
 
+    // Select an icon if we do not have an action
+    if (icon == null && onAction == null) {
+      icon = FontAwesomeIcons.checkCircle;
+    }
+
   } else if (success == false) {
     backgroundColor = Colors.deepOrange;
+
+    if (icon == null && onAction == null) {
+      icon = FontAwesomeIcons.exclamationCircle;
+    }
+
   }
 
   SnackBarAction action;
