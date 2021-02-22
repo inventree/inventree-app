@@ -4,7 +4,8 @@
 - Fixes crash bug on top-level part category
 - Fixed crash bug on top-level stock location
 - Adds context overlay to barcode scanner view
-- Notifcations are less obtrusive (uses snack bar)
+- Notifications are less obtrusive (uses snack bar)
+- Fixed search views - keyboard search button now works properly
 
 ## 0.1.0 - February 2021
 ---

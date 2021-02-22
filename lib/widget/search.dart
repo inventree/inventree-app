@@ -1,6 +1,7 @@
 
 import 'package:InvenTree/widget/part_detail.dart';
 import 'package:InvenTree/widget/progress.dart';
+import 'package:InvenTree/widget/snacks.dart';
 import 'package:InvenTree/widget/stock_detail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:InvenTree/inventree/part.dart';
 import 'package:InvenTree/inventree/stock.dart';
+import 'package:one_context/one_context.dart';
 
 import '../api.dart';
 
@@ -18,6 +20,9 @@ class PartSearchDelegate extends SearchDelegate<InvenTreePart> {
   final key = GlobalKey<ScaffoldState>();
 
   BuildContext context;
+
+  // What did we search for last time?
+  String _cachedQuery;
 
   bool _searching = false;
 
@@ -45,6 +50,12 @@ class PartSearchDelegate extends SearchDelegate<InvenTreePart> {
       return;
     }
 
+    if (query == _cachedQuery) {
+      return;
+    }
+
+    _cachedQuery = query;
+
     _searching = true;
 
     print("Searching...");
@@ -67,8 +78,11 @@ class PartSearchDelegate extends SearchDelegate<InvenTreePart> {
     print("Searching complete! Results: ${partResults.length}");
     _searching = false;
 
-    // TODO: Show a snackbar detailing number of results...
-    //showSnackIcon("Found ${partResults.length} parts", context: context);
+    showSnackIcon(
+        "${partResults.length} ${I18N.of(OneContext().context).results}",
+        success: partResults.length > 0,
+        icon: FontAwesomeIcons.pollH,
+    );
 
     // For some reason, need to toggle between suggestions and results here...
     showSuggestions(context);
@@ -133,9 +147,13 @@ class PartSearchDelegate extends SearchDelegate<InvenTreePart> {
   @override
   Widget buildResults(BuildContext context) {
 
+    print("build results");
+
     if (_searching) {
       return progressIndicator();
     }
+
+    search(context);
 
     if (query.length == 0) {
       return ListTile(
@@ -152,8 +170,8 @@ class PartSearchDelegate extends SearchDelegate<InvenTreePart> {
 
     if (partResults.length == 0) {
       return ListTile(
-        title: Text("No Results"),
-        subtitle: Text("No results matching query")
+        title: Text(I18N.of(context).noResults),
+        subtitle: Text("No results for '${query}'")
       );
     }
 
@@ -189,6 +207,8 @@ class StockSearchDelegate extends SearchDelegate<InvenTreeStockItem> {
 
   final BuildContext context;
 
+  String _cachedQuery;
+
   bool _searching = false;
 
   // Custom filters for the stock item search
@@ -214,6 +234,12 @@ class StockSearchDelegate extends SearchDelegate<InvenTreeStockItem> {
       return;
     }
 
+    if (query == _cachedQuery) {
+      return;
+    }
+
+    _cachedQuery = query;
+
     _searching = true;
 
     print("Searching...");
@@ -236,7 +262,12 @@ class StockSearchDelegate extends SearchDelegate<InvenTreeStockItem> {
 
     _searching = false;
 
-    // TODO - Show a snackbar icon with number of results.
+    showSnackIcon(
+      "${itemResults.length} ${I18N.of(OneContext().context).results}",
+      success: itemResults.length > 0,
+      icon: FontAwesomeIcons.pollH,
+    );
+
     showSuggestions(context);
     showResults(context);
   }
@@ -299,9 +330,13 @@ class StockSearchDelegate extends SearchDelegate<InvenTreeStockItem> {
   @override
   Widget buildResults(BuildContext context) {
 
+    search(context);
+
     if (_searching) {
       return progressIndicator();
     }
+
+    search(context);
 
     if (query.length == 0) {
       return ListTile(
@@ -318,8 +353,8 @@ class StockSearchDelegate extends SearchDelegate<InvenTreeStockItem> {
 
     if (itemResults.length == 0) {
       return ListTile(
-          title: Text("No Results"),
-          subtitle: Text("No results matching query")
+          title: Text(I18N.of(context).noResults),
+          subtitle: Text("No results for '${query}'")
       );
     }
 
