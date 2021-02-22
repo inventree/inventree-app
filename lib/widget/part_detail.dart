@@ -234,6 +234,19 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       ),
     );
 
+    if (false && part.isPurchaseable) {
+
+      if (part.supplier_count > 0) {
+        tiles.add(
+          ListTile(
+            title: Text("Suppliers"),
+            leading: FaIcon(FontAwesomeIcons.industry),
+            trailing: Text("${part.supplier_count}"),
+          )
+        );
+      }
+    }
+
     // TODO - Add link to parts on order
     // Parts on order
     if (false && part.isPurchaseable) {

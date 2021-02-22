@@ -172,6 +172,8 @@ class InvenTreePart extends InvenTreeModel {
     });
   }
 
+  int get supplier_count => jsondata['suppliers'] as int ?? 0;
+
   // Cached list of test templates
   List<InvenTreePartTestTemplate> testingTemplates = List<InvenTreePartTestTemplate>();
 
