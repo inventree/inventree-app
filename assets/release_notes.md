@@ -1,3 +1,8 @@
+## 0.1.2 - February 2021
+---
+
+- Fixes bug which caused blank screen when opening barcode scanner
+
 ## 0.1.1 - February 2021
 ---
 
