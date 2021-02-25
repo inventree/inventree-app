@@ -436,19 +436,22 @@ class _QRViewState extends State<InvenTreeQRView> {
     return Scaffold(
         body: Stack(
           children: <Widget>[
-            Expanded(
-                flex: 4,
-                child: QRView(
-                  key: qrKey,
-                  onQRViewCreated: _onViewCreated,
-                  overlay: QrScannerOverlayShape(
-                    borderColor: Colors.red,
-                    borderRadius: 10,
-                    borderLength: 30,
-                    borderWidth: 10,
-                    cutOutSize: 300,
-                  ),
+            Column(
+              children: [
+                Expanded(
+                  child: QRView(
+                    key: qrKey,
+                    onQRViewCreated: _onViewCreated,
+                    overlay: QrScannerOverlayShape(
+                      borderColor: Colors.red,
+                      borderRadius: 10,
+                      borderLength: 30,
+                      borderWidth: 10,
+                      cutOutSize: 300,
+                    ),
+                  )
                 )
+              ]
             ),
             Center(
                 child: Column(
