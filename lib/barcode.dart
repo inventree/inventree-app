@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:one_context/one_context.dart';
 
+import 'package:device_info/device_info.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 import 'package:InvenTree/inventree/stock.dart';
@@ -15,9 +16,9 @@ import 'package:InvenTree/api.dart';
 
 import 'package:InvenTree/widget/location_display.dart';
 import 'package:InvenTree/widget/part_detail.dart';
-import 'package:InvenTree/widget/category_display.dart';
 import 'package:InvenTree/widget/stock_detail.dart';
 
+import 'dart:io';
 import 'dart:convert';
 
 
@@ -396,21 +397,33 @@ class _QRViewState extends State<InvenTreeQRView> {
 
   BuildContext context;
 
+  // In order to get hot reload to work we need to pause the camera if the platform
+  // is android, or resume the camera if the platform is iOS.
+  @override
+  void reassemble() {
+    super.reassemble();
+    if (Platform.isAndroid) {
+      _controller.pauseCamera();
+    } else if (Platform.isIOS) {
+      _controller.resumeCamera();
+    }
+  }
+
   _QRViewState(this._handler) : super();
 
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
   void _onViewCreated(QRViewController controller) {
     _controller = controller;
-    controller.scannedDataStream.listen((scandata) {
+    controller.scannedDataStream.listen((barcode) {
       _controller?.pauseCamera();
-      _handler.processBarcode(context, _controller, scandata);
+      _handler.processBarcode(context, _controller, barcode.code);
     });
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller?.dispose();
     super.dispose();
   }
 
