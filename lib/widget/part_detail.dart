@@ -82,7 +82,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   }
 
   void _toggleStar() async {
-    await part.setStarred(context, !part.starred);
+    await part.update(context, values: {"starred": "${!part.starred}"});
     refresh();
   }
 
@@ -158,8 +158,10 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           title: Text("${part.fullname}"),
           subtitle: Text("${part.description}"),
           trailing: IconButton(
-            icon: FaIcon(part.starred ? FontAwesomeIcons.solidStar : FontAwesomeIcons.star),
-            onPressed: null, // TODO: _toggleStar,
+            icon: FaIcon(part.starred ? FontAwesomeIcons.solidStar : FontAwesomeIcons.star,
+              color: part.starred ? Color.fromRGBO(250, 250, 100, 1) : null,
+            ),
+            onPressed: _toggleStar,
           ),
           leading: GestureDetector(
             child: InvenTreeAPI().getImage(part.thumbnail),

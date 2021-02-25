@@ -1,3 +1,8 @@
+## 0.1.3 - February 2021
+---
+
+- Adds ability to toggle "star" status for Part
+
 ## 0.1.2 - February 2021
 ---
 
