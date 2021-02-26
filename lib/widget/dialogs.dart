@@ -141,24 +141,30 @@ Future<void> showTimeoutError(BuildContext context) async {
   await showServerError(I18N.of(context).timeout, I18N.of(context).noResponse);
 }
 
-void showFormDialog(String title, {GlobalKey<FormState> key, List<Widget> fields, List<Widget> actions, Function callback}) {
+void showFormDialog(String title, {String acceptText, String cancelText, GlobalKey<FormState> key, List<Widget> fields, List<Widget> actions, Function callback}) {
 
   BuildContext dialogContext;
+
+  if (acceptText == null) {
+    acceptText = I18N.of(OneContext().context).save;
+  }
+
+  if (cancelText == null) {
+    cancelText = I18N.of(OneContext().context).cancel;
+  }
 
   // Undefined actions = OK + Cancel
   if (actions == null) {
     actions = <Widget>[
       FlatButton(
-        child: Text(I18N.of(OneContext().context).cancel),
+        child: Text(cancelText),
         onPressed: () {
-
-          print("cancel and close the dialog");
           // Close the form
           Navigator.pop(dialogContext);
         }
       ),
       FlatButton(
-        child: Text(I18N.of(OneContext().context).save),
+        child: Text(acceptText),
         onPressed: () {
           if (key.currentState.validate()) {
             key.currentState.save();

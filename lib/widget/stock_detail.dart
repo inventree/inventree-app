@@ -101,8 +101,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
   void _addStock() async {
 
-    Navigator.of(context).pop();
-
     double quantity = double.parse(_quantityController.text);
     _quantityController.clear();
 
@@ -121,14 +119,9 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     showFormDialog( I18N.of(context).addStock,
       key: _addStockKey,
-      actions: <Widget>[
-        FlatButton(
-          child: Text(I18N.of(context).add),
-            onPressed: () {
-              if (_addStockKey.currentState.validate()) _addStock();
-            },
-        )
-      ],
+      callback: () {
+        _addStock();
+      },
       fields: <Widget> [
         Text("Current stock: ${item.quantity}"),
         QuantityField(
@@ -154,7 +147,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   }
 
   void _removeStock() async {
-    Navigator.of(context).pop();
 
     double quantity = double.parse(_quantityController.text);
     _quantityController.clear();
@@ -174,14 +166,9 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     showFormDialog(I18N.of(context).removeStock,
         key: _removeStockKey,
-        actions: <Widget>[
-          FlatButton(
-            child: Text(I18N.of(context).remove),
-            onPressed: () {
-              if (_removeStockKey.currentState.validate()) _removeStock();
-            },
-          )
-        ],
+        callback: () {
+          _removeStock();
+        },
         fields: <Widget>[
           Text("Current stock: ${item.quantity}"),
           QuantityField(
@@ -201,8 +188,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
   void _countStock() async {
 
-    Navigator.of(context).pop();
-
     double quantity = double.parse(_quantityController.text);
     _quantityController.clear();
 
@@ -220,14 +205,10 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     showFormDialog(I18N.of(context).countStock,
       key: _countStockKey,
-      actions: <Widget> [
-        FlatButton(
-          child: Text(I18N.of(context).count),
-          onPressed: () {
-            if (_countStockKey.currentState.validate()) _countStock();
-          },
-        )
-      ],
+      callback: () {
+        _countStock();
+      },
+      acceptText: I18N.of(context).count,
       fields: <Widget> [
         QuantityField(
           label: I18N.of(context).countStock,
