@@ -130,9 +130,37 @@ Future<void> showServerError(String title, String description) async {
 
 Future<void> showStatusCodeError(int status, {int expected = 200}) async {
 
+  BuildContext ctx = OneContext().context;
+
+  String msg = I18N.of(ctx).responseInvalid;
+  String extra = "Server responded with status code ${status}";
+
+  switch (status) {
+    case 400:
+      msg = I18N.of(ctx).response400;
+      break;
+    case 401:
+      msg = I18N.of(ctx).response401;
+      break;
+    case 403:
+      msg = I18N.of(ctx).response403;
+      break;
+    case 404:
+      msg = I18N.of(ctx).response404;
+      break;
+    case 405:
+      msg = I18N.of(ctx).response405;
+      break;
+    case 429:
+      msg = I18N.of(ctx).response429;
+      break;
+    default:
+      break;
+  }
+
   showServerError(
-    I18N.of(OneContext().context).responseInvalid,
-    "Server responded with status code ${status}"
+    msg,
+    extra,
   );
 }
 
