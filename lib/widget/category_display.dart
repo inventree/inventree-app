@@ -62,7 +62,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
         )
     );
 
-    if (category != null) {
+    if ((category != null) && InvenTreeAPI().checkPermission('part_category', 'change')) {
       actions.add(
         IconButton(
           icon: FaIcon(FontAwesomeIcons.edit),

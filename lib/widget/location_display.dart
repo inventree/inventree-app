@@ -62,7 +62,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       ),
     );
 
-    if (location != null) {
+    if ((location != null) && (InvenTreeAPI().checkPermission('stock_location', 'change'))) {
       actions.add(
         IconButton(
           icon: FaIcon(FontAwesomeIcons.edit),
@@ -320,22 +320,29 @@ List<Widget> detailTiles() {
 
     tiles.add(locationDescriptionCard());
 
-    // Scan items into location
-    tiles.add(
-      ListTile(
-        title: Text(I18N.of(context).barcodeScanInItems),
-        leading: FaIcon(FontAwesomeIcons.exchangeAlt),
-        trailing: FaIcon(FontAwesomeIcons.qrcode),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => InvenTreeQRView(StockLocationScanInItemsHandler(location)))
-          ).then((context) {
-            refresh();
-          });
-        },
-      )
-    );
+    // Stock adjustment actions
+    if (InvenTreeAPI().checkPermission('stock', 'change')) {
+      // Scan items into location
+      tiles.add(
+          ListTile(
+            title: Text(I18N
+                .of(context)
+                .barcodeScanInItems),
+            leading: FaIcon(FontAwesomeIcons.exchangeAlt),
+            trailing: FaIcon(FontAwesomeIcons.qrcode),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) =>
+                      InvenTreeQRView(
+                          StockLocationScanInItemsHandler(location)))
+              ).then((context) {
+                refresh();
+              });
+            },
+          )
+      );
+    }
 
     // Move location into another location
     // TODO: Implement this!

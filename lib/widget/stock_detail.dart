@@ -140,10 +140,9 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
   void _stockUpdateMessage(bool result) {
 
-    showSnackIcon(
-      result ? "Stock item updated" : "Stock item updated failed",
-      success: result
-    );
+    if (result) {
+      showSnackIcon("Stock item updated", success: true);
+    }
   }
 
   void _removeStock() async {
@@ -513,6 +512,24 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     List<Widget> tiles = [];
 
     tiles.add(headerTile());
+
+    // First check that the user has the required permissions to adjust stock
+    if (!InvenTreeAPI().checkPermission('stock', 'change')) {
+      tiles.add(
+        ListTile(
+          title: Text("Permission Required"),
+          leading: FaIcon(FontAwesomeIcons.userTimes)
+        )
+      );
+
+      tiles.add(
+        ListTile(
+          subtitle: Text("Your account does not have permission to perform stock adjustments"),
+        )
+      );
+
+      return tiles;
+    }
 
     if (!item.isSerialized()) {
       tiles.add(

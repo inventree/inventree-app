@@ -41,18 +41,29 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   @override
   List<Widget> getAppBarActions(BuildContext context) {
-    return <Widget>[
-      IconButton(
-        icon: FaIcon(FontAwesomeIcons.globe),
-        onPressed: _openInvenTreePage,
-      ),
-      // TODO: Hide the 'edit' button if the user does not have permission!!
-      IconButton(
-        icon: FaIcon(FontAwesomeIcons.edit),
-        tooltip: I18N.of(context).edit,
-        onPressed: _editPartDialog,
-      )
-    ];
+
+    List<Widget> actions = [];
+
+    if (InvenTreeAPI().checkPermission('part', 'view')) {
+      actions.add(
+        IconButton(
+          icon: FaIcon(FontAwesomeIcons.globe),
+          onPressed: _openInvenTreePage,
+        ),
+      );
+    }
+
+    if (InvenTreeAPI().checkPermission('part', 'change')) {
+      actions.add(
+        IconButton(
+          icon: FaIcon(FontAwesomeIcons.edit),
+          tooltip: I18N.of(context).edit,
+          onPressed: _editPartDialog,
+        )
+      );
+    }
+
+    return actions;
   }
 
   _PartDisplayState(this.part) {
@@ -82,8 +93,11 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   }
 
   void _toggleStar() async {
-    await part.update(context, values: {"starred": "${!part.starred}"});
-    refresh();
+
+    if (InvenTreeAPI().checkPermission('part', 'change')) {
+      await part.update(context, values: {"starred": "${!part.starred}"});
+      refresh();
+    }
   }
 
   void _savePart(Map<String, String> values) async {
