@@ -359,6 +359,8 @@ class InvenTreeAPI {
 
     roles.clear();
 
+    print("Requesting user role data");
+
     // Next we request the permissions assigned to the current user
     // Note: 2021-02-27 this "roles" feature for the API was just introduced.
     // Any 'older' version of the server allows any API method for any logged in user!
@@ -369,15 +371,23 @@ class InvenTreeAPI {
       print(error);
     }).then((response) {
 
+      print("Response status: ${response.statusCode}");
+
       if (response.statusCode == 200) {
 
         // Convert response to JSON representation
-        var data = json.decode(response.body);
-          if (data.containsKey('roles')) {
 
+        try {
+          var data = json.decode(response.body);
+          if (data.containsKey('roles')) {
             // Save a local copy of the user roles
             roles = data['roles'];
           }
+        }
+        on FormatException {
+          // Old server has re-directed away from the API
+        }
+      } else {
       }
     });
   }
