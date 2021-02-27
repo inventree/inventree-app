@@ -2,6 +2,9 @@
 ---
 
 - Adds ability to toggle "star" status for Part
+- Fixes form display bug for stock adjustment actions
+- User permissions are now queried from the InvenTree server
+- Any "unauthorized" actions are now not displayed
 
 ## 0.1.2 - February 2021
 ---
