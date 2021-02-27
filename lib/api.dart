@@ -67,6 +67,8 @@ class InvenTreeAPI {
   static const _URL_GET_TOKEN = "user/token/";
   static const _URL_GET_VERSION = "";
 
+  static const _URL_GET_ROLES = "user/roles/";
+
   // Base URL for InvenTree API e.g. http://192.168.120.10:8000
   String _BASE_URL = "";
 
@@ -100,6 +102,8 @@ class InvenTreeAPI {
   String makeUrl(String endpoint) => _makeUrl(endpoint);
 
   UserProfile profile;
+
+  Map<String, dynamic> roles = {};
 
   // Authentication token (initially empty, must be requested)
   String _token = "";
@@ -263,6 +267,8 @@ class InvenTreeAPI {
       print("Error requesting token:");
       print(error);
 
+      response = null;
+
     });
 
     if (response == null) {
@@ -293,7 +299,8 @@ class InvenTreeAPI {
       _token = data["token"];
       print("Received token - $_token");
 
-      _connected = true;
+      // Request user role information
+      await getUserRoles();
 
       // Ok, probably pretty good...
       return true;
@@ -330,13 +337,13 @@ class InvenTreeAPI {
 
     _connecting = true;
 
-    bool result = await _connect(context);
+    _connected = await _connect(context);
 
-    print("_connect() returned result: ${result}");
+    print("_connect() returned result: ${_connected}");
 
     _connecting = false;
 
-    if (result) {
+    if (_connected) {
       showSnackIcon(
         I18N.of(OneContext().context).serverConnected,
         icon: FontAwesomeIcons.server,
@@ -344,8 +351,59 @@ class InvenTreeAPI {
       );
     }
 
-    return result;
+    return _connected;
   }
+
+
+  Future<void> getUserRoles() async {
+
+    roles.clear();
+
+    // Next we request the permissions assigned to the current user
+    // Note: 2021-02-27 this "roles" feature for the API was just introduced.
+    // Any 'older' version of the server allows any API method for any logged in user!
+    // We will return immediately, but request the user roles in the background
+    await get(_URL_GET_ROLES).timeout(
+        Duration(seconds: 10)).catchError((error) {
+      print("Error requesting roles:");
+      print(error);
+    }).then((response) {
+
+      if (response.statusCode == 200) {
+
+        // Convert response to JSON representation
+        var data = json.decode(response.body);
+          if (data.containsKey('roles')) {
+
+            // Save a local copy of the user roles
+            roles = data['roles'];
+          }
+      }
+    });
+  }
+
+
+  bool checkPermission(String role, String permission) {
+    /*
+     * Check if the user has the given role.permission assigned
+     *
+     * e.g. 'part', 'change'
+     */
+
+    // If we do not have enough information, assume permission is allowed
+    if (roles == null || roles.isEmpty) {
+      return true;
+    }
+
+    if (!roles.containsKey(role)) {
+      return true;
+    }
+
+    List<String> perms = List.from(roles[role]);
+
+    return perms.contains(permission);
+  }
+
 
   // Perform a PATCH request
   Future<http.Response> patch(String url, {Map<String, String> body}) async {
