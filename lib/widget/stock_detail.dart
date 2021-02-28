@@ -246,7 +246,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
 
   void _transferStock(BuildContext context, InvenTreeStockLocation location) async {
-    Navigator.of(context).pop();
 
     double quantity = double.parse(_quantityController.text);
     String notes = _notesController.text;
@@ -254,13 +253,13 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     _quantityController.clear();
     _notesController.clear();
 
-    var response = await item.transferStock(location.pk, quantity: quantity, notes: notes);
+    var result = await item.transferStock(location.pk, quantity: quantity, notes: notes);
 
-    // TODO - Error handling (potentially return false?)
     refresh();
 
-    // TODO - Display a snackbar here indicating the action was successful (or otherwise)
-
+    if (result) {
+      showSnackIcon("Stock item transferred", success: true);
+    }
   }
 
   void _transferStockDialog() async {
@@ -274,16 +273,9 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     showFormDialog(I18N.of(context).transferStock,
         key: _moveStockKey,
-        actions: <Widget>[
-          FlatButton(
-            child: Text(I18N.of(context).transfer),
-            onPressed: () {
-              if (_moveStockKey.currentState.validate()) {
-                _moveStockKey.currentState.save();
-              }
-            },
-          )
-        ],
+        callback: () {
+          _transferStock(context, selectedLocation);
+        },
         fields: <Widget>[
           QuantityField(
             label: I18N.of(context).quantity,
