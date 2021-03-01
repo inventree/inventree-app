@@ -5,6 +5,7 @@
 - Fixes form display bug for stock adjustment actions
 - User permissions are now queried from the InvenTree server
 - Any "unauthorized" actions are now not displayed
+- Uses server-side pagination, providing a significant increase in UI performance
 
 ## 0.1.2 - February 2021
 ---

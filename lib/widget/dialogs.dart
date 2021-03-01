@@ -113,6 +113,8 @@ Future<void> showServerError(String title, String description) async {
     title = I18N.of(OneContext().context).serverError;
   }
 
+  // TODO - Play audio notification
+
   showSnackIcon(
     title,
     success: false,

@@ -64,7 +64,8 @@ flutter:
     - assets/image/icon.png
     - assets/release_notes.md
     - assets/sounds/barcode_scan.mp3
-    - assets/sounds/error_tone.mp3
+    - assets/sounds/barcode_error.mp3
+    - assets/sounds/server_error.mp3
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
