@@ -19,6 +19,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class CategoryDisplayWidget extends StatefulWidget {
 
@@ -124,8 +125,6 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
   List<InvenTreePartCategory> _subcategories = List<InvenTreePartCategory>();
 
-  List<InvenTreePart> _parts = List<InvenTreePart>();
-
   @override
   Future<void> onBuild(BuildContext context) async {
     refresh();
@@ -148,20 +147,6 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
       for (var cat in cats) {
         if (cat is InvenTreePartCategory) {
           _subcategories.add(cat);
-        }
-      }
-
-      // Update state
-      setState(() {});
-    });
-
-    // Request a list of parts under this category
-    await InvenTreePart().list(context, filters: {"category": "$pk"}).then((var parts) {
-      _parts.clear();
-
-      for (var part in parts) {
-        if (part is InvenTreePart) {
-          _parts.add(part);
         }
       }
 
@@ -262,32 +247,6 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
     return tiles;
   }
 
-  List<Widget> partTiles() {
-    List<Widget> tiles = <Widget>[
-      getCategoryDescriptionCard(),
-      ListTile(
-        title: Text(
-          I18N.of(context).parts,
-          style: TextStyle(fontWeight: FontWeight.bold)
-        ),
-        trailing: _parts.isNotEmpty ? Text("${_parts.length}") : null,
-      ),
-    ];
-
-    if (loading) {
-      tiles.add(progressIndicator());
-    } else if (_parts.length == 0) {
-        tiles.add(ListTile(
-          title: Text("No Parts"),
-          subtitle: Text("No parts available in this category")
-        ));
-    } else {
-        tiles.add(PartList(_parts));
-    }
-
-    return tiles;
-  }
-
   List<Widget> actionTiles() {
 
     List<Widget> tiles = [
@@ -313,9 +272,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
           children: detailTiles()
         );
       case 1:
-        return ListView(
-          children: partTiles()
-        );
+        return PaginatedPartList(category?.pk ?? null);
       case 2:
         return ListView(
           children: actionTiles()
@@ -368,13 +325,67 @@ class SubcategoryList extends StatelessWidget {
 }
 
 
-/*
- * Builder for displaying a list of Part objects
+/**
+ * Widget for displaying a list of Part objects within a PartCategory display.
+ *
+ * Uses server-side pagination for snappy results
  */
-class PartList extends StatelessWidget {
-  final List<InvenTreePart> _parts;
 
-  PartList(this._parts);
+class PaginatedPartList extends StatefulWidget {
+
+  final int categoryId;
+
+  PaginatedPartList(this.categoryId);
+
+  @override
+  _PaginatedPartListState createState() => _PaginatedPartListState(categoryId);
+}
+
+
+class _PaginatedPartListState extends State<PaginatedPartList> {
+
+  static const _pageSize = 25;
+
+  final int categoryId;
+
+  _PaginatedPartListState(this.categoryId);
+
+  final PagingController<int, InvenTreePart> _pagingController = PagingController(firstPageKey: 0);
+
+  @override
+  void initState() {
+    _pagingController.addPageRequestListener((pageKey) {
+      _fetchPage(pageKey);
+    });
+  }
+
+  Future<void> _fetchPage(int pageKey) async {
+    try {
+
+      final page = await InvenTreePart().listPaginated(_pageSize, pageKey, filters: {"category": "${categoryId}"});
+      final isLastPage = page.length < _pageSize;
+
+      // Construct a list of part objects
+      List<InvenTreePart> parts = [];
+
+      for (var result in page.results) {
+        if (result is InvenTreePart) {
+          parts.add(result);
+        }
+      }
+
+      if (isLastPage) {
+        _pagingController.appendLastPage(parts);
+      } else {
+        final int nextPageKey = pageKey + page.length;
+        _pagingController.appendPage(parts, nextPageKey);
+      }
+
+    } catch (error) {
+      print("Error! - ${error.toString()}");
+      _pagingController.error = error;
+    }
+  }
 
   void _openPart(BuildContext context, int pk) {
     // Attempt to load the part information
@@ -386,13 +397,7 @@ class PartList extends StatelessWidget {
     });
   }
 
-  Widget _build(BuildContext context, int index) {
-    InvenTreePart part;
-
-    if (index < _parts.length) {
-      part = _parts[index];
-    }
-
+  Widget _buildPart(BuildContext context, InvenTreePart part) {
     return ListTile(
       title: Text(part.fullname),
       subtitle: Text("${part.description}"),
@@ -406,15 +411,18 @@ class PartList extends StatelessWidget {
         _openPart(context, part.pk);
       },
     );
-
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-        shrinkWrap: true,
-        physics: ClampingScrollPhysics(),
-        separatorBuilder: (_, __) => const Divider(height: 3),
-        itemBuilder: _build, itemCount: _parts.length);
+    return PagedListView<int, InvenTreePart>.separated(
+        pagingController: _pagingController,
+        builderDelegate: PagedChildBuilderDelegate<InvenTreePart>(
+          itemBuilder: (context, item, index) {
+            return _buildPart(context, item);
+          }
+        ),
+        separatorBuilder: (context, index) => const Divider(height: 1),
+    );
   }
 }

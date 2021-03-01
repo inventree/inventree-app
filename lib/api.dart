@@ -371,7 +371,7 @@ class InvenTreeAPI {
       }
     });
   }
-  
+
   bool checkPermission(String role, String permission) {
     /*
      * Check if the user has the given role.permission assigned
