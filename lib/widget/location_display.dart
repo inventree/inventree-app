@@ -229,7 +229,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
           children: detailTiles(),
         );
       case 1:
-        return PaginatedStockList(location?.pk ?? null);
+        return PaginatedStockList({"location": "${location?.pk ?? -1}"});
       case 2:
         return ListView(
           children: ListTile.divideTiles(
@@ -401,12 +401,12 @@ class SublocationList extends StatelessWidget {
 
 class PaginatedStockList extends StatefulWidget {
 
-  final int locationId;
+  final Map<String, String> filters;
 
-  PaginatedStockList(this.locationId);
+  PaginatedStockList(this.filters);
 
   @override
-  _PaginatedStockListState createState() => _PaginatedStockListState(locationId);
+  _PaginatedStockListState createState() => _PaginatedStockListState(filters);
 }
 
 
@@ -416,9 +416,9 @@ class _PaginatedStockListState extends State<PaginatedStockList> {
 
   String _searchTerm;
 
-  final int locationId;
+  final Map<String, String> filters;
 
-  _PaginatedStockListState(this.locationId);
+  _PaginatedStockListState(this.filters);
 
   final PagingController<int, InvenTreeStockItem> _pagingController = PagingController(firstPageKey: 0);
 
@@ -440,15 +440,13 @@ class _PaginatedStockListState extends State<PaginatedStockList> {
   Future<void> _fetchPage(int pageKey) async {
     try {
 
-      Map<String, String> filters = {
-        "location": "${locationId}"
-      };
+      Map<String, String> params = this.filters;
 
       if (_searchTerm != null && _searchTerm.isNotEmpty) {
-        filters["search"] = "${_searchTerm}";
+        params["search"] = "${_searchTerm}";
       }
 
-      final page = await InvenTreeStockItem().listPaginated(_pageSize, pageKey, filters: filters);
+      final page = await InvenTreeStockItem().listPaginated(_pageSize, pageKey, filters: params);
       final isLastPage = page.length < _pageSize;
 
       // Construct a list of stock item objects

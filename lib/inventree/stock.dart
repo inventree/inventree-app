@@ -125,6 +125,7 @@ class InvenTreeStockItem extends InvenTreeModel {
     headers["part_detail"] = "true";
     headers["location_detail"] = "true";
     headers["supplier_detail"] = "true";
+    headers["cascade"] = "false";
 
     return headers;
   }

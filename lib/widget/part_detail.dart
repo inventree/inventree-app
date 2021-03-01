@@ -19,6 +19,8 @@ import 'package:InvenTree/widget/fields.dart';
 import 'package:InvenTree/api.dart';
 import 'package:InvenTree/widget/refreshable_state.dart';
 
+import 'location_display.dart';
+
 
 class PartDetailWidget extends StatefulWidget {
 
@@ -88,7 +90,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   @override
   Future<void> request(BuildContext context) async {
     await part.reload(context);
-    await part.getStockItems(context);
     await part.getTestTemplates(context);
   }
 
@@ -390,11 +391,13 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       )
     );
 
+    /*
     if (loading) {
       tiles.add(progressIndicator());
     } else if (part.stockItems.length > 0) {
       tiles.add(PartStockList(part.stockItems));
     }
+    */
 
     return tiles;
   }
@@ -437,6 +440,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         ),
       );
       case 1:
+        return PaginatedStockList({"part": "${part.pk}"});
+        /*
         return Center(
           child: ListView(
             children: ListTile.divideTiles(
@@ -445,6 +450,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
             ).toList()
           )
         );
+         */
       case 2:
         return Center(
           child: ListView(
@@ -487,46 +493,5 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   @override
   Widget getBody(BuildContext context) {
     return getSelectedWidget(tabIndex);
-  }
-}
-
-class PartStockList extends StatelessWidget {
-  final List<InvenTreeStockItem> _items;
-
-  PartStockList(this._items);
-
-  void _openItem(BuildContext context, int pk) {
-    // Load detail view for stock item
-    InvenTreeStockItem().get(context, pk).then((var item) {
-      if (item is InvenTreeStockItem) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => StockDetailWidget(item)));
-      }
-    });
-  }
-
-  Widget _build(BuildContext context, int index) {
-
-    InvenTreeStockItem item = _items[index];
-
-    return ListTile(
-      title: Text("${item.locationName}"),
-      subtitle: Text("${item.locationPathString}"),
-      trailing: Text(item.serialOrQuantityDisplay()),
-      leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
-      onTap: () {
-        _openItem(context, item.pk);
-      },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.separated(
-        shrinkWrap: true,
-        physics: ClampingScrollPhysics(),
-        itemBuilder: _build,
-        separatorBuilder: (_, __) => const Divider(height: 3),
-        itemCount: _items.length
-    );
   }
 }
