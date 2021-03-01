@@ -34,7 +34,7 @@ dependencies:
   image_picker: ^0.6.6                    # Select or take photos
   url_launcher: ^5.7.10                   # Open link in system browser
   flutter_markdown: ^0.5.2                # Rendering markdown
-  camera:
+  camera:                                 # Camera
   path_provider: ^1.6.27                  # Local file storage
   sembast: ^2.4.9                         # NoSQL data storage
   one_context: ^0.5.0                     # Dialogs without requiring context
@@ -63,6 +63,8 @@ flutter:
   assets:
     - assets/image/icon.png
     - assets/release_notes.md
+    - assets/sounds/barcode_scan.mp3
+    - assets/sounds/error_tone.mp3
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

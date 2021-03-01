@@ -228,6 +228,10 @@ class InvenTreeAPI {
       message += "\n";
       message += I18N.of(ctx).serverApiRequired + ": ${_minApiVersion}";
 
+      message += "\n\n";
+
+      message += "Ensure your InvenTree server version is up to date!";
+
       showServerError(
         I18N.of(OneContext().context).serverOld,
         message
