@@ -135,6 +135,9 @@ class InvenTreeAPI {
   // Server version information
   String _version = '';
 
+  // API version of the connected server
+  int _apiVersion = 1;
+
   // Getter for server version information
   String get version => _version;
 
@@ -247,6 +250,8 @@ class InvenTreeAPI {
     _version = data["version"];
     instance = data['instance'] ?? '';
 
+    // Default API version is 1 if not provided
+    _apiVersion = data['apiVersion'] as int ?? 1;
     // Check that the remote server version is *new* enough
     if (!_checkServerVersion(_version)) {
       showServerError(
