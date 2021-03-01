@@ -272,7 +272,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
           children: detailTiles()
         );
       case 1:
-        return PaginatedPartList(category?.pk ?? null);
+        return PaginatedPartList({"category": "${category?.pk ?? null}"});
       case 2:
         return ListView(
           children: actionTiles()
@@ -333,12 +333,12 @@ class SubcategoryList extends StatelessWidget {
 
 class PaginatedPartList extends StatefulWidget {
 
-  final int categoryId;
+  final Map<String, String> filters;
 
-  PaginatedPartList(this.categoryId);
+  PaginatedPartList(this.filters);
 
   @override
-  _PaginatedPartListState createState() => _PaginatedPartListState(categoryId);
+  _PaginatedPartListState createState() => _PaginatedPartListState(filters);
 }
 
 
@@ -348,9 +348,9 @@ class _PaginatedPartListState extends State<PaginatedPartList> {
 
   String _searchTerm;
 
-  final int categoryId;
+  final Map<String, String> filters;
 
-  _PaginatedPartListState(this.categoryId);
+  _PaginatedPartListState(this.filters);
 
   final PagingController<int, InvenTreePart> _pagingController = PagingController(firstPageKey: 0);
 
@@ -372,15 +372,13 @@ class _PaginatedPartListState extends State<PaginatedPartList> {
   Future<void> _fetchPage(int pageKey) async {
     try {
 
-      Map<String, String> filters = {
-        "category": "${categoryId}",
-      };
+      Map<String, String> params = filters;
 
       if (_searchTerm != null && _searchTerm.isNotEmpty) {
-        filters["search"] = _searchTerm;
+        params["search"] = _searchTerm;
       }
 
-      final page = await InvenTreePart().listPaginated(_pageSize, pageKey, filters: filters);
+      final page = await InvenTreePart().listPaginated(_pageSize, pageKey, filters: params);
       final isLastPage = page.length < _pageSize;
 
       // Construct a list of part objects
