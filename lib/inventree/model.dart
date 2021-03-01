@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:InvenTree/api.dart';
 import 'package:InvenTree/widget/dialogs.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:one_context/one_context.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -13,6 +14,29 @@ import 'dart:convert';
 import 'package:path/path.dart' as path;
 import 'package:http/http.dart' as http;
 
+
+// Paginated response object
+class InvenTreePageResponse {
+
+  InvenTreePageResponse() {
+    results = [];
+  }
+
+  void addResult(InvenTreeModel item) {
+    results.add(item);
+  }
+
+  // Total number of results in the dataset
+  int _count = 0;
+
+  void set count(int v) { _count = v; }
+
+  int get count => _count;
+
+  int get length => results?.length ?? 0;
+
+  List<InvenTreeModel> results = [];
+}
 
 /**
  * The InvenTreeModel class provides a base-level object
@@ -315,6 +339,65 @@ class InvenTreeModel {
     });
 
     return _model;
+  }
+
+  Future<InvenTreePageResponse> listPaginated(int limit, int offset, {Map<String, String> filters}) async {
+    var params = defaultListFilters();
+
+    if (filters != null) {
+      for (String key in filters.keys) {
+        params[key] = filters[key];
+      }
+    }
+
+    params["limit"] = "${limit}";
+    params["offset"] = "${offset}";
+
+    var response = await api.get(URL, params: params)
+        .timeout(Duration(seconds: 10))
+        .catchError((error) {
+      if (error is SocketException) {
+        showServerError(
+            I18N
+                .of(OneContext().context)
+                .connectionRefused,
+            error.toString()
+        );
+      }
+
+      return null;
+    });
+
+    if (response == null) {
+      return null;
+    }
+
+    if (response.statusCode != 200) {
+      showStatusCodeError(response.statusCode);
+      return null;
+    }
+
+    // Construct the response
+    InvenTreePageResponse page = new InvenTreePageResponse();
+
+    final data = json.decode(response.body);
+
+    if (data.containsKey("count") && data.containsKey("results")) {
+       page.count = data["count"] as int;
+
+       page.results = [];
+
+       for (var result in data["results"]) {
+         page.addResult(createFromJson(result));
+       }
+
+       return page;
+
+    } else {
+      // Inavlid response
+      print("Invalid!");
+      return null;
+    }
   }
 
   // Return list of objects from the database, with optional filters
