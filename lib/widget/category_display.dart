@@ -346,6 +346,8 @@ class _PaginatedPartListState extends State<PaginatedPartList> {
 
   static const _pageSize = 25;
 
+  String _searchTerm;
+
   final int categoryId;
 
   _PaginatedPartListState(this.categoryId);
@@ -357,12 +359,28 @@ class _PaginatedPartListState extends State<PaginatedPartList> {
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
     });
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
   }
 
   Future<void> _fetchPage(int pageKey) async {
     try {
 
-      final page = await InvenTreePart().listPaginated(_pageSize, pageKey, filters: {"category": "${categoryId}"});
+      Map<String, String> filters = {
+        "category": "${categoryId}",
+      };
+
+      if (_searchTerm != null && _searchTerm.isNotEmpty) {
+        filters["search"] = _searchTerm;
+      }
+
+      final page = await InvenTreePart().listPaginated(_pageSize, pageKey, filters: filters);
       final isLastPage = page.length < _pageSize;
 
       // Construct a list of part objects
@@ -413,8 +431,34 @@ class _PaginatedPartListState extends State<PaginatedPartList> {
     );
   }
 
+  void updateSearchTerm(String searchTerm) {
+    _searchTerm = searchTerm;
+    _pagingController.refresh();
+  }
+
   @override
   Widget build(BuildContext context) {
+    return CustomScrollView(
+      slivers: <Widget>[
+        // TODO: Introduce searching within the list
+        /*
+        SliverToBoxAdapter(child: TextField(
+            onChanged: updateSearchTerm,
+          )
+        ),
+         */
+        PagedSliverList.separated(
+            pagingController: _pagingController,
+            builderDelegate: PagedChildBuilderDelegate<InvenTreePart>(
+                itemBuilder: (context, item, index) {
+                  return _buildPart(context, item);
+                }
+            ),
+            separatorBuilder: (context, index) => const Divider(height: 1),
+        ),
+      ]
+    );
+
     return PagedListView<int, InvenTreePart>.separated(
         pagingController: _pagingController,
         builderDelegate: PagedChildBuilderDelegate<InvenTreePart>(

@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class LocationDisplayWidget extends StatefulWidget {
 
@@ -159,18 +160,6 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     });
 
     setState(() {});
-
-    await InvenTreeStockItem().list(context, filters: {"location": "$pk"}).then((var items) {
-      _items.clear();
-
-      for (var item in items) {
-        if (item is InvenTreeStockItem) {
-          _items.add(item);
-        }
-      }
-    });
-
-    setState(() {});
   }
 
   Widget locationDescriptionCard() {
@@ -240,9 +229,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
           children: detailTiles(),
         );
       case 1:
-        return ListView(
-          children: stockTiles(),
-        );
+        return PaginatedStockList(location?.pk ?? null);
       case 2:
         return ListView(
           children: ListTile.divideTiles(
@@ -300,6 +287,8 @@ List<Widget> detailTiles() {
       )
     ];
 
+    /*
+
     if (loading) {
       tiles.add(progressIndicator());
     } else if (_items.length > 0) {
@@ -310,6 +299,7 @@ List<Widget> detailTiles() {
         subtitle: Text("No stock items available in this location")
       ));
     }
+    */
 
     return tiles;
   }
@@ -403,10 +393,83 @@ class SublocationList extends StatelessWidget {
   }
 }
 
-class StockList extends StatelessWidget {
-  final List<InvenTreeStockItem> _items;
+/**
+ * Widget for displaying a list of stock items within a stock location.
+ *
+ * Users server-side pagination for snappy results
+ */
 
-  StockList(this._items);
+class PaginatedStockList extends StatefulWidget {
+
+  final int locationId;
+
+  PaginatedStockList(this.locationId);
+
+  @override
+  _PaginatedStockListState createState() => _PaginatedStockListState(locationId);
+}
+
+
+class _PaginatedStockListState extends State<PaginatedStockList> {
+
+  static const _pageSize = 25;
+
+  String _searchTerm;
+
+  final int locationId;
+
+  _PaginatedStockListState(this.locationId);
+
+  final PagingController<int, InvenTreeStockItem> _pagingController = PagingController(firstPageKey: 0);
+
+  @override
+  void initState() {
+    _pagingController.addPageRequestListener((pageKey) {
+      _fetchPage(pageKey);
+    });
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _fetchPage(int pageKey) async {
+    try {
+
+      Map<String, String> filters = {
+        "location": "${locationId}"
+      };
+
+      if (_searchTerm != null && _searchTerm.isNotEmpty) {
+        filters["search"] = "${_searchTerm}";
+      }
+
+      final page = await InvenTreeStockItem().listPaginated(_pageSize, pageKey, filters: filters);
+      final isLastPage = page.length < _pageSize;
+
+      // Construct a list of stock item objects
+      List<InvenTreeStockItem> items = [];
+
+      for (var result in page.results) {
+        if (result is InvenTreeStockItem) {
+          items.add(result);
+        }
+      }
+
+      if (isLastPage) {
+        _pagingController.appendLastPage(items);
+      } else {
+        final int nextPageKey = pageKey + page.length;
+        _pagingController.appendPage(items, nextPageKey);
+      }
+    } catch (error) {
+      _pagingController.error = error;
+    }
+  }
 
   void _openItem(BuildContext context, int pk) {
     InvenTreeStockItem().get(context, pk).then((var item) {
@@ -416,9 +479,7 @@ class StockList extends StatelessWidget {
     });
   }
 
-  Widget _build(BuildContext context, int index) {
-    InvenTreeStockItem item = _items[index];
-
+  Widget _buildItem(BuildContext context, InvenTreeStockItem item) {
     return ListTile(
       title: Text("${item.partName}"),
       subtitle: Text("${item.partDescription}"),
@@ -437,11 +498,20 @@ class StockList extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return ListView.separated(
-        shrinkWrap: true,
-        physics: ClampingScrollPhysics(),
-        separatorBuilder: (_, __) => const Divider(height: 3),
-        itemBuilder: _build, itemCount: _items.length);
+  Widget build (BuildContext context) {
+    return CustomScrollView(
+      slivers: <Widget>[
+        // TODO - Search input
+        PagedSliverList.separated(
+            pagingController: _pagingController,
+            builderDelegate: PagedChildBuilderDelegate<InvenTreeStockItem>(
+              itemBuilder: (context, item, index) {
+                return _buildItem(context, item);
+              }
+            ),
+            separatorBuilder: (context, item) => const Divider(height: 1),
+        )
+      ]
+    );
   }
 }
