@@ -26,42 +26,8 @@ import 'package:one_context/one_context.dart';
 
 class InvenTreeAPI {
 
-  // Minimum supported InvenTree server version is
-  static const List<int> MIN_SUPPORTED_VERSION = [0, 1, 5];
-
-  String get _requiredVersionString => "${MIN_SUPPORTED_VERSION[0]}.${MIN_SUPPORTED_VERSION[1]}.${MIN_SUPPORTED_VERSION[2]}";
-
-  bool _checkServerVersion(String version) {
-
-    // Provided version string should be of the format "x.y.z [...]"
-    List<String> versionSplit = version.split(' ').first.split('.');
-
-    // Extract the version number <major>.<minor>.<sub> from the string
-    if (versionSplit.length != 3) {
-      return false;
-    }
-
-    // Cast the server version to an explicit integer
-    int server_version_code = 0;
-
-    print("server version: ${version}");
-
-    server_version_code += (int.tryParse(versionSplit[0]) ?? 0) * 100 * 100;
-    server_version_code += (int.tryParse(versionSplit[1]) ?? 0) * 100;
-    server_version_code += (int.tryParse(versionSplit[2]));
-
-    print("server version code: ${server_version_code}");
-
-    int required_version_code = 0;
-
-    required_version_code += MIN_SUPPORTED_VERSION[0] * 100 * 100;
-    required_version_code += MIN_SUPPORTED_VERSION[1] * 100;
-    required_version_code += MIN_SUPPORTED_VERSION[2];
-
-    print("required version code: ${required_version_code}");
-
-    return server_version_code >= required_version_code;
-  }
+  // Minimum required API version for server
+  static const _minApiVersion = 2;
 
   // Endpoint for requesting an API token
   static const _URL_GET_TOKEN = "user/token/";
@@ -252,11 +218,19 @@ class InvenTreeAPI {
 
     // Default API version is 1 if not provided
     _apiVersion = data['apiVersion'] as int ?? 1;
-    // Check that the remote server version is *new* enough
-    if (!_checkServerVersion(_version)) {
+
+    if (_apiVersion < _minApiVersion) {
+
+      BuildContext ctx = OneContext().context;
+
+      String message = I18N.of(ctx).serverApiVersion + ": ${_apiVersion}";
+
+      message += "\n";
+      message += I18N.of(ctx).serverApiRequired + ": ${_minApiVersion}";
+
       showServerError(
         I18N.of(OneContext().context).serverOld,
-        "\n\nServer Version: ${_version}\n\nRequired version: ${_requiredVersionString}"
+        message
       );
 
       return false;
@@ -384,6 +358,7 @@ class InvenTreeAPI {
 
         try {
           var data = json.decode(response.body);
+
           if (data.containsKey('roles')) {
             // Save a local copy of the user roles
             roles = data['roles'];
@@ -396,8 +371,7 @@ class InvenTreeAPI {
       }
     });
   }
-
-
+  
   bool checkPermission(String role, String permission) {
     /*
      * Check if the user has the given role.permission assigned
