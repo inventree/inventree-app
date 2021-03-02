@@ -27,6 +27,16 @@ class InvenTreeAboutWidget extends StatelessWidget {
     );
   }
 
+  void _credits(BuildContext context) async {
+
+    String notes = await rootBundle.loadString("assets/credits.md");
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => CreditsWidget(notes))
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -111,6 +121,17 @@ class InvenTreeAboutWidget extends StatelessWidget {
         onTap: () {
           _releaseNotes(context);
         },
+      )
+    );
+
+    tiles.add(
+      ListTile(
+        title: Text(I18N.of(context).credits),
+        subtitle: Text("Additional app credits"),
+        leading: FaIcon(FontAwesomeIcons.bullhorn),
+        onTap: () {
+          _credits(context);
+        }
       )
     );
 

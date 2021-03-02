@@ -64,6 +64,7 @@ flutter:
   assets:
     - assets/image/icon.png
     - assets/release_notes.md
+    - assets/credits.md
     - assets/sounds/barcode_scan.mp3
     - assets/sounds/barcode_error.mp3
     - assets/sounds/server_error.mp3
