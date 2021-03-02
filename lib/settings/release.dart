@@ -16,7 +16,7 @@ class ReleaseNotesWidget extends StatelessWidget {
   Widget build (BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Release Notes")
+        title: Text(I18N.of(context).releaseNotes)
       ),
       body: Markdown(
         selectable: false,

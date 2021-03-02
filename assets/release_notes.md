@@ -1,4 +1,7 @@
-## 0.1.3 - March 2021
+## InvenTree App Release Notes
+---
+
+### 0.1.3 - March 2021
 ---
 
 - Adds ability to toggle "star" status for Part
@@ -8,12 +11,12 @@
 - Uses server-side pagination, providing a significant increase in UI performance
 - Adds audio feedback for server errors and barcode scanning
 
-## 0.1.2 - February 2021
+### 0.1.2 - February 2021
 ---
 
 - Fixes bug which caused blank screen when opening barcode scanner
 
-## 0.1.1 - February 2021
+### 0.1.1 - February 2021
 ---
 
 - Fixes crash bug on top-level part category
@@ -22,7 +25,7 @@
 - Notifications are less obtrusive (uses snack bar)
 - Fixed search views - keyboard search button now works properly
 
-## 0.1.0 - February 2021
+### 0.1.0 - February 2021
 ---
 This is the initial release of the InvenTree app.
 

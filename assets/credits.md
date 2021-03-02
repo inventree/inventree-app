@@ -1,6 +1,6 @@
 ## InvenTree App Credits
 ---
 
-**Sound Files**
+### Sound Files
 
-Some sound files have been sourced from [https://www.zapsplat.com](https://www.zapsplat.com)
+- Some sound files have been sourced from [https://www.zapsplat.com](https://www.zapsplat.com)
