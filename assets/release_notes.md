@@ -1,4 +1,4 @@
-## 0.1.3 - February 2021
+## 0.1.3 - March 2021
 ---
 
 - Adds ability to toggle "star" status for Part
@@ -6,6 +6,7 @@
 - User permissions are now queried from the InvenTree server
 - Any "unauthorized" actions are now not displayed
 - Uses server-side pagination, providing a significant increase in UI performance
+- Adds audio feedback for server errors and barcode scanning
 
 ## 0.1.2 - February 2021
 ---

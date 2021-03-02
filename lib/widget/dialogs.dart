@@ -1,5 +1,7 @@
 
 import 'package:InvenTree/widget/snacks.dart';
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -113,7 +115,9 @@ Future<void> showServerError(String title, String description) async {
     title = I18N.of(OneContext().context).serverError;
   }
 
-  // TODO - Play audio notification
+  // Play a sound
+  AudioCache player = AudioCache();
+  player.play("sounds/server_error.mp3");
 
   showSnackIcon(
     title,

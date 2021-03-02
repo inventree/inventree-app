@@ -1,5 +1,6 @@
 import 'package:InvenTree/widget/dialogs.dart';
 import 'package:InvenTree/widget/snacks.dart';
+import 'package:audioplayers/audio_cache.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -38,6 +39,16 @@ class BarcodeHandler {
     QRViewController _controller;
     BuildContext _context;
 
+    void successTone() {
+      AudioCache player = AudioCache();
+      player.play("sounds/barcode_scan.mp3");
+    }
+
+    void failureTone() {
+      AudioCache player = AudioCache();
+      player.play("sounds/barcode_error.mp3");
+    }
+
     Future<void> onBarcodeMatched(Map<String, dynamic> data) {
       // Called when the server "matches" a barcode
       // Override this function
@@ -46,6 +57,9 @@ class BarcodeHandler {
     Future<void> onBarcodeUnknown(Map<String, dynamic> data) {
       // Called when the server does not know about a barcode
       // Override this function
+
+      failureTone();
+
       showSnackIcon(
         I18N.of(OneContext().context).barcodeNoMatch,
         success: false,
@@ -54,6 +68,9 @@ class BarcodeHandler {
     }
 
     Future<void> onBarcodeUnhandled(Map<String, dynamic> data) {
+
+      failureTone();
+
       // Called when the server returns an unhandled response
       showServerError(I18N.of(OneContext().context).responseUnknown, data.toString());
 
@@ -119,6 +136,8 @@ class BarcodeScanHandler extends BarcodeHandler {
   @override
   Future<void> onBarcodeUnknown(Map<String, dynamic> data) {
 
+    failureTone();
+
     showSnackIcon(
         I18N.of(OneContext().context).barcodeNoMatch,
         icon: FontAwesomeIcons.exclamationCircle,
@@ -139,6 +158,9 @@ class BarcodeScanHandler extends BarcodeHandler {
       pk = data['stocklocation']['pk'] as int ?? null;
 
       if (pk != null) {
+
+        successTone();
+
         InvenTreeStockLocation().get(_context, pk).then((var loc) {
           if (loc is InvenTreeStockLocation) {
             Navigator.of(_context).pop();
@@ -146,6 +168,9 @@ class BarcodeScanHandler extends BarcodeHandler {
           }
         });
       } else {
+
+        failureTone();
+
         showSnackIcon(
           I18N.of(OneContext().context).invalidStockLocation,
           success: false
@@ -157,11 +182,17 @@ class BarcodeScanHandler extends BarcodeHandler {
       pk = data['stockitem']['pk'] as int ?? null;
 
       if (pk != null) {
+
+        successTone();
+
         InvenTreeStockItem().get(_context, pk).then((var item) {
           Navigator.of(_context).pop();
           Navigator.push(_context, MaterialPageRoute(builder: (context) => StockDetailWidget(item)));
         });
       } else {
+
+        failureTone();
+
         showSnackIcon(
             I18N.of(OneContext().context).invalidStockItem,
             success: false
@@ -172,17 +203,26 @@ class BarcodeScanHandler extends BarcodeHandler {
       pk = data['part']['pk'] as int ?? null;
 
       if (pk != null) {
+
+        successTone();
+
         InvenTreePart().get(_context, pk).then((var part) {
           Navigator.of(_context).pop();
           Navigator.push(_context, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
         });
       } else {
+
+        failureTone();
+
         showSnackIcon(
             I18N.of(OneContext().context).invalidPart,
             success: false
         );
       }
     } else {
+
+      failureTone();
+
       showSnackIcon(
         I18N.of(OneContext().context).barcodeUnknown,
         success: false,
@@ -220,7 +260,10 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
 
   @override
   Future<void> onBarcodeMatched(Map<String, dynamic> data) {
-    // If the barcode is known, we can't asisgn it to the stock item!
+
+    failureTone();
+
+    // If the barcode is known, we can't assign it to the stock item!
     showSnackIcon(
       I18N.of(OneContext().context).barcodeInUse,
       icon: FontAwesomeIcons.qrcode,
@@ -245,6 +288,8 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
       ).then((result) {
         if (result) {
 
+          failureTone();
+
           // Close the barcode scanner
           _controller.dispose();
           Navigator.of(_context).pop();
@@ -255,6 +300,8 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
             icon: FontAwesomeIcons.qrcode
           );
         } else {
+
+          successTone();
 
           showSnackIcon(
               I18N.of(OneContext().context).barcodeNotAssigned,
@@ -294,6 +341,9 @@ class StockItemScanIntoLocationHandler extends BarcodeHandler {
       final result = await item.transferStock(location);
 
       if (result) {
+
+        successTone();
+
         // Close the scanner
         _controller.dispose();
         Navigator.of(_context).pop();
@@ -303,12 +353,18 @@ class StockItemScanIntoLocationHandler extends BarcodeHandler {
           success: true,
         );
       } else {
+
+        failureTone();
+
         showSnackIcon(
           I18N.of(OneContext().context).barcodeScanIntoLocationFailure,
           success: false
         );
       }
     } else {
+
+      failureTone();
+
       showSnackIcon(
         I18N.of(OneContext().context).invalidStockLocation,
         success: false,
@@ -341,26 +397,37 @@ class StockLocationScanInItemsHandler extends BarcodeHandler {
       final InvenTreeStockItem item = await InvenTreeStockItem().get(_context, item_id);
 
       if (item == null) {
+
+        failureTone();
+
         showSnackIcon(
           I18N.of(OneContext().context).invalidStockItem,
           success: false,
         );
       } else if (item.locationId == location.pk) {
-        showSnackIcon(
-          I18N.of(OneContext().context).itemInLocation,
-          success: true
-        );
-      }
+        failureTone();
 
-      else {
+        showSnackIcon(
+            I18N
+                .of(OneContext().context)
+                .itemInLocation,
+            success: true
+        );
+      } else {
         final result = await item.transferStock(location.pk);
 
         if (result) {
+
+          successTone();
+
           showSnackIcon(
             I18N.of(OneContext().context).barcodeScanIntoLocationSuccess,
             success: true
           );
         } else {
+
+          failureTone();
+
           showSnackIcon(
             I18N.of(OneContext().context).barcodeScanIntoLocationFailure,
             success: false
@@ -368,6 +435,9 @@ class StockLocationScanInItemsHandler extends BarcodeHandler {
         }
       }
     } else {
+
+      failureTone();
+
       // Does not match a valid stock item!
       showSnackIcon(
         I18N.of(OneContext().context).invalidStockItem,

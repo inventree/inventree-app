@@ -39,6 +39,7 @@ dependencies:
   sembast: ^2.4.9                         # NoSQL data storage
   one_context: ^0.5.0                     # Dialogs without requiring context
   infinite_scroll_pagination: ^2.3.0      # Let the server do all the work!
+  audioplayers:
   path:
 
 dev_dependencies:
