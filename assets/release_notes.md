@@ -10,6 +10,7 @@
 - Any "unauthorized" actions are now not displayed
 - Uses server-side pagination, providing a significant increase in UI performance
 - Adds audio feedback for server errors and barcode scanning
+- Adds "app settings" view
 
 ### 0.1.2 - February 2021
 ---

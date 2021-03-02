@@ -53,7 +53,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     }
 
     showFormDialog(
-      I18N.of(context).profileAdd,
+      createNew ? I18N.of(context).profileAdd : I18N.of(context).profileEdit,
       key: _addProfileKey,
       callback: () {
           if (createNew) {
@@ -237,8 +237,6 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
   @override
   Widget build(BuildContext context) {
 
-    final Size screenSize = MediaQuery.of(context).size;
-
     List<Widget> children = [];
 
     if (profiles != null && profiles.length > 0) {
@@ -268,7 +266,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
                           Navigator.of(context).pop();
                           _selectProfile(context, profile);
                         },
-                        child: Text(I18N.of(context).profileSelect),
+                        child: Text(I18N.of(context).profileConnect),
                       ),
                       SimpleDialogOption(
                         onPressed: () {

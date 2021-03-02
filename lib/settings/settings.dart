@@ -1,4 +1,5 @@
 import 'package:InvenTree/settings/about.dart';
+import 'package:InvenTree/settings/app_settings.dart';
 import 'package:InvenTree/settings/login.dart';
 import 'package:InvenTree/user_profile.dart';
 
@@ -39,10 +40,16 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
             context: context,
             tiles: <Widget>[
               ListTile(
-                  title: Text(I18N.of(context).profile),
-                  subtitle: Text("Configure user profile settings"),
-                  leading: FaIcon(FontAwesomeIcons.user),
+                  title: Text(I18N.of(context).server),
+                  subtitle: Text("Configure server settings"),
+                  leading: FaIcon(FontAwesomeIcons.server),
                   onTap: _editServerSettings,
+              ),
+              ListTile(
+                leading: FaIcon(FontAwesomeIcons.cogs),
+                title: Text(I18N.of(context).appSettings),
+                subtitle: Text(I18N.of(context).appSettingsDetails),
+                onTap: _editAppSettings,
               ),
               ListTile(
                 title: Text(I18N.of(context).about),
@@ -76,9 +83,11 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
 
   void _editServerSettings() async {
 
-    List<UserProfile> profiles = await UserProfileDBManager().getAllProfiles();
-
     Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeLoginSettingsWidget()));
+  }
+
+  void _editAppSettings() async {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeAppSettingsWidget()));
   }
 
   void _about() async {
