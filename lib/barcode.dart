@@ -1,3 +1,4 @@
+import 'package:InvenTree/app_settings.dart';
 import 'package:InvenTree/widget/dialogs.dart';
 import 'package:InvenTree/widget/snacks.dart';
 import 'package:audioplayers/audio_cache.dart';
@@ -39,14 +40,24 @@ class BarcodeHandler {
     QRViewController _controller;
     BuildContext _context;
 
-    void successTone() {
-      AudioCache player = AudioCache();
-      player.play("sounds/barcode_scan.mp3");
+    void successTone() async {
+
+      final bool en = await InvenTreeSettingsManager().getValue("barcodeSounds", true) as bool;
+
+      if (en) {
+        AudioCache player = AudioCache();
+        player.play("sounds/barcode_scan.mp3");
+      }
     }
 
-    void failureTone() {
-      AudioCache player = AudioCache();
-      player.play("sounds/barcode_error.mp3");
+    void failureTone() async {
+
+      final bool en = await InvenTreeSettingsManager().getValue("barcodeSounds", true) as bool;
+
+      if (en) {
+        AudioCache player = AudioCache();
+        player.play("sounds/barcode_error.mp3");
+      }
     }
 
     Future<void> onBarcodeMatched(Map<String, dynamic> data) {

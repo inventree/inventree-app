@@ -1,4 +1,5 @@
 
+import 'package:InvenTree/app_settings.dart';
 import 'package:InvenTree/widget/snacks.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -116,8 +117,12 @@ Future<void> showServerError(String title, String description) async {
   }
 
   // Play a sound
-  AudioCache player = AudioCache();
-  player.play("sounds/server_error.mp3");
+  final bool tones = await InvenTreeSettingsManager().getValue("serverSounds", true) as bool;
+
+  if (tones) {
+    AudioCache player = AudioCache();
+    player.play("sounds/server_error.mp3");
+  }
 
   showSnackIcon(
     title,
