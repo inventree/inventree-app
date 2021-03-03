@@ -10,6 +10,7 @@ import 'package:InvenTree/widget/dialogs.dart';
 import 'package:InvenTree/widget/search.dart';
 import 'package:InvenTree/widget/snacks.dart';
 import 'package:InvenTree/widget/stock_detail.dart';
+import 'package:InvenTree/widget/paginator.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -131,8 +132,6 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     }
   }
 
-  List<InvenTreeStockItem> _items = List<InvenTreeStockItem>();
-
   @override
   Future<void> onBuild(BuildContext context) async {
     refresh();
@@ -162,7 +161,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     setState(() {});
   }
 
-  Widget locationDescriptionCard() {
+  Widget locationDescriptionCard({bool includeActions = true}) {
     if (location == null) {
       return Card(
         child: ListTile(
@@ -170,13 +169,16 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
         )
       );
     } else {
-      return Card(
-        child: Column(
-          children: <Widget> [
-            ListTile(
-              title: Text("${location.name}"),
-              subtitle: Text("${location.description}"),
-            ),
+
+      List<Widget> children = [
+        ListTile(
+          title: Text("${location.name}"),
+          subtitle: Text("${location.description}"),
+        ),
+      ];
+
+      if (includeActions) {
+        children.add(
             ListTile(
               title: Text("Parent Category"),
               subtitle: Text("${location.parentpathstring}"),
@@ -193,7 +195,12 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
                 }
               },
             )
-          ]
+        );
+      }
+
+      return Card(
+        child: Column(
+          children: children,
         )
       );
     }
@@ -222,6 +229,8 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     );
   }
 
+  int stockItemCount = 0;
+
   Widget getSelectedWidget(int index) {
     switch (index) {
       case 0:
@@ -229,7 +238,30 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
           children: detailTiles(),
         );
       case 1:
-        return PaginatedStockList({"location": "${location?.pk ?? -1}"});
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            locationDescriptionCard(includeActions: false),
+            ListTile(
+              title: Text(
+                I18N.of(context).stockItems,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              trailing: Text("${stockItemCount}")
+            ),
+            Divider(height: 3),
+            Expanded(
+              child: PaginatedStockList(
+                {"location": "${location?.pk ?? -1}"},
+                onTotalChanged: (int total) {
+                  setState(() {
+                    stockItemCount = total;
+                  });
+                }
+              ),
+            )
+          ]
+        );
       case 2:
         return ListView(
           children: ListTile.divideTiles(
@@ -275,40 +307,10 @@ List<Widget> detailTiles() {
   }
 
 
-  List<Widget> stockTiles() {
-    List<Widget> tiles = [
-      locationDescriptionCard(),
-      ListTile(
-        title: Text(
-            I18N.of(context).stockItems,
-            style: TextStyle(fontWeight: FontWeight.bold)
-        ),
-        trailing: _items.length > 0 ? Text("${_items.length}") : null,
-      )
-    ];
-
-    /*
-
-    if (loading) {
-      tiles.add(progressIndicator());
-    } else if (_items.length > 0) {
-      tiles.add(StockList(_items));
-    } else {
-      tiles.add(ListTile(
-        title: Text("No Stock Items"),
-        subtitle: Text("No stock items available in this location")
-      ));
-    }
-    */
-
-    return tiles;
-  }
-
-
   List<Widget> actionTiles() {
     List<Widget> tiles = [];
 
-    tiles.add(locationDescriptionCard());
+    tiles.add(locationDescriptionCard(includeActions: false));
 
     // Stock adjustment actions
     if (InvenTreeAPI().checkPermission('stock', 'change')) {
@@ -403,10 +405,12 @@ class PaginatedStockList extends StatefulWidget {
 
   final Map<String, String> filters;
 
-  PaginatedStockList(this.filters);
+  Function onTotalChanged;
+
+  PaginatedStockList(this.filters, {this.onTotalChanged});
 
   @override
-  _PaginatedStockListState createState() => _PaginatedStockListState(filters);
+  _PaginatedStockListState createState() => _PaginatedStockListState(filters, onTotalChanged);
 }
 
 
@@ -418,7 +422,9 @@ class _PaginatedStockListState extends State<PaginatedStockList> {
 
   final Map<String, String> filters;
 
-  _PaginatedStockListState(this.filters);
+  Function onTotalChanged;
+
+  _PaginatedStockListState(this.filters, this.onTotalChanged);
 
   final PagingController<int, InvenTreeStockItem> _pagingController = PagingController(firstPageKey: 0);
 
@@ -464,6 +470,11 @@ class _PaginatedStockListState extends State<PaginatedStockList> {
         final int nextPageKey = pageKey + page.length;
         _pagingController.appendPage(items, nextPageKey);
       }
+
+      if (onTotalChanged != null) {
+        onTotalChanged(page.count);
+      }
+
     } catch (error) {
       _pagingController.error = error;
     }
@@ -498,6 +509,9 @@ class _PaginatedStockListState extends State<PaginatedStockList> {
   @override
   Widget build (BuildContext context) {
     return CustomScrollView(
+      shrinkWrap: true,
+      physics: ClampingScrollPhysics(),
+      scrollDirection: Axis.vertical,
       slivers: <Widget>[
         // TODO - Search input
         PagedSliverList.separated(
@@ -505,6 +519,9 @@ class _PaginatedStockListState extends State<PaginatedStockList> {
             builderDelegate: PagedChildBuilderDelegate<InvenTreeStockItem>(
               itemBuilder: (context, item, index) {
                 return _buildItem(context, item);
+              },
+              noItemsFoundIndicatorBuilder: (context) {
+                return NoResultsWidget("No stock items found");
               }
             ),
             separatorBuilder: (context, item) => const Divider(height: 1),

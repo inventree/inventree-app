@@ -13,6 +13,7 @@ import 'package:InvenTree/widget/snacks.dart';
 import 'package:InvenTree/widget/part_detail.dart';
 import 'package:InvenTree/widget/drawer.dart';
 import 'package:InvenTree/widget/refreshable_state.dart';
+import 'package:InvenTree/widget/paginator.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -155,7 +156,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
     });
   }
 
-  Widget getCategoryDescriptionCard() {
+  Widget getCategoryDescriptionCard({bool extra = true}) {
     if (category == null) {
       return Card(
         child: ListTile(
@@ -163,16 +164,18 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
         )
       );
     } else {
-      return Card(
-        child: Column(
-          children: <Widget>[
-            ListTile(
-              title: Text("${category.name}",
-                  style: TextStyle(fontWeight: FontWeight.bold)
-              ),
-              subtitle: Text("${category.description}"),
-            ),
-            Divider(),
+
+      List<Widget> children = [
+        ListTile(
+          title: Text("${category.name}",
+              style: TextStyle(fontWeight: FontWeight.bold)
+          ),
+          subtitle: Text("${category.description}"),
+        ),
+      ];
+
+      if (extra) {
+        children.add(
             ListTile(
               title: Text(I18N.of(context).parentCategory),
               subtitle: Text("${category.parentpathstring}"),
@@ -190,7 +193,12 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
                 }
               },
             )
-          ]
+        );
+      }
+
+      return Card(
+        child: Column(
+          children: children
         ),
       );
     }
@@ -250,7 +258,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
   List<Widget> actionTiles() {
 
     List<Widget> tiles = [
-      getCategoryDescriptionCard(),
+      getCategoryDescriptionCard(extra: false),
       ListTile(
         title: Text(I18N.of(context).actions,
           style: TextStyle(fontWeight: FontWeight.bold)
@@ -263,6 +271,8 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
     return tiles;
   }
 
+  int partCount = 0;
+
   @override
   Widget getBody(BuildContext context) {
 
@@ -272,7 +282,33 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
           children: detailTiles()
         );
       case 1:
-        return PaginatedPartList({"category": "${category?.pk ?? null}"});
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            getCategoryDescriptionCard(extra: false),
+            ListTile(
+              title: Text(
+                I18N.of(context).parts,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              trailing: Text(
+                "${partCount}",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            Divider(height: 3),
+            Expanded(
+              child: PaginatedPartList(
+                {"category": "${category?.pk ?? null}"},
+                onTotalChanged: (int total) {
+                  setState(() {
+                    partCount = total;
+                  });
+                },
+              )
+            )
+          ],
+        );
       case 2:
         return ListView(
           children: actionTiles()
@@ -335,10 +371,12 @@ class PaginatedPartList extends StatefulWidget {
 
   final Map<String, String> filters;
 
-  PaginatedPartList(this.filters);
+  Function onTotalChanged;
+
+  PaginatedPartList(this.filters, {this.onTotalChanged});
 
   @override
-  _PaginatedPartListState createState() => _PaginatedPartListState(filters);
+  _PaginatedPartListState createState() => _PaginatedPartListState(filters, onTotalChanged);
 }
 
 
@@ -348,9 +386,11 @@ class _PaginatedPartListState extends State<PaginatedPartList> {
 
   String _searchTerm;
 
+  Function onTotalChanged;
+
   final Map<String, String> filters;
 
-  _PaginatedPartListState(this.filters);
+  _PaginatedPartListState(this.filters, this.onTotalChanged);
 
   final PagingController<int, InvenTreePart> _pagingController = PagingController(firstPageKey: 0);
 
@@ -397,6 +437,10 @@ class _PaginatedPartListState extends State<PaginatedPartList> {
         _pagingController.appendPage(parts, nextPageKey);
       }
 
+      if (onTotalChanged != null) {
+        onTotalChanged(page.count);
+      }
+
     } catch (error) {
       print("Error! - ${error.toString()}");
       _pagingController.error = error;
@@ -437,34 +481,25 @@ class _PaginatedPartListState extends State<PaginatedPartList> {
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
+      shrinkWrap: true,
+      physics: ClampingScrollPhysics(),
+      scrollDirection: Axis.vertical,
       slivers: <Widget>[
         // TODO: Introduce searching within the list
-        /*
-        SliverToBoxAdapter(child: TextField(
-            onChanged: updateSearchTerm,
-          )
-        ),
-         */
+        //PaginatedSearch(callback: updateSearchTerm),
         PagedSliverList.separated(
             pagingController: _pagingController,
             builderDelegate: PagedChildBuilderDelegate<InvenTreePart>(
                 itemBuilder: (context, item, index) {
                   return _buildPart(context, item);
-                }
+                },
+              noItemsFoundIndicatorBuilder: (context) {
+                  return NoResultsWidget("No parts found");
+              }
             ),
             separatorBuilder: (context, index) => const Divider(height: 1),
         ),
       ]
-    );
-
-    return PagedListView<int, InvenTreePart>.separated(
-        pagingController: _pagingController,
-        builderDelegate: PagedChildBuilderDelegate<InvenTreePart>(
-          itemBuilder: (context, item, index) {
-            return _buildPart(context, item);
-          }
-        ),
-        separatorBuilder: (context, index) => const Divider(height: 1),
     );
   }
 }

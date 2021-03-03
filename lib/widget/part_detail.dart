@@ -427,6 +427,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     return tiles;
   }
 
+  int stockItemCount = 0;
 
   Widget getSelectedWidget(int index) {
     switch (index) {
@@ -440,17 +441,30 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         ),
       );
       case 1:
-        return PaginatedStockList({"part": "${part.pk}"});
-        /*
-        return Center(
-          child: ListView(
-            children: ListTile.divideTiles(
-              context: context,
-              tiles: stockTiles()
-            ).toList()
-          )
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            headerTile(),
+            ListTile(
+              title: Text(
+                I18N.of(context).stockItems,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              trailing: Text("${stockItemCount}")
+            ),
+            Divider(height: 3),
+            Expanded(
+              child: PaginatedStockList(
+                {"part": "${part.pk}"},
+                onTotalChanged: (int total) {
+                  setState(() {
+                    stockItemCount = total;
+                  });
+                },
+              )
+            )
+          ],
         );
-         */
       case 2:
         return Center(
           child: ListView(
