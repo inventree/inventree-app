@@ -57,6 +57,7 @@ class InvenTreeStockItem extends InvenTreeModel {
   static const int DESTROYED = 60;
   static const int REJECTED = 65;
   static const int LOST = 70;
+  static const int RETURNED = 85;
 
   String statusLabel(BuildContext context) {
 
@@ -73,6 +74,8 @@ class InvenTreeStockItem extends InvenTreeModel {
         return I18N.of(context).rejected;
       case LOST:
         return I18N.of(context).lost;
+      case RETURNED:
+        return I18N.of(context).returned;
       default:
         return status.toString();
     }

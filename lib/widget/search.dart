@@ -17,7 +17,7 @@ import '../api.dart';
 
 class PartSearchDelegate extends SearchDelegate<InvenTreePart> {
 
-  final key = GlobalKey<ScaffoldState>();
+  final partSearchKey = GlobalKey<ScaffoldState>();
 
   BuildContext context;
 
@@ -203,7 +203,7 @@ class PartSearchDelegate extends SearchDelegate<InvenTreePart> {
 
 class StockSearchDelegate extends SearchDelegate<InvenTreeStockItem> {
 
-  final key = GlobalKey<ScaffoldState>();
+  final stockSearchKey = GlobalKey<ScaffoldState>();
 
   final BuildContext context;
 
