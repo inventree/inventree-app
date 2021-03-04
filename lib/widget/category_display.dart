@@ -283,32 +283,8 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
           children: detailTiles()
         );
       case 1:
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            getCategoryDescriptionCard(extra: false),
-            ListTile(
-              title: Text(
-                I18N.of(context).parts,
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              trailing: Text(
-                "${partCount}",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-            Divider(height: 3),
-            Expanded(
-              child: PaginatedPartList(
-                {"category": "${category?.pk ?? null}"},
-                onTotalChanged: (int total) {
-                  setState(() {
-                    partCount = total;
-                  });
-                },
-              )
-            )
-          ],
+        return PaginatedPartList(
+          {"category": "${category?.pk ?? null}"},
         );
       case 2:
         return ListView(
@@ -410,6 +386,8 @@ class _PaginatedPartListState extends State<PaginatedPartList> {
     super.dispose();
   }
 
+  int resultCount = 0;
+
   Future<void> _fetchPage(int pageKey) async {
     try {
 
@@ -444,6 +422,10 @@ class _PaginatedPartListState extends State<PaginatedPartList> {
       if (onTotalChanged != null) {
         onTotalChanged(page.count);
       }
+
+      setState(() {
+        resultCount = page.count;
+      });
 
     } catch (error) {
       print("Error! - ${error.toString()}");
@@ -484,13 +466,43 @@ class _PaginatedPartListState extends State<PaginatedPartList> {
 
   @override
   Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        PaginatedSearch(
+          callback: updateSearchTerm,
+          results: resultCount
+        ),
+        Expanded(
+          child: CustomScrollView(
+            shrinkWrap: true,
+            physics: ClampingScrollPhysics(),
+            scrollDirection: Axis.vertical,
+            slivers: [
+              PagedSliverList.separated(
+                  pagingController: _pagingController,
+                  builderDelegate: PagedChildBuilderDelegate<InvenTreePart>(
+                    itemBuilder: (context, item, index) {
+                      return _buildPart(context, item);
+                    },
+                    noItemsFoundIndicatorBuilder: (context) {
+                      return NoResultsWidget("No parts found");
+                    },
+                  ),
+                separatorBuilder: (context, index) => const Divider(height: 1),
+              )
+            ],
+          )
+        )
+      ],
+    );
     return CustomScrollView(
       shrinkWrap: true,
       physics: ClampingScrollPhysics(),
       scrollDirection: Axis.vertical,
       slivers: <Widget>[
         // TODO: Introduce searching within the list
-        //PaginatedSearch(callback: updateSearchTerm),
+        PaginatedSearch(callback: updateSearchTerm),
         PagedSliverList.separated(
             pagingController: _pagingController,
             builderDelegate: PagedChildBuilderDelegate<InvenTreePart>(

@@ -9,17 +9,28 @@ class PaginatedSearch extends StatelessWidget {
 
   Function callback;
 
-  PaginatedSearch({this.callback});
+  int results = 0;
+
+  PaginatedSearch({this.callback, this.results});
 
   @override
   Widget build(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: TextField(
-          onChanged: callback,
-          decoration: InputDecoration(
-            hintText: "Search",
-          ),
-      )
+    return ListTile(
+      leading: FaIcon(FontAwesomeIcons.search),
+      title: TextField(
+        onChanged: (value) {
+          if (callback != null) {
+            callback(value);
+          }
+        },
+        decoration: InputDecoration(
+          hintText: "Search parts",
+        ),
+      ),
+      trailing: Text(
+        "${results}",
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
     );
   }
 }
@@ -41,4 +52,3 @@ class NoResultsWidget extends StatelessWidget {
   }
 
 }
-
