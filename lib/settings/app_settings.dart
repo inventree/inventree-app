@@ -21,6 +21,8 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
 
   bool barcodeSounds = true;
   bool serverSounds = true;
+  bool partSubcategory = false;
+  bool stockSublocation = false;
 
   @override
   void initState() {
@@ -32,6 +34,9 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
   void loadSettings() async {
     barcodeSounds = await InvenTreeSettingsManager().getValue("barcodeSounds", true) as bool;
     serverSounds = await InvenTreeSettingsManager().getValue("serverSounds", true) as bool;
+
+    partSubcategory = await InvenTreeSettingsManager().getValue("partSubcategory", false) as bool;
+    stockSublocation = await InvenTreeSettingsManager().getValue("stockSublocation", false) as bool;
 
     setState(() {
     });
@@ -55,6 +60,22 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
     });
   }
 
+  void setPartSubcategory(bool en) async {
+    await InvenTreeSettingsManager().setValue("partSubcategory", en);
+    partSubcategory = await InvenTreeSettingsManager().getValue("partSubcategory", false);
+
+    setState(() {
+    });
+  }
+
+  void setStockSublocation(bool en) async {
+    await InvenTreeSettingsManager().setValue("stockSublocation", en);
+    stockSublocation = await InvenTreeSettingsManager().getValue("stockSublocation", false);
+
+    setState(() {
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -66,6 +87,39 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
       body: Container(
         child: ListView(
           children: [
+            ListTile(
+              title: Text(
+                I18N.of(context).parts,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              leading: FaIcon(FontAwesomeIcons.shapes),
+            ),
+            ListTile(
+              title: Text("Include Subcategories"),
+              subtitle: Text("Display subcategory parts in list view"),
+              leading: FaIcon(FontAwesomeIcons.sitemap),
+              trailing: Switch(
+                value: partSubcategory,
+                onChanged: setPartSubcategory,
+              ),
+            ),
+            Divider(height: 3),
+            ListTile(
+              title: Text(I18N.of(context).stock,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              leading: FaIcon(FontAwesomeIcons.boxes),
+            ),
+            ListTile(
+              title: Text("Include Sublocations"),
+              subtitle: Text("Display sublocation items in list view"),
+              leading: FaIcon(FontAwesomeIcons.sitemap),
+              trailing: Switch(
+                value: stockSublocation,
+                onChanged: setStockSublocation,
+              ),
+            ),
+            Divider(height: 3),
             ListTile(
               title: Text(
                 I18N.of(context).sounds,

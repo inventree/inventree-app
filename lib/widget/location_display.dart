@@ -1,4 +1,5 @@
 import 'package:InvenTree/api.dart';
+import 'package:InvenTree/app_settings.dart';
 import 'package:InvenTree/barcode.dart';
 import 'package:InvenTree/inventree/stock.dart';
 import 'package:InvenTree/preferences.dart';
@@ -232,6 +233,14 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
   int stockItemCount = 0;
 
   Widget getSelectedWidget(int index) {
+
+    // Construct filters for paginated stock list
+    Map<String, String> filters = {};
+
+    if (location != null) {
+      filters["location"] = "${location.pk}";
+    }
+
     switch (index) {
       case 0:
         return ListView(
@@ -252,7 +261,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
             Divider(height: 3),
             Expanded(
               child: PaginatedStockList(
-                {"location": "${location?.pk ?? -1}"},
+                filters,
                 onTotalChanged: (int total) {
                   setState(() {
                     stockItemCount = total;
@@ -451,6 +460,10 @@ class _PaginatedStockListState extends State<PaginatedStockList> {
       if (_searchTerm != null && _searchTerm.isNotEmpty) {
         params["search"] = "${_searchTerm}";
       }
+
+      // Do we include stock items from sub-locations?
+      final bool cascade = await InvenTreeSettingsManager().getValue("stockSublocation", false);
+      params["cascade"] = "${cascade}";
 
       final page = await InvenTreeStockItem().listPaginated(_pageSize, pageKey, filters: params);
       final isLastPage = page.length < _pageSize;

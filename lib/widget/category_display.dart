@@ -1,5 +1,6 @@
 
 import 'package:InvenTree/api.dart';
+import 'package:InvenTree/app_settings.dart';
 import 'package:InvenTree/inventree/part.dart';
 import 'package:InvenTree/preferences.dart';
 import 'package:InvenTree/widget/progress.dart';
@@ -417,6 +418,9 @@ class _PaginatedPartListState extends State<PaginatedPartList> {
       if (_searchTerm != null && _searchTerm.isNotEmpty) {
         params["search"] = _searchTerm;
       }
+
+      final bool cascade = await InvenTreeSettingsManager().getValue("partSubcategory", false);
+      params["cascade"] = "${cascade}";
 
       final page = await InvenTreePart().listPaginated(_pageSize, pageKey, filters: params);
       final isLastPage = page.length < _pageSize;
