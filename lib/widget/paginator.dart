@@ -36,7 +36,7 @@ class PaginatedSearchWidget extends StatelessWidget {
           }
         },
         decoration: InputDecoration(
-          hintText: "Search parts",
+          hintText: I18N.of(context).search,
         ),
       ),
       trailing: Text(
