@@ -46,6 +46,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
     List<Widget> actions = [];
 
+    /*
     actions.add(
       IconButton(
         icon: FaIcon(FontAwesomeIcons.search),
@@ -64,6 +65,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
         }
       ),
     );
+     */
 
     if ((location != null) && (InvenTreeAPI().checkPermission('stock_location', 'change'))) {
       actions.add(
@@ -247,30 +249,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
           children: detailTiles(),
         );
       case 1:
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            locationDescriptionCard(includeActions: false),
-            ListTile(
-              title: Text(
-                I18N.of(context).stockItems,
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              trailing: Text("${stockItemCount}")
-            ),
-            Divider(height: 3),
-            Expanded(
-              child: PaginatedStockList(
-                filters,
-                onTotalChanged: (int total) {
-                  setState(() {
-                    stockItemCount = total;
-                  });
-                }
-              ),
-            )
-          ]
-        );
+        return PaginatedStockList(filters);
       case 2:
         return ListView(
           children: ListTile.divideTiles(
@@ -414,12 +393,10 @@ class PaginatedStockList extends StatefulWidget {
 
   final Map<String, String> filters;
 
-  Function onTotalChanged;
-
-  PaginatedStockList(this.filters, {this.onTotalChanged});
+  PaginatedStockList(this.filters);
 
   @override
-  _PaginatedStockListState createState() => _PaginatedStockListState(filters, onTotalChanged);
+  _PaginatedStockListState createState() => _PaginatedStockListState(filters);
 }
 
 
@@ -427,13 +404,11 @@ class _PaginatedStockListState extends State<PaginatedStockList> {
 
   static const _pageSize = 25;
 
-  String _searchTerm;
+  String _searchTerm = "";
 
   final Map<String, String> filters;
 
-  Function onTotalChanged;
-
-  _PaginatedStockListState(this.filters, this.onTotalChanged);
+  _PaginatedStockListState(this.filters);
 
   final PagingController<int, InvenTreeStockItem> _pagingController = PagingController(firstPageKey: 0);
 
@@ -452,14 +427,14 @@ class _PaginatedStockListState extends State<PaginatedStockList> {
     super.dispose();
   }
 
+  int resultCount = 0;
+
   Future<void> _fetchPage(int pageKey) async {
     try {
 
       Map<String, String> params = this.filters;
 
-      if (_searchTerm != null && _searchTerm.isNotEmpty) {
-        params["search"] = "${_searchTerm}";
-      }
+      params["search"] = "${_searchTerm}";
 
       // Do we include stock items from sub-locations?
       final bool cascade = await InvenTreeSettingsManager().getValue("stockSublocation", false);
@@ -484,9 +459,9 @@ class _PaginatedStockListState extends State<PaginatedStockList> {
         _pagingController.appendPage(items, nextPageKey);
       }
 
-      if (onTotalChanged != null) {
-        onTotalChanged(page.count);
-      }
+      setState(() {
+        resultCount = page.count;
+      });
 
     } catch (error) {
       _pagingController.error = error;
@@ -519,25 +494,40 @@ class _PaginatedStockListState extends State<PaginatedStockList> {
     );
   }
 
+  final TextEditingController searchController = TextEditingController();
+
+  void updateSearchTerm() {
+    _searchTerm = searchController.text;
+    _pagingController.refresh();
+  }
+
   @override
   Widget build (BuildContext context) {
-    return CustomScrollView(
-      shrinkWrap: true,
-      physics: ClampingScrollPhysics(),
-      scrollDirection: Axis.vertical,
-      slivers: <Widget>[
-        // TODO - Search input
-        PagedSliverList.separated(
-            pagingController: _pagingController,
-            builderDelegate: PagedChildBuilderDelegate<InvenTreeStockItem>(
-              itemBuilder: (context, item, index) {
-                return _buildItem(context, item);
-              },
-              noItemsFoundIndicatorBuilder: (context) {
-                return NoResultsWidget("No stock items found");
-              }
-            ),
-            separatorBuilder: (context, item) => const Divider(height: 1),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        PaginatedSearchWidget(searchController, updateSearchTerm, resultCount),
+        Expanded(
+          child: CustomScrollView(
+            shrinkWrap: true,
+            physics: ClampingScrollPhysics(),
+            scrollDirection: Axis.vertical,
+            slivers: <Widget>[
+              // TODO - Search input
+              PagedSliverList.separated(
+                  pagingController: _pagingController,
+                  builderDelegate: PagedChildBuilderDelegate<InvenTreeStockItem>(
+                    itemBuilder: (context, item, index) {
+                      return _buildItem(context, item);
+                    },
+                    noItemsFoundIndicatorBuilder: (context) {
+                      return NoResultsWidget("No stock items found");
+                    }
+                  ),
+                  separatorBuilder: (context, item) => const Divider(height: 1),
+              )
+            ]
+          )
         )
       ]
     );

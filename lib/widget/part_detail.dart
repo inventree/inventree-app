@@ -441,30 +441,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         ),
       );
       case 1:
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            headerTile(),
-            ListTile(
-              title: Text(
-                I18N.of(context).stockItems,
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              trailing: Text("${stockItemCount}")
-            ),
-            Divider(height: 3),
-            Expanded(
-              child: PaginatedStockList(
-                {"part": "${part.pk}"},
-                onTotalChanged: (int total) {
-                  setState(() {
-                    stockItemCount = total;
-                  });
-                },
-              )
-            )
-          ],
-        );
+        return PaginatedStockList({"part": "${part.pk}"});
       case 2:
         return Center(
           child: ListView(

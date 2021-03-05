@@ -46,6 +46,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
     List<Widget> actions = [];
 
+    /*
     actions.add(
         IconButton(
           icon: FaIcon(FontAwesomeIcons.search),
@@ -64,6 +65,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
           }
         )
     );
+     */
 
     if ((category != null) && InvenTreeAPI().checkPermission('part_category', 'change')) {
       actions.add(
@@ -361,7 +363,7 @@ class _PaginatedPartListState extends State<PaginatedPartList> {
 
   static const _pageSize = 25;
 
-  String _searchTerm;
+  String _searchTerm = "";
 
   Function onTotalChanged;
 
@@ -393,9 +395,7 @@ class _PaginatedPartListState extends State<PaginatedPartList> {
 
       Map<String, String> params = filters;
 
-      if (_searchTerm != null && _searchTerm.isNotEmpty) {
-        params["search"] = _searchTerm;
-      }
+      params["search"] = _searchTerm ?? "";
 
       final bool cascade = await InvenTreeSettingsManager().getValue("partSubcategory", false);
       params["cascade"] = "${cascade}";
@@ -459,8 +459,13 @@ class _PaginatedPartListState extends State<PaginatedPartList> {
     );
   }
 
-  void updateSearchTerm(String searchTerm) {
-    _searchTerm = searchTerm;
+  final TextEditingController searchController = TextEditingController();
+
+  void updateSearchTerm() {
+
+    print("Search Term: '${_searchTerm}'");
+
+    _searchTerm = searchController.text;
     _pagingController.refresh();
   }
 
@@ -469,10 +474,7 @@ class _PaginatedPartListState extends State<PaginatedPartList> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        PaginatedSearch(
-          callback: updateSearchTerm,
-          results: resultCount
-        ),
+        PaginatedSearchWidget(searchController, updateSearchTerm, resultCount),
         Expanded(
           child: CustomScrollView(
             shrinkWrap: true,
@@ -495,27 +497,6 @@ class _PaginatedPartListState extends State<PaginatedPartList> {
           )
         )
       ],
-    );
-    return CustomScrollView(
-      shrinkWrap: true,
-      physics: ClampingScrollPhysics(),
-      scrollDirection: Axis.vertical,
-      slivers: <Widget>[
-        // TODO: Introduce searching within the list
-        PaginatedSearch(callback: updateSearchTerm),
-        PagedSliverList.separated(
-            pagingController: _pagingController,
-            builderDelegate: PagedChildBuilderDelegate<InvenTreePart>(
-                itemBuilder: (context, item, index) {
-                  return _buildPart(context, item);
-                },
-              noItemsFoundIndicatorBuilder: (context) {
-                  return NoResultsWidget("No parts found");
-              }
-            ),
-            separatorBuilder: (context, index) => const Divider(height: 1),
-        ),
-      ]
     );
   }
 }

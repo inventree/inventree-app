@@ -5,22 +5,34 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class PaginatedSearch extends StatelessWidget {
+class PaginatedSearchWidget extends StatelessWidget {
 
-  Function callback;
+  Function onChanged;
 
   int results = 0;
 
-  PaginatedSearch({this.callback, this.results});
+  TextEditingController controller;
+
+  PaginatedSearchWidget(this.controller, this.onChanged, this.results);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: FaIcon(FontAwesomeIcons.search),
-      title: TextField(
+      leading: GestureDetector(
+        child: FaIcon(controller.text.isEmpty ? FontAwesomeIcons.search : FontAwesomeIcons.backspace),
+        onTap: () {
+          if (onChanged != null) {
+            controller.clear();
+            onChanged();
+          }
+        },
+      ),
+      title: TextFormField(
+        controller: controller,
         onChanged: (value) {
-          if (callback != null) {
-            callback(value);
+
+          if (onChanged != null) {
+            onChanged();
           }
         },
         decoration: InputDecoration(
