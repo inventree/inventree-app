@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:InvenTree/app_settings.dart';
 import 'package:InvenTree/user_profile.dart';
 import 'package:InvenTree/widget/snacks.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,12 +10,47 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:InvenTree/widget/dialogs.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:one_context/one_context.dart';
 
+/**
+ * Custom FileService for caching network images
+ * Requires a custom badCertificateCallback,
+ * so we can accept "dodgy" certificates
+ */
+class InvenTreeFileService extends FileService {
+
+  HttpClient _client;
+
+  InvenTreeFileService({HttpClient client, bool strictHttps = false}) {
+    _client = client ?? HttpClient();
+    _client.badCertificateCallback = (cert, host, port) {
+      print("BAD CERTIFICATE CALLBACK FOR IMAGE REQUEST");
+      return !strictHttps;
+    };
+  }
+
+  @override
+  Future<FileServiceResponse> get(String url,
+      {Map<String, String> headers = const {}}) async {
+    final Uri resolved = Uri.base.resolve(url);
+    final HttpClientRequest req = await _client.getUrl(resolved);
+    headers?.forEach((key, value) {
+      req.headers.add(key, value);
+    });
+    final HttpClientResponse httpResponse = await req.close();
+    final http.StreamedResponse _response = http.StreamedResponse(
+      httpResponse.timeout(Duration(seconds: 60)), httpResponse.statusCode,
+      contentLength: httpResponse.contentLength,
+      reasonPhrase: httpResponse.reasonPhrase,
+      isRedirect: httpResponse.isRedirect,
+    );
+    return HttpGetResponse(_response);
+  }
+}
 
 /**
  * InvenTree API - Access to the InvenTree REST interface.
@@ -525,6 +561,8 @@ class InvenTreeAPI {
     client.badCertificateCallback = ((X509Certificate cert, String host, int port) {
       // TODO - Introspection of actual certificate?
 
+      allowBadCert = true;
+
       if (allowBadCert) {
         return true;
       } else {
@@ -664,6 +702,8 @@ class InvenTreeAPI {
 
   static String get staticThumb => "/static/img/blank_image.thumbnail.png";
 
+
+
   /**
    * Load image from the InvenTree server,
    * or from local cache (if it has been cached!)
@@ -675,6 +715,15 @@ class InvenTreeAPI {
 
     String url = makeUrl(imageUrl);
 
+    const key = "inventree_network_image";
+
+    CacheManager manager = CacheManager(
+      Config(
+        key,
+        fileService: InvenTreeFileService(),
+      )
+    );
+
     return new CachedNetworkImage(
       imageUrl: url,
       placeholder: (context, url) => CircularProgressIndicator(),
@@ -682,6 +731,7 @@ class InvenTreeAPI {
       httpHeaders: defaultHeaders(),
       height: height,
       width: width,
+      cacheManager: manager,
     );
   }
 }
