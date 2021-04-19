@@ -1,6 +1,13 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.1.4 - April 2021
+---
+
+- Fixes certificate issues connecting to HTTPs server
+- Bug fixes for various API calls
+- UI cleanup
+
 ### 0.1.3 - March 2021
 ---
 
