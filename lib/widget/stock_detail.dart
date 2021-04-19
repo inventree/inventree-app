@@ -529,6 +529,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
               title: Text(I18N.of(context).countStock),
               leading: FaIcon(FontAwesomeIcons.checkCircle),
               onTap: _countStockDialog,
+              trailing: Text(item.quantityString),
           )
       );
 

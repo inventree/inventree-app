@@ -619,7 +619,6 @@ class InvenTreeAPI {
 
   String _authorizationHeader(String username, String password) {
     if (_token.isNotEmpty) {
-      print("Using TOKEN: ${_token}");
       return "Token $_token";
     } else {
       return "Basic " + base64Encode(utf8.encode('${username}:${password}'));

@@ -433,6 +433,8 @@ class InvenTreeStockItem extends InvenTreeModel {
       return false;
     }
 
+    print("Adjust stock: ${endpoint}");
+
     var response = await api.post(
       endpoint,
       body: {
@@ -441,8 +443,11 @@ class InvenTreeStockItem extends InvenTreeModel {
         "quantity": "${q}",
         },
         "notes": notes ?? '',
-      }
+      },
+      expectedStatusCode: 200
     );
+
+    print("Adjustment completed!");
 
     if (response == null) {
       return false;
