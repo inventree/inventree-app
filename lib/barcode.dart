@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:one_context/one_context.dart';
 
-import 'package:device_info/device_info.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 import 'package:InvenTree/inventree/stock.dart';
@@ -21,7 +20,6 @@ import 'package:InvenTree/widget/part_detail.dart';
 import 'package:InvenTree/widget/stock_detail.dart';
 
 import 'dart:io';
-import 'dart:convert';
 
 
 class BarcodeHandler {
@@ -88,49 +86,34 @@ class BarcodeHandler {
       _controller.resumeCamera();
     }
 
-    Future<void> processBarcode(BuildContext context, QRViewController _controller, String barcode, {String url = "barcode/"}) {
+    Future<void> processBarcode(BuildContext context, QRViewController _controller, String barcode, {String url = "barcode/"}) async {
       this._context = context;
       this._controller = _controller;
 
       print("Scanned barcode data: ${barcode}");
 
-      // Send barcode request to server
-      InvenTreeAPI().post(
+      var data = await InvenTreeAPI().post(
           url,
           body: {
-            "barcode": barcode
-          }
-      ).then((var response) {
+            "barcode": barcode,
+          },
+          expectedStatusCode: 200
+      );
 
-        if (response.statusCode != 200) {
-          showStatusCodeError(response.statusCode);
-          _controller.resumeCamera();
-
-          return;
-        }
-
-        // Decode the response
-        final Map<String, dynamic> data = json.decode(response.body);
-
-        if (data.containsKey('error')) {
-          _controller.resumeCamera();
-          onBarcodeUnknown(data);
-        } else if (data.containsKey('success')) {
-          _controller.resumeCamera();
-          onBarcodeMatched(data);
-        } else {
-          _controller.resumeCamera();
-          onBarcodeUnhandled(data);
-        }
-      }).timeout(
-          Duration(seconds: 5)
-      ).catchError((error) {
-
-        showServerError(I18N.of(OneContext().context).error, error.toString());
-        _controller.resumeCamera();
-
+      if (data == null) {
         return;
-      });
+      }
+
+      if (data.containsKey('error')) {
+        _controller.resumeCamera();
+        onBarcodeUnknown(data);
+      } else if (data.containsKey('success')) {
+        _controller.resumeCamera();
+        onBarcodeMatched(data);
+      } else {
+        _controller.resumeCamera();
+        onBarcodeUnhandled(data);
+      }
     }
 }
 

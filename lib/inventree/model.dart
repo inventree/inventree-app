@@ -262,36 +262,13 @@ class InvenTreeModel {
 
     InvenTreeModel _model;
 
-    await api.post(URL, body: data).timeout(Duration(seconds: 10)).catchError((e) {
-      print("Error during CREATE");
-      print(e.toString());
+    var response = await api.post(URL, body: data);
 
-      if (e is SocketException) {
-        showServerError(
-            I18N.of(context).connectionRefused,
-            e.toString()
-        );
-      }
-      else if (e is TimeoutException) {
-        showTimeoutError(context);
-      } else {
-        // Re-throw the error
-        throw e;
-      }
-
+    if (response == null) {
       return null;
-    })
-    .then((http.Response response) {
-      // Server should return HTTP_201_CREATED
-      if (response.statusCode == 201) {
-        var decoded = json.decode(response.body);
-        _model = createFromJson(decoded);
-      } else {
-        showStatusCodeError(response.statusCode);
-      }
-    });
+    }
 
-    return _model;
+    return createFromJson(response);
   }
 
   Future<InvenTreePageResponse> listPaginated(int limit, int offset, {Map<String, String> filters}) async {

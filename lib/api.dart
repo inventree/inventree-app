@@ -388,22 +388,96 @@ class InvenTreeAPI {
     return response;
   }
 
-  // Perform a POST request
-  Future<http.Response> post(String url, {Map<String, dynamic> body}) async {
+  /**
+   * Perform a HTTP POST request
+   * Returns a json object (or null if unsuccessful)
+   */
+  Future<dynamic> post(String url, {Map<String, dynamic> body, int expectedStatusCode=201}) async {
     var _url = makeApiUrl(url);
     var _headers = jsonHeaders();
 
     print("POST: ${_url} -> ${body.toString()}");
 
-    var data = jsonEncode(body);
+    var client = createClient(true);
 
-    return http.post(_url,
-      headers: _headers,
-      body: data,
-    );
+    HttpClientRequest request = await client.postUrl(Uri.parse(_url));
+
+    var data = json.encode(body);
+
+    // Set headers
+    // Ref: https://stackoverflow.com/questions/59713003/body-not-sending-using-map-in-flutter
+    request.headers.set('Accept', 'application/json');
+    request.headers.set('Content-type', 'application/json');
+    request.headers.set('Content-Length', data.length.toString());
+
+    if (profile != null) {
+      request.headers.set(
+        HttpHeaders.authorizationHeader,
+        _authorizationHeader(profile.username, profile.password)
+      );
+    }
+
+    // Add JSON data to the request
+    request.add(utf8.encode(data));
+
+    HttpClientResponse response = await request.close()
+    .timeout(Duration(seconds: 30))
+    .catchError((error) {
+      print("POST request returned error");
+      print("URL: ${_url}");
+      print("Error: ${error.toString()}");
+
+      var ctx = OneContext().context;
+
+      if (error is SocketException) {
+        showServerError(
+          I18N.of(ctx).connectionRefused,
+          error.toString()
+        );
+      } else if (error is TimeoutException) {
+        showTimeoutError(ctx);
+      } else {
+        showServerError(
+          I18N.of(ctx).serverError,
+          error.toString()
+        );
+      }
+
+      return null;
+    });
+
+    if (response == null) {
+      print("null response from POST ${_url}");
+      return null;
+    }
+
+    if (response.statusCode != expectedStatusCode) {
+      showStatusCodeError(response.statusCode);
+      return null;
+    }
+
+    // Convert the body of the response to a JSON object
+    String responseData = await response.transform(utf8.decoder).join();
+
+    try {
+      var data = json.decode(responseData);
+
+      return data;
+
+    } on FormatException {
+
+      print("JSON format exception!");
+      print("${responseData}");
+
+      showServerError(
+          "Format Exception",
+          "JSON data format exception:\n${responseData}"
+      );
+      return null;
+    }
   }
 
-  HttpClient _client(bool allowBadCert) {
+  HttpClient createClient(bool allowBadCert) {
 
     var client = new HttpClient();
 
@@ -433,7 +507,7 @@ class InvenTreeAPI {
    * Perform a HTTP GET request
    * Returns a json object (or null if did not complete)
    */
-  Future<dynamic> get(String url, {Map<String, String> params}) async {
+  Future<dynamic> get(String url, {Map<String, String> params, int expectedStatusCode=200}) async {
     var _url = makeApiUrl(url);
     var _headers = defaultHeaders();
 
@@ -455,9 +529,7 @@ class InvenTreeAPI {
 
     print("GET: " + _url);
 
-    var client = _client(true);
-
-    print("Created client");
+    var client = createClient(true);
 
     HttpClientRequest request = await client.getUrl(Uri.parse(_url));
 
@@ -469,8 +541,6 @@ class InvenTreeAPI {
           _authorizationHeader(profile.username, profile.password)
       );
     }
-
-    print("Created request: ${request.uri}");
 
     HttpClientResponse response = await request.close()
     .timeout(Duration(seconds: 30))
@@ -505,7 +575,7 @@ class InvenTreeAPI {
     }
 
     // Check the status code of the response
-    if (response.statusCode != 200) {
+    if (response.statusCode != expectedStatusCode) {
       showStatusCodeError(response.statusCode);
       return null;
     }

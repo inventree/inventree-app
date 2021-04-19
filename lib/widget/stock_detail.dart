@@ -247,7 +247,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
   void _transferStock(BuildContext context, InvenTreeStockLocation location) async {
 
-    double quantity = double.parse(_quantityController.text);
+    double quantity = double.tryParse(_quantityController.text) ?? item.quantity;
     String notes = _notesController.text;
 
     _quantityController.clear();

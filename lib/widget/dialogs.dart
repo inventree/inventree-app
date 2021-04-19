@@ -208,8 +208,6 @@ void showFormDialog(String title, {String acceptText, String cancelText, GlobalK
           if (key.currentState.validate()) {
             key.currentState.save();
 
-            print("Saving and closing the dialog");
-
             // Close the dialog
             Navigator.pop(dialogContext);
 

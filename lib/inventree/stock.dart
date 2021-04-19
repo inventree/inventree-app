@@ -437,31 +437,14 @@ class InvenTreeStockItem extends InvenTreeModel {
       endpoint,
       body: {
         "item": {
-          "pk": "${pk}",
-          "quantity": "${q}",
+        "pk": "${pk}",
+        "quantity": "${q}",
         },
         "notes": notes ?? '',
-    }).timeout(Duration(seconds: 10)).catchError((error) {
-      if (error is TimeoutException) {
-        showTimeoutError(context);
-      } else if (error is SocketException) {
-        showServerError(
-            I18N.of(context).connectionRefused,
-            error.toString()
-        );
-      } else {
-        // Re-throw the error
-        throw error;
       }
+    );
 
-      // Null response if error
-      return null;
-    });
-
-    if (response == null) return false;
-
-    if (response.statusCode != 200) {
-      showStatusCodeError(response.statusCode);
+    if (response == null) {
       return false;
     }
 
@@ -508,9 +491,13 @@ class InvenTreeStockItem extends InvenTreeModel {
       data["item"]["quantity"] = "${quantity}";
     }
 
+    print("transfer stock!");
+
     final response = await api.post("/stock/transfer/", body: data);
 
-    return (response.statusCode == 200);
+    print("transfer response: ${response}");
+
+    return response != null;
   }
 }
 
