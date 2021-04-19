@@ -186,34 +186,15 @@ class InvenTreeModel {
       addr += "/";
     }
 
-    var response = await api.patch(addr, body: values)
-        .timeout(Duration(seconds: 10))
-        .catchError((e) {
-
-          if (e is SocketException) {
-            showServerError(
-              I18N.of(context).connectionRefused,
-              e.toString()
-            );
-          } else if (e is TimeoutException) {
-            showTimeoutError(context);
-          } else {
-            // Re-throw the error
-            throw e;
-          }
-
-          return null;
-    });
+    var response = await api.patch(
+      addr,
+      body: values,
+      expectedStatusCode: 200
+    );
 
     if (response == null) return false;
 
-    if (response.statusCode != 200) {
-      showStatusCodeError(response.statusCode);
-      return false;
-    }
-
     return true;
-
   }
 
   // Return the detail view for the associated pk

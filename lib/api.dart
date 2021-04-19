@@ -348,9 +348,8 @@ class InvenTreeAPI {
 
 
   // Perform a PATCH request
-  Future<http.Response> patch(String url, {Map<String, String> body}) async {
+  Future<dynamic> patch(String url, {Map<String, String> body, int expectedStatusCode=200}) async {
     var _url = makeApiUrl(url);
-    var _headers = defaultHeaders();
     var _body = Map<String, String>();
 
     // Copy across provided data
@@ -358,10 +357,59 @@ class InvenTreeAPI {
 
     print("PATCH: " + _url);
 
-    return http.patch(_url,
-      headers: _headers,
-      body: _body,
-    );
+    var client = createClient(true);
+
+    HttpClientRequest request = await client.patchUrl(Uri.parse(_url));
+
+    var data = json.encode(body);
+
+    // Set headers
+    request.headers.set('Accept', 'application/json');
+    request.headers.set('Content-type', 'application/json');
+    request.headers.set('Content-Length', data.length.toString());
+    request.headers.set(HttpHeaders.authorizationHeader, _authorizationHeader());
+
+    request.add(utf8.encode(data));
+
+    HttpClientResponse response = await request.close()
+    .timeout(Duration(seconds: 30))
+    .catchError((error) {
+      print("PATCH request returned error");
+      print("URL: ${_url}");
+      print("Error: ${error.toString()}");
+
+      var ctx = OneContext().context;
+
+      if (error is SocketException) {
+        showServerError(
+            I18N
+                .of(ctx)
+                .connectionRefused,
+            error.toString()
+        );
+      } else if (error is TimeoutException) {
+        showTimeoutError(ctx);
+      } else {
+        showServerError(
+            I18N
+                .of(ctx)
+                .serverError,
+            error.toString()
+        );
+      }
+
+      return null;
+    });
+
+    if (response == null) {
+      print("null response from PATCH ${_url}");
+      return null;
+    }
+
+    if (response.statusCode != expectedStatusCode) {
+      showStatusCodeError(response.statusCode);
+      return null;
+    }
   }
 
   /*
@@ -394,7 +442,6 @@ class InvenTreeAPI {
    */
   Future<dynamic> post(String url, {Map<String, dynamic> body, int expectedStatusCode=201}) async {
     var _url = makeApiUrl(url);
-    var _headers = jsonHeaders();
 
     print("POST: ${_url} -> ${body.toString()}");
 
@@ -409,13 +456,7 @@ class InvenTreeAPI {
     request.headers.set('Accept', 'application/json');
     request.headers.set('Content-type', 'application/json');
     request.headers.set('Content-Length', data.length.toString());
-
-    if (profile != null) {
-      request.headers.set(
-        HttpHeaders.authorizationHeader,
-        _authorizationHeader(profile.username, profile.password)
-      );
-    }
+    request.headers.set(HttpHeaders.authorizationHeader, _authorizationHeader());
 
     // Add JSON data to the request
     request.add(utf8.encode(data));
@@ -509,7 +550,6 @@ class InvenTreeAPI {
    */
   Future<dynamic> get(String url, {Map<String, String> params, int expectedStatusCode=200}) async {
     var _url = makeApiUrl(url);
-    var _headers = defaultHeaders();
 
     print("GET: ${_url}");
 
@@ -535,12 +575,7 @@ class InvenTreeAPI {
 
     // Set headers
     request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
-    if (profile != null) {
-      request.headers.set(
-          HttpHeaders.authorizationHeader,
-          _authorizationHeader(profile.username, profile.password)
-      );
-    }
+    request.headers.set(HttpHeaders.authorizationHeader, _authorizationHeader());
 
     HttpClientResponse response = await request.close()
     .timeout(Duration(seconds: 30))
@@ -604,9 +639,7 @@ class InvenTreeAPI {
   Map<String, String> defaultHeaders() {
     var headers = Map<String, String>();
 
-    if (profile != null) {
-      headers[HttpHeaders.authorizationHeader] = _authorizationHeader(profile.username, profile.password);
-    }
+    headers[HttpHeaders.authorizationHeader] = _authorizationHeader();
 
     return headers;
   }
@@ -617,11 +650,13 @@ class InvenTreeAPI {
     return headers;
   }
 
-  String _authorizationHeader(String username, String password) {
+  String _authorizationHeader() {
     if (_token.isNotEmpty) {
       return "Token $_token";
+    } else if (profile != null) {
+      return "Basic " + base64Encode(utf8.encode('${profile.username}:${profile.password}'));
     } else {
-      return "Basic " + base64Encode(utf8.encode('${username}:${password}'));
+      return "";
     }
   }
 
