@@ -166,39 +166,13 @@ class InvenTreeModel {
    */
   Future<bool> reload(BuildContext context) async {
 
-    var response = await api.get(url, params: defaultGetFilters())
-      .timeout(Duration(seconds: 10))
-      .catchError((e) {
-
-          if (e is SocketException) {
-            showServerError(
-              I18N.of(context).connectionRefused,
-              e.toString()
-            );
-          }
-          else if (e is TimeoutException) {
-            showTimeoutError(context);
-          } else {
-            // Re-throw the error
-            throw e;
-          }
-
-          return null;
-    });
+    var response = await api.get(url, params: defaultGetFilters());
     
     if (response == null) {
       return false;
     }
 
-    if (response.statusCode != 200) {
-      showStatusCodeError(response.statusCode);
-      print("Error retrieving data");
-      return false;
-    }
-
-    final Map<String, dynamic> data = json.decode(response.body);
-
-    jsondata = data;
+    jsondata = response;
 
     return true;
   }
@@ -265,34 +239,13 @@ class InvenTreeModel {
 
     print("GET: $addr ${params.toString()}");
 
-    var response = await api.get(addr, params: params)
-        .timeout(Duration(seconds: 10))
-        .catchError((e) {
-
-          if (e is SocketException) {
-            showServerError(I18N.of(context).connectionRefused, e.toString());
-          }
-          else if (e is TimeoutException) {
-            showTimeoutError(context);
-          } else {
-            // Re-throw the error
-            throw e;
-          }
-          return null;
-      });
+    var response = await api.get(addr, params: params);
 
     if (response == null) {
       return null;
     }
 
-    if (response.statusCode != 200) {
-      showStatusCodeError(response.statusCode);
-      return null;
-    }
-
-    final data = json.decode(response.body);
-
-    return createFromJson(data);
+    return createFromJson(response);
   }
 
   Future<InvenTreeModel> create(BuildContext context, Map<String, dynamic> data) async {
@@ -353,41 +306,21 @@ class InvenTreeModel {
     params["limit"] = "${limit}";
     params["offset"] = "${offset}";
 
-    var response = await api.get(URL, params: params)
-        .timeout(Duration(seconds: 10))
-        .catchError((error) {
-      if (error is SocketException) {
-        showServerError(
-            I18N
-                .of(OneContext().context)
-                .connectionRefused,
-            error.toString()
-        );
-      }
-
-      return null;
-    });
+    var response = await api.get(URL, params: params);
 
     if (response == null) {
-      return null;
-    }
-
-    if (response.statusCode != 200) {
-      showStatusCodeError(response.statusCode);
       return null;
     }
 
     // Construct the response
     InvenTreePageResponse page = new InvenTreePageResponse();
 
-    final data = json.decode(response.body);
-
-    if (data.containsKey("count") && data.containsKey("results")) {
-       page.count = data["count"] as int;
+    if (response.containsKey("count") && response.containsKey("results")) {
+       page.count = response["count"] as int;
 
        page.results = [];
 
-       for (var result in data["results"]) {
+       for (var result in response["results"]) {
          page.addResult(createFromJson(result));
        }
 
@@ -417,50 +350,20 @@ class InvenTreeModel {
 
     print("LIST: $URL ${params.toString()}");
 
-    // TODO - Add "timeout"
-    // TODO - Add error catching
-
-    var response = await api.get(URL, params:params)
-      .timeout(Duration(seconds: 10))
-      .catchError((e) {
-
-        if (e is SocketException) {
-          showServerError(
-              I18N.of(context).connectionRefused,
-              e.toString()
-          );
-        }
-        else if (e is TimeoutException) {
-          showTimeoutError(context);
-        } else {
-          // Re-throw the error
-          throw e;
-        }
-
-        return null;
-    });
-
-    if (response == null) {
-      return null;
-    }
+    var response = await api.get(URL, params: params);
 
     // A list of "InvenTreeModel" items
     List<InvenTreeModel> results = new List<InvenTreeModel>();
 
-    if (response.statusCode != 200) {
-      showStatusCodeError(response.statusCode);
-
-      // Return empty list
+    if (response == null) {
       return results;
     }
-
-    final data = json.decode(response.body);
 
     // TODO - handle possible error cases:
     // - No data receieved
     // - Data is not a list of maps
 
-    for (var d in data) {
+    for (var d in response) {
 
       // Create a new object (of the current class type
       InvenTreeModel obj = createFromJson(d);
