@@ -484,23 +484,18 @@ class InvenTreeStockItem extends InvenTreeModel {
       quantity = this.quantity;
     }
 
-    Map<String, dynamic> data = {
-      "item": {
-        "pk": "${pk}",
+    final response = await api.post(
+      "/stock/transfer/",
+      body: {
+        "item": {
+          "pk": "${pk}",
+          "quantity": "${quantity}",
+        },
+        "location": "${location}",
+        "notes": notes ?? "",
       },
-      "location": "${location}",
-      "notes": notes ?? '',
-    };
-
-    if (quantity != null) {
-      data["item"]["quantity"] = "${quantity}";
-    }
-
-    print("transfer stock!");
-
-    final response = await api.post("/stock/transfer/", body: data);
-
-    print("transfer response: ${response}");
+      expectedStatusCode: 200
+    );
 
     return response != null;
   }

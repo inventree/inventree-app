@@ -314,7 +314,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
                 _selectedController.text = selectedLocation.pathstring;
               },
               onSaved: (value) {
-                _transferStock(context, selectedLocation);
               },
               itemBuilder: (context, suggestion) {
                 var location = suggestion as InvenTreeStockLocation;
