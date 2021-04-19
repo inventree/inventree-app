@@ -446,6 +446,8 @@ class InvenTreeAPI {
       showStatusCodeError(response.statusCode);
       return null;
     }
+
+    return response;
   }
 
   /*
