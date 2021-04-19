@@ -5,6 +5,7 @@
 ---
 
 - Fixes certificate issues connecting to HTTPs server
+- Fixes some app crash bugs
 - Bug fixes for various API calls
 - UI cleanup
 

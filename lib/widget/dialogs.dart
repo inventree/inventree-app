@@ -177,19 +177,24 @@ Future<void> showStatusCodeError(int status, {int expected = 200}) async {
 
 Future<void> showTimeoutError(BuildContext context) async {
 
-  await showServerError(I18N.of(context).timeout, I18N.of(context).noResponse);
+  // Use OneContext as "sometimes" context is null here?
+  var ctx = OneContext().context;
+
+  await showServerError(I18N.of(ctx).timeout, I18N.of(ctx).noResponse);
 }
 
 void showFormDialog(String title, {String acceptText, String cancelText, GlobalKey<FormState> key, List<Widget> fields, List<Widget> actions, Function callback}) {
 
   BuildContext dialogContext;
 
+  var ctx = OneContext().context;
+
   if (acceptText == null) {
-    acceptText = I18N.of(OneContext().context).save;
+    acceptText = I18N.of(ctx).save;
   }
 
   if (cancelText == null) {
-    cancelText = I18N.of(OneContext().context).cancel;
+    cancelText = I18N.of(ctx).cancel;
   }
 
   // Undefined actions = OK + Cancel

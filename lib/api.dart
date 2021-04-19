@@ -209,9 +209,6 @@ class InvenTreeAPI {
       return false;
     }
 
-
-    print("Response from server: ${response}");
-
     // We expect certain response from the server
     if (!response.containsKey("server") || !response.containsKey("version") || !response.containsKey("instance")) {
 
@@ -395,7 +392,37 @@ class InvenTreeAPI {
 
     var client = createClient(true);
 
-    HttpClientRequest request = await client.patchUrl(Uri.parse(_url));
+    // Open a connection to the server
+    HttpClientRequest request = await client.patchUrl(Uri.parse(_url))
+    .timeout(Duration(seconds: 10))
+    .catchError((error) {
+      print("PATCH request return error");
+      print("URL: ${_url}");
+      print("Error: ${error.toString()}");
+
+      var ctx = OneContext().context;
+
+      if (error is SocketException) {
+        showServerError(
+          I18N.of(ctx).connectionRefused,
+          error.toString(),
+        );
+      } else if (error is TimeoutException) {
+        showTimeoutError(ctx);
+      } else {
+        showServerError(
+          I18N.of(ctx).serverError,
+          error.toString()
+        );
+      }
+
+      return null;
+    });
+
+    // Request could not be made
+    if (request = null) {
+      return null;
+    }
 
     var data = json.encode(body);
 
@@ -485,7 +512,36 @@ class InvenTreeAPI {
 
     var client = createClient(true);
 
-    HttpClientRequest request = await client.postUrl(Uri.parse(_url));
+    // Open a connection to the server
+    HttpClientRequest request = await client.postUrl(Uri.parse(_url))
+    .timeout(Duration(seconds: 10))
+    .catchError((error) {
+      print("POST request returned error");
+      print("URL: ${_url}");
+      print("Error: ${error.toString()}");
+
+      var ctx = OneContext().context;
+
+      if (error is SocketException) {
+        showServerError(
+          I18N.of(ctx).connectionRefused,
+          error.toString()
+        );
+      } else if (error is TimeoutException) {
+        showTimeoutError(ctx);
+      } else {
+        showServerError(
+        I18N.of(ctx).serverError,
+        error.toString()
+        );
+      }
+
+      return null;
+    });
+
+    if (request == null) {
+      return null;
+    }
 
     var data = json.encode(body);
 
@@ -607,18 +663,47 @@ class InvenTreeAPI {
       _url = _url.substring(0, _url.length - 1);
     }
 
-    print("GET: " + _url);
-
     var client = createClient(true);
 
-    HttpClientRequest request = await client.getUrl(Uri.parse(_url));
+    // Open a connection
+    HttpClientRequest request = await client.getUrl(Uri.parse(_url))
+    .timeout(Duration(seconds: 10))
+        .catchError((error) {
+      print("GET request returned error");
+      print("URL: ${_url}");
+      print("Error: ${error.toString()}");
 
-    // Set headers
+      var ctx = OneContext().context;
+
+      if (error is SocketException) {
+        showServerError(
+            I18N.of(ctx).connectionRefused,
+            error.toString()
+        );
+      } else if (error is TimeoutException) {
+        showTimeoutError(ctx);
+      } else {
+        showServerError(
+            I18N.of(ctx).serverError,
+            error.toString()
+        );
+      }
+
+      return null;
+    });
+
+    if (request == null) {
+      return null;
+    }
+
+    // Set connection headers
     request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
     request.headers.set(HttpHeaders.authorizationHeader, _authorizationHeader());
 
+    print("Attempting connection");
+
     HttpClientResponse response = await request.close()
-    .timeout(Duration(seconds: 30))
+    .timeout(Duration(seconds: 10))
     .catchError((error) {
       print("GET request returned error");
       print("URL: ${_url}");
@@ -642,6 +727,8 @@ class InvenTreeAPI {
 
       return null;
     });
+
+    print("got here");
 
     // A null response means something has gone wrong...
     if (response == null) {
