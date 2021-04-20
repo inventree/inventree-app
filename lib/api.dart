@@ -165,13 +165,19 @@ class InvenTreeAPI {
 
   InvenTreeAPI._internal();
 
+
+  /**
+   * Connect to the remote InvenTree server:
+   *
+   * - Check that the InvenTree server exists
+   * - Request user token from the server
+   * - Request user roles from the server
+   */
   Future<bool> _connect(BuildContext context) async {
 
-    /* Address is the base address for the InvenTree server,
-     * e.g. http://127.0.0.1:8000
-     */
-
     if (profile == null) return false;
+
+    var ctx = OneContext().context;
 
     String address = profile.server.trim();
     String username = profile.username.trim();
@@ -179,7 +185,7 @@ class InvenTreeAPI {
 
     if (address.isEmpty || username.isEmpty || password.isEmpty) {
       showSnackIcon(
-        "Incomplete server details",
+        "Incomplete profile details",
         icon: FontAwesomeIcons.exclamationCircle,
         success: false
       );
@@ -189,28 +195,36 @@ class InvenTreeAPI {
     if (!address.endsWith('/')) {
       address = address + '/';
     }
-
-    // TODO - Better URL validation
-
-    /*
+    /* TODO: Better URL validation
      * - If not a valid URL, return error
      * - If no port supplied, append a default port
      */
 
     _BASE_URL = address;
 
-    print("Connecting to ${apiUrl} -> ${username}:${password}");
+    print("Connecting to ${apiUrl} -> username=${username}");
 
-    // Request the /api/ endpoint - response is a json object
-    var response = await get("");
+    HttpClientResponse response;
+    dynamic data;
+
+    response = await getResponse("");
 
     // Null response means something went horribly wrong!
+    // Most likely, the server cannot be contacted
     if (response == null) {
+      // An error message has already been displayed!
       return false;
     }
 
+    if (response.statusCode != 200) {
+      showStatusCodeError(response.statusCode);
+      return false;
+    }
+
+    data = await responseToJson(response);
+
     // We expect certain response from the server
-    if (!response.containsKey("server") || !response.containsKey("version") || !response.containsKey("instance")) {
+    if (data == null || !data.containsKey("server") || !data.containsKey("version") || !data.containsKey("instance")) {
 
       showServerError(
         "Missing Data",
@@ -221,15 +235,13 @@ class InvenTreeAPI {
     }
 
     // Record server information
-    _version = response["version"];
-    instance = response['instance'] ?? '';
+    _version = data["version"];
+    instance = data['instance'] ?? '';
 
     // Default API version is 1 if not provided
-    _apiVersion = response['apiVersion'] as int ?? 1;
+    _apiVersion = data['apiVersion'] as int ?? 1;
 
     if (_apiVersion < _minApiVersion) {
-
-      BuildContext ctx = OneContext().context;
 
       String message = I18N.of(ctx).serverApiVersion + ": ${_apiVersion}";
 
@@ -248,23 +260,43 @@ class InvenTreeAPI {
       return false;
     }
 
+    /**
+     * Request user token information from the server
+     * This is the stage that we check username:password credentials!
+     */
     // Clear the existing token value
     _token = "";
 
     print("Requesting token from server");
 
-    response = await get(_URL_GET_TOKEN);
+    response = await getResponse(_URL_GET_TOKEN);
 
+    // A "null" response means that the request was unsuccessful
     if (response == null) {
-      showServerError(
-          I18N.of(OneContext().context).tokenError,
-          "Error requesting access token from server"
-      );
+      return false;
+    }
+
+    if (response.statusCode != 200) {
+
+      switch (response.statusCode) {
+        case 401:
+        case 403:
+          showServerError(
+            I18N.of(ctx).serverAuthenticationError,
+            "Incorrect username:password combination"
+          );
+          break;
+        default:
+          showStatusCodeError(response.statusCode);
+          break;
+      }
 
       return false;
     }
 
-    if (!response.containsKey("token")) {
+    data = await responseToJson(response);
+
+    if (data == null || !data.containsKey("token")) {
       showServerError(
           I18N.of(OneContext().context).tokenMissing,
           "Access token missing from response"
@@ -274,7 +306,7 @@ class InvenTreeAPI {
     }
 
     // Return the received token
-    _token = response["token"];
+    _token = data["token"];
     print("Received token - $_token");
 
     // Request user role information
@@ -420,7 +452,7 @@ class InvenTreeAPI {
     });
 
     // Request could not be made
-    if (request = null) {
+    if (request == null) {
       return null;
     }
 
@@ -474,7 +506,9 @@ class InvenTreeAPI {
       return null;
     }
 
-    return response;
+    var responseData = await responseToJson(response);
+
+    return responseData;
   }
 
   /*
@@ -591,25 +625,9 @@ class InvenTreeAPI {
       return null;
     }
 
-    // Convert the body of the response to a JSON object
-    String responseData = await response.transform(utf8.decoder).join();
+    var responseData = await responseToJson(response);
 
-    try {
-      var data = json.decode(responseData);
-
-      return data;
-
-    } on FormatException {
-
-      print("JSON format exception!");
-      print("${responseData}");
-
-      showServerError(
-          "Format Exception",
-          "JSON data format exception:\n${responseData}"
-      );
-      return null;
-    }
+    return responseData;
   }
 
   HttpClient createClient(bool allowBadCert) {
@@ -641,10 +659,11 @@ class InvenTreeAPI {
   }
 
   /**
-   * Perform a HTTP GET request
-   * Returns a json object (or null if did not complete)
+   * Perform a HTTP GET request,
+   * and return the Response object
+   * (or null if the request fails)
    */
-  Future<dynamic> get(String url, {Map<String, String> params, int expectedStatusCode=200}) async {
+  Future<HttpClientResponse> getResponse(String url, {Map<String, String> params}) async {
     var _url = makeApiUrl(url);
 
     print("GET: ${_url}");
@@ -667,7 +686,7 @@ class InvenTreeAPI {
 
     // Open a connection
     HttpClientRequest request = await client.getUrl(Uri.parse(_url))
-    .timeout(Duration(seconds: 10))
+        .timeout(Duration(seconds: 10))
         .catchError((error) {
       print("GET request returned error");
       print("URL: ${_url}");
@@ -700,11 +719,9 @@ class InvenTreeAPI {
     request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
     request.headers.set(HttpHeaders.authorizationHeader, _authorizationHeader());
 
-    print("Attempting connection");
-
     HttpClientResponse response = await request.close()
-    .timeout(Duration(seconds: 10))
-    .catchError((error) {
+        .timeout(Duration(seconds: 10))
+        .catchError((error) {
       print("GET request returned error");
       print("URL: ${_url}");
       print("Error: ${error.toString()}");
@@ -728,11 +745,46 @@ class InvenTreeAPI {
       return null;
     });
 
-    print("got here");
+    return response;
+  }
+
+  dynamic responseToJson(HttpClientResponse response) async {
+
+    if (response == null) {
+      return null;
+    }
+
+    String body = await response.transform(utf8.decoder).join();
+
+    try {
+      var data = json.decode(body);
+
+      return data;
+    } on FormatException {
+
+      print("JSON format exception!");
+      print("${body}");
+
+      showServerError(
+          "Format Exception",
+          "JSON data format exception:\n${body}"
+      );
+      return null;
+    }
+
+  }
+
+  /**
+   * Perform a HTTP GET request
+   * Returns a json object (or null if did not complete)
+   */
+  Future<dynamic> get(String url, {Map<String, String> params, int expectedStatusCode=200}) async {
+
+    var response = await getResponse(url, params: params);
 
     // A null response means something has gone wrong...
     if (response == null) {
-      print("null response from GET ${_url}");
+      print("null response from GET ${url}");
       return null;
     }
 
@@ -742,25 +794,9 @@ class InvenTreeAPI {
       return null;
     }
 
-    // Convert the body of the response to a JSON object
-    String body = await response.transform(utf8.decoder).join();
+    var data = await responseToJson(response);
 
-    try {
-      var data = json.decode(body);
-
-      return data;
-
-    } on FormatException {
-
-      print("JSON format exception!");
-      print("${body}");
-
-      showServerError(
-        "Format Exception",
-        "JSON data format exception:\n${body}"
-      );
-      return null;
-    }
+    return data;
   }
 
   Map<String, String> defaultHeaders() {
