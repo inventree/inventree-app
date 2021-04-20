@@ -7,6 +7,7 @@
 - Fixes certificate issues connecting to HTTPs server
 - Fixes some app crash bugs
 - Bug fixes for various API calls
+- Improved error messages for invalid user credentials
 - UI cleanup
 
 ### 0.1.3 - March 2021
