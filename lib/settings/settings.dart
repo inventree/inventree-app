@@ -72,6 +72,15 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
               ),
 
               ListTile(
+                title: Text(L10().translate),
+                subtitle: Text(L10().translateHelp),
+                leading: FaIcon(FontAwesomeIcons.language),
+                onTap: () {
+                  _translate();
+                }
+              ),
+
+              ListTile(
                 title: Text(L10().feedback),
                 subtitle: Text(L10().submitFeedback),
                 leading: FaIcon(FontAwesomeIcons.comments),
@@ -91,6 +100,14 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
   void _openDocs() async {
     if (await canLaunch(docsUrl)) {
       await launch(docsUrl);
+    }
+  }
+
+  void _translate() async {
+    final String url = "https://crowdin.com/project/inventree";
+
+    if (await canLaunch(url)) {
+      await launch(url);
     }
   }
 

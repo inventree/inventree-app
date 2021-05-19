@@ -5,6 +5,7 @@
 ---
 
 - Added ability for user to submit feedback
+- Update translations
 
 ### 0.1.4 - April 2021
 ---
