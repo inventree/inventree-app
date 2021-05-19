@@ -227,7 +227,7 @@ class BarcodeScanHandler extends BarcodeHandler {
                 title: Text(I18N.of(_context).unknownResponse),
                 children: <Widget>[
                   ListTile(
-                    title: Text("Response data"),
+                    title: Text(I18N.of(_context).responseData),
                     subtitle: Text(data.toString()),
                   )
                 ],
@@ -270,7 +270,10 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
     // If the barcode is unknown, we *can* assign it to the stock item!
 
     if (!data.containsKey("hash")) {
-      showServerError("Missing data", "Barcode hash data missing from response");
+      showServerError(
+          I18N.of(_context).missingData,
+          I18N.of(_context).barcodeMissingHash,
+      );
     } else {
 
       // Send the 'hash' code as the UID for the stock item

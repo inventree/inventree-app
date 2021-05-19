@@ -227,8 +227,8 @@ class InvenTreeAPI {
     if (data == null || !data.containsKey("server") || !data.containsKey("version") || !data.containsKey("instance")) {
 
       showServerError(
-        "Missing Data",
-        "Server response missing required fields"
+        I18N.of(ctx).missingData,
+        I18N.of(ctx).serverMissingData,
       );
 
       return false;
@@ -283,7 +283,7 @@ class InvenTreeAPI {
         case 403:
           showServerError(
             I18N.of(ctx).serverAuthenticationError,
-            "Incorrect username:password combination"
+            I18N.of(ctx).invalidUsernamePassword,
           );
           break;
         default:
@@ -299,7 +299,7 @@ class InvenTreeAPI {
     if (data == null || !data.containsKey("token")) {
       showServerError(
           I18N.of(OneContext().context).tokenMissing,
-          "Access token missing from response"
+          I18N.of(OneContext().context).tokenMissingFromResponse,
       );
 
       return false;
@@ -644,7 +644,7 @@ class InvenTreeAPI {
       } else {
         showServerError(
           I18N.of(OneContext().context).serverCertificateError,
-          "Server HTTPS certificate invalid"
+          I18N.of(OneContext().context).serverCertificateInvalid,
         );
         return false;
       }
@@ -766,8 +766,8 @@ class InvenTreeAPI {
       print("${body}");
 
       showServerError(
-          "Format Exception",
-          "JSON data format exception:\n${body}"
+        I18N.of(OneContext().context).formatException,
+        I18N.of(OneContext().context).formatExceptionJson + ":\n${body}"
       );
       return null;
     }
