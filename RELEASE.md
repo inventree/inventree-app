@@ -12,6 +12,10 @@ Add a file `key.properties` under the android/ directory
 
 Make sure that the build number is incremented every time (or it will be rejected by Play Store).
 
+### Copy Translations
+
+Ensure that the translation files have been updated, and copied into the correct directory!!
+
 ### Build Appbundle
 
 `flutter build appbundle`
