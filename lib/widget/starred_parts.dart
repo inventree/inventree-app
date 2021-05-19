@@ -7,6 +7,8 @@ import 'package:InvenTree/widget/refreshable_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import '../api.dart';
 
 
@@ -24,7 +26,7 @@ class _StarredPartState extends RefreshableState<StarredPartWidget> {
   List<InvenTreePart> starredParts = [];
 
   @override
-  String getAppBarTitle(BuildContext context) => "Starred Parts";
+  String getAppBarTitle(BuildContext context) => I18N.of(context).partsStarred;
 
   @override
   Future<void> request(BuildContext context) async {
@@ -75,8 +77,8 @@ class _StarredPartState extends RefreshableState<StarredPartWidget> {
       return ListView(
         children: [
           ListTile(
-            title: Text("No Parts"),
-            subtitle: Text("No starred parts available")
+            title: Text(I18N.of(context).partsNone),
+            subtitle: Text(I18N.of(context).partsStarredNone)
           )
         ],
       );

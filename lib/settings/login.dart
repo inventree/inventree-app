@@ -300,7 +300,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
       // No profile available!
       children.add(
         ListTile(
-          title: Text("No profiles available"),
+          title: Text(I18N.of(context).profileNone),
         )
       );
     }

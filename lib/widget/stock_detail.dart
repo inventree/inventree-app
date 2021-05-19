@@ -410,7 +410,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           ListTile(
             title: Text(I18N.of(context).stockLocation),
             leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
-            subtitle: Text("No location set"),
+            subtitle: Text(I18N.of(context).locationNotSet),
           )
       );
     }
@@ -508,14 +508,14 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     if (!InvenTreeAPI().checkPermission('stock', 'change')) {
       tiles.add(
         ListTile(
-          title: Text("Permission Required"),
+          title: Text(I18N.of(context).permissionRequired),
           leading: FaIcon(FontAwesomeIcons.userTimes)
         )
       );
 
       tiles.add(
         ListTile(
-          subtitle: Text("Your account does not have permission to perform stock adjustments"),
+          subtitle: Text(I18N.of(context).permissionAccountDenied),
         )
       );
 

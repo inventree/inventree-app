@@ -104,22 +104,6 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     });
   }
 
-  void _unsupported() {
-    showDialog(
-        context:  context,
-        child: new SimpleDialog(
-          title: new Text("Unsupported"),
-          children: <Widget>[
-            ListTile(
-              title: Text("This feature is not yet supported"),
-              subtitle: Text("It will be supported in an upcoming release"),
-            )
-          ],
-        )
-    );
-  }
-
-
   void _loadProfile() async {
 
     _profile = await UserProfileDBManager().getSelectedProfile();
@@ -144,8 +128,8 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     // Tap to select / create a profile
     if (_profile == null) {
       return ListTile(
-        title: Text("No Profile Selected"),
-        subtitle: Text("Tap to create or select a profile"),
+        title: Text(I18N.of(context).profileNotSelected),
+        subtitle: Text(I18N.of(context).profileTapToCreate),
         leading: FaIcon(FontAwesomeIcons.server),
         trailing: FaIcon(
           FontAwesomeIcons.user,
@@ -160,7 +144,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     // Profile is selected ...
     if (InvenTreeAPI().isConnecting()) {
       return ListTile(
-        title: Text("Connecting to server..."),
+        title: Text(I18N.of(context).serverConnecting),
         subtitle: Text("${InvenTreeAPI().baseUrl}"),
         leading: FaIcon(FontAwesomeIcons.server),
         trailing: Spinner(
@@ -173,7 +157,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
       );
     } else if (InvenTreeAPI().isConnected()) {
       return ListTile(
-        title: Text("Connected to server"),
+        title: Text(I18N.of(context).serverConnected),
         subtitle: Text("${InvenTreeAPI().baseUrl}"),
         leading: FaIcon(FontAwesomeIcons.server),
         trailing: FaIcon(
@@ -186,7 +170,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
       );
     } else {
       return ListTile(
-        title: Text("Could not connect to server"),
+        title: Text(I18N.of(context).serverCouldNotConnect),
         subtitle: Text("${_profile.server}"),
         leading: FaIcon(FontAwesomeIcons.server),
         trailing: FaIcon(

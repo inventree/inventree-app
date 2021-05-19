@@ -163,7 +163,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
     if (category == null) {
       return Card(
         child: ListTile(
-          title: Text("Top level part category"),
+          title: Text(I18N.of(context).partCategoryTopLevel)
         )
       );
     } else {
@@ -248,8 +248,8 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
       tiles.add(progressIndicator());
     } else if (_subcategories.length == 0) {
       tiles.add(ListTile(
-        title: Text("No Subcategories"),
-        subtitle: Text("No subcategories available")
+        title: Text(I18N.of(context).noSubcategories),
+        subtitle: Text(I18N.of(context).noSubcategoriesAvailable)
       ));
     } else {
       tiles.add(SubcategoryList(_subcategories));

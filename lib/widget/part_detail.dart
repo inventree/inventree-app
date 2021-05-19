@@ -216,7 +216,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     if (part.categoryName != null && part.categoryName.isNotEmpty) {
       tiles.add(
         ListTile(
-            title: Text("Part Category"),
+            title: Text(I18N.of(context).partCategory),
             subtitle: Text("${part.categoryName}"),
             leading: FaIcon(FontAwesomeIcons.sitemap),
             onTap: () {
@@ -232,8 +232,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     } else {
       tiles.add(
         ListTile(
-          title: Text("Part Category"),
-          subtitle: Text("Top level part category"),
+          title: Text(I18N.of(context).partCategory),
+          subtitle: Text(I18N.of(context).partCategoryTopLevel),
           leading: FaIcon(FontAwesomeIcons.sitemap),
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));
@@ -261,7 +261,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       if (part.supplier_count > 0) {
         tiles.add(
           ListTile(
-            title: Text("Suppliers"),
+            title: Text(I18N.of(context).suppliers),
             leading: FaIcon(FontAwesomeIcons.industry),
             trailing: Text("${part.supplier_count}"),
           )
@@ -289,7 +289,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     if (false && part.isAssembly) {
 
       tiles.add(ListTile(
-        title: Text("Bill of Materials"),
+        title: Text(I18N.of(context).billOfMaterials),
         leading: FaIcon(FontAwesomeIcons.thList),
         trailing: Text("${part.bomItemCount}"),
         onTap: null,
@@ -298,7 +298,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
       tiles.add(
           ListTile(
-            title: Text("Building"),
+            title: Text(I18N.of(context).building),
             leading: FaIcon(FontAwesomeIcons.tools),
             trailing: Text("${part.building}"),
             onTap: null,
@@ -344,7 +344,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     // TODO - Add request tests?
     if (false && part.isTrackable) {
       tiles.add(ListTile(
-          title: Text("Required Tests"),
+          title: Text(I18N.of(context).testsRequired),
           leading: FaIcon(FontAwesomeIcons.tasks),
           trailing: Text("${part.testTemplateCount}"),
           onTap: null,
@@ -356,11 +356,10 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     if (part.notes.isNotEmpty) {
       tiles.add(
           ListTile(
-            title: Text("Notes"),
+            title: Text(I18N.of(context).notes),
             leading: FaIcon(FontAwesomeIcons.stickyNote),
             trailing: Text(""),
             onTap: () {
-              print("Hello");
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => PartNotesWidget(part))

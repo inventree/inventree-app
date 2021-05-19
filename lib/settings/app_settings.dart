@@ -95,8 +95,8 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
               leading: FaIcon(FontAwesomeIcons.shapes),
             ),
             ListTile(
-              title: Text("Include Subcategories"),
-              subtitle: Text("Display subcategory parts in list view"),
+              title: Text(I18N.of(context).includeSubcategories),
+              subtitle: Text(I18N.of(context).includeSubcategoriesDetail),
               leading: FaIcon(FontAwesomeIcons.sitemap),
               trailing: Switch(
                 value: partSubcategory,
@@ -111,8 +111,8 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
               leading: FaIcon(FontAwesomeIcons.boxes),
             ),
             ListTile(
-              title: Text("Include Sublocations"),
-              subtitle: Text("Display sublocation items in list view"),
+              title: Text(I18N.of(context).includeSublocations),
+              subtitle: Text(I18N.of(context).includeSublocationsDetail),
               leading: FaIcon(FontAwesomeIcons.sitemap),
               trailing: Switch(
                 value: stockSublocation,
@@ -129,7 +129,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
             ),
             ListTile(
               title: Text(I18N.of(context).serverError),
-              subtitle: Text("Play audible tone on server error"),
+              subtitle: Text(I18N.of(context).soundOnServerError),
               leading: FaIcon(FontAwesomeIcons.server),
               trailing: Switch(
                 value: serverSounds,
@@ -138,7 +138,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
             ),
             ListTile(
               title: Text(I18N.of(context).barcodeTones),
-              subtitle: Text("Play audible tones for barcode actions"),
+              subtitle: Text(I18N.of(context).soundOnBarcodeAction),
               leading: FaIcon(FontAwesomeIcons.qrcode),
               trailing: Switch(
                 value: barcodeSounds,

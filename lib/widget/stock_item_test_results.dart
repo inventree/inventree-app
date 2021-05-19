@@ -178,7 +178,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
 
     tiles.add(
       ListTile(
-        title: Text("Test Results",
+        title: Text(I18N.of(context).testResults,
           style: TextStyle(fontWeight: FontWeight.bold)
         )
       )
@@ -193,8 +193,8 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
 
     if (results.length == 0) {
       tiles.add(ListTile(
-        title: Text("No Results"),
-        subtitle: Text("No test results available"),
+        title: Text(I18N.of(context).testResultNone),
+        subtitle: Text(I18N.of(context).testResultNoneDetail),
       ));
 
       return tiles;
@@ -254,7 +254,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
 
     if (tiles.isEmpty) {
       tiles.add(ListTile(
-        title: Text("No test results"),
+        title: Text(I18N.of(context).testResultNone),
       ));
     }
 

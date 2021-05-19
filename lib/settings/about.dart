@@ -116,7 +116,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
     tiles.add(
       ListTile(
         title: Text(I18N.of(context).releaseNotes),
-        subtitle: Text("Display app release notes"),
+        subtitle: Text(I18N.of(context).appReleaseNotes),
         leading: FaIcon(FontAwesomeIcons.fileAlt),
         onTap: () {
           _releaseNotes(context);
@@ -127,7 +127,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
     tiles.add(
       ListTile(
         title: Text(I18N.of(context).credits),
-        subtitle: Text("Additional app credits"),
+        subtitle: Text(I18N.of(context).appCredits),
         leading: FaIcon(FontAwesomeIcons.bullhorn),
         onTap: () {
           _credits(context);

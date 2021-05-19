@@ -157,21 +157,21 @@ class PartSearchDelegate extends SearchDelegate<InvenTreePart> {
 
     if (query.length == 0) {
       return ListTile(
-        title: Text("Enter search query")
+        title: Text(I18N.of(context).queryEnter)
       );
     }
 
     if (query.length < 3) {
       return ListTile(
-        title: Text("Query too short"),
-        subtitle: Text("Enter a query of at least three characters")
+        title: Text(I18N.of(context).queryShort),
+        subtitle: Text(I18N.of(context).queryShortDetail)
       );
     }
 
     if (partResults.length == 0) {
       return ListTile(
         title: Text(I18N.of(context).noResults),
-        subtitle: Text("No results for '${query}'")
+        subtitle: Text(I18N.of(context).queryNoResults + " '${query}'")
       );
     }
 
@@ -340,21 +340,21 @@ class StockSearchDelegate extends SearchDelegate<InvenTreeStockItem> {
 
     if (query.length == 0) {
       return ListTile(
-          title: Text("Enter search query")
+          title: Text(I18N.of(context).queryEnter)
       );
     }
 
     if (query.length < 3) {
       return ListTile(
-          title: Text("Query too short"),
-          subtitle: Text("Enter a query of at least three characters")
+          title: Text(I18N.of(context).queryShort),
+          subtitle: Text(I18N.of(context).queryShortDetail)
       );
     }
 
     if (itemResults.length == 0) {
       return ListTile(
           title: Text(I18N.of(context).noResults),
-          subtitle: Text("No results for '${query}'")
+          subtitle: Text(I18N.of(context).queryNoResults + " '${query}'")
       );
     }
 

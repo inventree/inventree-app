@@ -183,7 +183,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       if (includeActions) {
         children.add(
             ListTile(
-              title: Text("Parent Category"),
+              title: Text(I18N.of(context).parentCategory),
               subtitle: Text("${location.parentpathstring}"),
               leading: FaIcon(FontAwesomeIcons.levelUpAlt),
               onTap: () {
@@ -286,8 +286,8 @@ List<Widget> detailTiles() {
       tiles.add(SublocationList(_sublocations));
     } else {
       tiles.add(ListTile(
-        title: Text("No Sublocations"),
-        subtitle: Text("No sublocations available")
+        title: Text(I18N.of(context).sublocationNone),
+        subtitle: Text(I18N.of(context).sublocationNoneDetail)
       ));
     }
 
