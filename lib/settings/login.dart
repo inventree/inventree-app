@@ -94,14 +94,14 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
         ),
         StringField(
           label: I18N.of(context).username,
-          hint: "Enter username",
+          hint: I18N.of(context).enterPassword,
           initial: createNew ? '' : profile.username,
           onSaved: (value) => _username = value,
           validator: _validateUsername,
         ),
         StringField(
           label: I18N.of(context).password,
-          hint: "Enter password",
+          hint: I18N.of(context).enterUsername,
           initial: createNew ? '' : profile.password,
           onSaved: (value) => _password = value,
           validator: _validatePassword,

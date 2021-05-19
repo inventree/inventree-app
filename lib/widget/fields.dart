@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'package:one_context/one_context.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'dart:async';
@@ -119,7 +120,7 @@ class StringField extends TextFormField {
         enabled: isEnabled,
         validator: (value) {
           if (!allowEmpty && value.isEmpty) {
-            return "Value cannot be empty";
+            return I18N.of(OneContext().context).valueCannotBeEmpty;
           }
 
           if (validator != null) {
@@ -146,12 +147,15 @@ class QuantityField extends TextFormField {
         controller: controller,
         keyboardType: TextInputType.numberWithOptions(signed: false, decimal: true),
         validator: (value) {
-          if (value.isEmpty) return "Quantity is empty";
+
+          final ctx = OneContext().context;
+
+          if (value.isEmpty) return I18N.of(ctx).quantityEmpty;
 
           double quantity = double.tryParse(value);
 
-          if (quantity == null) return "Invalid quantity";
-          if (quantity <= 0) return "Quantity must be positive";
+          if (quantity == null) return I18N.of(ctx).quantityInvalid;
+          if (quantity <= 0) return I18N.of(ctx).quantityPositive;
           if ((max != null) && (quantity > max)) return "Quantity must not exceed ${max}";
 
           return null;

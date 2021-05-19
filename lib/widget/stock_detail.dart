@@ -304,7 +304,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
               },
               validator: (value) {
                 if (selectedLocation == null) {
-                  return "Select a location";
+                  return I18N.of(context).selectLocation;
                 }
 
                 return null;

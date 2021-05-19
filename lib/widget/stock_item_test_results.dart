@@ -78,14 +78,14 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
       },
       fields: <Widget>[
         StringField(
-          label: "Test Name",
+          label: I18N.of(context).testName,
           initial: name,
           isEnabled: nameIsEditable,
           onSaved: (value) => _name = value,
         ),
         CheckBoxField(
           label: I18N.of(context).result,
-          hint: "Test passed or failed",
+          hint: I18N.of(context).testPassedOrFailed,
           initial: true,
           onSaved: (value) => _result = value,
         ),
@@ -96,14 +96,14 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
           onSaved: (value) => _value = value,
           validator: (String value) {
             if (valueRequired && (value == null || value.isEmpty)) {
-              return "Value required for this test";
+              return I18N.of(context).valueRequired;
             }
             return null;
           },
         ),
         ImagePickerField(
           context,
-          label: "Attach Image",
+          label: I18N.of(context).attachImage,
           required: attachmentRequired,
           onSaved: (attachment) => _attachment = attachment,
         ),
@@ -279,7 +279,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
 
     buttons.add(SpeedDialChild(
       child: Icon(FontAwesomeIcons.plusCircle),
-      label: "Add Test Result",
+      label: I18N.of(context).testResultAdd,
       onTap: () {
         addTestResult();
       },
