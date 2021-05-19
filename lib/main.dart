@@ -70,10 +70,16 @@ class InvenTreeApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: [
-        const Locale('en', ''), // English, no country code
         const Locale('de', ''),
+        const Locale('en', ''), // English, no country code
+        const Locale('es', ''),
         const Locale('fr', ''),
         const Locale('it', ''),
+        const Locale('ja', ''),
+        const Locale('pl', ''),
+        const Locale('ru', ''),
+        const Locale('tr', ''),
+        const Locale('zh', ''),
       ],
     );
   }
