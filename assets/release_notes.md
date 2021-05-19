@@ -1,6 +1,11 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.1.5 - May 2021
+---
+
+- Added ability for user to submit feedback
+
 ### 0.1.4 - April 2021
 ---
 
