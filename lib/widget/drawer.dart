@@ -33,6 +33,9 @@ class InvenTreeDrawer extends StatelessWidget {
   }
 
   void _search() {
+
+    if (!InvenTreeAPI().checkConnection(context)) return;
+
     _closeDrawer();
 
     showSearch(
