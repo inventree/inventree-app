@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:InvenTree/l10.dart';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PaginatedSearchWidget extends StatelessWidget {
 
@@ -36,7 +36,7 @@ class PaginatedSearchWidget extends StatelessWidget {
           }
         },
         decoration: InputDecoration(
-          hintText: I18N.of(context).search,
+          hintText: L10().search,
         ),
       ),
       trailing: Text(
@@ -57,7 +57,7 @@ class NoResultsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return ListTile(
-      title: Text(I18N.of(context).noResults),
+      title: Text(L10().noResults),
       subtitle: Text(description),
       leading: FaIcon(FontAwesomeIcons.exclamationCircle),
     );

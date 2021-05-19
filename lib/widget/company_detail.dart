@@ -2,13 +2,12 @@
 import 'package:InvenTree/api.dart';
 import 'package:InvenTree/inventree/company.dart';
 import 'package:InvenTree/widget/dialogs.dart';
-import 'package:InvenTree/widget/drawer.dart';
 import 'package:InvenTree/widget/fields.dart';
 import 'package:InvenTree/widget/refreshable_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:InvenTree/l10.dart';
 
 class CompanyDetailWidget extends StatefulWidget {
 
@@ -29,7 +28,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
   final _editCompanyKey = GlobalKey<FormState>();
 
   @override
-  String getAppBarTitle(BuildContext context) => I18N.of(context).company;
+  String getAppBarTitle(BuildContext context) => L10().company;
 
   @override
   Future<void> request(BuildContext context) async {
@@ -55,17 +54,17 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
     var _description;
     var _website;
 
-    showFormDialog(I18N.of(context).edit,
+    showFormDialog(L10().edit,
         key: _editCompanyKey,
         actions: <Widget>[
           FlatButton(
-            child: Text(I18N.of(context).cancel),
+            child: Text(L10().cancel),
             onPressed: () {
               Navigator.pop(context);
             },
           ),
           FlatButton(
-            child: Text(I18N.of(context).save),
+            child: Text(L10().save),
             onPressed: () {
               if (_editCompanyKey.currentState.validate()) {
                 _editCompanyKey.currentState.save();
@@ -81,21 +80,21 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
         ],
         fields: <Widget>[
           StringField(
-            label: I18N.of(context).name,
+            label: L10().name,
             initial: company.name,
             onSaved: (value) {
               _name = value;
             },
           ),
           StringField(
-            label: I18N.of(context).description,
+            label: L10().description,
             initial: company.description,
             onSaved: (value) {
               _description = value;
             },
           ),
           StringField(
-            label: I18N.of(context).website,
+            label: L10().website,
             initial: company.website,
             allowEmpty: true,
             onSaved: (value) {
@@ -193,7 +192,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
 
     if (company.notes.isNotEmpty) {
       tiles.add(ListTile(
-        title: Text(I18N.of(context).notes),
+        title: Text(L10().notes),
         leading: FaIcon(FontAwesomeIcons.stickyNote),
         onTap: null,
       ));

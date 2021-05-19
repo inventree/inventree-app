@@ -6,10 +6,10 @@ import 'package:InvenTree/widget/stock_detail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:InvenTree/l10.dart';
+
 import 'package:InvenTree/inventree/part.dart';
 import 'package:InvenTree/inventree/stock.dart';
-import 'package:one_context/one_context.dart';
 
 import '../api.dart';
 
@@ -36,7 +36,7 @@ class PartSearchDelegate extends SearchDelegate<InvenTreePart> {
   }
 
   @override
-  String get searchFieldLabel => I18N.of(context).searchParts;
+  String get searchFieldLabel => L10().searchParts;
 
   // List of part results
   List<InvenTreePart> partResults = [];
@@ -79,7 +79,7 @@ class PartSearchDelegate extends SearchDelegate<InvenTreePart> {
     _searching = false;
 
     showSnackIcon(
-        "${partResults.length} ${I18N.of(OneContext().context).results}",
+        "${partResults.length} ${L10().results}",
         success: partResults.length > 0,
         icon: FontAwesomeIcons.pollH,
     );
@@ -157,21 +157,21 @@ class PartSearchDelegate extends SearchDelegate<InvenTreePart> {
 
     if (query.length == 0) {
       return ListTile(
-        title: Text(I18N.of(context).queryEnter)
+        title: Text(L10().queryEnter)
       );
     }
 
     if (query.length < 3) {
       return ListTile(
-        title: Text(I18N.of(context).queryShort),
-        subtitle: Text(I18N.of(context).queryShortDetail)
+        title: Text(L10().queryShort),
+        subtitle: Text(L10().queryShortDetail)
       );
     }
 
     if (partResults.length == 0) {
       return ListTile(
-        title: Text(I18N.of(context).noResults),
-        subtitle: Text(I18N.of(context).queryNoResults + " '${query}'")
+        title: Text(L10().noResults),
+        subtitle: Text(L10().queryNoResults + " '${query}'")
       );
     }
 
@@ -221,7 +221,7 @@ class StockSearchDelegate extends SearchDelegate<InvenTreeStockItem> {
   }
 
   @override
-  String get searchFieldLabel => I18N.of(context).searchStock;
+  String get searchFieldLabel => L10().searchStock;
 
   // List of StockItem results
   List<InvenTreeStockItem> itemResults = [];
@@ -263,7 +263,7 @@ class StockSearchDelegate extends SearchDelegate<InvenTreeStockItem> {
     _searching = false;
 
     showSnackIcon(
-      "${itemResults.length} ${I18N.of(OneContext().context).results}",
+      "${itemResults.length} ${L10().results}",
       success: itemResults.length > 0,
       icon: FontAwesomeIcons.pollH,
     );
@@ -340,21 +340,21 @@ class StockSearchDelegate extends SearchDelegate<InvenTreeStockItem> {
 
     if (query.length == 0) {
       return ListTile(
-          title: Text(I18N.of(context).queryEnter)
+          title: Text(L10().queryEnter)
       );
     }
 
     if (query.length < 3) {
       return ListTile(
-          title: Text(I18N.of(context).queryShort),
-          subtitle: Text(I18N.of(context).queryShortDetail)
+          title: Text(L10().queryShort),
+          subtitle: Text(L10().queryShortDetail)
       );
     }
 
     if (itemResults.length == 0) {
       return ListTile(
-          title: Text(I18N.of(context).noResults),
-          subtitle: Text(I18N.of(context).queryNoResults + " '${query}'")
+          title: Text(L10().noResults),
+          subtitle: Text(L10().queryNoResults + " '${query}'")
       );
     }
 

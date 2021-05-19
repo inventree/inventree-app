@@ -3,8 +3,9 @@ import 'package:InvenTree/widget/fields.dart';
 import 'package:InvenTree/widget/spinner.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import 'package:InvenTree/l10.dart';
 
 import '../api.dart';
 import '../preferences.dart';
@@ -53,7 +54,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     }
 
     showFormDialog(
-      createNew ? I18N.of(context).profileAdd : I18N.of(context).profileEdit,
+      createNew ? L10().profileAdd : L10().profileEdit,
       key: _addProfileKey,
       callback: () {
           if (createNew) {
@@ -79,29 +80,29 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
       },
       fields: <Widget> [
         StringField(
-          label: I18N.of(context).name,
+          label: L10().name,
           hint: "Enter profile name",
           initial: createNew ? '' : profile.name,
           onSaved: (value) => _name = value,
           validator: _validateProfileName,
         ),
         StringField(
-          label: I18N.of(context).server,
+          label: L10().server,
           hint: "http[s]://<server>:<port>",
           initial: createNew ? '' : profile.server,
           validator: _validateServer,
           onSaved: (value) => _server = value,
         ),
         StringField(
-          label: I18N.of(context).username,
-          hint: I18N.of(context).enterPassword,
+          label: L10().username,
+          hint: L10().enterPassword,
           initial: createNew ? '' : profile.username,
           onSaved: (value) => _username = value,
           validator: _validateUsername,
         ),
         StringField(
-          label: I18N.of(context).password,
-          hint: I18N.of(context).enterUsername,
+          label: L10().password,
+          hint: L10().enterUsername,
           initial: createNew ? '' : profile.password,
           onSaved: (value) => _password = value,
           validator: _validatePassword,
@@ -266,28 +267,28 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
                           Navigator.of(context).pop();
                           _selectProfile(context, profile);
                         },
-                        child: Text(I18N.of(context).profileConnect),
+                        child: Text(L10().profileConnect),
                       ),
                       SimpleDialogOption(
                         onPressed: () {
                           Navigator.of(context).pop();
                           _editProfile(context, userProfile: profile);
                         },
-                        child: Text(I18N.of(context).profileEdit),
+                        child: Text(L10().profileEdit),
                       ),
                       SimpleDialogOption(
                         onPressed: () {
                           Navigator.of(context).pop();
                           // Navigator.of(context, rootNavigator: true).pop();
                           confirmationDialog(
-                              I18N.of(context).delete,
-                              I18N.of(context).profileDelete + "?",
+                              L10().delete,
+                              L10().profileDelete + "?",
                               onAccept: () {
                                 _deleteProfile(profile);
                               }
                           );
                         },
-                        child: Text(I18N.of(context).profileDelete),
+                        child: Text(L10().profileDelete),
                       )
                     ],
                   );
@@ -300,7 +301,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
       // No profile available!
       children.add(
         ListTile(
-          title: Text(I18N.of(context).profileNone),
+          title: Text(L10().profileNone),
         )
       );
     }
@@ -308,7 +309,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     return Scaffold(
       key: _loginKey,
       appBar: AppBar(
-        title: Text(I18N.of(context).profileSelect),
+        title: Text(L10().profileSelect),
       ),
       body: Container(
         child: ListView(

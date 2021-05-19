@@ -3,7 +3,7 @@ import 'package:InvenTree/widget/starred_parts.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'file:///C:/inventree-app/lib/l10.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -128,8 +128,8 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     // Tap to select / create a profile
     if (_profile == null) {
       return ListTile(
-        title: Text(I18N.of(context).profileNotSelected),
-        subtitle: Text(I18N.of(context).profileTapToCreate),
+        title: Text(L10().profileNotSelected),
+        subtitle: Text(L10().profileTapToCreate),
         leading: FaIcon(FontAwesomeIcons.server),
         trailing: FaIcon(
           FontAwesomeIcons.user,
@@ -144,7 +144,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     // Profile is selected ...
     if (InvenTreeAPI().isConnecting()) {
       return ListTile(
-        title: Text(I18N.of(context).serverConnecting),
+        title: Text(L10().serverConnecting),
         subtitle: Text("${InvenTreeAPI().baseUrl}"),
         leading: FaIcon(FontAwesomeIcons.server),
         trailing: Spinner(
@@ -157,7 +157,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
       );
     } else if (InvenTreeAPI().isConnected()) {
       return ListTile(
-        title: Text(I18N.of(context).serverConnected),
+        title: Text(L10().serverConnected),
         subtitle: Text("${InvenTreeAPI().baseUrl}"),
         leading: FaIcon(FontAwesomeIcons.server),
         trailing: FaIcon(
@@ -170,7 +170,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
       );
     } else {
       return ListTile(
-        title: Text(I18N.of(context).serverCouldNotConnect),
+        title: Text(L10().serverCouldNotConnect),
         subtitle: Text("${_profile.server}"),
         leading: FaIcon(FontAwesomeIcons.server),
         trailing: FaIcon(
@@ -198,12 +198,12 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     return Scaffold(
       key: _homeKey,
       appBar: AppBar(
-        title: Text(I18N.of(context).appTitle),
+        title: Text(L10().appTitle),
         actions: <Widget>[
           /*
           IconButton(
             icon: FaIcon(FontAwesomeIcons.search),
-            tooltip: I18N.of(context).search,
+            tooltip: L10().search,
             onPressed: _searchParts,
           ),
           */
@@ -224,10 +224,10 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
                   children: <Widget>[
                     IconButton(
                       icon: new FaIcon(FontAwesomeIcons.barcode),
-                      tooltip: I18N.of(context).scanBarcode,
+                      tooltip: L10().scanBarcode,
                       onPressed: () { _scan(context); },
                     ),
-                    Text(I18N.of(context).scanBarcode),
+                    Text(L10().scanBarcode),
                   ],
                 ),
               ],
@@ -240,10 +240,10 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
                   children: <Widget>[
                     IconButton(
                       icon: new FaIcon(FontAwesomeIcons.shapes),
-                      tooltip: I18N.of(context).parts,
+                      tooltip: L10().parts,
                       onPressed: () { _parts(context); },
                     ),
-                    Text(I18N.of(context).parts),
+                    Text(L10().parts),
                   ],
                 ),
                 Column(
@@ -251,10 +251,10 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
 
                     IconButton(
                       icon: new FaIcon(FontAwesomeIcons.search),
-                      tooltip: I18N.of(context).searchParts,
+                      tooltip: L10().searchParts,
                       onPressed: _searchParts,
                     ),
-                    Text(I18N.of(context).searchParts),
+                    Text(L10().searchParts),
                   ],
                 ),
                 // TODO - Re-add starred parts link
@@ -281,20 +281,20 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
                   children: <Widget>[
                     IconButton(
                       icon: new FaIcon(FontAwesomeIcons.boxes),
-                      tooltip: I18N.of(context).stock,
+                      tooltip: L10().stock,
                       onPressed: () { _stock(context); },
                     ),
-                    Text(I18N.of(context).stock),
+                    Text(L10().stock),
                   ],
                 ),
                 Column(
                   children: <Widget>[
                     IconButton(
                       icon: new FaIcon(FontAwesomeIcons.search),
-                      tooltip: I18N.of(context).searchStock,
+                      tooltip: L10().searchStock,
                       onPressed: _searchStock,
                     ),
-                    Text(I18N.of(context).searchStock),
+                    Text(L10().searchStock),
                   ],
                 ),
               ]

@@ -2,21 +2,20 @@
 import 'package:InvenTree/app_settings.dart';
 import 'package:InvenTree/widget/snacks.dart';
 import 'package:audioplayers/audio_cache.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:InvenTree/l10.dart';
 import 'package:one_context/one_context.dart';
 
 Future<void> confirmationDialog(String title, String text, {String acceptText, String rejectText, Function onAccept, Function onReject}) async {
 
   if (acceptText == null || acceptText.isEmpty) {
-    acceptText = I18N.of(OneContext().context).ok;
+    acceptText = L10().ok;
   }
 
   if (rejectText == null || rejectText.isEmpty) {
-    rejectText = I18N.of(OneContext().context).cancel;
+    rejectText = L10().cancel;
   }
 
   OneContext().showDialog(
@@ -60,7 +59,7 @@ Future<void> confirmationDialog(String title, String text, {String acceptText, S
 Future<void> showInfoDialog(BuildContext context, String title, String description, {IconData icon = FontAwesomeIcons.info, String info, Function onDismissed}) async {
 
   if (info == null || info.isEmpty) {
-    info = I18N.of(context).info;
+    info = L10().info;
   }
 
   showDialog(
@@ -87,7 +86,7 @@ Future<void> showInfoDialog(BuildContext context, String title, String descripti
 Future<void> showErrorDialog(String title, String description, {IconData icon = FontAwesomeIcons.exclamationCircle, String error, Function onDismissed}) async {
 
   if (error == null || error.isEmpty) {
-    error = I18N.of(OneContext().context).error;
+    error = L10().error;
   }
 
   OneContext().showDialog(
@@ -113,7 +112,7 @@ Future<void> showErrorDialog(String title, String description, {IconData icon = 
 Future<void> showServerError(String title, String description) async {
 
   if (title == null || title.isEmpty) {
-    title = I18N.of(OneContext().context).serverError;
+    title = L10().serverError;
   }
 
   // Play a sound
@@ -127,12 +126,12 @@ Future<void> showServerError(String title, String description) async {
   showSnackIcon(
     title,
     success: false,
-    actionText: I18N.of(OneContext().context).details,
+    actionText: L10().details,
     onAction: () {
       showErrorDialog(
           title,
           description,
-          error: I18N.of(OneContext().context).serverError,
+          error: L10().serverError,
           icon: FontAwesomeIcons.server
       );
     }
@@ -143,27 +142,27 @@ Future<void> showStatusCodeError(int status, {int expected = 200}) async {
 
   BuildContext ctx = OneContext().context;
 
-  String msg = I18N.of(ctx).responseInvalid;
+  String msg = L10().responseInvalid;
   String extra = "Server responded with status code ${status}";
 
   switch (status) {
     case 400:
-      msg = I18N.of(ctx).response400;
+      msg = L10().response400;
       break;
     case 401:
-      msg = I18N.of(ctx).response401;
+      msg = L10().response401;
       break;
     case 403:
-      msg = I18N.of(ctx).response403;
+      msg = L10().response403;
       break;
     case 404:
-      msg = I18N.of(ctx).response404;
+      msg = L10().response404;
       break;
     case 405:
-      msg = I18N.of(ctx).response405;
+      msg = L10().response405;
       break;
     case 429:
-      msg = I18N.of(ctx).response429;
+      msg = L10().response429;
       break;
     default:
       break;
@@ -180,7 +179,7 @@ Future<void> showTimeoutError(BuildContext context) async {
   // Use OneContext as "sometimes" context is null here?
   var ctx = OneContext().context;
 
-  await showServerError(I18N.of(ctx).timeout, I18N.of(ctx).noResponse);
+  await showServerError(L10().timeout, L10().noResponse);
 }
 
 void showFormDialog(String title, {String acceptText, String cancelText, GlobalKey<FormState> key, List<Widget> fields, List<Widget> actions, Function callback}) {
@@ -190,11 +189,11 @@ void showFormDialog(String title, {String acceptText, String cancelText, GlobalK
   var ctx = OneContext().context;
 
   if (acceptText == null) {
-    acceptText = I18N.of(ctx).save;
+    acceptText = L10().save;
   }
 
   if (cancelText == null) {
-    cancelText = I18N.of(ctx).cancel;
+    cancelText = L10().cancel;
   }
 
   // Undefined actions = OK + Cancel

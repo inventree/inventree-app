@@ -16,7 +16,7 @@ import 'package:InvenTree/widget/stock_notes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:InvenTree/l10.dart';
 
 import 'package:InvenTree/api.dart';
 
@@ -37,7 +37,7 @@ class StockDetailWidget extends StatefulWidget {
 class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
   @override
-  String getAppBarTitle(BuildContext context) => I18N.of(context).stockItem;
+  String getAppBarTitle(BuildContext context) => L10().stockItem;
 
   final TextEditingController _quantityController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
@@ -62,7 +62,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       /*
       IconButton(
         icon: FaIcon(FontAwesomeIcons.edit),
-        tooltip: I18N.of(context).edit,
+        tooltip: L10().edit,
         onPressed: _editPartDialog,
       )
        */
@@ -117,7 +117,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     _quantityController.clear();
     _notesController.clear();
 
-    showFormDialog( I18N.of(context).addStock,
+    showFormDialog( L10().addStock,
       key: _addStockKey,
       callback: () {
         _addStock();
@@ -125,12 +125,12 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       fields: <Widget> [
         Text("Current stock: ${item.quantity}"),
         QuantityField(
-          label: I18N.of(context).addStock,
+          label: L10().addStock,
           controller: _quantityController,
         ),
         TextFormField(
           decoration: InputDecoration(
-            labelText: I18N.of(context).notes,
+            labelText: L10().notes,
           ),
           controller: _notesController,
         )
@@ -163,7 +163,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     _quantityController.clear();
     _notesController.clear();
 
-    showFormDialog(I18N.of(context).removeStock,
+    showFormDialog(L10().removeStock,
         key: _removeStockKey,
         callback: () {
           _removeStock();
@@ -171,13 +171,13 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         fields: <Widget>[
           Text("Current stock: ${item.quantity}"),
           QuantityField(
-            label: I18N.of(context).removeStock,
+            label: L10().removeStock,
             controller: _quantityController,
             max: item.quantity,
           ),
           TextFormField(
             decoration: InputDecoration(
-              labelText: I18N.of(context).notes,
+              labelText: L10().notes,
             ),
             controller: _notesController,
           ),
@@ -202,21 +202,21 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     _quantityController.text = item.quantityString;
     _notesController.clear();
 
-    showFormDialog(I18N.of(context).countStock,
+    showFormDialog(L10().countStock,
       key: _countStockKey,
       callback: () {
         _countStock();
       },
-      acceptText: I18N.of(context).count,
+      acceptText: L10().count,
       fields: <Widget> [
         QuantityField(
-          label: I18N.of(context).countStock,
+          label: L10().countStock,
           hint: "${item.quantityString}",
           controller: _quantityController,
         ),
         TextFormField(
           decoration: InputDecoration(
-            labelText: I18N.of(context).notes,
+            labelText: L10().notes,
           ),
           controller: _notesController,
         )
@@ -231,12 +231,12 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     if (result) {
       showSnackIcon(
-        I18N.of(context).stockItemUpdateSuccess,
+        L10().stockItemUpdateSuccess,
         success: true
       );
     } else {
       showSnackIcon(
-        I18N.of(context).stockItemUpdateFailure,
+        L10().stockItemUpdateFailure,
         success: false,
       );
     }
@@ -271,14 +271,14 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     _quantityController.text = "${item.quantityString}";
 
-    showFormDialog(I18N.of(context).transferStock,
+    showFormDialog(L10().transferStock,
         key: _moveStockKey,
         callback: () {
           _transferStock(context, selectedLocation);
         },
         fields: <Widget>[
           QuantityField(
-            label: I18N.of(context).quantity,
+            label: L10().quantity,
             controller: _quantityController,
             max: item.quantity,
           ),
@@ -304,7 +304,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
               },
               validator: (value) {
                 if (selectedLocation == null) {
-                  return I18N.of(context).selectLocation;
+                  return L10().selectLocation;
                 }
 
                 return null;
@@ -373,7 +373,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     if (item.isSerialized()) {
       tiles.add(
           ListTile(
-            title: Text(I18N.of(context).serialNumber),
+            title: Text(L10().serialNumber),
             leading: FaIcon(FontAwesomeIcons.hashtag),
             trailing: Text("${item.serialNumber}"),
           )
@@ -381,7 +381,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     } else {
       tiles.add(
           ListTile(
-            title: Text(I18N.of(context).quantity),
+            title: Text(L10().quantity),
             leading: FaIcon(FontAwesomeIcons.cubes),
             trailing: Text("${item.quantityString}"),
           )
@@ -392,7 +392,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     if ((item.locationId > 0) && (item.locationName != null) && (item.locationName.isNotEmpty)) {
       tiles.add(
           ListTile(
-            title: Text(I18N.of(context).stockLocation),
+            title: Text(L10().stockLocation),
             subtitle: Text("${item.locationPathString}"),
             leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
             onTap: () {
@@ -408,9 +408,9 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     } else {
       tiles.add(
           ListTile(
-            title: Text(I18N.of(context).stockLocation),
+            title: Text(L10().stockLocation),
             leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
-            subtitle: Text(I18N.of(context).locationNotSet),
+            subtitle: Text(L10().locationNotSet),
           )
       );
     }
@@ -445,7 +445,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     if ((item.testResultCount > 0) || (part != null && part.isTrackable)) {
       tiles.add(
           ListTile(
-              title: Text(I18N.of(context).testResults),
+              title: Text(L10().testResults),
               leading: FaIcon(FontAwesomeIcons.tasks),
               trailing: Text("${item.testResultCount}"),
               onTap: () {
@@ -465,7 +465,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     if (false && item.trackingItemCount > 0) {
       tiles.add(
         ListTile(
-          title: Text(I18N.of(context).history),
+          title: Text(L10().history),
           leading: FaIcon(FontAwesomeIcons.history),
           trailing: Text("${item.trackingItemCount}"),
           onTap: () {
@@ -481,7 +481,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     if (item.notes.isNotEmpty) {
       tiles.add(
         ListTile(
-          title: Text(I18N.of(context).notes),
+          title: Text(L10().notes),
           leading: FaIcon(FontAwesomeIcons.stickyNote),
           trailing: Text(""),
           onTap: () {
@@ -508,14 +508,14 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     if (!InvenTreeAPI().checkPermission('stock', 'change')) {
       tiles.add(
         ListTile(
-          title: Text(I18N.of(context).permissionRequired),
+          title: Text(L10().permissionRequired),
           leading: FaIcon(FontAwesomeIcons.userTimes)
         )
       );
 
       tiles.add(
         ListTile(
-          subtitle: Text(I18N.of(context).permissionAccountDenied),
+          subtitle: Text(L10().permissionAccountDenied),
         )
       );
 
@@ -525,7 +525,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     if (!item.isSerialized()) {
       tiles.add(
           ListTile(
-              title: Text(I18N.of(context).countStock),
+              title: Text(L10().countStock),
               leading: FaIcon(FontAwesomeIcons.checkCircle),
               onTap: _countStockDialog,
               trailing: Text(item.quantityString),
@@ -534,7 +534,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
       tiles.add(
           ListTile(
-              title: Text(I18N.of(context).removeStock),
+              title: Text(L10().removeStock),
               leading: FaIcon(FontAwesomeIcons.minusCircle),
               onTap: _removeStockDialog,
           )
@@ -542,7 +542,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
       tiles.add(
           ListTile(
-              title: Text(I18N.of(context).addStock),
+              title: Text(L10().addStock),
               leading: FaIcon(FontAwesomeIcons.plusCircle),
               onTap: _addStockDialog,
           )
@@ -551,7 +551,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     tiles.add(
       ListTile(
-        title: Text(I18N.of(context).transferStock),
+        title: Text(L10().transferStock),
         leading: FaIcon(FontAwesomeIcons.exchangeAlt),
         onTap: _transferStockDialog,
       )
@@ -560,7 +560,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     // Scan item into a location
     tiles.add(
       ListTile(
-        title: Text(I18N.of(context).scanIntoLocation),
+        title: Text(L10().scanIntoLocation),
         leading: FaIcon(FontAwesomeIcons.exchangeAlt),
         trailing: FaIcon(FontAwesomeIcons.qrcode),
         onTap: () {
@@ -578,7 +578,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     if (item.uid.isEmpty) {
       tiles.add(
         ListTile(
-          title: Text(I18N.of(context).barcodeAssign),
+          title: Text(L10().barcodeAssign),
           leading: FaIcon(FontAwesomeIcons.barcode),
           trailing: FaIcon(FontAwesomeIcons.qrcode),
           onTap: () {
@@ -594,7 +594,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     } else {
       tiles.add(
         ListTile(
-          title: Text(I18N.of(context).barcodeUnassign),
+          title: Text(L10().barcodeUnassign),
           leading: FaIcon(FontAwesomeIcons.barcode),
           onTap: () {
             _unassignBarcode(context);
@@ -614,11 +614,11 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       items: <BottomNavigationBarItem> [
         BottomNavigationBarItem(
           icon: FaIcon(FontAwesomeIcons.infoCircle),
-          title: Text(I18N.of(context).details),
+          title: Text(L10().details),
         ),
         BottomNavigationBarItem(
           icon: FaIcon(FontAwesomeIcons.wrench),
-          title: Text(I18N.of(context).actions),
+          title: Text(L10().actions),
         ),
       ]
     );

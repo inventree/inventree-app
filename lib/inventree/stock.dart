@@ -1,14 +1,13 @@
 import 'package:InvenTree/inventree/part.dart';
-import 'package:InvenTree/widget/dialogs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'model.dart';
+import 'package:InvenTree/l10.dart';
 
 
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:InvenTree/api.dart';
 
 
@@ -63,19 +62,19 @@ class InvenTreeStockItem extends InvenTreeModel {
 
     switch (status) {
       case OK:
-        return I18N.of(context).ok;
+        return L10().ok;
       case ATTENTION:
-        return I18N.of(context).attention;
+        return L10().attention;
       case DAMAGED:
-        return I18N.of(context).damaged;
+        return L10().damaged;
       case DESTROYED:
-        return I18N.of(context).destroyed;
+        return L10().destroyed;
       case REJECTED:
-        return I18N.of(context).rejected;
+        return L10().rejected;
       case LOST:
-        return I18N.of(context).lost;
+        return L10().lost;
       case RETURNED:
-        return I18N.of(context).returned;
+        return L10().returned;
       default:
         return status.toString();
     }

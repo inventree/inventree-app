@@ -1,14 +1,12 @@
 import 'dart:io';
 
-import 'package:InvenTree/inventree/stock.dart';
 import 'package:InvenTree/widget/part_notes.dart';
 import 'package:InvenTree/widget/progress.dart';
 import 'package:InvenTree/widget/snacks.dart';
-import 'package:InvenTree/widget/stock_detail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:InvenTree/l10.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:InvenTree/inventree/part.dart';
@@ -39,7 +37,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   final _editPartKey = GlobalKey<FormState>();
 
   @override
-  String getAppBarTitle(BuildContext context) => I18N.of(context).partDetails;
+  String getAppBarTitle(BuildContext context) => L10().partDetails;
 
   @override
   List<Widget> getAppBarActions(BuildContext context) {
@@ -59,7 +57,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       actions.add(
         IconButton(
           icon: FaIcon(FontAwesomeIcons.edit),
-          tooltip: I18N.of(context).edit,
+          tooltip: L10().edit,
           onPressed: _editPartDialog,
         )
       );
@@ -127,7 +125,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     var _keywords;
     var _link;
 
-    showFormDialog(I18N.of(context).editPart,
+    showFormDialog(L10().editPart,
       key: _editPartKey,
       callback: () {
         _savePart({
@@ -140,29 +138,29 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       },
       fields: <Widget>[
         StringField(
-          label: I18N.of(context).name,
+          label: L10().name,
           initial: part.name,
           onSaved: (value) => _name = value,
         ),
         StringField(
-          label: I18N.of(context).description,
+          label: L10().description,
           initial: part.description,
           onSaved: (value) => _description = value,
         ),
         StringField(
-          label: I18N.of(context).internalPartNumber,
+          label: L10().internalPartNumber,
           initial: part.IPN,
           allowEmpty: true,
           onSaved: (value) => _ipn = value,
         ),
         StringField(
-          label: I18N.of(context).keywords,
+          label: L10().keywords,
           initial: part.keywords,
           allowEmpty: true,
           onSaved: (value) => _keywords = value,
         ),
         StringField(
-          label: I18N.of(context).link,
+          label: L10().link,
           initial: part.link,
           allowEmpty: true,
           onSaved: (value) => _link = value
@@ -216,7 +214,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     if (part.categoryName != null && part.categoryName.isNotEmpty) {
       tiles.add(
         ListTile(
-            title: Text(I18N.of(context).partCategory),
+            title: Text(L10().partCategory),
             subtitle: Text("${part.categoryName}"),
             leading: FaIcon(FontAwesomeIcons.sitemap),
             onTap: () {
@@ -232,8 +230,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     } else {
       tiles.add(
         ListTile(
-          title: Text(I18N.of(context).partCategory),
-          subtitle: Text(I18N.of(context).partCategoryTopLevel),
+          title: Text(L10().partCategory),
+          subtitle: Text(L10().partCategoryTopLevel),
           leading: FaIcon(FontAwesomeIcons.sitemap),
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));
@@ -245,7 +243,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     // Stock information
     tiles.add(
       ListTile(
-        title: Text(I18N.of(context).stock),
+        title: Text(L10().stock),
         leading: FaIcon(FontAwesomeIcons.boxes),
         trailing: Text("${part.inStockString}"),
         onTap: () {
@@ -261,7 +259,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       if (part.supplier_count > 0) {
         tiles.add(
           ListTile(
-            title: Text(I18N.of(context).suppliers),
+            title: Text(L10().suppliers),
             leading: FaIcon(FontAwesomeIcons.industry),
             trailing: Text("${part.supplier_count}"),
           )
@@ -289,7 +287,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     if (false && part.isAssembly) {
 
       tiles.add(ListTile(
-        title: Text(I18N.of(context).billOfMaterials),
+        title: Text(L10().billOfMaterials),
         leading: FaIcon(FontAwesomeIcons.thList),
         trailing: Text("${part.bomItemCount}"),
         onTap: null,
@@ -298,7 +296,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
       tiles.add(
           ListTile(
-            title: Text(I18N.of(context).building),
+            title: Text(L10().building),
             leading: FaIcon(FontAwesomeIcons.tools),
             trailing: Text("${part.building}"),
             onTap: null,
@@ -344,7 +342,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     // TODO - Add request tests?
     if (false && part.isTrackable) {
       tiles.add(ListTile(
-          title: Text(I18N.of(context).testsRequired),
+          title: Text(L10().testsRequired),
           leading: FaIcon(FontAwesomeIcons.tasks),
           trailing: Text("${part.testTemplateCount}"),
           onTap: null,
@@ -356,7 +354,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     if (part.notes.isNotEmpty) {
       tiles.add(
           ListTile(
-            title: Text(I18N.of(context).notes),
+            title: Text(L10().notes),
             leading: FaIcon(FontAwesomeIcons.stickyNote),
             trailing: Text(""),
             onTap: () {
@@ -382,7 +380,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     tiles.add(
       ListTile(
         title: Text(
-          I18N.of(context).stockItems,
+          L10().stockItems,
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle: part.stockItems.isEmpty ? Text("No stock items available") : null,
@@ -408,7 +406,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
     tiles.add(
       ListTile(
-        title: Text(I18N.of(context).stockItemCreate),
+        title: Text(L10().stockItemCreate),
         leading: FaIcon(FontAwesomeIcons.box),
         onTap: null,
       )
@@ -463,17 +461,17 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       items: <BottomNavigationBarItem> [
         BottomNavigationBarItem(
           icon: FaIcon(FontAwesomeIcons.infoCircle),
-          label: I18N.of(context).details,
+          label: L10().details,
         ),
         BottomNavigationBarItem(
           icon: FaIcon(FontAwesomeIcons.boxes),
-          label: I18N.of(context).stock
+          label: L10().stock
         ),
         // TODO - Add part actions
         /*
         BottomNavigationBarItem(
           icon: FaIcon(FontAwesomeIcons.wrench),
-          label: I18N.of(context).actions,
+          label: L10().actions,
         ),
          */
       ]

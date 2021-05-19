@@ -4,7 +4,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:one_context/one_context.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:InvenTree/l10.dart';
 
 import 'dart:async';
 import 'dart:io';
@@ -52,7 +53,7 @@ class ImagePickerField extends FormField<File> {
         onSaved: onSaved,
         validator: (File img) {
           if (required && (img == null)) {
-            return I18N.of(context).required;
+            return L10().required;
           }
 
           return null;
@@ -67,13 +68,13 @@ class ImagePickerField extends FormField<File> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 FlatButton(
-                  child: Text(I18N.of(context).selectImage),
+                  child: Text(L10().selectImage),
                   onPressed: () {
                     _selectFromGallery(state);
                   },
                 ),
                 FlatButton(
-                  child: Text(I18N.of(context).takePicture),
+                  child: Text(L10().takePicture),
                   onPressed: () {
                     _selectFromCamera(state);
                   },
@@ -82,7 +83,7 @@ class ImagePickerField extends FormField<File> {
             ),
           );
           return ListTile(
-            title: Text(I18N.of(context).selectImage),
+            title: Text(L10().selectImage),
           );
         }
       );
@@ -120,7 +121,7 @@ class StringField extends TextFormField {
         enabled: isEnabled,
         validator: (value) {
           if (!allowEmpty && value.isEmpty) {
-            return I18N.of(OneContext().context).valueCannotBeEmpty;
+            return L10().valueCannotBeEmpty;
           }
 
           if (validator != null) {
@@ -148,14 +149,12 @@ class QuantityField extends TextFormField {
         keyboardType: TextInputType.numberWithOptions(signed: false, decimal: true),
         validator: (value) {
 
-          final ctx = OneContext().context;
-
-          if (value.isEmpty) return I18N.of(ctx).quantityEmpty;
+          if (value.isEmpty) return L10().quantityEmpty;
 
           double quantity = double.tryParse(value);
 
-          if (quantity == null) return I18N.of(ctx).quantityInvalid;
-          if (quantity <= 0) return I18N.of(ctx).quantityPositive;
+          if (quantity == null) return L10().quantityInvalid;
+          if (quantity <= 0) return L10().quantityPositive;
           if ((max != null) && (quantity > max)) return "Quantity must not exceed ${max}";
 
           return null;

@@ -2,17 +2,15 @@
 import 'package:InvenTree/api.dart';
 import 'package:InvenTree/app_settings.dart';
 import 'package:InvenTree/inventree/part.dart';
-import 'package:InvenTree/preferences.dart';
 import 'package:InvenTree/widget/progress.dart';
-import 'package:InvenTree/widget/search.dart';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:InvenTree/l10.dart';
+
 
 import 'package:InvenTree/widget/fields.dart';
 import 'package:InvenTree/widget/dialogs.dart';
 import 'package:InvenTree/widget/snacks.dart';
 import 'package:InvenTree/widget/part_detail.dart';
-import 'package:InvenTree/widget/drawer.dart';
 import 'package:InvenTree/widget/refreshable_state.dart';
 import 'package:InvenTree/widget/paginator.dart';
 
@@ -39,7 +37,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
   final _editCategoryKey = GlobalKey<FormState>();
 
   @override
-  String getAppBarTitle(BuildContext context) => I18N.of(context).partCategory;
+  String getAppBarTitle(BuildContext context) => L10().partCategory;
 
   @override
   List<Widget> getAppBarActions(BuildContext context) {
@@ -71,7 +69,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
       actions.add(
         IconButton(
           icon: FaIcon(FontAwesomeIcons.edit),
-          tooltip: I18N.of(context).edit,
+          tooltip: L10().edit,
           onPressed: _editCategoryDialog,
         )
       );
@@ -99,7 +97,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
     var _description;
 
     showFormDialog(
-      I18N.of(context).editCategory,
+      L10().editCategory,
       key: _editCategoryKey,
       callback: () {
         _editCategory({
@@ -109,12 +107,12 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
       },
       fields: <Widget>[
         StringField(
-          label: I18N.of(context).name,
+          label: L10().name,
           initial: category.name,
           onSaved: (value) => _name = value
         ),
         StringField(
-          label: I18N.of(context).description,
+          label: L10().description,
           initial: category.description,
           onSaved: (value) => _description = value
         )
@@ -163,7 +161,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
     if (category == null) {
       return Card(
         child: ListTile(
-          title: Text(I18N.of(context).partCategoryTopLevel)
+          title: Text(L10().partCategoryTopLevel)
         )
       );
     } else {
@@ -180,7 +178,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
       if (extra) {
         children.add(
             ListTile(
-              title: Text(I18N.of(context).parentCategory),
+              title: Text(L10().parentCategory),
               subtitle: Text("${category.parentpathstring}"),
               leading: FaIcon(FontAwesomeIcons.levelUpAlt),
               onTap: () {
@@ -215,17 +213,17 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: FaIcon(FontAwesomeIcons.sitemap),
-          label: I18N.of(context).details,
+          label: L10().details,
         ),
         BottomNavigationBarItem(
           icon: FaIcon(FontAwesomeIcons.shapes),
-          label: I18N.of(context).parts,
+          label: L10().parts,
         ),
         // TODO - Add the "actions" item back in
         /*
         BottomNavigationBarItem(
           icon: FaIcon(FontAwesomeIcons.wrench),
-          label: I18N.of(context).actions
+          label: L10().actions
         ),
          */
       ]
@@ -237,7 +235,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
       getCategoryDescriptionCard(),
       ListTile(
         title: Text(
-          I18N.of(context).subcategories,
+          L10().subcategories,
           style: TextStyle(fontWeight: FontWeight.bold)
         ),
         trailing: _subcategories.isNotEmpty ? Text("${_subcategories.length}") : null,
@@ -248,8 +246,8 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
       tiles.add(progressIndicator());
     } else if (_subcategories.length == 0) {
       tiles.add(ListTile(
-        title: Text(I18N.of(context).noSubcategories),
-        subtitle: Text(I18N.of(context).noSubcategoriesAvailable)
+        title: Text(L10().noSubcategories),
+        subtitle: Text(L10().noSubcategoriesAvailable)
       ));
     } else {
       tiles.add(SubcategoryList(_subcategories));
@@ -263,7 +261,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
     List<Widget> tiles = [
       getCategoryDescriptionCard(extra: false),
       ListTile(
-        title: Text(I18N.of(context).actions,
+        title: Text(L10().actions,
           style: TextStyle(fontWeight: FontWeight.bold)
         )
       )

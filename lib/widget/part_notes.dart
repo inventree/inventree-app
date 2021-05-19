@@ -1,11 +1,8 @@
-
-
-
 import 'package:InvenTree/inventree/part.dart';
 import 'package:InvenTree/widget/refreshable_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:InvenTree/l10.dart';
 
 
 class PartNotesWidget extends StatefulWidget {
@@ -26,7 +23,7 @@ class _PartNotesState extends RefreshableState<PartNotesWidget> {
   _PartNotesState(this.part);
 
   @override
-  String getAppBarTitle(BuildContext context) => I18N.of(context).partNotes;
+  String getAppBarTitle(BuildContext context) => L10().partNotes;
 
   @override
   Widget getBody(BuildContext context) {

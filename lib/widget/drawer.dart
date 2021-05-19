@@ -3,9 +3,7 @@ import 'package:InvenTree/barcode.dart';
 import 'package:InvenTree/widget/company_list.dart';
 import 'package:InvenTree/widget/search.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import 'package:InvenTree/api.dart';
+import 'package:InvenTree/l10.dart';
 
 import 'package:InvenTree/widget/category_display.dart';
 import 'package:InvenTree/widget/location_display.dart';
@@ -118,28 +116,28 @@ class InvenTreeDrawer extends StatelessWidget {
                     width: 30,
                   ),
                   title: Text(
-                    I18N.of(context).appTitle,
+                    L10().appTitle,
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   onTap: _home,
                 ),
                 ListTile(
-                  title: Text(I18N.of(context).scanBarcode),
+                  title: Text(L10().scanBarcode),
                   onTap: _scan,
                   leading: FaIcon(FontAwesomeIcons.barcode),
                 ),
                 ListTile(
-                  title: Text(I18N.of(context).search),
+                  title: Text(L10().search),
                   leading: FaIcon(FontAwesomeIcons.search),
                   onTap: _search,
                 ),
                 ListTile(
-                  title: Text(I18N.of(context).parts),
+                  title: Text(L10().parts),
                   leading: Icon(Icons.category),
                   onTap: _showParts,
                 ),
                 ListTile(
-                  title: Text(I18N.of(context).stock),
+                  title: Text(L10().stock),
                   leading: FaIcon(FontAwesomeIcons.boxes),
                   onTap: _showStock,
                 ),
@@ -161,7 +159,7 @@ class InvenTreeDrawer extends StatelessWidget {
                 ),
                 */
                 ListTile(
-                  title: Text(I18N.of(context).settings),
+                  title: Text(L10().settings),
                   leading: Icon(Icons.settings),
                   onTap: _settings,
                 ),

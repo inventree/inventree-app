@@ -2,22 +2,20 @@ import 'package:InvenTree/api.dart';
 import 'package:InvenTree/app_settings.dart';
 import 'package:InvenTree/barcode.dart';
 import 'package:InvenTree/inventree/stock.dart';
-import 'package:InvenTree/preferences.dart';
 import 'package:InvenTree/widget/progress.dart';
 
 import 'package:InvenTree/widget/refreshable_state.dart';
 import 'package:InvenTree/widget/fields.dart';
 import 'package:InvenTree/widget/dialogs.dart';
-import 'package:InvenTree/widget/search.dart';
 import 'package:InvenTree/widget/snacks.dart';
 import 'package:InvenTree/widget/stock_detail.dart';
 import 'package:InvenTree/widget/paginator.dart';
+import 'package:InvenTree/l10.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class LocationDisplayWidget extends StatefulWidget {
@@ -71,7 +69,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       actions.add(
         IconButton(
           icon: FaIcon(FontAwesomeIcons.edit),
-          tooltip: I18N.of(context).edit,
+          tooltip: L10().edit,
           onPressed: _editLocationDialog,
         )
       );
@@ -97,7 +95,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     var _name;
     var _description;
 
-    showFormDialog(I18N.of(context).editLocation,
+    showFormDialog(L10().editLocation,
       key: _editLocationKey,
       callback: () {
         _editLocation({
@@ -107,12 +105,12 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       },
       fields: <Widget> [
         StringField(
-          label: I18N.of(context).name,
+          label: L10().name,
           initial: location.name,
           onSaved: (value) => _name = value,
         ),
         StringField(
-          label: I18N.of(context).description,
+          label: L10().description,
           initial: location.description,
           onSaved: (value) => _description = value,
         )
@@ -168,7 +166,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     if (location == null) {
       return Card(
         child: ListTile(
-          title: Text(I18N.of(context).stockTopLevel),
+          title: Text(L10().stockTopLevel),
         )
       );
     } else {
@@ -183,7 +181,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       if (includeActions) {
         children.add(
             ListTile(
-              title: Text(I18N.of(context).parentCategory),
+              title: Text(L10().parentCategory),
               subtitle: Text("${location.parentpathstring}"),
               leading: FaIcon(FontAwesomeIcons.levelUpAlt),
               onTap: () {
@@ -217,16 +215,16 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
         items: <BottomNavigationBarItem> [
           BottomNavigationBarItem(
             icon: FaIcon(FontAwesomeIcons.sitemap),
-            label: I18N.of(context).details,
+            label: L10().details,
           ),
           BottomNavigationBarItem(
             icon: FaIcon(FontAwesomeIcons.boxes),
-            label: I18N.of(context).stock,
+            label: L10().stock,
           ),
           // TODO - Add in actions when they are written...
           BottomNavigationBarItem(
             icon: FaIcon(FontAwesomeIcons.wrench),
-            label: I18N.of(context).actions,
+            label: L10().actions,
           )
         ]
     );
@@ -273,7 +271,7 @@ List<Widget> detailTiles() {
       locationDescriptionCard(),
       ListTile(
         title: Text(
-          I18N.of(context).sublocations,
+          L10().sublocations,
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         trailing: sublocations.length > 0 ? Text("${sublocations.length}") : null,
@@ -286,8 +284,8 @@ List<Widget> detailTiles() {
       tiles.add(SublocationList(_sublocations));
     } else {
       tiles.add(ListTile(
-        title: Text(I18N.of(context).sublocationNone),
-        subtitle: Text(I18N.of(context).sublocationNoneDetail)
+        title: Text(L10().sublocationNone),
+        subtitle: Text(L10().sublocationNoneDetail)
       ));
     }
 
@@ -305,9 +303,7 @@ List<Widget> detailTiles() {
       // Scan items into location
       tiles.add(
           ListTile(
-            title: Text(I18N
-                .of(context)
-                .barcodeScanInItems),
+            title: Text(L10().barcodeScanInItems),
             leading: FaIcon(FontAwesomeIcons.exchangeAlt),
             trailing: FaIcon(FontAwesomeIcons.qrcode),
             onTap: () {

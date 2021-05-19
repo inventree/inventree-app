@@ -7,16 +7,15 @@ import 'package:InvenTree/widget/fields.dart';
 import 'package:InvenTree/widget/progress.dart';
 import 'package:InvenTree/widget/snacks.dart';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:InvenTree/l10.dart';
 
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:InvenTree/widget/refreshable_state.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:image_picker/image_picker.dart';
+
 
 class StockItemTestResultsWidget extends StatefulWidget {
 
@@ -34,7 +33,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
   final _addResultKey = GlobalKey<FormState>();
 
   @override
-  String getAppBarTitle(BuildContext context) => I18N.of(context).testResults;
+  String getAppBarTitle(BuildContext context) => L10().testResults;
 
   @override
   Future<void> request(BuildContext context) async {
@@ -78,38 +77,38 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
       },
       fields: <Widget>[
         StringField(
-          label: I18N.of(context).testName,
+          label: L10().testName,
           initial: name,
           isEnabled: nameIsEditable,
           onSaved: (value) => _name = value,
         ),
         CheckBoxField(
-          label: I18N.of(context).result,
-          hint: I18N.of(context).testPassedOrFailed,
+          label: L10().result,
+          hint: L10().testPassedOrFailed,
           initial: true,
           onSaved: (value) => _result = value,
         ),
         StringField(
-          label: I18N.of(context).value,
+          label: L10().value,
           initial: value,
           allowEmpty: true,
           onSaved: (value) => _value = value,
           validator: (String value) {
             if (valueRequired && (value == null || value.isEmpty)) {
-              return I18N.of(context).valueRequired;
+              return L10().valueRequired;
             }
             return null;
           },
         ),
         ImagePickerField(
           context,
-          label: I18N.of(context).attachImage,
+          label: L10().attachImage,
           required: attachmentRequired,
           onSaved: (attachment) => _attachment = attachment,
         ),
         StringField(
           allowEmpty: true,
-          label: I18N.of(context).notes,
+          label: L10().notes,
           onSaved: (value) => _notes = value,
         ),
       ]
@@ -178,7 +177,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
 
     tiles.add(
       ListTile(
-        title: Text(I18N.of(context).testResults,
+        title: Text(L10().testResults,
           style: TextStyle(fontWeight: FontWeight.bold)
         )
       )
@@ -193,8 +192,8 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
 
     if (results.length == 0) {
       tiles.add(ListTile(
-        title: Text(I18N.of(context).testResultNone),
-        subtitle: Text(I18N.of(context).testResultNoneDetail),
+        title: Text(L10().testResultNone),
+        subtitle: Text(L10().testResultNoneDetail),
       ));
 
       return tiles;
@@ -254,7 +253,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
 
     if (tiles.isEmpty) {
       tiles.add(ListTile(
-        title: Text(I18N.of(context).testResultNone),
+        title: Text(L10().testResultNone),
       ));
     }
 
@@ -279,7 +278,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
 
     buttons.add(SpeedDialChild(
       child: Icon(FontAwesomeIcons.plusCircle),
-      label: I18N.of(context).testResultAdd,
+      label: L10().testResultAdd,
       onTap: () {
         addTestResult();
       },

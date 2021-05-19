@@ -2,16 +2,15 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:InvenTree/app_settings.dart';
 import 'package:InvenTree/user_profile.dart';
 import 'package:InvenTree/widget/snacks.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:InvenTree/widget/dialogs.dart';
+import 'package:InvenTree/l10.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:one_context/one_context.dart';
@@ -119,7 +118,7 @@ class InvenTreeAPI {
     if (!isConnected()) {
 
       showSnackIcon(
-        I18N.of(context).notConnected,
+        L10().notConnected,
         success: false,
         icon: FontAwesomeIcons.server
       );
@@ -227,8 +226,8 @@ class InvenTreeAPI {
     if (data == null || !data.containsKey("server") || !data.containsKey("version") || !data.containsKey("instance")) {
 
       showServerError(
-        I18N.of(ctx).missingData,
-        I18N.of(ctx).serverMissingData,
+        L10().missingData,
+        L10().serverMissingData,
       );
 
       return false;
@@ -243,17 +242,17 @@ class InvenTreeAPI {
 
     if (_apiVersion < _minApiVersion) {
 
-      String message = I18N.of(ctx).serverApiVersion + ": ${_apiVersion}";
+      String message = L10().serverApiVersion + ": ${_apiVersion}";
 
       message += "\n";
-      message += I18N.of(ctx).serverApiRequired + ": ${_minApiVersion}";
+      message += L10().serverApiRequired + ": ${_minApiVersion}";
 
       message += "\n\n";
 
       message += "Ensure your InvenTree server version is up to date!";
 
       showServerError(
-        I18N.of(OneContext().context).serverOld,
+        L10().serverOld,
         message
       );
 
@@ -282,8 +281,8 @@ class InvenTreeAPI {
         case 401:
         case 403:
           showServerError(
-            I18N.of(ctx).serverAuthenticationError,
-            I18N.of(ctx).invalidUsernamePassword,
+            L10().serverAuthenticationError,
+            L10().invalidUsernamePassword,
           );
           break;
         default:
@@ -298,8 +297,8 @@ class InvenTreeAPI {
 
     if (data == null || !data.containsKey("token")) {
       showServerError(
-          I18N.of(OneContext().context).tokenMissing,
-          I18N.of(OneContext().context).tokenMissingFromResponse,
+          L10().tokenMissing,
+          L10().tokenMissingFromResponse,
       );
 
       return false;
@@ -338,7 +337,7 @@ class InvenTreeAPI {
 
     if (profile == null) {
       showSnackIcon(
-          I18N.of(OneContext().context).profileSelect,
+          L10().profileSelect,
           success: false,
           icon: FontAwesomeIcons.exclamationCircle
       );
@@ -355,7 +354,7 @@ class InvenTreeAPI {
 
     if (_connected) {
       showSnackIcon(
-        I18N.of(OneContext().context).serverConnected,
+        L10().serverConnected,
         icon: FontAwesomeIcons.server,
         success: true,
       );
@@ -436,14 +435,14 @@ class InvenTreeAPI {
 
       if (error is SocketException) {
         showServerError(
-          I18N.of(ctx).connectionRefused,
+          L10().connectionRefused,
           error.toString(),
         );
       } else if (error is TimeoutException) {
         showTimeoutError(ctx);
       } else {
         showServerError(
-          I18N.of(ctx).serverError,
+          L10().serverError,
           error.toString()
         );
       }
@@ -477,18 +476,14 @@ class InvenTreeAPI {
 
       if (error is SocketException) {
         showServerError(
-            I18N
-                .of(ctx)
-                .connectionRefused,
+            L10().connectionRefused,
             error.toString()
         );
       } else if (error is TimeoutException) {
         showTimeoutError(ctx);
       } else {
         showServerError(
-            I18N
-                .of(ctx)
-                .serverError,
+            L10().serverError,
             error.toString()
         );
       }
@@ -558,14 +553,14 @@ class InvenTreeAPI {
 
       if (error is SocketException) {
         showServerError(
-          I18N.of(ctx).connectionRefused,
+          L10().connectionRefused,
           error.toString()
         );
       } else if (error is TimeoutException) {
         showTimeoutError(ctx);
       } else {
         showServerError(
-        I18N.of(ctx).serverError,
+        L10().serverError,
         error.toString()
         );
       }
@@ -600,14 +595,14 @@ class InvenTreeAPI {
 
       if (error is SocketException) {
         showServerError(
-          I18N.of(ctx).connectionRefused,
+          L10().connectionRefused,
           error.toString()
         );
       } else if (error is TimeoutException) {
         showTimeoutError(ctx);
       } else {
         showServerError(
-          I18N.of(ctx).serverError,
+          L10().serverError,
           error.toString()
         );
       }
@@ -643,8 +638,8 @@ class InvenTreeAPI {
         return true;
       } else {
         showServerError(
-          I18N.of(OneContext().context).serverCertificateError,
-          I18N.of(OneContext().context).serverCertificateInvalid,
+          L10().serverCertificateError,
+          L10().serverCertificateInvalid,
         );
         return false;
       }
@@ -696,14 +691,14 @@ class InvenTreeAPI {
 
       if (error is SocketException) {
         showServerError(
-            I18N.of(ctx).connectionRefused,
+            L10().connectionRefused,
             error.toString()
         );
       } else if (error is TimeoutException) {
         showTimeoutError(ctx);
       } else {
         showServerError(
-            I18N.of(ctx).serverError,
+            L10().serverError,
             error.toString()
         );
       }
@@ -730,14 +725,14 @@ class InvenTreeAPI {
 
       if (error is SocketException) {
         showServerError(
-            I18N.of(ctx).connectionRefused,
+            L10().connectionRefused,
             error.toString()
         );
       } else if (error is TimeoutException) {
         showTimeoutError(ctx);
       } else {
         showServerError(
-            I18N.of(ctx).serverError,
+            L10().serverError,
             error.toString()
         );
       }
@@ -766,8 +761,8 @@ class InvenTreeAPI {
       print("${body}");
 
       showServerError(
-        I18N.of(OneContext().context).formatException,
-        I18N.of(OneContext().context).formatExceptionJson + ":\n${body}"
+        L10().formatException,
+        L10().formatExceptionJson + ":\n${body}"
       );
       return null;
     }

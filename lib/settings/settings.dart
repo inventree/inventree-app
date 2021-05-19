@@ -7,7 +7,8 @@ import 'package:InvenTree/widget/dialogs.dart';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:InvenTree/l10.dart';
+
 import 'package:url_launcher/url_launcher.dart';
 
 import 'login.dart';
@@ -35,7 +36,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text(I18N.of(context).settings),
+        title: Text(L10().settings),
       ),
       body: Center(
         child: ListView(
@@ -43,26 +44,26 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
             context: context,
             tiles: <Widget>[
               ListTile(
-                  title: Text(I18N.of(context).server),
-                  subtitle: Text(I18N.of(context).configureServer),
+                  title: Text(L10().server),
+                  subtitle: Text(L10().configureServer),
                   leading: FaIcon(FontAwesomeIcons.server),
                   onTap: _editServerSettings,
               ),
               ListTile(
                 leading: FaIcon(FontAwesomeIcons.cogs),
-                title: Text(I18N.of(context).appSettings),
-                subtitle: Text(I18N.of(context).appSettingsDetails),
+                title: Text(L10().appSettings),
+                subtitle: Text(L10().appSettingsDetails),
                 onTap: _editAppSettings,
               ),
               ListTile(
-                title: Text(I18N.of(context).about),
-                subtitle: Text(I18N.of(context).appDetails),
+                title: Text(L10().about),
+                subtitle: Text(L10().appDetails),
                 leading: FaIcon(FontAwesomeIcons.infoCircle),
                 onTap: _about,
               ),
 
               ListTile(
-                title: Text(I18N.of(context).documentation),
+                title: Text(L10().documentation),
                 subtitle: Text("https://inventree.readthedocs.io"),
                 leading: FaIcon(FontAwesomeIcons.book),
                 onTap: () {
@@ -71,8 +72,8 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
               ),
 
               ListTile(
-                title: Text(I18N.of(context).feedback),
-                subtitle: Text(I18N.of(context).submitFeedback),
+                title: Text(L10().feedback),
+                subtitle: Text(L10().submitFeedback),
                 leading: FaIcon(FontAwesomeIcons.comments),
                 onTap: () {
                   _submitFeedback(context);
@@ -115,12 +116,12 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
 
     if (result) {
       showSnackIcon(
-        I18N.of(context).feedbackSuccess,
+        L10().feedbackSuccess,
         success: true,
       );
     } else {
       showSnackIcon(
-        I18N.of(context).feedbackError,
+        L10().feedbackError,
         success: false,
       );
     }
@@ -133,7 +134,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
     _controller.clear();
 
     showFormDialog(
-      I18N.of(context).submitFeedback,
+      L10().submitFeedback,
       key: _feedbackKey,
       callback: () {
         _sendReport(context, _controller.text);

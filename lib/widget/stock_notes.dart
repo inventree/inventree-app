@@ -1,11 +1,9 @@
 
-
-
 import 'package:InvenTree/inventree/stock.dart';
 import 'package:InvenTree/widget/refreshable_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:InvenTree/l10.dart';
 
 
 class StockNotesWidget extends StatefulWidget {
@@ -26,7 +24,7 @@ class _StockNotesState extends RefreshableState<StockNotesWidget> {
   _StockNotesState(this.item);
 
   @override
-  String getAppBarTitle(BuildContext context) => I18N.of(context).stockItemNotes;
+  String getAppBarTitle(BuildContext context) => L10().stockItemNotes;
 
   @override
   Widget getBody(BuildContext context) {

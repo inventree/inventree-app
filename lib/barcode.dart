@@ -11,7 +11,7 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 import 'package:InvenTree/inventree/stock.dart';
 import 'package:InvenTree/inventree/part.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:InvenTree/l10.dart';
 
 import 'package:InvenTree/api.dart';
 
@@ -70,7 +70,7 @@ class BarcodeHandler {
       failureTone();
 
       showSnackIcon(
-        I18N.of(OneContext().context).barcodeNoMatch,
+        L10().barcodeNoMatch,
         success: false,
         icon: FontAwesomeIcons.qrcode
       );
@@ -81,7 +81,7 @@ class BarcodeHandler {
       failureTone();
 
       // Called when the server returns an unhandled response
-      showServerError(I18N.of(OneContext().context).responseUnknown, data.toString());
+      showServerError(L10().responseUnknown, data.toString());
 
       _controller.resumeCamera();
     }
@@ -125,7 +125,7 @@ class BarcodeScanHandler extends BarcodeHandler {
    */
 
   @override
-  String getOverlayText(BuildContext context) => I18N.of(context).barcodeScanGeneral;
+  String getOverlayText(BuildContext context) => L10().barcodeScanGeneral;
 
   @override
   Future<void> onBarcodeUnknown(Map<String, dynamic> data) {
@@ -133,7 +133,7 @@ class BarcodeScanHandler extends BarcodeHandler {
     failureTone();
 
     showSnackIcon(
-        I18N.of(OneContext().context).barcodeNoMatch,
+        L10().barcodeNoMatch,
         icon: FontAwesomeIcons.exclamationCircle,
         success: false,
     );
@@ -166,7 +166,7 @@ class BarcodeScanHandler extends BarcodeHandler {
         failureTone();
 
         showSnackIcon(
-          I18N.of(OneContext().context).invalidStockLocation,
+          L10().invalidStockLocation,
           success: false
         );
       }
@@ -188,7 +188,7 @@ class BarcodeScanHandler extends BarcodeHandler {
         failureTone();
 
         showSnackIcon(
-            I18N.of(OneContext().context).invalidStockItem,
+            L10().invalidStockItem,
             success: false
         );
       }
@@ -209,7 +209,7 @@ class BarcodeScanHandler extends BarcodeHandler {
         failureTone();
 
         showSnackIcon(
-            I18N.of(OneContext().context).invalidPart,
+            L10().invalidPart,
             success: false
         );
       }
@@ -218,16 +218,16 @@ class BarcodeScanHandler extends BarcodeHandler {
       failureTone();
 
       showSnackIcon(
-        I18N.of(OneContext().context).barcodeUnknown,
+        L10().barcodeUnknown,
         success: false,
         onAction: () {
           showDialog(
               context: _context,
               child: SimpleDialog(
-                title: Text(I18N.of(_context).unknownResponse),
+                title: Text(L10().unknownResponse),
                 children: <Widget>[
                   ListTile(
-                    title: Text(I18N.of(_context).responseData),
+                    title: Text(L10().responseData),
                     subtitle: Text(data.toString()),
                   )
                 ],
@@ -250,7 +250,7 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
   StockItemBarcodeAssignmentHandler(this.item);
 
   @override
-  String getOverlayText(BuildContext context) => I18N.of(context).barcodeScanAssign;
+  String getOverlayText(BuildContext context) => L10().barcodeScanAssign;
 
   @override
   Future<void> onBarcodeMatched(Map<String, dynamic> data) {
@@ -259,7 +259,7 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
 
     // If the barcode is known, we can't assign it to the stock item!
     showSnackIcon(
-      I18N.of(OneContext().context).barcodeInUse,
+      L10().barcodeInUse,
       icon: FontAwesomeIcons.qrcode,
       success: false
     );
@@ -271,8 +271,8 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
 
     if (!data.containsKey("hash")) {
       showServerError(
-          I18N.of(_context).missingData,
-          I18N.of(_context).barcodeMissingHash,
+          L10().missingData,
+          L10().barcodeMissingHash,
       );
     } else {
 
@@ -292,7 +292,7 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
           Navigator.of(_context).pop();
 
           showSnackIcon(
-            I18N.of(OneContext().context).barcodeAssigned,
+            L10().barcodeAssigned,
             success: true,
             icon: FontAwesomeIcons.qrcode
           );
@@ -301,7 +301,7 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
           successTone();
 
           showSnackIcon(
-              I18N.of(OneContext().context).barcodeNotAssigned,
+              L10().barcodeNotAssigned,
               success: false,
               icon: FontAwesomeIcons.qrcode
           );
@@ -325,7 +325,7 @@ class StockItemScanIntoLocationHandler extends BarcodeHandler {
   StockItemScanIntoLocationHandler(this.item);
 
   @override
-  String getOverlayText(BuildContext context) => I18N.of(context).barcodeScanLocation;
+  String getOverlayText(BuildContext context) => L10().barcodeScanLocation;
 
   @override
   Future<void> onBarcodeMatched(Map<String, dynamic> data) async {
@@ -346,7 +346,7 @@ class StockItemScanIntoLocationHandler extends BarcodeHandler {
         Navigator.of(_context).pop();
 
         showSnackIcon(
-          I18N.of(OneContext().context).barcodeScanIntoLocationSuccess,
+          L10().barcodeScanIntoLocationSuccess,
           success: true,
         );
       } else {
@@ -354,7 +354,7 @@ class StockItemScanIntoLocationHandler extends BarcodeHandler {
         failureTone();
 
         showSnackIcon(
-          I18N.of(OneContext().context).barcodeScanIntoLocationFailure,
+          L10().barcodeScanIntoLocationFailure,
           success: false
         );
       }
@@ -363,7 +363,7 @@ class StockItemScanIntoLocationHandler extends BarcodeHandler {
       failureTone();
 
       showSnackIcon(
-        I18N.of(OneContext().context).invalidStockLocation,
+        L10().invalidStockLocation,
         success: false,
       );
     }
@@ -381,7 +381,7 @@ class StockLocationScanInItemsHandler extends BarcodeHandler {
   StockLocationScanInItemsHandler(this.location);
   
   @override
-  String getOverlayText(BuildContext context) => I18N.of(context).barcodeScanItem;
+  String getOverlayText(BuildContext context) => L10().barcodeScanItem;
 
   @override
   Future<void> onBarcodeMatched(Map<String, dynamic> data) async {
@@ -398,16 +398,14 @@ class StockLocationScanInItemsHandler extends BarcodeHandler {
         failureTone();
 
         showSnackIcon(
-          I18N.of(OneContext().context).invalidStockItem,
+          L10().invalidStockItem,
           success: false,
         );
       } else if (item.locationId == location.pk) {
         failureTone();
 
         showSnackIcon(
-            I18N
-                .of(OneContext().context)
-                .itemInLocation,
+            L10().itemInLocation,
             success: true
         );
       } else {
@@ -418,7 +416,7 @@ class StockLocationScanInItemsHandler extends BarcodeHandler {
           successTone();
 
           showSnackIcon(
-            I18N.of(OneContext().context).barcodeScanIntoLocationSuccess,
+            L10().barcodeScanIntoLocationSuccess,
             success: true
           );
         } else {
@@ -426,7 +424,7 @@ class StockLocationScanInItemsHandler extends BarcodeHandler {
           failureTone();
 
           showSnackIcon(
-            I18N.of(OneContext().context).barcodeScanIntoLocationFailure,
+            L10().barcodeScanIntoLocationFailure,
             success: false
           );
         }
@@ -437,7 +435,7 @@ class StockLocationScanInItemsHandler extends BarcodeHandler {
 
       // Does not match a valid stock item!
       showSnackIcon(
-        I18N.of(OneContext().context).invalidStockItem,
+        L10().invalidStockItem,
         success: false,
       );
     }

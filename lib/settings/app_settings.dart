@@ -2,7 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:InvenTree/l10.dart';
+
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:InvenTree/app_settings.dart';
@@ -82,21 +83,21 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
     return Scaffold(
       key: _settingsKey,
       appBar: AppBar(
-        title: Text(I18N.of(context).appSettings),
+        title: Text(L10().appSettings),
       ),
       body: Container(
         child: ListView(
           children: [
             ListTile(
               title: Text(
-                I18N.of(context).parts,
+                L10().parts,
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               leading: FaIcon(FontAwesomeIcons.shapes),
             ),
             ListTile(
-              title: Text(I18N.of(context).includeSubcategories),
-              subtitle: Text(I18N.of(context).includeSubcategoriesDetail),
+              title: Text(L10().includeSubcategories),
+              subtitle: Text(L10().includeSubcategoriesDetail),
               leading: FaIcon(FontAwesomeIcons.sitemap),
               trailing: Switch(
                 value: partSubcategory,
@@ -105,14 +106,14 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
             ),
             Divider(height: 3),
             ListTile(
-              title: Text(I18N.of(context).stock,
+              title: Text(L10().stock,
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               leading: FaIcon(FontAwesomeIcons.boxes),
             ),
             ListTile(
-              title: Text(I18N.of(context).includeSublocations),
-              subtitle: Text(I18N.of(context).includeSublocationsDetail),
+              title: Text(L10().includeSublocations),
+              subtitle: Text(L10().includeSublocationsDetail),
               leading: FaIcon(FontAwesomeIcons.sitemap),
               trailing: Switch(
                 value: stockSublocation,
@@ -122,14 +123,14 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
             Divider(height: 3),
             ListTile(
               title: Text(
-                I18N.of(context).sounds,
+                L10().sounds,
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               leading: FaIcon(FontAwesomeIcons.volumeUp),
             ),
             ListTile(
-              title: Text(I18N.of(context).serverError),
-              subtitle: Text(I18N.of(context).soundOnServerError),
+              title: Text(L10().serverError),
+              subtitle: Text(L10().soundOnServerError),
               leading: FaIcon(FontAwesomeIcons.server),
               trailing: Switch(
                 value: serverSounds,
@@ -137,8 +138,8 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
               ),
             ),
             ListTile(
-              title: Text(I18N.of(context).barcodeTones),
-              subtitle: Text(I18N.of(context).soundOnBarcodeAction),
+              title: Text(L10().barcodeTones),
+              subtitle: Text(L10().soundOnBarcodeAction),
               leading: FaIcon(FontAwesomeIcons.qrcode),
               trailing: Switch(
                 value: barcodeSounds,
