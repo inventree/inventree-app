@@ -55,7 +55,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
     );
 
     showSnackIcon(
-      success ? "Test result uploaded" : "Could not upload test result",
+      success ? L10().testResultUploadPass : L10().testResultUploadFail,
       success: success
     );
 
@@ -70,7 +70,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
     String _notes;
     File _attachment;
 
-    showFormDialog("Add Test Data",
+    showFormDialog(L10().testResultAdd,
       key: _addResultKey,
       callback: () {
         uploadTestResult(_name, _result, _value, _notes, _attachment);

@@ -82,9 +82,6 @@ class ImagePickerField extends FormField<File> {
               ],
             ),
           );
-          return ListTile(
-            title: Text(L10().selectImage),
-          );
         }
       );
 }
