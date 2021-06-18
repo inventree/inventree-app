@@ -5,8 +5,6 @@ import 'package:InvenTree/inventree/sentry.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'file:///C:/inventree-app/lib/l10.dart';
-
 import 'package:InvenTree/widget/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

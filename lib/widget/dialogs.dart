@@ -1,7 +1,7 @@
 
 import 'package:InvenTree/app_settings.dart';
 import 'package:InvenTree/widget/snacks.dart';
-import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -64,7 +64,7 @@ Future<void> showInfoDialog(BuildContext context, String title, String descripti
 
   showDialog(
     context: context,
-    child: SimpleDialog(
+    builder: (BuildContext context) => SimpleDialog(
       title: ListTile(
         title: Text(info),
         leading: FaIcon(icon),
@@ -119,7 +119,7 @@ Future<void> showServerError(String title, String description) async {
   final bool tones = await InvenTreeSettingsManager().getValue("serverSounds", true) as bool;
 
   if (tones) {
-    AudioCache player = AudioCache();
+    final player = AudioCache();
     player.play("sounds/server_error.mp3");
   }
 

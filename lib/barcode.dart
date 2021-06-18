@@ -1,7 +1,7 @@
 import 'package:InvenTree/app_settings.dart';
 import 'package:InvenTree/widget/dialogs.dart';
 import 'package:InvenTree/widget/snacks.dart';
-import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -43,7 +43,7 @@ class BarcodeHandler {
       final bool en = await InvenTreeSettingsManager().getValue("barcodeSounds", true) as bool;
 
       if (en) {
-        AudioCache player = AudioCache();
+        final player = AudioCache();
         player.play("sounds/barcode_scan.mp3");
       }
     }
@@ -53,7 +53,7 @@ class BarcodeHandler {
       final bool en = await InvenTreeSettingsManager().getValue("barcodeSounds", true) as bool;
 
       if (en) {
-        AudioCache player = AudioCache();
+        final player = AudioCache();
         player.play("sounds/barcode_error.mp3");
       }
     }
@@ -223,7 +223,7 @@ class BarcodeScanHandler extends BarcodeHandler {
         onAction: () {
           showDialog(
               context: _context,
-              child: SimpleDialog(
+              builder: (BuildContext context) => SimpleDialog(
                 title: Text(L10().unknownResponse),
                 children: <Widget>[
                   ListTile(

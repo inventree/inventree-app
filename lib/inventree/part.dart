@@ -301,6 +301,10 @@ class InvenTreePart extends InvenTreeModel {
       return img.isNotEmpty ? img : InvenTreeAPI.staticThumb;
     }
 
+    void uploadImage(File image) async {
+      // TODO
+    }
+
     // Return the "starred" status of this part
     bool get starred => jsondata['starred'] as bool ?? false;
 

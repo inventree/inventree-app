@@ -34,6 +34,7 @@ class PartDetailWidget extends StatefulWidget {
 
 class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
+  final _editImageKey = GlobalKey<FormState>();
   final _editPartKey = GlobalKey<FormState>();
 
   @override
@@ -116,6 +117,39 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     refresh();
   }
 
+  void _uploadImage(File image) async {
+
+    print("Uploading image...");
+    await part.uploadImage(image);
+    print("Done");
+
+    refresh();
+  }
+
+  void _selectImage() {
+
+    File _attachment;
+
+    if (!InvenTreeAPI().checkPermission('part', 'change')) {
+      return;
+    }
+
+    showFormDialog(L10().selectImage,
+      key: _editImageKey,
+      callback: () {
+        _uploadImage(_attachment);
+      },
+      fields: <Widget>[
+        ImagePickerField(
+          context,
+          label: L10().attachImage,
+          required: true,
+          onSaved: (attachment) => _attachment = attachment,
+        ),
+      ]
+    );
+  }
+
   void _editPartDialog() {
 
     // Values which can be edited
@@ -189,6 +223,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
                 MaterialPageRoute(builder: (context) => FullScreenWidget(part.fullname, part.image))
               );
             }),
+            onLongPress: _selectImage,
         ),
     );
   }

@@ -28,24 +28,28 @@ class ImagePickerField extends FormField<File> {
   }
 
   static Future<void> _getImageFromGallery(FormFieldState<File> field) async {
-    
-    File image;
-    
-    await ImagePicker.pickImage(source: ImageSource.gallery).then((File img) {
-      image = img;
-    });
 
-    field.didChange(image);
+    final picker = ImagePicker();
+
+    final pickedImage = await picker.getImage(source: ImageSource.gallery);
+
+    if (pickedImage != null)
+    {
+      field.didChange(File(pickedImage.path));
+    }
   }
 
   static Future<void> _getImageFromCamera(FormFieldState<File> field) async {
-    File image;
 
-    await ImagePicker.pickImage(source: ImageSource.camera).then((File img) {
-      image = img;
-    });
+    final picker = ImagePicker();
 
-    field.didChange(image);
+    final pickedImage = await picker.getImage(source: ImageSource.camera);
+
+    if (pickedImage != null)
+    {
+        field.didChange(File(pickedImage.path));
+    }
+
   }
 
   ImagePickerField(BuildContext context, {String label = "Attach Image", Function onSaved, bool required = false}) :
