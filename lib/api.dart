@@ -421,14 +421,22 @@ class InvenTreeAPI {
 
     print("PATCH: " + _url);
 
+    final uri = Uri.parse(_url);
+
+    // Check for invalid host
+    if (uri.host.isEmpty) {
+      showServerError(L10().invalidHost, L10().invalidHostDetails);
+      return null;
+    }
+
     var client = createClient(true);
 
     // Open a connection to the server
-    HttpClientRequest request = await client.patchUrl(Uri.parse(_url))
+    HttpClientRequest request = await client.patchUrl(uri)
     .timeout(Duration(seconds: 10))
     .catchError((error) {
       print("PATCH request return error");
-      print("URL: ${_url}");
+      print("URL: ${uri}");
       print("Error: ${error.toString()}");
 
       var ctx = OneContext().context;
@@ -541,12 +549,19 @@ class InvenTreeAPI {
 
     var client = createClient(true);
 
+    final uri = Uri.parse(_url);
+
+    if (uri.host.isEmpty) {
+      showServerError(L10().invalidHost, L10().invalidHostDetails);
+      return null;
+    }
+
     // Open a connection to the server
-    HttpClientRequest request = await client.postUrl(Uri.parse(_url))
+    HttpClientRequest request = await client.postUrl(uri)
     .timeout(Duration(seconds: 10))
     .catchError((error) {
       print("POST request returned error");
-      print("URL: ${_url}");
+      print("URL: ${uri}");
       print("Error: ${error.toString()}");
 
       var ctx = OneContext().context;
@@ -679,12 +694,20 @@ class InvenTreeAPI {
 
     var client = createClient(true);
 
+    final uri = Uri.parse(_url);
+
+    // Check for invalid host
+    if (uri.host.isEmpty) {
+      showServerError(L10().invalidHost, L10().invalidHostDetails);
+      return null;
+    }
+
     // Open a connection
-    HttpClientRequest request = await client.getUrl(Uri.parse(_url))
+    HttpClientRequest request = await client.getUrl(uri)
         .timeout(Duration(seconds: 10))
         .catchError((error) {
       print("GET request returned error");
-      print("URL: ${_url}");
+      print("URL: ${uri}");
       print("Error: ${error.toString()}");
 
       var ctx = OneContext().context;

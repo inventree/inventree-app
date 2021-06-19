@@ -4,6 +4,7 @@
 ### 0.1.6 - May 2021
 ---
 
+- Display error message for improperly formatted server address
 
 
 ### 0.1.5 - May 2021
