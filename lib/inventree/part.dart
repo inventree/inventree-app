@@ -301,8 +301,26 @@ class InvenTreePart extends InvenTreeModel {
       return img.isNotEmpty ? img : InvenTreeAPI.staticThumb;
     }
 
-    void uploadImage(File image) async {
-      // TODO
+    Future<bool> uploadImage(File image) async {
+      // Upload file against this part
+      final http.StreamedResponse response = await InvenTreeAPI().uploadFile(
+        url,
+        image,
+        method: 'PATCH',
+        name: 'image',
+      );
+
+      if (response == null) {
+        print("uploadImage returned null at '${url}'");
+        return false;
+      }
+
+      if (response.statusCode != 200) {
+        print("uploadImage returned ${response.statusCode} at '${url}'");
+        return false;
+      }
+
+      return true;
     }
 
     // Return the "starred" status of this part

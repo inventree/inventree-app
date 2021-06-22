@@ -62,11 +62,10 @@ class InvenTreeFileService extends FileService {
 class InvenTreeAPI {
 
   // Minimum required API version for server
-  static const _minApiVersion = 3;
+  static const _minApiVersion = 6;
 
   // Endpoint for requesting an API token
   static const _URL_GET_TOKEN = "user/token/";
-  static const _URL_GET_VERSION = "";
 
   static const _URL_GET_ROLES = "user/roles/";
 
@@ -518,16 +517,18 @@ class InvenTreeAPI {
    * Upload a file to the given URL
    */
   Future<http.StreamedResponse> uploadFile(String url, File f,
-      {String name = "attachment", Map<String, String> fields}) async {
+      {String name = "attachment", String method="POST", Map<String, String> fields}) async {
     var _url = makeApiUrl(url);
 
-    var request = http.MultipartRequest('POST', Uri.parse(_url));
+    var request = http.MultipartRequest(method, Uri.parse(_url));
 
     request.headers.addAll(defaultHeaders());
 
-    fields.forEach((String key, String value) {
-      request.fields[key] = value;
-    });
+    if (fields != null) {
+      fields.forEach((String key, String value) {
+        request.fields[key] = value;
+      });
+    }
 
     var _file = await http.MultipartFile.fromPath(name, f.path);
 
