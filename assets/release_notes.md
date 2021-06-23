@@ -1,9 +1,10 @@
 ## InvenTree App Release Notes
 ---
 
-### 0.1.6 - May 2021
+### 0.1.6 - June 2021
 ---
 
+- Upload Part images from phone camera or gallery
 - Display error message for improperly formatted server address
 
 
