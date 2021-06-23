@@ -117,11 +117,25 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     refresh();
   }
 
+  /**
+   * Upload image for this Part.
+   * Show a SnackBar with upload result.
+   */
   void _uploadImage(File image) async {
 
-    print("Uploading image...");
-    await part.uploadImage(image);
-    print("Done");
+    final result = await part.uploadImage(image);
+
+    if (result) {
+      showSnackIcon(
+        L10().imageUploadSuccess,
+        success: true
+      );
+    } else {
+      showSnackIcon(
+        L10().imageUploadFailure,
+        success: false,
+      );
+    }
 
     refresh();
   }
