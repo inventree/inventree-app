@@ -94,7 +94,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   void _toggleStar() async {
 
-    if (InvenTreeAPI().checkPermission('part', 'change')) {
+    if (InvenTreeAPI().checkPermission('part', 'view')) {
       await part.update(context, values: {"starred": "${!part.starred}"});
       refresh();
     }
@@ -105,7 +105,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     final bool result = await part.update(context, values: values);
 
     if (result) {
-      showSnackIcon("Part edited", success: true);
+      showSnackIcon(L10().partEdited, success: true);
     }
     /*
     showSnackIcon(
@@ -130,14 +130,15 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         L10().imageUploadSuccess,
         success: true
       );
+
+      refresh();
+
     } else {
       showSnackIcon(
         L10().imageUploadFailure,
         success: false,
       );
     }
-
-    refresh();
   }
 
   void _selectImage() {
@@ -432,7 +433,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           L10().stockItems,
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        subtitle: part.stockItems.isEmpty ? Text("No stock items available") : null,
+        subtitle: part.stockItems.isEmpty ? Text(L10().stockItemsNotAvailable) : null,
         trailing: part.stockItems.isNotEmpty ? Text("${part.stockItems.length}") : null,
       )
     );
@@ -463,7 +464,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
     tiles.add(
       ListTile(
-        title: Text("Scan New Stock Item"),
+        title: Text(L10().barcodeScanItem),
         leading: FaIcon(FontAwesomeIcons.box),
         trailing: FaIcon(FontAwesomeIcons.qrcode),
         onTap: null,

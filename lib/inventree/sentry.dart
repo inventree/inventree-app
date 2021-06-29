@@ -86,7 +86,7 @@ bool isInDebugMode() {
 
 Future<void> sentryReportError(dynamic error, dynamic stackTrace) async {
 
-  print('Intercepted error: $error');
+  print('----- Sentry Intercepted error: $error -----');
   print(stackTrace);
 
   // Errors thrown in development mode are unlikely to be interesting. You can
@@ -94,7 +94,7 @@ Future<void> sentryReportError(dynamic error, dynamic stackTrace) async {
   // the report.
   if (isInDebugMode()) {
 
-    print('In dev mode. Not sending report to Sentry.io.');
+    print('----- In dev mode. Not sending report to Sentry.io -----');
     return;
   }
 

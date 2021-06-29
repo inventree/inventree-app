@@ -247,7 +247,11 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
 
   final InvenTreeStockItem item;
 
-  StockItemBarcodeAssignmentHandler(this.item);
+  StockItemBarcodeAssignmentHandler(this.item) {
+    if (item == null) {
+      throw new AssertionError("null StockItem passed to barcode handler");
+    }
+  }
 
   @override
   String getOverlayText(BuildContext context) => L10().barcodeScanAssign;
@@ -322,7 +326,11 @@ class StockItemScanIntoLocationHandler extends BarcodeHandler {
 
   final InvenTreeStockItem item;
 
-  StockItemScanIntoLocationHandler(this.item);
+  StockItemScanIntoLocationHandler(this.item) {
+    if (item == null) {
+      throw new AssertionError("null StockItem passed to StockItemScanIntoLocationHandler");
+    }
+  }
 
   @override
   String getOverlayText(BuildContext context) => L10().barcodeScanLocation;
@@ -378,7 +386,11 @@ class StockLocationScanInItemsHandler extends BarcodeHandler {
   
   final InvenTreeStockLocation location;
   
-  StockLocationScanInItemsHandler(this.location);
+  StockLocationScanInItemsHandler(this.location) {
+    if (location == null) {
+      throw new AssertionError("null StockLocation passed to StockLocationScanInItemsHandler");
+    }
+  }
   
   @override
   String getOverlayText(BuildContext context) => L10().barcodeScanItem;
