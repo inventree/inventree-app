@@ -432,7 +432,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           L10().stockItems,
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        subtitle: part.stockItems.isEmpty ? Text("No stock items available") : null,
+        subtitle: part.stockItems.isEmpty ? Text(L10().stockItemsNotAvailable) : null,
         trailing: part.stockItems.isNotEmpty ? Text("${part.stockItems.length}") : null,
       )
     );
@@ -463,7 +463,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
     tiles.add(
       ListTile(
-        title: Text("Scan New Stock Item"),
+        title: Text(L10().barcodeScanItem),
         leading: FaIcon(FontAwesomeIcons.box),
         trailing: FaIcon(FontAwesomeIcons.qrcode),
         onTap: null,

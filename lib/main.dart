@@ -12,37 +12,32 @@ import 'package:one_context/one_context.dart';
 
 import 'dsn.dart';
 
+import 'package:flutter/foundation.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 
-void main() async {
-
-
-  await Sentry.init((options) {
-      options.dsn = SENTRY_DSN_KEY;
-    },
-    //appRunner: () => runApp(InvenTreeApp())
-  );
+Future<void> main() async {
 
   await runZonedGuarded<Future<void>>(() async {
 
-  WidgetsFlutterBinding.ensureInitialized();
+    await Sentry.init((options) {
+      options.dsn = SENTRY_DSN_KEY;
+    });
 
-  // This captures errors reported by the Flutter framework.
-  FlutterError.onError = (FlutterErrorDetails details) async {
-    if (isInDebugMode()) {
-      // In development mode simply print to console.
-      FlutterError.dumpErrorToConsole(details);
-    } else {
-      // In production mode report to the application zone to report to
-      // Sentry.
-      Zone.current.handleUncaughtError(details.exception, details.stack);
-    }
-  };
+    WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(InvenTreeApp());
+    // Pass any flutter errors off to the Sentry reporting context!
+    FlutterError.onError = (FlutterErrorDetails details) async {
 
-  }, (Object error, StackTrace stackTrace) {
+      // Ensure that the error gets reported to sentry!
+      await sentryReportError(details.exception, details.stack);
+    };
+
+    runApp(
+      InvenTreeApp()
+    );
+
+  }, (Object error, StackTrace stackTrace) async {
     sentryReportError(error, stackTrace);
   });
 
@@ -81,6 +76,7 @@ class InvenTreeApp extends StatelessWidget {
         const Locale('tr', ''),
         const Locale('zh', ''),
       ],
+
     );
   }
 }
