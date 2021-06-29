@@ -141,7 +141,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   void _stockUpdateMessage(bool result) {
 
     if (result) {
-      showSnackIcon("Stock item updated", success: true);
+      showSnackIcon(L10().stockItemUpdated, success: true);
     }
   }
 
@@ -258,7 +258,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     refresh();
 
     if (result) {
-      showSnackIcon("Stock item transferred", success: true);
+      showSnackIcon(L10().stockItemTransferred, success: true);
     }
   }
 
@@ -287,7 +287,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
                   controller: _selectedController,
                   autofocus: true,
                   decoration: InputDecoration(
-                      hintText: "Search for location",
+                      hintText: L10().searchLocation,
                       border: OutlineInputBorder()
                   )
               ),
