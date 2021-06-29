@@ -297,27 +297,29 @@ List<Widget> detailTiles() {
     List<Widget> tiles = [];
 
     tiles.add(locationDescriptionCard(includeActions: false));
-
-    // Stock adjustment actions
-    if (InvenTreeAPI().checkPermission('stock', 'change')) {
-      // Scan items into location
-      tiles.add(
-          ListTile(
-            title: Text(L10().barcodeScanInItems),
-            leading: FaIcon(FontAwesomeIcons.exchangeAlt),
-            trailing: FaIcon(FontAwesomeIcons.qrcode),
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) =>
-                      InvenTreeQRView(
-                          StockLocationScanInItemsHandler(location)))
-              ).then((context) {
-                refresh();
-              });
-            },
-          )
-      );
+    
+    if (location != null) {
+      // Stock adjustment actions
+      if (InvenTreeAPI().checkPermission('stock', 'change')) {
+        // Scan items into location
+        tiles.add(
+            ListTile(
+              title: Text(L10().barcodeScanInItems),
+              leading: FaIcon(FontAwesomeIcons.exchangeAlt),
+              trailing: FaIcon(FontAwesomeIcons.qrcode),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) =>
+                        InvenTreeQRView(
+                            StockLocationScanInItemsHandler(location)))
+                ).then((context) {
+                  refresh();
+                });
+              },
+            )
+        );
+      }
     }
 
     // Move location into another location
@@ -331,6 +333,19 @@ List<Widget> detailTiles() {
       )
     );
      */
+
+    if (tiles.length <= 1) {
+      tiles.add(
+        ListTile(
+          title: Text(
+              L10().actionsNone,
+            style: TextStyle(
+              fontStyle: FontStyle.italic
+            ),
+          )
+        )
+      );
+    }
 
     return tiles;
   }
