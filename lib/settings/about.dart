@@ -107,7 +107,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
     tiles.add(
       ListTile(
         title: Text(L10().version),
-        subtitle: Text("${info.version}"),
+        subtitle: Text("${info.version} - Build ${info.buildNumber}"),
         leading: FaIcon(FontAwesomeIcons.infoCircle)
       )
     );

@@ -1,6 +1,12 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.2.5 - June 2021
+---
+
+- Fixed bug associated with scanning a StockItem into a non-existent location
+- Improved error reporting
+
 ### 0.2.4 - June 2021
 ---
 
