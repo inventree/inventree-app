@@ -399,30 +399,35 @@ class _PaginatedPartListState extends State<PaginatedPartList> {
       params["cascade"] = "${cascade}";
 
       final page = await InvenTreePart().listPaginated(_pageSize, pageKey, filters: params);
-      final isLastPage = page.length < _pageSize;
+      int pageLength = page.length ?? 0;
+      int pageCount = page.count ?? 0;
+
+      final isLastPage = pageLength < _pageSize;
 
       // Construct a list of part objects
       List<InvenTreePart> parts = [];
 
-      for (var result in page.results) {
-        if (result is InvenTreePart) {
-          parts.add(result);
+      if (page == null) {
+        for (var result in page.results) {
+          if (result is InvenTreePart) {
+            parts.add(result);
+          }
         }
       }
 
       if (isLastPage) {
         _pagingController.appendLastPage(parts);
       } else {
-        final int nextPageKey = pageKey + page.length;
+        final int nextPageKey = pageKey + pageLength;
         _pagingController.appendPage(parts, nextPageKey);
       }
 
       if (onTotalChanged != null) {
-        onTotalChanged(page.count);
+        onTotalChanged(pageCount);
       }
 
       setState(() {
-        resultCount = page.count;
+        resultCount = pageCount;
       });
 
     } catch (error) {
