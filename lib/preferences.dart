@@ -15,15 +15,19 @@ class InvenTreePreferencesDB {
 
   InvenTreePreferencesDB._();
 
-  Completer<Database> _dbOpenCompleter;
+  Completer<Database> _dbOpenCompleter = Completer();
+
+  bool isOpen = false;
 
   Future<Database> get database async {
-    // If completer is null, AppDatabaseClass is newly instantiated, so database is not yet opened
-    if (_dbOpenCompleter == null) {
-      _dbOpenCompleter = Completer();
+
+    if (!isOpen) {
       // Calling _openDatabase will also complete the completer with database instance
       _openDatabase();
+
+      isOpen = true;
     }
+
     // If the database is already opened, awaiting the future will happen instantly.
     // Otherwise, awaiting the returned future will take some time - until complete() is called
     // on the Completer in _openDatabase() below.

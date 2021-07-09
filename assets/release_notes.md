@@ -1,6 +1,12 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.2.6 - July 2021
+---
+
+- Major code update with "null safety" features
+- Updated translations
+
 ### 0.2.5 - June 2021
 ---
 

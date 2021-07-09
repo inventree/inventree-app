@@ -22,24 +22,29 @@ import 'package:one_context/one_context.dart';
  */
 class InvenTreeFileService extends FileService {
 
-  HttpClient _client;
+  HttpClient? _client = null;
 
-  InvenTreeFileService({HttpClient client, bool strictHttps = false}) {
+  InvenTreeFileService({HttpClient? client, bool strictHttps = false}) {
     _client = client ?? HttpClient();
-    _client.badCertificateCallback = (cert, host, port) {
-      print("BAD CERTIFICATE CALLBACK FOR IMAGE REQUEST");
-      return !strictHttps;
-    };
+
+    if (_client != null) {
+      _client?.badCertificateCallback = (cert, host, port) {
+        print("BAD CERTIFICATE CALLBACK FOR IMAGE REQUEST");
+        return !strictHttps;
+      };
+    }
   }
 
   @override
   Future<FileServiceResponse> get(String url,
       {Map<String, String> headers = const {}}) async {
     final Uri resolved = Uri.base.resolve(url);
-    final HttpClientRequest req = await _client.getUrl(resolved);
-    headers?.forEach((key, value) {
+    final HttpClientRequest req = await _client!.getUrl(resolved);
+
+    headers.forEach((key, value) {
       req.headers.add(key, value);
     });
+
     final HttpClientResponse httpResponse = await req.close();
     final http.StreamedResponse _response = http.StreamedResponse(
       httpResponse.timeout(Duration(seconds: 60)), httpResponse.statusCode,
@@ -101,7 +106,7 @@ class InvenTreeAPI {
 
   String makeUrl(String endpoint) => _makeUrl(endpoint);
 
-  UserProfile profile;
+  UserProfile? profile = null;
 
   Map<String, dynamic> roles = {};
 
@@ -171,15 +176,19 @@ class InvenTreeAPI {
    * - Request user token from the server
    * - Request user roles from the server
    */
-  Future<bool> _connect(BuildContext context) async {
+  Future<bool> _connect() async {
 
     if (profile == null) return false;
 
     var ctx = OneContext().context;
 
-    String address = profile.server.trim();
-    String username = profile.username.trim();
-    String password = profile.password.trim();
+    String address = profile?.server ?? "";
+    String username = profile?.username ?? "";
+    String password = profile?.password ?? "";
+
+    address = address.trim();
+    username = username.trim();
+    password = password.trim();
 
     if (address.isEmpty || username.isEmpty || password.isEmpty) {
       showSnackIcon(
@@ -202,7 +211,8 @@ class InvenTreeAPI {
 
     print("Connecting to ${apiUrl} -> username=${username}");
 
-    HttpClientResponse response;
+    HttpClientResponse? response;
+
     dynamic data;
 
     response = await getResponse("");
@@ -237,7 +247,7 @@ class InvenTreeAPI {
     instance = data['instance'] ?? '';
 
     // Default API version is 1 if not provided
-    _apiVersion = data['apiVersion'] as int ?? 1;
+    _apiVersion = (data['apiVersion'] ?? 1) as int;
 
     if (_apiVersion < _minApiVersion) {
 
@@ -315,7 +325,7 @@ class InvenTreeAPI {
 
   }
 
-  bool disconnectFromServer() {
+  void disconnectFromServer() {
     print("InvenTreeAPI().disconnectFromServer()");
 
     _connected = false;
@@ -324,7 +334,7 @@ class InvenTreeAPI {
     profile = null;
   }
 
-  Future<bool> connectToServer(BuildContext context) async {
+  Future<bool> connectToServer() async {
 
     // Ensure server is first disconnected
     disconnectFromServer();
@@ -345,7 +355,7 @@ class InvenTreeAPI {
 
     _connecting = true;
 
-    _connected = await _connect(context);
+    _connected = await _connect();
 
     print("_connect() returned result: ${_connected}");
 
@@ -411,12 +421,14 @@ class InvenTreeAPI {
 
 
   // Perform a PATCH request
-  Future<dynamic> patch(String url, {Map<String, String> body, int expectedStatusCode=200}) async {
+  Future<dynamic> patch(String url, {Map<String, String>? body, int expectedStatusCode=200}) async {
     var _url = makeApiUrl(url);
     var _body = Map<String, String>();
 
     // Copy across provided data
-    body.forEach((K, V) => _body[K] = V);
+    if (body != null) {
+      body.forEach((K, V) => _body[K] = V);
+    }
 
     print("PATCH: " + _url);
 
@@ -517,7 +529,8 @@ class InvenTreeAPI {
    * Upload a file to the given URL
    */
   Future<http.StreamedResponse> uploadFile(String url, File f,
-      {String name = "attachment", String method="POST", Map<String, String> fields}) async {
+      {String name = "attachment", String method="POST", Map<String, String>? fields}) async {
+
     var _url = makeApiUrl(url);
 
     var request = http.MultipartRequest(method, Uri.parse(_url));
@@ -543,7 +556,8 @@ class InvenTreeAPI {
    * Perform a HTTP POST request
    * Returns a json object (or null if unsuccessful)
    */
-  Future<dynamic> post(String url, {Map<String, dynamic> body, int expectedStatusCode=201}) async {
+  Future<dynamic> post(String url, {Map<String, dynamic>? body, int expectedStatusCode=201}) async {
+
     var _url = makeApiUrl(url);
 
     print("POST: ${_url} -> ${body.toString()}");
@@ -615,7 +629,7 @@ class InvenTreeAPI {
           error.toString()
         );
       } else if (error is TimeoutException) {
-        showTimeoutError(ctx);
+        showTimeoutError();
       } else {
         showServerError(
           L10().serverError,
@@ -674,7 +688,7 @@ class InvenTreeAPI {
    * and return the Response object
    * (or null if the request fails)
    */
-  Future<HttpClientResponse> getResponse(String url, {Map<String, String> params}) async {
+  Future<HttpClientResponse?> getResponse(String url, {Map<String, String>? params}) async {
     var _url = makeApiUrl(url);
 
     print("GET: ${_url}");
@@ -797,7 +811,7 @@ class InvenTreeAPI {
    * Perform a HTTP GET request
    * Returns a json object (or null if did not complete)
    */
-  Future<dynamic> get(String url, {Map<String, String> params, int expectedStatusCode=200}) async {
+  Future<dynamic> get(String url, {Map<String, String>? params, int expectedStatusCode=200}) async {
 
     var response = await getResponse(url, params: params);
 
@@ -836,7 +850,7 @@ class InvenTreeAPI {
     if (_token.isNotEmpty) {
       return "Token $_token";
     } else if (profile != null) {
-      return "Basic " + base64Encode(utf8.encode('${profile.username}:${profile.password}'));
+      return "Basic " + base64Encode(utf8.encode('${profile?.username}:${profile?.password}'));
     } else {
       return "";
     }
@@ -846,13 +860,11 @@ class InvenTreeAPI {
 
   static String get staticThumb => "/static/img/blank_image.thumbnail.png";
 
-
-
   /**
    * Load image from the InvenTree server,
    * or from local cache (if it has been cached!)
    */
-  CachedNetworkImage getImage(String imageUrl, {double height, double width}) {
+  CachedNetworkImage getImage(String imageUrl, {double height = 0, double width = 0}) {
     if (imageUrl.isEmpty) {
       imageUrl = staticImage;
     }

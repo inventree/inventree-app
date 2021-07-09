@@ -33,7 +33,7 @@ class InvenTreePageResponse {
 
   int get count => _count;
 
-  int get length => results?.length ?? 0;
+  int get length => results.length;
 
   List<InvenTreeModel> results = [];
 }
@@ -91,16 +91,16 @@ class InvenTreeModel {
 
   }
 
-  int get pk => jsondata['pk'] ?? -1;
+  int get pk => (jsondata['pk'] ?? -1) as int;
 
   // Some common accessors
   String get name => jsondata['name'] ?? '';
 
   String get description => jsondata['description'] ?? '';
 
-  String get notes => jsondata['notes'] as String ?? '';
+  String get notes => jsondata['notes'] ?? '';
 
-  int get parentId => jsondata['parent'] as int ?? -1;
+  int get parentId => (jsondata['parent'] ?? -1) as int;
 
   // Legacy API provided external link as "URL", while newer API uses "link"
   String get link => jsondata['link'] ?? jsondata['URL'] ?? '';
@@ -127,7 +127,7 @@ class InvenTreeModel {
     }
   }
 
-  String get keywords => jsondata['keywords'] as String ?? '';
+  String get keywords => jsondata['keywords'] ?? '';
 
   // Create a new object from JSON data (not a constructor!)
   InvenTreeModel createFromJson(Map<String, dynamic> json) {
@@ -142,7 +142,7 @@ class InvenTreeModel {
 
 
   // Search this Model type in the database
-  Future<List<InvenTreeModel>> search(BuildContext context, String searchTerm, {Map<String, String> filters}) async {
+  Future<List<InvenTreeModel>> search(BuildContext context, String searchTerm, {Map<String, String>? filters}) async {
 
     if (filters == null) {
       filters = {};
@@ -150,7 +150,7 @@ class InvenTreeModel {
 
     filters["search"] = searchTerm;
 
-    final results = list(context, filters: filters);
+    final results = list(filters: filters);
 
     return results;
 
@@ -164,7 +164,7 @@ class InvenTreeModel {
   /*
    * Reload this object, by requesting data from the server
    */
-  Future<bool> reload(BuildContext context) async {
+  Future<bool> reload() async {
 
     var response = await api.get(url, params: defaultGetFilters());
     
@@ -178,7 +178,7 @@ class InvenTreeModel {
   }
 
   // POST data to update the model
-  Future<bool> update(BuildContext context, {Map<String, String> values}) async {
+  Future<bool> update({Map<String, String>? values}) async {
 
     var addr = path.join(URL, pk.toString());
 
@@ -198,15 +198,15 @@ class InvenTreeModel {
   }
 
   // Return the detail view for the associated pk
-  Future<InvenTreeModel> get(BuildContext context, int pk, {Map<String, String> filters}) async {
+  Future<InvenTreeModel?> get(int pk, {Map<String, String>? filters}) async {
 
     // TODO - Add "timeout"
     // TODO - Add error catching
 
-    var addr = path.join(URL, pk.toString());
+    var url = path.join(URL, pk.toString());
 
-    if (!addr.endsWith("/")) {
-      addr += "/";
+    if (!url.endsWith("/")) {
+      url += "/";
     }
 
     var params = defaultGetFilters();
@@ -214,13 +214,13 @@ class InvenTreeModel {
     if (filters != null) {
       // Override any default values
       for (String key in filters.keys) {
-        params[key] = filters[key];
+        params[key] = filters[key] ?? '';
       }
     }
 
-    print("GET: $addr ${params.toString()}");
+    print("GET: $url ${params.toString()}");
 
-    var response = await api.get(addr, params: params);
+    var response = await api.get(url, params: params);
 
     if (response == null) {
       return null;
@@ -229,7 +229,7 @@ class InvenTreeModel {
     return createFromJson(response);
   }
 
-  Future<InvenTreeModel> create(BuildContext context, Map<String, dynamic> data) async {
+  Future<InvenTreeModel?> create(Map<String, dynamic> data) async {
 
     print("CREATE: ${URL} ${data.toString()}");
 
@@ -241,8 +241,6 @@ class InvenTreeModel {
       data.remove('id');
     }
 
-    InvenTreeModel _model;
-
     var response = await api.post(URL, body: data);
 
     if (response == null) {
@@ -252,12 +250,12 @@ class InvenTreeModel {
     return createFromJson(response);
   }
 
-  Future<InvenTreePageResponse> listPaginated(int limit, int offset, {Map<String, String> filters}) async {
+  Future<InvenTreePageResponse?> listPaginated(int limit, int offset, {Map<String, String>? filters = null}) async {
     var params = defaultListFilters();
 
     if (filters != null) {
       for (String key in filters.keys) {
-        params[key] = filters[key];
+        params[key] = filters[key] ?? '';
       }
     }
 
@@ -285,14 +283,12 @@ class InvenTreeModel {
        return page;
 
     } else {
-      // Inavlid response
-      print("Invalid!");
       return null;
     }
   }
 
   // Return list of objects from the database, with optional filters
-  Future<List<InvenTreeModel>> list(BuildContext context, {Map<String, String> filters}) async {
+  Future<List<InvenTreeModel>> list({Map<String, String>? filters}) async {
 
     if (filters == null) {
       filters = {};
@@ -302,7 +298,7 @@ class InvenTreeModel {
 
     if (filters != null) {
       for (String key in filters.keys) {
-        params[key] = filters[key];
+        params[key] = filters[key] ?? '';
       }
     }
 
@@ -311,7 +307,7 @@ class InvenTreeModel {
     var response = await api.get(URL, params: params);
 
     // A list of "InvenTreeModel" items
-    List<InvenTreeModel> results = new List<InvenTreeModel>();
+    List<InvenTreeModel> results = new List<InvenTreeModel>.empty();
 
     if (response == null) {
       return results;

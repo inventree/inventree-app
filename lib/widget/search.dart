@@ -15,25 +15,21 @@ import '../api.dart';
 
 // TODO - Refactor duplicate code in this file!
 
-class PartSearchDelegate extends SearchDelegate<InvenTreePart> {
+class PartSearchDelegate extends SearchDelegate<InvenTreePart?> {
 
   final partSearchKey = GlobalKey<ScaffoldState>();
 
   BuildContext context;
 
   // What did we search for last time?
-  String _cachedQuery;
+  String _cachedQuery = "";
 
   bool _searching = false;
 
   // Custom filters for the part search
   Map<String, String> filters = {};
 
-  PartSearchDelegate(this.context, {this.filters}) {
-    if (filters == null) {
-      filters = {};
-    }
-  }
+  PartSearchDelegate(this.context, {this.filters = const {}});
 
   @override
   String get searchFieldLabel => L10().searchParts;
@@ -71,7 +67,7 @@ class PartSearchDelegate extends SearchDelegate<InvenTreePart> {
 
     for (int idx = 0; idx < results.length; idx++) {
       if (results[idx] is InvenTreePart) {
-        partResults.add(results[idx]);
+        partResults.add(results[idx] as InvenTreePart);
       }
     }
 
@@ -132,7 +128,7 @@ class PartSearchDelegate extends SearchDelegate<InvenTreePart> {
       ),
       trailing: Text(part.inStockString),
       onTap: () {
-        InvenTreePart().get(context, part.pk).then((var prt) {
+        InvenTreePart().get(part.pk).then((var prt) {
           if (prt is InvenTreePart) {
             Navigator.push(
               context,
@@ -201,18 +197,18 @@ class PartSearchDelegate extends SearchDelegate<InvenTreePart> {
 }
 
 
-class StockSearchDelegate extends SearchDelegate<InvenTreeStockItem> {
+class StockSearchDelegate extends SearchDelegate<InvenTreeStockItem?> {
 
   final stockSearchKey = GlobalKey<ScaffoldState>();
 
   final BuildContext context;
 
-  String _cachedQuery;
+  String _cachedQuery = "";
 
   bool _searching = false;
 
   // Custom filters for the stock item search
-  Map<String, String> filters;
+  Map<String, String>? filters;
 
   StockSearchDelegate(this.context, {this.filters}) {
     if (filters == null) {
@@ -247,7 +243,9 @@ class StockSearchDelegate extends SearchDelegate<InvenTreeStockItem> {
     showResults(context);
 
     // Enable cascading part search by default
-    filters["cascade"] = "true";
+    if (filters != null) {
+      filters?["cascade"] = "true";
+    }
 
     final results = await InvenTreeStockItem().search(
         context, query, filters: filters);
@@ -256,7 +254,7 @@ class StockSearchDelegate extends SearchDelegate<InvenTreeStockItem> {
 
     for (int idx = 0; idx < results.length; idx++) {
       if (results[idx] is InvenTreeStockItem) {
-        itemResults.add(results[idx]);
+        itemResults.add(results[idx] as InvenTreeStockItem);
       }
     }
 
@@ -315,7 +313,7 @@ class StockSearchDelegate extends SearchDelegate<InvenTreeStockItem> {
       ),
       trailing: Text(item.serialOrQuantityDisplay()),
       onTap: () {
-        InvenTreeStockItem().get(context, item.pk).then((var it) {
+        InvenTreeStockItem().get(item.pk).then((var it) {
           if (it is InvenTreeStockItem) {
             Navigator.push(
               context,

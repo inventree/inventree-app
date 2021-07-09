@@ -9,7 +9,7 @@ class PartNotesWidget extends StatefulWidget {
 
   final InvenTreePart part;
 
-  PartNotesWidget(this.part, {Key key}) : super(key: key);
+  PartNotesWidget(this.part, {Key? key}) : super(key: key);
 
   @override
   _PartNotesState createState() => _PartNotesState(part);

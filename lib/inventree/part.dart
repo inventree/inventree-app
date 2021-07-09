@@ -100,10 +100,11 @@ class InvenTreePartTestTemplate extends InvenTreeModel {
   }
 
   bool passFailStatus() {
+
     var result = latestResult();
 
     if (result == null) {
-      return null;
+      return false;
     }
 
     return result.result;
@@ -113,7 +114,7 @@ class InvenTreePartTestTemplate extends InvenTreeModel {
   List<InvenTreeStockItemTestResult> results = [];
 
   // Return the most recent test result recorded against this template
-  InvenTreeStockItemTestResult latestResult() {
+  InvenTreeStockItemTestResult? latestResult() {
     if (results.isEmpty) {
       return null;
     }
@@ -143,12 +144,12 @@ class InvenTreePart extends InvenTreeModel {
   @override
   Map<String, String> defaultGetFilters() {
     return {
-      "category_detail": "1",   // Include category detail information
+      "category_detail": "true",   // Include category detail information
     };
   }
 
   // Cached list of stock items
-  List<InvenTreeStockItem> stockItems = List<InvenTreeStockItem>();
+  List<InvenTreeStockItem> stockItems = List<InvenTreeStockItem>.empty();
 
   int get stockItemCount => stockItems.length;
 
@@ -156,7 +157,6 @@ class InvenTreePart extends InvenTreeModel {
   Future<void> getStockItems(BuildContext context, {bool showDialog=false}) async {
 
     await InvenTreeStockItem().list(
-      context,
       filters: {
         "part": "${pk}",
         "in_stock": "true",
@@ -172,18 +172,17 @@ class InvenTreePart extends InvenTreeModel {
     });
   }
 
-  int get supplier_count => jsondata['suppliers'] as int ?? 0;
+  int get supplier_count => (jsondata['suppliers'] ?? 0) as int;
 
   // Cached list of test templates
-  List<InvenTreePartTestTemplate> testingTemplates = List<InvenTreePartTestTemplate>();
+  List<InvenTreePartTestTemplate> testingTemplates = List<InvenTreePartTestTemplate>.empty();
 
   int get testTemplateCount => testingTemplates.length;
 
   // Request test templates from the serve
-  Future<void> getTestTemplates(BuildContext context, {bool showDialog=false}) async {
+  Future<void> getTestTemplates({bool showDialog=false}) async {
 
     InvenTreePartTestTemplate().list(
-      context,
       filters: {
         "part": "${pk}",
       },
@@ -200,10 +199,10 @@ class InvenTreePart extends InvenTreeModel {
   }
 
     // Get the number of stock on order for this Part
-    double get onOrder => double.tryParse(jsondata['ordering'].toString() ?? '0');
+    double get onOrder => double.tryParse(jsondata['ordering']) ?? 0;
 
     // Get the stock count for this Part
-    double get inStock => double.tryParse(jsondata['in_stock'].toString() ?? '0');
+    double get inStock => double.tryParse(jsondata['in_stock']) ?? 0;
 
     String get inStockString {
 
@@ -215,51 +214,55 @@ class InvenTreePart extends InvenTreeModel {
     }
 
     // Get the number of units being build for this Part
-    double get building => double.tryParse(jsondata['building'].toString() ?? '0');
+    double get building => double.tryParse(jsondata['building']) ?? 0;
 
     // Get the number of BOM items in this Part (if it is an assembly)
-    int get bomItemCount => jsondata['bom_items'] as int ?? 0;
+    int get bomItemCount => (jsondata['bom_items'] ?? 0) as int;
 
     // Get the number of BOMs this Part is used in (if it is a component)
-    int get usedInCount => jsondata['used_in'] as int ?? 0;
+    int get usedInCount => (jsondata['used_in'] ?? 0) as int;
 
-    bool get isAssembly => jsondata['assembly'] ?? false;
+    bool get isAssembly => (jsondata['assembly'] ?? false) as bool;
 
-    bool get isComponent => jsondata['component'] ?? false;
+    bool get isComponent => (jsondata['component'] ?? false) as bool;
 
-    bool get isPurchaseable => jsondata['purchaseable'] ?? false;
+    bool get isPurchaseable => (jsondata['purchaseable'] ?? false) as bool;
 
-    bool get isSalable => jsondata['salable'] ?? false;
+    bool get isSalable => (jsondata['salable'] ?? false) as bool;
 
-    bool get isActive => jsondata['active'] ?? false;
+    bool get isActive => (jsondata['active'] ?? false) as bool;
 
-    bool get isVirtual => jsondata['virtual'] ?? false;
+    bool get isVirtual => (jsondata['virtual'] ?? false) as bool;
 
-    bool get isTrackable => jsondata['trackable'] ?? false;
+    bool get isTrackable => (jsondata['trackable'] ?? false) as bool;
 
     // Get the IPN (internal part number) for the Part instance
-    String get IPN => jsondata['IPN'] as String ?? '';
+    String get IPN => jsondata['IPN'] ?? '';
 
     // Get the revision string for the Part instance
-    String get revision => jsondata['revision'] as String ?? '';
+    String get revision => jsondata['revision'] ?? '';
 
     // Get the category ID for the Part instance (or 'null' if does not exist)
-    int get categoryId => jsondata['category'] as int ?? null;
+    int get categoryId => (jsondata['category'] ?? -1) as int;
 
     // Get the category name for the Part instance
     String get categoryName {
-      if (categoryId == null) return '';
+      // Inavlid category ID
+      if (categoryId <= 0) return '';
+
       if (!jsondata.containsKey('category_detail')) return '';
 
-      return jsondata['category_detail']['name'] as String ?? '';
+      return jsondata['category_detail']?['name'] ?? '';
     }
 
     // Get the category description for the Part instance
     String get categoryDescription {
-      if (categoryId == null) return '';
+      // Invalid category ID
+      if (categoryId <= 0) return '';
+
       if (!jsondata.containsKey('category_detail')) return '';
 
-      return jsondata['category_detail']['description'] as String ?? '';
+      return jsondata['category_detail']?['description'] ?? '';
     }
     // Get the image URL for the Part instance
     String get _image  => jsondata['image'] ?? '';
@@ -274,7 +277,7 @@ class InvenTreePart extends InvenTreeModel {
 
       if (fn.isNotEmpty) return fn;
 
-      List<String> elements = List<String>();
+      List<String> elements = List<String>.empty();
 
       if (IPN.isNotEmpty) elements.add(IPN);
 
@@ -324,7 +327,7 @@ class InvenTreePart extends InvenTreeModel {
     }
 
     // Return the "starred" status of this part
-    bool get starred => jsondata['starred'] as bool ?? false;
+    bool get starred => (jsondata['starred'] ?? false) as bool;
 
     InvenTreePart() : super();
 

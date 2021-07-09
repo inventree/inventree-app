@@ -10,7 +10,7 @@ class StockNotesWidget extends StatefulWidget {
 
   final InvenTreeStockItem item;
 
-  StockNotesWidget(this.item, {Key key}) : super(key: key);
+  StockNotesWidget(this.item, {Key? key}) : super(key: key);
 
   @override
   _StockNotesState createState() => _StockNotesState(item);

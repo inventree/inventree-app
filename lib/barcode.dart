@@ -35,8 +35,8 @@ class BarcodeHandler {
 
     BarcodeHandler();
 
-    QRViewController _controller;
-    BuildContext _context;
+    QRViewController? _controller;
+    BuildContext? _context;
 
     void successTone() async {
 
@@ -58,12 +58,12 @@ class BarcodeHandler {
       }
     }
 
-    Future<void> onBarcodeMatched(Map<String, dynamic> data) {
+    Future<void> onBarcodeMatched(Map<String, dynamic> data) async {
       // Called when the server "matches" a barcode
       // Override this function
     }
 
-    Future<void> onBarcodeUnknown(Map<String, dynamic> data) {
+    Future<void> onBarcodeUnknown(Map<String, dynamic> data) async {
       // Called when the server does not know about a barcode
       // Override this function
 
@@ -76,17 +76,17 @@ class BarcodeHandler {
       );
     }
 
-    Future<void> onBarcodeUnhandled(Map<String, dynamic> data) {
+    Future<void> onBarcodeUnhandled(Map<String, dynamic> data) async {
 
       failureTone();
 
       // Called when the server returns an unhandled response
       showServerError(L10().responseUnknown, data.toString());
 
-      _controller.resumeCamera();
+      _controller?.resumeCamera();
     }
 
-    Future<void> processBarcode(BuildContext context, QRViewController _controller, String barcode, {String url = "barcode/"}) async {
+    Future<void> processBarcode(BuildContext? context, QRViewController? _controller, String barcode, {String url = "barcode/"}) async {
       this._context = context;
       this._controller = _controller;
 
@@ -105,13 +105,13 @@ class BarcodeHandler {
       }
 
       if (data.containsKey('error')) {
-        _controller.resumeCamera();
+        _controller?.resumeCamera();
         onBarcodeUnknown(data);
       } else if (data.containsKey('success')) {
-        _controller.resumeCamera();
+        _controller?.resumeCamera();
         onBarcodeMatched(data);
       } else {
-        _controller.resumeCamera();
+        _controller?.resumeCamera();
         onBarcodeUnhandled(data);
       }
     }
@@ -128,7 +128,7 @@ class BarcodeScanHandler extends BarcodeHandler {
   String getOverlayText(BuildContext context) => L10().barcodeScanGeneral;
 
   @override
-  Future<void> onBarcodeUnknown(Map<String, dynamic> data) {
+  Future<void> onBarcodeUnknown(Map<String, dynamic> data) async {
 
     failureTone();
 
@@ -140,8 +140,9 @@ class BarcodeScanHandler extends BarcodeHandler {
   }
 
   @override
-  Future<void> onBarcodeMatched(Map<String, dynamic> data) {
-    int pk;
+  Future<void> onBarcodeMatched(Map<String, dynamic> data) async {
+
+    int pk = -1;
 
     print("Handle barcode:");
     print(data);
@@ -149,16 +150,21 @@ class BarcodeScanHandler extends BarcodeHandler {
     // A stocklocation has been passed?
     if (data.containsKey('stocklocation')) {
 
-      pk = data['stocklocation']['pk'] as int ?? null;
+      pk = (data['stocklocation']?['pk'] ?? -1) as int;
 
-      if (pk != null) {
+      if (pk > 0) {
 
         successTone();
 
-        InvenTreeStockLocation().get(_context, pk).then((var loc) {
+        InvenTreeStockLocation().get(pk).then((var loc) {
           if (loc is InvenTreeStockLocation) {
-            Navigator.of(_context).pop();
-            Navigator.push(_context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(loc)));
+
+            var _ctx = _context;
+
+            if (_ctx != null) {
+              Navigator.of(_ctx).pop();
+              Navigator.push(_ctx, MaterialPageRoute(builder: (context) => LocationDisplayWidget(loc)));
+            }
           }
         });
       } else {
@@ -173,15 +179,24 @@ class BarcodeScanHandler extends BarcodeHandler {
 
     } else if (data.containsKey('stockitem')) {
 
-      pk = data['stockitem']['pk'] as int ?? null;
+      pk = (data['stockitem']?['pk'] ?? -1) as int;
 
-      if (pk != null) {
+      if (pk > 0) {
 
         successTone();
 
-        InvenTreeStockItem().get(_context, pk).then((var item) {
-          Navigator.of(_context).pop();
-          Navigator.push(_context, MaterialPageRoute(builder: (context) => StockDetailWidget(item)));
+        InvenTreeStockItem().get(pk).then((var item) {
+
+          var _ctx = _context;
+
+          if (_ctx != null) {
+            // Dispose of the barcode scanner
+            Navigator.of(_ctx).pop();
+
+            if (item is InvenTreeStockItem) {
+              Navigator.push(_ctx, MaterialPageRoute(builder: (context) => StockDetailWidget(item)));
+            }
+          }
         });
       } else {
 
@@ -194,15 +209,24 @@ class BarcodeScanHandler extends BarcodeHandler {
       }
     } else if (data.containsKey('part')) {
 
-      pk = data['part']['pk'] as int ?? null;
+      pk = (data['part']?['pk'] ?? -1) as int;
 
-      if (pk != null) {
+      if (pk > 0) {
 
         successTone();
 
-        InvenTreePart().get(_context, pk).then((var part) {
-          Navigator.of(_context).pop();
-          Navigator.push(_context, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
+        InvenTreePart().get(pk).then((var part) {
+
+          var _ctx = _context;
+
+          if (_ctx != null) {
+            // Dismiss the barcode scanner
+            Navigator.of(_ctx).pop();
+
+            if (part is InvenTreePart) {
+              Navigator.push(_ctx, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
+            }
+          }
         });
       } else {
 
@@ -221,8 +245,11 @@ class BarcodeScanHandler extends BarcodeHandler {
         L10().barcodeUnknown,
         success: false,
         onAction: () {
+
+          var _ctx = OneContext().context;
+
           showDialog(
-              context: _context,
+              context: _ctx,
               builder: (BuildContext context) => SimpleDialog(
                 title: Text(L10().unknownResponse),
                 children: <Widget>[
@@ -257,7 +284,7 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
   String getOverlayText(BuildContext context) => L10().barcodeScanAssign;
 
   @override
-  Future<void> onBarcodeMatched(Map<String, dynamic> data) {
+  Future<void> onBarcodeMatched(Map<String, dynamic> data) async {
 
     failureTone();
 
@@ -270,7 +297,7 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
   }
 
   @override
-  Future<void> onBarcodeUnknown(Map<String, dynamic> data) {
+  Future<void> onBarcodeUnknown(Map<String, dynamic> data) async {
     // If the barcode is unknown, we *can* assign it to the stock item!
 
     if (!data.containsKey("hash")) {
@@ -282,7 +309,6 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
 
       // Send the 'hash' code as the UID for the stock item
       item.update(
-        _context,
         values: {
           "uid": data['hash'],
         }
@@ -292,8 +318,13 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
           failureTone();
 
           // Close the barcode scanner
-          _controller.dispose();
-          Navigator.of(_context).pop();
+          _controller?.dispose();
+
+          var _ctx = (_context);
+
+          if (_ctx != null) {
+            Navigator.of(_ctx).pop();
+          }
 
           showSnackIcon(
             L10().barcodeAssigned,
@@ -350,8 +381,13 @@ class StockItemScanIntoLocationHandler extends BarcodeHandler {
         successTone();
 
         // Close the scanner
-        _controller.dispose();
-        Navigator.of(_context).pop();
+        _controller?.dispose();
+
+        var _ctx = _context;
+
+        if (_ctx != null) {
+          Navigator.of(_ctx).pop();
+        }
 
         showSnackIcon(
           L10().barcodeScanIntoLocationSuccess,
@@ -403,7 +439,7 @@ class StockLocationScanInItemsHandler extends BarcodeHandler {
 
       int item_id = data['stockitem']['pk'] as int;
 
-      final InvenTreeStockItem item = await InvenTreeStockItem().get(_context, item_id);
+      final InvenTreeStockItem? item = await InvenTreeStockItem().get(item_id) as InvenTreeStockItem;
 
       if (item == null) {
 
@@ -459,7 +495,7 @@ class InvenTreeQRView extends StatefulWidget {
 
   final BarcodeHandler _handler;
 
-  InvenTreeQRView(this._handler, {Key key}) : super(key: key);
+  InvenTreeQRView(this._handler, {Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _QRViewState(_handler);
@@ -468,11 +504,11 @@ class InvenTreeQRView extends StatefulWidget {
 
 class _QRViewState extends State<InvenTreeQRView> {
 
-  QRViewController _controller;
+  QRViewController? _controller;
 
   final BarcodeHandler _handler;
 
-  BuildContext context;
+  BuildContext? _context;
 
   // In order to get hot reload to work we need to pause the camera if the platform
   // is android, or resume the camera if the platform is iOS.
@@ -480,9 +516,9 @@ class _QRViewState extends State<InvenTreeQRView> {
   void reassemble() {
     super.reassemble();
     if (Platform.isAndroid) {
-      _controller.pauseCamera();
+      _controller?.pauseCamera();
     } else if (Platform.isIOS) {
-      _controller.resumeCamera();
+      _controller?.resumeCamera();
     }
   }
 
@@ -494,7 +530,7 @@ class _QRViewState extends State<InvenTreeQRView> {
     _controller = controller;
     controller.scannedDataStream.listen((barcode) {
       _controller?.pauseCamera();
-      _handler.processBarcode(context, _controller, barcode.code);
+      _handler.processBarcode(_context, _controller, barcode.code);
     });
   }
 
@@ -508,7 +544,7 @@ class _QRViewState extends State<InvenTreeQRView> {
   Widget build(BuildContext context) {
 
     // Save the context for later on!
-    this.context = context;
+    this._context = context;
 
     return Scaffold(
         body: Stack(

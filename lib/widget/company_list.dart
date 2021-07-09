@@ -11,8 +11,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 abstract class CompanyListWidget extends StatefulWidget {
 
-  String title;
-  Map<String, String> filters;
+  String title = "";
+  Map<String, String> filters = {};
 
   @override
   _CompanyListState createState() => _CompanyListState(title, filters);
@@ -39,9 +39,9 @@ class CustomerListWidget extends CompanyListWidget {
 
 class _CompanyListState extends RefreshableState<CompanyListWidget> {
 
-  var _companies = new List<InvenTreeCompany>();
+  var _companies = new List<InvenTreeCompany>.empty();
 
-  var _filteredCompanies = new List<InvenTreeCompany>();
+  var _filteredCompanies = new List<InvenTreeCompany>.empty();
 
   String _title = "Companies";
 
@@ -58,9 +58,9 @@ class _CompanyListState extends RefreshableState<CompanyListWidget> {
   }
 
   @override
-  Future<void> request(BuildContext context) async {
+  Future<void> request() async {
 
-    await InvenTreeCompany().list(context, filters: _filters).then((var companies) {
+    await InvenTreeCompany().list(filters: _filters).then((var companies) {
 
       _companies.clear();
 
@@ -96,8 +96,10 @@ class _CompanyListState extends RefreshableState<CompanyListWidget> {
         leading: InvenTreeAPI().getImage(company.image),
         onTap: () {
           if (company.pk > 0) {
-            InvenTreeCompany().get(context, company.pk).then((var c) {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyDetailWidget(c)));
+            InvenTreeCompany().get(company.pk).then((var c) {
+              if (c != null && c is InvenTreeCompany) {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyDetailWidget(c)));
+              }
             });
           }
         },

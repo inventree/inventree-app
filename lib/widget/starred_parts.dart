@@ -14,7 +14,7 @@ import '../api.dart';
 
 class StarredPartWidget extends StatefulWidget {
 
-  StarredPartWidget({Key key}) : super(key: key);
+  StarredPartWidget({Key? key}) : super(key: key);
 
   @override
   _StarredPartState createState() => _StarredPartState();
@@ -29,15 +29,17 @@ class _StarredPartState extends RefreshableState<StarredPartWidget> {
   String getAppBarTitle(BuildContext context) => L10().partsStarred;
 
   @override
-  Future<void> request(BuildContext context) async {
+  Future<void> request() async {
 
-    final parts = await InvenTreePart().list(context, filters: {"starred": "true"});
+    final parts = await InvenTreePart().list(filters: {"starred": "true"});
 
     starredParts.clear();
 
-    for (int idx = 0; idx < parts.length; idx++) {
-      if (parts[idx] is InvenTreePart) {
-        starredParts.add(parts[idx]);
+    if (parts != null) {
+      for (int idx = 0; idx < parts.length; idx++) {
+        if (parts[idx] is InvenTreePart) {
+          starredParts.add(parts[idx] as InvenTreePart);
+        }
       }
     }
   }
@@ -54,7 +56,7 @@ class _StarredPartState extends RefreshableState<StarredPartWidget> {
             height: 40
         ),
         onTap: () {
-          InvenTreePart().get(context, part.pk).then((var prt) {
+          InvenTreePart().get(part.pk).then((var prt) {
             if (prt is InvenTreePart) {
               Navigator.push(
                   context,
