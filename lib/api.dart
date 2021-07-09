@@ -37,13 +37,15 @@ class InvenTreeFileService extends FileService {
 
   @override
   Future<FileServiceResponse> get(String url,
-      {Map<String, String> headers = const {}}) async {
+      {Map<String, String>? headers}) async {
     final Uri resolved = Uri.base.resolve(url);
     final HttpClientRequest req = await _client!.getUrl(resolved);
 
-    headers.forEach((key, value) {
-      req.headers.add(key, value);
-    });
+    if (headers != null) {
+      headers.forEach((key, value) {
+        req.headers.add(key, value);
+      });
+    }
 
     final HttpClientResponse httpResponse = await req.close();
     final http.StreamedResponse _response = http.StreamedResponse(
@@ -458,7 +460,7 @@ class InvenTreeAPI {
           error.toString(),
         );
       } else if (error is TimeoutException) {
-        showTimeoutError(ctx);
+        showTimeoutError();
       } else {
         showServerError(
           L10().serverError,
@@ -499,7 +501,7 @@ class InvenTreeAPI {
             error.toString()
         );
       } else if (error is TimeoutException) {
-        showTimeoutError(ctx);
+        showTimeoutError();
       } else {
         showServerError(
             L10().serverError,
@@ -587,7 +589,7 @@ class InvenTreeAPI {
           error.toString()
         );
       } else if (error is TimeoutException) {
-        showTimeoutError(ctx);
+        showTimeoutError();
       } else {
         showServerError(
         L10().serverError,
@@ -718,7 +720,7 @@ class InvenTreeAPI {
     }
 
     // Open a connection
-    HttpClientRequest request = await client.getUrl(uri)
+    HttpClientRequest? request = await client.getUrl(uri)
         .timeout(Duration(seconds: 10))
         .catchError((error) {
       print("GET request returned error");
@@ -733,7 +735,7 @@ class InvenTreeAPI {
             error.toString()
         );
       } else if (error is TimeoutException) {
-        showTimeoutError(ctx);
+        showTimeoutError();
       } else {
         showServerError(
             L10().serverError,
@@ -767,7 +769,7 @@ class InvenTreeAPI {
             error.toString()
         );
       } else if (error is TimeoutException) {
-        showTimeoutError(ctx);
+        showTimeoutError();
       } else {
         showServerError(
             L10().serverError,
