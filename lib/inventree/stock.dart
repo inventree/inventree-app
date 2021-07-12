@@ -459,7 +459,7 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   Future<bool> countStock(BuildContext context, double q, {String? notes}) async {
 
-    final bool result = await adjustStock(context, "/stock/count", q, notes: notes);
+    final bool result = await adjustStock(context, "/stock/count/", q, notes: notes);
 
     return result;
   }
