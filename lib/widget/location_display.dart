@@ -1,6 +1,7 @@
 import 'package:InvenTree/api.dart';
 import 'package:InvenTree/app_settings.dart';
 import 'package:InvenTree/barcode.dart';
+import 'package:InvenTree/inventree/sentry.dart';
 import 'package:InvenTree/inventree/stock.dart';
 import 'package:InvenTree/widget/progress.dart';
 
@@ -497,8 +498,10 @@ class _PaginatedStockListState extends State<PaginatedStockList> {
         resultCount = pageCount;
       });
 
-    } catch (error) {
+    } catch (error, stackTrace) {
       _pagingController.error = error;
+
+      sentryReportError(error, stackTrace);
     }
   }
 

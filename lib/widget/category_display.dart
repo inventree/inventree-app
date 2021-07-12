@@ -2,6 +2,7 @@
 import 'package:InvenTree/api.dart';
 import 'package:InvenTree/app_settings.dart';
 import 'package:InvenTree/inventree/part.dart';
+import 'package:InvenTree/inventree/sentry.dart';
 import 'package:InvenTree/widget/progress.dart';
 
 import 'package:InvenTree/l10.dart';
@@ -437,9 +438,11 @@ class _PaginatedPartListState extends State<PaginatedPartList> {
         resultCount = pageCount;
       });
 
-    } catch (error) {
+    } catch (error, stackTrace) {
       print("Error! - ${error.toString()}");
       _pagingController.error = error;
+
+      sentryReportError(error, stackTrace);
     }
   }
 

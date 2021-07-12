@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:InvenTree/inventree/sentry.dart';
 import 'package:InvenTree/user_profile.dart';
 import 'package:InvenTree/widget/snacks.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,6 +12,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:InvenTree/widget/dialogs.dart';
 import 'package:InvenTree/l10.dart';
+import 'package:InvenTree/inventree/sentry.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:one_context/one_context.dart';
@@ -445,7 +447,7 @@ class InvenTreeAPI {
     // Open a connection to the server
     HttpClientRequest request = await client.patchUrl(uri)
     .timeout(Duration(seconds: 10))
-    .catchError((error) {
+    .catchError((error, stackTrace) {
       print("PATCH request return error");
       print("URL: ${uri}");
       print("Error: ${error.toString()}");
@@ -464,6 +466,8 @@ class InvenTreeAPI {
           L10().serverError,
           error.toString()
         );
+
+        sentryReportError(error, stackTrace);
       }
 
       return null;
@@ -486,7 +490,7 @@ class InvenTreeAPI {
 
     HttpClientResponse response = await request.close()
     .timeout(Duration(seconds: 30))
-    .catchError((error) {
+    .catchError((error, stackTrace) {
       print("PATCH request returned error");
       print("URL: ${_url}");
       print("Error: ${error.toString()}");
@@ -505,6 +509,8 @@ class InvenTreeAPI {
             L10().serverError,
             error.toString()
         );
+
+        sentryReportError(error, stackTrace);
       }
 
       return null;
@@ -574,7 +580,7 @@ class InvenTreeAPI {
     // Open a connection to the server
     HttpClientRequest request = await client.postUrl(uri)
     .timeout(Duration(seconds: 10))
-    .catchError((error) {
+    .catchError((error, stackTrace) {
       print("POST request returned error");
       print("URL: ${uri}");
       print("Error: ${error.toString()}");
@@ -593,6 +599,8 @@ class InvenTreeAPI {
         L10().serverError,
         error.toString()
         );
+
+        sentryReportError(error, stackTrace);
       }
 
       return null;
@@ -612,7 +620,7 @@ class InvenTreeAPI {
 
     HttpClientResponse response = await request.close()
     .timeout(Duration(seconds: 30))
-    .catchError((error) {
+    .catchError((error, stackTrace) {
       print("POST request returned error");
       print("URL: ${_url}");
       print("Error: ${error.toString()}");
@@ -631,6 +639,8 @@ class InvenTreeAPI {
           L10().serverError,
           error.toString()
         );
+
+        sentryReportError(error, stackTrace);
       }
 
       return null;
@@ -729,7 +739,7 @@ class InvenTreeAPI {
       // Open a connection
       request = await client.getUrl(uri)
           .timeout(Duration(seconds: 10))
-          .catchError((error) {
+          .catchError((error, stackTrace) {
         print("GET request returned error");
         print("URL: ${uri}");
         print("Error: ${error.toString()}");
@@ -748,11 +758,13 @@ class InvenTreeAPI {
               L10().serverError,
               error.toString()
           );
+
+          sentryReportError(error, stackTrace);
         }
 
         return null;
       });
-    } catch (error) {
+    } catch (error, stackTrace) {
       if (error is FormatException) {
         showServerError(
           L10().invalidHost,
@@ -768,6 +780,9 @@ class InvenTreeAPI {
           L10().serverError,
           error.toString()
         );
+        
+        // Report to sentry
+        sentryReportError(error, stackTrace);
       }
 
       return null;
@@ -783,7 +798,7 @@ class InvenTreeAPI {
 
     HttpClientResponse response = await request.close()
         .timeout(Duration(seconds: 10))
-        .catchError((error) {
+        .catchError((error, stackTrace) {
       print("GET request returned error");
       print("URL: ${_url}");
       print("Error: ${error.toString()}");
@@ -802,6 +817,8 @@ class InvenTreeAPI {
             L10().serverError,
             error.toString()
         );
+
+        sentryReportError(error, stackTrace);
       }
 
       return null;
