@@ -423,14 +423,12 @@ class InvenTreeAPI {
 
 
   // Perform a PATCH request
-  Future<dynamic> patch(String url, {Map<String, String>? body, int expectedStatusCode=200}) async {
+  Future<dynamic> patch(String url, {Map<String, String> body = const {}, int expectedStatusCode=200}) async {
     var _url = makeApiUrl(url);
     var _body = Map<String, String>();
 
     // Copy across provided data
-    if (body != null) {
-      body.forEach((K, V) => _body[K] = V);
-    }
+    body.forEach((K, V) => _body[K] = V);
 
     print("PATCH: " + _url);
 
@@ -512,17 +510,17 @@ class InvenTreeAPI {
       return null;
     });
 
-    if (response == null) {
-      print("null response from PATCH ${_url}");
-      return null;
-    }
+    var responseData = await responseToJson(response);
 
     if (response.statusCode != expectedStatusCode) {
       showStatusCodeError(response.statusCode);
+
+      print("PATCH to ${_url} returned status code ${response.statusCode}");
+      print("Data:");
+      print(responseData);
+
       return null;
     }
-
-    var responseData = await responseToJson(response);
 
     return responseData;
   }
@@ -558,7 +556,7 @@ class InvenTreeAPI {
    * Perform a HTTP POST request
    * Returns a json object (or null if unsuccessful)
    */
-  Future<dynamic> post(String url, {Map<String, dynamic>? body, int expectedStatusCode=201}) async {
+  Future<dynamic> post(String url, {Map<String, dynamic> body = const {}, int expectedStatusCode=201}) async {
 
     var _url = makeApiUrl(url);
 
@@ -599,10 +597,6 @@ class InvenTreeAPI {
 
       return null;
     });
-
-    if (request == null) {
-      return null;
-    }
 
     var data = json.encode(body);
 
@@ -647,12 +641,17 @@ class InvenTreeAPI {
       return null;
     }
 
+    var responseData = await responseToJson(response);
+
     if (response.statusCode != expectedStatusCode) {
       showStatusCodeError(response.statusCode);
+
+      print("POST to ${_url} returned status code ${response.statusCode}");
+      print("Data:");
+      print(responseData);
+
       return null;
     }
-
-    var responseData = await responseToJson(response);
 
     return responseData;
   }
@@ -690,13 +689,13 @@ class InvenTreeAPI {
    * and return the Response object
    * (or null if the request fails)
    */
-  Future<HttpClientResponse?> getResponse(String url, {Map<String, String>? params}) async {
+  Future<HttpClientResponse?> getResponse(String url, {Map<String, String> params = const {}}) async {
     var _url = makeApiUrl(url);
 
     print("GET: ${_url}");
 
     // If query parameters are supplied, form a query string
-    if (params != null && params.isNotEmpty) {
+    if (params.isNotEmpty) {
       String query = '?';
 
       params.forEach((K, V) => query += K + '=' + V + '&');
@@ -785,10 +784,6 @@ class InvenTreeAPI {
 
   dynamic responseToJson(HttpClientResponse response) async {
 
-    if (response == null) {
-      return null;
-    }
-
     String body = await response.transform(utf8.decoder).join();
 
     try {
@@ -813,7 +808,7 @@ class InvenTreeAPI {
    * Perform a HTTP GET request
    * Returns a json object (or null if did not complete)
    */
-  Future<dynamic> get(String url, {Map<String, String>? params, int expectedStatusCode=200}) async {
+  Future<dynamic> get(String url, {Map<String, String> params = const {}, int expectedStatusCode=200}) async {
 
     var response = await getResponse(url, params: params);
 

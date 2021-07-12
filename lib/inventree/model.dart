@@ -142,11 +142,7 @@ class InvenTreeModel {
 
 
   // Search this Model type in the database
-  Future<List<InvenTreeModel>> search(BuildContext context, String searchTerm, {Map<String, String>? filters}) async {
-
-    if (filters == null) {
-      filters = {};
-    }
+  Future<List<InvenTreeModel>> search(BuildContext context, String searchTerm, {Map<String, String> filters = const {}}) async {
 
     filters["search"] = searchTerm;
 
@@ -178,7 +174,7 @@ class InvenTreeModel {
   }
 
   // POST data to update the model
-  Future<bool> update({Map<String, String>? values}) async {
+  Future<bool> update({Map<String, String> values = const {}}) async {
 
     var addr = path.join(URL, pk.toString());
 
@@ -198,7 +194,7 @@ class InvenTreeModel {
   }
 
   // Return the detail view for the associated pk
-  Future<InvenTreeModel?> get(int pk, {Map<String, String>? filters}) async {
+  Future<InvenTreeModel?> get(int pk, {Map<String, String> filters = const {}}) async {
 
     // TODO - Add "timeout"
     // TODO - Add error catching
@@ -211,11 +207,9 @@ class InvenTreeModel {
 
     var params = defaultGetFilters();
 
-    if (filters != null) {
-      // Override any default values
-      for (String key in filters.keys) {
-        params[key] = filters[key] ?? '';
-      }
+    // Override any default values
+    for (String key in filters.keys) {
+      params[key] = filters[key] ?? '';
     }
 
     print("GET: $url ${params.toString()}");
@@ -250,13 +244,11 @@ class InvenTreeModel {
     return createFromJson(response);
   }
 
-  Future<InvenTreePageResponse?> listPaginated(int limit, int offset, {Map<String, String>? filters = null}) async {
+  Future<InvenTreePageResponse?> listPaginated(int limit, int offset, {Map<String, String> filters = const {}}) async {
     var params = defaultListFilters();
 
-    if (filters != null) {
-      for (String key in filters.keys) {
-        params[key] = filters[key] ?? '';
-      }
+    for (String key in filters.keys) {
+      params[key] = filters[key] ?? '';
     }
 
     params["limit"] = "${limit}";
@@ -288,18 +280,12 @@ class InvenTreeModel {
   }
 
   // Return list of objects from the database, with optional filters
-  Future<List<InvenTreeModel>> list({Map<String, String>? filters}) async {
-
-    if (filters == null) {
-      filters = {};
-    }
+  Future<List<InvenTreeModel>> list({Map<String, String> filters = const {}}) async {
 
     var params = defaultListFilters();
 
-    if (filters != null) {
-      for (String key in filters.keys) {
-        params[key] = filters[key] ?? '';
-      }
+    for (String key in filters.keys) {
+      params[key] = filters[key] ?? '';
     }
 
     print("LIST: $URL ${params.toString()}");

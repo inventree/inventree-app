@@ -27,9 +27,20 @@ class PartSearchDelegate extends SearchDelegate<InvenTreePart?> {
   bool _searching = false;
 
   // Custom filters for the part search
-  Map<String, String> filters = {};
+  Map<String, String> _filters = {};
 
-  PartSearchDelegate(this.context, {this.filters = const {}});
+  PartSearchDelegate(this.context, {Map<String, String> filters = const {}}) {
+
+    // Copy filter values
+    for (String key in filters.keys) {
+
+      String? value = filters[key];
+
+      if (value != null) {
+        _filters[key] = value;
+      }
+    }
+  }
 
   @override
   String get searchFieldLabel => L10().searchParts;
@@ -58,10 +69,9 @@ class PartSearchDelegate extends SearchDelegate<InvenTreePart?> {
 
     showResults(context);
 
-    // Enable cascading part search by default
-    filters["cascade"] = "true";
+    _filters["cascade"] = "true";
 
-    final results = await InvenTreePart().search(context, query, filters: filters);
+    final results = await InvenTreePart().search(context, query, filters: _filters);
 
     partResults.clear();
 
@@ -208,11 +218,18 @@ class StockSearchDelegate extends SearchDelegate<InvenTreeStockItem?> {
   bool _searching = false;
 
   // Custom filters for the stock item search
-  Map<String, String>? filters;
+  Map<String, String> _filters = {};
 
-  StockSearchDelegate(this.context, {this.filters}) {
-    if (filters == null) {
-      filters = {};
+  StockSearchDelegate(this.context, {Map<String, String> filters = const {}}) {
+
+    // Copy filter values
+    for (String key in filters.keys) {
+
+      String? value = filters[key];
+
+      if (value != null) {
+        _filters[key] = value;
+      }
     }
   }
 
@@ -243,12 +260,10 @@ class StockSearchDelegate extends SearchDelegate<InvenTreeStockItem?> {
     showResults(context);
 
     // Enable cascading part search by default
-    if (filters != null) {
-      filters?["cascade"] = "true";
-    }
+    _filters["cascade"] = "true";
 
     final results = await InvenTreeStockItem().search(
-        context, query, filters: filters);
+        context, query, filters: _filters);
 
     itemResults.clear();
 
