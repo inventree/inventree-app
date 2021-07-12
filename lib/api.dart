@@ -525,6 +525,18 @@ class InvenTreeAPI {
       print("Data:");
       print(responseData);
 
+      // Server error
+      if (response.statusCode >= 500) {
+        sentryReportMessage(
+            "Server error on PATCH request",
+            context: {
+              "url": _url,
+              "statusCode": "${response.statusCode}",
+              "data": responseData.toString(),
+            }
+        );
+      }
+
       return null;
     }
 
@@ -659,6 +671,18 @@ class InvenTreeAPI {
       print("POST to ${_url} returned status code ${response.statusCode}");
       print("Data:");
       print(responseData);
+
+      // Server error
+      if (response.statusCode >= 500) {
+        sentryReportMessage(
+          "Server error on POST request",
+          context: {
+            "url": _url,
+            "statusCode": "${response.statusCode}",
+            "data": responseData.toString(),
+          }
+        );
+      }
 
       return null;
     }
@@ -863,15 +887,28 @@ class InvenTreeAPI {
       return null;
     }
 
+    var responseData = await responseToJson(response);
+
     // Check the status code of the response
     if (response.statusCode != expectedStatusCode) {
       showStatusCodeError(response.statusCode);
+
+      // Server error
+      if (response.statusCode >= 500) {
+        sentryReportMessage(
+            "Server error on GET request",
+            context: {
+              "url": url,
+              "statusCode": "${response.statusCode}",
+              "data": responseData.toString(),
+            }
+        );
+      }
+
       return null;
     }
 
-    var data = await responseToJson(response);
-
-    return data;
+    return responseData;
   }
 
   Map<String, String> defaultHeaders() {
