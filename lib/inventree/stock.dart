@@ -138,7 +138,7 @@ class InvenTreeStockItem extends InvenTreeModel {
     // TODO
   }
 
-  List<InvenTreePartTestTemplate> testTemplates = List<InvenTreePartTestTemplate>.empty();
+  List<InvenTreePartTestTemplate> testTemplates = [];
 
   int get testTemplateCount => testTemplates.length;
 
@@ -159,7 +159,7 @@ class InvenTreeStockItem extends InvenTreeModel {
     });
   }
 
-  List<InvenTreeStockItemTestResult> testResults = List<InvenTreeStockItemTestResult>.empty();
+  List<InvenTreeStockItemTestResult> testResults = [];
 
   int get testResultCount => testResults.length;
 

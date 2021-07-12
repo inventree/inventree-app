@@ -149,7 +149,7 @@ class InvenTreePart extends InvenTreeModel {
   }
 
   // Cached list of stock items
-  List<InvenTreeStockItem> stockItems = List<InvenTreeStockItem>.empty();
+  List<InvenTreeStockItem> stockItems = [];
 
   int get stockItemCount => stockItems.length;
 
@@ -175,7 +175,7 @@ class InvenTreePart extends InvenTreeModel {
   int get supplier_count => (jsondata['suppliers'] ?? 0) as int;
 
   // Cached list of test templates
-  List<InvenTreePartTestTemplate> testingTemplates = List<InvenTreePartTestTemplate>.empty();
+  List<InvenTreePartTestTemplate> testingTemplates = [];
 
   int get testTemplateCount => testingTemplates.length;
 
@@ -277,7 +277,7 @@ class InvenTreePart extends InvenTreeModel {
 
       if (fn.isNotEmpty) return fn;
 
-      List<String> elements = List<String>.empty();
+      List<String> elements = [];
 
       if (IPN.isNotEmpty) elements.add(IPN);
 

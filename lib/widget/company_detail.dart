@@ -107,7 +107,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
 
   List<Widget> _companyTiles() {
 
-    var tiles = List<Widget>.empty();
+    List<Widget> tiles = [];
 
     bool sep = false;
 

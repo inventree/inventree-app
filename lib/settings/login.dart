@@ -26,7 +26,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
 
   final GlobalKey<FormState> _addProfileKey = new GlobalKey<FormState>();
 
-  List<UserProfile> profiles = new List<UserProfile>.empty();
+  List<UserProfile> profiles = [];
 
   _InvenTreeLoginSettingsState() {
     _reload();

@@ -130,7 +130,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
   // The local InvenTreePartCategory object
   final InvenTreePartCategory? category;
 
-  List<InvenTreePartCategory> _subcategories = List<InvenTreePartCategory>.empty();
+  List<InvenTreePartCategory> _subcategories = [];
 
   @override
   Future<void> onBuild(BuildContext context) async {

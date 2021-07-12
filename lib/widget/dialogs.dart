@@ -220,7 +220,7 @@ void showFormDialog(String title, {String? acceptText, String? cancelText, Globa
     ];
   }
 
-  var _fields = fields ?? List<Widget>.empty();
+  List<Widget> _fields = fields ?? [];
 
   OneContext().showDialog(
     builder: (BuildContext context) {

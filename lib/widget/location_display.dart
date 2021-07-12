@@ -128,7 +128,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
   _LocationDisplayState(this.location) {}
 
-  List<InvenTreeStockLocation> _sublocations = List<InvenTreeStockLocation>.empty();
+  List<InvenTreeStockLocation> _sublocations = [];
 
   String _locationFilter = '';
 

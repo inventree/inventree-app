@@ -133,7 +133,7 @@ class UserProfileDBManager {
 
     final profiles = await store.find(await _db);
 
-    List<UserProfile> profileList = new List<UserProfile>.empty();
+    List<UserProfile> profileList = [];
 
     for (int idx = 0; idx < profiles.length; idx++) {
 
@@ -158,7 +158,7 @@ class UserProfileDBManager {
 
     final profiles = await store.find(await _db);
 
-    List<UserProfile> profileList = new List<UserProfile>.empty();
+    List<UserProfile> profileList = [];
 
     for (int idx = 0; idx < profiles.length; idx++) {
 

@@ -39,9 +39,9 @@ class CustomerListWidget extends CompanyListWidget {
 
 class _CompanyListState extends RefreshableState<CompanyListWidget> {
 
-  var _companies = new List<InvenTreeCompany>.empty();
+  List<InvenTreeCompany> _companies = [];
 
-  var _filteredCompanies = new List<InvenTreeCompany>.empty();
+  List<InvenTreeCompany> _filteredCompanies = [];
 
   String _title = "Companies";
 

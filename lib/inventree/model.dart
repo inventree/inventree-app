@@ -307,7 +307,7 @@ class InvenTreeModel {
     var response = await api.get(URL, params: params);
 
     // A list of "InvenTreeModel" items
-    List<InvenTreeModel> results = new List<InvenTreeModel>.empty();
+    List<InvenTreeModel> results = [];
 
     if (response == null) {
       return results;

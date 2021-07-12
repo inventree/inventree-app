@@ -296,7 +296,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
                   )
               ),
               suggestionsCallback: (pattern) async {
-                var suggestions = List<InvenTreeStockLocation>.empty();
+                List<InvenTreeStockLocation> suggestions = [];
 
                 for (var loc in locations) {
                   if (loc.matchAgainstString(pattern)) {
