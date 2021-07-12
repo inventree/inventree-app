@@ -866,7 +866,7 @@ class InvenTreeAPI {
    * Load image from the InvenTree server,
    * or from local cache (if it has been cached!)
    */
-  CachedNetworkImage getImage(String imageUrl, {double height = 0, double width = 0}) {
+  CachedNetworkImage getImage(String imageUrl, {double? height, double? width}) {
     if (imageUrl.isEmpty) {
       imageUrl = staticImage;
     }
