@@ -184,6 +184,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
         ListTile(
           title: Text("${location!.name}"),
           subtitle: Text("${location!.description}"),
+          trailing: Text("${location!.itemcount}"),
         ),
       ];
 
