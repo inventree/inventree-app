@@ -13,7 +13,7 @@ class CompanyDetailWidget extends StatefulWidget {
 
   final InvenTreeCompany company;
 
-  CompanyDetailWidget(this.company, {Key key}) : super(key: key);
+  CompanyDetailWidget(this.company, {Key? key}) : super(key: key);
 
   @override
   _CompanyDetailState createState() => _CompanyDetailState(company);
@@ -31,8 +31,8 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
   String getAppBarTitle(BuildContext context) => L10().company;
 
   @override
-  Future<void> request(BuildContext context) async {
-    await company.reload(context);
+  Future<void> request() async {
+    await company.reload();
   }
 
   _CompanyDetailState(this.company) {
@@ -42,7 +42,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
   void _saveCompany(Map<String, String> values) async {
     Navigator.of(context).pop();
 
-    var response = await company.update(context, values: values);
+    var response = await company.update(values: values);
 
     refresh();
   }
@@ -66,8 +66,8 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
           FlatButton(
             child: Text(L10().save),
             onPressed: () {
-              if (_editCompanyKey.currentState.validate()) {
-                _editCompanyKey.currentState.save();
+              if (_editCompanyKey.currentState!.validate()) {
+                _editCompanyKey.currentState!.save();
 
                 _saveCompany({
                   "name": _name,
@@ -107,7 +107,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
 
   List<Widget> _companyTiles() {
 
-    var tiles = List<Widget>();
+    List<Widget> tiles = [];
 
     bool sep = false;
 

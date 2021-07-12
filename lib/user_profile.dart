@@ -9,32 +9,32 @@ class UserProfile {
 
   UserProfile({
     this.key,
-    this.name,
-    this.server,
-    this.username,
-    this.password,
-    this.selected,
+    this.name = "",
+    this.server = "",
+    this.username = "",
+    this.password = "",
+    this.selected = false,
   });
 
   // ID of the profile
-  int key;
+  int? key;
 
   // Name of the user profile
-  String name;
+  String name = "";
 
   // Base address of the InvenTree server
-  String server;
+  String server = "";
 
   // Username
-  String username;
+  String username = "";
 
   // Password
-  String password;
+  String password = "";
 
   bool selected = false;
 
   // User ID (will be provided by the server on log-in)
-  int user_id;
+  int user_id = -1;
 
   factory UserProfile.fromJson(int key, Map<String, dynamic> json, bool isSelected) => UserProfile(
     key: key,
@@ -122,7 +122,7 @@ class UserProfileDBManager {
     print("Deleted user profile <${profile.key}> - '${profile.name}'");
   }
 
-  Future<UserProfile> getSelectedProfile() async {
+  Future<UserProfile?> getSelectedProfile() async {
     /*
      * Return the currently selected profile.
      *
@@ -133,7 +133,7 @@ class UserProfileDBManager {
 
     final profiles = await store.find(await _db);
 
-    List<UserProfile> profileList = new List<UserProfile>();
+    List<UserProfile> profileList = [];
 
     for (int idx = 0; idx < profiles.length; idx++) {
 
@@ -158,7 +158,7 @@ class UserProfileDBManager {
 
     final profiles = await store.find(await _db);
 
-    List<UserProfile> profileList = new List<UserProfile>();
+    List<UserProfile> profileList = [];
 
     for (int idx = 0; idx < profiles.length; idx++) {
 

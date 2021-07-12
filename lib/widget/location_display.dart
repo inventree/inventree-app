@@ -1,6 +1,7 @@
 import 'package:InvenTree/api.dart';
 import 'package:InvenTree/app_settings.dart';
 import 'package:InvenTree/barcode.dart';
+import 'package:InvenTree/inventree/sentry.dart';
 import 'package:InvenTree/inventree/stock.dart';
 import 'package:InvenTree/widget/progress.dart';
 
@@ -20,11 +21,11 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class LocationDisplayWidget extends StatefulWidget {
 
-  LocationDisplayWidget(this.location, {Key key}) : super(key: key);
+  LocationDisplayWidget(this.location, {Key? key}) : super(key: key);
 
-  final InvenTreeStockLocation location;
+  final InvenTreeStockLocation? location;
 
-  final String title = "Location";
+  final String title = L10().stockLocation;
 
   @override
   _LocationDisplayState createState() => _LocationDisplayState(location);
@@ -32,12 +33,12 @@ class LocationDisplayWidget extends StatefulWidget {
 
 class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
-  final InvenTreeStockLocation location;
+  final InvenTreeStockLocation? location;
 
   final _editLocationKey = GlobalKey<FormState>();
 
   @override
-  String getAppBarTitle(BuildContext context) { return "Stock Location"; }
+  String getAppBarTitle(BuildContext context) { return L10().stockLocation; }
 
   @override
   List<Widget> getAppBarActions(BuildContext context) {
@@ -80,12 +81,16 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
   void _editLocation(Map<String, String> values) async {
 
-    final bool result = await location.update(context, values: values);
+    bool result = false;
 
-    showSnackIcon(
-      result ? "Location edited" : "Location editing failed",
-      success: result
-    );
+    if (location != null) {
+      result = await location!.update(values: values);
+
+      showSnackIcon(
+          result ? "Location edited" : "Location editing failed",
+          success: result
+      );
+    }
 
     refresh();
   }
@@ -94,6 +99,10 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     // Values which an be edited
     var _name;
     var _description;
+
+    if (location == null) {
+      return;
+    }
 
     showFormDialog(L10().editLocation,
       key: _editLocationKey,
@@ -106,12 +115,12 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       fields: <Widget> [
         StringField(
           label: L10().name,
-          initial: location.name,
+          initial: location?.name ?? '',
           onSaved: (value) => _name = value,
         ),
         StringField(
           label: L10().description,
-          initial: location.description,
+          initial: location?.description ?? '',
           onSaved: (value) => _description = value,
         )
       ]
@@ -120,7 +129,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
   _LocationDisplayState(this.location) {}
 
-  List<InvenTreeStockLocation> _sublocations = List<InvenTreeStockLocation>();
+  List<InvenTreeStockLocation> _sublocations = [];
 
   String _locationFilter = '';
 
@@ -139,17 +148,17 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
   }
 
   @override
-  Future<void> request(BuildContext context) async {
+  Future<void> request() async {
 
     int pk = location?.pk ?? -1;
 
     // Reload location information
     if (location != null) {
-      await location.reload(context);
+      await location?.reload();
     }
 
     // Request a list of sub-locations under this one
-    await InvenTreeStockLocation().list(context, filters: {"parent": "$pk"}).then((var locs) {
+    await InvenTreeStockLocation().list(filters: {"parent": "$pk"}).then((var locs) {
       _sublocations.clear();
 
       for (var loc in locs) {
@@ -173,8 +182,9 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
       List<Widget> children = [
         ListTile(
-          title: Text("${location.name}"),
-          subtitle: Text("${location.description}"),
+          title: Text("${location!.name}"),
+          subtitle: Text("${location!.description}"),
+          trailing: Text("${location!.itemcount}"),
         ),
       ];
 
@@ -182,13 +192,17 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
         children.add(
             ListTile(
               title: Text(L10().parentCategory),
-              subtitle: Text("${location.parentpathstring}"),
+              subtitle: Text("${location!.parentpathstring}"),
               leading: FaIcon(FontAwesomeIcons.levelUpAlt),
               onTap: () {
-                if (location.parentId < 0) {
+
+                int parent = location?.parentId ?? -1;
+
+                if (parent < 0) {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(null)));
                 } else {
-                  InvenTreeStockLocation().get(context, location.parentId).then((var loc) {
+
+                  InvenTreeStockLocation().get(parent).then((var loc) {
                     if (loc is InvenTreeStockLocation) {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(loc)));
                     }
@@ -238,7 +252,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     Map<String, String> filters = {};
 
     if (location != null) {
-      filters["location"] = "${location.pk}";
+      filters["location"] = "${location!.pk}";
     }
 
     switch (index) {
@@ -256,7 +270,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
           ).toList()
         );
       default:
-        return null;
+        return ListView();
     }
   }
 
@@ -297,7 +311,7 @@ List<Widget> detailTiles() {
     List<Widget> tiles = [];
 
     tiles.add(locationDescriptionCard(includeActions: false));
-    
+
     if (location != null) {
       // Stock adjustment actions
       if (InvenTreeAPI().checkPermission('stock', 'change')) {
@@ -308,14 +322,19 @@ List<Widget> detailTiles() {
               leading: FaIcon(FontAwesomeIcons.exchangeAlt),
               trailing: FaIcon(FontAwesomeIcons.qrcode),
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) =>
-                        InvenTreeQRView(
-                            StockLocationScanInItemsHandler(location)))
-                ).then((context) {
-                  refresh();
-                });
+
+                var _loc = location;
+
+                if (_loc != null) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) =>
+                          InvenTreeQRView(
+                              StockLocationScanInItemsHandler(_loc)))
+                  ).then((context) {
+                    refresh();
+                  });
+                }
               },
             )
         );
@@ -361,7 +380,7 @@ class SublocationList extends StatelessWidget {
 
   void _openLocation(BuildContext context, int pk) {
 
-    InvenTreeStockLocation().get(context, pk).then((var loc) {
+    InvenTreeStockLocation().get(pk).then((var loc) {
       if (loc is InvenTreeStockLocation) {
 
         Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(loc)));
@@ -452,35 +471,43 @@ class _PaginatedStockListState extends State<PaginatedStockList> {
       params["cascade"] = "${cascade}";
 
       final page = await InvenTreeStockItem().listPaginated(_pageSize, pageKey, filters: params);
-      final isLastPage = page.length < _pageSize;
+
+      int pageLength = page?.length ?? 0;
+      int pageCount = page?.count ?? 0;
+
+      final isLastPage = pageLength < _pageSize;
 
       // Construct a list of stock item objects
       List<InvenTreeStockItem> items = [];
 
-      for (var result in page.results) {
-        if (result is InvenTreeStockItem) {
-          items.add(result);
+      if (page != null) {
+        for (var result in page.results) {
+          if (result is InvenTreeStockItem) {
+            items.add(result);
+          }
         }
       }
 
       if (isLastPage) {
         _pagingController.appendLastPage(items);
       } else {
-        final int nextPageKey = pageKey + page.length;
+        final int nextPageKey = pageKey + pageLength;
         _pagingController.appendPage(items, nextPageKey);
       }
 
       setState(() {
-        resultCount = page.count;
+        resultCount = pageCount;
       });
 
-    } catch (error) {
+    } catch (error, stackTrace) {
       _pagingController.error = error;
+
+      sentryReportError(error, stackTrace);
     }
   }
 
   void _openItem(BuildContext context, int pk) {
-    InvenTreeStockItem().get(context, pk).then((var item) {
+    InvenTreeStockItem().get(pk).then((var item) {
       if (item is InvenTreeStockItem) {
         Navigator.push(context, MaterialPageRoute(builder: (context) => StockDetailWidget(item)));
       }

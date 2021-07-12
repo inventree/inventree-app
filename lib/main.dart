@@ -52,7 +52,7 @@ class InvenTreeApp extends StatelessWidget {
     return MaterialApp(
       builder: OneContext().builder,
       navigatorKey: OneContext().key,
-      onGenerateTitle: (BuildContext context) => I18N.of(context).appTitle,
+      onGenerateTitle: (BuildContext context) => I18N.of(context)!.appTitle,
       theme: ThemeData(
         primarySwatch: Colors.lightBlue,
         secondaryHeaderColor: Colors.blueGrey,

@@ -22,7 +22,7 @@ import 'location_display.dart';
 
 class PartDetailWidget extends StatefulWidget {
 
-  PartDetailWidget(this.part, {Key key}) : super(key: key);
+  PartDetailWidget(this.part, {Key? key}) : super(key: key);
 
   final InvenTreePart part;
 
@@ -87,22 +87,22 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   }
 
   @override
-  Future<void> request(BuildContext context) async {
-    await part.reload(context);
-    await part.getTestTemplates(context);
+  Future<void> request() async {
+    await part.reload();
+    await part.getTestTemplates();
   }
 
   void _toggleStar() async {
 
     if (InvenTreeAPI().checkPermission('part', 'view')) {
-      await part.update(context, values: {"starred": "${!part.starred}"});
+      await part.update(values: {"starred": "${!part.starred}"});
       refresh();
     }
   }
 
   void _savePart(Map<String, String> values) async {
 
-    final bool result = await part.update(context, values: values);
+    final bool result = await part.update(values: values);
 
     if (result) {
       showSnackIcon(L10().partEdited, success: true);
@@ -121,7 +121,11 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
    * Upload image for this Part.
    * Show a SnackBar with upload result.
    */
-  void _uploadImage(File image) async {
+  void _uploadImage(File? image) async {
+
+    if (image == null) {
+      return;
+    }
 
     final result = await part.uploadImage(image);
 
@@ -143,7 +147,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   void _selectImage() {
 
-    File _attachment;
+    File? _attachment;
 
     if (!InvenTreeAPI().checkPermission('part', 'change')) {
       return;
@@ -261,7 +265,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     }
 
     // Category information
-    if (part.categoryName != null && part.categoryName.isNotEmpty) {
+    if (part.categoryName.isNotEmpty) {
       tiles.add(
         ListTile(
             title: Text(L10().partCategory),
@@ -269,9 +273,12 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
             leading: FaIcon(FontAwesomeIcons.sitemap),
             onTap: () {
               if (part.categoryId > 0) {
-                InvenTreePartCategory().get(context, part.categoryId).then((var cat) {
-                  Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => CategoryDisplayWidget(cat)));
+                InvenTreePartCategory().get(part.categoryId).then((var cat) {
+
+                  if (cat is InvenTreePartCategory) {
+                    Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => CategoryDisplayWidget(cat)));
+                  }
                 });
               }
             },
@@ -499,7 +506,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           )
         );
       default:
-        return null;
+        return Center();
     }
   }
 

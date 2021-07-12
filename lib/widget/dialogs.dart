@@ -8,15 +8,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:InvenTree/l10.dart';
 import 'package:one_context/one_context.dart';
 
-Future<void> confirmationDialog(String title, String text, {String acceptText, String rejectText, Function onAccept, Function onReject}) async {
+Future<void> confirmationDialog(String title, String text, {String? acceptText, String? rejectText, Function? onAccept, Function? onReject}) async {
 
-  if (acceptText == null || acceptText.isEmpty) {
-    acceptText = L10().ok;
-  }
-
-  if (rejectText == null || rejectText.isEmpty) {
-    rejectText = L10().cancel;
-  }
+  String _accept = acceptText ?? L10().ok;
+  String _reject = rejectText ?? L10().cancel;
 
   OneContext().showDialog(
     builder: (BuildContext context) {
@@ -28,7 +23,7 @@ Future<void> confirmationDialog(String title, String text, {String acceptText, S
         content: Text(text),
         actions: [
           FlatButton(
-            child: Text(rejectText),
+            child: Text(_reject),
             onPressed: () {
               // Close this dialog
               Navigator.pop(context);
@@ -39,7 +34,7 @@ Future<void> confirmationDialog(String title, String text, {String acceptText, S
             }
           ),
           FlatButton(
-            child: Text(acceptText),
+            child: Text(_accept),
             onPressed: () {
               // Close this dialog
               Navigator.pop(context);
@@ -56,17 +51,14 @@ Future<void> confirmationDialog(String title, String text, {String acceptText, S
 }
 
 
-Future<void> showInfoDialog(BuildContext context, String title, String description, {IconData icon = FontAwesomeIcons.info, String info, Function onDismissed}) async {
+Future<void> showInfoDialog(String title, String description, {IconData icon = FontAwesomeIcons.info, String? info, Function()? onDismissed}) async {
 
-  if (info == null || info.isEmpty) {
-    info = L10().info;
-  }
+  String _info = info ?? L10().info;
 
-  showDialog(
-    context: context,
+  OneContext().showDialog(
     builder: (BuildContext context) => SimpleDialog(
       title: ListTile(
-        title: Text(info),
+        title: Text(_info),
         leading: FaIcon(icon),
       ),
       children: <Widget>[
@@ -83,16 +75,14 @@ Future<void> showInfoDialog(BuildContext context, String title, String descripti
   });
 }
 
-Future<void> showErrorDialog(String title, String description, {IconData icon = FontAwesomeIcons.exclamationCircle, String error, Function onDismissed}) async {
+Future<void> showErrorDialog(String title, String description, {IconData icon = FontAwesomeIcons.exclamationCircle, String? error, Function? onDismissed}) async {
 
-  if (error == null || error.isEmpty) {
-    error = L10().error;
-  }
+  String _error = error ?? L10().error;
 
   OneContext().showDialog(
     builder: (context) => SimpleDialog(
       title: ListTile(
-        title: Text(error),
+        title: Text(_error),
         leading: FaIcon(icon),
       ),
       children: [
@@ -111,7 +101,7 @@ Future<void> showErrorDialog(String title, String description, {IconData icon = 
 
 Future<void> showServerError(String title, String description) async {
 
-  if (title == null || title.isEmpty) {
+  if (title.isEmpty) {
     title = L10().serverError;
   }
 
@@ -139,8 +129,6 @@ Future<void> showServerError(String title, String description) async {
 }
 
 Future<void> showStatusCodeError(int status, {int expected = 200}) async {
-
-  BuildContext ctx = OneContext().context;
 
   String msg = L10().responseInvalid;
   String extra = "Server responded with status code ${status}";
@@ -174,7 +162,7 @@ Future<void> showStatusCodeError(int status, {int expected = 200}) async {
   );
 }
 
-Future<void> showTimeoutError(BuildContext context) async {
+Future<void> showTimeoutError() async {
 
   // Use OneContext as "sometimes" context is null here?
   var ctx = OneContext().context;
@@ -182,48 +170,57 @@ Future<void> showTimeoutError(BuildContext context) async {
   await showServerError(L10().timeout, L10().noResponse);
 }
 
-void showFormDialog(String title, {String acceptText, String cancelText, GlobalKey<FormState> key, List<Widget> fields, List<Widget> actions, Function callback}) {
+void showFormDialog(String title, {String? acceptText, String? cancelText, GlobalKey<FormState>? key, List<Widget>? fields, List<Widget>? actions, Function? callback}) {
 
-  BuildContext dialogContext;
+  BuildContext? dialogContext;
 
   var ctx = OneContext().context;
 
-  if (acceptText == null) {
-    acceptText = L10().save;
-  }
-
-  if (cancelText == null) {
-    cancelText = L10().cancel;
-  }
+  String _accept = acceptText ?? L10().save;
+  String _cancel = cancelText ?? L10().cancel;
 
   // Undefined actions = OK + Cancel
   if (actions == null) {
     actions = <Widget>[
       FlatButton(
-        child: Text(cancelText),
+        child: Text(_cancel),
         onPressed: () {
           // Close the form
-          Navigator.pop(dialogContext);
+          var _ctx = dialogContext;
+          if (_ctx != null) {
+            Navigator.pop(_ctx);
+          }
         }
       ),
       FlatButton(
-        child: Text(acceptText),
+        child: Text(_accept),
         onPressed: () {
-          if (key.currentState.validate()) {
-            key.currentState.save();
 
-            // Close the dialog
-            Navigator.pop(dialogContext);
+          var _key = key;
 
-            // Callback
-            if (callback != null) {
-              callback();
+          if (_key != null && _key.currentState != null) {
+            if (_key.currentState!.validate()) {
+              _key.currentState!.save();
+
+              // Close the dialog
+              var _ctx = dialogContext;
+
+              if (_ctx != null) {
+                Navigator.pop(_ctx);
+              }
+
+              // Callback
+              if (callback != null) {
+                callback();
+              }
             }
           }
         }
       )
     ];
   }
+
+  List<Widget> _fields = fields ?? [];
 
   OneContext().showDialog(
     builder: (BuildContext context) {
@@ -238,7 +235,7 @@ void showFormDialog(String title, {String acceptText, String cancelText, GlobalK
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: fields
+                      children: _fields
                   )
               )
           )

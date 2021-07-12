@@ -2,6 +2,7 @@
 import 'package:InvenTree/api.dart';
 import 'package:InvenTree/app_settings.dart';
 import 'package:InvenTree/inventree/part.dart';
+import 'package:InvenTree/inventree/sentry.dart';
 import 'package:InvenTree/widget/progress.dart';
 
 import 'package:InvenTree/l10.dart';
@@ -23,9 +24,9 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class CategoryDisplayWidget extends StatefulWidget {
 
-  CategoryDisplayWidget(this.category, {Key key}) : super(key: key);
+  CategoryDisplayWidget(this.category, {Key? key}) : super(key: key);
 
-  final InvenTreePartCategory category;
+  final InvenTreePartCategory? category;
 
   @override
   _CategoryDisplayState createState() => _CategoryDisplayState(category);
@@ -81,7 +82,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
   void _editCategory(Map<String, String> values) async {
 
-    final bool result = await category.update(context, values: values);
+    final bool result = await category!.update(values: values);
 
     showSnackIcon(
       result ? "Category edited" : "Category editing failed",
@@ -92,6 +93,11 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
   }
 
   void _editCategoryDialog() {
+
+    // Cannot edit top-level category
+    if (category == null) {
+      return;
+    }
 
     var _name;
     var _description;
@@ -108,12 +114,12 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
       fields: <Widget>[
         StringField(
           label: L10().name,
-          initial: category.name,
+          initial: category?.name,
           onSaved: (value) => _name = value
         ),
         StringField(
           label: L10().description,
-          initial: category.description,
+          initial: category?.description,
           onSaved: (value) => _description = value
         )
       ]
@@ -123,9 +129,9 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
   _CategoryDisplayState(this.category) {}
 
   // The local InvenTreePartCategory object
-  final InvenTreePartCategory category;
+  final InvenTreePartCategory? category;
 
-  List<InvenTreePartCategory> _subcategories = List<InvenTreePartCategory>();
+  List<InvenTreePartCategory> _subcategories = [];
 
   @override
   Future<void> onBuild(BuildContext context) async {
@@ -133,17 +139,17 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
   }
 
   @override
-  Future<void> request(BuildContext context) async {
+  Future<void> request() async {
 
     int pk = category?.pk ?? -1;
 
     // Update the category
     if (category != null) {
-      await category.reload(context);
+      await category!.reload();
     }
 
     // Request a list of sub-categories under this one
-    await InvenTreePartCategory().list(context, filters: {"parent": "$pk"}).then((var cats) {
+    await InvenTreePartCategory().list(filters: {"parent": "$pk"}).then((var cats) {
       _subcategories.clear();
 
       for (var cat in cats) {
@@ -168,10 +174,10 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
       List<Widget> children = [
         ListTile(
-          title: Text("${category.name}",
+          title: Text("${category?.name}",
               style: TextStyle(fontWeight: FontWeight.bold)
           ),
-          subtitle: Text("${category.description}"),
+          subtitle: Text("${category?.description}"),
         ),
       ];
 
@@ -179,14 +185,14 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
         children.add(
             ListTile(
               title: Text(L10().parentCategory),
-              subtitle: Text("${category.parentpathstring}"),
+              subtitle: Text("${category?.parentpathstring}"),
               leading: FaIcon(FontAwesomeIcons.levelUpAlt),
               onTap: () {
-                if (category.parentId < 0) {
+                if (category == null || ((category?.parentId ?? 0) < 0)) {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));
                 } else {
                   // TODO - Refactor this code into the InvenTreePart class
-                  InvenTreePartCategory().get(context, category.parentId).then((var cat) {
+                  InvenTreePartCategory().get(category?.parentId ?? -1).then((var cat) {
                     if (cat is InvenTreePartCategory) {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(cat)));
                     }
@@ -290,6 +296,8 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
         return ListView(
           children: actionTiles()
         );
+      default:
+        return ListView();
     }
   }
 }
@@ -306,7 +314,7 @@ class SubcategoryList extends StatelessWidget {
   void _openCategory(BuildContext context, int pk) {
 
     // Attempt to load the sub-category.
-    InvenTreePartCategory().get(context, pk).then((var cat) {
+    InvenTreePartCategory().get(pk).then((var cat) {
       if (cat is InvenTreePartCategory) {
 
         Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(cat)));
@@ -348,7 +356,7 @@ class PaginatedPartList extends StatefulWidget {
 
   final Map<String, String> filters;
 
-  Function onTotalChanged;
+  Function(int)? onTotalChanged;
 
   PaginatedPartList(this.filters, {this.onTotalChanged});
 
@@ -363,7 +371,7 @@ class _PaginatedPartListState extends State<PaginatedPartList> {
 
   String _searchTerm = "";
 
-  Function onTotalChanged;
+  Function(int)? onTotalChanged;
 
   final Map<String, String> filters;
 
@@ -393,21 +401,21 @@ class _PaginatedPartListState extends State<PaginatedPartList> {
 
       Map<String, String> params = filters;
 
-      params["search"] = _searchTerm ?? "";
+      params["search"] = _searchTerm;
 
       final bool cascade = await InvenTreeSettingsManager().getValue("partSubcategory", false);
       params["cascade"] = "${cascade}";
 
       final page = await InvenTreePart().listPaginated(_pageSize, pageKey, filters: params);
-      int pageLength = page.length ?? 0;
-      int pageCount = page.count ?? 0;
+      int pageLength = page?.length ?? 0;
+      int pageCount = page?.count ?? 0;
 
       final isLastPage = pageLength < _pageSize;
 
       // Construct a list of part objects
       List<InvenTreePart> parts = [];
 
-      if (page == null) {
+      if (page != null) {
         for (var result in page.results) {
           if (result is InvenTreePart) {
             parts.add(result);
@@ -423,22 +431,24 @@ class _PaginatedPartListState extends State<PaginatedPartList> {
       }
 
       if (onTotalChanged != null) {
-        onTotalChanged(pageCount);
+        onTotalChanged!(pageCount);
       }
 
       setState(() {
         resultCount = pageCount;
       });
 
-    } catch (error) {
+    } catch (error, stackTrace) {
       print("Error! - ${error.toString()}");
       _pagingController.error = error;
+
+      sentryReportError(error, stackTrace);
     }
   }
 
   void _openPart(BuildContext context, int pk) {
     // Attempt to load the part information
-    InvenTreePart().get(context, pk).then((var part) {
+    InvenTreePart().get(pk).then((var part) {
       if (part is InvenTreePart) {
 
         Navigator.push(context, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));

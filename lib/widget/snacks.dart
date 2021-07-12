@@ -15,14 +15,14 @@ import 'package:one_context/one_context.dart';
 import 'package:InvenTree/l10.dart';
 
 
-void showSnackIcon(String text, {IconData icon, Function onAction, bool success, String actionText}) {
+void showSnackIcon(String text, {IconData? icon, Function()? onAction, bool? success, String? actionText}) {
 
   OneContext().hideCurrentSnackBar();
 
-  Color backgroundColor;
+  Color backgroundColor = Colors.deepOrange;
 
   // Make some selections based on the "success" value
-  if (success == true) {
+  if (success != null && success == true) {
     backgroundColor = Colors.lightGreen;
 
     // Select an icon if we do not have an action
@@ -30,26 +30,21 @@ void showSnackIcon(String text, {IconData icon, Function onAction, bool success,
       icon = FontAwesomeIcons.checkCircle;
     }
 
-  } else if (success == false) {
+  } else if (success != null && success == false) {
     backgroundColor = Colors.deepOrange;
 
     if (icon == null && onAction == null) {
       icon = FontAwesomeIcons.exclamationCircle;
     }
-
   }
 
-  SnackBarAction action;
+  String _action = actionText ?? L10().details;
+
+  SnackBarAction? action;
 
   if (onAction != null) {
-
-    if (actionText == null) {
-      // Default action text
-      actionText = L10().details;
-    }
-
     action = SnackBarAction(
-      label: actionText,
+      label: _action,
       onPressed: onAction,
     );
   }

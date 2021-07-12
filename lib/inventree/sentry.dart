@@ -84,6 +84,40 @@ bool isInDebugMode() {
   return inDebugMode;
 }
 
+Future<bool> sentryReportMessage(String message, {Map<String, String>? context}) async {
+
+  final server_info = getServerInfo();
+  final app_info = await getAppInfo();
+  final device_info = await getDeviceInfo();
+
+  print("Sending user message to Sentry: ${message}");
+
+  if (isInDebugMode()) {
+
+    print('----- In dev mode. Not sending message to Sentry.io -----');
+    return true;
+  }
+
+  Sentry.configureScope((scope) {
+    scope.setExtra("server", server_info);
+    scope.setExtra("app", app_info);
+    scope.setExtra("device", device_info);
+
+    if (context != null) {
+      scope.setExtra("context", context);
+    }
+  });
+
+  final sentryId = await Sentry.captureMessage(message).catchError((error) {
+    print("Error uploading sentry messages...");
+    print(error);
+    return null;
+  });
+
+  return sentryId != null;
+}
+
+
 Future<void> sentryReportError(dynamic error, dynamic stackTrace) async {
 
   print('----- Sentry Intercepted error: $error -----');
@@ -114,28 +148,4 @@ Future<void> sentryReportError(dynamic error, dynamic stackTrace) async {
   }).then((response) {
     print("Uploaded information to Sentry.io : ${response.toString()}");
   });
-}
-
-
-Future<bool> sentryReportMessage(String message) async {
-
-  final server_info = getServerInfo();
-  final app_info = await getAppInfo();
-  final device_info = await getDeviceInfo();
-
-  print("Sending user message to Sentry");
-
-  Sentry.configureScope((scope) {
-    scope.setExtra("server", server_info);
-    scope.setExtra("app", app_info);
-    scope.setExtra("device", device_info);
-  });
-
-  final sentryId = await Sentry.captureMessage(message).catchError((error) {
-    print("Error uploading sentry messages...");
-    print(error);
-    return null;
-  });
-
-  return sentryId != null;
 }

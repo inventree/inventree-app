@@ -25,7 +25,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class StockDetailWidget extends StatefulWidget {
 
-  StockDetailWidget(this.item, {Key key}) : super(key: key);
+  StockDetailWidget(this.item, {Key? key}) : super(key: key);
 
   final InvenTreeStockItem item;
 
@@ -77,7 +77,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   final InvenTreeStockItem item;
 
   // Part object
-  InvenTreePart part;
+  InvenTreePart? part;
 
   @override
   Future<void> onBuild(BuildContext context) async {
@@ -89,14 +89,14 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   }
 
   @override
-  Future<void> request(BuildContext context) async {
-    await item.reload(context);
+  Future<void> request() async {
+    await item.reload();
 
     // Request part information
-    part = await InvenTreePart().get(context, item.partId);
+    part = await InvenTreePart().get(item.partId) as InvenTreePart;
 
     // Request test results...
-    await item.getTestResults(context);
+    await item.getTestResults();
   }
 
   void _addStock() async {
@@ -227,7 +227,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
   void _unassignBarcode(BuildContext context) async {
 
-    final bool result = await item.update(context, values: {'uid': ''});
+    final bool result = await item.update(values: {'uid': ''});
 
     if (result) {
       showSnackIcon(
@@ -245,7 +245,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   }
 
 
-  void _transferStock(BuildContext context, InvenTreeStockLocation location) async {
+  void _transferStock(InvenTreeStockLocation location) async {
 
     double quantity = double.tryParse(_quantityController.text) ?? item.quantity;
     String notes = _notesController.text;
@@ -264,17 +264,21 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
   void _transferStockDialog() async {
 
-    var locations = await InvenTreeStockLocation().list(context);
+    var locations = await InvenTreeStockLocation().list();
     final _selectedController = TextEditingController();
 
-    InvenTreeStockLocation selectedLocation;
+    InvenTreeStockLocation? selectedLocation;
 
     _quantityController.text = "${item.quantityString}";
 
     showFormDialog(L10().transferStock,
         key: _moveStockKey,
         callback: () {
-          _transferStock(context, selectedLocation);
+          var _loc = selectedLocation;
+
+          if (_loc != null) {
+            _transferStock(_loc);
+          }
         },
         fields: <Widget>[
           QuantityField(
@@ -292,7 +296,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
                   )
               ),
               suggestionsCallback: (pattern) async {
-                var suggestions = List<InvenTreeStockLocation>();
+                List<InvenTreeStockLocation> suggestions = [];
 
                 for (var loc in locations) {
                   if (loc.matchAgainstString(pattern)) {
@@ -311,7 +315,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
               },
               onSuggestionSelected: (suggestion) {
                 selectedLocation = suggestion as InvenTreeStockLocation;
-                _selectedController.text = selectedLocation.pathstring;
+                _selectedController.text = selectedLocation!.pathstring;
               },
               onSaved: (value) {
               },
@@ -342,7 +346,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         ),
         onTap: () {
           if (item.partId > 0) {
-            InvenTreePart().get(context, item.partId).then((var part) {
+            InvenTreePart().get(item.partId).then((var part) {
               if (part is InvenTreePart) {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
               }
@@ -397,9 +401,12 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
             leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
             onTap: () {
               if (item.locationId > 0) {
-                InvenTreeStockLocation().get(context, item.locationId).then((var loc) {
-                  Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => LocationDisplayWidget(loc)));
+                InvenTreeStockLocation().get(item.locationId).then((var loc) {
+
+                  if (loc is InvenTreeStockLocation) {
+                    Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => LocationDisplayWidget(loc)));
+                  }
                 });
               }
             },
@@ -442,7 +449,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     }
 
-    if ((item.testResultCount > 0) || (part != null && part.isTrackable)) {
+    if ((item.testResultCount > 0) || (part?.isTrackable ?? false)) {
       tiles.add(
           ListTile(
               title: Text(L10().testResults),
@@ -641,7 +648,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           ).toList()
         );
       default:
-        return null;
+        return ListView();
     }
   }
 

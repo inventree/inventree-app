@@ -11,7 +11,7 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
   final refreshableKey = GlobalKey<ScaffoldState>();
 
   // Storage for context once "Build" is called
-  BuildContext context;
+  BuildContext? _context;
 
   // Current tab index (used for widgets which display bottom tabs)
   int tabIndex = 0;
@@ -36,7 +36,7 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
 
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => onBuild(context));
+    WidgetsBinding.instance?.addPostFrameCallback((_) => onBuild(_context!));
   }
 
   // Function called after the widget is first build
@@ -45,7 +45,7 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
   }
 
   // Function to request data for this page
-  Future<void> request(BuildContext context) async {
+  Future<void> request() async {
     return;
   }
 
@@ -55,7 +55,7 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
       loading = true;
     });
 
-    await request(context);
+    await request();
 
     setState(() {
       loading = false;
@@ -77,14 +77,16 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
 
   // Function to construct a body (MUST BE PROVIDED)
   Widget getBody(BuildContext context) {
+
+    // Default return is an empty ListView
+    return ListView();
+  }
+
+  Widget? getBottomNavBar(BuildContext context) {
     return null;
   }
 
-  Widget getBottomNavBar(BuildContext context) {
-    return null;
-  }
-
-  Widget getFab(BuildContext context) {
+  Widget? getFab(BuildContext context) {
     return null;
   }
 
@@ -92,7 +94,7 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
   Widget build(BuildContext context) {
 
     // Save the context for future use
-    this.context = context;
+    _context = context;
 
     return Scaffold(
       key: refreshableKey,

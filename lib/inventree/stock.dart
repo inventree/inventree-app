@@ -138,14 +138,13 @@ class InvenTreeStockItem extends InvenTreeModel {
     // TODO
   }
 
-  List<InvenTreePartTestTemplate> testTemplates = List<InvenTreePartTestTemplate>();
+  List<InvenTreePartTestTemplate> testTemplates = [];
 
   int get testTemplateCount => testTemplates.length;
 
   // Get all the test templates associated with this StockItem
-  Future<void> getTestTemplates(BuildContext context, {bool showDialog=false}) async {
+  Future<void> getTestTemplates({bool showDialog=false}) async {
     await InvenTreePartTestTemplate().list(
-      context,
       filters: {
         "part": "${partId}",
       },
@@ -160,14 +159,13 @@ class InvenTreeStockItem extends InvenTreeModel {
     });
   }
 
-  List<InvenTreeStockItemTestResult> testResults = List<InvenTreeStockItemTestResult>();
+  List<InvenTreeStockItemTestResult> testResults = [];
 
   int get testResultCount => testResults.length;
 
-  Future<void> getTestResults(BuildContext context) async {
+  Future<void> getTestResults() async {
 
     await InvenTreeStockItemTestResult().list(
-      context,
       filters: {
         "stock_item": "${pk}",
         "user_detail": "true",
@@ -183,7 +181,7 @@ class InvenTreeStockItem extends InvenTreeModel {
     });
   }
 
-  Future<bool> uploadTestResult(BuildContext context, String testName, bool result, {String value, String notes, File attachment}) async {
+  Future<bool> uploadTestResult(BuildContext context, String testName, bool result, {String? value, String? notes, File? attachment}) async {
 
     Map<String, String> data = {
       "stock_item": pk.toString(),
@@ -204,7 +202,7 @@ class InvenTreeStockItem extends InvenTreeModel {
      * TODO: Is there a nice way to refactor this one?
      */
     if (attachment == null) {
-      var _result = await InvenTreeStockItemTestResult().create(context, data);
+      var _result = await InvenTreeStockItemTestResult().create(data);
 
       return (_result != null) && (_result is InvenTreeStockItemTestResult);
     } else {
@@ -224,12 +222,12 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   int get partId => jsondata['part'] ?? -1;
 
-  int get trackingItemCount => jsondata['tracking_items'] as int ?? 0;
+  int get trackingItemCount => (jsondata['tracking_items'] ?? 0) as int;
 
   // Date of last update
   String get updated => jsondata["updated"] ?? "";
 
-  DateTime get stocktakeDate {
+  DateTime? get stocktakeDate {
     if (jsondata.containsKey("stocktake_date")) {
       if (jsondata["stocktake_date"] == null) {
         return null;
@@ -292,15 +290,18 @@ class InvenTreeStockItem extends InvenTreeModel {
    */
   String get partThumbnail {
 
-    String thumb;
+    String thumb = "";
 
-    if (jsondata.containsKey('part_detail')) {
-      thumb = jsondata['part_detail']['thumbnail'] as String ?? '';
+    thumb = jsondata['part_detail']?['thumbnail'] ?? '';
+
+    // Use 'image' as a backup
+    if (thumb.isEmpty) {
+      thumb = jsondata['part_detail']?['image'] ?? '';
     }
 
     // Try a different approach
     if (thumb.isEmpty) {
-      jsondata['part__thumbnail'] as String ?? '';
+      thumb = jsondata['part__thumbnail'] ?? '';
     }
 
     // Still no thumbnail? Use the 'no image' image
@@ -309,7 +310,7 @@ class InvenTreeStockItem extends InvenTreeModel {
     return thumb;
   }
 
-  int get supplierPartId => jsondata['supplier_part'] as int ?? -1;
+  int get supplierPartId => (jsondata['supplier_part'] ?? -1) as int;
 
   String get supplierImage {
     String thumb = '';
@@ -341,9 +342,9 @@ class InvenTreeStockItem extends InvenTreeModel {
     return sku;
   }
 
-  String get serialNumber => jsondata['serial'] as String ?? null;
+  String get serialNumber => jsondata['serial'] ?? "";
 
-  double get quantity => double.tryParse(jsondata['quantity'].toString() ?? '0');
+  double get quantity => double.tryParse(jsondata['quantity'].toString()) ?? 0;
 
   String get quantityString {
 
@@ -354,9 +355,9 @@ class InvenTreeStockItem extends InvenTreeModel {
     }
   }
 
-  int get locationId => jsondata['location'] as int ?? -1;
+  int get locationId => (jsondata['location'] ?? -1) as int;
 
-  bool isSerialized() => serialNumber != null && quantity.toInt() == 1;
+  bool isSerialized() => serialNumber.isNotEmpty && quantity.toInt() == 1;
 
   String serialOrQuantityDisplay() {
     if (isSerialized()) {
@@ -397,10 +398,10 @@ class InvenTreeStockItem extends InvenTreeModel {
   String get displayQuantity {
     // Display either quantity or serial number!
 
-    if (serialNumber != null) {
+    if (serialNumber.isNotEmpty) {
       return "SN: $serialNumber";
     } else {
-      return quantity.toString().trim();
+      return quantityString;
     }
   }
 
@@ -420,7 +421,7 @@ class InvenTreeStockItem extends InvenTreeModel {
    * - Remove
    * - Count
    */
-  Future<bool> adjustStock(BuildContext context, String endpoint, double q, {String notes}) async {
+  Future<bool> adjustStock(BuildContext context, String endpoint, double q, {String? notes}) async {
 
     // Serialized stock cannot be adjusted
     if (isSerialized()) {
@@ -456,30 +457,29 @@ class InvenTreeStockItem extends InvenTreeModel {
     return true;
   }
 
-  Future<bool> countStock(BuildContext context, double q, {String notes}) async {
+  Future<bool> countStock(BuildContext context, double q, {String? notes}) async {
 
-    final bool result = await adjustStock(context, "/stock/count", q, notes: notes);
+    final bool result = await adjustStock(context, "/stock/count/", q, notes: notes);
 
     return result;
   }
 
-  Future<bool> addStock(BuildContext context, double q, {String notes}) async {
+  Future<bool> addStock(BuildContext context, double q, {String? notes}) async {
 
     final bool result = await adjustStock(context,  "/stock/add/", q, notes: notes);
 
     return result;
   }
 
-  Future<bool> removeStock(BuildContext context, double q, {String notes}) async {
+  Future<bool> removeStock(BuildContext context, double q, {String? notes}) async {
 
     final bool result = await adjustStock(context, "/stock/remove/", q, notes: notes);
 
     return result;
   }
 
-  Future<bool> transferStock(int location, {double quantity, String notes}) async {
-    if (quantity == null) {} else
-    if ((quantity < 0) || (quantity > this.quantity)) {
+  Future<bool> transferStock(int location, {double? quantity, String? notes}) async {
+    if ((quantity == null) || (quantity < 0) || (quantity > this.quantity)) {
       quantity = this.quantity;
     }
 

@@ -26,7 +26,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
 
   final GlobalKey<FormState> _addProfileKey = new GlobalKey<FormState>();
 
-  List<UserProfile> profiles;
+  List<UserProfile> profiles = [];
 
   _InvenTreeLoginSettingsState() {
     _reload();
@@ -40,14 +40,14 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     });
   }
 
-  void _editProfile(BuildContext context, {UserProfile userProfile, bool createNew = false}) {
+  void _editProfile(BuildContext context, {UserProfile? userProfile, bool createNew = false}) {
 
     var _name;
     var _server;
     var _username;
     var _password;
 
-    UserProfile profile;
+    UserProfile? profile;
 
     if (userProfile != null) {
       profile = userProfile;
@@ -69,10 +69,10 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
             _addProfile(profile);
           } else {
 
-            profile.name = _name;
-            profile.server = _server;
-            profile.username = _username;
-            profile.password = _password;
+            profile?.name = _name;
+            profile?.server = _server;
+            profile?.username = _username;
+            profile?.password = _password;
 
             _updateProfile(profile);
 
@@ -82,28 +82,28 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
         StringField(
           label: L10().name,
           hint: "Enter profile name",
-          initial: createNew ? '' : profile.name,
+          initial: createNew ? '' : profile?.name ?? '',
           onSaved: (value) => _name = value,
           validator: _validateProfileName,
         ),
         StringField(
           label: L10().server,
           hint: "http[s]://<server>:<port>",
-          initial: createNew ? '' : profile.server,
+          initial: createNew ? '' : profile?.server ?? '',
           validator: _validateServer,
           onSaved: (value) => _server = value,
         ),
         StringField(
           label: L10().username,
           hint: L10().enterPassword,
-          initial: createNew ? '' : profile.username,
+          initial: createNew ? '' : profile?.username ?? '',
           onSaved: (value) => _username = value,
           validator: _validateUsername,
         ),
         StringField(
           label: L10().password,
           hint: L10().enterUsername,
-          initial: createNew ? '' : profile.password,
+          initial: createNew ? '' : profile?.password ?? '',
           onSaved: (value) => _password = value,
           validator: _validatePassword,
         )
@@ -111,7 +111,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     );
   }
 
-  String _validateProfileName(String value) {
+  String? _validateProfileName(String value) {
 
     if (value.isEmpty) {
       return 'Profile name cannot be empty';
@@ -122,14 +122,14 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     return null;
   }
 
-  String _validateServer(String value) {
+  String? _validateServer(String value) {
 
     if (value.isEmpty) {
-      return 'Server cannot be empty';
+      return L10().serverEmpty;
     }
 
     if (!value.startsWith("http:") && !value.startsWith("https:")) {
-      return 'Server must start with http[s]';
+      return L10().serverStart;
     }
 
     // TODO: URL validator
@@ -137,17 +137,17 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     return null;
   }
 
-  String _validateUsername(String value) {
+  String? _validateUsername(String value) {
     if (value.isEmpty) {
-      return 'Username cannot be empty';
+      return L10().usernameEmpty;
     }
 
     return null;
   }
 
-  String _validatePassword(String value) {
+  String? _validatePassword(String value) {
     if (value.isEmpty) {
-      return 'Password cannot be empty';
+      return L10().passwordEmpty;
     }
 
     return null;
@@ -158,12 +158,18 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     // Disconnect InvenTree
     InvenTreeAPI().disconnectFromServer();
 
-    await UserProfileDBManager().selectProfile(profile.key);
+    var key = profile.key;
+
+    if (key == null) {
+      return;
+    }
+
+    await UserProfileDBManager().selectProfile(key);
 
     _reload();
 
     // Attempt server login (this will load the newly selected profile
-    InvenTreeAPI().connectToServer(_loginKey.currentContext).then((result) {
+    InvenTreeAPI().connectToServer().then((result) {
       _reload();
     });
 
@@ -176,21 +182,25 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
 
     _reload();
 
-    if (InvenTreeAPI().isConnected() && profile.key == InvenTreeAPI().profile.key) {
+    if (InvenTreeAPI().isConnected() && profile.key == (InvenTreeAPI().profile?.key ?? '')) {
       InvenTreeAPI().disconnectFromServer();
     }
   }
 
-  void _updateProfile(UserProfile profile) async {
+  void _updateProfile(UserProfile? profile) async {
+
+    if (profile == null) {
+      return;
+    }
 
     await UserProfileDBManager().updateProfile(profile);
 
     _reload();
 
-    if (InvenTreeAPI().isConnected() && profile.key == InvenTreeAPI().profile.key) {
+    if (InvenTreeAPI().isConnected() && InvenTreeAPI().profile != null && profile.key == (InvenTreeAPI().profile?.key ?? '')) {
       // Attempt server login (this will load the newly selected profile
 
-      InvenTreeAPI().connectToServer(_loginKey.currentContext).then((result) {
+      InvenTreeAPI().connectToServer().then((result) {
         _reload();
       });
     }
@@ -203,13 +213,13 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     _reload();
   }
 
-  Widget _getProfileIcon(UserProfile profile) {
+  Widget? _getProfileIcon(UserProfile profile) {
 
     // Not selected? No icon for you!
-    if (profile == null || !profile.selected) return null;
+    if (!profile.selected) return null;
 
     // Selected, but (for some reason) not the same as the API...
-    if (InvenTreeAPI().profile == null || InvenTreeAPI().profile.key != profile.key) {
+    if ((InvenTreeAPI().profile?.key ?? '') != profile.key) {
       return FaIcon(
         FontAwesomeIcons.questionCircle,
         color: Color.fromRGBO(250, 150, 50, 1)

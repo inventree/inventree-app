@@ -19,7 +19,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class StockItemTestResultsWidget extends StatefulWidget {
 
-  StockItemTestResultsWidget(this.item, {Key key}) : super(key: key);
+  StockItemTestResultsWidget(this.item, {Key? key}) : super(key: key);
 
   final InvenTreeStockItem item;
 
@@ -36,16 +36,16 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
   String getAppBarTitle(BuildContext context) => L10().testResults;
 
   @override
-  Future<void> request(BuildContext context) async {
-    await item.getTestTemplates(context);
-    await item.getTestResults(context);
+  Future<void> request() async {
+    await item.getTestTemplates();
+    await item.getTestResults();
   }
 
   final InvenTreeStockItem item;
 
   _StockItemTestResultDisplayState(this.item);
 
-  void uploadTestResult(String name, bool result, String value, String notes, File attachment) async {
+  void uploadTestResult(String name, bool result, String value, String notes, File? attachment) async {
 
     final success = await item.uploadTestResult(
       context, name, result,
@@ -64,11 +64,11 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
 
   void addTestResult({String name = '', bool nameIsEditable = true, bool result = false, String value = '', bool valueRequired = false, bool attachmentRequired = false}) async  {
 
-    String _name;
-    bool _result;
-    String _value;
-    String _notes;
-    File _attachment;
+    String _name = "";
+    bool _result = false;
+    String _value = "";
+    String _notes = "";
+    File? _attachment;
 
     showFormDialog(L10().testResultAdd,
       key: _addResultKey,
@@ -80,21 +80,21 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
           label: L10().testName,
           initial: name,
           isEnabled: nameIsEditable,
-          onSaved: (value) => _name = value,
+          onSaved: (value) => _name = value ?? '',
         ),
         CheckBoxField(
           label: L10().result,
           hint: L10().testPassedOrFailed,
           initial: true,
-          onSaved: (value) => _result = value,
+          onSaved: (value) => _result = value ?? false,
         ),
         StringField(
           label: L10().value,
           initial: value,
           allowEmpty: true,
-          onSaved: (value) => _value = value,
+          onSaved: (value) => _value = value ?? '',
           validator: (String value) {
-            if (valueRequired && (value == null || value.isEmpty)) {
+            if (valueRequired && value.isEmpty) {
               return L10().valueRequired;
             }
             return null;
@@ -109,7 +109,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
         StringField(
           allowEmpty: true,
           label: L10().notes,
-          onSaved: (value) => _notes = value,
+          onSaved: (value) => _notes = value ?? '',
         ),
       ]
     );
@@ -202,10 +202,11 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
     for (var item in results) {
 
       bool _required = false;
-      String _test;
-      bool _result = null;
-      String _value;
-      String _notes;
+      String _test = "";
+      bool _result = false;
+      String _value = "";
+      String _notes = "";
+
       FaIcon _icon = FaIcon(FontAwesomeIcons.questionCircle, color: Color.fromRGBO(0, 0, 250, 1));
       bool _valueRequired = false;
       bool _attachmentRequired = false;

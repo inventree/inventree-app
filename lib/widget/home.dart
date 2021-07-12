@@ -20,7 +20,7 @@ import 'package:InvenTree/widget/spinner.dart';
 import 'package:InvenTree/widget/drawer.dart';
 
 class InvenTreeHomePage extends StatefulWidget {
-  InvenTreeHomePage({Key key}) : super(key: key);
+  InvenTreeHomePage({Key? key}) : super(key: key);
 
   @override
   _InvenTreeHomePageState createState() => _InvenTreeHomePageState();
@@ -37,9 +37,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
   }
 
   // Selected user profile
-  UserProfile _profile;
-
-  BuildContext _context;
+  UserProfile? _profile;
 
   void _searchParts() {
     if (!InvenTreeAPI().checkConnection(context)) return;
@@ -113,7 +111,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
       if (!InvenTreeAPI().isConnected() && !InvenTreeAPI().isConnecting()) {
 
         // Attempt server connection
-        InvenTreeAPI().connectToServer(_homeKey.currentContext).then((result) {
+        InvenTreeAPI().connectToServer().then((result) {
           setState(() {});
         });
       }
@@ -171,7 +169,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     } else {
       return ListTile(
         title: Text(L10().serverCouldNotConnect),
-        subtitle: Text("${_profile.server}"),
+        subtitle: Text("${_profile!.server}"),
         leading: FaIcon(FontAwesomeIcons.server),
         trailing: FaIcon(
           FontAwesomeIcons.timesCircle,
@@ -186,8 +184,6 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
 
   @override
   Widget build(BuildContext context) {
-
-    _context = context;
 
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
