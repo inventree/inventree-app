@@ -7,7 +7,7 @@ description: InvenTree stock management
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 0.2.5+13
+version: 0.2.6+14
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -30,7 +30,7 @@ dependencies:
   font_awesome_flutter: ^9.1.0            # FontAwesome icon set
   flutter_speed_dial: ^3.0.5              # FAB menu elements
   sentry_flutter: 5.0.0                   # Error reporting
-  flutter_typeahead: ^3.1.3               # Auto-complete input field
+  flutter_typeahead: ^3.1.0               # Auto-complete input field
   image_picker: ^0.8.0                    # Select or take photos
   url_launcher: 6.0.0                     # Open link in system browser
   flutter_markdown: ^0.6.2                # Rendering markdown
