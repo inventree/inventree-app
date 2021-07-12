@@ -401,7 +401,7 @@ class InvenTreeStockItem extends InvenTreeModel {
     if (serialNumber.isNotEmpty) {
       return "SN: $serialNumber";
     } else {
-      return quantity.toString().trim();
+      return quantityString;
     }
   }
 
