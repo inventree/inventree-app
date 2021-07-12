@@ -478,7 +478,7 @@ class InvenTreeAPI {
       return null;
     }
 
-    var data = json.encode(body);
+    var data = json.encode(_body);
 
     // Set headers
     request.headers.set('Accept', 'application/json');
@@ -532,7 +532,8 @@ class InvenTreeAPI {
             context: {
               "url": _url,
               "statusCode": "${response.statusCode}",
-              "data": responseData.toString(),
+              "response": responseData.toString(),
+              "request": body.toString(),
             }
         );
       }
@@ -566,6 +567,21 @@ class InvenTreeAPI {
     request.files.add(_file);
 
     var response = await request.send();
+
+    if (response.statusCode >= 500) {
+      // Server error
+      if (response.statusCode >= 500) {
+        sentryReportMessage(
+            "Server error on file upload",
+            context: {
+              "url": _url,
+              "statusCode": "${response.statusCode}",
+              "response": response.toString(),
+              "request": request.fields.toString(),
+            }
+        );
+      }
+    }
 
     return response;
   }
@@ -679,7 +695,8 @@ class InvenTreeAPI {
           context: {
             "url": _url,
             "statusCode": "${response.statusCode}",
-            "data": responseData.toString(),
+            "response": responseData.toString(),
+            "request": body.toString(),
           }
         );
       }
@@ -900,7 +917,8 @@ class InvenTreeAPI {
             context: {
               "url": url,
               "statusCode": "${response.statusCode}",
-              "data": responseData.toString(),
+              "response": responseData.toString(),
+              "params": params.toString(),
             }
         );
       }
