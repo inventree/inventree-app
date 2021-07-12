@@ -710,7 +710,12 @@ class InvenTreeAPI {
 
     var client = createClient(true);
 
-    final uri = Uri.parse(_url);
+    Uri? uri = Uri.tryParse(_url);
+
+    if (uri == null) {
+      showServerError(L10().invalidHost, L10().invalidHostDetails);
+      return null;
+    }
 
     // Check for invalid host
     if (uri.host.isEmpty) {
@@ -718,32 +723,55 @@ class InvenTreeAPI {
       return null;
     }
 
-    // Open a connection
-    HttpClientRequest? request = await client.getUrl(uri)
-        .timeout(Duration(seconds: 10))
-        .catchError((error) {
-      print("GET request returned error");
-      print("URL: ${uri}");
-      print("Error: ${error.toString()}");
+    HttpClientRequest? request;
 
-      var ctx = OneContext().context;
+    try {
+      // Open a connection
+      request = await client.getUrl(uri)
+          .timeout(Duration(seconds: 10))
+          .catchError((error) {
+        print("GET request returned error");
+        print("URL: ${uri}");
+        print("Error: ${error.toString()}");
 
-      if (error is SocketException) {
+        var ctx = OneContext().context;
+
+        if (error is SocketException) {
+          showServerError(
+              L10().connectionRefused,
+              error.toString()
+          );
+        } else if (error is TimeoutException) {
+          showTimeoutError();
+        } else {
+          showServerError(
+              L10().serverError,
+              error.toString()
+          );
+        }
+
+        return null;
+      });
+    } catch (error) {
+      if (error is FormatException) {
+        showServerError(
+          L10().invalidHost,
+          L10().invalidHostDetails)
+        ;
+      } else if (error is SocketException) {
         showServerError(
             L10().connectionRefused,
             error.toString()
         );
-      } else if (error is TimeoutException) {
-        showTimeoutError();
       } else {
         showServerError(
-            L10().serverError,
-            error.toString()
+          L10().serverError,
+          error.toString()
         );
       }
 
       return null;
-    });
+    }
 
     if (request == null) {
       return null;
