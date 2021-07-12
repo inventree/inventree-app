@@ -5,6 +5,8 @@
 ---
 
 - Major code update with "null safety" features
+- Handle case of improperly formatted hostname
+- Multiple API bug fixes (mostly null references)
 - Updated translations
 
 ### 0.2.5 - June 2021
