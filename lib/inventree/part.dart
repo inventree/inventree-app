@@ -199,10 +199,10 @@ class InvenTreePart extends InvenTreeModel {
   }
 
     // Get the number of stock on order for this Part
-    double get onOrder => double.tryParse(jsondata['ordering']) ?? 0;
+    double get onOrder => double.tryParse(jsondata['ordering'].toString()) ?? 0;
 
     // Get the stock count for this Part
-    double get inStock => double.tryParse(jsondata['in_stock']) ?? 0;
+    double get inStock => double.tryParse(jsondata['in_stock'].toString()) ?? 0;
 
     String get inStockString {
 
@@ -214,7 +214,7 @@ class InvenTreePart extends InvenTreeModel {
     }
 
     // Get the number of units being build for this Part
-    double get building => double.tryParse(jsondata['building']) ?? 0;
+    double get building => double.tryParse(jsondata['building'].toString()) ?? 0;
 
     // Get the number of BOM items in this Part (if it is an assembly)
     int get bomItemCount => (jsondata['bom_items'] ?? 0) as int;
