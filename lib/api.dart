@@ -349,8 +349,6 @@ class InvenTreeAPI {
     // Load selected profile
     profile = await UserProfileDBManager().getSelectedProfile();
 
-    print("API Profile: ${profile.toString()}");
-
     if (profile == null) {
       showSnackIcon(
           L10().profileSelect,
@@ -363,8 +361,6 @@ class InvenTreeAPI {
     _connecting = true;
 
     _connected = await _connect();
-
-    print("_connect() returned result: ${_connected}");
 
     _connecting = false;
 
@@ -747,8 +743,6 @@ class InvenTreeAPI {
         );
         return false;
       }
-
-      return allowBadCert;
     });
 
     // Set the connection timeout
@@ -856,6 +850,15 @@ class InvenTreeAPI {
 
       print("JSON format exception!");
       print("${body}");
+
+      sentryReportMessage(
+        "Error decoding JSON response from server",
+        context: {
+          "headers": response.headers.toString(),
+          "statusCode": response.statusCode.toString(),
+          "data": body.toString(),
+        }
+      );
 
       showServerError(
         L10().formatException,
