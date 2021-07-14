@@ -765,10 +765,6 @@ class InvenTreeAPI {
         return null;
     }
 
-    if (request == null) {
-      return null;
-    }
-
     // Set connection headers
     request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
     request.headers.set(HttpHeaders.authorizationHeader, _authorizationHeader());
@@ -776,7 +772,6 @@ class InvenTreeAPI {
 
     try {
       HttpClientResponse response = await request.close().timeout(Duration(seconds: 10));
-
       return response;
 
     } on TimeoutException catch (error) {
