@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:intl/intl.dart';
+
 import 'package:InvenTree/inventree/sentry.dart';
 import 'package:InvenTree/user_profile.dart';
 import 'package:InvenTree/widget/snacks.dart';
@@ -472,6 +474,7 @@ class InvenTreeAPI {
     // Set headers
     request.headers.set('Accept', 'application/json');
     request.headers.set('Content-type', 'application/json');
+    request.headers.set('Accept-Language', Intl.getCurrentLocale());
     request.headers.set('Content-Length', data.length.toString());
     request.headers.set(HttpHeaders.authorizationHeader, _authorizationHeader());
 
@@ -568,6 +571,54 @@ class InvenTreeAPI {
     }
 
     return response;
+  }
+
+  /**
+   * Perform a HTTP OPTIONS request,
+   * to get the available fields at a given endpoint.
+   * We send this with the currently selected "locale",
+   * so that (hopefully) the field messages are correctly translated
+   */
+  Future<dynamic> options(String url) async {
+
+    var _url = makeApiUrl(url);
+
+    var client = createClient(true);
+
+    final uri = Uri.parse(_url);
+
+    if (uri.host.isEmpty) {
+      showServerError(L10().invalidHost, L10().invalidHostDetails);
+      return null;
+    }
+
+    HttpClientRequest? request;
+    HttpClientResponse? response;
+
+    try {
+      request = await client.openUrl("OPTIONS", uri).timeout(Duration(seconds: 10));
+
+      request.headers.set('Accept', 'application/json');
+      request.headers.set('Accept-Language', Intl.getCurrentLocale());
+      request.headers.set('Content-type', 'application/json');
+      request.headers.set(HttpHeaders.authorizationHeader, _authorizationHeader());
+
+      response = await request.close().timeout(Duration(seconds: 10));
+    } on SocketException catch (error) {
+      showServerError(L10().connectionRefused, error.toString());
+      return null;
+    } on TimeoutException catch (error) {
+      showTimeoutError();
+      return null;
+    } catch (error, stackTrace) {
+      showServerError(L10().serverError, error.toString());
+      sentryReportError(error, stackTrace);
+      return null;
+    }
+
+    var responseData = await responseToJson(response);
+
+    return responseData;
   }
 
   /**
