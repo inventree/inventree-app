@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:InvenTree/api_form.dart';
 import 'package:InvenTree/widget/part_notes.dart';
 import 'package:InvenTree/widget/progress.dart';
 import 'package:InvenTree/widget/snacks.dart';
@@ -177,6 +178,24 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     var _ipn;
     var _keywords;
     var _link;
+
+
+    launchApiForm(
+        "Edit Part",
+        part.url,
+        {
+          "name": {},
+          "description": {},
+          "IPN": {
+            "hidden": true,
+            "label": "My custom label!",
+          },
+          "active": {},
+        },
+        modelData: part.jsondata
+    );
+
+    return;
 
     showFormDialog(L10().editPart,
       key: _editPartKey,

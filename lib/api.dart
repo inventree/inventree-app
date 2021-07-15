@@ -516,9 +516,10 @@ class InvenTreeAPI {
             }
         );
       }
-
-      return null;
     }
+
+    // Include the statuscode in the response object
+    responseData["statusCode"] = response.statusCode;
 
     return responseData;
   }
