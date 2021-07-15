@@ -1,10 +1,11 @@
-import 'dart:convert';
-
 import 'package:InvenTree/api.dart';
 import 'package:InvenTree/widget/dialogs.dart';
 import 'package:InvenTree/widget/fields.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:one_context/one_context.dart';
+import 'package:InvenTree/l10.dart';
+
 
 /*
  * Class that represents a single "form field",
@@ -70,7 +71,6 @@ class APIFormField {
       initialValue: value ?? '',
       onSaved: (val) {
         data["value"] = val;
-        print("${name} -> ${val}");
       },
       validator: (value) {
 
@@ -88,7 +88,6 @@ class APIFormField {
       initial: value,
       onSaved: (val) {
         data['value'] = val;
-        print("${name} -> ${val}");
       },
     );
   }
@@ -125,20 +124,20 @@ Map<String, dynamic> extractFields(dynamic options) {
  * @param method is the HTTP method to use to send the form data to the server (e.g. POST / PATCH)
  */
 
-Future<bool> launchApiForm(String title, String url, Map<String, dynamic> fields, {Map<String, dynamic> modelData = const {}, String method = "PATCH"}) async {
+Future<void> launchApiForm(String title, String url, Map<String, dynamic> fields, {Map<String, dynamic> modelData = const {}, String method = "PATCH"}) async {
 
   dynamic options = await InvenTreeAPI().options(url);
 
   // null response from server
   if (options == null) {
-    return false;
+    return;
   }
 
   var availableFields = extractFields(options);
 
   if (availableFields.isEmpty) {
     print("Empty fields {} returned from ${url}");
-    return false;
+    return;
   }
 
   // Construct a list of APIFormField objects
@@ -158,15 +157,11 @@ Future<bool> launchApiForm(String title, String url, Map<String, dynamic> fields
 
     // Override defined field parameters, if provided
     for (String key in localField.keys) {
-      // Special consideration
+      // Special consideration must be taken here!
       if (key == "filters") {
-
+        // TODO: Custom filter updating
       } else {
-        String? val = localField[key];
-
-        if (val != null) {
-          remoteField[key] = val;
-        }
+        remoteField[key] = localField[key];
       }
     }
 
@@ -186,14 +181,64 @@ Future<bool> launchApiForm(String title, String url, Map<String, dynamic> fields
   List<Widget> widgets = [];
 
   for (var ff in formFields) {
-    widgets.add(ff.constructField());
+    if (!ff.hidden) {
+      widgets.add(ff.constructField());
+    }
   }
 
-  final formKey = new GlobalKey<FormState>();
+  final _formKey = new GlobalKey<FormState>();
 
-  showFormDialog(title, fields: widgets, key: formKey, callback: () {
-    print("submitted, I guess?");
-  });
+  OneContext().showDialog(
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(title),
+        actions: <Widget>[
+          // Cancel button
+          TextButton(
+            child: Text(L10().cancel),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          // Save button
+          TextButton(
+            child: Text(L10().save),
+            onPressed: () {
+              // Validate the form
+              if (_formKey.currentState!.validate()) {
+                _formKey.currentState!.save();
 
-  return true;
+                // Package up the form data
+                Map<String, String> formData = {};
+
+                for (var field in formFields) {
+                  formData[field.name] = field.value.toString();
+                }
+
+                print(formData.toString());
+
+                // Send the data to the server
+
+                // Respond to error message
+
+                // Dismiss the form
+
+              }
+            },
+          )
+        ],
+        content: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: widgets
+            )
+          )
+        )
+      );
+    }
+  );
 }
