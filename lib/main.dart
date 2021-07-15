@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:InvenTree/inventree/sentry.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';

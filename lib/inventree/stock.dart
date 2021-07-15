@@ -188,11 +188,11 @@ class InvenTreeStockItem extends InvenTreeModel {
       "result": result.toString(),
     };
 
-    if (value != null && !value.isEmpty) {
+    if (value != null && value.isNotEmpty) {
       data["value"] = value;
     }
 
-    if (notes != null && !notes.isEmpty) {
+    if (notes != null && notes.isNotEmpty) {
       data["notes"] = notes;
     }
 
@@ -211,8 +211,6 @@ class InvenTreeStockItem extends InvenTreeModel {
       // Check that the HTTP status code is HTTP_201_CREATED
       return _uploadResponse.statusCode == 201;
     }
-
-    return false;
   }
 
   String get uid => jsondata['uid'] ?? '';

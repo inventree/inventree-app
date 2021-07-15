@@ -22,7 +22,7 @@ Future<void> confirmationDialog(String title, String text, {String? acceptText, 
         ),
         content: Text(text),
         actions: [
-          FlatButton(
+          TextButton(
             child: Text(_reject),
             onPressed: () {
               // Close this dialog
@@ -33,7 +33,7 @@ Future<void> confirmationDialog(String title, String text, {String? acceptText, 
               }
             }
           ),
-          FlatButton(
+          TextButton(
             child: Text(_accept),
             onPressed: () {
               // Close this dialog
@@ -176,7 +176,7 @@ void showFormDialog(String title, {String? acceptText, String? cancelText, Globa
   // Undefined actions = OK + Cancel
   if (actions == null) {
     actions = <Widget>[
-      FlatButton(
+      TextButton(
         child: Text(_cancel),
         onPressed: () {
           // Close the form
@@ -186,7 +186,7 @@ void showFormDialog(String title, {String? acceptText, String? cancelText, Globa
           }
         }
       ),
-      FlatButton(
+      TextButton(
         child: Text(_accept),
         onPressed: () {
 

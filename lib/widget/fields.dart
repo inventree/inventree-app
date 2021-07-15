@@ -71,13 +71,13 @@ class ImagePickerField extends FormField<File> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                FlatButton(
+                TextButton(
                   child: Text(L10().selectImage),
                   onPressed: () {
                     _selectFromGallery(state);
                   },
                 ),
-                FlatButton(
+                TextButton(
                   child: Text(L10().takePicture),
                   onPressed: () {
                     _selectFromCamera(state);

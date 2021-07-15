@@ -1,12 +1,8 @@
 import 'dart:io';
 
 import 'package:device_info/device_info.dart';
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info/package_info.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:one_context/one_context.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:InvenTree/api.dart';
 
@@ -108,13 +104,14 @@ Future<bool> sentryReportMessage(String message, {Map<String, String>? context})
     }
   });
 
-  final sentryId = await Sentry.captureMessage(message).catchError((error) {
+  try {
+    await Sentry.captureMessage(message);
+    return true;
+  } catch (error) {
     print("Error uploading sentry messages...");
     print(error);
-    return null;
-  });
-
-  return sentryId != null;
+    return false;
+  }
 }
 
 

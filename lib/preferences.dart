@@ -54,10 +54,6 @@ class InvenTreePreferencesDB {
 
 class InvenTreePreferences {
 
-  static const String _SERVER = 'server';
-  static const String _USERNAME = 'username';
-  static const String _PASSWORD = 'password';
-
   /* The following settings are not stored to persistent storage,
    * instead they are only used as 'session preferences'.
    * They are kept here as a convenience only.

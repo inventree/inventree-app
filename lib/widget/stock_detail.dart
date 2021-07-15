@@ -392,7 +392,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     }
 
     // Location information
-    if ((item.locationId > 0) && (item.locationName != null) && (item.locationName.isNotEmpty)) {
+    if ((item.locationId > 0) && (item.locationName.isNotEmpty)) {
       tiles.add(
           ListTile(
             title: Text(L10().stockLocation),
@@ -581,7 +581,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     );
 
     // Add or remove custom barcode
-    if (item != null && item.uid.isEmpty) {
+    if (item.uid.isEmpty) {
       tiles.add(
         ListTile(
           title: Text(L10().barcodeAssign),

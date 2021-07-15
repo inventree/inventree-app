@@ -9,7 +9,7 @@ import 'package:InvenTree/widget/refreshable_state.dart';
 
 abstract class CompanyListWidget extends StatefulWidget {
 
-  String title = "";
+  final String title = "";
   Map<String, String> filters = {};
 
   @override

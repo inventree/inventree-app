@@ -48,9 +48,7 @@ class InvenTreePartCategory extends InvenTreeModel {
 
   InvenTreePartCategory() : super();
 
-  InvenTreePartCategory.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
-
-  }
+  InvenTreePartCategory.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) {
@@ -85,8 +83,7 @@ class InvenTreePartTestTemplate extends InvenTreeModel {
 
   InvenTreePartTestTemplate() : super();
 
-  InvenTreePartTestTemplate.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
-  }
+  InvenTreePartTestTemplate.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) {
@@ -308,11 +305,6 @@ class InvenTreePart extends InvenTreeModel {
         method: 'PATCH',
         name: 'image',
       );
-
-      if (response == null) {
-        print("uploadImage returned null at '${url}'");
-        return false;
-      }
 
       if (response.statusCode != 200) {
         print("uploadImage returned ${response.statusCode} at '${url}'");

@@ -19,12 +19,8 @@ class InvenTreePageResponse {
   }
 
   // Total number of results in the dataset
-  int _count = 0;
-
-  void set count(int v) { _count = v; }
-
-  int get count => _count;
-
+  int count = 0;
+  
   int get length => results.length;
 
   List<InvenTreeModel> results = [];
