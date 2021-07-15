@@ -35,8 +35,7 @@ class InvenTreeStockItemTestResult extends InvenTreeModel {
 
   InvenTreeStockItemTestResult() : super();
 
-  InvenTreeStockItemTestResult.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
-  }
+  InvenTreeStockItemTestResult.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
   @override
   InvenTreeStockItemTestResult createFromJson(Map<String, dynamic> json) {
@@ -388,9 +387,8 @@ class InvenTreeStockItem extends InvenTreeModel {
   }
 
   String get locationPathString {
-    String path = '';
 
-    if (locationId == -1 || !jsondata.containsKey('location_detail')) return 'No location specified';
+    if (locationId == -1 || !jsondata.containsKey('location_detail')) return L10().locationNotSet;
 
     return jsondata['location_detail']['pathstring'] ?? '';
   }

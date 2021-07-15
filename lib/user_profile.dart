@@ -116,8 +116,6 @@ class UserProfileDBManager {
   }
 
   Future deleteProfile(UserProfile profile) async {
-    final finder = Finder(filter: Filter.equals("name", profile.name));
-
     await store.record(profile.key).delete(await _db);
     print("Deleted user profile <${profile.key}> - '${profile.name}'");
   }
@@ -132,8 +130,6 @@ class UserProfileDBManager {
     final selected = await store.record("selected").get(await _db);
 
     final profiles = await store.find(await _db);
-
-    List<UserProfile> profileList = [];
 
     for (int idx = 0; idx < profiles.length; idx++) {
 

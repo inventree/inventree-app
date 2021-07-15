@@ -246,8 +246,6 @@ class BarcodeScanHandler extends BarcodeHandler {
         success: false,
         onAction: () {
 
-          var _ctx = OneContext().context;
-
           OneContext().showDialog(
               builder: (BuildContext context) => SimpleDialog(
                 title: Text(L10().unknownResponse),

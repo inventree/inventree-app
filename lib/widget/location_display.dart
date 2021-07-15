@@ -127,7 +127,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     );
   }
 
-  _LocationDisplayState(this.location) {}
+  _LocationDisplayState(this.location);
 
   List<InvenTreeStockLocation> _sublocations = [];
 

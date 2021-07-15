@@ -17,8 +17,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
 
   final GlobalKey<_InvenTreeAppSettingsState> _settingsKey = GlobalKey<_InvenTreeAppSettingsState>();
 
-  _InvenTreeAppSettingsState() {
-  }
+  _InvenTreeAppSettingsState();
 
   bool barcodeSounds = true;
   bool serverSounds = true;

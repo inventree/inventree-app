@@ -1,14 +1,10 @@
-import 'dart:convert';
-
 import 'package:InvenTree/api.dart';
 import 'package:InvenTree/inventree/stock.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:InvenTree/l10.dart';
 
 import 'model.dart';
 import 'dart:io';
-
-import 'package:path/path.dart' as path;
 import 'package:http/http.dart' as http;
 
 class InvenTreePartCategory extends InvenTreeModel {
@@ -42,7 +38,7 @@ class InvenTreePartCategory extends InvenTreeModel {
     String p = psplit.join("/");
 
     if (p.isEmpty) {
-      p = "Top level part category";
+      p = L10().partCategoryTopLevel;
     }
 
     return p;

@@ -14,10 +14,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:InvenTree/widget/dialogs.dart';
 import 'package:InvenTree/l10.dart';
-import 'package:InvenTree/inventree/sentry.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:one_context/one_context.dart';
 
 /**
  * Custom FileService for caching network images
@@ -26,7 +24,7 @@ import 'package:one_context/one_context.dart';
  */
 class InvenTreeFileService extends FileService {
 
-  HttpClient? _client = null;
+  HttpClient? _client;
 
   InvenTreeFileService({HttpClient? client, bool strictHttps = false}) {
     _client = client ?? HttpClient();
@@ -113,7 +111,7 @@ class InvenTreeAPI {
 
   String makeUrl(String endpoint) => _makeUrl(endpoint);
 
-  UserProfile? profile = null;
+  UserProfile? profile;
 
   Map<String, dynamic> roles = {};
 
@@ -186,8 +184,6 @@ class InvenTreeAPI {
   Future<bool> _connect() async {
 
     if (profile == null) return false;
-
-    var ctx = OneContext().context;
 
     String address = profile?.server ?? "";
     String username = profile?.username ?? "";
@@ -451,7 +447,7 @@ class InvenTreeAPI {
     } on SocketException catch (error) {
       showServerError(L10().connectionRefused, error.toString());
       return null;
-    } on TimeoutException catch (error) {
+    } on TimeoutException {
       showTimeoutError();
       return null;
     } catch (error, stackTrace) {
@@ -468,10 +464,10 @@ class InvenTreeAPI {
     var data = json.encode(_body);
 
     // Set headers
-    request.headers.set('Accept', 'application/json');
-    request.headers.set('Content-type', 'application/json');
-    request.headers.set('Accept-Language', Intl.getCurrentLocale());
-    request.headers.set('Content-Length', data.length.toString());
+    request.headers.set(HttpHeaders.acceptHeader, 'application/json');
+    request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
+    request.headers.set(HttpHeaders.acceptLanguageHeader, Intl.getCurrentLocale());
+    request.headers.set(HttpHeaders.contentLengthHeader, data.length.toString());
     request.headers.set(HttpHeaders.authorizationHeader, _authorizationHeader());
 
     request.add(utf8.encode(data));
@@ -486,7 +482,7 @@ class InvenTreeAPI {
           error.toString()
       );
       return null;
-    } on TimeoutException catch (error) {
+    } on TimeoutException {
       showTimeoutError();
       return null;
     } catch (error, stackTrace) {
@@ -594,16 +590,16 @@ class InvenTreeAPI {
     try {
       request = await client.openUrl("OPTIONS", uri).timeout(Duration(seconds: 10));
 
-      request.headers.set('Accept', 'application/json');
-      request.headers.set('Accept-Language', Intl.getCurrentLocale());
-      request.headers.set('Content-type', 'application/json');
+      request.headers.set(HttpHeaders.acceptHeader, 'application/json');
+      request.headers.set(HttpHeaders.acceptLanguageHeader, Intl.getCurrentLocale());
+      request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
       request.headers.set(HttpHeaders.authorizationHeader, _authorizationHeader());
 
       response = await request.close().timeout(Duration(seconds: 10));
     } on SocketException catch (error) {
       showServerError(L10().connectionRefused, error.toString());
       return null;
-    } on TimeoutException catch (error) {
+    } on TimeoutException {
       showTimeoutError();
       return null;
     } catch (error, stackTrace) {
@@ -647,7 +643,7 @@ class InvenTreeAPI {
           error.toString()
       );
       return null;
-    } on TimeoutException catch (error) {
+    } on TimeoutException {
       showTimeoutError();
       return null;
     } catch (error, stackTrace) {
@@ -666,9 +662,10 @@ class InvenTreeAPI {
 
     // Set headers
     // Ref: https://stackoverflow.com/questions/59713003/body-not-sending-using-map-in-flutter
-    request.headers.set('Accept', 'application/json');
-    request.headers.set('Content-type', 'application/json');
-    request.headers.set('Content-Length', data.length.toString());
+    request.headers.set(HttpHeaders.acceptHeader, 'application/json');
+    request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
+    request.headers.set(HttpHeaders.acceptLanguageHeader, Intl.getCurrentLocale());
+    request.headers.set(HttpHeaders.contentLengthHeader, data.length.toString());
     request.headers.set(HttpHeaders.authorizationHeader, _authorizationHeader());
 
     // Add JSON data to the request
@@ -684,7 +681,7 @@ class InvenTreeAPI {
           error.toString()
       );
       return null;
-    } on TimeoutException catch (error) {
+    } on TimeoutException {
       showTimeoutError();
       return null;
     } catch (error, stackTrace) {
@@ -795,13 +792,13 @@ class InvenTreeAPI {
     try {
       // Open a connection
       request = await client.getUrl(uri).timeout(Duration(seconds: 10));
-    } on TimeoutException catch (error) {
+    } on TimeoutException {
       showTimeoutError();
       return null;
     } on SocketException catch (error) {
       showServerError(L10().connectionRefused, error.toString());
       return null;
-    } on Exception catch (error) {
+    } on FormatException {
       showServerError(L10().invalidHost, L10().invalidHostDetails);
       return null;
     } catch (error, stackTrace) {
@@ -811,15 +808,16 @@ class InvenTreeAPI {
     }
 
     // Set connection headers
+    request.headers.set(HttpHeaders.acceptHeader, 'application/json');
     request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
+    request.headers.set(HttpHeaders.acceptLanguageHeader, Intl.getCurrentLocale());
     request.headers.set(HttpHeaders.authorizationHeader, _authorizationHeader());
-
 
     try {
       HttpClientResponse response = await request.close().timeout(Duration(seconds: 10));
       return response;
 
-    } on TimeoutException catch (error) {
+    } on TimeoutException {
       showTimeoutError();
       return null;
     } on SocketException catch (error) {

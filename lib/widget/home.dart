@@ -1,5 +1,4 @@
 import 'package:InvenTree/user_profile.dart';
-import 'package:InvenTree/widget/starred_parts.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

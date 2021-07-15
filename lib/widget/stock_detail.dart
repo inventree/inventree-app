@@ -48,8 +48,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   final _moveStockKey = GlobalKey<FormState>();
   final _editStockKey = GlobalKey<FormState>();
 
-  _StockItemDisplayState(this.item) {
-  }
+  _StockItemDisplayState(this.item);
 
   @override
   List<Widget> getAppBarActions(BuildContext context) {

@@ -2,8 +2,6 @@ import 'package:InvenTree/widget/drawer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:InvenTree/widget/drawer.dart';
 
 
 abstract class RefreshableState<T extends StatefulWidget> extends State<T> {

@@ -1,18 +1,10 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:InvenTree/api.dart';
-import 'package:InvenTree/widget/dialogs.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:one_context/one_context.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-// import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import 'dart:convert';
-
 import 'package:path/path.dart' as path;
-import 'package:http/http.dart' as http;
 
 
 // Paginated response object

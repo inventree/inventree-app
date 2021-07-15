@@ -42,7 +42,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
   void _saveCompany(Map<String, String> values) async {
     Navigator.of(context).pop();
 
-    var response = await company.update(values: values);
+    await company.update(values: values);
 
     refresh();
   }
@@ -57,13 +57,13 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
     showFormDialog(L10().edit,
         key: _editCompanyKey,
         actions: <Widget>[
-          FlatButton(
+          TextButton(
             child: Text(L10().cancel),
             onPressed: () {
               Navigator.pop(context);
             },
           ),
-          FlatButton(
+          TextButton(
             child: Text(L10().save),
             onPressed: () {
               if (_editCompanyKey.currentState!.validate()) {

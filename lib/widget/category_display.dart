@@ -126,7 +126,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
     );
   }
 
-  _CategoryDisplayState(this.category) {}
+  _CategoryDisplayState(this.category);
 
   // The local InvenTreePartCategory object
   final InvenTreePartCategory? category;

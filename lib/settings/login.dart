@@ -8,7 +8,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:InvenTree/l10.dart';
 
 import '../api.dart';
-import '../preferences.dart';
 import '../user_profile.dart';
 
 class InvenTreeLoginSettingsWidget extends StatefulWidget {
@@ -21,8 +20,6 @@ class InvenTreeLoginSettingsWidget extends StatefulWidget {
 class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
 
   final GlobalKey<_InvenTreeLoginSettingsState> _loginKey = GlobalKey<_InvenTreeLoginSettingsState>();
-
-  final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
   final GlobalKey<FormState> _addProfileKey = new GlobalKey<FormState>();
 
@@ -250,7 +247,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
 
     List<Widget> children = [];
 
-    if (profiles != null && profiles.length > 0) {
+    if (profiles.length > 0) {
       for (int idx = 0; idx < profiles.length; idx++) {
         UserProfile profile = profiles[idx];
 

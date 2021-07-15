@@ -5,9 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'package:InvenTree/api.dart';
 import 'package:InvenTree/inventree/company.dart';
-import 'package:InvenTree/widget/drawer.dart';
 import 'package:InvenTree/widget/refreshable_state.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 abstract class CompanyListWidget extends StatefulWidget {
 
@@ -50,7 +48,7 @@ class _CompanyListState extends RefreshableState<CompanyListWidget> {
 
   Map<String, String> _filters = Map<String, String>();
 
-  _CompanyListState(this._title, this._filters) {}
+  _CompanyListState(this._title, this._filters);
 
   @override
   Future<void> onBuild(BuildContext context) async {

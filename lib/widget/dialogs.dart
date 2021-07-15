@@ -163,18 +163,12 @@ Future<void> showStatusCodeError(int status, {int expected = 200}) async {
 }
 
 Future<void> showTimeoutError() async {
-
-  // Use OneContext as "sometimes" context is null here?
-  var ctx = OneContext().context;
-
   await showServerError(L10().timeout, L10().noResponse);
 }
 
 void showFormDialog(String title, {String? acceptText, String? cancelText, GlobalKey<FormState>? key, List<Widget>? fields, List<Widget>? actions, Function? callback}) {
 
   BuildContext? dialogContext;
-
-  var ctx = OneContext().context;
 
   String _accept = acceptText ?? L10().save;
   String _cancel = cancelText ?? L10().cancel;
