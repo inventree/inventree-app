@@ -2,6 +2,38 @@ import 'dart:convert';
 
 import 'package:InvenTree/api.dart';
 
+
+/*
+ * Class that represents a single "form field",
+ * defined by the InvenTree API
+ */
+class APIFormField {
+
+  // Constructor
+  APIFormField(this.name, this.data);
+
+  // Name of this field
+  final String name;
+
+  // JSON data which defines the field
+  final dynamic data;
+
+  // Is this field hidden?
+  bool get hidden => (data['hidden'] ?? false) as bool;
+
+  // Is this field read only?
+  bool get readOnly => (data['read_only'] ?? false) as bool;
+
+  // Is this field required?
+  bool get required => (data['required'] ?? false) as bool;
+
+  String get label => (data['label'] ?? '') as String;
+
+  String get helpText => (data['help_text'] ?? '') as String;
+
+}
+
+
 /*
  * Extract field options from a returned OPTIONS request
  */
@@ -42,6 +74,9 @@ Future<bool> launchApiForm(String url, Map<String, dynamic> fields, {String meth
     return false;
   }
 
+  // Construct a list of APIFormField objects
+  List<APIFormField> formFields = [];
+
   // Iterate through the provided fields we wish to display
   for (String fieldName in fields.keys) {
 
@@ -68,8 +103,11 @@ Future<bool> launchApiForm(String url, Map<String, dynamic> fields, {String meth
       }
     }
 
-    print("${fieldName} -> ${remoteField.toString()}");
+    formFields.add(APIFormField(fieldName, remoteField));
+  }
 
+  for (var ff in formFields) {
+    print("${ff.name} -> ${ff.label} (${ff.helpText})");
   }
 
   return true;
