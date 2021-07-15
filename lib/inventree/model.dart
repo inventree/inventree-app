@@ -126,8 +126,7 @@ class InvenTreeModel {
   }
 
   // Return the API detail endpoint for this Model object
-  String get url => "${URL}/${pk}/";
-
+  String get url => "${URL}/${pk}/".replaceAll("//", "/");
 
   // Search this Model type in the database
   Future<List<InvenTreeModel>> search(BuildContext context, String searchTerm, {Map<String, String> filters = const {}}) async {
