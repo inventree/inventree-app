@@ -137,7 +137,7 @@ Map<String, dynamic> extractFields(APIResponse response) {
  * @param method is the HTTP method to use to send the form data to the server (e.g. POST / PATCH)
  */
 
-Future<void> launchApiForm(String title, String url, Map<String, dynamic> fields, {Map<String, dynamic> modelData = const {}, String method = "PATCH"}) async {
+Future<void> launchApiForm(String title, String url, Map<String, dynamic> fields, {Map<String, dynamic> modelData = const {}, String method = "PATCH", Function? onSuccess, Function? onCancel}) async {
 
   var options = await InvenTreeAPI().options(url);
 
@@ -225,6 +225,11 @@ Future<void> launchApiForm(String title, String url, Map<String, dynamic> fields
       case 201:
         // Form was validated by the server
         Navigator.pop(context);
+
+        if (onSuccess != null) {
+          onSuccess();
+        }
+
         break;
       case 400:
 
@@ -255,6 +260,10 @@ Future<void> launchApiForm(String title, String url, Map<String, dynamic> fields
             child: Text(L10().cancel),
             onPressed: () {
               Navigator.pop(context);
+
+              if (onCancel != null) {
+                onCancel();
+              }
             },
           ),
           // Save button

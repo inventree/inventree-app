@@ -192,7 +192,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           },
           "active": {},
         },
-        modelData: part.jsondata
+        modelData: part.jsondata,
+      onSuccess: refresh,
     );
 
     return;
