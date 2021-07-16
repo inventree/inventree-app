@@ -1,15 +1,15 @@
 import 'dart:io';
 
-import 'package:InvenTree/api_form.dart';
-import 'package:InvenTree/widget/part_notes.dart';
-import 'package:InvenTree/widget/progress.dart';
-import 'package:InvenTree/widget/snacks.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:inventree/l10.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'package:inventree/l10.dart';
+import 'package:inventree/api_form.dart';
+import 'package:inventree/widget/part_notes.dart';
+import 'package:inventree/widget/progress.dart';
+import 'package:inventree/widget/snacks.dart';
 import 'package:inventree/inventree/part.dart';
 import 'package:inventree/widget/full_screen_image.dart';
 import 'package:inventree/widget/category_display.dart';
