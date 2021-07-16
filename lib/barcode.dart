@@ -1,6 +1,6 @@
-import 'package:InvenTree/app_settings.dart';
-import 'package:InvenTree/widget/dialogs.dart';
-import 'package:InvenTree/widget/snacks.dart';
+import 'package:inventree/app_settings.dart';
+import 'package:inventree/widget/dialogs.dart';
+import 'package:inventree/widget/snacks.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,15 +9,15 @@ import 'package:one_context/one_context.dart';
 
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
-import 'package:InvenTree/inventree/stock.dart';
-import 'package:InvenTree/inventree/part.dart';
-import 'package:InvenTree/l10.dart';
+import 'package:inventree/inventree/stock.dart';
+import 'package:inventree/inventree/part.dart';
+import 'package:inventree/l10.dart';
 
-import 'package:InvenTree/api.dart';
+import 'package:inventree/api.dart';
 
-import 'package:InvenTree/widget/location_display.dart';
-import 'package:InvenTree/widget/part_detail.dart';
-import 'package:InvenTree/widget/stock_detail.dart';
+import 'package:inventree/widget/location_display.dart';
+import 'package:inventree/widget/part_detail.dart';
+import 'package:inventree/widget/stock_detail.dart';
 
 import 'dart:io';
 

@@ -4,16 +4,16 @@ import 'dart:io';
 
 import 'package:intl/intl.dart';
 
-import 'package:InvenTree/inventree/sentry.dart';
-import 'package:InvenTree/user_profile.dart';
-import 'package:InvenTree/widget/snacks.dart';
+import 'package:inventree/inventree/sentry.dart';
+import 'package:inventree/user_profile.dart';
+import 'package:inventree/widget/snacks.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:InvenTree/widget/dialogs.dart';
-import 'package:InvenTree/l10.dart';
+import 'package:inventree/widget/dialogs.dart';
+import 'package:inventree/l10.dart';
 
 import 'package:http/http.dart' as http;
 

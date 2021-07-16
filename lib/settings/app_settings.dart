@@ -2,11 +2,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
-import 'package:InvenTree/l10.dart';
+import 'package:inventree/l10.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import 'package:InvenTree/app_settings.dart';
+import 'package:inventree/app_settings.dart';
 
 class InvenTreeAppSettingsWidget extends StatefulWidget {
   @override

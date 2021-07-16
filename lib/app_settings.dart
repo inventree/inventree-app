@@ -3,7 +3,7 @@
  */
 
 import 'package:sembast/sembast.dart';
-import 'package:InvenTree/preferences.dart';
+import 'package:inventree/preferences.dart';
 
 class InvenTreeSettingsManager {
 

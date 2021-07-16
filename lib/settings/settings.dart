@@ -1,13 +1,13 @@
-import 'package:InvenTree/inventree/sentry.dart';
-import 'package:InvenTree/settings/about.dart';
-import 'package:InvenTree/settings/app_settings.dart';
-import 'package:InvenTree/settings/login.dart';
-import 'package:InvenTree/widget/snacks.dart';
-import 'package:InvenTree/widget/dialogs.dart';
+import 'package:inventree/inventree/sentry.dart';
+import 'package:inventree/settings/about.dart';
+import 'package:inventree/settings/app_settings.dart';
+import 'package:inventree/settings/login.dart';
+import 'package:inventree/widget/snacks.dart';
+import 'package:inventree/widget/dialogs.dart';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:InvenTree/l10.dart';
+import 'package:inventree/l10.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 

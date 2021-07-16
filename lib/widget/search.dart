@@ -1,15 +1,15 @@
 
-import 'package:InvenTree/widget/part_detail.dart';
-import 'package:InvenTree/widget/progress.dart';
-import 'package:InvenTree/widget/snacks.dart';
-import 'package:InvenTree/widget/stock_detail.dart';
+import 'package:inventree/widget/part_detail.dart';
+import 'package:inventree/widget/progress.dart';
+import 'package:inventree/widget/snacks.dart';
+import 'package:inventree/widget/stock_detail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:InvenTree/l10.dart';
+import 'package:inventree/l10.dart';
 
-import 'package:InvenTree/inventree/part.dart';
-import 'package:InvenTree/inventree/stock.dart';
+import 'package:inventree/inventree/part.dart';
+import 'package:inventree/inventree/stock.dart';
 
 import '../api.dart';
 

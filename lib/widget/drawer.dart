@@ -1,14 +1,14 @@
-import 'package:InvenTree/api.dart';
-import 'package:InvenTree/barcode.dart';
-import 'package:InvenTree/widget/company_list.dart';
-import 'package:InvenTree/widget/search.dart';
+import 'package:inventree/api.dart';
+import 'package:inventree/barcode.dart';
+import 'package:inventree/widget/company_list.dart';
+import 'package:inventree/widget/search.dart';
 import 'package:flutter/material.dart';
-import 'package:InvenTree/l10.dart';
+import 'package:inventree/l10.dart';
 
-import 'package:InvenTree/widget/category_display.dart';
-import 'package:InvenTree/widget/location_display.dart';
+import 'package:inventree/widget/category_display.dart';
+import 'package:inventree/widget/location_display.dart';
 
-import 'package:InvenTree/settings/settings.dart';
+import 'package:inventree/settings/settings.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class InvenTreeDrawer extends StatelessWidget {

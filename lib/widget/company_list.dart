@@ -1,11 +1,11 @@
 
-import 'package:InvenTree/widget/company_detail.dart';
+import 'package:inventree/widget/company_detail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:InvenTree/api.dart';
-import 'package:InvenTree/inventree/company.dart';
-import 'package:InvenTree/widget/refreshable_state.dart';
+import 'package:inventree/api.dart';
+import 'package:inventree/inventree/company.dart';
+import 'package:inventree/widget/refreshable_state.dart';
 
 abstract class CompanyListWidget extends StatefulWidget {
 

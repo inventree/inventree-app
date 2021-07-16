@@ -4,7 +4,7 @@ import 'package:device_info/device_info.dart';
 import 'package:package_info/package_info.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
-import 'package:InvenTree/api.dart';
+import 'package:inventree/api.dart';
 
 Future<Map<String, dynamic>> getDeviceInfo() async {
 

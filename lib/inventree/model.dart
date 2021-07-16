@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:InvenTree/api.dart';
+import 'package:inventree/api.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:url_launcher/url_launcher.dart';
 

@@ -1,17 +1,17 @@
-import 'package:InvenTree/api.dart';
-import 'package:InvenTree/app_settings.dart';
-import 'package:InvenTree/barcode.dart';
-import 'package:InvenTree/inventree/sentry.dart';
-import 'package:InvenTree/inventree/stock.dart';
-import 'package:InvenTree/widget/progress.dart';
+import 'package:inventree/api.dart';
+import 'package:inventree/app_settings.dart';
+import 'package:inventree/barcode.dart';
+import 'package:inventree/inventree/sentry.dart';
+import 'package:inventree/inventree/stock.dart';
+import 'package:inventree/widget/progress.dart';
 
-import 'package:InvenTree/widget/refreshable_state.dart';
-import 'package:InvenTree/widget/fields.dart';
-import 'package:InvenTree/widget/dialogs.dart';
-import 'package:InvenTree/widget/snacks.dart';
-import 'package:InvenTree/widget/stock_detail.dart';
-import 'package:InvenTree/widget/paginator.dart';
-import 'package:InvenTree/l10.dart';
+import 'package:inventree/widget/refreshable_state.dart';
+import 'package:inventree/widget/fields.dart';
+import 'package:inventree/widget/dialogs.dart';
+import 'package:inventree/widget/snacks.dart';
+import 'package:inventree/widget/stock_detail.dart';
+import 'package:inventree/widget/paginator.dart';
+import 'package:inventree/l10.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

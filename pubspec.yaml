@@ -1,4 +1,4 @@
-name: InvenTree
+name: inventree
 description: InvenTree stock management
 
 # In Android, build-name is used as versionName while build-number used as versionCode.
