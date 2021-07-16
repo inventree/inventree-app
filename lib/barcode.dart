@@ -92,7 +92,7 @@ class BarcodeHandler {
 
       print("Scanned barcode data: ${barcode}");
 
-      var data = await InvenTreeAPI().post(
+      var response = await InvenTreeAPI().post(
           url,
           body: {
             "barcode": barcode,
@@ -100,19 +100,19 @@ class BarcodeHandler {
           expectedStatusCode: 200
       );
 
-      if (data == null) {
+      if (!response.isValid()) {
         return;
       }
 
-      if (data.containsKey('error')) {
+      if (response.data.containsKey('error')) {
         _controller?.resumeCamera();
-        onBarcodeUnknown(data);
-      } else if (data.containsKey('success')) {
+        onBarcodeUnknown(response.data);
+      } else if (response.data.containsKey('success')) {
         _controller?.resumeCamera();
-        onBarcodeMatched(data);
+        onBarcodeMatched(response.data);
       } else {
         _controller?.resumeCamera();
-        onBarcodeUnhandled(data);
+        onBarcodeUnhandled(response.data);
       }
     }
 }
