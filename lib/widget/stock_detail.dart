@@ -1,6 +1,3 @@
-
-import 'dart:io';
-
 import 'package:inventree/barcode.dart';
 import 'package:inventree/inventree/stock.dart';
 import 'package:inventree/inventree/part.dart';

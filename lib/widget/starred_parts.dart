@@ -35,11 +35,9 @@ class _StarredPartState extends RefreshableState<StarredPartWidget> {
 
     starredParts.clear();
 
-    if (parts != null) {
-      for (int idx = 0; idx < parts.length; idx++) {
-        if (parts[idx] is InvenTreePart) {
-          starredParts.add(parts[idx] as InvenTreePart);
-        }
+    for (int idx = 0; idx < parts.length; idx++) {
+      if (parts[idx] is InvenTreePart) {
+        starredParts.add(parts[idx] as InvenTreePart);
       }
     }
   }
