@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:InvenTree/l10.dart';
+import 'package:inventree/l10.dart';
 
 
 class PaginatedSearchWidget extends StatelessWidget {

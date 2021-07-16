@@ -1,7 +1,7 @@
-import 'package:InvenTree/api.dart';
-import 'package:InvenTree/inventree/stock.dart';
+import 'package:inventree/api.dart';
+import 'package:inventree/inventree/stock.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:InvenTree/l10.dart';
+import 'package:inventree/l10.dart';
 
 import 'model.dart';
 import 'dart:io';

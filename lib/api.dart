@@ -4,18 +4,39 @@ import 'dart:io';
 
 import 'package:intl/intl.dart';
 
-import 'package:InvenTree/inventree/sentry.dart';
-import 'package:InvenTree/user_profile.dart';
-import 'package:InvenTree/widget/snacks.dart';
+import 'package:inventree/inventree/sentry.dart';
+import 'package:inventree/user_profile.dart';
+import 'package:inventree/widget/snacks.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:InvenTree/widget/dialogs.dart';
-import 'package:InvenTree/l10.dart';
+import 'package:inventree/widget/dialogs.dart';
+import 'package:inventree/l10.dart';
 
 import 'package:http/http.dart' as http;
+
+
+/**
+ * Class representing an API response from the server
+ */
+class APIResponse {
+
+  APIResponse({this.url = "", this.method = "", this.statusCode = -1, this.data});
+
+  int statusCode = -1;
+
+  String url = "";
+
+  String method = "";
+
+  dynamic data;
+
+  // Request is "valid" if a statusCode was returned
+  bool isValid() => statusCode >= 0;
+}
+
 
 /**
  * Custom FileService for caching network images
@@ -214,16 +235,12 @@ class InvenTreeAPI {
 
     print("Connecting to ${apiUrl} -> username=${username}");
 
-    HttpClientResponse? response;
+    APIResponse response;
 
-    dynamic data;
+    response = await get("", expectedStatusCode: 200);
 
-    response = await getResponse("");
-
-    // Null response means something went horribly wrong!
-    // Most likely, the server cannot be contacted
-    if (response == null) {
-      // An error message has already been displayed!
+    // Response was invalid for some reason
+    if (!response.isValid()) {
       return false;
     }
 
@@ -232,10 +249,8 @@ class InvenTreeAPI {
       return false;
     }
 
-    data = await responseToJson(response);
-
     // We expect certain response from the server
-    if (data == null || !data.containsKey("server") || !data.containsKey("version") || !data.containsKey("instance")) {
+    if (response.data == null || !response.data.containsKey("server") || !response.data.containsKey("version") || !response.data.containsKey("instance")) {
 
       showServerError(
         L10().missingData,
@@ -246,11 +261,11 @@ class InvenTreeAPI {
     }
 
     // Record server information
-    _version = data["version"];
-    instance = data['instance'] ?? '';
+    _version = response.data["version"];
+    instance = response.data['instance'] ?? '';
 
     // Default API version is 1 if not provided
-    _apiVersion = (data['apiVersion'] ?? 1) as int;
+    _apiVersion = (response.data['apiVersion'] ?? 1) as int;
 
     if (_apiVersion < _minApiVersion) {
 
@@ -280,10 +295,10 @@ class InvenTreeAPI {
 
     print("Requesting token from server");
 
-    response = await getResponse(_URL_GET_TOKEN);
+    response = await get(_URL_GET_TOKEN);
 
-    // A "null" response means that the request was unsuccessful
-    if (response == null) {
+    // Invalid response
+    if (!response.isValid()) {
       return false;
     }
 
@@ -305,9 +320,7 @@ class InvenTreeAPI {
       return false;
     }
 
-    data = await responseToJson(response);
-
-    if (data == null || !data.containsKey("token")) {
+    if (response.data == null || !response.data.containsKey("token")) {
       showServerError(
           L10().tokenMissing,
           L10().tokenMissingFromResponse,
@@ -317,7 +330,7 @@ class InvenTreeAPI {
     }
 
     // Return the received token
-    _token = data["token"];
+    _token = response.data["token"];
     print("Received token - $_token");
 
     // Request user role information
@@ -383,17 +396,15 @@ class InvenTreeAPI {
     // Any 'older' version of the server allows any API method for any logged in user!
     // We will return immediately, but request the user roles in the background
 
-    var response = await get(_URL_GET_ROLES);
+    var response = await get(_URL_GET_ROLES, expectedStatusCode: 200);
 
-    // Null response from server
-    if (response == null) {
-      print("null response requesting user roles");
+    if (!response.isValid() || response.statusCode != 200) {
       return;
     }
 
-    if (response.containsKey('roles')) {
+    if (response.data.containsKey('roles')) {
       // Save a local copy of the user roles
-      roles = response['roles'];
+      roles = response.data['roles'];
     }
   }
 
@@ -420,108 +431,27 @@ class InvenTreeAPI {
 
 
   // Perform a PATCH request
-  Future<dynamic> patch(String url, {Map<String, String> body = const {}, int expectedStatusCode=200}) async {
-    var _url = makeApiUrl(url);
+  Future<APIResponse> patch(String url, {Map<String, String> body = const {}, int expectedStatusCode=200}) async {
     var _body = Map<String, String>();
 
     // Copy across provided data
     body.forEach((K, V) => _body[K] = V);
 
-    print("PATCH: " + _url);
+    HttpClientRequest? request = await apiRequest(url, "PATCH");
 
-    final uri = Uri.parse(_url);
-
-    // Check for invalid host
-    if (uri.host.isEmpty) {
-      showServerError(L10().invalidHost, L10().invalidHostDetails);
-      return null;
-    }
-
-    var client = createClient(true);
-
-    HttpClientRequest? request;
-
-    try {
-      // Open a connection to the server
-      request = await client.patchUrl(uri).timeout(Duration(seconds: 10));
-    } on SocketException catch (error) {
-      showServerError(L10().connectionRefused, error.toString());
-      return null;
-    } on TimeoutException {
-      showTimeoutError();
-      return null;
-    } catch (error, stackTrace) {
-      showServerError(
-          L10().serverError,
-          error.toString()
+    if (request == null) {
+      // Return an "invalid" APIResponse
+      return new APIResponse(
+        url: url,
+        method: 'PATCH',
       );
-
-      sentryReportError(error, stackTrace);
-
-      return null;
     }
 
-    var data = json.encode(_body);
-
-    // Set headers
-    request.headers.set(HttpHeaders.acceptHeader, 'application/json');
-    request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
-    request.headers.set(HttpHeaders.acceptLanguageHeader, Intl.getCurrentLocale());
-    request.headers.set(HttpHeaders.contentLengthHeader, data.length.toString());
-    request.headers.set(HttpHeaders.authorizationHeader, _authorizationHeader());
-
-    request.add(utf8.encode(data));
-
-    HttpClientResponse? response;
-
-    try {
-      response = await request.close().timeout(Duration(seconds: 10));
-    } on SocketException catch (error) {
-      showServerError(
-          L10().connectionRefused,
-          error.toString()
-      );
-      return null;
-    } on TimeoutException {
-      showTimeoutError();
-      return null;
-    } catch (error, stackTrace) {
-      showServerError(
-            L10().serverError,
-            error.toString()
-      );
-
-      sentryReportError(error, stackTrace);
-      return null;
-    }
-
-    var responseData = await responseToJson(response);
-
-    if (response.statusCode != expectedStatusCode) {
-      showStatusCodeError(response.statusCode);
-
-      print("PATCH to ${_url} returned status code ${response.statusCode}");
-      print("Data:");
-      print(responseData);
-
-      // Server error
-      if (response.statusCode >= 500) {
-        sentryReportMessage(
-            "Server error on PATCH request",
-            context: {
-              "url": _url,
-              "statusCode": "${response.statusCode}",
-              "response": responseData.toString(),
-              "request": body.toString(),
-            }
-        );
-      }
-    }
-
-    // Include the statuscode in the response object
-    responseData["statusCode"] = response.statusCode;
-
-    return responseData;
+    return completeRequest(
+      request,
+      data: json.encode(_body),
+      statusCode: expectedStatusCode
+    );
   }
 
   /*
@@ -572,155 +502,42 @@ class InvenTreeAPI {
    * We send this with the currently selected "locale",
    * so that (hopefully) the field messages are correctly translated
    */
-  Future<dynamic> options(String url) async {
+  Future<APIResponse> options(String url) async {
 
-    var _url = makeApiUrl(url);
+    HttpClientRequest? request = await apiRequest(url, "OPTIONS");
 
-    var client = createClient(true);
-
-    final uri = Uri.parse(_url);
-
-    if (uri.host.isEmpty) {
-      showServerError(L10().invalidHost, L10().invalidHostDetails);
-      return null;
+    if (request == null) {
+      // Return an "invalid" APIResponse
+      return new APIResponse(
+        url: url,
+        method: 'OPTIONS'
+      );
     }
 
-    HttpClientRequest? request;
-    HttpClientResponse? response;
-
-    try {
-      request = await client.openUrl("OPTIONS", uri).timeout(Duration(seconds: 10));
-
-      request.headers.set(HttpHeaders.acceptHeader, 'application/json');
-      request.headers.set(HttpHeaders.acceptLanguageHeader, Intl.getCurrentLocale());
-      request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
-      request.headers.set(HttpHeaders.authorizationHeader, _authorizationHeader());
-
-      response = await request.close().timeout(Duration(seconds: 10));
-    } on SocketException catch (error) {
-      showServerError(L10().connectionRefused, error.toString());
-      return null;
-    } on TimeoutException {
-      showTimeoutError();
-      return null;
-    } catch (error, stackTrace) {
-      showServerError(L10().serverError, error.toString());
-      sentryReportError(error, stackTrace);
-      return null;
-    }
-
-    var responseData = await responseToJson(response);
-
-    return responseData;
+    return completeRequest(request);
   }
 
   /**
    * Perform a HTTP POST request
    * Returns a json object (or null if unsuccessful)
    */
-  Future<dynamic> post(String url, {Map<String, dynamic> body = const {}, int expectedStatusCode=201}) async {
+  Future<APIResponse> post(String url, {Map<String, dynamic> body = const {}, int expectedStatusCode=201}) async {
 
-    var _url = makeApiUrl(url);
+    HttpClientRequest? request = await apiRequest(url, "POST");
 
-    print("POST: ${_url} -> ${body.toString()}");
-
-    var client = createClient(true);
-
-    final uri = Uri.parse(_url);
-
-    if (uri.host.isEmpty) {
-      showServerError(L10().invalidHost, L10().invalidHostDetails);
-      return null;
+    if (request == null) {
+      // Return an "invalid" APIResponse
+      return new APIResponse(
+        url: url,
+        method: 'POST'
+      );
     }
 
-    HttpClientRequest? request;
-
-    try {
-      // Open a connection to the server
-      request = await client.postUrl(uri).timeout(Duration(seconds: 10));
-    } on SocketException catch (error) {
-      showServerError(
-          L10().connectionRefused,
-          error.toString()
-      );
-      return null;
-    } on TimeoutException {
-      showTimeoutError();
-      return null;
-    } catch (error, stackTrace) {
-
-      showServerError(
-        L10().serverError,
-        error.toString()
-      );
-
-      sentryReportError(error, stackTrace);
-
-      return null;
-    }
-
-    var data = json.encode(body);
-
-    // Set headers
-    // Ref: https://stackoverflow.com/questions/59713003/body-not-sending-using-map-in-flutter
-    request.headers.set(HttpHeaders.acceptHeader, 'application/json');
-    request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
-    request.headers.set(HttpHeaders.acceptLanguageHeader, Intl.getCurrentLocale());
-    request.headers.set(HttpHeaders.contentLengthHeader, data.length.toString());
-    request.headers.set(HttpHeaders.authorizationHeader, _authorizationHeader());
-
-    // Add JSON data to the request
-    request.add(utf8.encode(data));
-
-    HttpClientResponse? response;
-
-    try {
-      response = await request.close().timeout(Duration(seconds: 10));
-    } on SocketException catch (error) {
-      showServerError(
-          L10().connectionRefused,
-          error.toString()
-      );
-      return null;
-    } on TimeoutException {
-      showTimeoutError();
-      return null;
-    } catch (error, stackTrace) {
-      showServerError(
-        L10().serverError,
-        error.toString()
-      );
-
-      sentryReportError(error, stackTrace);
-      return null;
-    }
-
-    var responseData = await responseToJson(response);
-
-    if (response.statusCode != expectedStatusCode) {
-      showStatusCodeError(response.statusCode);
-
-      print("POST to ${_url} returned status code ${response.statusCode}");
-      print("Data:");
-      print(responseData);
-
-      // Server error
-      if (response.statusCode >= 500) {
-        sentryReportMessage(
-          "Server error on POST request",
-          context: {
-            "url": _url,
-            "statusCode": "${response.statusCode}",
-            "response": responseData.toString(),
-            "request": body.toString(),
-          }
-        );
-      }
-
-      return null;
-    }
-
-    return responseData;
+    return completeRequest(
+      request,
+      data: json.encode(body),
+      statusCode: expectedStatusCode
+    );
   }
 
   HttpClient createClient(bool allowBadCert) {
@@ -750,20 +567,21 @@ class InvenTreeAPI {
   }
 
   /**
-   * Perform a HTTP GET request,
-   * and return the Response object
-   * (or null if the request fails)
+   * Initiate a HTTP request to the server
+   *
+   * @param url is the API endpoint
+   * @param method is the HTTP method e.g. 'POST' / 'PATCH' / 'GET' etc;
+   * @param params is the request parameters
    */
-  Future<HttpClientResponse?> getResponse(String url, {Map<String, String> params = const {}}) async {
+  Future<HttpClientRequest?> apiRequest(String url, String method, {Map<String, String> urlParams = const {}}) async {
+
     var _url = makeApiUrl(url);
 
-    print("GET: ${_url}");
+    // Add any required query parameters to the URL using ?key=value notation
+    if (urlParams.isNotEmpty) {
+      String query = "?";
 
-    // If query parameters are supplied, form a query string
-    if (params.isNotEmpty) {
-      String query = '?';
-
-      params.forEach((K, V) => query += K + '=' + V + '&');
+      urlParams.forEach((k, v) => query += "${k}=${v}&");
 
       _url += query;
     }
@@ -773,70 +591,106 @@ class InvenTreeAPI {
       _url = _url.substring(0, _url.length - 1);
     }
 
+    Uri? _uri = Uri.tryParse(_url);
+
+    print("apiRequest ${method} -> ${url}");
+
+    if (_uri == null) {
+      showServerError(L10().invalidHost, L10().invalidHostDetails);
+      return null;
+    }
+
+    if (_uri.host.isEmpty) {
+      showServerError(L10().invalidHost, L10().invalidHostDetails);
+      return null;
+    }
+
+    HttpClientRequest? _request;
+
     var client = createClient(true);
 
-    Uri? uri = Uri.tryParse(_url);
-
-    if (uri == null) {
-      showServerError(L10().invalidHost, L10().invalidHostDetails);
-      return null;
-    }
-
-    // Check for invalid host
-    if (uri.host.isEmpty) {
-      showServerError(L10().invalidHost, L10().invalidHostDetails);
-      return null;
-    }
-
-    HttpClientRequest? request;
-
+    // Attempt to open a connection to the server
     try {
-      // Open a connection
-      request = await client.getUrl(uri).timeout(Duration(seconds: 10));
-    } on TimeoutException {
-      showTimeoutError();
-      return null;
+      _request = await client.openUrl(method, _uri).timeout(Duration(seconds: 10));
+
+      // Set headers
+      _request.headers.set(HttpHeaders.authorizationHeader, _authorizationHeader());
+      _request.headers.set(HttpHeaders.acceptHeader, 'application/json');
+      _request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
+      _request.headers.set(HttpHeaders.acceptLanguageHeader, Intl.getCurrentLocale());
+
+      return _request;
     } on SocketException catch (error) {
       showServerError(L10().connectionRefused, error.toString());
       return null;
-    } on FormatException {
-      showServerError(L10().invalidHost, L10().invalidHostDetails);
-      return null;
-    } catch (error, stackTrace) {
-        sentryReportError(error, stackTrace);
-        showServerError(L10().serverError, error.toString());
-        return null;
-    }
-
-    // Set connection headers
-    request.headers.set(HttpHeaders.acceptHeader, 'application/json');
-    request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
-    request.headers.set(HttpHeaders.acceptLanguageHeader, Intl.getCurrentLocale());
-    request.headers.set(HttpHeaders.authorizationHeader, _authorizationHeader());
-
-    try {
-      HttpClientResponse response = await request.close().timeout(Duration(seconds: 10));
-      return response;
-
     } on TimeoutException {
       showTimeoutError();
       return null;
-    } on SocketException catch (error) {
-      showServerError(L10().connectionRefused, error.toString());
-      return null;
     } catch (error, stackTrace) {
-
-        showServerError(
-            L10().serverError,
-            error.toString()
-        );
-
-        sentryReportError(error, stackTrace);
-
+      showServerError(L10().serverError, error.toString());
+      sentryReportError(error, stackTrace);
       return null;
     }
   }
 
+
+  /**
+   * Complete an API request, and return an APIResponse object
+   */
+  Future<APIResponse> completeRequest(HttpClientRequest request, {String? data, int? statusCode}) async {
+
+    if (data != null && data.isNotEmpty) {
+      request.headers.set(HttpHeaders.contentLengthHeader, data.length.toString());
+      request.add(utf8.encode(data));
+    }
+
+    APIResponse response = new APIResponse(
+      method: request.method,
+      url: request.uri.toString()
+    );
+
+    try {
+      HttpClientResponse? _response = await request.close().timeout(Duration(seconds: 10));
+
+      response.statusCode = _response.statusCode;
+      response.data = await responseToJson(_response);
+
+      // Expected status code not returned
+      if ((statusCode != null) && (statusCode != _response.statusCode)) {
+        showStatusCodeError(_response.statusCode);
+      }
+
+      // Report any server errors
+      if (_response.statusCode >= 500) {
+        sentryReportMessage(
+          "Server error",
+          context: {
+            "url": request.uri.toString(),
+            "method": request.method,
+            "statusCode": _response.statusCode.toString(),
+            "requestHeaders": request.headers.toString(),
+            "responseHeaders": _response.headers.toString(),
+            "responseData": response.data.toString(),
+          }
+        );
+      }
+
+    } on SocketException catch (error) {
+      showServerError(L10().connectionRefused, error.toString());
+    } on TimeoutException {
+      showTimeoutError();
+    } catch (error, stackTrace) {
+      showServerError(L10().serverError, error.toString());
+      sentryReportError(error, stackTrace);
+    }
+
+    return response;
+
+  }
+
+  /**
+   * Convert a HttpClientResponse response object to JSON
+   */
   dynamic responseToJson(HttpClientResponse response) async {
 
     String body = await response.transform(utf8.decoder).join();
@@ -872,52 +726,34 @@ class InvenTreeAPI {
    * Perform a HTTP GET request
    * Returns a json object (or null if did not complete)
    */
-  Future<dynamic> get(String url, {Map<String, String> params = const {}, int expectedStatusCode=200}) async {
+  Future<APIResponse> get(String url, {Map<String, String> params = const {}, int expectedStatusCode=200}) async {
 
-    var response = await getResponse(url, params: params);
+    HttpClientRequest? request = await apiRequest(
+      url,
+      "GET",
+      urlParams: params,
+    );
 
-    // A null response means something has gone wrong...
-    if (response == null) {
-      print("null response from GET ${url}");
-      return null;
+    if (request == null) {
+      // Return an "invalid" APIResponse
+      return new APIResponse(
+        url: url,
+        method: 'GET',
+      );
     }
 
-    var responseData = await responseToJson(response);
-
-    // Check the status code of the response
-    if (response.statusCode != expectedStatusCode) {
-      showStatusCodeError(response.statusCode);
-
-      // Server error
-      if (response.statusCode >= 500) {
-        sentryReportMessage(
-            "Server error on GET request",
-            context: {
-              "url": url,
-              "statusCode": "${response.statusCode}",
-              "response": responseData.toString(),
-              "params": params.toString(),
-            }
-        );
-      }
-
-      return null;
-    }
-
-    return responseData;
+    return completeRequest(request);
   }
 
+  // Return a list of request headers
   Map<String, String> defaultHeaders() {
     var headers = Map<String, String>();
 
     headers[HttpHeaders.authorizationHeader] = _authorizationHeader();
+    headers[HttpHeaders.acceptHeader] = 'application/json';
+    headers[HttpHeaders.contentTypeHeader] = 'application/json';
+    headers[HttpHeaders.acceptLanguageHeader] = Intl.getCurrentLocale();
 
-    return headers;
-  }
-
-  Map<String, String> jsonHeaders() {
-    var headers = defaultHeaders();
-    headers['Content-Type'] = 'application/json';
     return headers;
   }
 

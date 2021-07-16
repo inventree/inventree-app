@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:InvenTree/l10.dart';
+import 'package:inventree/l10.dart';
 
 
 class ReleaseNotesWidget extends StatelessWidget {

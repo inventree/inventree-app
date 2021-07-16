@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:InvenTree/api.dart';
+import 'package:inventree/api.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -149,13 +149,13 @@ class InvenTreeModel {
    */
   Future<bool> reload() async {
 
-    var response = await api.get(url, params: defaultGetFilters());
+    var response = await api.get(url, params: defaultGetFilters(), expectedStatusCode: 200);
     
-    if (response == null) {
+    if (!response.isValid()) {
       return false;
     }
 
-    jsondata = response;
+    jsondata = response.data;
 
     return true;
   }
@@ -163,19 +163,21 @@ class InvenTreeModel {
   // POST data to update the model
   Future<bool> update({Map<String, String> values = const {}}) async {
 
-    var addr = path.join(URL, pk.toString());
+    var url = path.join(URL, pk.toString());
 
-    if (!addr.endsWith("/")) {
-      addr += "/";
+    if (!url.endsWith("/")) {
+      url += "/";
     }
 
     var response = await api.patch(
-      addr,
+      url,
       body: values,
       expectedStatusCode: 200
     );
 
-    if (response == null) return false;
+    if (!response.isValid()) {
+      return false;
+    }
 
     return true;
   }
@@ -199,15 +201,13 @@ class InvenTreeModel {
       params[key] = filters[key] ?? '';
     }
 
-    print("GET: $url ${params.toString()}");
-
     var response = await api.get(url, params: params);
 
-    if (response == null) {
+    if (!response.isValid()) {
       return null;
     }
 
-    return createFromJson(response);
+    return createFromJson(response.data);
   }
 
   Future<InvenTreeModel?> create(Map<String, dynamic> data) async {
@@ -224,11 +224,12 @@ class InvenTreeModel {
 
     var response = await api.post(URL, body: data);
 
-    if (response == null) {
+    // Invalid response returned from server
+    if (!response.isValid()) {
       return null;
     }
 
-    return createFromJson(response);
+    return createFromJson(response.data);
   }
 
   Future<InvenTreePageResponse?> listPaginated(int limit, int offset, {Map<String, String> filters = const {}}) async {
@@ -243,19 +244,19 @@ class InvenTreeModel {
 
     var response = await api.get(URL, params: params);
 
-    if (response == null) {
+    if (!response.isValid()) {
       return null;
     }
 
     // Construct the response
     InvenTreePageResponse page = new InvenTreePageResponse();
 
-    if (response.containsKey("count") && response.containsKey("results")) {
-       page.count = response["count"] as int;
+    if (response.data.containsKey("count") && response.data.containsKey("results")) {
+       page.count = response.data["count"] as int;
 
        page.results = [];
 
-       for (var result in response["results"]) {
+       for (var result in response.data["results"]) {
          page.addResult(createFromJson(result));
        }
 
@@ -282,7 +283,7 @@ class InvenTreeModel {
     // A list of "InvenTreeModel" items
     List<InvenTreeModel> results = [];
 
-    if (response == null) {
+    if (!response.isValid()) {
       return results;
     }
 
@@ -290,7 +291,7 @@ class InvenTreeModel {
     // - No data receieved
     // - Data is not a list of maps
 
-    for (var d in response) {
+    for (var d in response.data) {
 
       // Create a new object (of the current class type
       InvenTreeModel obj = createFromJson(d);

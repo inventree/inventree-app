@@ -1,13 +1,13 @@
 
 
-import 'package:InvenTree/inventree/part.dart';
-import 'package:InvenTree/widget/part_detail.dart';
-import 'package:InvenTree/widget/progress.dart';
-import 'package:InvenTree/widget/refreshable_state.dart';
+import 'package:inventree/inventree/part.dart';
+import 'package:inventree/widget/part_detail.dart';
+import 'package:inventree/widget/progress.dart';
+import 'package:inventree/widget/refreshable_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:InvenTree/l10.dart';
+import 'package:inventree/l10.dart';
 
 import '../api.dart';
 
@@ -35,11 +35,9 @@ class _StarredPartState extends RefreshableState<StarredPartWidget> {
 
     starredParts.clear();
 
-    if (parts != null) {
-      for (int idx = 0; idx < parts.length; idx++) {
-        if (parts[idx] is InvenTreePart) {
-          starredParts.add(parts[idx] as InvenTreePart);
-        }
+    for (int idx = 0; idx < parts.length; idx++) {
+      if (parts[idx] is InvenTreePart) {
+        starredParts.add(parts[idx] as InvenTreePart);
       }
     }
   }

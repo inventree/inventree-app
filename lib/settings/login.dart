@@ -1,11 +1,11 @@
-import 'package:InvenTree/widget/dialogs.dart';
-import 'package:InvenTree/widget/fields.dart';
-import 'package:InvenTree/widget/spinner.dart';
+import 'package:inventree/widget/dialogs.dart';
+import 'package:inventree/widget/fields.dart';
+import 'package:inventree/widget/spinner.dart';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import 'package:InvenTree/l10.dart';
+import 'package:inventree/l10.dart';
 
 import '../api.dart';
 import '../user_profile.dart';

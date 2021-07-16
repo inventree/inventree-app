@@ -1,14 +1,14 @@
-import 'package:InvenTree/inventree/part.dart';
+import 'package:inventree/inventree/part.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'model.dart';
-import 'package:InvenTree/l10.dart';
+import 'package:inventree/l10.dart';
 
 
 import 'dart:async';
 import 'dart:io';
 
-import 'package:InvenTree/api.dart';
+import 'package:inventree/api.dart';
 
 
 class InvenTreeStockItemTestResult extends InvenTreeModel {

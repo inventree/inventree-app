@@ -1,5 +1,5 @@
-import 'package:InvenTree/api.dart';
-import 'package:InvenTree/settings/release.dart';
+import 'package:inventree/api.dart';
+import 'package:inventree/settings/release.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info/package_info.dart';
 
-import 'package:InvenTree/l10.dart';
+import 'package:inventree/l10.dart';
 
 class InvenTreeAboutWidget extends StatelessWidget {
 

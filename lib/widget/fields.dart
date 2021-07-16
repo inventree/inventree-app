@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'package:InvenTree/l10.dart';
+import 'package:inventree/l10.dart';
 
 import 'dart:async';
 import 'dart:io';

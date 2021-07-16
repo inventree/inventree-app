@@ -1,19 +1,19 @@
 
-import 'package:InvenTree/api.dart';
-import 'package:InvenTree/app_settings.dart';
-import 'package:InvenTree/inventree/part.dart';
-import 'package:InvenTree/inventree/sentry.dart';
-import 'package:InvenTree/widget/progress.dart';
+import 'package:inventree/api.dart';
+import 'package:inventree/app_settings.dart';
+import 'package:inventree/inventree/part.dart';
+import 'package:inventree/inventree/sentry.dart';
+import 'package:inventree/widget/progress.dart';
 
-import 'package:InvenTree/l10.dart';
+import 'package:inventree/l10.dart';
 
 
-import 'package:InvenTree/widget/fields.dart';
-import 'package:InvenTree/widget/dialogs.dart';
-import 'package:InvenTree/widget/snacks.dart';
-import 'package:InvenTree/widget/part_detail.dart';
-import 'package:InvenTree/widget/refreshable_state.dart';
-import 'package:InvenTree/widget/paginator.dart';
+import 'package:inventree/widget/fields.dart';
+import 'package:inventree/widget/dialogs.dart';
+import 'package:inventree/widget/snacks.dart';
+import 'package:inventree/widget/part_detail.dart';
+import 'package:inventree/widget/refreshable_state.dart';
+import 'package:inventree/widget/paginator.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';

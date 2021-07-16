@@ -1,13 +1,13 @@
 
-import 'package:InvenTree/api.dart';
-import 'package:InvenTree/inventree/company.dart';
-import 'package:InvenTree/widget/dialogs.dart';
-import 'package:InvenTree/widget/fields.dart';
-import 'package:InvenTree/widget/refreshable_state.dart';
+import 'package:inventree/api.dart';
+import 'package:inventree/inventree/company.dart';
+import 'package:inventree/widget/dialogs.dart';
+import 'package:inventree/widget/fields.dart';
+import 'package:inventree/widget/refreshable_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:InvenTree/l10.dart';
+import 'package:inventree/l10.dart';
 
 class CompanyDetailWidget extends StatefulWidget {
 

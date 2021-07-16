@@ -1,4 +1,4 @@
-import 'package:InvenTree/user_profile.dart';
+import 'package:inventree/user_profile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -6,17 +6,17 @@ import 'file:///C:/inventree-app/lib/l10.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import 'package:InvenTree/barcode.dart';
-import 'package:InvenTree/api.dart';
+import 'package:inventree/barcode.dart';
+import 'package:inventree/api.dart';
 
-import 'package:InvenTree/settings/login.dart';
+import 'package:inventree/settings/login.dart';
 
-import 'package:InvenTree/widget/category_display.dart';
-import 'package:InvenTree/widget/company_list.dart';
-import 'package:InvenTree/widget/location_display.dart';
-import 'package:InvenTree/widget/search.dart';
-import 'package:InvenTree/widget/spinner.dart';
-import 'package:InvenTree/widget/drawer.dart';
+import 'package:inventree/widget/category_display.dart';
+import 'package:inventree/widget/company_list.dart';
+import 'package:inventree/widget/location_display.dart';
+import 'package:inventree/widget/search.dart';
+import 'package:inventree/widget/spinner.dart';
+import 'package:inventree/widget/drawer.dart';
 
 class InvenTreeHomePage extends StatefulWidget {
   InvenTreeHomePage({Key? key}) : super(key: key);
