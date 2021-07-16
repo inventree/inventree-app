@@ -35,8 +35,20 @@ class APIFormField {
   // Get the "default" as a string
   dynamic get defaultValue => data['default'];
 
+  bool hasErrors() => errorMessages().length > 0;
+
   // Return the error message associated with this field
-  String get errorMessage => data['error'];
+  List<String> errorMessages() {
+    List<dynamic> errors = data['errors'] ?? [];
+
+    List<String> messages = [];
+
+    for (dynamic error in errors) {
+      messages.add(error.toString());
+    }
+
+    return messages;
+  }
 
   // Is this field required?
   bool get required => (data['required'] ?? false) as bool;
@@ -98,17 +110,17 @@ class APIFormField {
 /*
  * Extract field options from a returned OPTIONS request
  */
-Map<String, dynamic> extractFields(dynamic options) {
+Map<String, dynamic> extractFields(APIResponse response) {
 
-  if (options == null) {
+  if (!response.isValid()) {
     return {};
   }
 
-  if (!options.containsKey("actions")) {
+  if (!response.data.containsKey("actions")) {
     return {};
   }
 
-  var actions = options["actions"];
+  var actions = response.data["actions"];
 
   return actions["POST"] ?? actions["PUT"] ?? actions["PATCH"] ?? {};
 }
@@ -127,10 +139,12 @@ Map<String, dynamic> extractFields(dynamic options) {
 
 Future<void> launchApiForm(String title, String url, Map<String, dynamic> fields, {Map<String, dynamic> modelData = const {}, String method = "PATCH"}) async {
 
-  dynamic options = await InvenTreeAPI().options(url);
+  var options = await InvenTreeAPI().options(url);
 
-  // null response from server
-  if (options == null) {
+  final _formKey = new GlobalKey<FormState>();
+
+  // Invalid response from server
+  if (!options.isValid()) {
     return;
   }
 
@@ -187,7 +201,49 @@ Future<void> launchApiForm(String title, String url, Map<String, dynamic> fields
     }
   }
 
-  final _formKey = new GlobalKey<FormState>();
+  void sendRequest(BuildContext context) async {
+
+    // Package up the form data
+    Map<String, String> formData = {};
+
+    for (var field in formFields) {
+      formData[field.name] = field.value.toString();
+    }
+
+    var response = await InvenTreeAPI().patch(
+      url,
+      body: formData,
+    );
+
+    if (!response.isValid()) {
+      // TODO - Display an error message here...
+      return;
+    }
+
+    switch (response.statusCode) {
+      case 200:
+      case 201:
+        // Form was validated by the server
+        Navigator.pop(context);
+        break;
+      case 400:
+
+        // Update field errors
+        for (var field in formFields) {
+          field.data['errors'] = response.data[field.name];
+
+          if (field.hasErrors()) {
+            print("Field '${field.name}' has errors:");
+            for (String error in field.errorMessages()) {
+              print(" - ${error}");
+            }
+          }
+        }
+
+        break;
+    }
+  }
+
 
   OneContext().showDialog(
     builder: (BuildContext context) {
@@ -209,21 +265,7 @@ Future<void> launchApiForm(String title, String url, Map<String, dynamic> fields
               if (_formKey.currentState!.validate()) {
                 _formKey.currentState!.save();
 
-                // Package up the form data
-                Map<String, String> formData = {};
-
-                for (var field in formFields) {
-                  formData[field.name] = field.value.toString();
-                }
-
-                print(formData.toString());
-
-                // Send the data to the server
-
-                // Respond to error message
-
-                // Dismiss the form
-
+                sendRequest(context);
               }
             },
           )

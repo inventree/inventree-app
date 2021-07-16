@@ -34,7 +34,7 @@ class APIResponse {
   dynamic data;
 
   // Request is "valid" if a statusCode was returned
-  bool isValid() => statusCode >= 0;
+  bool isValid() => (statusCode >= 0) && (statusCode < 500);
 }
 
 
@@ -431,7 +431,7 @@ class InvenTreeAPI {
 
 
   // Perform a PATCH request
-  Future<APIResponse> patch(String url, {Map<String, String> body = const {}, int expectedStatusCode=200}) async {
+  Future<APIResponse> patch(String url, {Map<String, String> body = const {}, int? expectedStatusCode}) async {
     var _body = Map<String, String>();
 
     // Copy across provided data
