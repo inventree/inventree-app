@@ -23,7 +23,7 @@ import 'package:http/http.dart' as http;
  */
 class APIResponse {
 
-  APIResponse({this.url = "", this.method = "", this.statusCode = -1, this.data});
+  APIResponse({this.url = "", this.method = "", this.statusCode = -1, this.data = const {}});
 
   int statusCode = -1;
 
@@ -31,7 +31,7 @@ class APIResponse {
 
   String method = "";
 
-  dynamic data;
+  dynamic data = {};
 
   // Request is "valid" if a statusCode was returned
   bool isValid() => statusCode >= 0;
@@ -653,7 +653,7 @@ class InvenTreeAPI {
       HttpClientResponse? _response = await request.close().timeout(Duration(seconds: 10));
 
       response.statusCode = _response.statusCode;
-      response.data = await responseToJson(_response);
+      response.data = await responseToJson(_response) ?? {};
 
       // Expected status code not returned
       if ((statusCode != null) && (statusCode != _response.statusCode)) {
@@ -698,7 +698,7 @@ class InvenTreeAPI {
     try {
       var data = json.decode(body);
 
-      return data;
+      return data ?? {};
     } on FormatException {
 
       print("JSON format exception!");
@@ -717,7 +717,9 @@ class InvenTreeAPI {
         L10().formatException,
         L10().formatExceptionJson + ":\n${body}"
       );
-      return null;
+
+      // Return an empty map
+      return {};
     }
 
   }
