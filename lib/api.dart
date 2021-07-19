@@ -23,7 +23,7 @@ import 'package:inventree/widget/snacks.dart';
  */
 class APIResponse {
 
-  APIResponse({this.url = "", this.method = "", this.statusCode = -1, this.data});
+  APIResponse({this.url = "", this.method = "", this.statusCode = -1, this.data = const {}});
 
   int statusCode = -1;
 
@@ -31,7 +31,7 @@ class APIResponse {
 
   String method = "";
 
-  dynamic data;
+  dynamic data = {};
 
   // Request is "valid" if a statusCode was returned
   bool isValid() => (statusCode >= 0) && (statusCode < 500);
@@ -653,26 +653,32 @@ class InvenTreeAPI {
       HttpClientResponse? _response = await request.close().timeout(Duration(seconds: 10));
 
       response.statusCode = _response.statusCode;
-      response.data = await responseToJson(_response);
 
-      // Expected status code not returned
-      if ((statusCode != null) && (statusCode != _response.statusCode)) {
-        showStatusCodeError(_response.statusCode);
-      }
-
-      // Report any server errors
+      // If the server returns a server error code, alert the user
       if (_response.statusCode >= 500) {
-        sentryReportMessage(
-          "Server error",
-          context: {
-            "url": request.uri.toString(),
-            "method": request.method,
-            "statusCode": _response.statusCode.toString(),
-            "requestHeaders": request.headers.toString(),
-            "responseHeaders": _response.headers.toString(),
-            "responseData": response.data.toString(),
-          }
-        );
+        showStatusCodeError(_response.statusCode);
+      } else {
+        response.data = await responseToJson(_response) ?? {};
+
+        // Expected status code not returned
+        if ((statusCode != null) && (statusCode != _response.statusCode)) {
+          showStatusCodeError(_response.statusCode);
+        }
+
+        // Report any server errors
+        if (_response.statusCode >= 500) {
+          sentryReportMessage(
+              "Server error",
+              context: {
+                "url": request.uri.toString(),
+                "method": request.method,
+                "statusCode": _response.statusCode.toString(),
+                "requestHeaders": request.headers.toString(),
+                "responseHeaders": _response.headers.toString(),
+                "responseData": response.data.toString(),
+              }
+          );
+        }
       }
 
     } on SocketException catch (error) {
@@ -698,7 +704,7 @@ class InvenTreeAPI {
     try {
       var data = json.decode(body);
 
-      return data;
+      return data ?? {};
     } on FormatException {
 
       print("JSON format exception!");
@@ -717,7 +723,9 @@ class InvenTreeAPI {
         L10().formatException,
         L10().formatExceptionJson + ":\n${body}"
       );
-      return null;
+
+      // Return an empty map
+      return {};
     }
 
   }
