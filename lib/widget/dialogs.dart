@@ -128,10 +128,10 @@ Future<void> showServerError(String title, String description) async {
   );
 }
 
-Future<void> showStatusCodeError(int status, {int expected = 200}) async {
+Future<void> showStatusCodeError(int status) async {
 
   String msg = L10().responseInvalid;
-  String extra = "Server responded with status code ${status}";
+  String extra = "${L10().statusCode}: ${status}";
 
   switch (status) {
     case 400:

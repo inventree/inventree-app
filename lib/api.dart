@@ -34,7 +34,7 @@ class APIResponse {
   dynamic data = {};
 
   // Request is "valid" if a statusCode was returned
-  bool isValid() => statusCode >= 0;
+  bool isValid() => (statusCode >= 0) && (statusCode < 500);
 }
 
 
