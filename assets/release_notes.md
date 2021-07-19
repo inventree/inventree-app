@@ -1,6 +1,12 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.2.9 - July 2021
+---
+
+- Handle 50x responses from server
+- Improved reporting of error messages
+
 ### 0.2.8 - July 2021
 ---
 
