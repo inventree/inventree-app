@@ -152,6 +152,24 @@ Future<void> showStatusCodeError(int status, {int expected = 200}) async {
     case 429:
       msg = L10().response429;
       break;
+    case 500:
+      msg = L10().response500;
+      break;
+    case 501:
+      msg = L10().response501;
+      break;
+    case 502:
+      msg = L10().response502;
+      break;
+    case 503:
+      msg = L10().response503;
+      break;
+    case 504:
+      msg = L10().response504;
+      break;
+    case 505:
+      msg = L10().response505;
+      break;
     default:
       break;
   }
