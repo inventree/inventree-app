@@ -179,21 +179,19 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     var _keywords;
     var _link;
 
-
     launchApiForm(
-        "Edit Part",
+        L10().editPart,
         part.url,
         {
           "name": {},
           "description": {},
-          "IPN": {
-            "hidden": true,
-            "label": "My custom label!",
-          },
+          "IPN": {},
+          "keywords": {},
           "active": {},
+          "link": {},
         },
         modelData: part.jsondata,
-      onSuccess: refresh,
+        onSuccess: refresh,
     );
 
     return;

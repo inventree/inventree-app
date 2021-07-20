@@ -63,6 +63,7 @@ class APIFormField {
   Widget constructField() {
     switch (type) {
       case "string":
+      case "url":
         return _constructString();
       case "boolean":
         return _constructBoolean();
@@ -86,8 +87,9 @@ class APIFormField {
         data["value"] = val;
       },
       validator: (value) {
-
-        // TODO - Custom field validation
+        if (required && (value == null || value.isEmpty)) {
+          return L10().valueCannotBeEmpty;
+        }
       },
     );
   }
@@ -193,13 +195,38 @@ Future<void> launchApiForm(String title, String url, Map<String, dynamic> fields
     formFields.add(APIFormField(fieldName, remoteField));
   }
 
-  List<Widget> widgets = [];
+  List<Widget> buildWidgets() {
+    List<Widget> widgets = [];
 
-  for (var ff in formFields) {
-    if (!ff.hidden) {
+    for (var ff in formFields) {
+
+      if (ff.hidden) {
+        continue;
+      }
+
       widgets.add(ff.constructField());
+
+      if (ff.hasErrors()) {
+        for (String error in ff.errorMessages()) {
+          widgets.add(
+              ListTile(
+                title: Text(
+                    error,
+                    style: TextStyle(color: Color.fromRGBO(250, 50, 50, 1))
+                ),
+              )
+          );
+        }
+      }
+
     }
+
+    return widgets;
   }
+
+
+  List<Widget> _widgets = buildWidgets();
+
 
   void sendRequest(BuildContext context) async {
 
@@ -252,44 +279,51 @@ Future<void> launchApiForm(String title, String url, Map<String, dynamic> fields
 
   OneContext().showDialog(
     builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text(title),
-        actions: <Widget>[
-          // Cancel button
-          TextButton(
-            child: Text(L10().cancel),
-            onPressed: () {
-              Navigator.pop(context);
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+              title: Text(title),
+              actions: <Widget>[
+                // Cancel button
+                TextButton(
+                  child: Text(L10().cancel),
+                  onPressed: () {
+                    Navigator.pop(context);
 
-              if (onCancel != null) {
-                onCancel();
-              }
-            },
-          ),
-          // Save button
-          TextButton(
-            child: Text(L10().save),
-            onPressed: () {
-              // Validate the form
-              if (_formKey.currentState!.validate()) {
-                _formKey.currentState!.save();
+                    if (onCancel != null) {
+                      onCancel();
+                    }
+                  },
+                ),
+                // Save button
+                TextButton(
+                  child: Text(L10().save),
+                  onPressed: () {
+                    // Validate the form
+                    if (_formKey.currentState!.validate()) {
+                      _formKey.currentState!.save();
 
-                sendRequest(context);
-              }
-            },
-          )
-        ],
-        content: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: widgets
-            )
-          )
-        )
+                      setState(() {
+                        sendRequest(context);
+                        _widgets = buildWidgets();
+                      });
+                    }
+                  },
+                )
+              ],
+              content: Form(
+                  key: _formKey,
+                  child: SingleChildScrollView(
+                      child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: _widgets,
+                      )
+                  )
+              )
+          );
+        }
       );
     }
   );
