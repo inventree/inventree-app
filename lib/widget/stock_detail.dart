@@ -418,7 +418,32 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     }
 
+    // Last update?
+    var update_date = item.updatedDateString;
+
+    if (update_date != null) {
+
+      tiles.add(
+        ListTile(
+          title: Text(L10().lastUpdated),
+          subtitle: Text(update_date),
+          leading: FaIcon(FontAwesomeIcons.calendarAlt)
+        )
+      );
+    }
+
     // Stocktake?
+    var stocktake_date = item.stocktakeDateString;
+
+    if (stocktake_date != null) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().lastStocktake),
+          subtitle: Text(stocktake_date),
+          leading: FaIcon(FontAwesomeIcons.calendarAlt)
+        )
+      );
+    }
 
     // Supplier part?
     // TODO: Display supplier part info page?
