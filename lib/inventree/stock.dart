@@ -415,7 +415,13 @@ class InvenTreeStockItem extends InvenTreeModel {
 
     if (locationId == -1 || !jsondata.containsKey('location_detail')) return L10().locationNotSet;
 
-    return jsondata['location_detail']['pathstring'] ?? '';
+    String _loc = jsondata['location_detail']['pathstring'] ?? '';
+
+    if (_loc.isNotEmpty) {
+      return _loc;
+    } else {
+      return locationName;
+    }
   }
 
   String get displayQuantity {
