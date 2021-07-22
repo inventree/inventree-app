@@ -1,7 +1,7 @@
 ## InvenTree App Release Notes
 ---
 
-### 0.3.0 - July 2021
+### 0.2.10 - July 2021
 ---
 
 - Add "last updated" date to StockDetail view
