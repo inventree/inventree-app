@@ -1,3 +1,4 @@
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:inventree/api.dart';
 import 'package:inventree/widget/dialogs.dart';
 import 'package:inventree/widget/fields.dart';
@@ -139,7 +140,7 @@ Map<String, dynamic> extractFields(APIResponse response) {
  * @param method is the HTTP method to use to send the form data to the server (e.g. POST / PATCH)
  */
 
-Future<void> launchApiForm(String title, String url, Map<String, dynamic> fields, {Map<String, dynamic> modelData = const {}, String method = "PATCH", Function? onSuccess, Function? onCancel}) async {
+Future<void> launchApiForm(BuildContext context, String title, String url, Map<String, dynamic> fields, {Map<String, dynamic> modelData = const {}, String method = "PATCH", Function? onSuccess, Function? onCancel}) async {
 
   var options = await InvenTreeAPI().options(url);
 
@@ -195,136 +196,169 @@ Future<void> launchApiForm(String title, String url, Map<String, dynamic> fields
     formFields.add(APIFormField(fieldName, remoteField));
   }
 
-  List<Widget> buildWidgets() {
+  // Now, launch a new widget!
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => APIFormWidget(title, url, formFields))
+  );
+}
+
+
+class APIFormWidget extends StatefulWidget {
+
+  //! Form title to display
+  final String title;
+
+  //! API URL
+  final String url;
+
+  final List<APIFormField> fields;
+
+  APIFormWidget(this.title, this.url, this.fields, {Key? key}) : super(key: key);
+
+  @override
+  _APIFormWidgetState createState() => _APIFormWidgetState(title, url, fields);
+
+}
+
+
+class _APIFormWidgetState extends State<APIFormWidget> {
+
+  final _formKey = new GlobalKey<FormState>();
+
+  String title;
+
+  String url;
+
+  List<APIFormField> fields;
+
+  _APIFormWidgetState(this.title, this.url, this.fields) : super();
+
+  List<Widget> _buildForm() {
+
     List<Widget> widgets = [];
 
-    for (var ff in formFields) {
+    for (var field in fields) {
 
-      if (ff.hidden) {
+      if (field.hidden) {
         continue;
       }
 
-      widgets.add(ff.constructField());
+      widgets.add(field.constructField());
 
-      if (ff.hasErrors()) {
-        for (String error in ff.errorMessages()) {
+      if (field.hasErrors()) {
+        for (String error in field.errorMessages()) {
           widgets.add(
-              ListTile(
-                title: Text(
-                    error,
-                    style: TextStyle(color: Color.fromRGBO(250, 50, 50, 1))
-                ),
+            ListTile(
+              title: Text(
+                error,
+                style: TextStyle(color: Color.fromRGBO(250, 50, 50, 1)),
               )
+            )
           );
         }
       }
-
     }
+
+    // TODO: Add a "Save" button
+    // widgets.add(Spacer());
+
+    /*
+    widgets.add(
+      TextButton(
+        child: Text(
+          L10().save
+        ),
+        onPressed: null,
+      )
+    );
+    */
 
     return widgets;
   }
 
-
-  List<Widget> _widgets = buildWidgets();
-
-
-  void sendRequest(BuildContext context) async {
+  Future<void> _save(BuildContext context) async {
 
     // Package up the form data
-    Map<String, String> formData = {};
+    Map<String, String> _data = {};
 
-    for (var field in formFields) {
-      formData[field.name] = field.value.toString();
+    for (var field in fields) {
+      _data[field.name] = field.value.toString();
     }
 
-    var response = await InvenTreeAPI().patch(
+    // TODO: Handle "POST" forms too!!
+    final response = await InvenTreeAPI().patch(
       url,
-      body: formData,
+      body: _data,
     );
 
     if (!response.isValid()) {
-      // TODO - Display an error message here...
+      // TODO: Display an error message!
       return;
     }
 
     switch (response.statusCode) {
       case 200:
       case 201:
-        // Form was validated by the server
+        // Form was successfully validated by the server
+
+        // Hide this form
         Navigator.pop(context);
 
-        if (onSuccess != null) {
-          onSuccess();
-        }
+        // TODO: Display a snackBar
 
-        break;
+        // TODO: Run custom onSuccess function
+        return;
       case 400:
+        // Form submission / validation error
 
         // Update field errors
-        for (var field in formFields) {
+        for (var field in fields) {
           field.data['errors'] = response.data[field.name];
-
-          if (field.hasErrors()) {
-            print("Field '${field.name}' has errors:");
-            for (String error in field.errorMessages()) {
-              print(" - ${error}");
-            }
-          }
         }
-
         break;
+      // TODO: Other status codes?
     }
+
+    setState(() {
+      // Refresh the form
+    });
+
   }
 
+  @override
+  Widget build(BuildContext context) {
 
-  OneContext().showDialog(
-    builder: (BuildContext context) {
-      return StatefulBuilder(
-        builder: (context, setState) {
-          return AlertDialog(
-              title: Text(title),
-              actions: <Widget>[
-                // Cancel button
-                TextButton(
-                  child: Text(L10().cancel),
-                  onPressed: () {
-                    Navigator.pop(context);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+        actions: [
+          IconButton(
+            icon: FaIcon(FontAwesomeIcons.save),
+            onPressed: () {
 
-                    if (onCancel != null) {
-                      onCancel();
-                    }
-                  },
-                ),
-                // Save button
-                TextButton(
-                  child: Text(L10().save),
-                  onPressed: () {
-                    // Validate the form
-                    if (_formKey.currentState!.validate()) {
-                      _formKey.currentState!.save();
+              if (_formKey.currentState!.validate()) {
+                _formKey.currentState!.save();
 
-                      setState(() {
-                        sendRequest(context);
-                        _widgets = buildWidgets();
-                      });
-                    }
-                  },
-                )
-              ],
-              content: Form(
-                  key: _formKey,
-                  child: SingleChildScrollView(
-                      child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: _widgets,
-                      )
-                  )
-              )
-          );
-        }
-      );
-    }
-  );
+                _save(context);
+              }
+            },
+          )
+        ]
+      ),
+      body: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: _buildForm(),
+          ),
+          padding: EdgeInsets.all(16),
+        )
+      )
+    );
+
+  }
 }

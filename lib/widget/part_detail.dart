@@ -60,7 +60,9 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         IconButton(
           icon: FaIcon(FontAwesomeIcons.edit),
           tooltip: L10().edit,
-          onPressed: _editPartDialog,
+          onPressed: () {
+            _editPartDialog(context);
+          },
         )
       );
     }
@@ -170,7 +172,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     );
   }
 
-  void _editPartDialog() {
+  void _editPartDialog(BuildContext context) {
 
     // Values which can be edited
     var _name;
@@ -180,6 +182,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     var _link;
 
     launchApiForm(
+        context,
         L10().editPart,
         part.url,
         {

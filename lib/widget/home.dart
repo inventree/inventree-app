@@ -19,6 +19,7 @@ import 'package:inventree/widget/spinner.dart';
 import 'package:inventree/widget/drawer.dart';
 
 class InvenTreeHomePage extends StatefulWidget {
+
   InvenTreeHomePage({Key? key}) : super(key: key);
 
   @override
