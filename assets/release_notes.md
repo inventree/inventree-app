@@ -6,6 +6,7 @@
 
 - Add "last updated" date to StockDetail view
 - Add "stocktake" date to StockDetail view
+- Display location of stock items in list view
 
 ### 0.2.9 - July 2021
 ---
