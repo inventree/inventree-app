@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:inventree/inventree/part.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
@@ -222,18 +223,44 @@ class InvenTreeStockItem extends InvenTreeModel {
   int get trackingItemCount => (jsondata['tracking_items'] ?? 0) as int;
 
   // Date of last update
-  String get updated => jsondata["updated"] ?? "";
-
-  DateTime? get stocktakeDate {
-    if (jsondata.containsKey("stocktake_date")) {
-      if (jsondata["stocktake_date"] == null) {
-        return null;
-      }
-
-      return DateTime.tryParse(jsondata["stocktake_date"]) ?? null;
+  DateTime? get updatedDate {
+    if (jsondata.containsKey("updated")) {
+      return DateTime.tryParse(jsondata["updated"] ?? '');
     } else {
       return null;
     }
+  }
+
+  String? get updatedDateString {
+    var _updated = updatedDate;
+
+    if (_updated == null) {
+      return null;
+    }
+
+    final DateFormat _format = DateFormat("yyyy-MM-dd");
+
+    return _format.format(_updated);
+  }
+
+  DateTime? get stocktakeDate {
+    if (jsondata.containsKey("stocktake_date")) {
+      return DateTime.tryParse(jsondata["stocktake_date"] ?? '');
+    } else {
+      return null;
+    }
+  }
+
+  String? get stocktakeDateString {
+    var _stocktake = stocktakeDate;
+
+    if (_stocktake == null) {
+      return null;
+    }
+
+    final DateFormat _format = DateFormat("yyyy-MM-dd");
+
+    return _format.format(_stocktake);
   }
 
   String get partName {
@@ -388,7 +415,13 @@ class InvenTreeStockItem extends InvenTreeModel {
 
     if (locationId == -1 || !jsondata.containsKey('location_detail')) return L10().locationNotSet;
 
-    return jsondata['location_detail']['pathstring'] ?? '';
+    String _loc = jsondata['location_detail']['pathstring'] ?? '';
+
+    if (_loc.isNotEmpty) {
+      return _loc;
+    } else {
+      return locationName;
+    }
   }
 
   String get displayQuantity {

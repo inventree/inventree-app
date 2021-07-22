@@ -517,7 +517,7 @@ class _PaginatedStockListState extends State<PaginatedStockList> {
   Widget _buildItem(BuildContext context, InvenTreeStockItem item) {
     return ListTile(
       title: Text("${item.partName}"),
-      subtitle: Text("${item.partDescription}"),
+      subtitle: Text("${item.locationPathString}"),
       leading: InvenTreeAPI().getImage(
         item.partThumbnail,
         width: 40,
