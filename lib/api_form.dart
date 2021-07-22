@@ -60,6 +60,8 @@ class APIFormField {
 
   String get helpText => (data['help_text'] ?? '').toString();
 
+  String get placeholderText => (data['placeholder'] ?? '').toString();
+
   // Construct a widget for this input
   Widget constructField() {
     switch (type) {
@@ -81,7 +83,17 @@ class APIFormField {
     return TextFormField(
       decoration: InputDecoration(
         labelText: required ? label + "*" : label,
-        hintText: helpText,
+        labelStyle: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 22,
+          color: hasErrors() ? Color.fromRGBO(250, 50, 50, 1) : Color.fromRGBO(50, 50, 50, 1),
+        ),
+        helperText: helpText,
+        helperStyle: TextStyle(
+          fontStyle: FontStyle.italic,
+          color: hasErrors() ? Color.fromRGBO(205, 50, 50, 1) : Color.fromRGBO(50, 50, 50, 1),
+        ),
+        hintText: placeholderText,
       ),
       initialValue: value ?? '',
       onSaved: (val) {
@@ -89,7 +101,7 @@ class APIFormField {
       },
       validator: (value) {
         if (required && (value == null || value.isEmpty)) {
-          return L10().valueCannotBeEmpty;
+          // return L10().valueCannotBeEmpty;
         }
       },
     );
@@ -199,7 +211,12 @@ Future<void> launchApiForm(BuildContext context, String title, String url, Map<S
   // Now, launch a new widget!
   Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => APIFormWidget(title, url, formFields))
+    MaterialPageRoute(builder: (context) => APIFormWidget(
+        title,
+        url,
+        formFields,
+        onSuccess: onSuccess,
+    ))
   );
 }
 
@@ -214,10 +231,20 @@ class APIFormWidget extends StatefulWidget {
 
   final List<APIFormField> fields;
 
-  APIFormWidget(this.title, this.url, this.fields, {Key? key}) : super(key: key);
+  Function? onSuccess;
+
+  APIFormWidget(
+      this.title,
+      this.url,
+      this.fields,
+      {
+        Key? key,
+        this.onSuccess,
+      }
+  ) : super(key: key);
 
   @override
-  _APIFormWidgetState createState() => _APIFormWidgetState(title, url, fields);
+  _APIFormWidgetState createState() => _APIFormWidgetState(title, url, fields, onSuccess);
 
 }
 
@@ -232,7 +259,9 @@ class _APIFormWidgetState extends State<APIFormWidget> {
 
   List<APIFormField> fields;
 
-  _APIFormWidgetState(this.title, this.url, this.fields) : super();
+  Function? onSuccess;
+
+  _APIFormWidgetState(this.title, this.url, this.fields, this.onSuccess) : super();
 
   List<Widget> _buildForm() {
 
@@ -252,7 +281,11 @@ class _APIFormWidgetState extends State<APIFormWidget> {
             ListTile(
               title: Text(
                 error,
-                style: TextStyle(color: Color.fromRGBO(250, 50, 50, 1)),
+                style: TextStyle(
+                  color: Color.fromRGBO(250, 50, 50, 1),
+                  fontStyle: FontStyle.italic,
+                  fontSize: 16,
+                ),
               )
             )
           );
@@ -307,7 +340,12 @@ class _APIFormWidgetState extends State<APIFormWidget> {
 
         // TODO: Display a snackBar
 
-        // TODO: Run custom onSuccess function
+        // Run custom onSuccess function
+        var successFunc = onSuccess;
+
+        if (successFunc != null) {
+          successFunc();
+        }
         return;
       case 400:
         // Form submission / validation error

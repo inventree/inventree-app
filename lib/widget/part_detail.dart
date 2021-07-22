@@ -174,13 +174,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   void _editPartDialog(BuildContext context) {
 
-    // Values which can be edited
-    var _name;
-    var _description;
-    var _ipn;
-    var _keywords;
-    var _link;
-
     launchApiForm(
         context,
         L10().editPart,
@@ -196,52 +189,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         modelData: part.jsondata,
         onSuccess: refresh,
     );
-
-    return;
-
-    showFormDialog(L10().editPart,
-      key: _editPartKey,
-      callback: () {
-        _savePart({
-          "name": _name,
-          "description": _description,
-          "IPN": _ipn,
-          "keywords": _keywords,
-          "link": _link
-        });
-      },
-      fields: <Widget>[
-        StringField(
-          label: L10().name,
-          initial: part.name,
-          onSaved: (value) => _name = value,
-        ),
-        StringField(
-          label: L10().description,
-          initial: part.description,
-          onSaved: (value) => _description = value,
-        ),
-        StringField(
-          label: L10().internalPartNumber,
-          initial: part.IPN,
-          allowEmpty: true,
-          onSaved: (value) => _ipn = value,
-        ),
-        StringField(
-          label: L10().keywords,
-          initial: part.keywords,
-          allowEmpty: true,
-          onSaved: (value) => _keywords = value,
-        ),
-        StringField(
-          label: L10().link,
-          initial: part.link,
-          allowEmpty: true,
-          onSaved: (value) => _link = value
-        )
-      ]
-    );
-
   }
 
   Widget headerTile() {
