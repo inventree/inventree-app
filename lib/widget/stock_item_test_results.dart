@@ -84,7 +84,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
         ),
         CheckBoxField(
           label: L10().result,
-          hint: L10().testPassedOrFailed,
+          helperText: L10().testPassedOrFailed,
           initial: true,
           onSaved: (value) => _result = value ?? false,
         ),

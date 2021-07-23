@@ -6,6 +6,7 @@ import 'package:inventree/l10.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:inventree/widget/snacks.dart';
 import 'package:one_context/one_context.dart';
 
 
@@ -83,16 +84,9 @@ class APIFormField {
     return TextFormField(
       decoration: InputDecoration(
         labelText: required ? label + "*" : label,
-        labelStyle: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 22,
-          color: hasErrors() ? Color.fromRGBO(250, 50, 50, 1) : Color.fromRGBO(50, 50, 50, 1),
-        ),
+        labelStyle: _labelStyle(),
         helperText: helpText,
-        helperStyle: TextStyle(
-          fontStyle: FontStyle.italic,
-          color: hasErrors() ? Color.fromRGBO(205, 50, 50, 1) : Color.fromRGBO(50, 50, 50, 1),
-        ),
+        helperStyle: _helperStyle(),
         hintText: placeholderText,
       ),
       initialValue: value ?? '',
@@ -112,13 +106,31 @@ class APIFormField {
 
     return CheckBoxField(
       label: label,
-      hint: helpText,
+      labelStyle: _labelStyle(),
+      helperText: helpText,
+      helperStyle: _helperStyle(),
       initial: value,
       onSaved: (val) {
         data['value'] = val;
       },
     );
   }
+
+  TextStyle _labelStyle() {
+    return new TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 18,
+      color: hasErrors() ? Color.fromRGBO(250, 50, 50, 1) : Color.fromRGBO(50, 50, 50, 1),
+    );
+  }
+
+  TextStyle _helperStyle() {
+    return new TextStyle(
+      fontStyle: FontStyle.italic,
+      color: hasErrors() ? Color.fromRGBO(205, 50, 50, 1) : Color.fromRGBO(50, 50, 50, 1),
+    );
+  }
+
 }
 
 
@@ -166,7 +178,12 @@ Future<void> launchApiForm(BuildContext context, String title, String url, Map<S
   var availableFields = extractFields(options);
 
   if (availableFields.isEmpty) {
-    print("Empty fields {} returned from ${url}");
+    // User does not have permission to perform this action
+    showSnackIcon(
+      L10().response403,
+      icon: FontAwesomeIcons.userTimes,
+    );
+
     return;
   }
 

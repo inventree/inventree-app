@@ -92,17 +92,23 @@ class ImagePickerField extends FormField<File> {
 
 
 class CheckBoxField extends FormField<bool> {
-  CheckBoxField({String? label, String? hint, bool initial = false, Function(bool?)? onSaved}) :
+  CheckBoxField({
+      String? label, bool initial = false, Function(bool?)? onSaved,
+      TextStyle? labelStyle,
+      String? helperText,
+      TextStyle? helperStyle,
+  }) :
       super(
         onSaved: onSaved,
         initialValue: initial,
         builder: (FormFieldState<bool> state) {
           return CheckboxListTile(
             //dense: state.hasError,
-            title: label == null ? null : Text(label),
+            title: label != null ? Text(label, style: labelStyle) : null,
             value: state.value,
             onChanged: state.didChange,
-            subtitle: hint == null ? null : Text(hint),
+            subtitle: helperText != null ? Text(helperText, style: helperStyle) : null,
+            contentPadding: EdgeInsets.zero,
           );
         }
       );
