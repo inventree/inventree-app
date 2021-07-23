@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:inventree/app_colors.dart';
 
 class Spinner extends StatefulWidget {
   final IconData? icon;
@@ -9,7 +10,7 @@ class Spinner extends StatefulWidget {
   final Color color;
 
   const Spinner({
-    this.color = const Color.fromRGBO(150, 150, 150, 1),
+    this.color = COLOR_GRAY_LIGHT,
     Key? key,
     @required this.icon,
     this.duration = const Duration(milliseconds: 1800),

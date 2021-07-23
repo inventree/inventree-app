@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:inventree/app_colors.dart';
 
 import 'package:inventree/l10.dart';
 import 'package:inventree/api_form.dart';
@@ -198,7 +199,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           subtitle: Text("${part.description}"),
           trailing: IconButton(
             icon: FaIcon(part.starred ? FontAwesomeIcons.solidStar : FontAwesomeIcons.star,
-              color: part.starred ? Color.fromRGBO(250, 250, 100, 1) : null,
+              color: part.starred ? COLOR_STAR : null,
             ),
             onPressed: _toggleStar,
           ),
@@ -230,6 +231,29 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     if (loading) {
       tiles.add(progressIndicator());
       return tiles;
+    }
+
+    if (!part.isActive) {
+      tiles.add(
+        ListTile(
+          title: Text(
+              L10().inactive,
+              style: TextStyle(
+                color: COLOR_DANGER
+              )
+          ),
+          subtitle: Text(
+            L10().inactiveDetail,
+            style: TextStyle(
+              color: COLOR_DANGER
+            )
+          ),
+          leading: FaIcon(
+              FontAwesomeIcons.exclamationCircle,
+              color: COLOR_DANGER
+          ),
+        )
+      );
     }
 
     // Category information

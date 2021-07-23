@@ -1,3 +1,4 @@
+import 'package:inventree/app_colors.dart';
 import 'package:inventree/inventree/part.dart';
 import 'package:inventree/inventree/stock.dart';
 import 'package:inventree/inventree/model.dart';
@@ -207,7 +208,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
       String _value = "";
       String _notes = "";
 
-      FaIcon _icon = FaIcon(FontAwesomeIcons.questionCircle, color: Color.fromRGBO(0, 0, 250, 1));
+      FaIcon _icon = FaIcon(FontAwesomeIcons.questionCircle, color: COLOR_BLUE);
       bool _valueRequired = false;
       bool _attachmentRequired = false;
 
@@ -229,11 +230,11 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
 
       if (_result == true) {
         _icon = FaIcon(FontAwesomeIcons.checkCircle,
-          color: Color.fromRGBO(0, 250, 0, 0.8)
+          color: COLOR_SUCCESS,
         );
       } else if (_result == false) {
         _icon = FaIcon(FontAwesomeIcons.timesCircle,
-          color: Color.fromRGBO(250, 0, 0, 0.8)
+          color: COLOR_DANGER,
         );
       }
 

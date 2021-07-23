@@ -1,5 +1,6 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:inventree/api.dart';
+import 'package:inventree/app_colors.dart';
 import 'package:inventree/widget/dialogs.dart';
 import 'package:inventree/widget/fields.dart';
 import 'package:inventree/l10.dart';
@@ -120,14 +121,14 @@ class APIFormField {
     return new TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 18,
-      color: hasErrors() ? Color.fromRGBO(250, 50, 50, 1) : Color.fromRGBO(50, 50, 50, 1),
+      color: hasErrors() ? COLOR_DANGER : COLOR_GRAY,
     );
   }
 
   TextStyle _helperStyle() {
     return new TextStyle(
       fontStyle: FontStyle.italic,
-      color: hasErrors() ? Color.fromRGBO(205, 50, 50, 1) : Color.fromRGBO(50, 50, 50, 1),
+      color: hasErrors() ? COLOR_DANGER : COLOR_GRAY,
     );
   }
 
@@ -299,7 +300,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
               title: Text(
                 error,
                 style: TextStyle(
-                  color: Color.fromRGBO(250, 50, 50, 1),
+                  color: COLOR_DANGER,
                   fontStyle: FontStyle.italic,
                   fontSize: 16,
                 ),
