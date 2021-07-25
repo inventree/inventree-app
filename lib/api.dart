@@ -128,7 +128,13 @@ class InvenTreeAPI {
 
   String get imageUrl => _makeUrl("/image/");
 
-  String makeApiUrl(String endpoint) => _makeUrl("/api/" + endpoint);
+  String makeApiUrl(String endpoint) {
+    if (endpoint.startsWith("/api/") || endpoint.startsWith("api/")) {
+      return _makeUrl(endpoint);
+    } else {
+      return _makeUrl("/api/" + endpoint);
+    }
+  }
 
   String makeUrl(String endpoint) => _makeUrl(endpoint);
 

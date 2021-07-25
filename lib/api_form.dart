@@ -1,3 +1,4 @@
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:inventree/api.dart';
 import 'package:inventree/app_colors.dart';
@@ -26,6 +27,9 @@ class APIFormField {
   // JSON data which defines the field
   final dynamic data;
 
+  // Get the "api_url" associated with a related field
+  String get api_url => data["api_url"] ?? "";
+
   // Is this field hidden?
   bool get hidden => (data['hidden'] ?? false) as bool;
 
@@ -53,6 +57,9 @@ class APIFormField {
     return messages;
   }
 
+  // TODO
+  dynamic get filters => null;
+
   // Is this field required?
   bool get required => (data['required'] ?? false) as bool;
 
@@ -72,11 +79,30 @@ class APIFormField {
         return _constructString();
       case "boolean":
         return _constructBoolean();
+      case "related field":
+        return _constructRelatedField();
       default:
         return ListTile(
-          title: Text("Unsupported field type: '${type}'")
+          title: Text(
+            "Unsupported field type: '${type}'",
+            style: TextStyle(
+                color: COLOR_DANGER,
+                fontStyle: FontStyle.italic),
+          )
         );
     }
+  }
+
+  // Construct an input for a related field
+  Widget _constructRelatedField() {
+
+    return AutocompleteFormField(
+      required ? label + "*" : label,
+      api_url,
+      filters: filters,
+      hint: helpText,
+      renderer: null,
+    );
   }
 
   // Consturct a string input element

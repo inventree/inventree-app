@@ -187,6 +187,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           "keywords": {},
           "link": {},
 
+          "category": {},
+
           // Checkbox fields
           "active": {},
           "assembly": {},

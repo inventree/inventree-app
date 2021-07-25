@@ -1,6 +1,8 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:inventree/api.dart';
 
 import 'package:inventree/l10.dart';
 
@@ -110,6 +112,81 @@ class CheckBoxField extends FormField<bool> {
             subtitle: helperText != null ? Text(helperText, style: helperStyle) : null,
             contentPadding: EdgeInsets.zero,
           );
+        }
+      );
+}
+
+
+class AutocompleteFormField extends TypeAheadFormField {
+
+  final String label;
+
+  final _controller = TextEditingController();
+
+  final String url;
+
+  dynamic filters = {};
+
+  AutocompleteFormField(
+      this.label,
+      this.url,
+      {
+        this.filters,
+        Widget Function(dynamic)? renderer,
+        String? hint,
+      }) :
+      super(
+        textFieldConfiguration: TextFieldConfiguration(
+          autofocus: true,
+          decoration: InputDecoration(
+            hintText: hint,
+            border: OutlineInputBorder(),
+          ),
+        ),
+        suggestionsCallback: (String pattern) async {
+
+          Map<String, String> _filters = {};
+
+          if (filters != null) {
+            for (String key in filters) {
+              _filters[key] = filters[key].toString();
+            }
+          }
+
+          _filters["search"] = pattern;
+          _filters["offset"] = "0";
+          _filters["limit"] = "25";
+
+          final APIResponse response = await InvenTreeAPI().get(
+            url,
+            params: _filters
+          );
+
+          if (response.isValid()) {
+
+            List<dynamic> results = [];
+
+            for (var result in response.data['results'] ?? []) {
+              results.add(result);
+            }
+
+            return results;
+          } else {
+            return [];
+          }
+
+        },
+        itemBuilder: (context, suggestion) {
+          print("item builder: " + suggestion.toString());
+          return ListTile(
+            title: Text(suggestion['name']),
+          );
+        },
+        onSuggestionSelected: (suggestion) {
+          // TODO
+        },
+        onSaved: (value) {
+          // TODO
         }
       );
 }
