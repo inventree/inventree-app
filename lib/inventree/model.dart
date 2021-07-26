@@ -126,8 +126,7 @@ class InvenTreeModel {
   }
 
   // Return the API detail endpoint for this Model object
-  String get url => "${URL}/${pk}/";
-
+  String get url => "${URL}/${pk}/".replaceAll("//", "/");
 
   // Search this Model type in the database
   Future<List<InvenTreeModel>> search(BuildContext context, String searchTerm, {Map<String, String> filters = const {}}) async {
@@ -277,8 +276,6 @@ class InvenTreeModel {
       params[key] = filters[key] ?? '';
     }
 
-    print("LIST: $URL ${params.toString()}");
-
     var response = await api.get(URL, params: params);
 
     // A list of "InvenTreeModel" items
@@ -288,18 +285,22 @@ class InvenTreeModel {
       return results;
     }
 
-    // TODO - handle possible error cases:
-    // - No data receieved
-    // - Data is not a list of maps
+    dynamic data;
 
-    for (var d in response.data) {
+    if (response.data is List) {
+      data = response.data;
+    } else if (response.data.containsKey('results')) {
+      data = response.data['results'];
+    } else {
+      data = [];
+    }
+
+    for (var d in data) {
 
       // Create a new object (of the current class type
       InvenTreeModel obj = createFromJson(d);
 
-      if (obj != null) {
-        results.add(obj);
-      }
+      results.add(obj);
     }
 
     return results;

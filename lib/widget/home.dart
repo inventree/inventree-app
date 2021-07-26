@@ -1,3 +1,4 @@
+import 'package:inventree/app_colors.dart';
 import 'package:inventree/user_profile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,7 @@ import 'package:inventree/widget/spinner.dart';
 import 'package:inventree/widget/drawer.dart';
 
 class InvenTreeHomePage extends StatefulWidget {
+
   InvenTreeHomePage({Key? key}) : super(key: key);
 
   @override
@@ -130,7 +132,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
         leading: FaIcon(FontAwesomeIcons.server),
         trailing: FaIcon(
           FontAwesomeIcons.user,
-          color: Color.fromRGBO(250, 50, 50, 1),
+          color: COLOR_DANGER,
         ),
         onTap: () {
           _selectProfile();
@@ -146,7 +148,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
         leading: FaIcon(FontAwesomeIcons.server),
         trailing: Spinner(
           icon: FontAwesomeIcons.spinner,
-          color: Color.fromRGBO(50, 50, 250, 1),
+          color: COLOR_PROGRESS,
         ),
         onTap: () {
           _selectProfile();
@@ -159,7 +161,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
         leading: FaIcon(FontAwesomeIcons.server),
         trailing: FaIcon(
           FontAwesomeIcons.checkCircle,
-          color: Color.fromRGBO(50, 250, 50, 1)
+          color: COLOR_SUCCESS
         ),
         onTap: () {
           _selectProfile();
@@ -172,7 +174,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
         leading: FaIcon(FontAwesomeIcons.server),
         trailing: FaIcon(
           FontAwesomeIcons.timesCircle,
-          color: Color.fromRGBO(250, 50, 50, 1),
+          color: COLOR_DANGER,
         ),
         onTap: () {
           _selectProfile();

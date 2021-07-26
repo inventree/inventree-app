@@ -1,14 +1,16 @@
 import 'dart:io';
 
-import 'package:inventree/widget/part_notes.dart';
-import 'package:inventree/widget/progress.dart';
-import 'package:inventree/widget/snacks.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:inventree/l10.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:inventree/app_colors.dart';
 
+import 'package:inventree/l10.dart';
+import 'package:inventree/api_form.dart';
+import 'package:inventree/widget/part_notes.dart';
+import 'package:inventree/widget/progress.dart';
+import 'package:inventree/widget/snacks.dart';
 import 'package:inventree/inventree/part.dart';
 import 'package:inventree/widget/full_screen_image.dart';
 import 'package:inventree/widget/category_display.dart';
@@ -59,7 +61,9 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         IconButton(
           icon: FaIcon(FontAwesomeIcons.edit),
           tooltip: L10().edit,
-          onPressed: _editPartDialog,
+          onPressed: () {
+            _editPartDialog(context);
+          },
         )
       );
     }
@@ -169,58 +173,36 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     );
   }
 
-  void _editPartDialog() {
+  void _editPartDialog(BuildContext context) {
 
-    // Values which can be edited
-    var _name;
-    var _description;
-    var _ipn;
-    var _keywords;
-    var _link;
+    launchApiForm(
+        context,
+        L10().editPart,
+        part.url,
+        {
+          "name": {},
+          "description": {},
+          "IPN": {},
+          "revision": {},
+          "keywords": {},
+          "link": {},
 
-    showFormDialog(L10().editPart,
-      key: _editPartKey,
-      callback: () {
-        _savePart({
-          "name": _name,
-          "description": _description,
-          "IPN": _ipn,
-          "keywords": _keywords,
-          "link": _link
-        });
-      },
-      fields: <Widget>[
-        StringField(
-          label: L10().name,
-          initial: part.name,
-          onSaved: (value) => _name = value,
-        ),
-        StringField(
-          label: L10().description,
-          initial: part.description,
-          onSaved: (value) => _description = value,
-        ),
-        StringField(
-          label: L10().internalPartNumber,
-          initial: part.IPN,
-          allowEmpty: true,
-          onSaved: (value) => _ipn = value,
-        ),
-        StringField(
-          label: L10().keywords,
-          initial: part.keywords,
-          allowEmpty: true,
-          onSaved: (value) => _keywords = value,
-        ),
-        StringField(
-          label: L10().link,
-          initial: part.link,
-          allowEmpty: true,
-          onSaved: (value) => _link = value
-        )
-      ]
+          "category": {
+          },
+
+          // Checkbox fields
+          "active": {},
+          "assembly": {},
+          "component": {},
+          "purchaseable": {},
+          "salable": {},
+          "trackable": {},
+          "is_template": {},
+          "virtual": {},
+        },
+        modelData: part.jsondata,
+        onSuccess: refresh,
     );
-
   }
 
   Widget headerTile() {
@@ -230,7 +212,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           subtitle: Text("${part.description}"),
           trailing: IconButton(
             icon: FaIcon(part.starred ? FontAwesomeIcons.solidStar : FontAwesomeIcons.star,
-              color: part.starred ? Color.fromRGBO(250, 250, 100, 1) : null,
+              color: part.starred ? COLOR_STAR : null,
             ),
             onPressed: _toggleStar,
           ),
@@ -264,13 +246,36 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       return tiles;
     }
 
+    if (!part.isActive) {
+      tiles.add(
+        ListTile(
+          title: Text(
+              L10().inactive,
+              style: TextStyle(
+                color: COLOR_DANGER
+              )
+          ),
+          subtitle: Text(
+            L10().inactiveDetail,
+            style: TextStyle(
+              color: COLOR_DANGER
+            )
+          ),
+          leading: FaIcon(
+              FontAwesomeIcons.exclamationCircle,
+              color: COLOR_DANGER
+          ),
+        )
+      );
+    }
+
     // Category information
     if (part.categoryName.isNotEmpty) {
       tiles.add(
         ListTile(
             title: Text(L10().partCategory),
             subtitle: Text("${part.categoryName}"),
-            leading: FaIcon(FontAwesomeIcons.sitemap),
+            leading: FaIcon(FontAwesomeIcons.sitemap, color: COLOR_CLICK),
             onTap: () {
               if (part.categoryId > 0) {
                 InvenTreePartCategory().get(part.categoryId).then((var cat) {
@@ -289,7 +294,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         ListTile(
           title: Text(L10().partCategory),
           subtitle: Text(L10().partCategoryTopLevel),
-          leading: FaIcon(FontAwesomeIcons.sitemap),
+          leading: FaIcon(FontAwesomeIcons.sitemap, color: COLOR_CLICK),
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));
           },
@@ -301,7 +306,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     tiles.add(
       ListTile(
         title: Text(L10().stock),
-        leading: FaIcon(FontAwesomeIcons.boxes),
+        leading: FaIcon(FontAwesomeIcons.boxes, color: COLOR_CLICK),
         trailing: Text("${part.inStockString}"),
         onTap: () {
           setState(() {
@@ -387,8 +392,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       tiles.add(
         ListTile(
             title: Text("${part.link}"),
-            leading: FaIcon(FontAwesomeIcons.link),
-            trailing: FaIcon(FontAwesomeIcons.externalLinkAlt),
+            leading: FaIcon(FontAwesomeIcons.link, color: COLOR_CLICK),
             onTap: () {
               part.openLink();
             },
@@ -412,7 +416,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       tiles.add(
           ListTile(
             title: Text(L10().notes),
-            leading: FaIcon(FontAwesomeIcons.stickyNote),
+            leading: FaIcon(FontAwesomeIcons.stickyNote, color: COLOR_CLICK),
             trailing: Text(""),
             onTap: () {
               Navigator.push(

@@ -1,3 +1,4 @@
+import 'package:inventree/app_colors.dart';
 import 'package:inventree/widget/dialogs.dart';
 import 'package:inventree/widget/fields.dart';
 import 'package:inventree/widget/spinner.dart';
@@ -55,7 +56,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
       key: _addProfileKey,
       callback: () {
           if (createNew) {
-            // TODO - create the new profile...
+
             UserProfile profile = UserProfile(
               name: _name,
               server: _server,
@@ -219,7 +220,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     if ((InvenTreeAPI().profile?.key ?? '') != profile.key) {
       return FaIcon(
         FontAwesomeIcons.questionCircle,
-        color: Color.fromRGBO(250, 150, 50, 1)
+        color: COLOR_WARNING
       );
     }
 
@@ -227,17 +228,17 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     if (InvenTreeAPI().isConnected()) {
       return FaIcon(
         FontAwesomeIcons.checkCircle,
-        color: Color.fromRGBO(50, 250, 50, 1)
+        color: COLOR_SUCCESS
       );
     } else if (InvenTreeAPI().isConnecting()) {
       return Spinner(
         icon: FontAwesomeIcons.spinner,
-        color: Color.fromRGBO(50, 50, 250, 1),
+        color: COLOR_PROGRESS,
       );
     } else {
       return FaIcon(
         FontAwesomeIcons.timesCircle,
-        color: Color.fromRGBO(250, 50, 50, 1),
+        color: COLOR_DANGER,
       );
     }
   }
@@ -255,7 +256,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
           title: Text(
             profile.name,
           ),
-          tileColor: profile.selected ? Color.fromRGBO(0, 0, 0, 0.05) : null,
+          tileColor: profile.selected ? COLOR_SELECTED : null,
           subtitle: Text("${profile.server}"),
           trailing: _getProfileIcon(profile),
           onTap: () {

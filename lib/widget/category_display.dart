@@ -1,5 +1,6 @@
 
 import 'package:inventree/api.dart';
+import 'package:inventree/app_colors.dart';
 import 'package:inventree/app_settings.dart';
 import 'package:inventree/inventree/part.dart';
 import 'package:inventree/inventree/sentry.dart';
@@ -22,6 +23,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
+import '../api_form.dart';
+
 class CategoryDisplayWidget extends StatefulWidget {
 
   CategoryDisplayWidget(this.category, {Key? key}) : super(key: key);
@@ -35,7 +38,6 @@ class CategoryDisplayWidget extends StatefulWidget {
 
 class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
-  final _editCategoryKey = GlobalKey<FormState>();
 
   @override
   String getAppBarTitle(BuildContext context) => L10().partCategory;
@@ -71,7 +73,9 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
         IconButton(
           icon: FaIcon(FontAwesomeIcons.edit),
           tooltip: L10().edit,
-          onPressed: _editCategoryDialog,
+          onPressed: () {
+            _editCategoryDialog(context);
+          },
         )
       );
     }
@@ -80,49 +84,26 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
   }
 
-  void _editCategory(Map<String, String> values) async {
+  void _editCategoryDialog(BuildContext context) {
 
-    final bool result = await category!.update(values: values);
-
-    showSnackIcon(
-      result ? "Category edited" : "Category editing failed",
-      success: result
-    );
-
-    refresh();
-  }
-
-  void _editCategoryDialog() {
+    final _cat = category;
 
     // Cannot edit top-level category
-    if (category == null) {
+    if (_cat == null) {
       return;
     }
 
-    var _name;
-    var _description;
-
-    showFormDialog(
+    launchApiForm(
+      context,
       L10().editCategory,
-      key: _editCategoryKey,
-      callback: () {
-        _editCategory({
-          "name": _name,
-          "description": _description
-        });
+      _cat.url,
+      {
+        "name": {},
+        "description": {},
+        "parent": {},
       },
-      fields: <Widget>[
-        StringField(
-          label: L10().name,
-          initial: category?.name,
-          onSaved: (value) => _name = value
-        ),
-        StringField(
-          label: L10().description,
-          initial: category?.description,
-          onSaved: (value) => _description = value
-        )
-      ]
+      modelData: _cat.jsondata,
+      onSuccess: refresh,
     );
   }
 
@@ -186,7 +167,10 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
             ListTile(
               title: Text(L10().parentCategory),
               subtitle: Text("${category?.parentpathstring}"),
-              leading: FaIcon(FontAwesomeIcons.levelUpAlt),
+              leading: FaIcon(
+                FontAwesomeIcons.levelUpAlt,
+                color: COLOR_CLICK,
+              ),
               onTap: () {
                 if (category == null || ((category?.parentId ?? 0) < 0)) {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));

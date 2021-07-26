@@ -60,6 +60,8 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   String statusLabel(BuildContext context) {
 
+    // TODO: Delete me - The translated status values are provided by the API!
+
     switch (status) {
       case OK:
         return L10().ok;
@@ -219,6 +221,15 @@ class InvenTreeStockItem extends InvenTreeModel {
   int get status => jsondata['status'] ?? -1;
 
   int get partId => jsondata['part'] ?? -1;
+
+  String get purchasePrice => jsondata['purchase_price'];
+
+  bool get hasPurchasePrice {
+
+    String pp = purchasePrice;
+
+    return pp.isNotEmpty && pp.trim() != "-";
+  }
 
   int get trackingItemCount => (jsondata['tracking_items'] ?? 0) as int;
 
@@ -476,14 +487,7 @@ class InvenTreeStockItem extends InvenTreeModel {
       expectedStatusCode: 200
     );
 
-    print("Adjustment completed!");
-
-    if (response == null) {
-      return false;
-    }
-
-    // Stock adjustment succeeded!
-    return true;
+    return response.isValid();
   }
 
   Future<bool> countStock(BuildContext context, double q, {String? notes}) async {

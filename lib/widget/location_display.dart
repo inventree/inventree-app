@@ -1,4 +1,6 @@
 import 'package:inventree/api.dart';
+import 'package:inventree/api_form.dart';
+import 'package:inventree/app_colors.dart';
 import 'package:inventree/app_settings.dart';
 import 'package:inventree/barcode.dart';
 import 'package:inventree/inventree/sentry.dart';
@@ -71,7 +73,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
         IconButton(
           icon: FaIcon(FontAwesomeIcons.edit),
           tooltip: L10().edit,
-          onPressed: _editLocationDialog,
+          onPressed: () { _editLocationDialog(context); },
         )
       );
     }
@@ -79,23 +81,27 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     return actions;
   }
 
-  void _editLocation(Map<String, String> values) async {
+  void _editLocationDialog(BuildContext context) {
 
-    bool result = false;
+    final _loc = location;
 
-    if (location != null) {
-      result = await location!.update(values: values);
-
-      showSnackIcon(
-          result ? "Location edited" : "Location editing failed",
-          success: result
-      );
+    if (_loc == null) {
+      return;
     }
 
-    refresh();
-  }
+    launchApiForm(
+      context,
+      L10().editLocation,
+      _loc.url,
+      {
+        "name": {},
+        "description": {},
+        "parent": {},
+      },
+      modelData: _loc.jsondata,
+      onSuccess: refresh
+    );
 
-  void _editLocationDialog() {
     // Values which an be edited
     var _name;
     var _description;
@@ -103,28 +109,6 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     if (location == null) {
       return;
     }
-
-    showFormDialog(L10().editLocation,
-      key: _editLocationKey,
-      callback: () {
-        _editLocation({
-          "name": _name,
-          "description": _description
-        });
-      },
-      fields: <Widget> [
-        StringField(
-          label: L10().name,
-          initial: location?.name ?? '',
-          onSaved: (value) => _name = value,
-        ),
-        StringField(
-          label: L10().description,
-          initial: location?.description ?? '',
-          onSaved: (value) => _description = value,
-        )
-      ]
-    );
   }
 
   _LocationDisplayState(this.location);
@@ -193,7 +177,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
             ListTile(
               title: Text(L10().parentCategory),
               subtitle: Text("${location!.parentpathstring}"),
-              leading: FaIcon(FontAwesomeIcons.levelUpAlt),
+              leading: FaIcon(FontAwesomeIcons.levelUpAlt, color: COLOR_CLICK),
               onTap: () {
 
                 int parent = location?.parentId ?? -1;
@@ -319,7 +303,7 @@ List<Widget> detailTiles() {
         tiles.add(
             ListTile(
               title: Text(L10().barcodeScanInItems),
-              leading: FaIcon(FontAwesomeIcons.exchangeAlt),
+              leading: FaIcon(FontAwesomeIcons.exchangeAlt, color: COLOR_CLICK),
               trailing: FaIcon(FontAwesomeIcons.qrcode),
               onTap: () {
 

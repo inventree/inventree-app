@@ -2,20 +2,20 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-import 'package:inventree/inventree/sentry.dart';
-import 'package:inventree/user_profile.dart';
-import 'package:inventree/widget/snacks.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+
 import 'package:inventree/widget/dialogs.dart';
 import 'package:inventree/l10.dart';
-
-import 'package:http/http.dart' as http;
+import 'package:inventree/inventree/sentry.dart';
+import 'package:inventree/user_profile.dart';
+import 'package:inventree/widget/snacks.dart';
 
 
 /**
@@ -93,7 +93,7 @@ class InvenTreeFileService extends FileService {
 class InvenTreeAPI {
 
   // Minimum required API version for server
-  static const _minApiVersion = 6;
+  static const _minApiVersion = 7;
 
   // Endpoint for requesting an API token
   static const _URL_GET_TOKEN = "user/token/";
@@ -128,7 +128,13 @@ class InvenTreeAPI {
 
   String get imageUrl => _makeUrl("/image/");
 
-  String makeApiUrl(String endpoint) => _makeUrl("/api/" + endpoint);
+  String makeApiUrl(String endpoint) {
+    if (endpoint.startsWith("/api/") || endpoint.startsWith("api/")) {
+      return _makeUrl(endpoint);
+    } else {
+      return _makeUrl("/api/" + endpoint);
+    }
+  }
 
   String makeUrl(String endpoint) => _makeUrl(endpoint);
 
@@ -431,7 +437,7 @@ class InvenTreeAPI {
 
 
   // Perform a PATCH request
-  Future<APIResponse> patch(String url, {Map<String, String> body = const {}, int expectedStatusCode=200}) async {
+  Future<APIResponse> patch(String url, {Map<String, String> body = const {}, int? expectedStatusCode}) async {
     var _body = Map<String, String>();
 
     // Copy across provided data
@@ -593,8 +599,6 @@ class InvenTreeAPI {
 
     Uri? _uri = Uri.tryParse(_url);
 
-    print("apiRequest ${method} -> ${url}");
-
     if (_uri == null) {
       showServerError(L10().invalidHost, L10().invalidHostDetails);
       return null;
@@ -621,12 +625,15 @@ class InvenTreeAPI {
 
       return _request;
     } on SocketException catch (error) {
+      print("SocketException at ${url}: ${error.toString()}");
       showServerError(L10().connectionRefused, error.toString());
       return null;
     } on TimeoutException {
+      print("TimeoutException at ${url}");
       showTimeoutError();
       return null;
     } catch (error, stackTrace) {
+      print("Server error at ${url}: ${error.toString()}");
       showServerError(L10().serverError, error.toString());
       sentryReportError(error, stackTrace);
       return null;

@@ -1,4 +1,6 @@
+import 'package:inventree/app_colors.dart';
 import 'package:inventree/barcode.dart';
+import 'package:inventree/inventree/model.dart';
 import 'package:inventree/inventree/stock.dart';
 import 'package:inventree/inventree/part.dart';
 import 'package:inventree/widget/dialogs.dart';
@@ -17,8 +19,10 @@ import 'package:inventree/l10.dart';
 
 import 'package:inventree/api.dart';
 
-import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import '../api_form.dart';
 
 class StockDetailWidget extends StatefulWidget {
 
@@ -49,20 +53,29 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
   @override
   List<Widget> getAppBarActions(BuildContext context) {
-    return <Widget>[
-      IconButton(
-        icon: FaIcon(FontAwesomeIcons.globe),
-        onPressed: _openInvenTreePage,
-      ),
-      // TODO: Hide the 'edit' button if the user does not have permission!!
-      /*
-      IconButton(
-        icon: FaIcon(FontAwesomeIcons.edit),
-        tooltip: L10().edit,
-        onPressed: _editPartDialog,
-      )
-       */
-    ];
+
+    List<Widget> actions = [];
+
+    if (InvenTreeAPI().checkPermission('stock', 'view')) {
+      actions.add(
+        IconButton(
+          icon: FaIcon(FontAwesomeIcons.globe),
+          onPressed: _openInvenTreePage,
+        )
+      );
+    }
+
+    if (InvenTreeAPI().checkPermission('stock', 'change')) {
+      actions.add(
+          IconButton(
+            icon: FaIcon(FontAwesomeIcons.edit),
+            tooltip: L10().edit,
+            onPressed: () { _editStockItem(context); },
+          )
+      );
+    }
+
+    return actions;
   }
 
   Future<void> _openInvenTreePage() async {
@@ -93,6 +106,24 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     // Request test results...
     await item.getTestResults();
+  }
+
+  void _editStockItem(BuildContext context) async {
+
+    launchApiForm(
+      context,
+      L10().editItem,
+      item.url,
+      {
+        "status": {},
+        "batch": {},
+        "packaging": {},
+        "link": {},
+      },
+      modelData: item.jsondata,
+      onSuccess: refresh
+    );
+
   }
 
   void _addStock() async {
@@ -241,7 +272,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   }
 
 
-  void _transferStock(InvenTreeStockLocation location) async {
+  void _transferStock(int locationId) async {
 
     double quantity = double.tryParse(_quantityController.text) ?? item.quantity;
     String notes = _notesController.text;
@@ -249,7 +280,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     _quantityController.clear();
     _notesController.clear();
 
-    var result = await item.transferStock(location.pk, quantity: quantity, notes: notes);
+    var result = await item.transferStock(locationId, quantity: quantity, notes: notes);
 
     refresh();
 
@@ -258,22 +289,22 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     }
   }
 
-  void _transferStockDialog() async {
+  void _transferStockDialog(BuildContext context) async {
 
     var locations = await InvenTreeStockLocation().list();
     final _selectedController = TextEditingController();
 
-    InvenTreeStockLocation? selectedLocation;
+    int? location_pk;
 
     _quantityController.text = "${item.quantityString}";
 
     showFormDialog(L10().transferStock,
         key: _moveStockKey,
         callback: () {
-          var _loc = selectedLocation;
+          var _pk = location_pk;
 
-          if (_loc != null) {
-            _transferStock(_loc);
+          if (_pk != null) {
+            _transferStock(_pk);
           }
         },
         fields: <Widget>[
@@ -282,47 +313,57 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
             controller: _quantityController,
             max: item.quantity,
           ),
-          TypeAheadFormField(
-              textFieldConfiguration: TextFieldConfiguration(
-                  controller: _selectedController,
-                  autofocus: true,
-                  decoration: InputDecoration(
-                      hintText: L10().searchLocation,
-                      border: OutlineInputBorder()
-                  )
-              ),
-              suggestionsCallback: (pattern) async {
-                List<InvenTreeStockLocation> suggestions = [];
+          DropdownSearch<dynamic>(
+            mode: Mode.BOTTOM_SHEET,
+            showSelectedItem: false,
+            autoFocusSearchBox: true,
+            selectedItem: null,
+            errorBuilder: (context, entry, exception) {
+              print("entry: $entry");
+              print(exception.toString());
 
-                for (var loc in locations) {
-                  if (loc.matchAgainstString(pattern)) {
-                    suggestions.add(loc as InvenTreeStockLocation);
-                  }
+              return Text(
+                exception.toString(),
+                style: TextStyle(
+                  fontSize: 10,
+                )
+              );
+            },
+            onFind: (String filter) async {
+
+              Map<String, String> _filters = {
+                "search": filter,
+                "offset": "0",
+                "limit": "25"
+              };
+
+              final List<InvenTreeModel> results = await InvenTreeStockLocation().list(filters: _filters);
+
+              List<dynamic> items = [];
+
+              for (InvenTreeModel loc in results) {
+                if (loc is InvenTreeStockLocation) {
+                  items.add(loc.jsondata);
                 }
-
-                return suggestions;
-              },
-              validator: (value) {
-                if (selectedLocation == null) {
-                  return L10().selectLocation;
-                }
-
-                return null;
-              },
-              onSuggestionSelected: (suggestion) {
-                selectedLocation = suggestion as InvenTreeStockLocation;
-                _selectedController.text = selectedLocation!.pathstring;
-              },
-              onSaved: (value) {
-              },
-              itemBuilder: (context, suggestion) {
-                var location = suggestion as InvenTreeStockLocation;
-
-                return ListTile(
-                  title: Text("${location.pathstring}"),
-                  subtitle: Text("${location.description}"),
-                );
               }
+
+              return items;
+            },
+            label: L10().stockLocation,
+            hint: L10().searchLocation,
+            onChanged: null,
+            itemAsString: (dynamic location) {
+              return location['pathstring'];
+            },
+            onSaved: (dynamic location) {
+              if (location == null) {
+                location_pk = null;
+              } else {
+                location_pk = location['pk'];
+              }
+            },
+            isFilteredOnline: true,
+            showSearchBox:  true,
           ),
         ],
     );
@@ -394,7 +435,10 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           ListTile(
             title: Text(L10().stockLocation),
             subtitle: Text("${item.locationPathString}"),
-            leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
+            leading: FaIcon(
+              FontAwesomeIcons.mapMarkerAlt,
+              color: COLOR_CLICK,
+            ),
             onTap: () {
               if (item.locationId > 0) {
                 InvenTreeStockLocation().get(item.locationId).then((var loc) {
@@ -463,9 +507,10 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       tiles.add(
         ListTile(
           title: Text("${item.link}"),
-          leading: FaIcon(FontAwesomeIcons.link),
-          trailing: Text(""),
-          onTap: null,
+          leading: FaIcon(FontAwesomeIcons.link, color: COLOR_CLICK),
+          onTap: () {
+            item.openLink();
+          },
         )
       );
     }
@@ -474,7 +519,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       tiles.add(
           ListTile(
               title: Text(L10().testResults),
-              leading: FaIcon(FontAwesomeIcons.tasks),
+              leading: FaIcon(FontAwesomeIcons.tasks, color: COLOR_CLICK),
               trailing: Text("${item.testResultCount}"),
               onTap: () {
                 Navigator.push(
@@ -488,6 +533,18 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           )
       );
     }
+
+    if (item.hasPurchasePrice) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().purchasePrice),
+          leading: FaIcon(FontAwesomeIcons.dollarSign),
+          trailing: Text(item.purchasePrice),
+        )
+      );
+    }
+
+    // TODO - Is this stock item linked to a PurchaseOrder?
 
     // TODO - Re-enable stock item history display
     if (false && item.trackingItemCount > 0) {
@@ -510,8 +567,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       tiles.add(
         ListTile(
           title: Text(L10().notes),
-          leading: FaIcon(FontAwesomeIcons.stickyNote),
-          trailing: Text(""),
+          leading: FaIcon(FontAwesomeIcons.stickyNote, color: COLOR_CLICK),
           onTap: () {
             Navigator.push(
               context,
@@ -527,7 +583,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     return tiles;
   }
 
-  List<Widget> actionTiles() {
+  List<Widget> actionTiles(BuildContext context) {
     List<Widget> tiles = [];
 
     tiles.add(headerTile());
@@ -554,7 +610,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       tiles.add(
           ListTile(
               title: Text(L10().countStock),
-              leading: FaIcon(FontAwesomeIcons.checkCircle),
+              leading: FaIcon(FontAwesomeIcons.checkCircle, color: COLOR_CLICK),
               onTap: _countStockDialog,
               trailing: Text(item.quantityString),
           )
@@ -563,7 +619,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       tiles.add(
           ListTile(
               title: Text(L10().removeStock),
-              leading: FaIcon(FontAwesomeIcons.minusCircle),
+              leading: FaIcon(FontAwesomeIcons.minusCircle, color: COLOR_CLICK),
               onTap: _removeStockDialog,
           )
       );
@@ -571,7 +627,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       tiles.add(
           ListTile(
               title: Text(L10().addStock),
-              leading: FaIcon(FontAwesomeIcons.plusCircle),
+              leading: FaIcon(FontAwesomeIcons.plusCircle, color: COLOR_CLICK),
               onTap: _addStockDialog,
           )
       );
@@ -580,8 +636,8 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     tiles.add(
       ListTile(
         title: Text(L10().transferStock),
-        leading: FaIcon(FontAwesomeIcons.exchangeAlt),
-        onTap: _transferStockDialog,
+        leading: FaIcon(FontAwesomeIcons.exchangeAlt, color: COLOR_CLICK),
+        onTap: () { _transferStockDialog(context); },
       )
     );
 
@@ -589,7 +645,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     tiles.add(
       ListTile(
         title: Text(L10().scanIntoLocation),
-        leading: FaIcon(FontAwesomeIcons.exchangeAlt),
+        leading: FaIcon(FontAwesomeIcons.exchangeAlt, color: COLOR_CLICK),
         trailing: FaIcon(FontAwesomeIcons.qrcode),
         onTap: () {
           Navigator.push(
@@ -607,7 +663,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       tiles.add(
         ListTile(
           title: Text(L10().barcodeAssign),
-          leading: FaIcon(FontAwesomeIcons.barcode),
+          leading: FaIcon(FontAwesomeIcons.barcode, color: COLOR_CLICK),
           trailing: FaIcon(FontAwesomeIcons.qrcode),
           onTap: () {
             Navigator.push(
@@ -623,7 +679,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       tiles.add(
         ListTile(
           title: Text(L10().barcodeUnassign),
-          leading: FaIcon(FontAwesomeIcons.barcode),
+          leading: FaIcon(FontAwesomeIcons.barcode, color: COLOR_CLICK),
           onTap: () {
             _unassignBarcode(context);
           }
@@ -665,7 +721,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         return ListView(
           children: ListTile.divideTiles(
             context: context,
-            tiles: actionTiles()
+            tiles: actionTiles(context)
           ).toList()
         );
       default:
