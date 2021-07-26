@@ -46,6 +46,38 @@ class APIFormField {
   // Get the "default" as a string
   dynamic get defaultValue => data['default'];
 
+  Map<String, String> get filters {
+
+    Map<String, String> _filters = {};
+
+    // Start with the provided "model" filters
+    if (data.containsKey("filters")) {
+
+      dynamic f = data["filters"];
+
+      if (f is Map) {
+        f.forEach((key, value) {
+          _filters[key] = value.toString();
+        });
+      }
+    }
+
+    // Now, look at the provided "instance_filters"
+    if (data.containsKey("instance_filters")) {
+
+      dynamic f = data["instance_filters"];
+
+      if (f is Map) {
+        f.forEach((key, value) {
+          _filters[key] = value.toString();
+        });
+      }
+    }
+
+    return _filters;
+
+  }
+
   bool hasErrors() => errorMessages().length > 0;
 
   // Return the error message associated with this field
@@ -60,9 +92,6 @@ class APIFormField {
 
     return messages;
   }
-
-  // TODO
-  dynamic get filters => null;
 
   // Is this field required?
   bool get required => (data['required'] ?? false) as bool;
@@ -107,11 +136,9 @@ class APIFormField {
 
         Map<String, String> _filters = {};
 
-        if (filters != null) {
-          for (String key in filters) {
-            _filters[key] = filters[key].toString();
-          }
-        }
+        filters.forEach((key, value) {
+          _filters[key] = value;
+        });
 
         _filters["search"] = filter;
         _filters["offset"] = "0";
@@ -145,6 +172,19 @@ class APIFormField {
       // ),
       itemAsString: (dynamic item) {
         return item['pathstring'];
+      },
+      popupItemBuilder: (context, item, isSelected) {
+        return ListTile(
+          title: Text(
+              item['pathstring'].toString(),
+            style: TextStyle(fontWeight: isSelected ? FontWeight.bold : FontWeight.normal),
+          ),
+          subtitle: Text(item['description'].toString()),
+          trailing: Text(item['pk'].toString()),
+        );
+      },
+      onSaved: (item) {
+        data['value'] = item['pk'].toString();
       },
       isFilteredOnline: true,
       showSearchBox: true,
@@ -288,6 +328,19 @@ Future<void> launchApiForm(BuildContext context, String title, String url, Map<S
     for (String key in localField.keys) {
       // Special consideration must be taken here!
       if (key == "filters") {
+
+        if (!remoteField.containsKey("filters")) {
+          remoteField["filters"] = {};
+        }
+
+        var filters = localField["filters"];
+
+        if (filters is Map) {
+          filters.forEach((key, value) {
+            remoteField["filters"][key] = value;
+          });
+        }
+
         // TODO: Custom filter updating
       } else {
         remoteField[key] = localField[key];
