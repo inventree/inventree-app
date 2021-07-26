@@ -1,7 +1,7 @@
 ## InvenTree App Release Notes
 ---
 
-### 0.3.0 - July 2021
+### 0.3.1 - July 2021
 ---
 
 - Adds new "API driven" forms
