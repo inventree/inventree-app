@@ -16,6 +16,11 @@ Make sure that the build number is incremented every time (or it will be rejecte
 
 Ensure that the translation files have been updated, and copied into the correct directory!!
 
+```
+cd lib/l10n
+python update_translations.py
+```
+
 ### Build Appbundle
 
 `flutter build appbundle`

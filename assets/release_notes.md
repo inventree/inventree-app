@@ -10,7 +10,8 @@
 - Improvements for StockLocation editing form
 - Adds ability to edit StockItem
 - Display purchase price (where available) for StockItem
-- Updated translations 
+- Updated translations
+- Adds support for more languages
 
 ### 0.2.10 - July 2021
 ---

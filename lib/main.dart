@@ -64,16 +64,24 @@ class InvenTreeApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: [
-        const Locale('de', ''),
-        const Locale('en', ''),
-        const Locale('es', ''),
-        const Locale('fr', ''),
-        const Locale('it', ''),
-        const Locale('ja', ''),
-        const Locale('pl', ''),
-        const Locale('ru', ''),
-        const Locale('tr', ''),
-        const Locale('zh', ''),
+        const Locale('de', ''),   // German
+        const Locale('el', ''),   // Greek
+        const Locale('en', ''),   // English
+        const Locale('es', ''),   // Spanish
+        const Locale('fr', ''),   // French
+        const Locale('he', ''),   // Hebrew
+        const Locale('it', ''),   // Italian
+        const Locale('ja', ''),   // Japanese
+        const Locale('ko', ''),   // Korean
+        const Locale('nl', ''),   // Dutch
+        const Locale('no', ''),   // Norwegian
+        const Locale('pl', ''),   // Polish
+        const Locale('ru', ''),   // Russian
+        const Locale('sv', ''),   // Swedish
+        const Locale('th', ''),   // Thai
+        const Locale('tr', ''),   // Turkish
+        const Locale('vi', ''),   // Vietnamese
+        const Locale('zh-CN', ''),   // Chinese
       ],
 
     );
