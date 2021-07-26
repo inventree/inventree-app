@@ -534,6 +534,18 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     }
 
+    if (item.hasPurchasePrice) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().purchasePrice),
+          leading: FaIcon(FontAwesomeIcons.dollarSign),
+          trailing: Text(item.purchasePrice),
+        )
+      );
+    }
+
+    // TODO - Is this stock item linked to a PurchaseOrder?
+
     // TODO - Re-enable stock item history display
     if (false && item.trackingItemCount > 0) {
       tiles.add(
