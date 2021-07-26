@@ -188,8 +188,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           "link": {},
 
           "category": {
-            "filters": {
-            }
           },
 
           // Checkbox fields

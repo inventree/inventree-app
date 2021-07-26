@@ -5,6 +5,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 
 import 'package:inventree/api.dart';
 import 'package:inventree/app_colors.dart';
+import 'package:inventree/inventree/part.dart';
 import 'package:inventree/widget/fields.dart';
 import 'package:inventree/l10.dart';
 
@@ -31,8 +32,13 @@ class APIFormField {
   // JSON data which defines the field
   final dynamic data;
 
+  dynamic initial_data;
+
   // Get the "api_url" associated with a related field
   String get api_url => data["api_url"] ?? "";
+
+  // Get the "model" associated with a related field
+  String get model => data["model"] ?? "";
 
   // Is this field hidden?
   bool get hidden => (data['hidden'] ?? false) as bool;
@@ -104,6 +110,36 @@ class APIFormField {
 
   String get placeholderText => (data['placeholder'] ?? '').toString();
 
+  Future<void> loadInitialData() async {
+
+    // Only for "related fields"
+    if (type != "related field") {
+      return;
+    }
+
+    // Null value? No point!
+    if (value == null) {
+      return;
+    }
+
+    int? pk = int.tryParse(value.toString());
+
+    if (pk == null) {
+      return;
+    }
+
+    String url = api_url + "/" + pk.toString() + "/";
+
+    final APIResponse response = await InvenTreeAPI().get(
+      url,
+      params: filters,
+    );
+
+    if (response.isValid()) {
+      initial_data = response.data;
+    }
+  }
+
   // Construct a widget for this input
   Widget constructField() {
     switch (type) {
@@ -132,6 +168,7 @@ class APIFormField {
     return DropdownSearch<dynamic>(
       mode: Mode.BOTTOM_SHEET,
       showSelectedItem: true,
+      selectedItem: initial_data,
       onFind: (String filter) async {
 
         Map<String, String> _filters = {};
@@ -164,32 +201,29 @@ class APIFormField {
       },
       label: label,
       hint: helpText,
-      onChanged: print,
+      onChanged: null,
       showClearButton: !required,
-      // popupTitle: Text(
-      //   label,
-      //   style: _labelStyle(),
-      // ),
       itemAsString: (dynamic item) {
         return item['pathstring'];
       },
+      dropdownBuilder: (context, item, itemAsString) {
+        return _renderRelatedField(item, true, false);
+      },
       popupItemBuilder: (context, item, isSelected) {
-        return ListTile(
-          title: Text(
-              item['pathstring'].toString(),
-            style: TextStyle(fontWeight: isSelected ? FontWeight.bold : FontWeight.normal),
-          ),
-          subtitle: Text(item['description'].toString()),
-          trailing: Text(item['pk'].toString()),
-        );
+        return _renderRelatedField(item, isSelected, true);
       },
       onSaved: (item) {
-        data['value'] = item['pk'].toString();
+        if (item != null) {
+          data['value'] = item['pk'] ?? null;
+        } else {
+          data['value'] = null;
+        }
       },
       isFilteredOnline: true,
       showSearchBox: true,
       autoFocusSearchBox: true,
       compareFn: (dynamic item, dynamic selectedItem) {
+        // Comparison is based on the PK value
 
         if (item == null || selectedItem == null) {
           return false;
@@ -198,6 +232,48 @@ class APIFormField {
         return item['pk'] == selectedItem['pk'];
       }
     );
+  }
+
+  Widget _renderRelatedField(dynamic item, bool selected, bool extended) {
+    // Render a "related field" based on the "model" type
+
+    if (item == null) {
+      return Text(
+        helpText,
+        style: TextStyle(
+          fontStyle: FontStyle.italic
+        ),
+      );
+    }
+
+    switch (model) {
+      case "partcategory":
+
+        var cat = InvenTreePartCategory.fromJson(item);
+
+        return ListTile(
+          title: Text(
+            cat.pathstring,
+            style: TextStyle(fontWeight: selected && extended ? FontWeight.bold : FontWeight.normal)
+          ),
+          subtitle: extended ? Text(
+            cat.description,
+            style: TextStyle(fontWeight: selected ? FontWeight.bold : FontWeight.normal),
+          ) : null,
+        );
+      default:
+        return ListTile(
+          title: Text(
+            "Unsupported model",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: COLOR_DANGER
+            )
+          ),
+          subtitle: Text("Model '${model}' rendering not supported"),
+        );
+    }
+
   }
 
   // Construct a string input element
@@ -341,7 +417,6 @@ Future<void> launchApiForm(BuildContext context, String title, String url, Map<S
           });
         }
 
-        // TODO: Custom filter updating
       } else {
         remoteField[key] = localField[key];
       }
@@ -358,6 +433,11 @@ Future<void> launchApiForm(BuildContext context, String title, String url, Map<S
     }
 
     formFields.add(APIFormField(fieldName, remoteField));
+  }
+
+  // Grab existing data for each form field
+  for (var field in formFields) {
+    await field.loadInitialData();
   }
 
   // Now, launch a new widget!
@@ -445,20 +525,6 @@ class _APIFormWidgetState extends State<APIFormWidget> {
       }
     }
 
-    // TODO: Add a "Save" button
-    // widgets.add(Spacer());
-
-    /*
-    widgets.add(
-      TextButton(
-        child: Text(
-          L10().save
-        ),
-        onPressed: null,
-      )
-    );
-    */
-
     return widgets;
   }
 
@@ -468,7 +534,14 @@ class _APIFormWidgetState extends State<APIFormWidget> {
     Map<String, String> _data = {};
 
     for (var field in fields) {
-      _data[field.name] = field.value.toString();
+
+      dynamic value = field.value;
+
+      if (value == null) {
+        _data[field.name] = "";
+      } else {
+        _data[field.name] = value.toString();
+      }
     }
 
     // TODO: Handle "POST" forms too!!
