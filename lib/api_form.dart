@@ -187,6 +187,7 @@ class APIFormField {
       label: label,
       hint: helpText,
       onChanged: null,
+      autoFocusSearchBox: true,
       showClearButton: !required,
       itemAsString: (dynamic item) {
         return item['display_name'];

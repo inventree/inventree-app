@@ -285,11 +285,17 @@ class InvenTreeModel {
       return results;
     }
 
-    // TODO - handle possible error cases:
-    // - No data receieved
-    // - Data is not a list of maps
+    dynamic data;
 
-    for (var d in response.data) {
+    if (response.data is List) {
+      data = response.data;
+    } else if (response.data.containsKey('results')) {
+      data = response.data['results'];
+    } else {
+      data = [];
+    }
+
+    for (var d in data) {
 
       // Create a new object (of the current class type
       InvenTreeModel obj = createFromJson(d);

@@ -1,4 +1,5 @@
 import 'package:inventree/barcode.dart';
+import 'package:inventree/inventree/model.dart';
 import 'package:inventree/inventree/stock.dart';
 import 'package:inventree/inventree/part.dart';
 import 'package:inventree/widget/dialogs.dart';
@@ -17,7 +18,7 @@ import 'package:inventree/l10.dart';
 
 import 'package:inventree/api.dart';
 
-import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../api_form.dart';
@@ -270,7 +271,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   }
 
 
-  void _transferStock(InvenTreeStockLocation location) async {
+  void _transferStock(int locationId) async {
 
     double quantity = double.tryParse(_quantityController.text) ?? item.quantity;
     String notes = _notesController.text;
@@ -278,7 +279,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     _quantityController.clear();
     _notesController.clear();
 
-    var result = await item.transferStock(location.pk, quantity: quantity, notes: notes);
+    var result = await item.transferStock(locationId, quantity: quantity, notes: notes);
 
     refresh();
 
@@ -287,22 +288,22 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     }
   }
 
-  void _transferStockDialog() async {
+  void _transferStockDialog(BuildContext context) async {
 
     var locations = await InvenTreeStockLocation().list();
     final _selectedController = TextEditingController();
 
-    InvenTreeStockLocation? selectedLocation;
+    int? location_pk;
 
     _quantityController.text = "${item.quantityString}";
 
     showFormDialog(L10().transferStock,
         key: _moveStockKey,
         callback: () {
-          var _loc = selectedLocation;
+          var _pk = location_pk;
 
-          if (_loc != null) {
-            _transferStock(_loc);
+          if (_pk != null) {
+            _transferStock(_pk);
           }
         },
         fields: <Widget>[
@@ -311,47 +312,57 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
             controller: _quantityController,
             max: item.quantity,
           ),
-          TypeAheadFormField(
-              textFieldConfiguration: TextFieldConfiguration(
-                  controller: _selectedController,
-                  autofocus: true,
-                  decoration: InputDecoration(
-                      hintText: L10().searchLocation,
-                      border: OutlineInputBorder()
-                  )
-              ),
-              suggestionsCallback: (pattern) async {
-                List<InvenTreeStockLocation> suggestions = [];
+          DropdownSearch<dynamic>(
+            mode: Mode.BOTTOM_SHEET,
+            showSelectedItem: false,
+            autoFocusSearchBox: true,
+            selectedItem: null,
+            errorBuilder: (context, entry, exception) {
+              print("entry: $entry");
+              print(exception.toString());
 
-                for (var loc in locations) {
-                  if (loc.matchAgainstString(pattern)) {
-                    suggestions.add(loc as InvenTreeStockLocation);
-                  }
+              return Text(
+                exception.toString(),
+                style: TextStyle(
+                  fontSize: 10,
+                )
+              );
+            },
+            onFind: (String filter) async {
+
+              Map<String, String> _filters = {
+                "search": filter,
+                "offset": "0",
+                "limit": "25"
+              };
+
+              final List<InvenTreeModel> results = await InvenTreeStockLocation().list(filters: _filters);
+
+              List<dynamic> items = [];
+
+              for (InvenTreeModel loc in results) {
+                if (loc is InvenTreeStockLocation) {
+                  items.add(loc.jsondata);
                 }
-
-                return suggestions;
-              },
-              validator: (value) {
-                if (selectedLocation == null) {
-                  return L10().selectLocation;
-                }
-
-                return null;
-              },
-              onSuggestionSelected: (suggestion) {
-                selectedLocation = suggestion as InvenTreeStockLocation;
-                _selectedController.text = selectedLocation!.pathstring;
-              },
-              onSaved: (value) {
-              },
-              itemBuilder: (context, suggestion) {
-                var location = suggestion as InvenTreeStockLocation;
-
-                return ListTile(
-                  title: Text("${location.pathstring}"),
-                  subtitle: Text("${location.description}"),
-                );
               }
+
+              return items;
+            },
+            label: L10().stockLocation,
+            hint: L10().searchLocation,
+            onChanged: null,
+            itemAsString: (dynamic location) {
+              return location['pathstring'];
+            },
+            onSaved: (dynamic location) {
+              if (location == null) {
+                location_pk = null;
+              } else {
+                location_pk = location['pk'];
+              }
+            },
+            isFilteredOnline: true,
+            showSearchBox:  true,
           ),
         ],
     );
@@ -556,7 +567,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     return tiles;
   }
 
-  List<Widget> actionTiles() {
+  List<Widget> actionTiles(BuildContext context) {
     List<Widget> tiles = [];
 
     tiles.add(headerTile());
@@ -610,7 +621,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       ListTile(
         title: Text(L10().transferStock),
         leading: FaIcon(FontAwesomeIcons.exchangeAlt),
-        onTap: _transferStockDialog,
+        onTap: () { _transferStockDialog(context); },
       )
     );
 
@@ -694,7 +705,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         return ListView(
           children: ListTile.divideTiles(
             context: context,
-            tiles: actionTiles()
+            tiles: actionTiles(context)
           ).toList()
         );
       default:
