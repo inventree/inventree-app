@@ -476,14 +476,7 @@ class InvenTreeStockItem extends InvenTreeModel {
       expectedStatusCode: 200
     );
 
-    print("Adjustment completed!");
-
-    if (response == null) {
-      return false;
-    }
-
-    // Stock adjustment succeeded!
-    return true;
+    return response.isValid();
   }
 
   Future<bool> countStock(BuildContext context, double q, {String? notes}) async {

@@ -271,8 +271,7 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
 
   final InvenTreeStockItem item;
 
-  StockItemBarcodeAssignmentHandler(this.item) {
-  }
+  StockItemBarcodeAssignmentHandler(this.item);
 
   @override
   String getOverlayText(BuildContext context) => L10().barcodeScanAssign;

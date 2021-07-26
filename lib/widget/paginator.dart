@@ -21,19 +21,14 @@ class PaginatedSearchWidget extends StatelessWidget {
       leading: GestureDetector(
         child: FaIcon(controller.text.isEmpty ? FontAwesomeIcons.search : FontAwesomeIcons.backspace),
         onTap: () {
-          if (onChanged != null) {
-            controller.clear();
-            onChanged();
-          }
+          controller.clear();
+          onChanged();
         },
       ),
       title: TextFormField(
         controller: controller,
         onChanged: (value) {
-
-          if (onChanged != null) {
-            onChanged();
-          }
+          onChanged();
         },
         decoration: InputDecoration(
           hintText: L10().search,

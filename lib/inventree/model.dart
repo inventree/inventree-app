@@ -296,9 +296,7 @@ class InvenTreeModel {
       // Create a new object (of the current class type
       InvenTreeModel obj = createFromJson(d);
 
-      if (obj != null) {
-        results.add(obj);
-      }
+      results.add(obj);
     }
 
     return results;

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 
@@ -128,9 +130,6 @@ class APIFormField {
             results.add(result);
           }
 
-          print("Results:");
-          print(results);
-
           return results;
         } else {
           return [];
@@ -140,11 +139,16 @@ class APIFormField {
       hint: helpText,
       onChanged: print,
       showClearButton: !required,
+      // popupTitle: Text(
+      //   label,
+      //   style: _labelStyle(),
+      // ),
       itemAsString: (dynamic item) {
         return item['pathstring'];
       },
       isFilteredOnline: true,
       showSearchBox: true,
+      autoFocusSearchBox: true,
       compareFn: (dynamic item, dynamic selectedItem) {
 
         if (item == null || selectedItem == null) {
@@ -198,7 +202,9 @@ class APIFormField {
     return new TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 18,
+      fontFamily: "arial",
       color: hasErrors() ? COLOR_DANGER : COLOR_GRAY,
+      fontStyle: FontStyle.normal,
     );
   }
 
@@ -245,8 +251,6 @@ Map<String, dynamic> extractFields(APIResponse response) {
 Future<void> launchApiForm(BuildContext context, String title, String url, Map<String, dynamic> fields, {Map<String, dynamic> modelData = const {}, String method = "PATCH", Function? onSuccess, Function? onCancel}) async {
 
   var options = await InvenTreeAPI().options(url);
-
-  final _formKey = new GlobalKey<FormState>();
 
   // Invalid response from server
   if (!options.isValid()) {
