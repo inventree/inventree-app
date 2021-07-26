@@ -276,8 +276,6 @@ class InvenTreeModel {
       params[key] = filters[key] ?? '';
     }
 
-    print("LIST: $URL ${params.toString()}");
-
     var response = await api.get(URL, params: params);
 
     // A list of "InvenTreeModel" items

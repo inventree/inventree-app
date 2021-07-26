@@ -56,7 +56,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
       key: _addProfileKey,
       callback: () {
           if (createNew) {
-            // TODO - create the new profile...
+
             UserProfile profile = UserProfile(
               name: _name,
               server: _server,

@@ -599,8 +599,6 @@ class InvenTreeAPI {
 
     Uri? _uri = Uri.tryParse(_url);
 
-    print("apiRequest ${method} -> ${url}");
-
     if (_uri == null) {
       showServerError(L10().invalidHost, L10().invalidHostDetails);
       return null;
@@ -627,12 +625,15 @@ class InvenTreeAPI {
 
       return _request;
     } on SocketException catch (error) {
+      print("SocketException at ${url}: ${error.toString()}");
       showServerError(L10().connectionRefused, error.toString());
       return null;
     } on TimeoutException {
+      print("TimeoutException at ${url}");
       showTimeoutError();
       return null;
     } catch (error, stackTrace) {
+      print("Server error at ${url}: ${error.toString()}");
       showServerError(L10().serverError, error.toString());
       sentryReportError(error, stackTrace);
       return null;

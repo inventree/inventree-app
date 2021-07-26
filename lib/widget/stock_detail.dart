@@ -20,6 +20,8 @@ import 'package:inventree/api.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../api_form.dart';
+
 class StockDetailWidget extends StatefulWidget {
 
   StockDetailWidget(this.item, {Key? key}) : super(key: key);
@@ -49,20 +51,29 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
   @override
   List<Widget> getAppBarActions(BuildContext context) {
-    return <Widget>[
-      IconButton(
-        icon: FaIcon(FontAwesomeIcons.globe),
-        onPressed: _openInvenTreePage,
-      ),
-      // TODO: Hide the 'edit' button if the user does not have permission!!
-      /*
-      IconButton(
-        icon: FaIcon(FontAwesomeIcons.edit),
-        tooltip: L10().edit,
-        onPressed: _editPartDialog,
-      )
-       */
-    ];
+
+    List<Widget> actions = [];
+
+    if (InvenTreeAPI().checkPermission('stock', 'view')) {
+      actions.add(
+        IconButton(
+          icon: FaIcon(FontAwesomeIcons.globe),
+          onPressed: _openInvenTreePage,
+        )
+      );
+    }
+
+    if (InvenTreeAPI().checkPermission('stock', 'change')) {
+      actions.add(
+          IconButton(
+            icon: FaIcon(FontAwesomeIcons.edit),
+            tooltip: L10().edit,
+            onPressed: () { _editStockItem(context); },
+          )
+      );
+    }
+
+    return actions;
   }
 
   Future<void> _openInvenTreePage() async {
@@ -93,6 +104,24 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     // Request test results...
     await item.getTestResults();
+  }
+
+  void _editStockItem(BuildContext context) async {
+
+    launchApiForm(
+      context,
+      L10().editItem,
+      item.url,
+      {
+        "status": {},
+        "batch": {},
+        "packaging": {},
+        "link": {},
+      },
+      modelData: item.jsondata,
+      onSuccess: refresh
+    );
+
   }
 
   void _addStock() async {

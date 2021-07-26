@@ -111,6 +111,8 @@ class APIFormField {
 
   String get placeholderText => (data['placeholder'] ?? '').toString();
 
+  List<dynamic> get choices => data["choices"] ?? [];
+
   Future<void> loadInitialData() async {
 
     // Only for "related fields"
@@ -151,6 +153,8 @@ class APIFormField {
         return _constructBoolean();
       case "related field":
         return _constructRelatedField();
+      case "choice":
+        return _constructChoiceField();
       default:
         return ListTile(
           title: Text(
@@ -161,6 +165,40 @@ class APIFormField {
           )
         );
     }
+  }
+
+  Widget _constructChoiceField() {
+
+    dynamic _initial;
+
+    // Check if the current value is within the allowed values
+    for (var opt in choices) {
+      if (opt['value'] == value) {
+        _initial = opt;
+        break;
+      }
+    }
+
+    return DropdownSearch<dynamic>(
+      mode: Mode.BOTTOM_SHEET,
+      showSelectedItem: false,
+      selectedItem: _initial,
+      items: choices,
+      label: label,
+      hint: helpText,
+      onChanged: null,
+      showClearButton: !required,
+      itemAsString: (dynamic item) {
+        return item['display_name'];
+      },
+      onSaved: (item) {
+        if (item == null) {
+          data['value'] = null;
+        } else {
+          data['value'] = item['value'];
+        }
+      }
+    );
   }
 
   // Construct an input for a related field
