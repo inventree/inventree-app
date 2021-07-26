@@ -93,7 +93,7 @@ class InvenTreeFileService extends FileService {
 class InvenTreeAPI {
 
   // Minimum required API version for server
-  static const _minApiVersion = 6;
+  static const _minApiVersion = 7;
 
   // Endpoint for requesting an API token
   static const _URL_GET_TOKEN = "user/token/";

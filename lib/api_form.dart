@@ -1,15 +1,15 @@
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:dropdown_search/dropdown_search.dart';
+
 import 'package:inventree/api.dart';
 import 'package:inventree/app_colors.dart';
-import 'package:inventree/widget/dialogs.dart';
 import 'package:inventree/widget/fields.dart';
 import 'package:inventree/l10.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:inventree/widget/snacks.dart';
-import 'package:one_context/one_context.dart';
+
 
 
 /*
@@ -17,6 +17,8 @@ import 'package:one_context/one_context.dart';
  * defined by the InvenTree API
  */
 class APIFormField {
+
+  final _controller = TextEditingController();
 
   // Constructor
   APIFormField(this.name, this.data);
@@ -96,16 +98,65 @@ class APIFormField {
   // Construct an input for a related field
   Widget _constructRelatedField() {
 
-    return AutocompleteFormField(
-      required ? label + "*" : label,
-      api_url,
-      filters: filters,
+    return DropdownSearch<dynamic>(
+      mode: Mode.BOTTOM_SHEET,
+      showSelectedItem: true,
+      onFind: (String filter) async {
+
+        Map<String, String> _filters = {};
+
+        if (filters != null) {
+          for (String key in filters) {
+            _filters[key] = filters[key].toString();
+          }
+        }
+
+        _filters["search"] = filter;
+        _filters["offset"] = "0";
+        _filters["limit"] = "25";
+
+        final APIResponse response = await InvenTreeAPI().get(
+          api_url,
+          params: _filters
+        );
+
+        if (response.isValid()) {
+
+          List<dynamic> results = [];
+
+          for (var result in response.data['results'] ?? []) {
+            results.add(result);
+          }
+
+          print("Results:");
+          print(results);
+
+          return results;
+        } else {
+          return [];
+        }
+      },
+      label: label,
       hint: helpText,
-      renderer: null,
+      onChanged: print,
+      showClearButton: !required,
+      itemAsString: (dynamic item) {
+        return item['pathstring'];
+      },
+      isFilteredOnline: true,
+      showSearchBox: true,
+      compareFn: (dynamic item, dynamic selectedItem) {
+
+        if (item == null || selectedItem == null) {
+          return false;
+        }
+
+        return item['pk'] == selectedItem['pk'];
+      }
     );
   }
 
-  // Consturct a string input element
+  // Construct a string input element
   Widget _constructString() {
 
     return TextFormField(

@@ -1,6 +1,12 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.3.0 - July 2021
+---
+
+
+- Updated translations 
+
 ### 0.2.10 - July 2021
 ---
 
