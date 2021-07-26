@@ -4,7 +4,11 @@
 ### 0.3.0 - July 2021
 ---
 
-
+- Adds new "API driven" forms
+- Improvements for Part editing form
+- Improvements for PartCategory editing form
+- Improvements for StockLocation editing form
+- Adds ability to edit StockItem
 - Updated translations 
 
 ### 0.2.10 - July 2021

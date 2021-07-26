@@ -1,5 +1,6 @@
 
 import 'package:inventree/api.dart';
+import 'package:inventree/app_colors.dart';
 import 'package:inventree/app_settings.dart';
 import 'package:inventree/inventree/part.dart';
 import 'package:inventree/inventree/sentry.dart';
@@ -166,7 +167,10 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
             ListTile(
               title: Text(L10().parentCategory),
               subtitle: Text("${category?.parentpathstring}"),
-              leading: FaIcon(FontAwesomeIcons.levelUpAlt),
+              leading: FaIcon(
+                FontAwesomeIcons.levelUpAlt,
+                color: COLOR_CLICK,
+              ),
               onTap: () {
                 if (category == null || ((category?.parentId ?? 0) < 0)) {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));

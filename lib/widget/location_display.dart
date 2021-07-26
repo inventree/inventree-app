@@ -1,5 +1,6 @@
 import 'package:inventree/api.dart';
 import 'package:inventree/api_form.dart';
+import 'package:inventree/app_colors.dart';
 import 'package:inventree/app_settings.dart';
 import 'package:inventree/barcode.dart';
 import 'package:inventree/inventree/sentry.dart';
@@ -176,7 +177,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
             ListTile(
               title: Text(L10().parentCategory),
               subtitle: Text("${location!.parentpathstring}"),
-              leading: FaIcon(FontAwesomeIcons.levelUpAlt),
+              leading: FaIcon(FontAwesomeIcons.levelUpAlt, color: COLOR_CLICK),
               onTap: () {
 
                 int parent = location?.parentId ?? -1;
@@ -302,7 +303,7 @@ List<Widget> detailTiles() {
         tiles.add(
             ListTile(
               title: Text(L10().barcodeScanInItems),
-              leading: FaIcon(FontAwesomeIcons.exchangeAlt),
+              leading: FaIcon(FontAwesomeIcons.exchangeAlt, color: COLOR_CLICK),
               trailing: FaIcon(FontAwesomeIcons.qrcode),
               onTap: () {
 

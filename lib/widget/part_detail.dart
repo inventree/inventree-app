@@ -275,7 +275,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         ListTile(
             title: Text(L10().partCategory),
             subtitle: Text("${part.categoryName}"),
-            leading: FaIcon(FontAwesomeIcons.sitemap),
+            leading: FaIcon(FontAwesomeIcons.sitemap, color: COLOR_CLICK),
             onTap: () {
               if (part.categoryId > 0) {
                 InvenTreePartCategory().get(part.categoryId).then((var cat) {
@@ -294,7 +294,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         ListTile(
           title: Text(L10().partCategory),
           subtitle: Text(L10().partCategoryTopLevel),
-          leading: FaIcon(FontAwesomeIcons.sitemap),
+          leading: FaIcon(FontAwesomeIcons.sitemap, color: COLOR_CLICK),
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));
           },
@@ -306,7 +306,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     tiles.add(
       ListTile(
         title: Text(L10().stock),
-        leading: FaIcon(FontAwesomeIcons.boxes),
+        leading: FaIcon(FontAwesomeIcons.boxes, color: COLOR_CLICK),
         trailing: Text("${part.inStockString}"),
         onTap: () {
           setState(() {
@@ -392,8 +392,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       tiles.add(
         ListTile(
             title: Text("${part.link}"),
-            leading: FaIcon(FontAwesomeIcons.link),
-            trailing: FaIcon(FontAwesomeIcons.externalLinkAlt),
+            leading: FaIcon(FontAwesomeIcons.link, color: COLOR_CLICK),
             onTap: () {
               part.openLink();
             },
@@ -417,7 +416,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       tiles.add(
           ListTile(
             title: Text(L10().notes),
-            leading: FaIcon(FontAwesomeIcons.stickyNote),
+            leading: FaIcon(FontAwesomeIcons.stickyNote, color: COLOR_CLICK),
             trailing: Text(""),
             onTap: () {
               Navigator.push(
