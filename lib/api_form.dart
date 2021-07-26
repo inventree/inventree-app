@@ -6,6 +6,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:inventree/api.dart';
 import 'package:inventree/app_colors.dart';
 import 'package:inventree/inventree/part.dart';
+import 'package:inventree/inventree/stock.dart';
 import 'package:inventree/widget/fields.dart';
 import 'package:inventree/l10.dart';
 
@@ -258,6 +259,20 @@ class APIFormField {
           ),
           subtitle: extended ? Text(
             cat.description,
+            style: TextStyle(fontWeight: selected ? FontWeight.bold : FontWeight.normal),
+          ) : null,
+        );
+      case "stocklocation":
+
+        var loc = InvenTreeStockLocation.fromJson(item);
+
+        return ListTile(
+          title: Text(
+            loc.pathstring,
+              style: TextStyle(fontWeight: selected && extended ? FontWeight.bold : FontWeight.normal)
+          ),
+          subtitle: extended ? Text(
+            loc.description,
             style: TextStyle(fontWeight: selected ? FontWeight.bold : FontWeight.normal),
           ) : null,
         );
