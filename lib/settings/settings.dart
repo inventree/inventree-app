@@ -1,3 +1,4 @@
+import 'package:inventree/app_colors.dart';
 import 'package:inventree/inventree/sentry.dart';
 import 'package:inventree/settings/about.dart';
 import 'package:inventree/settings/app_settings.dart';
@@ -46,26 +47,26 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
               ListTile(
                   title: Text(L10().server),
                   subtitle: Text(L10().configureServer),
-                  leading: FaIcon(FontAwesomeIcons.server),
+                  leading: FaIcon(FontAwesomeIcons.server, color: COLOR_CLICK),
                   onTap: _editServerSettings,
               ),
               ListTile(
-                leading: FaIcon(FontAwesomeIcons.cogs),
                 title: Text(L10().appSettings),
                 subtitle: Text(L10().appSettingsDetails),
+                leading: FaIcon(FontAwesomeIcons.cogs, color: COLOR_CLICK),
                 onTap: _editAppSettings,
               ),
               ListTile(
                 title: Text(L10().about),
                 subtitle: Text(L10().appDetails),
-                leading: FaIcon(FontAwesomeIcons.infoCircle),
+                leading: FaIcon(FontAwesomeIcons.infoCircle, color: COLOR_CLICK),
                 onTap: _about,
               ),
 
               ListTile(
                 title: Text(L10().documentation),
                 subtitle: Text("https://inventree.readthedocs.io"),
-                leading: FaIcon(FontAwesomeIcons.book),
+                leading: FaIcon(FontAwesomeIcons.book, color: COLOR_CLICK),
                 onTap: () {
                   _openDocs();
                 },
@@ -74,7 +75,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
               ListTile(
                 title: Text(L10().translate),
                 subtitle: Text(L10().translateHelp),
-                leading: FaIcon(FontAwesomeIcons.language),
+                leading: FaIcon(FontAwesomeIcons.language, color: COLOR_CLICK),
                 onTap: () {
                   _translate();
                 }
@@ -83,7 +84,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
               ListTile(
                 title: Text(L10().feedback),
                 subtitle: Text(L10().submitFeedback),
-                leading: FaIcon(FontAwesomeIcons.comments),
+                leading: FaIcon(FontAwesomeIcons.comments, color: COLOR_CLICK),
                 onTap: () {
                   _submitFeedback(context);
                 },

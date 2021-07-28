@@ -1,4 +1,5 @@
 import 'package:inventree/api.dart';
+import 'package:inventree/app_colors.dart';
 import 'package:inventree/settings/release.dart';
 
 import 'package:flutter/cupertino.dart';
@@ -116,7 +117,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
       ListTile(
         title: Text(L10().releaseNotes),
         subtitle: Text(L10().appReleaseNotes),
-        leading: FaIcon(FontAwesomeIcons.fileAlt),
+        leading: FaIcon(FontAwesomeIcons.fileAlt, color: COLOR_CLICK),
         onTap: () {
           _releaseNotes(context);
         },
@@ -127,7 +128,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
       ListTile(
         title: Text(L10().credits),
         subtitle: Text(L10().appCredits),
-        leading: FaIcon(FontAwesomeIcons.bullhorn),
+        leading: FaIcon(FontAwesomeIcons.bullhorn, color: COLOR_CLICK),
         onTap: () {
           _credits(context);
         }

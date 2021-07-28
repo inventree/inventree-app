@@ -47,7 +47,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   final _removeStockKey = GlobalKey<FormState>();
   final _countStockKey = GlobalKey<FormState>();
   final _moveStockKey = GlobalKey<FormState>();
-  final _editStockKey = GlobalKey<FormState>();
 
   _StockItemDisplayState(this.item);
 
@@ -290,9 +289,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   }
 
   void _transferStockDialog(BuildContext context) async {
-
-    var locations = await InvenTreeStockLocation().list();
-    final _selectedController = TextEditingController();
 
     int? location_pk;
 
@@ -563,22 +559,21 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     }
 
-    if (item.notes.isNotEmpty) {
-      tiles.add(
-        ListTile(
-          title: Text(L10().notes),
-          leading: FaIcon(FontAwesomeIcons.stickyNote, color: COLOR_CLICK),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => StockNotesWidget(item))
-            );
-            // TODO: Load notes in markdown viewer widget
-            // TODO: Make this widget editable?
-          }
-        )
-      );
-    }
+    // Notes field
+    tiles.add(
+      ListTile(
+        title: Text(L10().notes),
+        leading: FaIcon(FontAwesomeIcons.stickyNote, color: COLOR_CLICK),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => StockNotesWidget(item))
+          );
+          // TODO: Load notes in markdown viewer widget
+          // TODO: Make this widget editable?
+        }
+      )
+    );
 
     return tiles;
   }

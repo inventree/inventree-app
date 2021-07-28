@@ -8,9 +8,6 @@ import 'package:inventree/inventree/stock.dart';
 import 'package:inventree/widget/progress.dart';
 
 import 'package:inventree/widget/refreshable_state.dart';
-import 'package:inventree/widget/fields.dart';
-import 'package:inventree/widget/dialogs.dart';
-import 'package:inventree/widget/snacks.dart';
 import 'package:inventree/widget/stock_detail.dart';
 import 'package:inventree/widget/paginator.dart';
 import 'package:inventree/l10.dart';
@@ -36,8 +33,6 @@ class LocationDisplayWidget extends StatefulWidget {
 class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
   final InvenTreeStockLocation? location;
-
-  final _editLocationKey = GlobalKey<FormState>();
 
   @override
   String getAppBarTitle(BuildContext context) { return L10().stockLocation; }
@@ -101,14 +96,6 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       modelData: _loc.jsondata,
       onSuccess: refresh
     );
-
-    // Values which an be edited
-    var _name;
-    var _description;
-
-    if (location == null) {
-      return;
-    }
   }
 
   _LocationDisplayState(this.location);

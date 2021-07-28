@@ -37,7 +37,6 @@ class PartDetailWidget extends StatefulWidget {
 class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   final _editImageKey = GlobalKey<FormState>();
-  final _editPartKey = GlobalKey<FormState>();
 
   @override
   String getAppBarTitle(BuildContext context) => L10().partDetails;
@@ -102,23 +101,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       await part.update(values: {"starred": "${!part.starred}"});
       refresh();
     }
-  }
-
-  void _savePart(Map<String, String> values) async {
-
-    final bool result = await part.update(values: values);
-
-    if (result) {
-      showSnackIcon(L10().partEdited, success: true);
-    }
-    /*
-    showSnackIcon(
-      result ? "Part edited" : "Part editing failed",
-      success: result
-    );
-    */
-
-    refresh();
   }
 
   /**
@@ -411,22 +393,20 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       );
     }
 
-    // Notes field?
-    if (part.notes.isNotEmpty) {
-      tiles.add(
-          ListTile(
-            title: Text(L10().notes),
-            leading: FaIcon(FontAwesomeIcons.stickyNote, color: COLOR_CLICK),
-            trailing: Text(""),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => PartNotesWidget(part))
-              );
-            },
-          )
-      );
-    }
+    // Notes field
+    tiles.add(
+      ListTile(
+        title: Text(L10().notes),
+        leading: FaIcon(FontAwesomeIcons.stickyNote, color: COLOR_CLICK),
+        trailing: Text(""),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => PartNotesWidget(part))
+          );
+        },
+      )
+    );
 
     return tiles;
 

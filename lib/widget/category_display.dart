@@ -8,10 +8,6 @@ import 'package:inventree/widget/progress.dart';
 
 import 'package:inventree/l10.dart';
 
-
-import 'package:inventree/widget/fields.dart';
-import 'package:inventree/widget/dialogs.dart';
-import 'package:inventree/widget/snacks.dart';
 import 'package:inventree/widget/part_detail.dart';
 import 'package:inventree/widget/refreshable_state.dart';
 import 'package:inventree/widget/paginator.dart';

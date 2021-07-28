@@ -1,9 +1,14 @@
 
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:inventree/inventree/stock.dart';
 import 'package:inventree/widget/refreshable_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:inventree/l10.dart';
+
+import '../api.dart';
+import '../api_form.dart';
 
 
 class StockNotesWidget extends StatefulWidget {
@@ -25,6 +30,43 @@ class _StockNotesState extends RefreshableState<StockNotesWidget> {
 
   @override
   String getAppBarTitle(BuildContext context) => L10().stockItemNotes;
+
+  @override
+  Future<void> request() async {
+    await item.reload();
+  }
+
+  @override
+  List<Widget> getAppBarActions(BuildContext context) {
+    List<Widget> actions = [];
+
+    if (InvenTreeAPI().checkPermission('stock', 'change')) {
+      actions.add(
+          IconButton(
+              icon: FaIcon(FontAwesomeIcons.edit),
+              tooltip: L10().edit,
+              onPressed: () {
+                launchApiForm(
+                    context,
+                    L10().editNotes,
+                    item.url,
+                    {
+                      "notes": {
+                        "multiline": true,
+                      }
+                    },
+                    modelData: item.jsondata,
+                    onSuccess: () {
+                      refresh();
+                    }
+                );
+              }
+          )
+      );
+    }
+
+    return actions;
+  }
 
   @override
   Widget getBody(BuildContext context) {

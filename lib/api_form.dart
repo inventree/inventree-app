@@ -22,8 +22,6 @@ import 'package:inventree/widget/snacks.dart';
  */
 class APIFormField {
 
-  final _controller = TextEditingController();
-
   // Constructor
   APIFormField(this.name, this.data);
 
@@ -46,6 +44,8 @@ class APIFormField {
 
   // Is this field read only?
   bool get readOnly => (data['read_only'] ?? false) as bool;
+
+  bool get multiline => (data['multiline'] ?? false) as bool;
 
   // Get the "value" as a string (look for "default" if not available)
   dynamic get value => (data['value'] ?? data['default']);
@@ -341,6 +341,8 @@ class APIFormField {
         helperStyle: _helperStyle(),
         hintText: placeholderText,
       ),
+      maxLines: multiline ? null : 1,
+      expands: false,
       initialValue: value ?? '',
       onSaved: (val) {
         data["value"] = val;
