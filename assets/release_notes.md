@@ -1,6 +1,14 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.4.0 - July 2021
+---
+
+- Fixes bug which prevented opening of external URLs
+- Adds ability to edit Part notes
+- Adds ability to edit StockItem notes
+
+
 ### 0.3.1 - July 2021
 ---
 
