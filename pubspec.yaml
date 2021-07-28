@@ -31,7 +31,7 @@ dependencies:
   flutter_speed_dial: ^3.0.5              # FAB menu elements
   sentry_flutter: 5.0.0                   # Error reporting
   image_picker: ^0.8.0                    # Select or take photos
-  url_launcher: 6.0.0                     # Open link in system browser
+  url_launcher: 6.0.9                     # Open link in system browser
   flutter_markdown: ^0.6.2                # Rendering markdown
   camera:                                 # Camera
   path_provider: 2.0.1                    # Local file storage
