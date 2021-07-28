@@ -489,6 +489,8 @@ class InvenTreeQRView extends StatefulWidget {
 
 class _QRViewState extends State<InvenTreeQRView> {
 
+  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+
   QRViewController? _controller;
 
   final BarcodeHandler _handler;
@@ -500,16 +502,15 @@ class _QRViewState extends State<InvenTreeQRView> {
   @override
   void reassemble() {
     super.reassemble();
+
     if (Platform.isAndroid) {
-      _controller?.pauseCamera();
-    } else if (Platform.isIOS) {
-      _controller?.resumeCamera();
+      _controller!.pauseCamera();
     }
+
+    _controller!.resumeCamera();
   }
 
   _QRViewState(this._handler) : super();
-
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
   void _onViewCreated(QRViewController controller) {
     _controller = controller;
