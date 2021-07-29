@@ -14,7 +14,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'login.dart';
 
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class InvenTreeSettingsWidget extends StatefulWidget {
   // InvenTree settings view
