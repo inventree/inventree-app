@@ -21,6 +21,7 @@ Future<void> main() async {
 
     await Sentry.init((options) {
       options.dsn = SENTRY_DSN_KEY;
+      options.environment = isInDebugMode() ? "debug" : "release";
     });
 
     WidgetsFlutterBinding.ensureInitialized();
