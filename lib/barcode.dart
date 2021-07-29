@@ -23,7 +23,7 @@ import 'dart:io';
 
 
 class BarcodeHandler {
-  /**
+  /*
    * Class which "handles" a barcode, by communicating with the InvenTree server,
    * and handling match / unknown / error cases.
    *
@@ -117,7 +117,7 @@ class BarcodeHandler {
 
 
 class BarcodeScanHandler extends BarcodeHandler {
-  /**
+  /*
    * Class for general barcode scanning.
    * Scan *any* barcode without context, and then redirect app to correct view
    */
@@ -141,9 +141,6 @@ class BarcodeScanHandler extends BarcodeHandler {
   Future<void> onBarcodeMatched(BuildContext context, Map<String, dynamic> data) async {
 
     int pk = -1;
-
-    print("Handle barcode:");
-    print(data);
 
     // A stocklocation has been passed?
     if (data.containsKey('stocklocation')) {
@@ -250,7 +247,7 @@ class BarcodeScanHandler extends BarcodeHandler {
 
 
 class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
-  /**
+  /*
    * Barcode handler for assigning a new barcode to a stock item
    */
 
@@ -325,7 +322,7 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
 
 
 class StockItemScanIntoLocationHandler extends BarcodeHandler {
-  /**
+  /*
    * Barcode handler for scanning a provided StockItem into a scanned StockLocation
    */
 
@@ -382,7 +379,7 @@ class StockItemScanIntoLocationHandler extends BarcodeHandler {
 
 
 class StockLocationScanInItemsHandler extends BarcodeHandler {
-  /**
+  /*
    * Barcode handler for scanning stock item(s) into the specified StockLocation
    */
   
@@ -472,8 +469,6 @@ class _QRViewState extends State<InvenTreeQRView> {
 
   final BarcodeHandler _handler;
 
-  BuildContext? _context;
-
   // In order to get hot reload to work we need to pause the camera if the platform
   // is android, or resume the camera if the platform is iOS.
   @override
@@ -505,9 +500,6 @@ class _QRViewState extends State<InvenTreeQRView> {
 
   @override
   Widget build(BuildContext context) {
-
-    // Save the context for later on!
-    this._context = context;
 
     return Scaffold(
         body: Stack(
