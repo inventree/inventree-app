@@ -24,7 +24,7 @@ dependencies:
   cupertino_icons: ^1.0.3
   http: ^0.13.0
   cached_network_image: ^3.0.0            # Download and cache remote images
-  qr_code_scanner: ^0.5.1                 # Barcode scanning
+  qr_code_scanner: ^0.5.2                 # Barcode scanning
   package_info_plus: ^1.0.4               # App information introspection
   device_info_plus: ^2.1.0                # Information about the device
   font_awesome_flutter: ^9.1.0            # FontAwesome icon set

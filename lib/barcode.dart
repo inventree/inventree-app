@@ -292,9 +292,6 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
 
           failureTone();
 
-          // Close the barcode scanner
-          _controller?.dispose();
-
           Navigator.of(context).pop();
 
           showSnackIcon(
@@ -317,10 +314,6 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
   }
 }
 
-
-
-
-
 class StockItemScanIntoLocationHandler extends BarcodeHandler {
   /*
    * Barcode handler for scanning a provided StockItem into a scanned StockLocation
@@ -338,7 +331,16 @@ class StockItemScanIntoLocationHandler extends BarcodeHandler {
     // If the barcode points to a 'stocklocation', great!
     if (data.containsKey('stocklocation')) {
       // Extract location information
-      int location = data['stocklocation']['pk'] as int;
+      int location = (data['stocklocation']['pk'] ?? -1) as int;
+
+      if (location == -1) {
+        showSnackIcon(
+          L10().invalidStockLocation,
+          success: false,
+        );
+
+        return;
+      }
 
       // Transfer stock to specified location
       final result = await item.transferStock(location);
@@ -346,9 +348,6 @@ class StockItemScanIntoLocationHandler extends BarcodeHandler {
       if (result) {
 
         successTone();
-
-        // Close the scanner
-        _controller?.dispose();
 
         Navigator.of(context).pop();
 
