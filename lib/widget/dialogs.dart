@@ -184,62 +184,47 @@ Future<void> showTimeoutError() async {
   await showServerError(L10().timeout, L10().noResponse);
 }
 
-void showFormDialog(String title, {String? acceptText, String? cancelText, GlobalKey<FormState>? key, List<Widget>? fields, List<Widget>? actions, Function? callback}) {
+void showFormDialog(String title, {String? acceptText, String? cancelText, GlobalKey<FormState>? key, List<Widget>? fields, Function? callback}) {
 
-  BuildContext? dialogContext;
 
   String _accept = acceptText ?? L10().save;
   String _cancel = cancelText ?? L10().cancel;
-
-  // Undefined actions = OK + Cancel
-  if (actions == null) {
-    actions = <Widget>[
-      TextButton(
-        child: Text(_cancel),
-        onPressed: () {
-          // Close the form
-          var _ctx = dialogContext;
-          if (_ctx != null) {
-            Navigator.pop(_ctx);
-          }
-        }
-      ),
-      TextButton(
-        child: Text(_accept),
-        onPressed: () {
-
-          var _key = key;
-
-          if (_key != null && _key.currentState != null) {
-            if (_key.currentState!.validate()) {
-              _key.currentState!.save();
-
-              // Close the dialog
-              var _ctx = dialogContext;
-
-              if (_ctx != null) {
-                Navigator.pop(_ctx);
-              }
-
-              // Callback
-              if (callback != null) {
-                callback();
-              }
-            }
-          }
-        }
-      )
-    ];
-  }
 
   List<Widget> _fields = fields ?? [];
 
   OneContext().showDialog(
     builder: (BuildContext context) {
-      dialogContext = context;
       return AlertDialog(
           title: Text(title),
-          actions: actions,
+          actions: <Widget>[
+            TextButton(
+                child: Text(_cancel),
+                onPressed: () {
+                  // Close the form
+                  Navigator.pop(context);
+                }
+            ),
+            TextButton(
+                child: Text(_accept),
+                onPressed: () {
+
+                  var _key = key;
+
+                  if (_key != null && _key.currentState != null) {
+                    if (_key.currentState!.validate()) {
+                      _key.currentState!.save();
+
+                      Navigator.pop(context);
+
+                      // Callback
+                      if (callback != null) {
+                        callback();
+                      }
+                    }
+                  }
+                }
+            )
+          ],
           content: Form(
               key: key,
               child: SingleChildScrollView(

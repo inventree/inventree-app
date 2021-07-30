@@ -8,6 +8,7 @@ import 'package:inventree/widget/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:one_context/one_context.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import 'dsn.dart';
 
@@ -17,13 +18,22 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 
 Future<void> main() async {
 
+  WidgetsFlutterBinding.ensureInitialized();
+
   await runZonedGuarded<Future<void>>(() async {
+
+    PackageInfo info = await PackageInfo.fromPlatform();
+    String pkg = info.packageName;
+    String version = info.version;
+    String build = info.buildNumber;
+
+    String release = "${pkg}@${version}:${build}";
 
     await Sentry.init((options) {
       options.dsn = SENTRY_DSN_KEY;
+      options.release = release;
+      options.environment = isInDebugMode() ? "debug" : "release";
     });
-
-    WidgetsFlutterBinding.ensureInitialized();
 
     // Pass any flutter errors off to the Sentry reporting context!
     FlutterError.onError = (FlutterErrorDetails details) async {
