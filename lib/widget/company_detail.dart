@@ -39,14 +39,6 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
     // TODO
   }
 
-  void _saveCompany(Map<String, String> values) async {
-    Navigator.of(context).pop();
-
-    await company.update(values: values);
-
-    refresh();
-  }
-
   void editCompanyDialog() {
 
     // Values which can be edited
@@ -54,55 +46,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
     var _description;
     var _website;
 
-    showFormDialog(L10().edit,
-        key: _editCompanyKey,
-        actions: <Widget>[
-          TextButton(
-            child: Text(L10().cancel),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          TextButton(
-            child: Text(L10().save),
-            onPressed: () {
-              if (_editCompanyKey.currentState!.validate()) {
-                _editCompanyKey.currentState!.save();
-
-                _saveCompany({
-                  "name": _name,
-                  "description": _description,
-                  "website": _website,
-                });
-              }
-            },
-          ),
-        ],
-        fields: <Widget>[
-          StringField(
-            label: L10().name,
-            initial: company.name,
-            onSaved: (value) {
-              _name = value;
-            },
-          ),
-          StringField(
-            label: L10().description,
-            initial: company.description,
-            onSaved: (value) {
-              _description = value;
-            },
-          ),
-          StringField(
-            label: L10().website,
-            initial: company.website,
-            allowEmpty: true,
-            onSaved: (value) {
-              _website = value;
-            },
-          )
-        ]
-    );
+    // TODO - API form
   }
 
   List<Widget> _companyTiles() {
