@@ -18,7 +18,7 @@ import 'package:inventree/user_profile.dart';
 import 'package:inventree/widget/snacks.dart';
 
 
-/**
+/*
  * Class representing an API response from the server
  */
 class APIResponse {
@@ -38,7 +38,7 @@ class APIResponse {
 }
 
 
-/**
+/*
  * Custom FileService for caching network images
  * Requires a custom badCertificateCallback,
  * so we can accept "dodgy" certificates
@@ -82,7 +82,7 @@ class InvenTreeFileService extends FileService {
   }
 }
 
-/**
+/*
  * InvenTree API - Access to the InvenTree REST interface.
  *
  * InvenTree implements token-based authentication, which is
@@ -201,7 +201,7 @@ class InvenTreeAPI {
   InvenTreeAPI._internal();
 
 
-  /**
+  /*
    * Connect to the remote InvenTree server:
    *
    * - Check that the InvenTree server exists
@@ -502,7 +502,7 @@ class InvenTreeAPI {
     return response;
   }
 
-  /**
+  /*
    * Perform a HTTP OPTIONS request,
    * to get the available fields at a given endpoint.
    * We send this with the currently selected "locale",
@@ -523,7 +523,7 @@ class InvenTreeAPI {
     return completeRequest(request);
   }
 
-  /**
+  /*
    * Perform a HTTP POST request
    * Returns a json object (or null if unsuccessful)
    */
@@ -572,7 +572,7 @@ class InvenTreeAPI {
     return client;
   }
 
-  /**
+  /*
    * Initiate a HTTP request to the server
    *
    * @param url is the API endpoint
@@ -641,7 +641,7 @@ class InvenTreeAPI {
   }
 
 
-  /**
+  /*
    * Complete an API request, and return an APIResponse object
    */
   Future<APIResponse> completeRequest(HttpClientRequest request, {String? data, int? statusCode}) async {
@@ -701,7 +701,7 @@ class InvenTreeAPI {
 
   }
 
-  /**
+  /*
    * Convert a HttpClientResponse response object to JSON
    */
   dynamic responseToJson(HttpClientResponse response) async {
@@ -737,7 +737,7 @@ class InvenTreeAPI {
 
   }
 
-  /**
+  /*
    * Perform a HTTP GET request
    * Returns a json object (or null if did not complete)
    */
@@ -786,7 +786,7 @@ class InvenTreeAPI {
 
   static String get staticThumb => "/static/img/blank_image.thumbnail.png";
 
-  /**
+  /*
    * Load image from the InvenTree server,
    * or from local cache (if it has been cached!)
    */

@@ -35,8 +35,6 @@ class PartDetailWidget extends StatefulWidget {
 
 class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
-  final _editImageKey = GlobalKey<FormState>();
-
   @override
   String getAppBarTitle(BuildContext context) => L10().partDetails;
 
@@ -99,34 +97,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     if (InvenTreeAPI().checkPermission('part', 'view')) {
       await part.update(values: {"starred": "${!part.starred}"});
       refresh();
-    }
-  }
-
-  /**
-   * Upload image for this Part.
-   * Show a SnackBar with upload result.
-   */
-  void _uploadImage(File? image) async {
-
-    if (image == null) {
-      return;
-    }
-
-    final result = await part.uploadImage(image);
-
-    if (result) {
-      showSnackIcon(
-        L10().imageUploadSuccess,
-        success: true
-      );
-
-      refresh();
-
-    } else {
-      showSnackIcon(
-        L10().imageUploadFailure,
-        success: false,
-      );
     }
   }
 

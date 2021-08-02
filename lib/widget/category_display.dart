@@ -326,7 +326,7 @@ class SubcategoryList extends StatelessWidget {
 }
 
 
-/**
+/*
  * Widget for displaying a list of Part objects within a PartCategory display.
  *
  * Uses server-side pagination for snappy results

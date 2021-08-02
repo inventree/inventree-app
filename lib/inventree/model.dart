@@ -26,7 +26,7 @@ class InvenTreePageResponse {
   List<InvenTreeModel> results = [];
 }
 
-/**
+/*
  * The InvenTreeModel class provides a base-level object
  * for interacting with InvenTree data.
  */
@@ -105,12 +105,9 @@ class InvenTreeModel {
   void openLink() async {
 
     if (link.isNotEmpty) {
-      print("Opening link: ${link}");
 
       if (await canLaunch(link)) {
         await launch(link);
-      } else {
-        // TODO
       }
     }
   }

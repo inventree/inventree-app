@@ -320,7 +320,7 @@ class InvenTreeStockItem extends InvenTreeModel {
     return img;
   }
 
-  /**
+  /*
    * Return the Part thumbnail for this stock item.
    */
   String get partThumbnail {

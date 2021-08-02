@@ -1,8 +1,6 @@
 
 import 'package:inventree/api.dart';
 import 'package:inventree/inventree/company.dart';
-import 'package:inventree/widget/dialogs.dart';
-import 'package:inventree/widget/fields.dart';
 import 'package:inventree/widget/refreshable_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

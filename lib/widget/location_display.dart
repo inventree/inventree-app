@@ -384,7 +384,7 @@ class SublocationList extends StatelessWidget {
   }
 }
 
-/**
+/*
  * Widget for displaying a list of stock items within a stock location.
  *
  * Users server-side pagination for snappy results
