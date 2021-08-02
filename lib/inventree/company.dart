@@ -52,6 +52,14 @@ class InvenTreeSupplierPart extends InvenTreeModel {
     // TODO
   }
 
+  int get manufacturerId => (jsondata['manufacturer'] ?? -1) as int;
+
+  int get manufacturerPartId => (jsondata['manufacturer_part'] ?? -1) as int;
+
+  int get supplierId => (jsondata['supplier'] ?? -1) as int;
+
+  String get SKU => (jsondata['SKU'] ?? '') as String;
+
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) {
     var part = InvenTreeSupplierPart.fromJson(json);
@@ -70,6 +78,12 @@ class InvenTreeManufacturerPart extends InvenTreeModel {
 
   InvenTreeManufacturerPart.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
   }
+
+  int get partId => (jsondata['part'] ?? -1) as int;
+
+  int get manufacturerId => (jsondata['manufacturer'] ?? -1) as int;
+
+  String get MPN => (jsondata['MPN'] ?? '') as String;
 
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) {
