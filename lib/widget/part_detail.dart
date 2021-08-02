@@ -325,7 +325,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     // Tiles for "purchaseable" parts
     if (part.isPurchaseable) {
 
-        tiles.add(
+      tiles.add(
           ListTile(
             title: Text(L10().suppliers),
             leading: FaIcon(FontAwesomeIcons.industry),
@@ -334,41 +334,36 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
               // TODO
             },
           )
-        );
-      }
+      );
 
       // On order
-      if (part.onOrder > 0) {
-        tiles.add(
-          ListTile(
-            title: Text(L10().onOrder),
-            subtitle: Text(L10().onOrderDetails),
-            leading: FaIcon(FontAwesomeIcons.shoppingCart),
-            trailing: Text("${part.onOrder}"),
-            onTap: () {
-              // TODO - Order views
-            },
-          )
-        );
-      }
+      tiles.add(
+        ListTile(
+          title: Text(L10().onOrder),
+          subtitle: Text(L10().onOrderDetails),
+          leading: FaIcon(FontAwesomeIcons.shoppingCart),
+          trailing: Text("${part.onOrder}"),
+          onTap: () {
+            // TODO - Order views
+          },
+        )
+      );
 
     }
 
     // Tiles for an "assembly" part
     if (part.isAssembly) {
 
-      if (part.bomItemCount > 0) {
-        tiles.add(
-            ListTile(
-              title: Text(L10().billOfMaterials),
-              leading: FaIcon(FontAwesomeIcons.thList),
-              trailing: Text("${part.bomItemCount}"),
-              onTap: () {
-                // TODO
-              }
-          )
-        );
-      }
+      tiles.add(
+          ListTile(
+            title: Text(L10().billOfMaterials),
+            leading: FaIcon(FontAwesomeIcons.thList),
+            trailing: Text("${part.bomItemCount}"),
+            onTap: () {
+              // TODO
+            }
+        )
+      );
 
       if (part.building > 0) {
         tiles.add(
@@ -386,15 +381,17 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
     // Tiles for "component" part
     if (part.isComponent) {
-      tiles.add(ListTile(
-        title: Text(L10().usedIn),
-        subtitle: Text(L10().usedInDetails),
-        leading: FaIcon(FontAwesomeIcons.sitemap),
-        trailing: Text("${part.usedInCount}"),
-        onTap: () {
-          // TODO
-        },
-      )
+
+      tiles.add(
+        ListTile(
+          title: Text(L10().usedIn),
+          subtitle: Text(L10().usedInDetails),
+          leading: FaIcon(FontAwesomeIcons.sitemap),
+          trailing: Text("${part.usedInCount}"),
+          onTap: () {
+            // TODO
+          },
+        )
       );
     }
 
