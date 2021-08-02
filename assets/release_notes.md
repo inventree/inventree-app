@@ -1,6 +1,14 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.4.2 - August 2021
+---
+
+- Simplify process for uploading part images
+- Display total stock "on order" for purchaseable parts
+- Display supplier information for purchaseable parts
+- Update translation strings
+
 ### 0.4.1 - July 2021
 ---
 

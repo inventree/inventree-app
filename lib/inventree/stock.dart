@@ -529,7 +529,7 @@ class InvenTreeStockItem extends InvenTreeModel {
       expectedStatusCode: 200
     );
 
-    return response != null;
+    return response.isValid() && response.statusCode == 200;
   }
 }
 
