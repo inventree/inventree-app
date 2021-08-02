@@ -1,128 +1,195 @@
 
-import 'package:inventree/widget/company_detail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import 'package:inventree/api.dart';
 import 'package:inventree/inventree/company.dart';
+import 'package:inventree/inventree/sentry.dart';
+import 'package:inventree/widget/paginator.dart';
 import 'package:inventree/widget/refreshable_state.dart';
+import 'package:inventree/widget/company_detail.dart';
 
-abstract class CompanyListWidget extends StatefulWidget {
+import '../l10.dart';
 
-  final String title = "";
-  Map<String, String> filters = {};
+
+class CompanyListWidget extends StatefulWidget {
+
+  CompanyListWidget(this.title, this.filters, {Key? key}) : super(key: key);
+
+  String title;
+
+  Map<String, String> filters;
 
   @override
-  _CompanyListState createState() => _CompanyListState(title, filters);
-
-}
-
-class SupplierListWidget extends CompanyListWidget {
-  @override
-  _CompanyListState createState() => _CompanyListState("Suppliers", {"is_supplier": "true"});
-}
-
-
-class ManufacturerListWidget extends CompanyListWidget {
-  @override
-  _CompanyListState createState() => _CompanyListState("Manufacturers", {"is_manufacturer": "true"});
+  _CompanyListWidgetState createState() => _CompanyListWidgetState(title, filters);
 }
 
 
-class CustomerListWidget extends CompanyListWidget {
-  @override
-  _CompanyListState createState() => _CompanyListState("Customers", {"is_customer": "true"});
-}
+class _CompanyListWidgetState extends RefreshableState<CompanyListWidget> {
 
+  _CompanyListWidgetState(this.title, this.filters);
 
-class _CompanyListState extends RefreshableState<CompanyListWidget> {
+  final String title;
 
-  List<InvenTreeCompany> _companies = [];
-
-  List<InvenTreeCompany> _filteredCompanies = [];
-
-  String _title = "Companies";
+  final Map<String, String> filters;
 
   @override
-  String getAppBarTitle(BuildContext context) { return _title; }
-
-  Map<String, String> _filters = Map<String, String>();
-
-  _CompanyListState(this._title, this._filters);
-
-  @override
-  Future<void> onBuild(BuildContext context) async {
-    refresh();
-  }
-
-  @override
-  Future<void> request() async {
-
-    await InvenTreeCompany().list(filters: _filters).then((var companies) {
-
-      _companies.clear();
-
-      for (var c in companies) {
-        if (c is InvenTreeCompany) {
-          _companies.add(c);
-        }
-      }
-
-      setState(() {
-        _filterResults("");
-      });
-
-    });
-  }
-
-  void _filterResults(String text) {
-
-    if (text.isEmpty) {
-      _filteredCompanies = _companies;
-    } else {
-      _filteredCompanies = _companies.where((c) => c.filter(text)).toList();
-    }
-  }
-
-  Widget _showCompany(BuildContext context, int index) {
-
-      InvenTreeCompany company = _filteredCompanies[index];
-
-      return ListTile(
-        title: Text("${company.name}"),
-        subtitle: Text("${company.description}"),
-        leading: InvenTreeAPI().getImage(company.image),
-        onTap: () {
-          if (company.pk > 0) {
-            InvenTreeCompany().get(company.pk).then((var c) {
-              if (c != null && c is InvenTreeCompany) {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyDetailWidget(c)));
-              }
-            });
-          }
-        },
-      );
-  }
+  String getAppBarTitle(BuildContext context) => title;
 
   @override
   Widget getBody(BuildContext context) {
-    return ListView(
-      children: <Widget>[
-        TextField(
-          decoration: InputDecoration(
-          hintText: 'Filter results',
-          ),
-          onChanged: (String text) {
-            setState(() {
-              _filterResults(text);
-            });
-          },
-        ),
-        ListView.builder(
-          shrinkWrap: true,
+
+    return PaginatedCompanyList(filters);
+
+  }
+
+}
+
+
+class PaginatedCompanyList extends StatefulWidget {
+
+  PaginatedCompanyList(this.filters, {this.onTotalChanged});
+
+  final Map<String, String> filters;
+
+  Function(int)? onTotalChanged;
+
+  @override
+  _CompanyListState createState() => _CompanyListState(filters, onTotalChanged);
+}
+
+class _CompanyListState extends State<PaginatedCompanyList> {
+
+  _CompanyListState(this.filters, this.onTotalChanged);
+  
+  static const _pageSize = 25;
+
+  String _searchTerm = "";
+
+  Function(int)? onTotalChanged;
+  
+  final Map<String, String> filters;
+  
+  final PagingController<int, InvenTreeCompany> _pagingController = PagingController(firstPageKey: 0);
+
+  final TextEditingController searchController = TextEditingController();
+  
+  @override
+  void initState() {
+    _pagingController.addPageRequestListener((pageKey) {
+      _fetchPage(pageKey);
+    });
+    
+    super.initState();
+  }
+  
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
+  }
+  
+  int resultCount = 0;
+  
+  Future<void> _fetchPage(int pageKey) async {
+    try {
+      Map<String, String> params = filters;
+
+      params["search"] = _searchTerm;
+
+      final page = await InvenTreeCompany().listPaginated(
+          _pageSize, pageKey, filters: params);
+
+      int pageLength = page?.length ?? 0;
+      int pageCount = page?.count ?? 0;
+
+      final isLastPage = pageLength < _pageSize;
+
+      List<InvenTreeCompany> companies = [];
+
+      if (page != null) {
+        for (var result in page.results) {
+          if (result is InvenTreeCompany) {
+            companies.add(result);
+          } else {
+            print(result.jsondata);
+          }
+        }
+      }
+
+      if (isLastPage) {
+        _pagingController.appendLastPage(companies);
+      } else {
+        final int nextPageKey = pageKey + pageLength;
+        _pagingController.appendPage(companies, nextPageKey);
+      }
+
+      if (onTotalChanged != null) {
+        onTotalChanged!(pageCount);
+      }
+
+      setState(() {
+        resultCount = pageCount;
+      });
+    } catch (error, stackTrace) {
+      print("Error! - ${error.toString()}");
+      _pagingController.error = error;
+      
+      sentryReportError(error, stackTrace);
+    }
+  }
+
+  void updateSearchTerm() {
+    _searchTerm = searchController.text;
+    _pagingController.refresh();
+  }
+
+  Widget _buildCompany(BuildContext context, InvenTreeCompany company) {
+
+    return ListTile(
+      title: Text(company.name),
+      subtitle: Text(company.description),
+      leading: InvenTreeAPI().getImage(
+        company.image,
+        width: 40,
+        height: 40
+      ),
+      onTap: () async {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyDetailWidget(company)));
+      },
+    );
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        PaginatedSearchWidget(searchController, updateSearchTerm, resultCount),
+        Expanded(
+          child: CustomScrollView(
+            shrinkWrap: true,
             physics: ClampingScrollPhysics(),
-            itemBuilder: _showCompany, itemCount: _filteredCompanies.length)
+            scrollDirection: Axis.vertical,
+            slivers: [
+              PagedSliverList.separated(
+                pagingController: _pagingController,
+                builderDelegate: PagedChildBuilderDelegate<InvenTreeCompany>(
+                  itemBuilder: (context, item, index) {
+                    return _buildCompany(context, item);
+                  },
+                  noItemsFoundIndicatorBuilder: (context) {
+                    return NoResultsWidget(L10().companyNoResults);
+                  }
+                ),
+                separatorBuilder: (context, index) => const Divider(height: 1),
+              )
+            ],
+          )
+        )
       ],
     );
   }
+  
 }

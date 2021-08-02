@@ -79,19 +79,19 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
   void _suppliers() {
     if (!InvenTreeAPI().checkConnection(context)) return;
 
-    Navigator.push(context, MaterialPageRoute(builder: (context) => SupplierListWidget()));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyListWidget(L10().suppliers, {"is_supplier": "true"})));
   }
 
   void _manufacturers() {
     if (!InvenTreeAPI().checkConnection(context)) return;
 
-    Navigator.push(context, MaterialPageRoute(builder: (context) => ManufacturerListWidget()));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyListWidget(L10().manufacturers, {"is_manufacturer": "true"})));
   }
 
   void _customers() {
     if (!InvenTreeAPI().checkConnection(context)) return;
 
-    Navigator.push(context, MaterialPageRoute(builder: (context) => CustomerListWidget()));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyListWidget(L10().customers, {"is_customer": "true"})));
   }
 
   void _selectProfile() {

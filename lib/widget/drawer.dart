@@ -80,21 +80,21 @@ class InvenTreeDrawer extends StatelessWidget {
     if (!InvenTreeAPI().checkConnection(context)) return;
     _closeDrawer();
 
-    Navigator.push(context, MaterialPageRoute(builder: (context) => SupplierListWidget()));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyListWidget(L10().suppliers, {"is_supplier": "true"})));
   }
 
   void _showManufacturers() {
     if (!InvenTreeAPI().checkConnection(context)) return;
     _closeDrawer();
 
-    Navigator.push(context, MaterialPageRoute(builder: (context) => ManufacturerListWidget()));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyListWidget(L10().manufacturers, {"is_manufacturer": "true"})));
   }
 
   void _showCustomers() {
     if (!InvenTreeAPI().checkConnection(context)) return;
     _closeDrawer();
 
-    Navigator.push(context, MaterialPageRoute(builder: (context) => CustomerListWidget()));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyListWidget(L10().customers, {"is_customer": "true"})));
   }
 
   /*
@@ -144,7 +144,7 @@ class InvenTreeDrawer extends StatelessWidget {
                   leading: FaIcon(FontAwesomeIcons.boxes),
                   onTap: _showStock,
                 ),
-                /*
+
                 ListTile(
                   title: Text("Suppliers"),
                   leading: FaIcon(FontAwesomeIcons.building),
@@ -160,7 +160,6 @@ class InvenTreeDrawer extends StatelessWidget {
                   leading: FaIcon(FontAwesomeIcons.users),
                   onTap: _showCustomers,
                 ),
-                */
                 ListTile(
                   title: Text(L10().settings),
                   leading: Icon(Icons.settings),

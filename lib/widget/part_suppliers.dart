@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:inventree/inventree/part.dart';
 import 'package:inventree/inventree/company.dart';
+import 'package:inventree/widget/company_detail.dart';
 import 'package:inventree/widget/refreshable_state.dart';
 
 class PartSupplierWidget extends StatefulWidget {
@@ -57,7 +58,19 @@ class _PartSupplierState extends RefreshableState<PartSupplierWidget> {
         height: 40,
       ),
       title: Text("${_part.SKU}"),
-      subtitle: Text("${_part.manufacturerName}: ${_part.MPN}")
+      subtitle: Text("${_part.manufacturerName}: ${_part.MPN}"),
+      onTap: () async {
+        var company = await InvenTreeCompany().get(_part.supplierId);
+
+        if (company != null && company is InvenTreeCompany) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => CompanyDetailWidget(company)
+              )
+          );
+        }
+      },
     );
   }
 

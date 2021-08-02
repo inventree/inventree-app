@@ -481,7 +481,7 @@ class _PaginatedPartListState extends State<PaginatedPartList> {
                       return _buildPart(context, item);
                     },
                     noItemsFoundIndicatorBuilder: (context) {
-                      return NoResultsWidget("No parts found");
+                      return NoResultsWidget(L10().partNoResults);
                     },
                   ),
                 separatorBuilder: (context, index) => const Divider(height: 1),
