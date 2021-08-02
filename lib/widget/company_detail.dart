@@ -1,5 +1,7 @@
 
 import 'package:inventree/api.dart';
+import 'package:inventree/api_form.dart';
+import 'package:inventree/app_colors.dart';
 import 'package:inventree/inventree/company.dart';
 import 'package:inventree/widget/refreshable_state.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,30 +23,64 @@ class CompanyDetailWidget extends StatefulWidget {
 
 class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
 
-  final InvenTreeCompany company;
+  _CompanyDetailState(this.company);
 
-  final _editCompanyKey = GlobalKey<FormState>();
+  final InvenTreeCompany company;
 
   @override
   String getAppBarTitle(BuildContext context) => L10().company;
+
+  @override
+  List<Widget> getAppBarActions(BuildContext context) {
+
+    List<Widget> actions = [];
+
+    actions.add(
+      IconButton(
+        icon: FaIcon(FontAwesomeIcons.globe),
+        onPressed: () async {
+          company.goToInvenTreePage();
+        },
+      )
+    );
+
+    actions.add(
+      IconButton(
+        icon: FaIcon(FontAwesomeIcons.edit),
+        tooltip: L10().edit,
+        onPressed: () {
+          editCompany(context);
+        }
+      )
+    );
+
+    return actions;
+
+  }
 
   @override
   Future<void> request() async {
     await company.reload();
   }
 
-  _CompanyDetailState(this.company) {
-    // TODO
-  }
+  void editCompany(BuildContext context) async {
 
-  void editCompanyDialog() {
-
-    // Values which can be edited
-    var _name;
-    var _description;
-    var _website;
-
-    // TODO - API form
+    launchApiForm(
+      context,
+      L10().companyEdit,
+      company.url,
+      {
+        "name": {},
+        "description": {},
+        "website": {},
+        "is_supplier": {},
+        "is_manufacturer": {},
+        "is_customer": {},
+        "currency": {},
+      },
+      modelData: company.jsondata,
+      onSuccess: refresh
+    );
   }
 
   List<Widget> _companyTiles() {
@@ -57,11 +93,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
       child: ListTile(
         title: Text("${company.name}"),
         subtitle: Text("${company.description}"),
-        leading: InvenTreeAPI().getImage(company.image),
-        trailing: IconButton(
-          icon: FaIcon(FontAwesomeIcons.edit),
-          onPressed: editCompanyDialog,
-        ),
+        leading: InvenTreeAPI().getImage(company.image, width: 40, height: 40),
       ),
     ));
 
@@ -105,9 +137,9 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
     if (company.link.isNotEmpty) {
       tiles.add(ListTile(
         title: Text("${company.link}"),
-        leading: FaIcon(FontAwesomeIcons.link),
+        leading: FaIcon(FontAwesomeIcons.link, color: COLOR_CLICK),
         onTap: () {
-          // TODO - Open external link
+          company.openLink();
         },
       ));
 
@@ -123,6 +155,10 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
       // TODO - Add list of purchase orders
 
       tiles.add(Divider());
+    }
+
+    if (company.isManufacturer) {
+      // TODO - Add list of manufacturer parts
     }
 
     if (company.isCustomer) {
