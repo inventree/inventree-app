@@ -46,6 +46,15 @@ class InvenTreeSupplierPart extends InvenTreeModel {
   @override
   String url = "company/part/";
 
+  @override
+  Map<String, String> defaultListFilters() {
+    return {
+      "manufacturer_detail": "true",
+      "supplier_detail": "true",
+      "supplier_part_detail": "true",
+    };
+  }
+
   InvenTreeSupplierPart() : super();
 
   InvenTreeSupplierPart.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
