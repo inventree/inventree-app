@@ -19,6 +19,7 @@ import 'package:inventree/widget/dialogs.dart';
 import 'package:inventree/widget/fields.dart';
 import 'package:inventree/api.dart';
 import 'package:inventree/widget/refreshable_state.dart';
+import 'package:inventree/widget/part_image_widget.dart';
 
 import 'location_display.dart';
 
@@ -132,30 +133,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     }
   }
 
-  void _selectImage() {
-
-    File? _attachment;
-
-    if (!InvenTreeAPI().checkPermission('part', 'change')) {
-      return;
-    }
-
-    showFormDialog(L10().selectImage,
-      key: _editImageKey,
-      callback: () {
-        _uploadImage(_attachment);
-      },
-      fields: <Widget>[
-        ImagePickerField(
-          context,
-          label: L10().attachImage,
-          required: true,
-          onSaved: (attachment) => _attachment = attachment,
-        ),
-      ]
-    );
-  }
-
   void _editPartDialog(BuildContext context) {
 
     launchApiForm(
@@ -204,10 +181,13 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => FullScreenWidget(part.fullname, part.image))
-              );
+                MaterialPageRoute(
+                  builder: (context) => PartImageWidget(part)
+                )
+              ).then((value) {
+                refresh();
+              });
             }),
-            onLongPress: _selectImage,
         ),
     );
   }
