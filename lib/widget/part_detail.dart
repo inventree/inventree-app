@@ -288,6 +288,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     tiles.add(
       ListTile(
         title: Text(L10().stock),
+        subtitle: Text(L10().stockDetails),
         leading: FaIcon(FontAwesomeIcons.boxes, color: COLOR_CLICK),
         trailing: Text("${part.inStockString}"),
         onTap: () {
@@ -298,87 +299,104 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       ),
     );
 
-    if (false && part.isPurchaseable) {
-
-      if (part.supplier_count > 0) {
-        tiles.add(
-          ListTile(
-            title: Text(L10().suppliers),
-            leading: FaIcon(FontAwesomeIcons.industry),
-            trailing: Text("${part.supplier_count}"),
-          )
-        );
-      }
-    }
-
-    // TODO - Add link to parts on order
-    // Parts on order
-    if (false && part.isPurchaseable) {
-      tiles.add(
-          ListTile(
-            title: Text("On Order"),
-            leading: FaIcon(FontAwesomeIcons.shoppingCart),
-            trailing: Text("${part.onOrder}"),
-            onTap: () {
-              // TODO: Click through to show items on order
-            },
-          )
-      );
-    }
-
-    // TODO
-    // Parts being built
-    if (false && part.isAssembly) {
-
-      tiles.add(ListTile(
-        title: Text(L10().billOfMaterials),
-        leading: FaIcon(FontAwesomeIcons.thList),
-        trailing: Text("${part.bomItemCount}"),
-        onTap: null,
-      )
-      );
-
-      tiles.add(
-          ListTile(
-            title: Text(L10().building),
-            leading: FaIcon(FontAwesomeIcons.tools),
-            trailing: Text("${part.building}"),
-            onTap: null,
-          )
-      );
-    }
-
-    // TODO - Do we want to use the app to display "used in"?
-    if (false && part.isComponent) {
-      tiles.add(ListTile(
-        title: Text("Used In"),
-        leading: FaIcon(FontAwesomeIcons.sitemap),
-        trailing: Text("${part.usedInCount}"),
-        onTap: null,
-      )
-      );
-    }
-
     // Keywords?
     if (part.keywords.isNotEmpty) {
       tiles.add(
-        ListTile(
-          title: Text("${part.keywords}"),
-          leading: FaIcon(FontAwesomeIcons.key),
-        )
+          ListTile(
+            title: Text("${part.keywords}"),
+            leading: FaIcon(FontAwesomeIcons.key),
+          )
       );
     }
 
     // External link?
     if (part.link.isNotEmpty) {
       tiles.add(
-        ListTile(
+          ListTile(
             title: Text("${part.link}"),
             leading: FaIcon(FontAwesomeIcons.link, color: COLOR_CLICK),
             onTap: () {
               part.openLink();
             },
           )
+      );
+    }
+
+    // Tiles for "purchaseable" parts
+    if (part.isPurchaseable) {
+
+      // Suppliers (TODO)
+      if (part.supplier_count > 0) {
+        tiles.add(
+          ListTile(
+            title: Text(L10().suppliers),
+            leading: FaIcon(FontAwesomeIcons.industry),
+            trailing: Text("${part.supplier_count}"),
+            onTap: () {
+              // TODO
+            },
+          )
+        );
+      }
+
+      // On order
+      if (part.onOrder > 0) {
+        tiles.add(
+          ListTile(
+            title: Text(L10().onOrder),
+            subtitle: Text(L10().onOrderDetails),
+            leading: FaIcon(FontAwesomeIcons.shoppingCart),
+            trailing: Text("${part.onOrder}"),
+            onTap: () {
+              // TODO - Order views
+            },
+          )
+        );
+      }
+
+    }
+
+    // Tiles for an "assembly" part
+    if (part.isAssembly) {
+
+      if (part.bomItemCount > 0) {
+        tiles.add(
+            ListTile(
+              title: Text(L10().billOfMaterials),
+              leading: FaIcon(FontAwesomeIcons.thList),
+              trailing: Text("${part.bomItemCount}"),
+              onTap: () {
+                // TODO
+              }
+          )
+        );
+      }
+
+      if (part.building > 0) {
+        tiles.add(
+            ListTile(
+              title: Text(L10().building),
+              leading: FaIcon(FontAwesomeIcons.tools),
+              trailing: Text("${part.building}"),
+              onTap: () {
+                // TODO
+              },
+            )
+        );
+      }
+    }
+
+    // Tiles for "component" part
+    if (part.isComponent) {
+      tiles.add(ListTile(
+        title: Text(L10().usedIn),
+        subtitle: Text(L10().usedInDetails),
+        leading: FaIcon(FontAwesomeIcons.sitemap),
+        trailing: Text("${part.usedInCount}"),
+        onTap: () {
+          // TODO
+        },
+      )
       );
     }
 
@@ -429,14 +447,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       )
     );
 
-    /*
-    if (loading) {
-      tiles.add(progressIndicator());
-    } else if (part.stockItems.length > 0) {
-      tiles.add(PartStockList(part.stockItems));
-    }
-    */
-
     return tiles;
   }
 
@@ -449,7 +459,9 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       ListTile(
         title: Text(L10().stockItemCreate),
         leading: FaIcon(FontAwesomeIcons.box),
-        onTap: null,
+        onTap: () {
+          // TODO
+        },
       )
     );
 
@@ -458,7 +470,9 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         title: Text(L10().barcodeScanItem),
         leading: FaIcon(FontAwesomeIcons.box),
         trailing: FaIcon(FontAwesomeIcons.qrcode),
-        onTap: null,
+        onTap: () {
+          // TODO
+        },
       ),
     );
 
