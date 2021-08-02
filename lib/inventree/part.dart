@@ -215,6 +215,15 @@ class InvenTreePart extends InvenTreeModel {
     // Get the number of stock on order for this Part
     double get onOrder => double.tryParse(jsondata['ordering'].toString()) ?? 0;
 
+    String get onOrderString {
+
+      if (onOrder == onOrder.toInt()) {
+        return onOrder.toInt().toString();
+      } else {
+        return onOrder.toString();
+      }
+    }
+
     // Get the stock count for this Part
     double get inStock => double.tryParse(jsondata['in_stock'].toString()) ?? 0;
 

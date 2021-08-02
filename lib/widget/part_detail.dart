@@ -346,7 +346,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           title: Text(L10().onOrder),
           subtitle: Text(L10().onOrderDetails),
           leading: FaIcon(FontAwesomeIcons.shoppingCart),
-          trailing: Text("${part.onOrder}"),
+          trailing: Text("${part.onOrderString}"),
           onTap: () {
             // TODO - Order views
           },
