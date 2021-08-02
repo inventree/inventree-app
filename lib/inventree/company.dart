@@ -59,3 +59,22 @@ class InvenTreeSupplierPart extends InvenTreeModel {
     return part;
   }
 }
+
+
+class InvenTreeManufacturerPart extends InvenTreeModel {
+
+  @override
+  String url = "company/part/manufacturer/";
+
+  InvenTreeManufacturerPart() : super();
+
+  InvenTreeManufacturerPart.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+  }
+
+  @override
+  InvenTreeModel createFromJson(Map<String, dynamic> json) {
+    var part = InvenTreeManufacturerPart.fromJson(json);
+
+    return part;
+  }
+}
