@@ -24,11 +24,11 @@ class InvenTreeCompany extends InvenTreeModel {
 
   bool get isSupplier => jsondata['is_supplier'] ?? false;
 
+  bool get isManufacturer => jsondata['is_manufacturer'] ?? false;
+
   bool get isCustomer => jsondata['is_customer'] ?? false;
 
-  InvenTreeCompany.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
-    // TODO
-  }
+  InvenTreeCompany.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) {
@@ -57,9 +57,7 @@ class InvenTreeSupplierPart extends InvenTreeModel {
 
   InvenTreeSupplierPart() : super();
 
-  InvenTreeSupplierPart.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
-    // TODO
-  }
+  InvenTreeSupplierPart.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
   int get manufacturerId => (jsondata['manufacturer'] ?? -1) as int;
 
@@ -92,8 +90,7 @@ class InvenTreeManufacturerPart extends InvenTreeModel {
 
   InvenTreeManufacturerPart() : super();
 
-  InvenTreeManufacturerPart.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
-  }
+  InvenTreeManufacturerPart.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
   int get partId => (jsondata['part'] ?? -1) as int;
 
