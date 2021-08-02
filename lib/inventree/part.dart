@@ -1,5 +1,6 @@
 import 'package:inventree/api.dart';
 import 'package:inventree/inventree/stock.dart';
+import 'package:inventree/inventree/company.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:inventree/l10.dart';
 
@@ -174,13 +175,10 @@ class InvenTreePart extends InvenTreeModel {
     final parts = await InvenTreeSupplierPart().list(
         filters: {
           "part": "${pk}",
-          "manufacturer_detail": "true",
-          "supplier_detail": "true",
-          "supplier_part_detail": "true"
         }
     );
 
-    for (result in parts) {
+    for (var result in parts) {
       if (result is InvenTreeSupplierPart) {
         _supplierParts.add(result);
       }
@@ -196,7 +194,7 @@ class InvenTreePart extends InvenTreeModel {
   int get testTemplateCount => testingTemplates.length;
 
   // Request test templates from the serve
-  Future<void> getTestTemplates({bool showDialog=false}) async {
+  Future<void> getTestTemplates() async {
 
     InvenTreePartTestTemplate().list(
       filters: {

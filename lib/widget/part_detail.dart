@@ -14,6 +14,7 @@ import 'package:inventree/widget/snacks.dart';
 import 'package:inventree/inventree/part.dart';
 import 'package:inventree/widget/full_screen_image.dart';
 import 'package:inventree/widget/category_display.dart';
+import 'package:inventree/widget/part_suppliers.dart';
 import 'package:inventree/widget/dialogs.dart';
 import 'package:inventree/widget/fields.dart';
 import 'package:inventree/api.dart';
@@ -328,10 +329,13 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       tiles.add(
           ListTile(
             title: Text(L10().suppliers),
-            leading: FaIcon(FontAwesomeIcons.industry),
+            leading: FaIcon(FontAwesomeIcons.industry, color: COLOR_CLICK),
             trailing: Text("${part.supplierCount}"),
             onTap: () {
-              // TODO
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PartSupplierWidget(part))
+              );
             },
           )
       );

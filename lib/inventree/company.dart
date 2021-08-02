@@ -1,9 +1,12 @@
+import 'package:inventree/api.dart';
+
 import 'model.dart';
 
 
 /*
  * The InvenTreeCompany class repreents the Company model in the InvenTree database.
  */
+
 class InvenTreeCompany extends InvenTreeModel {
 
   @override
@@ -14,7 +17,9 @@ class InvenTreeCompany extends InvenTreeModel {
 
   InvenTreeCompany() : super();
 
-  String get image => jsondata['image'] ?? '';
+  String get image => jsondata['image'] ?? jsondata['thumbnail'] ?? InvenTreeAPI.staticImage;
+
+  String get thumbnail => jsondata['thumbnail'] ?? jsondata['image'] ?? InvenTreeAPI.staticThumb;
 
   String get website => jsondata['website'] ?? '';
 
@@ -44,14 +49,14 @@ class InvenTreeCompany extends InvenTreeModel {
  */
 class InvenTreeSupplierPart extends InvenTreeModel {
   @override
-  String url = "company/part/";
+  String URL = "company/part/";
 
   @override
   Map<String, String> defaultListFilters() {
     return {
       "manufacturer_detail": "true",
       "supplier_detail": "true",
-      "supplier_part_detail": "true",
+      "manufacturer_part_detail": "true",
     };
   }
 
@@ -61,11 +66,21 @@ class InvenTreeSupplierPart extends InvenTreeModel {
 
   int get manufacturerId => (jsondata['manufacturer'] ?? -1) as int;
 
+  String get manufacturerName => jsondata['manufacturer_detail']['name'];
+
+  String get manufacturerImage => jsondata['manufacturer_detail']['image'] ?? jsondata['manufacturer_detail']['thumbnail'];
+
   int get manufacturerPartId => (jsondata['manufacturer_part'] ?? -1) as int;
 
   int get supplierId => (jsondata['supplier'] ?? -1) as int;
 
+  String get supplierName => jsondata['supplier_detail']['name'];
+
+  String get supplierImage => jsondata['supplier_detail']['image'] ?? jsondata['supplier_detail']['thumbnail'];
+
   String get SKU => (jsondata['SKU'] ?? '') as String;
+
+  String get MPN => jsondata['MPN'] ?? '';
 
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) {
