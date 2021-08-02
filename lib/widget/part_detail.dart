@@ -325,13 +325,11 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     // Tiles for "purchaseable" parts
     if (part.isPurchaseable) {
 
-      // Suppliers (TODO)
-      if (part.supplier_count > 0) {
         tiles.add(
           ListTile(
             title: Text(L10().suppliers),
             leading: FaIcon(FontAwesomeIcons.industry),
-            trailing: Text("${part.supplier_count}"),
+            trailing: Text("${part.supplierCount}"),
             onTap: () {
               // TODO
             },

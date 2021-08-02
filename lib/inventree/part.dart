@@ -165,7 +165,30 @@ class InvenTreePart extends InvenTreeModel {
     });
   }
 
-  int get supplier_count => (jsondata['suppliers'] ?? 0) as int;
+  int get supplierCount => (jsondata['suppliers'] ?? 0) as int;
+
+  // Request supplier parts for this part
+  Future<List<InvenTreeSupplierPart>> getSupplierParts() async {
+    List<InvenTreeSupplierPart> _supplierParts = [];
+
+    final parts = await InvenTreeSupplierPart().list(
+        filters: {
+          "part": "${pk}",
+          "manufacturer_detail": "true",
+          "supplier_detail": "true",
+          "supplier_part_detail": "true"
+        }
+    );
+
+    for (result in parts) {
+      if (result is InvenTreeSupplierPart) {
+        _supplierParts.add(result);
+      }
+    }
+
+    return _supplierParts;
+  }
+
 
   // Cached list of test templates
   List<InvenTreePartTestTemplate> testingTemplates = [];
