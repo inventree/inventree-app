@@ -221,8 +221,8 @@ class InvenTreeStockItem extends InvenTreeModel {
   int get status => jsondata['status'] ?? -1;
 
   int get partId => jsondata['part'] ?? -1;
-
-  String get purchasePrice => jsondata['purchase_price'];
+  
+  String get purchasePrice => jsondata['purchase_price'] ?? "";
 
   bool get hasPurchasePrice {
 
