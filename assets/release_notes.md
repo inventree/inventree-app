@@ -7,6 +7,8 @@
 - Simplify process for uploading part images
 - Display total stock "on order" for purchaseable parts
 - Display supplier information for purchaseable parts
+- Handle error responses from server when scanning barcodes
+- Handle error responses from server when fetching model data
 - Update translation strings
 
 ### 0.4.1 - July 2021

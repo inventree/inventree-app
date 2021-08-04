@@ -3,9 +3,12 @@ import 'dart:async';
 import 'package:inventree/api.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:inventree/inventree/sentry.dart';
+import 'package:inventree/widget/dialogs.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:path/path.dart' as path;
+
+import '../l10.dart';
 
 
 // Paginated response object
@@ -162,6 +165,11 @@ class InvenTreeModel {
         }
       );
 
+      showServerError(
+        L10().serverError,
+        L10().errorFetch,
+      );
+
       return false;
 
     }
@@ -226,6 +234,11 @@ class InvenTreeModel {
         }
       );
 
+      showServerError(
+        L10().serverError,
+        L10().errorFetch,
+      );
+
       return null;
 
     }
@@ -259,6 +272,12 @@ class InvenTreeModel {
           "valid": response.isValid().toString(),
         }
       );
+
+      showServerError(
+        L10().serverError,
+        L10().errorCreate,
+      );
+
 
       return null;
     }
