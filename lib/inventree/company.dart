@@ -51,13 +51,22 @@ class InvenTreeSupplierPart extends InvenTreeModel {
   @override
   String URL = "company/part/";
 
-  @override
-  Map<String, String> defaultListFilters() {
+  Map<String, String> _filters() {
     return {
       "manufacturer_detail": "true",
       "supplier_detail": "true",
       "manufacturer_part_detail": "true",
     };
+  }
+
+  @override
+  Map<String, String> defaultListFilters() {
+    return _filters();
+  }
+
+  @override
+  Map<String, String> defaultGetFilters() {
+    return _filters();
   }
 
   InvenTreeSupplierPart() : super();

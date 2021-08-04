@@ -274,14 +274,16 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       tiles.add(
           ListTile(
             title: Text(L10().suppliers),
-            leading: FaIcon(FontAwesomeIcons.industry, color: COLOR_CLICK),
+            leading: FaIcon(FontAwesomeIcons.industry),
             trailing: Text("${part.supplierCount}"),
+            /* TODO:
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => PartSupplierWidget(part))
               );
             },
+             */
           )
       );
 
