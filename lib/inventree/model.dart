@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:inventree/api.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:inventree/inventree/sentry.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:path/path.dart' as path;
@@ -147,9 +148,22 @@ class InvenTreeModel {
   Future<bool> reload() async {
 
     var response = await api.get(url, params: defaultGetFilters(), expectedStatusCode: 200);
-    
-    if (!response.isValid()) {
+
+    if (!response.isValid() || response.data == null || !(response.data is Map)) {
+
+      // Report error
+      await sentryReportMessage(
+        "InvenTreeModel.reload() returned invalid response",
+        context: {
+          "url": url,
+          "statusCode": response.statusCode.toString(),
+          "data": response.data?.toString() ?? "null",
+          "valid": response.isValid().toString(),
+        }
+      );
+
       return false;
+
     }
 
     jsondata = response.data;
@@ -200,8 +214,20 @@ class InvenTreeModel {
 
     var response = await api.get(url, params: params);
 
-    if (!response.isValid()) {
+    if (!response.isValid() || response.data == null || !(response.data is Map)) {
+
+      await sentryReportMessage(
+        "InvenTreeModel.get() returned invalid response",
+        context: {
+          "url": url,
+          "statusCode": response.statusCode.toString(),
+          "data": response.data?.toString() ?? "null",
+          "valid": response.isValid().toString()
+        }
+      );
+
       return null;
+
     }
 
     return createFromJson(response.data);
@@ -222,7 +248,18 @@ class InvenTreeModel {
     var response = await api.post(URL, body: data);
 
     // Invalid response returned from server
-    if (!response.isValid()) {
+    if (!response.isValid() || response.data == null || !(response.data is Map)) {
+
+      await sentryReportMessage(
+        "InvenTreeModel.create() returned invalid response",
+        context: {
+          "url": url,
+          "statusCode": response.statusCode.toString(),
+          "data": response.data?.toString() ?? "null",
+          "valid": response.isValid().toString(),
+        }
+      );
+
       return null;
     }
 

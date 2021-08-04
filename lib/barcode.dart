@@ -1,4 +1,5 @@
 import 'package:inventree/app_settings.dart';
+import 'package:inventree/inventree/sentry.dart';
 import 'package:inventree/widget/dialogs.dart';
 import 'package:inventree/widget/snacks.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -98,18 +99,28 @@ class BarcodeHandler {
           expectedStatusCode: 200
       );
 
-      if (!response.isValid()) {
-        return;
-      }
+      _controller?.resumeCamera();
 
-      if (response.data.containsKey('error')) {
-        _controller?.resumeCamera();
+      // Handle strange response from the server
+      if (!response.isValid() || response.data == null || !(response.data is Map)) {
+        onBarcodeUnknown(context, {});
+
+        // We want to know about this one!
+        await sentryReportMessage(
+            "BarcodeHandler.processBarcode returned strange value",
+            context: {
+              "data": response.data?.toString() ?? "null",
+              "barcode": barcode,
+              "url": url,
+              "statusCode": response.statusCode.toString(),
+              "valid": response.isValid().toString(),
+            }
+        );
+      } else if (response.data.containsKey('error')) {
         onBarcodeUnknown(context, response.data);
       } else if (response.data.containsKey('success')) {
-        _controller?.resumeCamera();
         onBarcodeMatched(context, response.data);
       } else {
-        _controller?.resumeCamera();
         onBarcodeUnhandled(context, response.data);
       }
     }
