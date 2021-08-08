@@ -219,18 +219,57 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
     return tiles;
   }
 
-  List<Widget> actionTiles() {
+  Future<void> _newCategory(BuildContext context) async {
+
+    int pk = category?.pk ?? -1;
+
+    launchApiForm(
+        context,
+        L10().categoryCreate,
+        InvenTreePartCategory().URL,
+        {
+          "name": {},
+          "description": {},
+          "parent": {
+          }
+        },
+        modelData: {
+          "parent": (pk > 0) ? pk : null,
+        }
+    );
+  }
+
+  Future<void> _newPart() async {
+
+  }
+
+  List<Widget> actionTiles(BuildContext context) {
 
     List<Widget> tiles = [
       getCategoryDescriptionCard(extra: false),
-      ListTile(
-        title: Text(L10().actions,
-          style: TextStyle(fontWeight: FontWeight.bold)
-        )
-      )
     ];
 
-    // TODO - Actions!
+    tiles.add(
+      ListTile(
+        title: Text(L10().categoryCreate),
+        subtitle: Text(L10().categoryCreateDetail),
+        leading: FaIcon(FontAwesomeIcons.sitemap, color: COLOR_CLICK),
+        onTap: () async {
+          _newCategory(context);
+        },
+      )
+    );
+
+    if (category != null) {
+      tiles.add(
+          ListTile(
+            title: Text(L10().partCreate),
+            subtitle: Text(L10().partCreateDetail),
+            leading: FaIcon(FontAwesomeIcons.shapes, color: COLOR_CLICK),
+            onTap: _newPart,
+          )
+      );
+    }
 
     return tiles;
   }
@@ -251,7 +290,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
         );
       case 2:
         return ListView(
-          children: actionTiles()
+          children: actionTiles(context)
         );
       default:
         return ListView();
