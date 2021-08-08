@@ -496,6 +496,9 @@ class InvenTreeAPI {
     if (response.statusCode >= 500) {
       // Server error
       if (response.statusCode >= 500) {
+
+        var data = await response.stream.bytesToString();
+
         sentryReportMessage(
             "Server error on file upload",
             context: {
@@ -503,6 +506,7 @@ class InvenTreeAPI {
               "statusCode": "${response.statusCode}",
               "response": response.toString(),
               "request": request.fields.toString(),
+              "data": data,
             }
         );
       }
