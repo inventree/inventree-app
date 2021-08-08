@@ -162,6 +162,8 @@ class InvenTreeModel {
           "statusCode": response.statusCode.toString(),
           "data": response.data?.toString() ?? "null",
           "valid": response.isValid().toString(),
+          "error": response.error,
+          "errorDetail": response.errorDetail,
         }
       );
 
@@ -230,7 +232,9 @@ class InvenTreeModel {
           "url": url,
           "statusCode": response.statusCode.toString(),
           "data": response.data?.toString() ?? "null",
-          "valid": response.isValid().toString()
+          "valid": response.isValid().toString(),
+          "error": response.error,
+          "errorDetail": response.errorDetail,
         }
       );
 
@@ -270,6 +274,8 @@ class InvenTreeModel {
           "statusCode": response.statusCode.toString(),
           "data": response.data?.toString() ?? "null",
           "valid": response.isValid().toString(),
+          "error": response.error,
+          "errorDetail": response.errorDetail,
         }
       );
 
