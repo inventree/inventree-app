@@ -434,9 +434,13 @@ class InvenTreeAPI {
       return true;
     }
 
-    List<String> perms = List.from(roles[role]);
-
-    return perms.contains(permission);
+    try {
+      List<String> perms = List.from(roles[role]);
+      return perms.contains(permission);
+    } catch (error, stackTrace) {
+      sentryReportError(error, stackTrace);
+      return true;
+    }
   }
 
 
