@@ -14,7 +14,7 @@ class InvenTreePartCategory extends InvenTreeModel {
   String NAME = "PartCategory";
 
   @override
-  String URL = "part/category/";
+  String get URL => "part/category/";
 
   @override
   Map<String, String> defaultListFilters() {
@@ -68,7 +68,7 @@ class InvenTreePartTestTemplate extends InvenTreeModel {
   String NAME = "PartTestTemplate";
 
   @override
-  String URL = "part/test-template/";
+  String get URL => "part/test-template/";
 
   String get key => jsondata['key'] ?? '';
 
@@ -125,7 +125,7 @@ class InvenTreePart extends InvenTreeModel {
   String NAME = "Part";
 
   @override
-  String URL = "part/";
+  String get URL => "part/";
 
   @override
   Map<String, String> defaultListFilters() {

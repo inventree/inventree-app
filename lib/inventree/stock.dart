@@ -18,7 +18,7 @@ class InvenTreeStockItemTestResult extends InvenTreeModel {
   String NAME = "StockItemTestResult";
 
   @override
-  String URL = "stock/test/";
+  String get URL => "stock/test/";
 
   String get key => jsondata['key'] ?? '';
 
@@ -103,7 +103,7 @@ class InvenTreeStockItem extends InvenTreeModel {
   String NAME = "StockItem";
 
   @override
-  String URL = "stock/";
+  String get URL => "stock/";
 
   @override
   String WEB_URL = "stock/item/";
@@ -540,7 +540,7 @@ class InvenTreeStockLocation extends InvenTreeModel {
   String NAME = "StockLocation";
 
   @override
-  String URL = "stock/location/";
+  String get URL => "stock/location/";
 
   String get pathstring => jsondata['pathstring'] ?? '';
 

@@ -469,12 +469,10 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           label: L10().stock
         ),
         // TODO - Add part actions
-        /*
         BottomNavigationBarItem(
           icon: FaIcon(FontAwesomeIcons.wrench),
           label: L10().actions,
         ),
-         */
       ]
     );
   }

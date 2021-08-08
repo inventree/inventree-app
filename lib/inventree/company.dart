@@ -13,7 +13,7 @@ class InvenTreeCompany extends InvenTreeModel {
   String NAME = "Company";
 
   @override
-  String URL = "company/";
+  String get URL => "company/";
 
   InvenTreeCompany() : super();
 
@@ -49,7 +49,7 @@ class InvenTreeCompany extends InvenTreeModel {
  */
 class InvenTreeSupplierPart extends InvenTreeModel {
   @override
-  String URL = "company/part/";
+  String get URL => "company/part/";
 
   Map<String, String> _filters() {
     return {

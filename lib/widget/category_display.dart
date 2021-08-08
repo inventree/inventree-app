@@ -43,27 +43,6 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
     List<Widget> actions = [];
 
-    /*
-    actions.add(
-        IconButton(
-          icon: FaIcon(FontAwesomeIcons.search),
-          onPressed: () {
-
-            Map<String, String> filters = {};
-
-            if (category != null) {
-              filters["category"] = "${category.pk}";
-            }
-
-            showSearch(
-                context: context,
-                delegate: PartSearchDelegate(context, filters: filters)
-            );
-          }
-        )
-    );
-     */
-
     if ((category != null) && InvenTreeAPI().checkPermission('part_category', 'change')) {
       actions.add(
         IconButton(
@@ -206,12 +185,10 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
           label: L10().parts,
         ),
         // TODO - Add the "actions" item back in
-        /*
         BottomNavigationBarItem(
           icon: FaIcon(FontAwesomeIcons.wrench),
           label: L10().actions
         ),
-         */
       ]
     );
   }

@@ -37,7 +37,7 @@ class InvenTreePageResponse {
 class InvenTreeModel {
 
   // Override the endpoint URL for each subclass
-  String URL = "";
+  String get URL => "";
 
   // Override the web URL for each subclass
   // Note: If the WEB_URL is the same (except for /api/) as URL then just leave blank
