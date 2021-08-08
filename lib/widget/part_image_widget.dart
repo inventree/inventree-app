@@ -12,6 +12,8 @@ import 'package:inventree/inventree/part.dart';
 import 'package:inventree/widget/refreshable_state.dart';
 import 'package:inventree/widget/snacks.dart';
 
+import '../l10.dart';
+
 class PartImageWidget extends StatefulWidget {
 
   PartImageWidget(this.part, {Key? key}) : super(key: key);
