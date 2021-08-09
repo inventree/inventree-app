@@ -246,11 +246,11 @@ class InvenTreeStockItem extends InvenTreeModel {
     }
   }
 
-  String? get updatedDateString {
+  String get updatedDateString {
     var _updated = updatedDate;
 
     if (_updated == null) {
-      return null;
+      return "";
     }
 
     final DateFormat _format = DateFormat("yyyy-MM-dd");
@@ -266,11 +266,11 @@ class InvenTreeStockItem extends InvenTreeModel {
     }
   }
 
-  String? get stocktakeDateString {
+  String get stocktakeDateString {
     var _stocktake = stocktakeDate;
 
     if (_stocktake == null) {
-      return null;
+      return "";
     }
 
     final DateFormat _format = DateFormat("yyyy-MM-dd");

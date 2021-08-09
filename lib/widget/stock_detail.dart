@@ -479,27 +479,23 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     }
 
     // Last update?
-    var update_date = item.updatedDateString;
-
-    if (update_date != null) {
+    if (item.updatedDateString.isNotEmpty) {
 
       tiles.add(
         ListTile(
           title: Text(L10().lastUpdated),
-          subtitle: Text(update_date),
+          subtitle: Text(item.updatedDateString),
           leading: FaIcon(FontAwesomeIcons.calendarAlt)
         )
       );
     }
 
     // Stocktake?
-    var stocktake_date = item.stocktakeDateString;
-
-    if (stocktake_date != null) {
+    if (item.stocktakeDateString.isNotEmpty) {
       tiles.add(
         ListTile(
           title: Text(L10().lastStocktake),
-          subtitle: Text(stocktake_date),
+          subtitle: Text(item.stocktakeDateString),
           leading: FaIcon(FontAwesomeIcons.calendarAlt)
         )
       );
