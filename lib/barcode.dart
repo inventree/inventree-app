@@ -114,6 +114,8 @@ class BarcodeHandler {
               "url": url,
               "statusCode": response.statusCode.toString(),
               "valid": response.isValid().toString(),
+              "error": response.error,
+              "errorDetail": response.errorDetail,
             }
         );
       } else if (response.data.containsKey('error')) {

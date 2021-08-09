@@ -1,6 +1,11 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.4.3 - August 2021
+---
+
+- Multiple bug fixes, mostly related to API calls
+
 ### 0.4.2 - August 2021
 ---
 

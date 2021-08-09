@@ -10,6 +10,9 @@ import 'package:inventree/api.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:inventree/inventree/part.dart';
 import 'package:inventree/widget/refreshable_state.dart';
+import 'package:inventree/widget/snacks.dart';
+
+import '../l10.dart';
 
 class PartImageWidget extends StatefulWidget {
 
@@ -43,7 +46,11 @@ class _PartImageState extends RefreshableState<PartImageWidget> {
     if (pickedImage != null) {
       File? img = File(pickedImage.path);
 
-      await part.uploadImage(img);
+      final result = await part.uploadImage(img);
+
+      if (!result) {
+        showSnackIcon(L10().uploadFailed, success: false);
+      }
 
       refresh();
     }
@@ -58,7 +65,11 @@ class _PartImageState extends RefreshableState<PartImageWidget> {
     if (pickedImage != null) {
       File? img = File(pickedImage.path);
 
-      await part.uploadImage(img);
+      final result = await part.uploadImage(img);
+
+      if (!result) {
+        showSnackIcon(L10().uploadFailed, success: false);
+      }
 
       refresh();
     }

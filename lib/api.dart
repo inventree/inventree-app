@@ -23,13 +23,17 @@ import 'package:inventree/widget/snacks.dart';
  */
 class APIResponse {
 
-  APIResponse({this.url = "", this.method = "", this.statusCode = -1, this.data = const {}});
+  APIResponse({this.url = "", this.method = "", this.statusCode = -1, this.error = "", this.data = const {}});
 
   int statusCode = -1;
 
   String url = "";
 
   String method = "";
+
+  String error = "";
+
+  String errorDetail = "";
 
   dynamic data = {};
 
@@ -430,9 +434,13 @@ class InvenTreeAPI {
       return true;
     }
 
-    List<String> perms = List.from(roles[role]);
-
-    return perms.contains(permission);
+    try {
+      List<String> perms = List.from(roles[role]);
+      return perms.contains(permission);
+    } catch (error, stackTrace) {
+      sentryReportError(error, stackTrace);
+      return true;
+    }
   }
 
 
@@ -450,6 +458,7 @@ class InvenTreeAPI {
       return new APIResponse(
         url: url,
         method: 'PATCH',
+        error: "HttpClientRequest is null"
       );
     }
 
@@ -487,6 +496,9 @@ class InvenTreeAPI {
     if (response.statusCode >= 500) {
       // Server error
       if (response.statusCode >= 500) {
+
+        var data = await response.stream.bytesToString();
+
         sentryReportMessage(
             "Server error on file upload",
             context: {
@@ -494,6 +506,7 @@ class InvenTreeAPI {
               "statusCode": "${response.statusCode}",
               "response": response.toString(),
               "request": request.fields.toString(),
+              "data": data,
             }
         );
       }
@@ -667,34 +680,43 @@ class InvenTreeAPI {
       } else {
         response.data = await responseToJson(_response) ?? {};
 
-        // Expected status code not returned
-        if ((statusCode != null) && (statusCode != _response.statusCode)) {
-          showStatusCodeError(_response.statusCode);
-        }
+        if (statusCode != null) {
 
-        // Report any server errors
-        if (_response.statusCode >= 500) {
-          sentryReportMessage(
-              "Server error",
-              context: {
-                "url": request.uri.toString(),
-                "method": request.method,
-                "statusCode": _response.statusCode.toString(),
-                "requestHeaders": request.headers.toString(),
-                "responseHeaders": _response.headers.toString(),
-                "responseData": response.data.toString(),
-              }
-          );
+          // Expected status code not returned
+          if (statusCode != _response.statusCode) {
+            showStatusCodeError(_response.statusCode);
+          }
+
+          // Report any server errors
+          if (_response.statusCode >= 500) {
+            sentryReportMessage(
+                "Server error",
+                context: {
+                  "url": request.uri.toString(),
+                  "method": request.method,
+                  "statusCode": _response.statusCode.toString(),
+                  "requestHeaders": request.headers.toString(),
+                  "responseHeaders": _response.headers.toString(),
+                  "responseData": response.data.toString(),
+                }
+            );
+          }
         }
       }
 
     } on SocketException catch (error) {
       showServerError(L10().connectionRefused, error.toString());
+      response.error = "SocketException";
+      response.errorDetail = error.toString();
+
     } on TimeoutException {
       showTimeoutError();
+      response.error = "TimeoutException";
     } catch (error, stackTrace) {
       showServerError(L10().serverError, error.toString());
       sentryReportError(error, stackTrace);
+      response.error = "UnknownError";
+      response.errorDetail = error.toString();
     }
 
     return response;
@@ -754,6 +776,7 @@ class InvenTreeAPI {
       return new APIResponse(
         url: url,
         method: 'GET',
+        error: "HttpClientRequest is null",
       );
     }
 
