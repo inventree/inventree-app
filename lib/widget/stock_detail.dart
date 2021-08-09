@@ -458,6 +458,16 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     }
 
+    if (item.batch.isNotEmpty) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().batchCode),
+          subtitle: Text(item.batch),
+          leading: FaIcon(FontAwesomeIcons.layerGroup),
+        )
+      );
+    }
+
     // Last update?
     var update_date = item.updatedDateString;
 
