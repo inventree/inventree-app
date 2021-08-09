@@ -220,6 +220,8 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   int get status => jsondata['status'] ?? -1;
 
+  String get packaging => jsondata["packaging"] ?? "";
+
   String get batch => jsondata["batch"] ?? "";
 
   int get partId => jsondata['part'] ?? -1;
