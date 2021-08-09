@@ -514,6 +514,9 @@ class _QRViewState extends State<InvenTreeQRView> {
   Widget build(BuildContext context) {
 
     return Scaffold(
+        appBar: AppBar(
+          title: Text(_handler.getOverlayText(context)),
+        ),
         body: Stack(
           children: <Widget>[
             Column(
