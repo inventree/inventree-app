@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:path/path.dart' as path;
 
 import '../l10.dart';
+import '../api_form.dart';
 
 
 // Paginated response object
@@ -61,6 +62,30 @@ class InvenTreeModel {
     } else {
       return "";
     }
+
+  }
+
+  // Fields for editing / creating this model
+  // Override per-model
+  Map<String, dynamic> formFields() {
+
+    return {};
+  }
+
+  Future<void> editForm(BuildContext context, String title, {Map<String, dynamic> fields=const {}, Function? onSuccess}) async {
+
+    if (fields.isEmpty) {
+      fields = formFields();
+    }
+
+    launchApiForm(
+      context,
+      title,
+      url,
+      fields,
+      modelData: jsondata,
+      onSuccess: onSuccess
+    );
 
   }
 

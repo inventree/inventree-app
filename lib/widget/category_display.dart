@@ -60,7 +60,6 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
   }
 
   void _editCategoryDialog(BuildContext context) {
-
     final _cat = category;
 
     // Cannot edit top-level category
@@ -68,18 +67,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
       return;
     }
 
-    launchApiForm(
-      context,
-      L10().editCategory,
-      _cat.url,
-      {
-        "name": {},
-        "description": {},
-        "parent": {},
-      },
-      modelData: _cat.jsondata,
-      onSuccess: refresh,
-    );
+    _cat.editForm(context, L10().editCategory, onSuccess: refresh);
   }
 
   _CategoryDisplayState(this.category);
@@ -227,12 +215,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
         context,
         L10().categoryCreate,
         InvenTreePartCategory().URL,
-        {
-          "name": {},
-          "description": {},
-          "parent": {
-          }
-        },
+        InvenTreePartCategory().formFields(),
         modelData: {
           "parent": (pk > 0) ? pk : null,
         }

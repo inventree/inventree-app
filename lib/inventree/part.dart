@@ -17,6 +17,16 @@ class InvenTreePartCategory extends InvenTreeModel {
   String get URL => "part/category/";
 
   @override
+  Map<String, dynamic> formFields() {
+
+    return {
+      "name": {},
+      "description": {},
+      "parent": {}
+    };
+  }
+
+  @override
   Map<String, String> defaultListFilters() {
     var filters = new Map<String, String>();
 
