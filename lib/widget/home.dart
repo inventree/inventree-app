@@ -3,7 +3,7 @@ import 'package:inventree/user_profile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'file:///C:/inventree-app/lib/l10.dart';
+import 'package:inventree/l10.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 

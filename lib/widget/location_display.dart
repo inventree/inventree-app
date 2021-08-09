@@ -438,7 +438,7 @@ class _PaginatedStockListState extends State<PaginatedStockList> {
       params["search"] = "${_searchTerm}";
 
       // Do we include stock items from sub-locations?
-      final bool cascade = await InvenTreeSettingsManager().getValue("stockSublocation", false);
+      final bool cascade = await InvenTreeSettingsManager().getValue("stockSublocation", true);
       params["cascade"] = "${cascade}";
 
       final page = await InvenTreeStockItem().listPaginated(_pageSize, pageKey, filters: params);

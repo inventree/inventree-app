@@ -1,6 +1,13 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.4.4 - August 2021
+---
+
+- App bar now always displays "back" button
+- Display "batch code" information for stock item
+- Display "packagin" information for stock item
+
 ### 0.4.3 - August 2021
 ---
 

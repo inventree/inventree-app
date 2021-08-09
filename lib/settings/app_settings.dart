@@ -35,8 +35,8 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
     barcodeSounds = await InvenTreeSettingsManager().getValue("barcodeSounds", true) as bool;
     serverSounds = await InvenTreeSettingsManager().getValue("serverSounds", true) as bool;
 
-    partSubcategory = await InvenTreeSettingsManager().getValue("partSubcategory", false) as bool;
-    stockSublocation = await InvenTreeSettingsManager().getValue("stockSublocation", false) as bool;
+    partSubcategory = await InvenTreeSettingsManager().getValue("partSubcategory", true) as bool;
+    stockSublocation = await InvenTreeSettingsManager().getValue("stockSublocation", true) as bool;
 
     setState(() {
     });
@@ -62,7 +62,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
 
   void setPartSubcategory(bool en) async {
     await InvenTreeSettingsManager().setValue("partSubcategory", en);
-    partSubcategory = await InvenTreeSettingsManager().getValue("partSubcategory", false);
+    partSubcategory = await InvenTreeSettingsManager().getValue("partSubcategory", true);
 
     setState(() {
     });
@@ -70,7 +70,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
 
   void setStockSublocation(bool en) async {
     await InvenTreeSettingsManager().setValue("stockSublocation", en);
-    stockSublocation = await InvenTreeSettingsManager().getValue("stockSublocation", false);
+    stockSublocation = await InvenTreeSettingsManager().getValue("stockSublocation", true);
 
     setState(() {
     });

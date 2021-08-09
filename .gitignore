@@ -25,6 +25,7 @@ android/key.properties
 .vscode/
 
 # Flutter/Dart/Pub related
+ios/Flutter/flutter_export_environment.sh
 **/doc/api/
 .dart_tool/
 .flutter-plugins

@@ -458,28 +458,44 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     }
 
-    // Last update?
-    var update_date = item.updatedDateString;
+    if (item.batch.isNotEmpty) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().batchCode),
+          subtitle: Text(item.batch),
+          leading: FaIcon(FontAwesomeIcons.layerGroup),
+        )
+      );
+    }
 
-    if (update_date != null) {
+    if (item.packaging.isNotEmpty) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().packaging),
+          subtitle: Text(item.packaging),
+          leading: FaIcon(FontAwesomeIcons.box),
+        )
+      );
+    }
+
+    // Last update?
+    if (item.updatedDateString.isNotEmpty) {
 
       tiles.add(
         ListTile(
           title: Text(L10().lastUpdated),
-          subtitle: Text(update_date),
+          subtitle: Text(item.updatedDateString),
           leading: FaIcon(FontAwesomeIcons.calendarAlt)
         )
       );
     }
 
     // Stocktake?
-    var stocktake_date = item.stocktakeDateString;
-
-    if (stocktake_date != null) {
+    if (item.stocktakeDateString.isNotEmpty) {
       tiles.add(
         ListTile(
           title: Text(L10().lastStocktake),
-          subtitle: Text(stocktake_date),
+          subtitle: Text(item.stocktakeDateString),
           leading: FaIcon(FontAwesomeIcons.calendarAlt)
         )
       );

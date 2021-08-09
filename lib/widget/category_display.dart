@@ -399,7 +399,7 @@ class _PaginatedPartListState extends State<PaginatedPartList> {
 
       params["search"] = _searchTerm;
 
-      final bool cascade = await InvenTreeSettingsManager().getValue("partSubcategory", false);
+      final bool cascade = await InvenTreeSettingsManager().getValue("partSubcategory", true);
       params["cascade"] = "${cascade}";
 
       final page = await InvenTreePart().listPaginated(_pageSize, pageKey, filters: params);
