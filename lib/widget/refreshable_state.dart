@@ -97,7 +97,7 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
     return Scaffold(
       key: refreshableKey,
       appBar: getAppBar(context),
-      drawer: getDrawer(context),
+      drawer: null, // getDrawer(context),
       floatingActionButton: getFab(context),
       body: Builder(
         builder: (BuildContext context) {
