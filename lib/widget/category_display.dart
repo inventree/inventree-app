@@ -273,26 +273,28 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
       getCategoryDescriptionCard(extra: false),
     ];
 
-    tiles.add(
-      ListTile(
-        title: Text(L10().categoryCreate),
-        subtitle: Text(L10().categoryCreateDetail),
-        leading: FaIcon(FontAwesomeIcons.sitemap, color: COLOR_CLICK),
-        onTap: () async {
-          _newCategory(context);
-        },
-      )
-    );
-
-    if (category != null) {
+    if (InvenTreeAPI().checkPermission('part', 'add')) {
       tiles.add(
           ListTile(
-            title: Text(L10().partCreate),
-            subtitle: Text(L10().partCreateDetail),
-            leading: FaIcon(FontAwesomeIcons.shapes, color: COLOR_CLICK),
-            onTap: _newPart,
+            title: Text(L10().categoryCreate),
+            subtitle: Text(L10().categoryCreateDetail),
+            leading: FaIcon(FontAwesomeIcons.sitemap, color: COLOR_CLICK),
+            onTap: () async {
+              _newCategory(context);
+            },
           )
       );
+
+      if (category != null) {
+        tiles.add(
+            ListTile(
+              title: Text(L10().partCreate),
+              subtitle: Text(L10().partCreateDetail),
+              leading: FaIcon(FontAwesomeIcons.shapes, color: COLOR_CLICK),
+              onTap: _newPart,
+            )
+        );
+      }
     }
 
     return tiles;
