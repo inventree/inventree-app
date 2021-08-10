@@ -138,6 +138,32 @@ class InvenTreePart extends InvenTreeModel {
   String get URL => "part/";
 
   @override
+  Map<String, dynamic> formFields() {
+    return {
+      "name": {},
+      "description": {},
+      "IPN": {},
+      "revision": {},
+      "keywords": {},
+      "link": {},
+
+      // Parent category
+      "category": {
+      },
+
+      // Checkbox fields
+      "active": {},
+      "assembly": {},
+      "component": {},
+      "purchaseable": {},
+      "salable": {},
+      "trackable": {},
+      "is_template": {},
+      "virtual": {},
+    };
+  }
+
+  @override
   Map<String, String> defaultListFilters() {
     return {
       "cascade": "false",

@@ -226,12 +226,12 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
       onSuccess: (data) async {
         
         if (data.containsKey("pk")) {
-          var new_cat = InvenTreePartCategory.fromJson(data);
+          var cat = InvenTreePartCategory.fromJson(data);
 
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => CategoryDisplayWidget(new_cat)
+              builder: (context) => CategoryDisplayWidget(cat)
             )
           );
         } else {

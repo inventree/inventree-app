@@ -100,35 +100,12 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   void _editPartDialog(BuildContext context) {
 
-    launchApiForm(
-        context,
-        L10().editPart,
-        part.url,
-        {
-          "name": {},
-          "description": {},
-          "IPN": {},
-          "revision": {},
-          "keywords": {},
-          "link": {},
-
-          "category": {
-          },
-
-          // Checkbox fields
-          "active": {},
-          "assembly": {},
-          "component": {},
-          "purchaseable": {},
-          "salable": {},
-          "trackable": {},
-          "is_template": {},
-          "virtual": {},
-        },
-        modelData: part.jsondata,
-        onSuccess: (data) async {
-          refresh();
-        },
+    part.editForm(
+      context,
+      L10().editPart,
+      onSuccess: (data) async {
+        refresh();
+      }
     );
   }
 
