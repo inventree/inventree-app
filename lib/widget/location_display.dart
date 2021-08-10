@@ -1,5 +1,4 @@
 import 'package:inventree/api.dart';
-import 'package:inventree/api_form.dart';
 import 'package:inventree/app_colors.dart';
 import 'package:inventree/app_settings.dart';
 import 'package:inventree/barcode.dart';

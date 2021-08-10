@@ -19,8 +19,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
-import '../api_form.dart';
-
 class CategoryDisplayWidget extends StatefulWidget {
 
   CategoryDisplayWidget(this.category, {Key? key}) : super(key: key);

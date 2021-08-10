@@ -22,8 +22,6 @@ import 'package:inventree/api.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../api_form.dart';
-
 class StockDetailWidget extends StatefulWidget {
 
   StockDetailWidget(this.item, {Key? key}) : super(key: key);

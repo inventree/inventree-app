@@ -7,8 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:inventree/l10.dart';
 
-import '../api_form.dart';
-
 
 class PartNotesWidget extends StatefulWidget {
 

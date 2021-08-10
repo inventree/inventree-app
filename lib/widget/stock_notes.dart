@@ -8,7 +8,6 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:inventree/l10.dart';
 
 import '../api.dart';
-import '../api_form.dart';
 
 
 class StockNotesWidget extends StatefulWidget {
