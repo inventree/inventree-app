@@ -400,6 +400,19 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         },
       ),
     );
+    
+    if (false && !part.isActive && InvenTreeAPI().checkPermission('part', 'delete')) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().deletePart),
+          subtitle: Text(L10().deletePartDetail),
+          leading: FaIcon(FontAwesomeIcons.trashAlt, color: COLOR_DANGER),
+          onTap: () {
+            // TODO
+          },
+        )
+      );
+    }
 
     return tiles;
   }

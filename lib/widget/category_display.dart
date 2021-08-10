@@ -297,6 +297,20 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
       }
     }
 
+    if (tiles.length == 0) {
+      tiles.add(
+        ListTile(
+          title: Text(
+            L10().actionsNone
+          ),
+          subtitle: Text(
+            L10().permissionAccountDenied,
+          ),
+          leading: FaIcon(FontAwesomeIcons.userTimes),
+        )
+      );
+    }
+
     return tiles;
   }
 
