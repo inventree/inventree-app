@@ -84,16 +84,9 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       return;
     }
 
-    launchApiForm(
+    _loc.editForm(
       context,
       L10().editLocation,
-      _loc.url,
-      {
-        "name": {},
-        "description": {},
-        "parent": {},
-      },
-      modelData: _loc.jsondata,
       onSuccess: (data) async {
         refresh();
       }
@@ -142,6 +135,31 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     });
 
     setState(() {});
+  }
+
+  Future<void> _newLocation(BuildContext context) async {
+
+    int pk = location?.pk ?? -1;
+
+    InvenTreeStockLocation().createForm(
+      context,
+      L10().locationCreate,
+      data: {
+        "parent": (pk > 0) ? pk : null,
+      },
+      onSuccess: (data) async {
+        if (data.containsKey("pk")) {
+          var loc = InvenTreeStockLocation.fromJson(data);
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => LocationDisplayWidget(loc)
+            )
+          );
+        }
+      }
+    );
   }
 
   Widget locationDescriptionCard({bool includeActions = true}) {
@@ -284,6 +302,21 @@ List<Widget> detailTiles() {
     List<Widget> tiles = [];
 
     tiles.add(locationDescriptionCard(includeActions: false));
+
+    if (InvenTreeAPI().checkPermission('stock', 'add')) {
+
+      tiles.add(
+        ListTile(
+          title: Text(L10().locationCreate),
+          subtitle: Text(L10().locationCreateDetail),
+          leading: FaIcon(FontAwesomeIcons.sitemap, color: COLOR_CLICK),
+          onTap: () async {
+            _newLocation(context);
+          },
+        )
+      );
+
+    }
 
     if (location != null) {
       // Stock adjustment actions

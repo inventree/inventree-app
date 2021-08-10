@@ -548,6 +548,15 @@ class InvenTreeStockLocation extends InvenTreeModel {
 
   String get pathstring => jsondata['pathstring'] ?? '';
 
+  @override
+  Map<String, dynamic> formFields() {
+    return {
+      "name": {},
+      "description": {},
+      "parent": {},
+    };
+  }
+
   String get parentpathstring {
     // TODO - Drive the refactor tractor through this
     List<String> psplit = pathstring.split('/');
