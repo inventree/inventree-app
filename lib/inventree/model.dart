@@ -199,17 +199,19 @@ class InvenTreeModel {
     if (!response.isValid() || response.data == null || !(response.data is Map)) {
 
       // Report error
-      await sentryReportMessage(
-        "InvenTreeModel.reload() returned invalid response",
-        context: {
-          "url": url,
-          "statusCode": response.statusCode.toString(),
-          "data": response.data?.toString() ?? "null",
-          "valid": response.isValid().toString(),
-          "error": response.error,
-          "errorDetail": response.errorDetail,
-        }
-      );
+      if (response.statusCode > 0) {
+        await sentryReportMessage(
+            "InvenTreeModel.reload() returned invalid response",
+            context: {
+              "url": url,
+              "statusCode": response.statusCode.toString(),
+              "data": response.data?.toString() ?? "null",
+              "valid": response.isValid().toString(),
+              "error": response.error,
+              "errorDetail": response.errorDetail,
+            }
+        );
+      }
 
       showServerError(
         L10().serverError,
@@ -270,17 +272,19 @@ class InvenTreeModel {
 
     if (!response.isValid() || response.data == null || !(response.data is Map)) {
 
-      await sentryReportMessage(
-        "InvenTreeModel.get() returned invalid response",
-        context: {
-          "url": url,
-          "statusCode": response.statusCode.toString(),
-          "data": response.data?.toString() ?? "null",
-          "valid": response.isValid().toString(),
-          "error": response.error,
-          "errorDetail": response.errorDetail,
-        }
-      );
+      if (response.statusCode > 0) {
+        await sentryReportMessage(
+            "InvenTreeModel.get() returned invalid response",
+            context: {
+              "url": url,
+              "statusCode": response.statusCode.toString(),
+              "data": response.data?.toString() ?? "null",
+              "valid": response.isValid().toString(),
+              "error": response.error,
+              "errorDetail": response.errorDetail,
+            }
+        );
+      }
 
       showServerError(
         L10().serverError,
@@ -311,17 +315,19 @@ class InvenTreeModel {
     // Invalid response returned from server
     if (!response.isValid() || response.data == null || !(response.data is Map)) {
 
-      await sentryReportMessage(
-        "InvenTreeModel.create() returned invalid response",
-        context: {
-          "url": url,
-          "statusCode": response.statusCode.toString(),
-          "data": response.data?.toString() ?? "null",
-          "valid": response.isValid().toString(),
-          "error": response.error,
-          "errorDetail": response.errorDetail,
-        }
-      );
+      if (response.statusCode > 0) {
+        await sentryReportMessage(
+            "InvenTreeModel.create() returned invalid response",
+            context: {
+              "url": url,
+              "statusCode": response.statusCode.toString(),
+              "data": response.data?.toString() ?? "null",
+              "valid": response.isValid().toString(),
+              "error": response.error,
+              "errorDetail": response.errorDetail,
+            }
+        );
+      }
 
       showServerError(
         L10().serverError,
