@@ -243,6 +243,28 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
   Future<void> _newPart() async {
 
+    int pk = category?.pk ?? -1;
+
+    InvenTreePart().createForm(
+      context,
+      L10().partCreate,
+      data: {
+        "category": (pk > 0) ? pk : null
+      },
+      onSuccess: (data) async {
+
+        if (data.containsKey("pk")) {
+          var part = InvenTreePart.fromJson(data);
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PartDetailWidget(part)
+            )
+          );
+        }
+      }
+    );
   }
 
   List<Widget> actionTiles(BuildContext context) {
