@@ -109,17 +109,15 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
   void _editStockItem(BuildContext context) async {
 
-    launchApiForm(
+    item.editForm(
       context,
       L10().editItem,
-      item.url,
-      {
+      fields: {
         "status": {},
         "batch": {},
         "packaging": {},
         "link": {},
       },
-      modelData: item.jsondata,
       onSuccess: (data) async {
         refresh();
       }

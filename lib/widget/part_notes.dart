@@ -46,16 +46,14 @@ class _PartNotesState extends RefreshableState<PartNotesWidget> {
           icon: FaIcon(FontAwesomeIcons.edit),
           tooltip: L10().edit,
           onPressed: () {
-            launchApiForm(
+            part.editForm(
               context,
               L10().editNotes,
-              part.url,
-              {
+              fields: {
                 "notes": {
                   "multiline": true,
                 }
               },
-              modelData: part.jsondata,
               onSuccess: (data) async {
                 refresh();
               }

@@ -65,20 +65,9 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
 
   void editCompany(BuildContext context) async {
 
-    launchApiForm(
+    company.editForm(
       context,
       L10().companyEdit,
-      company.url,
-      {
-        "name": {},
-        "description": {},
-        "website": {},
-        "is_supplier": {},
-        "is_manufacturer": {},
-        "is_customer": {},
-        "currency": {},
-      },
-      modelData: company.jsondata,
       onSuccess: (data) async {
         refresh();
       }

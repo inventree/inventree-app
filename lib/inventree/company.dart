@@ -15,6 +15,19 @@ class InvenTreeCompany extends InvenTreeModel {
   @override
   String get URL => "company/";
 
+  @override
+  Map<String, dynamic> formFields() {
+    return {
+      "name": {},
+      "description": {},
+      "website": {},
+      "is_supplier": {},
+      "is_manufacturer": {},
+      "is_customer": {},
+      "currency": {},
+    };
+  }
+
   InvenTreeCompany() : super();
 
   String get image => jsondata['image'] ?? jsondata['thumbnail'] ?? InvenTreeAPI.staticImage;

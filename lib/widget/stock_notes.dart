@@ -46,19 +46,17 @@ class _StockNotesState extends RefreshableState<StockNotesWidget> {
               icon: FaIcon(FontAwesomeIcons.edit),
               tooltip: L10().edit,
               onPressed: () {
-                launchApiForm(
-                    context,
-                    L10().editNotes,
-                    item.url,
-                    {
-                      "notes": {
-                        "multiline": true,
-                      }
-                    },
-                    modelData: item.jsondata,
-                    onSuccess: (data) async {
-                      refresh();
+                item.editForm(
+                  context,
+                  L10().editNotes,
+                  fields: {
+                    "notes": {
+                      "multiline": true,
                     }
+                  },
+                  onSuccess: (data) async {
+                    refresh();
+                  }
                 );
               }
           )
