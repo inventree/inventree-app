@@ -94,7 +94,9 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
         "parent": {},
       },
       modelData: _loc.jsondata,
-      onSuccess: refresh
+      onSuccess: (data) async {
+        refresh();
+      }
     );
   }
 

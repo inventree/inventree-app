@@ -56,7 +56,7 @@ class _PartNotesState extends RefreshableState<PartNotesWidget> {
                 }
               },
               modelData: part.jsondata,
-              onSuccess: () async {
+              onSuccess: (data) async {
                 refresh();
               }
             );

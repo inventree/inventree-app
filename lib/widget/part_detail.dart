@@ -126,7 +126,9 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           "virtual": {},
         },
         modelData: part.jsondata,
-        onSuccess: refresh,
+        onSuccess: (data) async {
+          refresh();
+        },
     );
   }
 

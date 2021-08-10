@@ -67,7 +67,13 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
       return;
     }
 
-    _cat.editForm(context, L10().editCategory, onSuccess: refresh);
+    _cat.editForm(
+        context,
+        L10().editCategory,
+        onSuccess: (data) async {
+          refresh();
+        }
+    );
   }
 
   _CategoryDisplayState(this.category);
@@ -211,14 +217,27 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
     int pk = category?.pk ?? -1;
 
-    launchApiForm(
-        context,
-        L10().categoryCreate,
-        InvenTreePartCategory().URL,
-        InvenTreePartCategory().formFields(),
-        modelData: {
-          "parent": (pk > 0) ? pk : null,
+    InvenTreePartCategory().createForm(
+      context,
+      L10().categoryCreate,
+      data: {
+        "parent": (pk > 0) ? pk : null,
+      },
+      onSuccess: (data) async {
+        
+        if (data.containsKey("pk")) {
+          var new_cat = InvenTreePartCategory.fromJson(data);
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CategoryDisplayWidget(new_cat)
+            )
+          );
+        } else {
+          refresh();
         }
+      }
     );
   }
 

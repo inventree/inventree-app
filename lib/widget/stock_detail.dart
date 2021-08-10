@@ -120,7 +120,9 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         "link": {},
       },
       modelData: item.jsondata,
-      onSuccess: refresh
+      onSuccess: (data) async {
+        refresh();
+      }
     );
 
   }

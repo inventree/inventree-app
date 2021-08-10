@@ -72,7 +72,25 @@ class InvenTreeModel {
     return {};
   }
 
-  Future<void> editForm(BuildContext context, String title, {Map<String, dynamic> fields=const {}, Function? onSuccess}) async {
+  Future<void> createForm(BuildContext context, String title, {Map<String, dynamic> fields=const{}, Map<String, dynamic> data=const {}, Function(dynamic)? onSuccess}) async {
+
+    if (fields.isEmpty) {
+      fields = formFields();
+    }
+
+    launchApiForm(
+      context,
+      title,
+      URL,
+      fields,
+      modelData: data,
+      onSuccess: onSuccess,
+      method: "POST",
+    );
+
+  }
+
+  Future<void> editForm(BuildContext context, String title, {Map<String, dynamic> fields=const {}, Function(dynamic)? onSuccess}) async {
 
     if (fields.isEmpty) {
       fields = formFields();
@@ -84,7 +102,8 @@ class InvenTreeModel {
       url,
       fields,
       modelData: jsondata,
-      onSuccess: onSuccess
+      onSuccess: onSuccess,
+      method: "PATCH"
     );
 
   }

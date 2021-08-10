@@ -79,7 +79,9 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
         "currency": {},
       },
       modelData: company.jsondata,
-      onSuccess: refresh
+      onSuccess: (data) async {
+        refresh();
+      }
     );
   }
 

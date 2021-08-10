@@ -56,7 +56,7 @@ class _StockNotesState extends RefreshableState<StockNotesWidget> {
                       }
                     },
                     modelData: item.jsondata,
-                    onSuccess: () {
+                    onSuccess: (data) async {
                       refresh();
                     }
                 );
