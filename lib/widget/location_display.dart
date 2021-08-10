@@ -162,6 +162,12 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     );
   }
 
+  Future<void> _newStockItem(BuildContext context) async {
+
+    // TODO
+
+  }
+
   Widget locationDescriptionCard({bool includeActions = true}) {
     if (location == null) {
       return Card(
@@ -226,7 +232,6 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
             icon: FaIcon(FontAwesomeIcons.boxes),
             label: L10().stock,
           ),
-          // TODO - Add in actions when they are written...
           BottomNavigationBarItem(
             icon: FaIcon(FontAwesomeIcons.wrench),
             label: L10().actions,
