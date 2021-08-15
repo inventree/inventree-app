@@ -113,8 +113,11 @@ class InvenTreeStockItem extends InvenTreeModel {
     return {
       "part": {},
       "location": {},
-      "status": {},
       "quantity": {},
+      "status": {},
+      "batch": {},
+      "packaging": {},
+      "link": {},
     };
   }
 

@@ -340,7 +340,7 @@ class APIFormField {
             part.description,
             style: TextStyle(fontWeight: selected ? FontWeight.bold : FontWeight.normal),
           ) : null,
-          leading: extended ? InvenTreeAPI().getImage(part.thumbnail, width: 32, height: 32) : null,
+          leading: extended ? InvenTreeAPI().getImage(part.thumbnail, width: 40, height: 40) : null,
         );
 
       case "partcategory":
