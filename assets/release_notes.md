@@ -1,16 +1,19 @@
 ## InvenTree App Release Notes
 ---
 
-### 0.4.4 - August 2021
+### 0.4.5 - August 2021
 ---
 
-- Add ability to create new Part Categories
-- Add ability to create new Parts
-- Add ability to create new Stock Locations
-- Add ability to create new Stock Items
+- Adds ability to create new Part Categories
+- Adds ability to create new Parts
+- Adds ability to create new Stock Locations
+- Adds ability to create new Stock Items
+- Adds ability to view and download attachments for Parts
+- Adds ability to upload new part attachments
 - App bar now always displays "back" button
 - Display "batch code" information for stock item
 - Display "packaging" information for stock item
+- Multiple bug fixes
 
 ### 0.4.3 - August 2021
 ---
