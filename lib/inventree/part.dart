@@ -11,9 +11,6 @@ import 'package:http/http.dart' as http;
 class InvenTreePartCategory extends InvenTreeModel {
 
   @override
-  String NAME = "PartCategory";
-
-  @override
   String get URL => "part/category/";
 
   @override
@@ -75,9 +72,6 @@ class InvenTreePartCategory extends InvenTreeModel {
 class InvenTreePartTestTemplate extends InvenTreeModel {
 
   @override
-  String NAME = "PartTestTemplate";
-
-  @override
   String get URL => "part/test-template/";
 
   String get key => jsondata['key'] ?? '';
@@ -130,9 +124,6 @@ class InvenTreePartTestTemplate extends InvenTreeModel {
 
 
 class InvenTreePart extends InvenTreeModel {
-
-  @override
-  String NAME = "Part";
 
   @override
   String get URL => "part/";
@@ -396,4 +387,21 @@ class InvenTreePart extends InvenTreeModel {
 
     return part;
   }
+}
+
+
+class InvenTreePartAttachment extends InvenTreeAttachment {
+
+  InvenTreePartAttachment() : super();
+
+  @override
+  String get URL => "part/attachment/";
+
+  InvenTreePartAttachment.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+
+  @override
+  InvenTreeModel createFromJson(Map<String, dynamic> json) {
+    return InvenTreePartAttachment.fromJson(json);
+  }
+
 }

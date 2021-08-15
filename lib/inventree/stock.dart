@@ -15,9 +15,6 @@ import 'package:inventree/api.dart';
 class InvenTreeStockItemTestResult extends InvenTreeModel {
 
   @override
-  String NAME = "StockItemTestResult";
-
-  @override
   String get URL => "stock/test/";
 
   String get key => jsondata['key'] ?? '';
@@ -98,9 +95,6 @@ class InvenTreeStockItem extends InvenTreeModel {
         return Color(0xFFAAAAAA);
     }
   }
-
-  @override
-  String NAME = "StockItem";
 
   @override
   String get URL => "stock/";
@@ -464,11 +458,7 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) {
-    var item = InvenTreeStockItem.fromJson(json);
-
-    // TODO?
-
-    return item;
+    return InvenTreeStockItem.fromJson(json);
   }
 
   /*
@@ -554,9 +544,6 @@ class InvenTreeStockItem extends InvenTreeModel {
 class InvenTreeStockLocation extends InvenTreeModel {
 
   @override
-  String NAME = "StockLocation";
-
-  @override
   String get URL => "stock/location/";
 
   String get pathstring => jsondata['pathstring'] ?? '';
@@ -591,9 +578,7 @@ class InvenTreeStockLocation extends InvenTreeModel {
 
   InvenTreeStockLocation() : super();
 
-  InvenTreeStockLocation.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
-    // TODO
-  }
+  InvenTreeStockLocation.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) {

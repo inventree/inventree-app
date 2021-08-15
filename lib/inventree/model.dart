@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:inventree/api.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:inventree/inventree/sentry.dart';
@@ -43,8 +44,6 @@ class InvenTreeModel {
   // Override the web URL for each subclass
   // Note: If the WEB_URL is the same (except for /api/) as URL then just leave blank
   String WEB_URL = "";
-
-  String NAME = "Model";
 
   String get webUrl {
 
@@ -450,6 +449,63 @@ class InvenTreeModel {
 
     return true;
   }
+}
+
+
+class InvenTreeAttachment extends InvenTreeModel {
+  // Class representing an "attachment" file
+
+  InvenTreeAttachment() : super();
+
+  String get attachment => jsondata["attachment"] ?? '';
+
+  // Return the filename of the attachment
+  String get filename {
+    return attachment.split("/").last;
+  }
+
+  IconData get icon {
+    String fn = filename.toLowerCase();
+
+    if (fn.endsWith(".pdf")) {
+      return FontAwesomeIcons.filePdf;
+    } else if (fn.endsWith(".csv")) {
+      return FontAwesomeIcons.fileCsv;
+    } else if (fn.endsWith(".doc") || fn.endsWith(".docx")) {
+      return FontAwesomeIcons.fileWord;
+    } else if (fn.endsWith(".xls") || fn.endsWith(".xlsx")) {
+      return FontAwesomeIcons.fileExcel;
+    }
+
+    // Image formats
+    final List<String> img_formats = [
+      ".png",
+      ".jpg",
+      ".gif",
+      ".bmp",
+      ".svg",
+    ];
+
+    for (String fmt in img_formats) {
+      if (fn.endsWith(fmt)) {
+        return FontAwesomeIcons.fileImage;
+      }
+    }
+
+    return FontAwesomeIcons.fileAlt;
+  }
+
+  String get comment => jsondata["comment"] ?? '';
+
+  DateTime? get uploadDate {
+    if (jsondata.containsKey("upload_date")) {
+      return DateTime.tryParse(jsondata["upload_date"] ?? '');
+    } else {
+      return null;
+    }
+  }
+
+  InvenTreeAttachment.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 }
 
 

@@ -10,9 +10,6 @@ import 'model.dart';
 class InvenTreeCompany extends InvenTreeModel {
 
   @override
-  String NAME = "Company";
-
-  @override
   String get URL => "company/";
 
   @override
