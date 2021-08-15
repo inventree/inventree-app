@@ -245,7 +245,15 @@ class APIFormField {
       onChanged: null,
       showClearButton: !required,
       itemAsString: (dynamic item) {
-        return item['pathstring'];
+        switch (model) {
+          case "part":
+            return item["full_name"];
+          case "partcategory":
+          case "stocklocation":
+            return item["pathstring"];
+          default:
+            return "itemAsString not implemented for '${model}'";
+        }
       },
       dropdownBuilder: (context, item, itemAsString) {
         return _renderRelatedField(item, true, false);
@@ -288,6 +296,22 @@ class APIFormField {
     }
 
     switch (model) {
+      case "part":
+
+        var part = InvenTreePart.fromJson(item);
+
+        return ListTile(
+          title: Text(
+            part.fullname,
+              style: TextStyle(fontWeight: selected && extended ? FontWeight.bold : FontWeight.normal)
+          ),
+          subtitle: extended ? Text(
+            part.description,
+            style: TextStyle(fontWeight: selected ? FontWeight.bold : FontWeight.normal),
+          ) : null,
+          leading: extended ? InvenTreeAPI().getImage(part.thumbnail, width: 32, height: 32) : null,
+        );
+
       case "partcategory":
 
         var cat = InvenTreePartCategory.fromJson(item);
@@ -587,6 +611,17 @@ class _APIFormWidgetState extends State<APIFormWidget> {
           );
         }
       }
+
+      // Add divider after some widgets
+      switch (field.type) {
+        case "related field":
+        case "choice":
+          widgets.add(Divider(height: 10));
+          break;
+        default:
+          break;
+      }
+
     }
 
     return widgets;
