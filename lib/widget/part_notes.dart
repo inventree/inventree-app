@@ -7,8 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:inventree/l10.dart';
 
-import '../api_form.dart';
-
 
 class PartNotesWidget extends StatefulWidget {
 
@@ -46,17 +44,15 @@ class _PartNotesState extends RefreshableState<PartNotesWidget> {
           icon: FaIcon(FontAwesomeIcons.edit),
           tooltip: L10().edit,
           onPressed: () {
-            launchApiForm(
+            part.editForm(
               context,
               L10().editNotes,
-              part.url,
-              {
+              fields: {
                 "notes": {
                   "multiline": true,
                 }
               },
-              modelData: part.jsondata,
-              onSuccess: () async {
+              onSuccess: (data) async {
                 refresh();
               }
             );

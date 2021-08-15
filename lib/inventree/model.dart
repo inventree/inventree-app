@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:path/path.dart' as path;
 
 import '../l10.dart';
+import '../api_form.dart';
 
 
 // Paginated response object
@@ -37,7 +38,7 @@ class InvenTreePageResponse {
 class InvenTreeModel {
 
   // Override the endpoint URL for each subclass
-  String URL = "";
+  String get URL => "";
 
   // Override the web URL for each subclass
   // Note: If the WEB_URL is the same (except for /api/) as URL then just leave blank
@@ -61,6 +62,49 @@ class InvenTreeModel {
     } else {
       return "";
     }
+
+  }
+
+  // Fields for editing / creating this model
+  // Override per-model
+  Map<String, dynamic> formFields() {
+
+    return {};
+  }
+
+  Future<void> createForm(BuildContext context, String title, {Map<String, dynamic> fields=const{}, Map<String, dynamic> data=const {}, Function(dynamic)? onSuccess}) async {
+
+    if (fields.isEmpty) {
+      fields = formFields();
+    }
+
+    launchApiForm(
+      context,
+      title,
+      URL,
+      fields,
+      modelData: data,
+      onSuccess: onSuccess,
+      method: "POST",
+    );
+
+  }
+
+  Future<void> editForm(BuildContext context, String title, {Map<String, dynamic> fields=const {}, Function(dynamic)? onSuccess}) async {
+
+    if (fields.isEmpty) {
+      fields = formFields();
+    }
+
+    launchApiForm(
+      context,
+      title,
+      url,
+      fields,
+      modelData: jsondata,
+      onSuccess: onSuccess,
+      method: "PATCH"
+    );
 
   }
 
@@ -155,17 +199,19 @@ class InvenTreeModel {
     if (!response.isValid() || response.data == null || !(response.data is Map)) {
 
       // Report error
-      await sentryReportMessage(
-        "InvenTreeModel.reload() returned invalid response",
-        context: {
-          "url": url,
-          "statusCode": response.statusCode.toString(),
-          "data": response.data?.toString() ?? "null",
-          "valid": response.isValid().toString(),
-          "error": response.error,
-          "errorDetail": response.errorDetail,
-        }
-      );
+      if (response.statusCode > 0) {
+        await sentryReportMessage(
+            "InvenTreeModel.reload() returned invalid response",
+            context: {
+              "url": url,
+              "statusCode": response.statusCode.toString(),
+              "data": response.data?.toString() ?? "null",
+              "valid": response.isValid().toString(),
+              "error": response.error,
+              "errorDetail": response.errorDetail,
+            }
+        );
+      }
 
       showServerError(
         L10().serverError,
@@ -226,17 +272,19 @@ class InvenTreeModel {
 
     if (!response.isValid() || response.data == null || !(response.data is Map)) {
 
-      await sentryReportMessage(
-        "InvenTreeModel.get() returned invalid response",
-        context: {
-          "url": url,
-          "statusCode": response.statusCode.toString(),
-          "data": response.data?.toString() ?? "null",
-          "valid": response.isValid().toString(),
-          "error": response.error,
-          "errorDetail": response.errorDetail,
-        }
-      );
+      if (response.statusCode > 0) {
+        await sentryReportMessage(
+            "InvenTreeModel.get() returned invalid response",
+            context: {
+              "url": url,
+              "statusCode": response.statusCode.toString(),
+              "data": response.data?.toString() ?? "null",
+              "valid": response.isValid().toString(),
+              "error": response.error,
+              "errorDetail": response.errorDetail,
+            }
+        );
+      }
 
       showServerError(
         L10().serverError,
@@ -267,17 +315,19 @@ class InvenTreeModel {
     // Invalid response returned from server
     if (!response.isValid() || response.data == null || !(response.data is Map)) {
 
-      await sentryReportMessage(
-        "InvenTreeModel.create() returned invalid response",
-        context: {
-          "url": url,
-          "statusCode": response.statusCode.toString(),
-          "data": response.data?.toString() ?? "null",
-          "valid": response.isValid().toString(),
-          "error": response.error,
-          "errorDetail": response.errorDetail,
-        }
-      );
+      if (response.statusCode > 0) {
+        await sentryReportMessage(
+            "InvenTreeModel.create() returned invalid response",
+            context: {
+              "url": url,
+              "statusCode": response.statusCode.toString(),
+              "data": response.data?.toString() ?? "null",
+              "valid": response.isValid().toString(),
+              "error": response.error,
+              "errorDetail": response.errorDetail,
+            }
+        );
+      }
 
       showServerError(
         L10().serverError,

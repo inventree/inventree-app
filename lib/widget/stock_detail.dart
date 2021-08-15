@@ -22,8 +22,6 @@ import 'package:inventree/api.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../api_form.dart';
-
 class StockDetailWidget extends StatefulWidget {
 
   StockDetailWidget(this.item, {Key? key}) : super(key: key);
@@ -109,18 +107,20 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
   void _editStockItem(BuildContext context) async {
 
-    launchApiForm(
+    var fields = InvenTreeStockItem().formFields();
+
+    // Some fields we don't want to edit!
+    fields.remove("part");
+    fields.remove("quantity");
+    fields.remove("location");
+
+    item.editForm(
       context,
       L10().editItem,
-      item.url,
-      {
-        "status": {},
-        "batch": {},
-        "packaging": {},
-        "link": {},
-      },
-      modelData: item.jsondata,
-      onSuccess: refresh
+      fields: fields,
+      onSuccess: (data) async {
+        refresh();
+      }
     );
 
   }

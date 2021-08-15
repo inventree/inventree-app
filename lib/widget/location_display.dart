@@ -1,5 +1,4 @@
 import 'package:inventree/api.dart';
-import 'package:inventree/api_form.dart';
 import 'package:inventree/app_colors.dart';
 import 'package:inventree/app_settings.dart';
 import 'package:inventree/barcode.dart';
@@ -84,17 +83,12 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       return;
     }
 
-    launchApiForm(
+    _loc.editForm(
       context,
       L10().editLocation,
-      _loc.url,
-      {
-        "name": {},
-        "description": {},
-        "parent": {},
-      },
-      modelData: _loc.jsondata,
-      onSuccess: refresh
+      onSuccess: (data) async {
+        refresh();
+      }
     );
   }
 
@@ -140,6 +134,61 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     });
 
     setState(() {});
+  }
+
+  Future<void> _newLocation(BuildContext context) async {
+
+    int pk = location?.pk ?? -1;
+
+    InvenTreeStockLocation().createForm(
+      context,
+      L10().locationCreate,
+      data: {
+        "parent": (pk > 0) ? pk : null,
+      },
+      onSuccess: (data) async {
+        if (data.containsKey("pk")) {
+          var loc = InvenTreeStockLocation.fromJson(data);
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => LocationDisplayWidget(loc)
+            )
+          );
+        }
+      }
+    );
+  }
+
+  Future<void> _newStockItem(BuildContext context) async {
+
+    int pk = location?.pk ?? -1;
+
+    if (pk <= 0) {
+      return;
+    }
+
+    InvenTreeStockItem().createForm(
+      context,
+      L10().stockItemCreate,
+      data: {
+        "location": pk,
+      },
+      onSuccess: (data) async {
+        if (data.containsKey("pk")) {
+          var item = InvenTreeStockItem.fromJson(data);
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => StockDetailWidget(item)
+            )
+          );
+        }
+      }
+    );
+
   }
 
   Widget locationDescriptionCard({bool includeActions = true}) {
@@ -206,7 +255,6 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
             icon: FaIcon(FontAwesomeIcons.boxes),
             label: L10().stock,
           ),
-          // TODO - Add in actions when they are written...
           BottomNavigationBarItem(
             icon: FaIcon(FontAwesomeIcons.wrench),
             label: L10().actions,
@@ -282,6 +330,32 @@ List<Widget> detailTiles() {
     List<Widget> tiles = [];
 
     tiles.add(locationDescriptionCard(includeActions: false));
+
+    if (InvenTreeAPI().checkPermission('stock', 'add')) {
+
+      tiles.add(
+        ListTile(
+          title: Text(L10().locationCreate),
+          subtitle: Text(L10().locationCreateDetail),
+          leading: FaIcon(FontAwesomeIcons.sitemap, color: COLOR_CLICK),
+          onTap: () async {
+            _newLocation(context);
+          },
+        )
+      );
+
+      tiles.add(
+        ListTile(
+          title: Text(L10().stockItemCreate),
+          subtitle: Text(L10().stockItemCreateDetail),
+          leading: FaIcon(FontAwesomeIcons.boxes, color: COLOR_CLICK),
+          onTap: () async {
+            _newStockItem(context);
+          },
+        )
+      );
+
+    }
 
     if (location != null) {
       // Stock adjustment actions

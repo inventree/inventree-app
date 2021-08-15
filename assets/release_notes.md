@@ -4,9 +4,13 @@
 ### 0.4.4 - August 2021
 ---
 
+- Add ability to create new Part Categories
+- Add ability to create new Parts
+- Add ability to create new Stock Locations
+- Add ability to create new Stock Items
 - App bar now always displays "back" button
 - Display "batch code" information for stock item
-- Display "packagin" information for stock item
+- Display "packaging" information for stock item
 
 ### 0.4.3 - August 2021
 ---

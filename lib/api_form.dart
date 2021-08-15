@@ -7,6 +7,7 @@ import 'package:inventree/api.dart';
 import 'package:inventree/app_colors.dart';
 import 'package:inventree/inventree/part.dart';
 import 'package:inventree/inventree/stock.dart';
+import 'package:inventree/widget/dialogs.dart';
 import 'package:inventree/widget/fields.dart';
 import 'package:inventree/l10.dart';
 
@@ -153,6 +154,9 @@ class APIFormField {
         return _constructBoolean();
       case "related field":
         return _constructRelatedField();
+      case "float":
+      case "decimal":
+        return _constructFloatField();
       case "choice":
         return _constructChoiceField();
       default:
@@ -202,6 +206,34 @@ class APIFormField {
     );
   }
 
+  // Construct a floating point numerical input field
+  Widget _constructFloatField() {
+
+    return TextFormField(
+      decoration: InputDecoration(
+        labelText: required ? label + "*" : label,
+        labelStyle: _labelStyle(),
+        helperText: helpText,
+        helperStyle: _helperStyle(),
+        hintText: placeholderText,
+      ),
+      initialValue: (value ?? 0).toString(),
+      keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
+      validator: (value) {
+
+        double? quantity = double.tryParse(value.toString()) ?? null;
+
+        if (quantity == null) {
+          return L10().numberInvalid;
+        }
+      },
+      onSaved: (val) {
+        data["value"] = val;
+      },
+    );
+
+  }
+
   // Construct an input for a related field
   Widget _constructRelatedField() {
 
@@ -244,7 +276,16 @@ class APIFormField {
       onChanged: null,
       showClearButton: !required,
       itemAsString: (dynamic item) {
-        return item['pathstring'];
+        switch (model) {
+          case "part":
+            return InvenTreePart.fromJson(item).fullname;
+          case "partcategory":
+            return InvenTreePartCategory.fromJson(item).pathstring;
+          case "stocklocation":
+            return InvenTreeStockLocation.fromJson(item).pathstring;
+          default:
+            return "itemAsString not implemented for '${model}'";
+        }
       },
       dropdownBuilder: (context, item, itemAsString) {
         return _renderRelatedField(item, true, false);
@@ -287,6 +328,22 @@ class APIFormField {
     }
 
     switch (model) {
+      case "part":
+
+        var part = InvenTreePart.fromJson(item);
+
+        return ListTile(
+          title: Text(
+            part.fullname,
+              style: TextStyle(fontWeight: selected && extended ? FontWeight.bold : FontWeight.normal)
+          ),
+          subtitle: extended ? Text(
+            part.description,
+            style: TextStyle(fontWeight: selected ? FontWeight.bold : FontWeight.normal),
+          ) : null,
+          leading: extended ? InvenTreeAPI().getImage(part.thumbnail, width: 40, height: 40) : null,
+        );
+
       case "partcategory":
 
         var cat = InvenTreePartCategory.fromJson(item);
@@ -420,7 +477,7 @@ Map<String, dynamic> extractFields(APIResponse response) {
  * @param method is the HTTP method to use to send the form data to the server (e.g. POST / PATCH)
  */
 
-Future<void> launchApiForm(BuildContext context, String title, String url, Map<String, dynamic> fields, {Map<String, dynamic> modelData = const {}, String method = "PATCH", Function? onSuccess, Function? onCancel}) async {
+Future<void> launchApiForm(BuildContext context, String title, String url, Map<String, dynamic> fields, {Map<String, dynamic> modelData = const {}, String method = "PATCH", Function(Map<String, dynamic>)? onSuccess, Function? onCancel}) async {
 
   var options = await InvenTreeAPI().options(url);
 
@@ -503,6 +560,7 @@ Future<void> launchApiForm(BuildContext context, String title, String url, Map<S
         title,
         url,
         formFields,
+        method,
         onSuccess: onSuccess,
     ))
   );
@@ -517,14 +575,18 @@ class APIFormWidget extends StatefulWidget {
   //! API URL
   final String url;
 
+  //! API method
+  final String method;
+
   final List<APIFormField> fields;
 
-  Function? onSuccess;
+  Function(Map<String, dynamic>)? onSuccess;
 
   APIFormWidget(
       this.title,
       this.url,
       this.fields,
+      this.method,
       {
         Key? key,
         this.onSuccess,
@@ -532,7 +594,7 @@ class APIFormWidget extends StatefulWidget {
   ) : super(key: key);
 
   @override
-  _APIFormWidgetState createState() => _APIFormWidgetState(title, url, fields, onSuccess);
+  _APIFormWidgetState createState() => _APIFormWidgetState(title, url, fields, method, onSuccess);
 
 }
 
@@ -545,11 +607,13 @@ class _APIFormWidgetState extends State<APIFormWidget> {
 
   String url;
 
+  String method;
+
   List<APIFormField> fields;
 
-  Function? onSuccess;
+  Function(Map<String, dynamic>)? onSuccess;
 
-  _APIFormWidgetState(this.title, this.url, this.fields, this.onSuccess) : super();
+  _APIFormWidgetState(this.title, this.url, this.fields, this.method, this.onSuccess) : super();
 
   List<Widget> _buildForm() {
 
@@ -579,35 +643,60 @@ class _APIFormWidgetState extends State<APIFormWidget> {
           );
         }
       }
+
+      // Add divider after some widgets
+      switch (field.type) {
+        case "related field":
+        case "choice":
+          widgets.add(Divider(height: 10));
+          break;
+        default:
+          break;
+      }
+
     }
 
     return widgets;
   }
 
+  Future<APIResponse> _submit(Map<String, String> data) async {
+
+    if (method == "POST") {
+      return await InvenTreeAPI().post(
+        url,
+        body: data,
+        expectedStatusCode: null
+      );
+    } else {
+      return await InvenTreeAPI().patch(
+        url,
+        body: data,
+        expectedStatusCode: null
+      );
+    }
+
+  }
+
   Future<void> _save(BuildContext context) async {
 
     // Package up the form data
-    Map<String, String> _data = {};
+    Map<String, String> data = {};
 
     for (var field in fields) {
 
       dynamic value = field.value;
 
       if (value == null) {
-        _data[field.name] = "";
+        data[field.name] = "";
       } else {
-        _data[field.name] = value.toString();
+        data[field.name] = value.toString();
       }
     }
 
-    // TODO: Handle "POST" forms too!!
-    final response = await InvenTreeAPI().patch(
-      url,
-      body: _data,
-    );
+    final response = await _submit(data);
 
     if (!response.isValid()) {
-      // TODO: Display an error message!
+      showServerError(L10().serverError, L10().responseInvalid);
       return;
     }
 
@@ -625,11 +714,25 @@ class _APIFormWidgetState extends State<APIFormWidget> {
         var successFunc = onSuccess;
 
         if (successFunc != null) {
-          successFunc();
+
+          // Ensure the response is a valid JSON structure
+          Map<String, dynamic> json = {};
+
+          if (response.data != null && response.data is Map) {
+            for (dynamic key in response.data.keys) {
+              json[key.toString()] = response.data[key];
+            }
+          }
+
+          successFunc(json);
         }
         return;
       case 400:
         // Form submission / validation error
+        showSnackIcon(
+          L10().error,
+          success: false
+        );
 
         // Update field errors
         for (var field in fields) {

@@ -13,7 +13,20 @@ class InvenTreeCompany extends InvenTreeModel {
   String NAME = "Company";
 
   @override
-  String URL = "company/";
+  String get URL => "company/";
+
+  @override
+  Map<String, dynamic> formFields() {
+    return {
+      "name": {},
+      "description": {},
+      "website": {},
+      "is_supplier": {},
+      "is_manufacturer": {},
+      "is_customer": {},
+      "currency": {},
+    };
+  }
 
   InvenTreeCompany() : super();
 
@@ -49,7 +62,7 @@ class InvenTreeCompany extends InvenTreeModel {
  */
 class InvenTreeSupplierPart extends InvenTreeModel {
   @override
-  String URL = "company/part/";
+  String get URL => "company/part/";
 
   Map<String, String> _filters() {
     return {

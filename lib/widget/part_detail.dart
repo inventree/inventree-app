@@ -6,12 +6,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:inventree/app_colors.dart';
 
 import 'package:inventree/l10.dart';
-import 'package:inventree/api_form.dart';
 import 'package:inventree/widget/part_notes.dart';
 import 'package:inventree/widget/progress.dart';
 import 'package:inventree/inventree/part.dart';
 import 'package:inventree/widget/category_display.dart';
-import 'package:inventree/widget/part_suppliers.dart';
 import 'package:inventree/api.dart';
 import 'package:inventree/widget/refreshable_state.dart';
 import 'package:inventree/widget/part_image_widget.dart';
@@ -100,33 +98,12 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   void _editPartDialog(BuildContext context) {
 
-    launchApiForm(
-        context,
-        L10().editPart,
-        part.url,
-        {
-          "name": {},
-          "description": {},
-          "IPN": {},
-          "revision": {},
-          "keywords": {},
-          "link": {},
-
-          "category": {
-          },
-
-          // Checkbox fields
-          "active": {},
-          "assembly": {},
-          "component": {},
-          "purchaseable": {},
-          "salable": {},
-          "trackable": {},
-          "is_template": {},
-          "virtual": {},
-        },
-        modelData: part.jsondata,
-        onSuccess: refresh,
+    part.editForm(
+      context,
+      L10().editPart,
+      onSuccess: (data) async {
+        refresh();
+      }
     );
   }
 
@@ -305,16 +282,18 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     // Tiles for an "assembly" part
     if (part.isAssembly) {
 
-      tiles.add(
-          ListTile(
-            title: Text(L10().billOfMaterials),
-            leading: FaIcon(FontAwesomeIcons.thList),
-            trailing: Text("${part.bomItemCount}"),
-            onTap: () {
-              // TODO
-            }
-        )
-      );
+      if (part.bomItemCount > 0) {
+        tiles.add(
+            ListTile(
+                title: Text(L10().billOfMaterials),
+                leading: FaIcon(FontAwesomeIcons.thList),
+                trailing: Text("${part.bomItemCount}"),
+                onTap: () {
+                  // TODO
+                }
+            )
+        );
+      }
 
       if (part.building > 0) {
         tiles.add(
@@ -331,7 +310,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     }
 
     // Tiles for "component" part
-    if (part.isComponent) {
+    if (part.isComponent && part.usedInCount > 0) {
 
       tiles.add(
         ListTile(
@@ -421,6 +400,19 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         },
       ),
     );
+    
+    if (false && !part.isActive && InvenTreeAPI().checkPermission('part', 'delete')) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().deletePart),
+          subtitle: Text(L10().deletePartDetail),
+          leading: FaIcon(FontAwesomeIcons.trashAlt, color: COLOR_DANGER),
+          onTap: () {
+            // TODO
+          },
+        )
+      );
+    }
 
     return tiles;
   }
@@ -469,12 +461,10 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           label: L10().stock
         ),
         // TODO - Add part actions
-        /*
         BottomNavigationBarItem(
           icon: FaIcon(FontAwesomeIcons.wrench),
           label: L10().actions,
         ),
-         */
       ]
     );
   }

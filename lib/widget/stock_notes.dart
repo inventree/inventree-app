@@ -8,7 +8,6 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:inventree/l10.dart';
 
 import '../api.dart';
-import '../api_form.dart';
 
 
 class StockNotesWidget extends StatefulWidget {
@@ -46,19 +45,17 @@ class _StockNotesState extends RefreshableState<StockNotesWidget> {
               icon: FaIcon(FontAwesomeIcons.edit),
               tooltip: L10().edit,
               onPressed: () {
-                launchApiForm(
-                    context,
-                    L10().editNotes,
-                    item.url,
-                    {
-                      "notes": {
-                        "multiline": true,
-                      }
-                    },
-                    modelData: item.jsondata,
-                    onSuccess: () {
-                      refresh();
+                item.editForm(
+                  context,
+                  L10().editNotes,
+                  fields: {
+                    "notes": {
+                      "multiline": true,
                     }
+                  },
+                  onSuccess: (data) async {
+                    refresh();
+                  }
                 );
               }
           )

@@ -540,7 +540,7 @@ class InvenTreeAPI {
    * Perform a HTTP POST request
    * Returns a json object (or null if unsuccessful)
    */
-  Future<APIResponse> post(String url, {Map<String, dynamic> body = const {}, int expectedStatusCode=201}) async {
+  Future<APIResponse> post(String url, {Map<String, dynamic> body = const {}, int? expectedStatusCode=201}) async {
 
     HttpClientRequest? request = await apiRequest(url, "POST");
 
@@ -763,7 +763,7 @@ class InvenTreeAPI {
    * Perform a HTTP GET request
    * Returns a json object (or null if did not complete)
    */
-  Future<APIResponse> get(String url, {Map<String, String> params = const {}, int expectedStatusCode=200}) async {
+  Future<APIResponse> get(String url, {Map<String, String> params = const {}, int? expectedStatusCode=200}) async {
 
     HttpClientRequest? request = await apiRequest(
       url,

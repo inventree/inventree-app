@@ -19,8 +19,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
-import '../api_form.dart';
-
 class CategoryDisplayWidget extends StatefulWidget {
 
   CategoryDisplayWidget(this.category, {Key? key}) : super(key: key);
@@ -43,27 +41,6 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
     List<Widget> actions = [];
 
-    /*
-    actions.add(
-        IconButton(
-          icon: FaIcon(FontAwesomeIcons.search),
-          onPressed: () {
-
-            Map<String, String> filters = {};
-
-            if (category != null) {
-              filters["category"] = "${category.pk}";
-            }
-
-            showSearch(
-                context: context,
-                delegate: PartSearchDelegate(context, filters: filters)
-            );
-          }
-        )
-    );
-     */
-
     if ((category != null) && InvenTreeAPI().checkPermission('part_category', 'change')) {
       actions.add(
         IconButton(
@@ -81,7 +58,6 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
   }
 
   void _editCategoryDialog(BuildContext context) {
-
     final _cat = category;
 
     // Cannot edit top-level category
@@ -89,17 +65,12 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
       return;
     }
 
-    launchApiForm(
-      context,
-      L10().editCategory,
-      _cat.url,
-      {
-        "name": {},
-        "description": {},
-        "parent": {},
-      },
-      modelData: _cat.jsondata,
-      onSuccess: refresh,
+    _cat.editForm(
+        context,
+        L10().editCategory,
+        onSuccess: (data) async {
+          refresh();
+        }
     );
   }
 
@@ -206,12 +177,10 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
           label: L10().parts,
         ),
         // TODO - Add the "actions" item back in
-        /*
         BottomNavigationBarItem(
           icon: FaIcon(FontAwesomeIcons.wrench),
           label: L10().actions
         ),
-         */
       ]
     );
   }
@@ -242,18 +211,103 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
     return tiles;
   }
 
-  List<Widget> actionTiles() {
+  Future<void> _newCategory(BuildContext context) async {
+
+    int pk = category?.pk ?? -1;
+
+    InvenTreePartCategory().createForm(
+      context,
+      L10().categoryCreate,
+      data: {
+        "parent": (pk > 0) ? pk : null,
+      },
+      onSuccess: (data) async {
+        
+        if (data.containsKey("pk")) {
+          var cat = InvenTreePartCategory.fromJson(data);
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CategoryDisplayWidget(cat)
+            )
+          );
+        } else {
+          refresh();
+        }
+      }
+    );
+  }
+
+  Future<void> _newPart() async {
+
+    int pk = category?.pk ?? -1;
+
+    InvenTreePart().createForm(
+      context,
+      L10().partCreate,
+      data: {
+        "category": (pk > 0) ? pk : null
+      },
+      onSuccess: (data) async {
+
+        if (data.containsKey("pk")) {
+          var part = InvenTreePart.fromJson(data);
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PartDetailWidget(part)
+            )
+          );
+        }
+      }
+    );
+  }
+
+  List<Widget> actionTiles(BuildContext context) {
 
     List<Widget> tiles = [
       getCategoryDescriptionCard(extra: false),
-      ListTile(
-        title: Text(L10().actions,
-          style: TextStyle(fontWeight: FontWeight.bold)
-        )
-      )
     ];
 
-    // TODO - Actions!
+    if (InvenTreeAPI().checkPermission('part', 'add')) {
+      tiles.add(
+          ListTile(
+            title: Text(L10().categoryCreate),
+            subtitle: Text(L10().categoryCreateDetail),
+            leading: FaIcon(FontAwesomeIcons.sitemap, color: COLOR_CLICK),
+            onTap: () async {
+              _newCategory(context);
+            },
+          )
+      );
+
+      if (category != null) {
+        tiles.add(
+            ListTile(
+              title: Text(L10().partCreate),
+              subtitle: Text(L10().partCreateDetail),
+              leading: FaIcon(FontAwesomeIcons.shapes, color: COLOR_CLICK),
+              onTap: _newPart,
+            )
+        );
+      }
+    }
+
+    if (tiles.length == 0) {
+      tiles.add(
+        ListTile(
+          title: Text(
+            L10().actionsNone
+          ),
+          subtitle: Text(
+            L10().permissionAccountDenied,
+          ),
+          leading: FaIcon(FontAwesomeIcons.userTimes),
+        )
+      );
+    }
 
     return tiles;
   }
@@ -274,7 +328,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
         );
       case 2:
         return ListView(
-          children: actionTiles()
+          children: actionTiles(context)
         );
       default:
         return ListView();
