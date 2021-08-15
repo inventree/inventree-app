@@ -597,12 +597,14 @@ class _APIFormWidgetState extends State<APIFormWidget> {
     if (method == "POST") {
       return await InvenTreeAPI().post(
         url,
-        body: data
+        body: data,
+        expectedStatusCode: null
       );
     } else {
       return await InvenTreeAPI().patch(
         url,
         body: data,
+        expectedStatusCode: null
       );
     }
 
@@ -660,6 +662,10 @@ class _APIFormWidgetState extends State<APIFormWidget> {
         return;
       case 400:
         // Form submission / validation error
+        showSnackIcon(
+          L10().error,
+          success: false
+        );
 
         // Update field errors
         for (var field in fields) {
