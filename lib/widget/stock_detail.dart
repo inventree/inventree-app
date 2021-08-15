@@ -107,15 +107,17 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
   void _editStockItem(BuildContext context) async {
 
+    var fields = InvenTreeStockItem().formFields();
+
+    // Some fields we don't want to edit!
+    fields.remove("part");
+    fields.remove("quantity");
+    fields.remove("location");
+
     item.editForm(
       context,
       L10().editItem,
-      fields: {
-        "status": {},
-        "batch": {},
-        "packaging": {},
-        "link": {},
-      },
+      fields: fields,
       onSuccess: (data) async {
         refresh();
       }

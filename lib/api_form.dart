@@ -278,10 +278,11 @@ class APIFormField {
       itemAsString: (dynamic item) {
         switch (model) {
           case "part":
-            return item["full_name"];
+            return InvenTreePart.fromJson(item).fullname;
           case "partcategory":
+            return InvenTreePartCategory.fromJson(item).pathstring;
           case "stocklocation":
-            return item["pathstring"];
+            return InvenTreeStockLocation.fromJson(item).pathstring;
           default:
             return "itemAsString not implemented for '${model}'";
         }
