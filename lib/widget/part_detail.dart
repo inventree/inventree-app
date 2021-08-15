@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:inventree/app_colors.dart';
+import 'package:inventree/inventree/stock.dart';
 
 import 'package:inventree/l10.dart';
 import 'package:inventree/widget/part_attachments_widget.dart';
@@ -14,6 +15,7 @@ import 'package:inventree/widget/category_display.dart';
 import 'package:inventree/api.dart';
 import 'package:inventree/widget/refreshable_state.dart';
 import 'package:inventree/widget/part_image_widget.dart';
+import 'package:inventree/widget/stock_detail.dart';
 
 import 'location_display.dart';
 
@@ -390,7 +392,36 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     return tiles;
   }
 
-  List<Widget> actionTiles() {
+  Future<void> _newStockItem(BuildContext context) async {
+
+    var fields = InvenTreeStockItem().formFields();
+
+    fields["part"]["hidden"] = true;
+
+    InvenTreeStockItem().createForm(
+        context,
+        L10().stockItemCreate,
+        fields: fields,
+        data: {
+          "part": "${part.pk}",
+        },
+        onSuccess: (data) async {
+          if (data.containsKey("pk")) {
+            var item = InvenTreeStockItem.fromJson(data);
+
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => StockDetailWidget(item)
+                )
+            );
+          }
+        }
+    );
+
+  }
+
+  List<Widget> actionTiles(BuildContext context) {
     List<Widget> tiles = [];
 
     tiles.add(headerTile());
@@ -400,7 +431,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         title: Text(L10().stockItemCreate),
         leading: FaIcon(FontAwesomeIcons.box),
         onTap: () {
-          // TODO
+          _newStockItem(context);
         },
       )
     );
@@ -452,7 +483,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           child: ListView(
             children: ListTile.divideTiles(
               context: context,
-              tiles: actionTiles()
+              tiles: actionTiles(context)
             ).toList()
           )
         );

@@ -398,6 +398,7 @@ class APIFormField {
         helperStyle: _helperStyle(),
         hintText: placeholderText,
       ),
+      readOnly: readOnly,
       maxLines: multiline ? null : 1,
       expands: false,
       initialValue: value ?? '',
