@@ -2,9 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
+import 'package:open_file/open_file.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +18,7 @@ import 'package:inventree/l10.dart';
 import 'package:inventree/inventree/sentry.dart';
 import 'package:inventree/user_profile.dart';
 import 'package:inventree/widget/snacks.dart';
+import 'package:path_provider/path_provider.dart';
 
 
 /*
@@ -119,6 +122,8 @@ class InvenTreeAPI {
   }
 
   String _makeUrl(String url) {
+
+    // Strip leading slash
     if (url.startsWith('/')) {
       url = url.substring(1, url.length);
     }
@@ -467,6 +472,92 @@ class InvenTreeAPI {
       data: json.encode(_body),
       statusCode: expectedStatusCode
     );
+  }
+
+  /*
+   * Download a file from the given URL
+   */
+  Future<void> downloadFile(String url, {bool openOnDownload = true}) async {
+
+    showSnackIcon(
+      L10().downloading,
+      icon: FontAwesomeIcons.download,
+      success: true
+    );
+
+    // Find the local downlods directory
+    final Directory dir = await getTemporaryDirectory();
+
+    String filename = url.split("/").last;
+
+    String local_path = dir.path + "/" + filename;
+
+    Uri? _uri = Uri.tryParse(makeUrl(url));
+
+    if (_uri == null) {
+      showServerError(L10().invalidHost, L10().invalidHostDetails);
+      return;
+    }
+
+    if (_uri.host.isEmpty) {
+      showServerError(L10().invalidHost, L10().invalidHostDetails);
+      return;
+    }
+
+    HttpClientRequest? _request;
+
+    var client = createClient(true);
+
+    // Attempt to open a connection to the server
+    try {
+      _request = await client.openUrl("GET", _uri).timeout(Duration(seconds: 10));
+
+      // Set headers
+      _request.headers.set(HttpHeaders.authorizationHeader, _authorizationHeader());
+      _request.headers.set(HttpHeaders.acceptHeader, 'application/json');
+      _request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
+      _request.headers.set(HttpHeaders.acceptLanguageHeader, Intl.getCurrentLocale());
+
+    } on SocketException catch (error) {
+      print("SocketException at ${url}: ${error.toString()}");
+      showServerError(L10().connectionRefused, error.toString());
+      return;
+    } on TimeoutException {
+      print("TimeoutException at ${url}");
+      showTimeoutError();
+      return;
+    } catch (error, stackTrace) {
+      print("Server error at ${url}: ${error.toString()}");
+      showServerError(L10().serverError, error.toString());
+      sentryReportError(error, stackTrace);
+      return;
+    }
+
+    try {
+      final response = await _request.close();
+
+      if (response.statusCode == 200) {
+        var bytes = await consolidateHttpClientResponseBytes(response);
+
+        File localFile = File(local_path);
+
+        await localFile.writeAsBytes(bytes);
+
+        if (openOnDownload) {
+          OpenFile.open(local_path);
+        }
+      } else {
+        showStatusCodeError(response.statusCode);
+      }
+    } on SocketException catch (error) {
+      showServerError(L10().connectionRefused, error.toString());
+    } on TimeoutException {
+      showTimeoutError();
+    } catch (error, stackTrace) {
+      print("Error downloading image:");
+      print(error.toString());
+      showServerError(L10().downloadError, error.toString());
+    }
   }
 
   /*

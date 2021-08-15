@@ -510,8 +510,6 @@ class _PaginatedPartListState extends State<PaginatedPartList> {
 
   void updateSearchTerm() {
 
-    print("Search Term: '${_searchTerm}'");
-
     _searchTerm = searchController.text;
     _pagingController.refresh();
   }

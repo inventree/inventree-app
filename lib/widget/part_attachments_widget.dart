@@ -161,6 +161,9 @@ class _PartAttachmentDisplayState extends RefreshableState<PartAttachmentsWidget
         title: Text(attachment.filename),
         subtitle: Text(attachment.comment),
         leading: FaIcon(attachment.icon),
+        onTap: () async {
+          await attachment.downloadAttachment();
+        },
       ));
     }
 

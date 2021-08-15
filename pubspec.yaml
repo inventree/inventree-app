@@ -33,9 +33,10 @@ dependencies:
   image_picker: ^0.8.3                    # Select or take photos
   file_picker: ^4.0.0                     # Select files from the device
   url_launcher: 6.0.9                     # Open link in system browser
+  open_file: 3.2.1                        # Open local files
   flutter_markdown: ^0.6.2                # Rendering markdown
   camera:                                 # Camera
-  path_provider: 2.0.1                    # Local file storage
+  path_provider: 2.0.2                    # Local file storage
   sembast: ^3.1.0+2                       # NoSQL data storage
   one_context: ^1.1.0                     # Dialogs without requiring context
   infinite_scroll_pagination: ^3.1.0      # Let the server do all the work!
