@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:inventree/app_colors.dart';
 
 import 'package:inventree/l10.dart';
+import 'package:inventree/widget/part_attachments_widget.dart';
 import 'package:inventree/widget/part_notes.dart';
 import 'package:inventree/widget/progress.dart';
 import 'package:inventree/inventree/part.dart';
@@ -30,6 +31,10 @@ class PartDetailWidget extends StatefulWidget {
 
 
 class _PartDisplayState extends RefreshableState<PartDetailWidget> {
+
+  InvenTreePart part;
+
+  _PartDisplayState(this.part);
 
   @override
   String getAppBarTitle(BuildContext context) => L10().partDetails;
@@ -63,15 +68,9 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     return actions;
   }
 
-  _PartDisplayState(this.part) {
-    // TODO
-  }
-
   Future<void> _openInvenTreePage() async {
     part.goToInvenTreePage();
   }
-
-  InvenTreePart part;
 
   @override
   Future<void> onBuild(BuildContext context) async {
@@ -346,6 +345,22 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => PartNotesWidget(part))
+          );
+        },
+      )
+    );
+
+    tiles.add(
+      ListTile(
+        title: Text(L10().attachments),
+        leading: FaIcon(FontAwesomeIcons.fileAlt, color: COLOR_CLICK),
+        trailing: Text(""),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PartAttachmentsWidget(part)
+            )
           );
         },
       )
