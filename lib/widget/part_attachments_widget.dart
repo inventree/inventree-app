@@ -26,6 +26,8 @@ class _PartAttachmentDisplayState extends RefreshableState<PartAttachmentsWidget
 
   final InvenTreePart part;
 
+  List<InvenTreePartAttachment> attachments = [];
+
   @override
   String getAppBarTitle(BuildContext context) => L10().attachments;
 
@@ -48,7 +50,22 @@ class _PartAttachmentDisplayState extends RefreshableState<PartAttachmentsWidget
 
   @override
   Future<void> request() async {
-    // TODO - Request part attachments from the server
+
+    await InvenTreePartAttachment().list(
+      filters: {
+        "part": "${part.pk}"
+      }
+    ).then((var results) {
+
+      attachments.clear();
+
+      for (var result in results) {
+        if (result is InvenTreePartAttachment) {
+          attachments.add(result);
+        }
+      }
+    });
+
   }
 
   @override
@@ -67,6 +84,24 @@ class _PartAttachmentDisplayState extends RefreshableState<PartAttachmentsWidget
   List<Widget> attachmentTiles(BuildContext context) {
 
     List<Widget> tiles = [];
+
+    for (var attachment in attachments) {
+      tiles.add(ListTile(
+        title: Text(attachment.filename),
+        subtitle: Text(attachment.comment),
+        leading: FaIcon(attachment.icon),
+      ));
+    }
+
+    if (tiles.length == 0) {
+      tiles.add(ListTile(
+        title: Text(L10().attachmentNone),
+        subtitle: Text(
+            L10().attachmentNonePartDetail,
+            style: TextStyle(fontStyle: FontStyle.italic),
+        ),
+      ));
+    }
 
     return tiles;
 
