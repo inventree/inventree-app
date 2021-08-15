@@ -1,10 +1,15 @@
 
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:inventree/inventree/part.dart';
 import 'package:inventree/widget/refreshable_state.dart';
+import 'package:inventree/widget/snacks.dart';
+
+import 'dart:io';
 
 import '../api.dart';
 import '../l10.dart';
@@ -36,16 +41,82 @@ class _PartAttachmentDisplayState extends RefreshableState<PartAttachmentsWidget
 
     List<Widget> actions = [];
 
-    if (false && InvenTreeAPI().checkPermission('part', 'change')) {
+    if (InvenTreeAPI().checkPermission('part', 'change')) {
+
+      // File upload
       actions.add(
         IconButton(
-          icon: FaIcon(FontAwesomeIcons.plus),
-          onPressed: null,
+          icon: FaIcon(FontAwesomeIcons.fileUpload),
+          onPressed: uploadFile,
+        )
+      );
+
+      // Upload from camera
+      actions.add(
+        IconButton(
+          icon: FaIcon(FontAwesomeIcons.camera),
+          onPressed: uploadFromCamera,
         )
       );
     }
 
     return actions;
+  }
+
+  Future<void> upload(File file) async {
+    final bool result = await InvenTreePartAttachment().uploadAttachment(
+      file,
+      fields: {
+        "part": "${part.pk}"
+      }
+    );
+
+    if (result) {
+      showSnackIcon(L10().uploadSuccess, success: true);
+    } else {
+      showSnackIcon(L10().uploadFailed, success: false);
+    }
+
+    refresh();
+
+  }
+
+  /*
+   * Select a file from the device to upload
+   */
+  Future<void> uploadFile() async {
+
+    final FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+
+      String? path = result.files.single.path;
+
+      if (path != null) {
+        File attachment = File(path);
+
+        upload(attachment);
+      }
+    }
+
+  }
+
+  /*
+   * Upload an attachment by taking a new picture with the built in device camera
+   */
+  Future<void> uploadFromCamera() async {
+
+
+    final picker = ImagePicker();
+
+    final pickedImage = await picker.getImage(source: ImageSource.camera);
+
+    if (pickedImage != null) {
+      File? attachment = File(pickedImage.path);
+      upload(attachment);
+    }
+
+    refresh();
   }
 
   @override

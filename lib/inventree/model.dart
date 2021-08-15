@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:inventree/api.dart';
@@ -8,6 +9,7 @@ import 'package:inventree/widget/dialogs.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:path/path.dart' as path;
+import 'package:http/http.dart' as http;
 
 import '../l10.dart';
 import '../api_form.dart';
@@ -506,6 +508,24 @@ class InvenTreeAttachment extends InvenTreeModel {
   }
 
   InvenTreeAttachment.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+
+  Future<bool> uploadAttachment(File attachment, {String comment = "", Map<String, String> fields = const {}}) async {
+
+    final http.StreamedResponse response = await InvenTreeAPI().uploadFile(
+        URL,
+        attachment,
+        method: 'POST',
+        name: 'attachment',
+        fields: fields
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
 }
 
 
