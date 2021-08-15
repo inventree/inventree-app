@@ -109,6 +109,16 @@ class InvenTreeStockItem extends InvenTreeModel {
   String WEB_URL = "stock/item/";
 
   @override
+  Map<String, dynamic> formFields() {
+    return {
+      "part": {},
+      "location": {},
+      "status": {},
+      "quantity": {},
+    };
+  }
+
+  @override
   Map<String, String> defaultGetFilters() {
 
     var headers = new Map<String, String>();

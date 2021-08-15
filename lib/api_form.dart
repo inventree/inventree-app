@@ -154,6 +154,9 @@ class APIFormField {
         return _constructBoolean();
       case "related field":
         return _constructRelatedField();
+      case "float":
+      case "decimal":
+        return _constructFloatField();
       case "choice":
         return _constructChoiceField();
       default:
@@ -201,6 +204,34 @@ class APIFormField {
         }
       }
     );
+  }
+
+  // Construct a floating point numerical input field
+  Widget _constructFloatField() {
+
+    return TextFormField(
+      decoration: InputDecoration(
+        labelText: required ? label + "*" : label,
+        labelStyle: _labelStyle(),
+        helperText: helpText,
+        helperStyle: _helperStyle(),
+        hintText: placeholderText,
+      ),
+      initialValue: (value ?? 0).toString(),
+      keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
+      validator: (value) {
+
+        double? quantity = double.tryParse(value.toString()) ?? null;
+
+        if (quantity == null) {
+          return L10().numberInvalid;
+        }
+      },
+      onSaved: (val) {
+        data["value"] = val;
+      },
+    );
+
   }
 
   // Construct an input for a related field

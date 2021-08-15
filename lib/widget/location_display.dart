@@ -163,7 +163,31 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
   Future<void> _newStockItem(BuildContext context) async {
 
-    // TODO
+    int pk = location?.pk ?? -1;
+
+    if (pk <= 0) {
+      return;
+    }
+
+    InvenTreeStockItem().createForm(
+      context,
+      L10().stockItemCreate,
+      data: {
+        "location": pk,
+      },
+      onSuccess: (data) async {
+        if (data.containsKey("pk")) {
+          var item = InvenTreeStockItem.fromJson(data);
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => StockDetailWidget(item)
+            )
+          );
+        }
+      }
+    );
 
   }
 
@@ -316,6 +340,17 @@ List<Widget> detailTiles() {
           leading: FaIcon(FontAwesomeIcons.sitemap, color: COLOR_CLICK),
           onTap: () async {
             _newLocation(context);
+          },
+        )
+      );
+
+      tiles.add(
+        ListTile(
+          title: Text(L10().stockItemCreate),
+          subtitle: Text(L10().stockItemCreateDetail),
+          leading: FaIcon(FontAwesomeIcons.boxes, color: COLOR_CLICK),
+          onTap: () async {
+            _newStockItem(context);
           },
         )
       );
