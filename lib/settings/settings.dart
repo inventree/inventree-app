@@ -9,6 +9,7 @@ import 'package:inventree/widget/dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:inventree/l10.dart';
+import 'package:inventree/widget/submit_feedback.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
@@ -129,43 +130,14 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
     });
   }
 
-  void _sendReport(BuildContext context, String message) async {
-    bool result = await sentryReportMessage(message);
-
-    if (result) {
-      showSnackIcon(
-        L10().feedbackSuccess,
-        success: true,
-      );
-    } else {
-      showSnackIcon(
-        L10().feedbackError,
-        success: false,
-      );
-    }
-  }
-
   void _submitFeedback(BuildContext context) async {
 
-    TextEditingController _controller = TextEditingController();
-
-    _controller.clear();
-
-    showFormDialog(
-      L10().submitFeedback,
-      key: _feedbackKey,
-      callback: () {
-        _sendReport(context, _controller.text);
-      },
-      fields: <Widget>[
-        TextField(
-          decoration: InputDecoration(
-          ),
-          keyboardType: TextInputType.multiline,
-          maxLines: null,
-          controller: _controller
-        )
-      ]
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SubmitFeedbackWidget(),
+      )
     );
   }
+
 }
