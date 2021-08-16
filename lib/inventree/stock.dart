@@ -17,6 +17,20 @@ class InvenTreeStockItemTestResult extends InvenTreeModel {
   @override
   String get URL => "stock/test/";
 
+  @override
+  Map<String, dynamic> formFields() {
+    return {
+      "stock_item": {
+        "hidden": true
+      },
+      "test": {},
+      "result": {},
+      "value": {},
+      "notes": {},
+      "attachment": {},
+    };
+  }
+
   String get key => jsondata['key'] ?? '';
 
   String get testName => jsondata['test'] ?? '';
@@ -188,39 +202,6 @@ class InvenTreeStockItem extends InvenTreeModel {
         }
       }
     });
-  }
-
-  Future<bool> uploadTestResult(BuildContext context, String testName, bool result, {String? value, String? notes, File? attachment}) async {
-
-    Map<String, String> data = {
-      "stock_item": pk.toString(),
-      "test": testName,
-      "result": result.toString(),
-    };
-
-    if (value != null && value.isNotEmpty) {
-      data["value"] = value;
-    }
-
-    if (notes != null && notes.isNotEmpty) {
-      data["notes"] = notes;
-    }
-
-    /*
-     * Upload is performed in different ways, depending if an attachment is provided.
-     * TODO: Is there a nice way to refactor this one?
-     */
-    if (attachment == null) {
-      var _result = await InvenTreeStockItemTestResult().create(data);
-
-      return (_result != null) && (_result is InvenTreeStockItemTestResult);
-    } else {
-      var url = InvenTreeStockItemTestResult().URL;
-      http.StreamedResponse _uploadResponse = await InvenTreeAPI().uploadFile(url, attachment, fields: data);
-
-      // Check that the HTTP status code is HTTP_201_CREATED
-      return _uploadResponse.statusCode == 201;
-    }
   }
 
   String get uid => jsondata['uid'] ?? '';

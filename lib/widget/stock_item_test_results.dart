@@ -1,3 +1,4 @@
+import 'package:inventree/api_form.dart';
 import 'package:inventree/app_colors.dart';
 import 'package:inventree/inventree/part.dart';
 import 'package:inventree/inventree/stock.dart';
@@ -46,73 +47,19 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
 
   _StockItemTestResultDisplayState(this.item);
 
-  void uploadTestResult(String name, bool result, String value, String notes, File? attachment) async {
+  void addTestResult(BuildContext context, {String name = '', bool nameIsEditable = true, bool result = false, String value = '', bool valueRequired = false, bool attachmentRequired = false}) async  {
 
-    final success = await item.uploadTestResult(
-      context, name, result,
-      value: value,
-      notes: notes,
-      attachment: attachment
-    );
-
-    showSnackIcon(
-      success ? L10().testResultUploadPass : L10().testResultUploadFail,
-      success: success
-    );
-
-    refresh();
-  }
-
-  void addTestResult({String name = '', bool nameIsEditable = true, bool result = false, String value = '', bool valueRequired = false, bool attachmentRequired = false}) async  {
-
-    String _name = "";
-    bool _result = false;
-    String _value = "";
-    String _notes = "";
-    File? _attachment;
-
-    showFormDialog(L10().testResultAdd,
-      key: _addResultKey,
-      callback: () {
-        uploadTestResult(_name, _result, _value, _notes, _attachment);
+    InvenTreeStockItemTestResult().createForm(
+      context,
+      L10().testResultAdd,
+      data: {
+        "stock_item": "${item.pk}",
+        "test": "${name}",
       },
-      fields: <Widget>[
-        StringField(
-          label: L10().testName,
-          initial: name,
-          isEnabled: nameIsEditable,
-          onSaved: (value) => _name = value ?? '',
-        ),
-        CheckBoxField(
-          label: L10().result,
-          helperText: L10().testPassedOrFailed,
-          initial: true,
-          onSaved: (value) => _result = value ?? false,
-        ),
-        StringField(
-          label: L10().value,
-          initial: value,
-          allowEmpty: true,
-          onSaved: (value) => _value = value ?? '',
-          validator: (String value) {
-            if (valueRequired && value.isEmpty) {
-              return L10().valueRequired;
-            }
-            return null;
-          },
-        ),
-        ImagePickerField(
-          context,
-          label: L10().attachImage,
-          required: attachmentRequired,
-          onSaved: (attachment) => _attachment = attachment,
-        ),
-        StringField(
-          allowEmpty: true,
-          label: L10().notes,
-          onSaved: (value) => _notes = value ?? '',
-        ),
-      ]
+      onSuccess: (data) {
+        refresh();
+      },
+      fileField: "attachment",
     );
   }
 
@@ -274,29 +221,12 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
     );
   }
 
-  /*
-  List<SpeedDialChild> actionButtons() {
-
-    var buttons = List<SpeedDialChild>();
-
-    buttons.add(SpeedDialChild(
-      child: Icon(FontAwesomeIcons.plusCircle),
-      label: L10().testResultAdd,
-      onTap: () {
-        addTestResult();
-      },
-    ));
-
-    return buttons;
-  }
-   */
-
   @override
   Widget getFab(BuildContext context) {
     return FloatingActionButton(
       child: Icon(FontAwesomeIcons.plus),
       onPressed: () {
-        addTestResult();
+        addTestResult(context);
       },
     );
   }

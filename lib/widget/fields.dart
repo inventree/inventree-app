@@ -56,7 +56,7 @@ class FilePickerDialog {
   }
 
   // Present a dialog to pick a file, either from local file system or from camera
-  static Future<void> pickFile({bool allowImages = true, bool allowFiles = true, Function(File)? onPicked}) async {
+  static Future<void> pickFile({String message = "", bool allowImages = true, bool allowFiles = true, Function(File)? onPicked}) async {
 
     String title = "";
 
@@ -67,7 +67,17 @@ class FilePickerDialog {
     }
 
     // Construct actions
-    List<Widget> actions = [];
+    List<Widget> actions = [
+
+    ];
+
+    if (message.isNotEmpty) {
+      actions.add(
+        ListTile(
+          title: Text(message)
+        )
+      );
+    }
 
     actions.add(
       SimpleDialogOption(
@@ -129,87 +139,6 @@ class FilePickerDialog {
     );
   }
 
-}
-
-
-/*
- * Form field for selecting an image file,
- * either from the gallery, or from the camera.
- */
-class ImagePickerField extends FormField<File> {
-
-  static void _selectFromGallery(FormFieldState<File> field) {
-    _getImageFromGallery(field);
-  }
-
-  static void _selectFromCamera(FormFieldState<File> field) {
-    _getImageFromCamera(field);
-  }
-
-  static Future<void> _getImageFromGallery(FormFieldState<File> field) async {
-
-    final picker = ImagePicker();
-
-    final pickedImage = await picker.getImage(source: ImageSource.gallery);
-
-    if (pickedImage != null)
-    {
-      field.didChange(File(pickedImage.path));
-    }
-  }
-
-  static Future<void> _getImageFromCamera(FormFieldState<File> field) async {
-
-    final picker = ImagePicker();
-
-    final pickedImage = await picker.getImage(source: ImageSource.camera);
-
-    if (pickedImage != null)
-    {
-        field.didChange(File(pickedImage.path));
-    }
-
-  }
-
-  ImagePickerField(BuildContext context, {String? label, Function(File?)? onSaved, bool required = false}) :
-      super(
-        onSaved: onSaved,
-        validator: (File? img) {
-          if (required && (img == null)) {
-            return L10().required;
-          }
-
-          return null;
-        },
-        builder: (FormFieldState<File> state) {
-
-          String _label = label ?? L10().attachImage;
-
-          return InputDecorator(
-            decoration: InputDecoration(
-              errorText: state.errorText,
-              labelText: required ? _label + "*" : _label,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                TextButton(
-                  child: Text(L10().selectImage),
-                  onPressed: () {
-                    _selectFromGallery(state);
-                  },
-                ),
-                TextButton(
-                  child: Text(L10().takePicture),
-                  onPressed: () {
-                    _selectFromCamera(state);
-                  },
-                )
-              ],
-            ),
-          );
-        }
-      );
 }
 
 
