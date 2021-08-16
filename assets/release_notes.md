@@ -6,6 +6,8 @@
 
 - Improved profile selection screen
 - Fixed a number of incorrect labels
+- Refactor test result upload functionality
+- Refactor file selection and upload functions
 
 ### 0.4.5 - August 2021
 ---
