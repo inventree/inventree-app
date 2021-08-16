@@ -1,3 +1,3 @@
 [submodule "lib/l10n"]
 	path = lib/l10n
-	url = git@github.com:SchrodingersGat/inventreeapp.git
+	url = git@github.com:inventree/inventree-app-i18n.git

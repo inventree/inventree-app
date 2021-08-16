@@ -318,7 +318,10 @@ List<Widget> detailTiles() {
     } else {
       tiles.add(ListTile(
         title: Text(L10().sublocationNone),
-        subtitle: Text(L10().sublocationNoneDetail)
+        subtitle: Text(
+            L10().sublocationNoneDetail,
+            style: TextStyle(fontStyle: FontStyle.italic)
+        )
       ));
     }
 

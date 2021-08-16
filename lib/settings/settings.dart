@@ -1,10 +1,7 @@
 import 'package:inventree/app_colors.dart';
-import 'package:inventree/inventree/sentry.dart';
 import 'package:inventree/settings/about.dart';
 import 'package:inventree/settings/app_settings.dart';
 import 'package:inventree/settings/login.dart';
-import 'package:inventree/widget/snacks.dart';
-import 'package:inventree/widget/dialogs.dart';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -29,7 +26,6 @@ class InvenTreeSettingsWidget extends StatefulWidget {
 class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  final _feedbackKey = GlobalKey<FormState>();
 
   final String docsUrl = "https://inventree.readthedocs.io/en/latest/app/app/";
 
