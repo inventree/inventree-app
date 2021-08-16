@@ -356,19 +356,14 @@ class InvenTreePart extends InvenTreeModel {
 
     Future<bool> uploadImage(File image) async {
       // Upload file against this part
-      final http.StreamedResponse response = await InvenTreeAPI().uploadFile(
+      final APIResponse response = await InvenTreeAPI().uploadFile(
         url,
         image,
         method: 'PATCH',
         name: 'image',
       );
 
-      if (response.statusCode != 200) {
-        print("uploadImage returned ${response.statusCode} at '${url}'");
-        return false;
-      }
-
-      return true;
+      return response.successful();
     }
 
     // Return the "starred" status of this part

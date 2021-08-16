@@ -73,7 +73,7 @@ class InvenTreeModel {
     return {};
   }
 
-  Future<void> createForm(BuildContext context, String title, {Map<String, dynamic> fields=const{}, Map<String, dynamic> data=const {}, Function(dynamic)? onSuccess}) async {
+  Future<void> createForm(BuildContext context, String title, {String fileField = "", Map<String, dynamic> fields=const{}, Map<String, dynamic> data=const {}, Function(dynamic)? onSuccess}) async {
 
     if (fields.isEmpty) {
       fields = formFields();
@@ -87,6 +87,7 @@ class InvenTreeModel {
       modelData: data,
       onSuccess: onSuccess,
       method: "POST",
+      fileField: fileField,
     );
 
   }
@@ -511,7 +512,7 @@ class InvenTreeAttachment extends InvenTreeModel {
 
   Future<bool> uploadAttachment(File attachment, {String comment = "", Map<String, String> fields = const {}}) async {
 
-    final http.StreamedResponse response = await InvenTreeAPI().uploadFile(
+    final APIResponse response = await InvenTreeAPI().uploadFile(
         URL,
         attachment,
         method: 'POST',
@@ -519,11 +520,7 @@ class InvenTreeAttachment extends InvenTreeModel {
         fields: fields
     );
 
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      return true;
-    } else {
-      return false;
-    }
+    return response.successful();
   }
 
   Future<void> downloadAttachment() async {

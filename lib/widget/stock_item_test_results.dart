@@ -244,6 +244,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
         trailing: _icon,
         onLongPress: () {
           addTestResult(
+              context,
               name: _test,
               nameIsEditable: !_required,
               valueRequired: _valueRequired,

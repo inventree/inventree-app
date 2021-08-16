@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'dart:io';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -6,6 +7,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:inventree/api.dart';
 import 'package:inventree/app_colors.dart';
 import 'package:inventree/inventree/part.dart';
+import 'package:inventree/inventree/sentry.dart';
 import 'package:inventree/inventree/stock.dart';
 import 'package:inventree/widget/dialogs.dart';
 import 'package:inventree/widget/fields.dart';
@@ -25,6 +27,9 @@ class APIFormField {
 
   // Constructor
   APIFormField(this.name, this.data);
+
+  // File to be uploaded for this filed
+  File? attachedfile;
 
   // Name of this field
   final String name;
@@ -159,6 +164,9 @@ class APIFormField {
         return _constructFloatField();
       case "choice":
         return _constructChoiceField();
+      case "file upload":
+      case "image upload":
+        return _constructFileField();
       default:
         return ListTile(
           title: Text(
@@ -171,6 +179,44 @@ class APIFormField {
     }
   }
 
+  // Field for selecting and uploading files
+  Widget _constructFileField() {
+
+    TextEditingController controller = new TextEditingController();
+
+    controller.text = (attachedfile?.path ?? L10().attachmentSelect).split("/").last;
+
+    return InputDecorator(
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+      ),
+      child: ListTile(
+        title: TextField(
+          readOnly: true,
+          controller: controller,
+        ),
+        trailing: IconButton(
+          icon: FaIcon(FontAwesomeIcons.plusCircle),
+          onPressed: () async {
+            FilePickerDialog.pickFile(
+              message: L10().attachmentSelect,
+              onPicked: (file) {
+                print("${file.path}");
+                // Display the filename
+                controller.text = file.path.split("/").last;
+
+                // Save the file
+                attachedfile = file;
+              }
+            );
+          },
+        )
+      )
+    );
+  }
+
+  // Field for selecting from multiple choice options
   Widget _constructChoiceField() {
 
     dynamic _initial;
@@ -478,7 +524,7 @@ Map<String, dynamic> extractFields(APIResponse response) {
  * @param method is the HTTP method to use to send the form data to the server (e.g. POST / PATCH)
  */
 
-Future<void> launchApiForm(BuildContext context, String title, String url, Map<String, dynamic> fields, {Map<String, dynamic> modelData = const {}, String method = "PATCH", Function(Map<String, dynamic>)? onSuccess, Function? onCancel}) async {
+Future<void> launchApiForm(BuildContext context, String title, String url, Map<String, dynamic> fields, {String fileField = "", Map<String, dynamic> modelData = const {}, String method = "PATCH", Function(Map<String, dynamic>)? onSuccess, Function? onCancel}) async {
 
   var options = await InvenTreeAPI().options(url);
 
@@ -508,6 +554,14 @@ Future<void> launchApiForm(BuildContext context, String title, String url, Map<S
     // Check that the field is actually available at the API endpoint
     if (!availableFields.containsKey(fieldName)) {
       print("Field '${fieldName}' not available at '${url}'");
+
+      sentryReportMessage(
+        "API form called with unknown field '${fieldName}'",
+        context: {
+          "url": url.toString(),
+        }
+      );
+
       continue;
     }
 
@@ -563,6 +617,7 @@ Future<void> launchApiForm(BuildContext context, String title, String url, Map<S
         formFields,
         method,
         onSuccess: onSuccess,
+        fileField: fileField,
     ))
   );
 }
@@ -579,6 +634,8 @@ class APIFormWidget extends StatefulWidget {
   //! API method
   final String method;
 
+  final String fileField;
+
   final List<APIFormField> fields;
 
   Function(Map<String, dynamic>)? onSuccess;
@@ -591,11 +648,12 @@ class APIFormWidget extends StatefulWidget {
       {
         Key? key,
         this.onSuccess,
+        this.fileField = "",
       }
   ) : super(key: key);
 
   @override
-  _APIFormWidgetState createState() => _APIFormWidgetState(title, url, fields, method, onSuccess);
+  _APIFormWidgetState createState() => _APIFormWidgetState(title, url, fields, method, onSuccess, fileField);
 
 }
 
@@ -610,11 +668,13 @@ class _APIFormWidgetState extends State<APIFormWidget> {
 
   String method;
 
+  String fileField;
+
   List<APIFormField> fields;
 
   Function(Map<String, dynamic>)? onSuccess;
 
-  _APIFormWidgetState(this.title, this.url, this.fields, this.method, this.onSuccess) : super();
+  _APIFormWidgetState(this.title, this.url, this.fields, this.method, this.onSuccess, this.fileField) : super();
 
   bool spacerRequired = false;
 
@@ -677,6 +737,32 @@ class _APIFormWidgetState extends State<APIFormWidget> {
   }
 
   Future<APIResponse> _submit(Map<String, String> data) async {
+
+
+    // If a file upload is required, we have to handle the submission differently
+    if (fileField.isNotEmpty) {
+
+      // Pop the "file" field
+      data.remove(fileField);
+
+      for (var field in fields) {
+        if (field.name == fileField) {
+
+          File? file = field.attachedfile;
+
+          if (file != null) {
+
+            // A valid file has been supplied
+            return await InvenTreeAPI().uploadFile(
+              url,
+              file,
+              name: fileField,
+              fields: data,
+            );
+          }
+        }
+      }
+    }
 
     if (method == "POST") {
       return await InvenTreeAPI().post(
