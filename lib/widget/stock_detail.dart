@@ -617,6 +617,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       return tiles;
     }
 
+    // "Count" is not available for serialized stock
     if (!item.isSerialized()) {
       tiles.add(
           ListTile(
