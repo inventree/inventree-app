@@ -101,8 +101,6 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
       return;
     }
 
-
-
     _reload();
 
     if (InvenTreeAPI().isConnected() && InvenTreeAPI().profile != null && profile.key == (InvenTreeAPI().profile?.key ?? '')) {
@@ -231,6 +229,14 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
       key: _loginKey,
       appBar: AppBar(
         title: Text(L10().profileSelect),
+        actions: [
+          IconButton(
+            icon: FaIcon(FontAwesomeIcons.plusCircle),
+            onPressed: () {
+              _editProfile(context, createNew: true);
+            },
+          )
+        ],
       ),
       body: Container(
         child: ListView(
@@ -240,12 +246,6 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
           ).toList(),
         )
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(FontAwesomeIcons.plus),
-        onPressed: () {
-          _editProfile(context, createNew: true);
-        },
-      )
     );
   }
 }
