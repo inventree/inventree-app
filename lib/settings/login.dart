@@ -179,14 +179,20 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
                           Navigator.of(context).pop();
                           _selectProfile(context, profile);
                         },
-                        child: Text(L10().profileConnect),
+                        child: ListTile(
+                          title: Text(L10().profileConnect),
+                          leading: FaIcon(FontAwesomeIcons.server),
+                        )
                       ),
                       SimpleDialogOption(
                         onPressed: () {
                           Navigator.of(context).pop();
                           _editProfile(context, userProfile: profile);
                         },
-                        child: Text(L10().profileEdit),
+                        child: ListTile(
+                          title: Text(L10().profileEdit),
+                          leading: FaIcon(FontAwesomeIcons.edit)
+                        )
                       ),
                       SimpleDialogOption(
                         onPressed: () {
@@ -200,7 +206,10 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
                               }
                           );
                         },
-                        child: Text(L10().profileDelete),
+                        child: ListTile(
+                          title: Text(L10().profileDelete),
+                          leading: FaIcon(FontAwesomeIcons.trashAlt),
+                        )
                       )
                     ],
                   );
