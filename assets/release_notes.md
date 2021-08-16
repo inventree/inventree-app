@@ -1,6 +1,12 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.4.6 - August 2021
+---
+
+- Improved profile selection screen
+- Fixed a number of incorrect labels
+
 ### 0.4.5 - August 2021
 ---
 

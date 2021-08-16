@@ -51,104 +51,14 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
       profile = userProfile;
     }
 
-    showFormDialog(
-      createNew ? L10().profileAdd : L10().profileEdit,
-      key: _addProfileKey,
-      callback: () {
-          if (createNew) {
-
-            UserProfile profile = UserProfile(
-              name: _name,
-              server: _server,
-              username: _username,
-              password: _password
-            );
-
-            _addProfile(profile);
-          } else {
-
-            profile?.name = _name;
-            profile?.server = _server;
-            profile?.username = _username;
-            profile?.password = _password;
-
-            _updateProfile(profile);
-
-          }
-      },
-      fields: <Widget> [
-        StringField(
-          label: L10().name,
-          hint: "Enter profile name",
-          initial: createNew ? '' : profile?.name ?? '',
-          onSaved: (value) => _name = value,
-          validator: _validateProfileName,
-        ),
-        StringField(
-          label: L10().server,
-          hint: "http[s]://<server>:<port>",
-          initial: createNew ? '' : profile?.server ?? '',
-          validator: _validateServer,
-          onSaved: (value) => _server = value,
-        ),
-        StringField(
-          label: L10().username,
-          hint: L10().enterPassword,
-          initial: createNew ? '' : profile?.username ?? '',
-          onSaved: (value) => _username = value,
-          validator: _validateUsername,
-        ),
-        StringField(
-          label: L10().password,
-          hint: L10().enterUsername,
-          initial: createNew ? '' : profile?.password ?? '',
-          onSaved: (value) => _password = value,
-          validator: _validatePassword,
-        )
-      ]
-    );
-  }
-
-  String? _validateProfileName(String value) {
-
-    if (value.isEmpty) {
-      return 'Profile name cannot be empty';
-    }
-
-    // TODO: Check if a profile already exists with ths name
-
-    return null;
-  }
-
-  String? _validateServer(String value) {
-
-    if (value.isEmpty) {
-      return L10().serverEmpty;
-    }
-
-    if (!value.startsWith("http:") && !value.startsWith("https:")) {
-      return L10().serverStart;
-    }
-
-    // TODO: URL validator
-
-    return null;
-  }
-
-  String? _validateUsername(String value) {
-    if (value.isEmpty) {
-      return L10().usernameEmpty;
-    }
-
-    return null;
-  }
-
-  String? _validatePassword(String value) {
-    if (value.isEmpty) {
-      return L10().passwordEmpty;
-    }
-
-    return null;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProfileEditWidget(userProfile)
+      )
+    ).then((context) {
+      _reload();
+    });
   }
 
   void _selectProfile(BuildContext context, UserProfile profile) async {
@@ -191,7 +101,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
       return;
     }
 
-    await UserProfileDBManager().updateProfile(profile);
+
 
     _reload();
 
@@ -204,12 +114,6 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     }
   }
 
-  void _addProfile(UserProfile profile) async {
-
-    await UserProfileDBManager().addProfile(profile);
-
-    _reload();
-  }
 
   Widget? _getProfileIcon(UserProfile profile) {
 
@@ -335,4 +239,183 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
       )
     );
   }
+}
+
+
+class ProfileEditWidget extends StatefulWidget {
+
+  UserProfile? profile;
+
+  ProfileEditWidget(this.profile) : super();
+
+  @override
+  _ProfileEditState createState() => _ProfileEditState(profile);
+}
+
+class _ProfileEditState extends State<ProfileEditWidget> {
+
+  UserProfile? profile;
+
+  _ProfileEditState(this.profile) : super();
+
+  final formKey = new GlobalKey<FormState>();
+
+  String name = "";
+  String server = "";
+  String username = "";
+  String password = "";
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(profile == null ? L10().profileAdd : L10().profileEdit),
+        actions: [
+          IconButton(
+            icon: FaIcon(FontAwesomeIcons.save),
+            onPressed: () async {
+              if (formKey.currentState!.validate()) {
+                formKey.currentState!.save();
+
+                UserProfile? prf = profile;
+
+                if (prf == null) {
+                  UserProfile profile = UserProfile(
+                    name: name,
+                    server: server,
+                    username: username,
+                    password: password,
+                  );
+
+                  await UserProfileDBManager().addProfile(profile);
+                } else {
+
+                  prf.name = name;
+                  prf.server = server;
+                  prf.username = username;
+                  prf.password = password;
+
+                  await UserProfileDBManager().updateProfile(prf);
+                }
+
+                // Close the window
+                Navigator.of(context).pop();
+              }
+            },
+          )
+        ]
+      ),
+      body: Form(
+        key: formKey,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: L10().profileName,
+                  labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                initialValue: profile?.name ?? "",
+                maxLines: 1,
+                keyboardType: TextInputType.text,
+                onSaved: (value) {
+                  name = value?.trim() ?? "";
+                },
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return L10().valueCannotBeEmpty;
+                  }
+                }
+              ),
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: L10().server,
+                  labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                  hintText: "http[s]://<server>:<port>",
+                ),
+                initialValue: profile?.server ?? "",
+                keyboardType: TextInputType.url,
+                onSaved: (value) {
+                  server = value?.trim() ?? "";
+                },
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return L10().serverEmpty;
+                  }
+
+                  value = value.trim();
+
+                  // Spaces are bad
+                  if (value.contains(" ")) {
+                    return L10().invalidHost;
+                  }
+
+                  if (!value.startsWith("http:") && !value.startsWith("https:")) {
+                    // return L10().serverStart;
+                  }
+
+                  Uri? _uri = Uri.tryParse(value);
+
+                  if (_uri == null || _uri.host.isEmpty) {
+                    return L10().invalidHost;
+                  } else {
+                    Uri uri = Uri.parse(value);
+
+                    if (uri.hasScheme) {
+                      print("Scheme: ${uri.scheme}");
+                      if (!(["http", "https"].contains(uri.scheme.toLowerCase()))) {
+                        return L10().serverStart;
+                      }
+                    } else {
+                      return L10().invalidHost;
+                    }
+                  }
+                },
+              ),
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: L10().username,
+                  labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                  hintText: L10().enterUsername
+                ),
+                initialValue: profile?.username ?? "",
+                keyboardType: TextInputType.text,
+                onSaved: (value) {
+                  username = value?.trim() ?? "";
+                },
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return L10().usernameEmpty;
+                  }
+                },
+              ),
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: L10().password,
+                  labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                  hintText: L10().enterPassword,
+                ),
+                initialValue: profile?.password ?? "",
+                keyboardType: TextInputType.visiblePassword,
+                obscureText: true,
+                onSaved: (value) {
+                  password = value ?? "";
+                },
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return L10().passwordEmpty;
+                  }
+                }
+              )
+            ]
+          ),
+          padding: EdgeInsets.all(16),
+        ),
+      )
+    );
+  }
+
 }
