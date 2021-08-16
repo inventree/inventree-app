@@ -616,6 +616,8 @@ class _APIFormWidgetState extends State<APIFormWidget> {
 
   _APIFormWidgetState(this.title, this.url, this.fields, this.method, this.onSuccess) : super();
 
+  bool spacerRequired = false;
+
   List<Widget> _buildForm() {
 
     List<Widget> widgets = [];
@@ -624,6 +626,18 @@ class _APIFormWidgetState extends State<APIFormWidget> {
 
       if (field.hidden) {
         continue;
+      }
+
+      // Add divider before some widgets
+      if (spacerRequired) {
+        switch (field.type) {
+          case "related field":
+          case "choice":
+            widgets.add(Divider(height: 15));
+            break;
+          default:
+            break;
+        }
       }
 
       widgets.add(field.constructField());
@@ -649,9 +663,11 @@ class _APIFormWidgetState extends State<APIFormWidget> {
       switch (field.type) {
         case "related field":
         case "choice":
-          widgets.add(Divider(height: 10));
+          widgets.add(Divider(height: 15));
+          spacerRequired = false;
           break;
         default:
+          spacerRequired = true;
           break;
       }
 
