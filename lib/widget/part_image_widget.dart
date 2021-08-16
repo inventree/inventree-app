@@ -9,6 +9,7 @@ import 'package:inventree/api.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:inventree/inventree/part.dart';
+import 'package:inventree/widget/fields.dart';
 import 'package:inventree/widget/refreshable_state.dart';
 import 'package:inventree/widget/snacks.dart';
 
@@ -37,45 +38,6 @@ class _PartImageState extends RefreshableState<PartImageWidget> {
     await part.reload();
   }
 
-  void uploadFromGallery() async {
-
-    final picker = ImagePicker();
-
-    final pickedImage = await picker.getImage(source: ImageSource.gallery);
-
-    if (pickedImage != null) {
-      File? img = File(pickedImage.path);
-
-      final result = await part.uploadImage(img);
-
-      if (!result) {
-        showSnackIcon(L10().uploadFailed, success: false);
-      }
-
-      refresh();
-    }
-  }
-
-  void uploadFromCamera() async {
-
-    final picker = ImagePicker();
-
-    final pickedImage = await picker.getImage(source: ImageSource.camera);
-
-    if (pickedImage != null) {
-      File? img = File(pickedImage.path);
-
-      final result = await part.uploadImage(img);
-
-      if (!result) {
-        showSnackIcon(L10().uploadFailed, success: false);
-      }
-
-      refresh();
-    }
-
-  }
-
   @override
   String getAppBarTitle(BuildContext context) => part.fullname;
 
@@ -89,16 +51,22 @@ class _PartImageState extends RefreshableState<PartImageWidget> {
       // File upload
       actions.add(
         IconButton(
-          icon: FaIcon(FontAwesomeIcons.fileImage),
-          onPressed: uploadFromGallery,
-        )
-      );
+          icon: FaIcon(FontAwesomeIcons.fileUpload),
+          onPressed: () async {
 
-      // Camera upload
-      actions.add(
-        IconButton(
-          icon: FaIcon(FontAwesomeIcons.camera),
-          onPressed: uploadFromCamera,
+            FilePickerDialog.pickFile(
+              onPicked: (File file) async {
+                final result = await part.uploadImage(file);
+
+                if (!result) {
+                  showSnackIcon(L10().uploadFailed, success: false);
+                }
+
+                refresh();
+              }
+            );
+
+          },
         )
       );
     }
