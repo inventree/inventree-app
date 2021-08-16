@@ -68,6 +68,10 @@ class InvenTreeStockItem extends InvenTreeModel {
   static const int REJECTED = 65;
   static const int LOST = 70;
   static const int RETURNED = 85;
+  
+  static const List<int> STATUS_CODES = [
+    OK, ATTENTION, DAMAGED, DESTROYED, REJECTED, LOST, RETURNED
+  ];
 
   String statusLabel(BuildContext context) {
 

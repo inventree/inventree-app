@@ -10,8 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:one_context/one_context.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-import 'dsn.dart';
-
 import 'package:flutter/foundation.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
@@ -29,11 +27,11 @@ Future<void> main() async {
 
     String release = "${pkg}@${version}:${build}";
 
-    await Sentry.init((options) {
-      options.dsn = SENTRY_DSN_KEY;
-      options.release = release;
-      options.environment = isInDebugMode() ? "debug" : "release";
-    });
+    // await Sentry.init((options) {
+    //   options.dsn = SENTRY_DSN_KEY;
+    //   options.release = release;
+    //   options.environment = isInDebugMode() ? "debug" : "release";
+    // });
 
     // Pass any flutter errors off to the Sentry reporting context!
     FlutterError.onError = (FlutterErrorDetails details) async {
