@@ -144,7 +144,7 @@ class APIFormField {
       params: filters,
     );
 
-    if (response.isValid()) {
+    if (response.successful()) {
       initial_data = response.data;
     }
   }

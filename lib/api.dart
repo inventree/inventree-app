@@ -262,12 +262,7 @@ class InvenTreeAPI {
 
     response = await get("", expectedStatusCode: 200);
 
-    // Response was invalid for some reason
-    if (!response.isValid()) {
-      return false;
-    }
-
-    if (response.statusCode != 200) {
+    if (!response.successful()) {
       showStatusCodeError(response.statusCode);
       return false;
     }
@@ -319,11 +314,7 @@ class InvenTreeAPI {
     response = await get(_URL_GET_TOKEN);
 
     // Invalid response
-    if (!response.isValid()) {
-      return false;
-    }
-
-    if (response.statusCode != 200) {
+    if (!response.successful()) {
 
       switch (response.statusCode) {
         case 401:
@@ -419,7 +410,7 @@ class InvenTreeAPI {
 
     var response = await get(_URL_GET_ROLES, expectedStatusCode: 200);
 
-    if (!response.isValid() || response.statusCode != 200) {
+    if (!response.successful()) {
       return;
     }
 

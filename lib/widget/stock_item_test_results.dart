@@ -38,6 +38,18 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
   String getAppBarTitle(BuildContext context) => L10().testResults;
 
   @override
+  List<Widget> getAppBarActions(BuildContext context) {
+    return [
+      IconButton(
+          icon: FaIcon(FontAwesomeIcons.plusCircle),
+          onPressed: () {
+              addTestResult(context);
+          }
+      ),
+    ];
+  }
+
+  @override
   Future<void> request() async {
     await item.getTestTemplates();
     await item.getTestResults();
@@ -218,16 +230,6 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
         context: context,
         tiles: resultsList()
       ).toList()
-    );
-  }
-
-  @override
-  Widget getFab(BuildContext context) {
-    return FloatingActionButton(
-      child: Icon(FontAwesomeIcons.plus),
-      onPressed: () {
-        addTestResult(context);
-      },
     );
   }
 }

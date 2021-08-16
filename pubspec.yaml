@@ -28,7 +28,6 @@ dependencies:
   package_info_plus: ^1.0.4               # App information introspection
   device_info_plus: ^2.1.0                # Information about the device
   font_awesome_flutter: ^9.1.0            # FontAwesome icon set
-  flutter_speed_dial: ^3.0.5              # FAB menu elements
   sentry_flutter: 5.0.0                   # Error reporting
   image_picker: ^0.8.3                    # Select or take photos
   file_picker: ^4.0.0                     # Select files from the device
