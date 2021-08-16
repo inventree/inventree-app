@@ -211,7 +211,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       if (includeActions) {
         children.add(
             ListTile(
-              title: Text(L10().parentCategory),
+              title: Text(L10().parentLocation),
               subtitle: Text("${location!.parentpathstring}"),
               leading: FaIcon(FontAwesomeIcons.levelUpAlt, color: COLOR_CLICK),
               onTap: () {

@@ -436,16 +436,19 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       )
     );
 
-    tiles.add(
-      ListTile(
-        title: Text(L10().barcodeScanItem),
-        leading: FaIcon(FontAwesomeIcons.box),
-        trailing: FaIcon(FontAwesomeIcons.qrcode),
-        onTap: () {
-          // TODO
-        },
-      ),
-    );
+    // TODO - Add this action back in once implemented
+    if (false) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().barcodeScanItem),
+          leading: FaIcon(FontAwesomeIcons.box),
+          trailing: FaIcon(FontAwesomeIcons.qrcode),
+          onTap: () {
+            // TODO
+          },
+        ),
+      );
+    }
     
     if (false && !part.isActive && InvenTreeAPI().checkPermission('part', 'delete')) {
       tiles.add(
