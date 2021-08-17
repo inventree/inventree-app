@@ -96,8 +96,6 @@ class BarcodeHandler {
         },
         expectedStatusCode: 200);
 
-    _controller?.resumeCamera();
-
     // Handle strange response from the server
     if (!response.isValid() ||
         response.data == null ||
@@ -114,11 +112,16 @@ class BarcodeHandler {
             "error": response.error,
             "errorDetail": response.errorDetail,
           });
+      // Since other barcode handlers don't need to resume, resume the scanning here.
+      _controller?.resumeCamera();
     } else if (response.data.containsKey('error')) {
       onBarcodeUnknown(context, response.data);
     } else if (response.data.containsKey('success')) {
       onBarcodeMatched(context, response.data);
     } else {
+      // Since other barcode handlers don't need to resume, resume the scanning here.
+      _controller?.resumeCamera();
+
       onBarcodeUnhandled(context, response.data);
     }
   }
@@ -154,16 +157,18 @@ class BarcodeScanHandler extends BarcodeHandler {
         )
       ];
 
+      _controller?.pauseCamera();
       OneContext().showDialog(builder: (context) {
         return SimpleDialog(
           title: ListTile(
-            title: Text("Assign barcode"),
-            subtitle: Text("Assign barcode '${barcode_data}' options"),
-            leading: FaIcon(FontAwesomeIcons.barcode)
-          ),
+              title: Text("Assign barcode"),
+              subtitle: Text("${barcode_data}"),
+              leading: FaIcon(FontAwesomeIcons.barcode)),
           children:
               ListTile.divideTiles(context: context, tiles: children).toList(),
         );
+      }).then((val) {
+        _controller?.resumeCamera();
       });
     } else {
       failureTone();
