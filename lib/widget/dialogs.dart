@@ -184,7 +184,7 @@ Future<void> showTimeoutError() async {
   await showServerError(L10().timeout, L10().noResponse);
 }
 
-void showFormDialog(String title, {String? acceptText, String? cancelText, GlobalKey<FormState>? key, List<Widget>? fields, Function? callback}) {
+Future<T?> showFormDialog<T>(String title, {String? acceptText, String? cancelText, GlobalKey<FormState>? key, List<Widget>? fields, Function? callback}) {
 
 
   String _accept = acceptText ?? L10().save;
@@ -192,7 +192,7 @@ void showFormDialog(String title, {String? acceptText, String? cancelText, Globa
 
   List<Widget> _fields = fields ?? [];
 
-  OneContext().showDialog(
+  return OneContext().showDialog<T>(
     builder: (BuildContext context) {
       return AlertDialog(
           title: Text(title),
