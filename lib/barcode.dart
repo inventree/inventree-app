@@ -35,8 +35,6 @@ class BarcodeHandler {
 
   BarcodeHandler();
 
-  QRViewController? _controller;
-
   void successTone() async {
     final bool en = await InvenTreeSettingsManager()
         .getValue("barcodeSounds", true) as bool;
@@ -58,35 +56,41 @@ class BarcodeHandler {
   }
 
   Future<void> onBarcodeMatched(
-      BuildContext context, Map<String, dynamic> data) async {
+      BuildContext context, QRViewController? controller, Map<String, dynamic> data) async {
     // Called when the server "matches" a barcode
     // Override this function
+
+    // Resume scanning.
+    controller?.resumeCamera();
   }
 
   Future<void> onBarcodeUnknown(
-      BuildContext context, Map<String, dynamic> data) async {
+      BuildContext context, QRViewController? controller, Map<String, dynamic> data) async {
     // Called when the server does not know about a barcode
     // Override this function
     failureTone();
 
     showSnackIcon(L10().barcodeNoMatch,
         success: false, icon: FontAwesomeIcons.qrcode);
+    // Resume scanning by default.
+    controller?.resumeCamera();
   }
 
   Future<void> onBarcodeUnhandled(
-      BuildContext context, Map<String, dynamic> data) async {
+      BuildContext context, QRViewController? controller, Map<String, dynamic> data) async {
     failureTone();
 
     // Called when the server returns an unhandled response
     showServerError(L10().responseUnknown, data.toString());
-
-    _controller?.resumeCamera();
+    // Resume scanning.
+    controller?.resumeCamera();
   }
 
   Future<void> processBarcode(
-      BuildContext context, QRViewController? _controller, String barcode,
+      BuildContext context, QRViewController? controller, String barcode,
       {String url = "barcode/"}) async {
-    this._controller = _controller;
+    // Pause scanning while handling the barcode.
+    controller?.pauseCamera();
 
     print("Scanned barcode data: ${barcode}");
 
@@ -112,17 +116,14 @@ class BarcodeHandler {
             "error": response.error,
             "errorDetail": response.errorDetail,
           });
-      // Since other barcode handlers don't need to resume, resume the scanning here.
-      _controller?.resumeCamera();
+      // Resume scanning.
+      controller?.resumeCamera();
     } else if (response.data.containsKey('error')) {
-      onBarcodeUnknown(context, response.data);
+      onBarcodeUnknown(context, controller, response.data);
     } else if (response.data.containsKey('success')) {
-      onBarcodeMatched(context, response.data);
+      onBarcodeMatched(context, controller, response.data);
     } else {
-      // Since other barcode handlers don't need to resume, resume the scanning here.
-      _controller?.resumeCamera();
-
-      onBarcodeUnhandled(context, response.data);
+      onBarcodeUnhandled(context, controller, response.data);
     }
   }
 }
@@ -138,14 +139,12 @@ class BarcodeScanHandler extends BarcodeHandler {
 
   @override
   Future<void> onBarcodeUnknown(
-      BuildContext context, Map<String, dynamic> data) async {
-    String error = data.containsKey("error") ? data["error"] as String : "";
-    String barcode_data =
-        data.containsKey("barcode_data") ? data["barcode_data"] as String : "";
+      BuildContext context, QRViewController? controller, Map<String, dynamic> data) async {
+    String barcode_data = data["barcode_data"].toString();
+    String hash = data["hash"].toString();
 
-    if (error.isNotEmpty && barcode_data.isNotEmpty) {
-      successTone();
-
+    // Valid barcode but unknown so far.
+    if (barcode_data.isNotEmpty && hash.isNotEmpty) {
       var children = [
         ListTile(
           title: Text("Receive"),
@@ -157,18 +156,19 @@ class BarcodeScanHandler extends BarcodeHandler {
         )
       ];
 
-      _controller?.pauseCamera();
+      successTone();
       OneContext().showDialog(builder: (context) {
         return SimpleDialog(
           title: ListTile(
               title: Text("Assign barcode"),
-              subtitle: Text("${barcode_data}"),
+              subtitle: Text("Data: '${barcode_data}'\nHash: ${hash}"),
               leading: FaIcon(FontAwesomeIcons.barcode)),
           children:
               ListTile.divideTiles(context: context, tiles: children).toList(),
         );
       }).then((val) {
-        _controller?.resumeCamera();
+        // Resume scanning after the dialog is closed.
+        controller?.resumeCamera();
       });
     } else {
       failureTone();
@@ -178,12 +178,14 @@ class BarcodeScanHandler extends BarcodeHandler {
         icon: FontAwesomeIcons.exclamationCircle,
         success: false,
       );
+      // Resume scanning.
+      controller?.resumeCamera();
     }
   }
 
   @override
   Future<void> onBarcodeMatched(
-      BuildContext context, Map<String, dynamic> data) async {
+      BuildContext context, QRViewController? controller, Map<String, dynamic> data) async {
     int pk = -1;
 
     // A stocklocation has been passed?
@@ -281,7 +283,7 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
 
   @override
   Future<void> onBarcodeMatched(
-      BuildContext context, Map<String, dynamic> data) async {
+      BuildContext context, QRViewController? controller, Map<String, dynamic> data) async {
     failureTone();
 
     // If the barcode is known, we can't assign it to the stock item!
@@ -291,7 +293,7 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
 
   @override
   Future<void> onBarcodeUnknown(
-      BuildContext context, Map<String, dynamic> data) async {
+      BuildContext context, QRViewController? controller, Map<String, dynamic> data) async {
     // If the barcode is unknown, we *can* assign it to the stock item!
 
     if (!data.containsKey("hash")) {
@@ -336,7 +338,7 @@ class StockItemScanIntoLocationHandler extends BarcodeHandler {
 
   @override
   Future<void> onBarcodeMatched(
-      BuildContext context, Map<String, dynamic> data) async {
+      BuildContext context, QRViewController? controller, Map<String, dynamic> data) async {
     // If the barcode points to a 'stocklocation', great!
     if (data.containsKey('stocklocation')) {
       // Extract location information
@@ -393,7 +395,7 @@ class StockLocationScanInItemsHandler extends BarcodeHandler {
 
   @override
   Future<void> onBarcodeMatched(
-      BuildContext context, Map<String, dynamic> data) async {
+      BuildContext context, QRViewController? controller, Map<String, dynamic> data) async {
     // Returned barcode must match a stock item
     if (data.containsKey('stockitem')) {
       int item_id = data['stockitem']['pk'] as int;
@@ -471,7 +473,6 @@ class _QRViewState extends State<InvenTreeQRView> {
   void _onViewCreated(BuildContext context, QRViewController controller) {
     _controller = controller;
     controller.scannedDataStream.listen((barcode) {
-      _controller?.pauseCamera();
       _handler.processBarcode(context, _controller, barcode.code);
     });
   }
