@@ -2,7 +2,7 @@ import 'model.dart';
 
 class InvenTreePO extends InvenTreeModel {
   @override
-  String get URL => "po/";
+  String get URL => "order/po/";
 
   @override
   Map<String, dynamic> formFields() {
@@ -45,7 +45,7 @@ class InvenTreePO extends InvenTreeModel {
 
 class InvenTreePOLineItem extends InvenTreeModel {
   @override
-  String get URL => "po-line/";
+  String get URL => "order/po-line/";
 
   @override
   Map<String, dynamic> formFields() {
@@ -79,7 +79,7 @@ class InvenTreePOLineItem extends InvenTreeModel {
 // TODO: @Guusggg Incomplete as I currently can't test it.
 class InvenTreeSO extends InvenTreeModel {
   @override
-  String get URL => "so/";
+  String get URL => "order/so/";
 
   @override
   Map<String, dynamic> formFields() {
