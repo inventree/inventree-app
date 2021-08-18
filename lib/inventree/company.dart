@@ -1,4 +1,5 @@
 import 'package:inventree/api.dart';
+import 'package:inventree/inventree/part.dart';
 
 import 'model.dart';
 
@@ -101,8 +102,7 @@ class InvenTreeSupplierPart extends InvenTreeModel {
 
   String get MPN => jsondata['MPN'] ?? '';
 
-  int get part => jsondata['part'];
-  Map<String, dynamic> get partDetail => jsondata['part_detail'];
+  InvenTreePart get part => InvenTreePart.fromJson(jsondata['part_detail']);
 
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) {

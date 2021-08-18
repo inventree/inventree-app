@@ -215,12 +215,11 @@ Future<T?> showFormDialog<T>(String title, {String? acceptText, String? cancelTe
                       _key.currentState!.save();
 
                       Navigator.pop(context);
-
-                      // Callback
-                      if (callback != null) {
-                        callback();
-                      }
                     }
+                  }
+                  // Callback
+                  if (callback != null) {
+                    callback();
                   }
                 }
             )
