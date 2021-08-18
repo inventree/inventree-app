@@ -101,6 +101,9 @@ class InvenTreeSupplierPart extends InvenTreeModel {
 
   String get MPN => jsondata['MPN'] ?? '';
 
+  int get part => jsondata['part'];
+  Map<String, dynamic> get partDetail => jsondata['part_detail'];
+
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) {
     var part = InvenTreeSupplierPart.fromJson(json);
