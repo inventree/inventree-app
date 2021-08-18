@@ -1,3 +1,4 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:inventree/app_settings.dart';
 import 'package:inventree/inventree/sentry.dart';
 import 'package:inventree/widget/dialogs.dart';
@@ -55,8 +56,8 @@ class BarcodeHandler {
     }
   }
 
-  Future<void> onBarcodeMatched(
-      BuildContext context, QRViewController? controller, Map<String, dynamic> data) async {
+  Future<void> onBarcodeMatched(BuildContext context,
+      QRViewController? controller, Map<String, dynamic> data) async {
     // Called when the server "matches" a barcode
     // Override this function
 
@@ -64,8 +65,8 @@ class BarcodeHandler {
     controller?.resumeCamera();
   }
 
-  Future<void> onBarcodeUnknown(
-      BuildContext context, QRViewController? controller, Map<String, dynamic> data) async {
+  Future<void> onBarcodeUnknown(BuildContext context,
+      QRViewController? controller, Map<String, dynamic> data) async {
     // Called when the server does not know about a barcode
     // Override this function
     failureTone();
@@ -76,8 +77,8 @@ class BarcodeHandler {
     controller?.resumeCamera();
   }
 
-  Future<void> onBarcodeUnhandled(
-      BuildContext context, QRViewController? controller, Map<String, dynamic> data) async {
+  Future<void> onBarcodeUnhandled(BuildContext context,
+      QRViewController? controller, Map<String, dynamic> data) async {
     failureTone();
 
     // Called when the server returns an unhandled response
@@ -128,6 +129,105 @@ class BarcodeHandler {
   }
 }
 
+Widget _renderPurchaseOrder(dynamic po, bool selected, bool extended) {
+  if (po == null) {
+    return Text(
+      "Help text",
+      style: TextStyle(fontStyle: FontStyle.italic),
+    );
+  }
+
+  return ListTile(
+    title: Text(po["description"],
+        style: TextStyle(
+            fontWeight:
+                selected && extended ? FontWeight.bold : FontWeight.normal)),
+    // subtitle: extended
+    //     ? Text(
+    //         part.description,
+    //         style: TextStyle(
+    //             fontWeight: selected ? FontWeight.bold : FontWeight.normal),
+    //       )
+    //     : null,
+    // leading: extended
+    //     ? InvenTreeAPI().getImage(part.thumbnail, width: 40, height: 40)
+    //     : null,
+  );
+}
+
+void _onReceiveLineItem(BuildContext context, QRViewController? controller) {
+  // Close the scanner.
+  //Navigator.of(context).pop();
+
+  showFormDialog("Select Part", fields: [DropdownSearch<dynamic>(
+      mode: Mode.BOTTOM_SHEET,
+      showSelectedItem: true,
+      onFind: (String filter) async {
+        Map<String, String> _filters = {};
+
+        _filters["search"] = filter;
+
+        List<int> partsToBeReceived = [];
+
+        final APIResponse response =
+        await InvenTreeAPI().get("/order/po/.*", params: _filters);
+
+        if (response.isValid()) {
+          for (var result in response.data['results'] ?? []) {
+            partsToBeReceived.add(result);
+          }
+
+          return partsToBeReceived;
+        } else {
+          return [];
+        }
+      },
+      label: "Label",
+      hint: "Help text",
+      onChanged: null,
+      showClearButton: true,
+      itemAsString: (dynamic item) {
+        return item.description;
+      },
+      dropdownBuilder: (context, item, itemAsString) {
+        return _renderPurchaseOrder(item, true, false);
+      },
+      popupItemBuilder: (context, item, isSelected) {
+        return _renderPurchaseOrder(item, isSelected, true);
+      },
+      onSaved: (item) {
+        // if (item != null) {
+        //   data['value'] = item['pk'] ?? null;
+        // } else {
+        //   data['value'] = null;
+        // }
+      },
+      isFilteredOnline: true,
+      showSearchBox: true,
+      autoFocusSearchBox: true,
+      compareFn: (dynamic item, dynamic selectedItem) {
+        // Comparison is based on the PK value
+        if (item == null || selectedItem == null) {
+          return false;
+        }
+
+        return item['pk'] == selectedItem['pk'];
+      })], callback: () {
+
+  }).then((val) {
+    // Resume scanning when the dialog is closed.
+    controller?.resumeCamera();
+  });
+}
+
+void _onAssignPart(BuildContext context, QRViewController? controller) {
+  // Navigator.of(context).pop();
+  // Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //         builder: (context) => LocationDisplayWidget(loc)));
+}
+
 class BarcodeScanHandler extends BarcodeHandler {
   /*
    * Class for general barcode scanning.
@@ -138,8 +238,8 @@ class BarcodeScanHandler extends BarcodeHandler {
   String getOverlayText(BuildContext context) => L10().barcodeScanGeneral;
 
   @override
-  Future<void> onBarcodeUnknown(
-      BuildContext context, QRViewController? controller, Map<String, dynamic> data) async {
+  Future<void> onBarcodeUnknown(BuildContext context,
+      QRViewController? controller, Map<String, dynamic> data) async {
     String barcode_data = data["barcode_data"].toString();
     String hash = data["hash"].toString();
 
@@ -147,28 +247,39 @@ class BarcodeScanHandler extends BarcodeHandler {
     if (barcode_data.isNotEmpty && hash.isNotEmpty) {
       var children = [
         ListTile(
-          title: Text("Receive"),
-          subtitle: Text("Select a Purchase Order to receive this to."),
-        ),
+            title: Text("Receive"),
+            subtitle: Text("Select a Purchase Order to receive this to."),
+            onTap: () {
+              // Close dialog.
+              Navigator.of(context, rootNavigator: true).pop(true);
+
+              _onReceiveLineItem(context, controller);
+            }),
         ListTile(
-          title: Text("Add stock"),
-          subtitle: Text("Select a Part to assign this new stock to."),
-        )
+            title: Text("Add stock"),
+            subtitle: Text("Select a Part to assign this new stock to."),
+            onTap: () {
+              // Close dialog.
+              Navigator.of(context, rootNavigator: true).pop(true);
+
+              _onAssignPart(context, controller);
+            })
       ];
 
       successTone();
-      OneContext().showDialog(builder: (context) {
+      OneContext().showDialog<bool>(builder: (context) {
         return SimpleDialog(
           title: ListTile(
               title: Text("Assign barcode"),
               subtitle: Text("Data: '${barcode_data}'\nHash: ${hash}"),
               leading: FaIcon(FontAwesomeIcons.barcode)),
-          children:
-              ListTile.divideTiles(context: context, tiles: children).toList(),
+          children: children,
         );
       }).then((val) {
-        // Resume scanning after the dialog is closed.
-        controller?.resumeCamera();
+        if(!val!) {
+          // Resume scanning after the dialog is closed.
+          controller?.resumeCamera();
+        }
       });
     } else {
       failureTone();
@@ -184,8 +295,8 @@ class BarcodeScanHandler extends BarcodeHandler {
   }
 
   @override
-  Future<void> onBarcodeMatched(
-      BuildContext context, QRViewController? controller, Map<String, dynamic> data) async {
+  Future<void> onBarcodeMatched(BuildContext context,
+      QRViewController? controller, Map<String, dynamic> data) async {
     int pk = -1;
 
     // A stocklocation has been passed?
@@ -282,18 +393,20 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
   String getOverlayText(BuildContext context) => L10().barcodeScanAssign;
 
   @override
-  Future<void> onBarcodeMatched(
-      BuildContext context, QRViewController? controller, Map<String, dynamic> data) async {
+  Future<void> onBarcodeMatched(BuildContext context,
+      QRViewController? controller, Map<String, dynamic> data) async {
     failureTone();
 
     // If the barcode is known, we can't assign it to the stock item!
     showSnackIcon(L10().barcodeInUse,
         icon: FontAwesomeIcons.qrcode, success: false);
+    // Resume scanning.
+    controller?.resumeCamera();
   }
 
   @override
-  Future<void> onBarcodeUnknown(
-      BuildContext context, QRViewController? controller, Map<String, dynamic> data) async {
+  Future<void> onBarcodeUnknown(BuildContext context,
+      QRViewController? controller, Map<String, dynamic> data) async {
     // If the barcode is unknown, we *can* assign it to the stock item!
 
     if (!data.containsKey("hash")) {
@@ -321,6 +434,8 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
         }
       });
     }
+    // Resume scanning.
+    controller?.resumeCamera();
   }
 }
 
@@ -337,8 +452,8 @@ class StockItemScanIntoLocationHandler extends BarcodeHandler {
   String getOverlayText(BuildContext context) => L10().barcodeScanLocation;
 
   @override
-  Future<void> onBarcodeMatched(
-      BuildContext context, QRViewController? controller, Map<String, dynamic> data) async {
+  Future<void> onBarcodeMatched(BuildContext context,
+      QRViewController? controller, Map<String, dynamic> data) async {
     // If the barcode points to a 'stocklocation', great!
     if (data.containsKey('stocklocation')) {
       // Extract location information
@@ -378,6 +493,8 @@ class StockItemScanIntoLocationHandler extends BarcodeHandler {
         success: false,
       );
     }
+    // Resume scanning.
+    controller?.resumeCamera();
   }
 }
 
@@ -394,8 +511,8 @@ class StockLocationScanInItemsHandler extends BarcodeHandler {
   String getOverlayText(BuildContext context) => L10().barcodeScanItem;
 
   @override
-  Future<void> onBarcodeMatched(
-      BuildContext context, QRViewController? controller, Map<String, dynamic> data) async {
+  Future<void> onBarcodeMatched(BuildContext context,
+      QRViewController? controller, Map<String, dynamic> data) async {
     // Returned barcode must match a stock item
     if (data.containsKey('stockitem')) {
       int item_id = data['stockitem']['pk'] as int;
@@ -429,13 +546,14 @@ class StockLocationScanInItemsHandler extends BarcodeHandler {
       }
     } else {
       failureTone();
-
       // Does not match a valid stock item!
       showSnackIcon(
         L10().invalidStockItem,
         success: false,
       );
     }
+    // Resume scanning.
+    controller?.resumeCamera();
   }
 }
 
