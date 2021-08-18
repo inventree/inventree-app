@@ -42,6 +42,14 @@ class APIResponse {
 
   // Request is "valid" if a statusCode was returned
   bool isValid() => (statusCode >= 0) && (statusCode < 500);
+
+  bool successful() => (statusCode >= 200) && (statusCode < 300);
+
+  bool redirected() => (statusCode >= 300) && (statusCode < 400);
+
+  bool clientError() => (statusCode >= 400) && (statusCode < 500);
+
+  bool serverError() => (statusCode >= 500);
 }
 
 
@@ -254,12 +262,7 @@ class InvenTreeAPI {
 
     response = await get("", expectedStatusCode: 200);
 
-    // Response was invalid for some reason
-    if (!response.isValid()) {
-      return false;
-    }
-
-    if (response.statusCode != 200) {
+    if (!response.successful()) {
       showStatusCodeError(response.statusCode);
       return false;
     }
@@ -308,16 +311,10 @@ class InvenTreeAPI {
     // Clear the existing token value
     _token = "";
 
-    print("Requesting token from server");
-
     response = await get(_URL_GET_TOKEN);
 
     // Invalid response
-    if (!response.isValid()) {
-      return false;
-    }
-
-    if (response.statusCode != 200) {
+    if (!response.successful()) {
 
       switch (response.statusCode) {
         case 401:
@@ -413,7 +410,7 @@ class InvenTreeAPI {
 
     var response = await get(_URL_GET_ROLES, expectedStatusCode: 200);
 
-    if (!response.isValid() || response.statusCode != 200) {
+    if (!response.successful()) {
       return;
     }
 
@@ -563,9 +560,8 @@ class InvenTreeAPI {
   /*
    * Upload a file to the given URL
    */
-  Future<http.StreamedResponse> uploadFile(String url, File f,
+  Future<APIResponse> uploadFile(String url, File f,
       {String name = "attachment", String method="POST", Map<String, String>? fields}) async {
-
     var _url = makeApiUrl(url);
 
     var request = http.MultipartRequest(method, Uri.parse(_url));
@@ -582,25 +578,63 @@ class InvenTreeAPI {
 
     request.files.add(_file);
 
-    var response = await request.send();
+    APIResponse response = APIResponse(
+      url: url,
+      method: method,
+    );
 
-    if (response.statusCode >= 500) {
-      // Server error
+    String jsondata = "";
+
+    try {
+      var httpResponse = await request.send().timeout(Duration(seconds: 120));
+
+      response.statusCode = httpResponse.statusCode;
+
+      jsondata = await httpResponse.stream.bytesToString();
+
+      response.data = json.decode(jsondata);
+
+      // Report a server-side error
       if (response.statusCode >= 500) {
-
-        var data = await response.stream.bytesToString();
-
         sentryReportMessage(
-            "Server error on file upload",
+            "Server error in uploadFile()",
             context: {
-              "url": _url,
-              "statusCode": "${response.statusCode}",
-              "response": response.toString(),
-              "request": request.fields.toString(),
-              "data": data,
+              "url": url,
+              "method": request.method,
+              "name": name,
+              "statusCode": response.statusCode.toString(),
+              "requestHeaders": request.headers.toString(),
+              "responseHeaders": httpResponse.headers.toString(),
             }
         );
       }
+    } on SocketException catch (error) {
+      showServerError(L10().connectionRefused, error.toString());
+      response.error = "SocketException";
+      response.errorDetail = error.toString();
+    } on FormatException {
+      showServerError(
+        L10().formatException,
+        L10().formatExceptionJson + ":\n${jsondata}"
+      );
+
+      sentryReportMessage(
+          "Error decoding JSON response from server",
+          context: {
+            "url": url,
+            "statusCode": response.statusCode.toString(),
+            "data": jsondata,
+          }
+      );
+
+    } on TimeoutException {
+      showTimeoutError();
+      response.error = "TimeoutException";
+    } catch (error, stackTrace) {
+      showServerError(L10().serverError, error.toString());
+      sentryReportError(error, stackTrace);
+      response.error = "UnknownError";
+      response.errorDetail = error.toString();
     }
 
     return response;
@@ -826,9 +860,6 @@ class InvenTreeAPI {
 
       return data ?? {};
     } on FormatException {
-
-      print("JSON format exception!");
-      print("${body}");
 
       sentryReportMessage(
         "Error decoding JSON response from server",

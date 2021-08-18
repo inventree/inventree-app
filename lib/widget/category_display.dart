@@ -202,7 +202,10 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
     } else if (_subcategories.length == 0) {
       tiles.add(ListTile(
         title: Text(L10().noSubcategories),
-        subtitle: Text(L10().noSubcategoriesAvailable)
+        subtitle: Text(
+            L10().noSubcategoriesAvailable,
+            style: TextStyle(fontStyle: FontStyle.italic)
+        )
       ));
     } else {
       tiles.add(SubcategoryList(_subcategories));

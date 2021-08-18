@@ -1,92 +1,144 @@
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:inventree/l10.dart';
 
 import 'dart:async';
 import 'dart:io';
 
-// TODO - Perhaps refactor all this using flutter_form_builder - https://pub.dev/packages/flutter_form_builder
+import 'package:one_context/one_context.dart';
 
 
-/*
- * Form field for selecting an image file,
- * either from the gallery, or from the camera.
- */
-class ImagePickerField extends FormField<File> {
 
-  static void _selectFromGallery(FormFieldState<File> field) {
-    _getImageFromGallery(field);
-  }
+class FilePickerDialog {
 
-  static void _selectFromCamera(FormFieldState<File> field) {
-    _getImageFromCamera(field);
-  }
-
-  static Future<void> _getImageFromGallery(FormFieldState<File> field) async {
+  static Future<File?> pickImageFromCamera() async {
 
     final picker = ImagePicker();
 
-    final pickedImage = await picker.getImage(source: ImageSource.gallery);
+    final pickedImage = await picker.pickImage(source: ImageSource.camera);
 
-    if (pickedImage != null)
-    {
-      field.didChange(File(pickedImage.path));
+    if (pickedImage != null) {
+      return File(pickedImage.path);
     }
+
+    return null;
   }
 
-  static Future<void> _getImageFromCamera(FormFieldState<File> field) async {
+  static Future<File?> pickImageFromGallery() async {
 
     final picker = ImagePicker();
 
-    final pickedImage = await picker.getImage(source: ImageSource.camera);
+    final pickedImage = await picker.pickImage(source: ImageSource.gallery);
 
-    if (pickedImage != null)
-    {
-        field.didChange(File(pickedImage.path));
+    if (pickedImage != null) {
+      return File(pickedImage.path);
     }
 
+    return null;
   }
 
-  ImagePickerField(BuildContext context, {String? label, Function(File?)? onSaved, bool required = false}) :
-      super(
-        onSaved: onSaved,
-        validator: (File? img) {
-          if (required && (img == null)) {
-            return L10().required;
+  static Future<File?> pickFileFromDevice() async {
+
+    final FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      String? path = result.files.single.path;
+
+      if (path != null) {
+        return File(path);
+      }
+
+      return null;
+    }
+  }
+
+  // Present a dialog to pick a file, either from local file system or from camera
+  static Future<void> pickFile({String message = "", bool allowImages = true, bool allowFiles = true, Function(File)? onPicked}) async {
+
+    String title = "";
+
+    if (allowImages && !allowFiles) {
+      title = L10().selectImage;
+    } else {
+      title = L10().selectFile;
+    }
+
+    // Construct actions
+    List<Widget> actions = [
+
+    ];
+
+    if (message.isNotEmpty) {
+      actions.add(
+        ListTile(
+          title: Text(message)
+        )
+      );
+    }
+
+    actions.add(
+      SimpleDialogOption(
+        child: ListTile(
+          leading: FaIcon(FontAwesomeIcons.fileUpload),
+          title: Text(allowFiles ? L10().selectFile : L10().selectImage),
+        ),
+        onPressed: () async {
+
+          // Close the dialog
+          OneContext().popDialog();
+
+          File? file;
+          if (allowFiles) {
+            file = await pickFileFromDevice();
+          } else {
+            file = await pickImageFromGallery();
           }
 
-          return null;
+          if (file != null) {
+            if (onPicked != null) {
+              onPicked(file);
+            }
+          }
         },
-        builder: (FormFieldState<File> state) {
+      )
+    );
 
-          String _label = label ?? L10().attachImage;
+    if (allowImages) {
+      actions.add(
+        SimpleDialogOption(
+          child: ListTile(
+            leading: FaIcon(FontAwesomeIcons.camera),
+            title: Text(L10().takePicture),
+          ),
+          onPressed: () async {
+            // Close the dialog
+            OneContext().popDialog();
 
-          return InputDecorator(
-            decoration: InputDecoration(
-              errorText: state.errorText,
-              labelText: required ? _label + "*" : _label,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                TextButton(
-                  child: Text(L10().selectImage),
-                  onPressed: () {
-                    _selectFromGallery(state);
-                  },
-                ),
-                TextButton(
-                  child: Text(L10().takePicture),
-                  onPressed: () {
-                    _selectFromCamera(state);
-                  },
-                )
-              ],
-            ),
-          );
-        }
+            File? file = await pickImageFromCamera();
+
+            if (file != null) {
+              if (onPicked != null) {
+                onPicked(file);
+              }
+            }
+          }
+        )
       );
+    }
+
+    OneContext().showDialog(
+        builder: (context) {
+        return SimpleDialog(
+          title: Text(title),
+          children: actions,
+        );
+      }
+    );
+  }
+
 }
 
 
