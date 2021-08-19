@@ -51,6 +51,15 @@ class InvenTreePOLineItem extends InvenTreeModel {
   Map<String, dynamic> formFields() {
     return {
       // TODO: @Guusggg Not sure what will come here.
+      // "quantity": {},
+      // "reference": {},
+      // "notes": {},
+      // "order": {},
+      // "part": {},
+      "received": {},
+      // "purchase_price": {},
+      // "purchase_price_currency": {},
+      // "destination": {}
     };
   }
 

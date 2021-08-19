@@ -1,5 +1,6 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:inventree/app_settings.dart';
+import 'package:inventree/inventree/order.dart';
 import 'package:inventree/inventree/sentry.dart';
 import 'package:inventree/widget/dialogs.dart';
 import 'package:inventree/widget/snacks.dart';
@@ -22,6 +23,8 @@ import 'package:inventree/widget/part_detail.dart';
 import 'package:inventree/widget/stock_detail.dart';
 
 import 'dart:io';
+
+import 'inventree/company.dart';
 
 class BarcodeHandler {
   /*
@@ -129,16 +132,43 @@ class BarcodeHandler {
   }
 }
 
-Widget _renderPurchaseOrder(dynamic po, bool selected, bool extended) {
-  if (po == null) {
+Widget _renderSupplierPart(
+    InvenTreeSupplierPart? supplierPart, bool selected, bool extended) {
+  if (supplierPart == null) {
     return Text(
-      "Help text",
+      "Select part",
       style: TextStyle(fontStyle: FontStyle.italic),
     );
   }
 
   return ListTile(
-    title: Text(po["description"],
+    title: Text("${supplierPart.part.name} - ${supplierPart.supplierName}",
+        style: TextStyle(
+            fontWeight:
+                selected && extended ? FontWeight.bold : FontWeight.normal)),
+    // subtitle: extended
+    //     ? Text(
+    //         part.description,
+    //         style: TextStyle(
+    //             fontWeight: selected ? FontWeight.bold : FontWeight.normal),
+    //       )
+    //     : null,
+    // leading: extended
+    //     ? InvenTreeAPI().getImage(part.thumbnail, width: 40, height: 40)
+    //     : null,
+  );
+}
+
+Widget _renderPurchaseOrder(InvenTreePO? order, bool selected, bool extended) {
+  if (order == null) {
+    return Text(
+      "Select purchase order",
+      style: TextStyle(fontStyle: FontStyle.italic),
+    );
+  }
+
+  return ListTile(
+    title: Text("${order.creationDate} - ${order.description}",
         style: TextStyle(
             fontWeight:
                 selected && extended ? FontWeight.bold : FontWeight.normal)),
@@ -158,42 +188,74 @@ Widget _renderPurchaseOrder(dynamic po, bool selected, bool extended) {
 void _onReceiveLineItem(BuildContext context, QRViewController? controller) {
   // Close the scanner.
   //Navigator.of(context).pop();
+  InvenTreeSupplierPart? selectedSupplierPart = null;
+  InvenTreePOLineItem? selectedLineItem = null;
 
-  showFormDialog("Select Part", fields: [DropdownSearch<dynamic>(
+  Map<int, List<InvenTreePOLineItem>> supplierPartIdToLineItemMap = {};
+  Map<int, InvenTreePO> orderMap = {};
+
+  var partSearch = DropdownSearch<InvenTreeSupplierPart>(
       mode: Mode.BOTTOM_SHEET,
       showSelectedItem: true,
       onFind: (String filter) async {
-        Map<String, String> _filters = {};
+        // Oh my god this became a monster...
+        return InvenTreeAPI().get("/order/po/.*/", params: {}).then((response) {
+          // Retrieve PurchaseOrders:
+          // PurchaseOrders constructed from JSON
+          final pos = (response.data as List).map((po) {
+            final order = InvenTreePO.fromJson(po);
+            // Cache the order for later.
+            orderMap.putIfAbsent(order.pk, () => order);
+            return order;
+          });
+          // Requests constructed from PurchaseOrders.
+          final requests = pos.map((po) => InvenTreeAPI()
+              .get("/order/po-line/", params: {"order": po.pk.toString()}));
+          // Wait till all are finished.
+          return Future.wait(requests);
+        }).then((responses) {
+          // Create LineItems from JSON.
+          final lis = responses.map((response) => response.data as List).map(
+              (itemList) =>
+                  itemList.map((li) => InvenTreePOLineItem.fromJson(li)));
+          final flat = lis.expand((i) => i).toList();
+          // Flatten the list and map to requests.
+          final requests = flat.map((li) {
+            if (li.part > 0) {
+              var list =
+                  supplierPartIdToLineItemMap.putIfAbsent(li.part, () => []);
+              // Cache the line item for later.
+              list.add(li);
 
-        _filters["search"] = filter;
+              return InvenTreeAPI()
+                  .get("/company/part/${li.part}/", params: {});
+            } else {
+              return null;
+            }
+          }).whereType<Future<APIResponse>>();
 
-        List<int> partsToBeReceived = [];
-
-        final APIResponse response =
-        await InvenTreeAPI().get("/order/po/.*", params: _filters);
-
-        if (response.isValid()) {
-          for (var result in response.data['results'] ?? []) {
-            partsToBeReceived.add(result);
-          }
-
-          return partsToBeReceived;
-        } else {
-          return [];
-        }
+          return Future.wait(requests);
+        }).then((responses) => responses
+            .map((response) => InvenTreeSupplierPart.fromJson(response.data))
+            .toSet()
+            .toList());
       },
-      label: "Label",
-      hint: "Help text",
-      onChanged: null,
-      showClearButton: true,
-      itemAsString: (dynamic item) {
+      label: "Part",
+      hint: "Select the received part",
+      onChanged: (changed) {
+        print("Changed to ${changed}");
+
+        selectedSupplierPart = changed;
+      },
+      showClearButton: false,
+      itemAsString: (item) {
         return item.description;
       },
       dropdownBuilder: (context, item, itemAsString) {
-        return _renderPurchaseOrder(item, true, false);
+        return _renderSupplierPart(item, true, false);
       },
       popupItemBuilder: (context, item, isSelected) {
-        return _renderPurchaseOrder(item, isSelected, true);
+        return _renderSupplierPart(item, isSelected, true);
       },
       onSaved: (item) {
         // if (item != null) {
@@ -202,18 +264,103 @@ void _onReceiveLineItem(BuildContext context, QRViewController? controller) {
         //   data['value'] = null;
         // }
       },
-      isFilteredOnline: true,
+      // TODO: Implement filtering.
+      isFilteredOnline: false,
       showSearchBox: true,
       autoFocusSearchBox: true,
-      compareFn: (dynamic item, dynamic selectedItem) {
+      compareFn: (item, selectedItem) {
         // Comparison is based on the PK value
-        if (item == null || selectedItem == null) {
+        if (selectedItem == null) {
           return false;
         }
 
-        return item['pk'] == selectedItem['pk'];
-      })], callback: () {
+        return item.pk == selectedItem.pk;
+      });
 
+  var poSearch = DropdownSearch<InvenTreePOLineItem>(
+      mode: Mode.BOTTOM_SHEET,
+      showSelectedItem: true,
+      onFind: (String filter) async {
+        var lineItems = supplierPartIdToLineItemMap[selectedSupplierPart!.pk];
+        var orders =
+            lineItems!;
+
+        return orders.toList();
+      },
+      label: "Line item",
+      hint: "Select the purchase order",
+      onChanged: (changed) {
+        selectedLineItem = changed;
+      },
+      showClearButton: false,
+      itemAsString: (item) {
+        return item.description;
+      },
+      dropdownBuilder: (context, item, itemAsString) {
+        var po = orderMap[item?.order];
+
+        return _renderPurchaseOrder(po, true, false);
+      },
+      popupItemBuilder: (context, item, isSelected) {
+        var po = orderMap[item.order];
+
+        return _renderPurchaseOrder(po, isSelected, true);
+      },
+      onSaved: (item) {
+        // if (item != null) {
+        //   data['value'] = item['pk'] ?? null;
+        // } else {
+        //   data['value'] = null;
+        // }
+      },
+      // TODO: Implement filtering.
+      isFilteredOnline: false,
+      showSearchBox: true,
+      autoFocusSearchBox: true,
+      compareFn: (item, selectedItem) {
+        // Comparison is based on the PK value
+        if (selectedItem == null) {
+          return false;
+        }
+
+        return item.pk == selectedItem.pk;
+      });
+  showFormDialog("Select Part", fields: [partSearch], callback: () {
+    if (selectedSupplierPart != null) {
+      print(
+          "Selected ${selectedSupplierPart?.part.name} from ${selectedSupplierPart?.supplierName} as received.");
+
+      if (supplierPartIdToLineItemMap.containsKey(selectedSupplierPart?.pk)) {
+        int count =
+            supplierPartIdToLineItemMap[selectedSupplierPart?.pk]?.length ?? 0;
+        if (count == 1) {
+          showFormDialog("Bla",
+              fields: [
+                Text("When deos this show up?"),
+              ],
+              callback: () {});
+          // Close PartSearch
+          Navigator.of(context, rootNavigator: true).pop();
+        } else {
+          print("Selected item is mentioned in $count po's");
+
+          showFormDialog("Select purchase order", fields: [poSearch],
+              callback: () {
+            print("Selected purchase order: $selectedLineItem");
+            var po = orderMap[selectedLineItem!.order];
+
+            selectedLineItem!.editForm(context, "Receive items");
+
+            // Close PurchaseOrderSearch
+            Navigator.of(context, rootNavigator: true).pop();
+          });
+          // Close PartSearch
+          Navigator.of(context, rootNavigator: true).pop();
+        }
+      }
+    } else {
+      // Nothing selected.
+    }
   }).then((val) {
     // Resume scanning when the dialog is closed.
     controller?.resumeCamera();
@@ -255,15 +402,15 @@ class BarcodeScanHandler extends BarcodeHandler {
 
               _onReceiveLineItem(context, controller);
             }),
-        ListTile(
-            title: Text("Add stock"),
-            subtitle: Text("Select a Part to assign this new stock to."),
-            onTap: () {
-              // Close dialog.
-              Navigator.of(context, rootNavigator: true).pop(true);
-
-              _onAssignPart(context, controller);
-            })
+        // ListTile(
+        //     title: Text("Add stock"),
+        //     subtitle: Text("Select a Part to assign this new stock to."),
+        //     onTap: () {
+        //       // Close dialog.
+        //       Navigator.of(context, rootNavigator: true).pop(true);
+        //
+        //       _onAssignPart(context, controller);
+        //     })
       ];
 
       successTone();
@@ -276,7 +423,7 @@ class BarcodeScanHandler extends BarcodeHandler {
           children: children,
         );
       }).then((val) {
-        if(!val!) {
+        if (!val!) {
           // Resume scanning after the dialog is closed.
           controller?.resumeCamera();
         }
