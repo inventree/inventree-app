@@ -3,6 +3,7 @@ import 'package:inventree/app_settings.dart';
 import 'package:inventree/inventree/order.dart';
 import 'package:inventree/inventree/sentry.dart';
 import 'package:inventree/widget/dialogs.dart';
+import 'package:inventree/widget/fields.dart';
 import 'package:inventree/widget/snacks.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
@@ -132,37 +133,10 @@ class BarcodeHandler {
   }
 }
 
-Widget _renderSupplierPart(
-    InvenTreeSupplierPart? supplierPart, bool selected, bool extended) {
-  if (supplierPart == null) {
-    return Text(
-      "Select part",
-      style: TextStyle(fontStyle: FontStyle.italic),
-    );
-  }
-
-  return ListTile(
-    title: Text("${supplierPart.part.name} - ${supplierPart.supplierName}",
-        style: TextStyle(
-            fontWeight:
-                selected && extended ? FontWeight.bold : FontWeight.normal)),
-    // subtitle: extended
-    //     ? Text(
-    //         part.description,
-    //         style: TextStyle(
-    //             fontWeight: selected ? FontWeight.bold : FontWeight.normal),
-    //       )
-    //     : null,
-    // leading: extended
-    //     ? InvenTreeAPI().getImage(part.thumbnail, width: 40, height: 40)
-    //     : null,
-  );
-}
-
 Widget _renderPurchaseOrder(InvenTreePO? order, bool selected, bool extended) {
   if (order == null) {
     return Text(
-      "Select purchase order",
+      "Select Purchase Order",
       style: TextStyle(fontStyle: FontStyle.italic),
     );
   }
@@ -185,7 +159,100 @@ Widget _renderPurchaseOrder(InvenTreePO? order, bool selected, bool extended) {
   );
 }
 
-void _onReceiveLineItem(BuildContext context, QRViewController? controller) {
+Widget _buildSupplierPart(BuildContext context, InvenTreeSupplierPart? part,
+    bool selected, bool extended) {
+  if (part == null) {
+    return Text(
+      "Select Part",
+      style: TextStyle(fontStyle: FontStyle.italic),
+    );
+  }
+
+  return ListTile(
+    title: Text(part.part.fullname,
+        style: TextStyle(
+            fontWeight:
+                selected && extended ? FontWeight.bold : FontWeight.normal)),
+    subtitle: Text("${part.description}"),
+    leading: InvenTreeAPI().getImage(
+      part.part.thumbnail,
+      width: 40,
+      height: 40,
+    ),
+  );
+}
+Widget _buildLineItem(BuildContext context, InvenTreePOLineItem item,
+    InvenTreeSupplierPart part) {
+  return ListTile(
+    title: Text(part.part.IPN),
+    subtitle: Text("${part.part.name}"),
+    trailing: Text("${item.received}"),
+    leading: InvenTreeAPI().getImage(
+      part.part.thumbnail,
+      width: 40,
+      height: 40,
+    ),
+  );
+}
+
+final receiveLineItemKey = GlobalKey<FormState>();
+
+Future<T?> _receiveLineItem<T>(BuildContext context, InvenTreePOLineItem item,
+    InvenTreeSupplierPart part, String barcodeHash) {
+  final quantityController = TextEditingController();
+
+  final quantity = QuantityField(
+    label: "Received",
+    max: item.quantity - item.received,
+    controller: quantityController,
+  );
+
+  final fields = <Widget>[
+    _buildLineItem(context, item, part),
+    Text("Waiting to be received: ${item.quantity - item.received}"),
+    quantity
+  ];
+
+  return showFormDialog<T>(
+    "Received amount",
+    key: receiveLineItemKey,
+    callback: () {
+      int amountReceived = int.parse(quantityController.value.text);
+
+      print("${item.received + amountReceived}");
+      
+      item.update(values: {
+        "received": "${item.received + amountReceived}",
+        "purchase_price": item.purchasePrice
+      }).then((updated) async {
+        if(updated) {
+          var stockItem = await InvenTreeStockItem().create({
+            "part": part.part.pk,
+            "supplier_part": part.pk,
+            "quantity": amountReceived,
+            "purchase_order": item.order,
+            "uid": barcodeHash,
+          }) as InvenTreeStockItem?;
+
+          if(stockItem != null) {
+            showSnackIcon("Received ${amountReceived}x ${part.part.name}",
+                success: true, icon: FontAwesomeIcons.boxes);
+          } else {
+            // Called when the server returns an unhandled response
+            showServerError(L10().responseUnknown, "Unable to create stock for received item ${part.part.name}");
+          }
+        } else {
+          // Called when the server returns an unhandled response
+          showServerError(L10().responseUnknown, "Unable to update POLineItem");
+        }
+      });
+      
+    },
+    fields: fields,
+  );
+}
+
+void _onReceiveLineItem(BuildContext context, QRViewController? controller, String barcodeHash) {
   // Close the scanner.
   //Navigator.of(context).pop();
   InvenTreeSupplierPart? selectedSupplierPart = null;
@@ -203,11 +270,12 @@ void _onReceiveLineItem(BuildContext context, QRViewController? controller) {
           // Retrieve PurchaseOrders:
           // PurchaseOrders constructed from JSON
           final pos = (response.data as List).map((po) {
-            final order = InvenTreePO.fromJson(po);
-            // Cache the order for later.
-            orderMap.putIfAbsent(order.pk, () => order);
-            return order;
-          });
+            return InvenTreePO.fromJson(po);
+          }).toList();
+          // Keep only PurchaseOrders that are waiting to be received.
+          pos.retainWhere((po) => po.status == PO_STATUS_PLACED);
+          // Cache the PurchaseOrder.
+          pos.forEach((order) => orderMap.putIfAbsent(order.pk, () => order));
           // Requests constructed from PurchaseOrders.
           final requests = pos.map((po) => InvenTreeAPI()
               .get("/order/po-line/", params: {"order": po.pk.toString()}));
@@ -218,8 +286,11 @@ void _onReceiveLineItem(BuildContext context, QRViewController? controller) {
           final lis = responses.map((response) => response.data as List).map(
               (itemList) =>
                   itemList.map((li) => InvenTreePOLineItem.fromJson(li)));
+          // Flatten the list
           final flat = lis.expand((i) => i).toList();
-          // Flatten the list and map to requests.
+          // Only keep parts that are still waiting to be received.
+          flat.retainWhere((li) => (li.quantity - li.received) > 0);
+          // and map to requests.
           final requests = flat.map((li) {
             if (li.part > 0) {
               var list =
@@ -232,7 +303,7 @@ void _onReceiveLineItem(BuildContext context, QRViewController? controller) {
             } else {
               return null;
             }
-          }).whereType<Future<APIResponse>>();
+          }).whereType<Future<APIResponse>>(); // Only keep non-null.
 
           return Future.wait(requests);
         }).then((responses) => responses
@@ -243,7 +314,7 @@ void _onReceiveLineItem(BuildContext context, QRViewController? controller) {
       label: "Part",
       hint: "Select the received part",
       onChanged: (changed) {
-        print("Changed to ${changed}");
+        print("Changed to $changed");
 
         selectedSupplierPart = changed;
       },
@@ -252,10 +323,10 @@ void _onReceiveLineItem(BuildContext context, QRViewController? controller) {
         return item.description;
       },
       dropdownBuilder: (context, item, itemAsString) {
-        return _renderSupplierPart(item, true, false);
+        return _buildSupplierPart(context, item, true, false);
       },
       popupItemBuilder: (context, item, isSelected) {
-        return _renderSupplierPart(item, isSelected, true);
+        return _buildSupplierPart(context, item, isSelected, true);
       },
       onSaved: (item) {
         // if (item != null) {
@@ -282,8 +353,7 @@ void _onReceiveLineItem(BuildContext context, QRViewController? controller) {
       showSelectedItem: true,
       onFind: (String filter) async {
         var lineItems = supplierPartIdToLineItemMap[selectedSupplierPart!.pk];
-        var orders =
-            lineItems!;
+        var orders = lineItems!;
 
         return orders.toList();
       },
@@ -325,6 +395,7 @@ void _onReceiveLineItem(BuildContext context, QRViewController? controller) {
 
         return item.pk == selectedItem.pk;
       });
+
   showFormDialog("Select Part", fields: [partSearch], callback: () {
     if (selectedSupplierPart != null) {
       print(
@@ -334,36 +405,42 @@ void _onReceiveLineItem(BuildContext context, QRViewController? controller) {
         int count =
             supplierPartIdToLineItemMap[selectedSupplierPart?.pk]?.length ?? 0;
         if (count == 1) {
-          showFormDialog("Bla",
-              fields: [
-                Text("When deos this show up?"),
-              ],
-              callback: () {});
-          // Close PartSearch
-          Navigator.of(context, rootNavigator: true).pop();
+          // Close the SelectPart dialog
+          OneContext().popDialog();
+
+          var lineItem =
+              supplierPartIdToLineItemMap[selectedSupplierPart?.pk]?.first;
+
+          _receiveLineItem(context, lineItem!, selectedSupplierPart!, barcodeHash)
+              .then((val) {
+            // Resume scanning when the dialog is closed.
+            controller?.resumeCamera();
+          });
         } else {
-          print("Selected item is mentioned in $count po's");
+          // Close the SelectPart dialog
+          OneContext().popDialog();
 
           showFormDialog("Select purchase order", fields: [poSearch],
               callback: () {
+            // Close the SelectPart dialog
+            OneContext().popDialog();
+
             print("Selected purchase order: $selectedLineItem");
             var po = orderMap[selectedLineItem!.order];
 
-            selectedLineItem!.editForm(context, "Receive items");
-
-            // Close PurchaseOrderSearch
-            Navigator.of(context, rootNavigator: true).pop();
+            _receiveLineItem(context, selectedLineItem!, selectedSupplierPart!, barcodeHash)
+                .then((val) {
+              // Resume scanning when the dialog is closed.
+              controller?.resumeCamera();
+            });
           });
-          // Close PartSearch
-          Navigator.of(context, rootNavigator: true).pop();
         }
       }
     } else {
       // Nothing selected.
     }
   }).then((val) {
-    // Resume scanning when the dialog is closed.
-    controller?.resumeCamera();
+    print(val);
   });
 }
 
@@ -400,7 +477,7 @@ class BarcodeScanHandler extends BarcodeHandler {
               // Close dialog.
               Navigator.of(context, rootNavigator: true).pop(true);
 
-              _onReceiveLineItem(context, controller);
+              _onReceiveLineItem(context, controller, hash);
             }),
         // ListTile(
         //     title: Text("Add stock"),
@@ -422,11 +499,6 @@ class BarcodeScanHandler extends BarcodeHandler {
               leading: FaIcon(FontAwesomeIcons.barcode)),
           children: children,
         );
-      }).then((val) {
-        if (!val!) {
-          // Resume scanning after the dialog is closed.
-          controller?.resumeCamera();
-        }
       });
     } else {
       failureTone();
