@@ -199,8 +199,12 @@ Widget _buildLineItem(BuildContext context, InvenTreePOLineItem item,
 
 final receiveLineItemKey = GlobalKey<FormState>();
 
-Future<T?> _receiveLineItem<T>(BuildContext context, QRViewController? controller, InvenTreePOLineItem item,
-    InvenTreeSupplierPart part, String barcodeHash) async {
+Future<T?> _receiveLineItem<T>(
+    BuildContext context,
+    QRViewController? controller,
+    InvenTreePOLineItem item,
+    InvenTreeSupplierPart part,
+    String barcodeHash) async {
   final quantityController = TextEditingController();
 
   final quantity = QuantityField(
@@ -284,19 +288,26 @@ Future<T?> _receiveLineItem<T>(BuildContext context, QRViewController? controlle
 
       item.update(values: {
         "received": "${item.received + amountReceived}",
-        "purchase_price": item.purchasePrice
+        "purchase_price": item.purchasePrice.toString()
       }).then((updated) async {
         if (updated) {
-          var stockItem = await InvenTreeStockItem().create({
+          var data = {
             "part": part.part.pk,
             "supplier_part": part.pk,
             "quantity": amountReceived,
             "purchase_order": item.order,
             "uid": barcodeHash,
-            "location": location_pk ?? -1,
-            "purchase_price": item.purchasePrice,
-            "purchase_price_currency": item.purchasePriceCurrency
-          }) as InvenTreeStockItem?;
+            "purchase_price": item.purchasePrice
+          };
+
+          if (location_pk != null) {
+            data.putIfAbsent("location", () => location_pk!);
+          }
+
+          print(data);
+
+          var stockItem =
+              await InvenTreeStockItem().create(data) as InvenTreeStockItem?;
 
           if (stockItem != null) {
             showSnackIcon("Received ${amountReceived}x ${part.part.name}",
@@ -480,8 +491,8 @@ void _onReceiveLineItem(
           var lineItem =
               supplierPartIdToLineItemMap[selectedSupplierPart?.pk]?.first;
 
-          _receiveLineItem(
-                  context, controller, lineItem!, selectedSupplierPart!, barcodeHash)
+          _receiveLineItem(context, controller, lineItem!,
+                  selectedSupplierPart!, barcodeHash)
               .then((val) {
             // Resume scanning when the dialog is closed.
             controller?.resumeCamera();
@@ -498,8 +509,8 @@ void _onReceiveLineItem(
             print("Selected purchase order: $selectedLineItem");
             var po = orderMap[selectedLineItem!.order];
 
-            _receiveLineItem(context, controller, selectedLineItem!, selectedSupplierPart!,
-                    barcodeHash)
+            _receiveLineItem(context, controller, selectedLineItem!,
+                    selectedSupplierPart!, barcodeHash)
                 .then((val) {
               // Resume scanning when the dialog is closed.
               controller?.resumeCamera();

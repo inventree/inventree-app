@@ -84,7 +84,7 @@ class InvenTreePOLineItem extends InvenTreeModel {
   String get reference => jsondata['reference'] ?? "";
   int get order => jsondata['order'] ?? -1;
   int get part => jsondata['part'] ?? -1;
-  String get purchasePrice => jsondata['purchase_price'] ?? "";
+  double get purchasePrice => double.parse(jsondata['purchase_price']);
   String get purchasePriceCurrency => jsondata['purchase_price_currency'] ?? "";
   String get purchasePriceString => jsondata['purchase_price_string'] ?? "";
 
