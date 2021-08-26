@@ -142,6 +142,8 @@ class InvenTreePart extends InvenTreeModel {
       "category": {
       },
 
+      "units": {},
+
       // Checkbox fields
       "active": {},
       "assembly": {},
@@ -256,12 +258,20 @@ class InvenTreePart extends InvenTreeModel {
 
     String get inStockString {
 
+      String q = inStock.toString();
+
       if (inStock == inStock.toInt()) {
-        return inStock.toInt().toString();
-      } else {
-        return inStock.toString();
+        q = inStock.toInt().toString();
       }
+
+      if (units.isNotEmpty) {
+        q += " ${units}";
+      }
+
+      return q;
     }
+
+    String get units => jsondata["units"] ?? "";
 
     // Get the number of units being build for this Part
     double get building => double.tryParse(jsondata['building'].toString()) ?? 0;
