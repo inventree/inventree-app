@@ -39,7 +39,7 @@ dependencies:
   sembast: ^3.1.0+2                       # NoSQL data storage
   one_context: ^1.1.0                     # Dialogs without requiring context
   infinite_scroll_pagination: ^3.1.0      # Let the server do all the work!
-  audioplayers: ^0.19.0                   # Play audio files
+  audioplayers: ^0.20.1                   # Play audio files
   dropdown_search: 0.6.3                  # Dropdown autocomplete form fields
   path:
 
