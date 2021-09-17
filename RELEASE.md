@@ -24,3 +24,24 @@ python update_translations.py
 ### Build Appbundle
 
 `flutter build appbundle`
+
+### Upload Appbundle
+
+Upload the appbundle file to the Android developer website.
+
+## Apple Store
+
+Ref: https://flutter.dev/docs/deployment/ios
+
+### Build ipa
+
+```
+flutter clean
+flutter build ipa
+```
+
+### Validate and Distribute
+
+- Open `./build/ios/archive/Runner.xcarchive` in Xcode
+- Run "Validate App"
+- Run "Distribute App"
