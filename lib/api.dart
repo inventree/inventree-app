@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:inventree/app_colors.dart';
 
 import 'package:open_file/open_file.dart';
 import 'package:flutter/cupertino.dart';
@@ -957,7 +958,7 @@ class InvenTreeAPI {
     return new CachedNetworkImage(
       imageUrl: url,
       placeholder: (context, url) => CircularProgressIndicator(),
-      errorWidget: (context, url, error) => Icon(FontAwesomeIcons.exclamation),
+      errorWidget: (context, url, error) => FaIcon(FontAwesomeIcons.timesCircle, color: COLOR_DANGER),
       httpHeaders: defaultHeaders(),
       height: height,
       width: width,
