@@ -87,6 +87,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     if (!InvenTreeAPI().checkConnection(context)) return;
   }
 
+
   void _showSuppliers(BuildContext context) {
     if (!InvenTreeAPI().checkConnection(context)) return;
 
@@ -346,6 +347,13 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
                 callback: () {
                   _showManufacturers(context);
                 }
+            ),
+            _iconButton(
+              L10().customers,
+              FontAwesomeIcons.userTie,
+              callback: () {
+                _showCustomers(context);
+              }
             ),
               /*
         Spacer(),
