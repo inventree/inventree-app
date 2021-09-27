@@ -228,8 +228,8 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
         ],
       ),
       drawer: new InvenTreeDrawer(context),
-      body: GridView.count(
-          crossAxisCount: MediaQuery.of(context).orientation == Orientation.portrait ? 3 : 5,
+      body: GridView.extent(
+          maxCrossAxisExtent: 150,
           shrinkWrap: true,
           physics: ClampingScrollPhysics(),
           children: [
