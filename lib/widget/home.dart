@@ -64,31 +64,42 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     scanQrCode(context);
   }
 
-  void _parts(BuildContext context) {
+  void _showParts(BuildContext context) {
     if (!InvenTreeAPI().checkConnection(context)) return;
 
     Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));
   }
 
-  void _stock(BuildContext context) {
+  void _showStarredParts(BuildContext context) {
+    if (!InvenTreeAPI().checkConnection(context)) return;
+
+    // TODO
+    // Navigator.push(context, MaterialPageRoute(builder: (context) => StarredPartWidget()));
+  }
+
+  void _showStock(BuildContext context) {
     if (!InvenTreeAPI().checkConnection(context)) return;
 
     Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(null)));
   }
 
-  void _suppliers() {
+  void _showPurchaseOrders(BuildContext context) {
+    if (!InvenTreeAPI().checkConnection(context)) return;
+  }
+
+  void _showSuppliers(BuildContext context) {
     if (!InvenTreeAPI().checkConnection(context)) return;
 
     Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyListWidget(L10().suppliers, {"is_supplier": "true"})));
   }
 
-  void _manufacturers() {
+  void _showManufacturers(BuildContext context) {
     if (!InvenTreeAPI().checkConnection(context)) return;
 
     Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyListWidget(L10().manufacturers, {"is_manufacturer": "true"})));
   }
 
-  void _customers() {
+  void _showCustomers(BuildContext context) {
     if (!InvenTreeAPI().checkConnection(context)) return;
 
     Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyListWidget(L10().customers, {"is_customer": "true"})));
@@ -183,6 +194,36 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     }
   }
 
+  Widget _header(String label) {
+    return Card(
+      margin: EdgeInsets.symmetric(
+        vertical: 1,
+        horizontal: 10,
+      ),
+      child: ListTile(
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: 10,
+          vertical: 1
+        ),
+        title: Text(
+          label,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _grid(List<Widget> children) {
+    return GridView.extent(
+      maxCrossAxisExtent: 140,
+      shrinkWrap: true,
+      physics: ClampingScrollPhysics(),
+      children: children,
+    );
+  }
+
   Widget _iconButton(String label, IconData icon, {Function()? callback}) {
 
     return GestureDetector(
@@ -194,8 +235,16 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            FaIcon(icon),
-            Text(label),
+            FaIcon(
+              icon,
+              color: COLOR_CLICK,
+            ),
+            Divider(
+              height: 10,
+            ),
+            Text(
+              label,
+            ),
           ]
         )
       ),
@@ -218,21 +267,21 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
       appBar: AppBar(
         title: Text(L10().appTitle),
         actions: <Widget>[
-          /*
-          IconButton(
-            icon: FaIcon(FontAwesomeIcons.search),
-            tooltip: L10().search,
-            onPressed: _searchParts,
-          ),
-          */
+          // IconButton(
+          //   icon: FaIcon(FontAwesomeIcons.barcode),
+          //   tooltip: L10().scanBarcode,
+          //   onPressed: () {
+          //     _scan(context);
+          //   },
+          // ),
         ],
       ),
       drawer: new InvenTreeDrawer(context),
-      body: GridView.extent(
-          maxCrossAxisExtent: 150,
-          shrinkWrap: true,
-          physics: ClampingScrollPhysics(),
-          children: [
+      body: ListView(
+        physics: ClampingScrollPhysics(),
+        shrinkWrap: true,
+        children: [
+          _grid([
             _iconButton(
                 L10().scanBarcode,
                 FontAwesomeIcons.barcode,
@@ -241,69 +290,64 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
                 }
             ),
             _iconButton(
-              L10().parts,
-              FontAwesomeIcons.shapes,
-              callback: () {
-                _parts(context);
-              }
+                L10().search,
+                FontAwesomeIcons.search,
+                callback: () {
+                  // TODO: Launch "generic" search widget
+                }
             ),
             _iconButton(
-              L10().searchParts,
-              FontAwesomeIcons.search,
-              callback: () {
-                _searchParts();
-              }
+                L10().parts,
+                FontAwesomeIcons.shapes,
+                callback: () {
+                  _showParts(context);
+                }
             ),
-            // TODO - Re-add starred parts link
-            /*
+
+              // TODO - Re-add starred parts link
+              /*
             Column(
               children: <Widget>[
                 IconButton(
                   icon: FaIcon(FontAwesomeIcons.solidStar),
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => StarredPartWidget()));
+
                   },
                 ),
                 Text("Starred Parts"),
               ]
             ),
              */
+
             _iconButton(
-              L10().stock,
-              FontAwesomeIcons.boxes,
-              callback: () {
-                _stock(context);
-              }
+                L10().stock,
+                FontAwesomeIcons.boxes,
+                callback: () {
+                  _showStock(context);
+                }
             ),
             _iconButton(
-              L10().searchStock,
-              FontAwesomeIcons.search,
-              callback: () {
-                _searchStock();
-              }
+                L10().purchaseOrders,
+                FontAwesomeIcons.shoppingCart,
+                callback: () {
+                  _showPurchaseOrders(context);
+                }
             ),
             _iconButton(
-              L10().purchaseOrders,
-              FontAwesomeIcons.shoppingCart,
-              callback: () {
-                // TODO
-              }
+                L10().suppliers,
+                FontAwesomeIcons.building,
+                callback: () {
+                  _showSuppliers(context);
+                }
             ),
             _iconButton(
-              L10().suppliers,
-              FontAwesomeIcons.building,
-              callback: () {
-                _suppliers();
-              }
+                L10().manufacturers,
+                FontAwesomeIcons.industry,
+                callback: () {
+                  _showManufacturers(context);
+                }
             ),
-            _iconButton(
-              L10().manufacturers,
-              FontAwesomeIcons.industry,
-              callback: () {
-                // TODO
-              }
-            ),
-            /*
+              /*
         Spacer(),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -342,7 +386,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
         ),
         Spacer(),
         */
-            /*
+              /*
         Spacer(),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -355,8 +399,10 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
         ),
       ]),
        */
-        ],
-      )
+            ],
+          )
+        ]
+      ),
     );
   }
 }
