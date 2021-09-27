@@ -223,6 +223,8 @@ class InvenTreeStockItem extends InvenTreeModel {
     return pp.isNotEmpty && pp.trim() != "-";
   }
 
+  int get purchaseOrderId => jsondata['purchase_order'] ?? -1;
+
   int get trackingItemCount => (jsondata['tracking_items'] ?? 0) as int;
 
   // Date of last update

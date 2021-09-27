@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:date_field/date_field.dart';
 
 import 'package:inventree/api.dart';
 import 'package:inventree/app_colors.dart';
@@ -167,6 +168,8 @@ class APIFormField {
       case "file upload":
       case "image upload":
         return _constructFileField();
+      case "date":
+        return _constructDateField();
       default:
         return ListTile(
           title: Text(
@@ -178,6 +181,30 @@ class APIFormField {
         );
     }
   }
+
+  // Field for displaying and selecting dates
+  Widget _constructDateField() {
+
+    return DateTimeFormField(
+      mode: DateTimeFieldPickerMode.date,
+      decoration: InputDecoration(
+        helperText: helpText,
+        helperStyle: _helperStyle(),
+        labelText: label,
+        labelStyle: _labelStyle(),
+      ),
+      initialValue: DateTime.tryParse(value ?? ""),
+      autovalidateMode: AutovalidateMode.always,
+      validator: (e) {
+        // TODO
+      },
+      onDateSelected: (DateTime dt) {
+        data['value'] = dt.toString().split(" ").first;
+      },
+    );
+
+  }
+
 
   // Field for selecting and uploading files
   Widget _constructFileField() {
@@ -417,6 +444,13 @@ class APIFormField {
             loc.description,
             style: TextStyle(fontWeight: selected ? FontWeight.bold : FontWeight.normal),
           ) : null,
+        );
+      case "owner":
+        String name = item["name"] ?? "";
+        bool isGroup = (item["label"] ?? "") == "group";
+        return ListTile(
+          title: Text(name),
+          leading: FaIcon(isGroup ? FontAwesomeIcons.users : FontAwesomeIcons.user),
         );
       default:
         return ListTile(

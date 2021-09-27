@@ -31,6 +31,7 @@ dependencies:
   sentry_flutter: 5.0.0                   # Error reporting
   image_picker: ^0.8.3                    # Select or take photos
   file_picker: ^4.0.0                     # Select files from the device
+  date_field: ^2.1.2                      # Date / time picker
   url_launcher: 6.0.9                     # Open link in system browser
   open_file: 3.2.1                        # Open local files
   flutter_markdown: ^0.6.2                # Rendering markdown
