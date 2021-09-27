@@ -31,6 +31,13 @@ class InvenTreePurchaseOrder extends InvenTreeModel {
   InvenTreePurchaseOrder() : super();
 
   @override
+  Map<String, String> defaultGetFilters() {
+    return {
+      "supplier_detail": "true",
+    };
+  }
+
+  @override
   Map<String, String> defaultListFilters() {
     return {
       "supplier_detail": "true",
@@ -55,11 +62,15 @@ class InvenTreePurchaseOrder extends InvenTreeModel {
 
   int get supplierId => jsondata['supplier'] ?? -1;
 
-  InvenTreeCompany get supplier {
+  InvenTreeCompany? get supplier {
 
-    dynamic supplier_detail = jsondata["supplier_detail"] ?? {};
+    dynamic supplier_detail = jsondata["supplier_detail"] ?? null;
 
-    return InvenTreeCompany.fromJson(supplier_detail);
+    if (supplier_detail == null) {
+      return null;
+    } else {
+      return InvenTreeCompany.fromJson(supplier_detail);
+    }
   }
 
   String get supplierReference => jsondata['supplier_reference'] ?? "";

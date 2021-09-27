@@ -1,6 +1,5 @@
 
 import 'package:inventree/api.dart';
-import 'package:inventree/api_form.dart';
 import 'package:inventree/app_colors.dart';
 import 'package:inventree/inventree/company.dart';
 import 'package:inventree/widget/refreshable_state.dart';

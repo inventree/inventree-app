@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:inventree/inventree/company.dart';
 import 'package:inventree/inventree/sentry.dart';
 import 'package:inventree/widget/paginator.dart';
+import 'package:inventree/widget/purchase_order_detail.dart';
 import 'package:inventree/widget/refreshable_state.dart';
 
 import '../l10.dart';
@@ -154,19 +156,24 @@ class _PaginatedPurchaseOrderListState extends State<_PaginatedPurchaseOrderList
 
   Widget _buildOrder(BuildContext context, InvenTreePurchaseOrder order) {
 
-    var supplier = order.supplier;
+    InvenTreeCompany? supplier = order.supplier;
 
     return ListTile(
       title: Text(order.reference),
       subtitle: Text(order.description),
-      leading: InvenTreeAPI().getImage(
+      leading: supplier == null ? null : InvenTreeAPI().getImage(
         supplier.thumbnail,
         width: 40,
         height: 40,
       ),
       trailing: Text("${order.lineItems}"),
       onTap: () async {
-        // TODO - Display purchase order information
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PurchaseOrderDetailWidget(order)
+          )
+        );
       },
     );
   }
