@@ -1,6 +1,13 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.4.7 - September 2021
+---
+
+- Display units after stock quantity
+- Support multi-byte UTF characters in API transactions
+- Updated translations
+
 ### 0.4.6 - August 2021
 ---
 

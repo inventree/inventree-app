@@ -27,6 +27,7 @@ android/key.properties
 # Flutter/Dart/Pub related
 ios/Flutter/flutter_export_environment.sh
 ios/Flutter/Flutter.podspec
+ios/build
 **/doc/api/
 .dart_tool/
 .flutter-plugins

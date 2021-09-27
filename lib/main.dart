@@ -59,6 +59,7 @@ class InvenTreeApp extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       builder: OneContext().builder,
       navigatorKey: OneContext().key,
       onGenerateTitle: (BuildContext context) => I18N.of(context)!.appTitle,

@@ -785,8 +785,11 @@ class InvenTreeAPI {
   Future<APIResponse> completeRequest(HttpClientRequest request, {String? data, int? statusCode}) async {
 
     if (data != null && data.isNotEmpty) {
-      request.headers.set(HttpHeaders.contentLengthHeader, data.length.toString());
-      request.add(utf8.encode(data));
+
+      var encoded_data = utf8.encode(data);
+
+      request.headers.set(HttpHeaders.contentLengthHeader, encoded_data.length.toString());
+      request.add(encoded_data);
     }
 
     APIResponse response = new APIResponse(

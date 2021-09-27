@@ -359,6 +359,10 @@ class InvenTreeStockItem extends InvenTreeModel {
     return sname;
   }
 
+  String get units {
+    return jsondata['part_detail']?['units'] ?? '';
+  }
+
   String get supplierSKU {
     String sku = '';
 
@@ -375,11 +379,18 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   String get quantityString {
 
+    String q = quantity.toString();
+
+    // Simplify integer values e.g. "1.0" becomes "1"
     if (quantity.toInt() == quantity) {
-      return quantity.toInt().toString();
-    } else {
-      return quantity.toString();
+      q = quantity.toInt().toString();
     }
+
+    if (units.isNotEmpty) {
+      q += " ${units}";
+    }
+
+    return q;
   }
 
   int get locationId => (jsondata['location'] ?? -1) as int;
