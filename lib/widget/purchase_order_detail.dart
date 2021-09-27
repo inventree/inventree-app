@@ -71,16 +71,48 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
     InvenTreeCompany? supplier = order.supplier;
 
-    print(order.jsondata);
-
     tiles.add(Card(
       child: ListTile(
         title: Text(order.reference),
         subtitle: Text(order.description),
         leading: supplier == null ? null : InvenTreeAPI().getImage(supplier.thumbnail, width: 40, height: 40),
-        trailing: Text("${order.lineItems}"),
       )
     ));
+
+    if (supplier != null) {
+      tiles.add(ListTile(
+        title: Text(L10().supplier),
+        subtitle: Text(supplier.name),
+        leading: FaIcon(FontAwesomeIcons.building),
+        onTap: () {
+          // TODO - Navigate to "supplier" page
+        },
+      ));
+    }
+
+    if (order.supplierReference.isNotEmpty) {
+      tiles.add(ListTile(
+        title: Text(L10().supplierReference),
+        subtitle: Text(order.supplierReference),
+        leading: FaIcon(FontAwesomeIcons.hashtag),
+      ));
+    }
+
+    if (order.issueDate.isNotEmpty) {
+      tiles.add(ListTile(
+        title: Text(L10().issueDate),
+        subtitle: Text(order.issueDate),
+        leading: FaIcon(FontAwesomeIcons.calendarAlt),
+      ));
+    }
+
+    if (order.targetDate.isNotEmpty) {
+      tiles.add(ListTile(
+        title: Text(L10().targetDate),
+        subtitle: Text(order.targetDate),
+        leading: FaIcon(FontAwesomeIcons.calendarAlt),
+      ));
+    }
 
     return tiles;
 

@@ -19,7 +19,6 @@ class InvenTreePurchaseOrder extends InvenTreeModel {
   Map<String, dynamic> formFields() {
     return {
       "reference": {},
-      "supplier": {},
       "supplier_reference": {},
       "description": {},
       "target_date": {},
