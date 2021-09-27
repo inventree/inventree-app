@@ -2,8 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:inventree/api.dart';
+import 'package:inventree/app_colors.dart';
 import 'package:inventree/inventree/company.dart';
+import 'package:inventree/inventree/part.dart';
 import 'package:inventree/inventree/purchase_order.dart';
+import 'package:inventree/widget/company_detail.dart';
 import 'package:inventree/widget/refreshable_state.dart';
 
 import '../l10.dart';
@@ -26,6 +29,8 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
   _PurchaseOrderDetailState(this.order);
 
   final InvenTreePurchaseOrder order;
+
+  List<InvenTreePOLineItem> lines = [];
 
   @override
   String getAppBarTitle(BuildContext context) => L10().purchaseOrder;
@@ -52,6 +57,9 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
   @override
   Future<void> request() async {
     await order.reload();
+
+    lines = await order.getLineItems();
+
   }
 
   void editOrder(BuildContext context) async {
