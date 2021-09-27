@@ -1,4 +1,5 @@
 import 'package:inventree/inventree/company.dart';
+import 'package:inventree/inventree/part.dart';
 
 import 'model.dart';
 
@@ -82,6 +83,25 @@ class InvenTreePurchaseOrder extends InvenTreeModel {
 
   bool get isFailed => this.status == PO_STATUS_CANCELLED || this.status == PO_STATUS_LOST || this.status == PO_STATUS_RETURNED;
 
+  Future<List<InvenTreePOLineItem>> getLineItems() async {
+
+    final results = await InvenTreePOLineItem().list(
+        filters: {
+          "order": "${pk}",
+        }
+    );
+
+    List<InvenTreePOLineItem> items = [];
+
+    for (var result in results) {
+      if (result is InvenTreePOLineItem) {
+        items.add(result);
+      }
+    }
+
+    return items;
+  }
+
   InvenTreePurchaseOrder.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
   @override
@@ -110,15 +130,39 @@ class InvenTreePOLineItem extends InvenTreeModel {
     };
   }
 
+  @override
+  Map<String, String> defaultGetFilters() {
+    return {
+      "part_detail": "true",
+    };
+  }
+
+  @override
+  Map<String, String> defaultListFilters() {
+    return {
+      "part_detail": "true",
+    };
+  }
+
   double get quantity => jsondata['quantity'] ?? 0;
 
   double get received => jsondata['received'] ?? 0;
 
   String get reference => jsondata['reference'] ?? "";
 
-  int get order => jsondata['order'] ?? -1;
+  int get orderId => jsondata['order'] ?? -1;
 
-  int get part => jsondata['part'] ?? -1;
+  int get supplirtPartId => jsondata['part'] ?? -1;
+
+  InvenTreePart? get part {
+    dynamic part_detail = jsondata["part_detail"] ?? null;
+
+    if (part_detail == null) {
+      return null;
+    } else {
+      return InvenTreePart.fromJson(part_detail);
+    }
+  }
 
   double get purchasePrice => double.parse(jsondata['purchase_price']);
 
