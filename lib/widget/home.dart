@@ -183,6 +183,27 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     }
   }
 
+  Widget _iconButton(String label, IconData icon, {Function()? callback}) {
+
+    return GestureDetector(
+      child: Card(
+        margin: EdgeInsets.symmetric(
+          vertical: 10,
+          horizontal: 10
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            FaIcon(icon),
+            Text(label),
+          ]
+        )
+      ),
+      onTap: callback,
+    );
+
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -207,184 +228,135 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
         ],
       ),
       drawer: new InvenTreeDrawer(context),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: (<Widget>[
-            Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    IconButton(
-                      icon: new FaIcon(FontAwesomeIcons.barcode),
-                      tooltip: L10().scanBarcode,
-                      onPressed: () { _scan(context); },
-                    ),
-                    Text(L10().scanBarcode),
-                  ],
-                ),
-              ],
+      body: GridView.count(
+          crossAxisCount: MediaQuery.of(context).orientation == Orientation.portrait ? 3 : 5,
+          shrinkWrap: true,
+          physics: ClampingScrollPhysics(),
+          children: [
+            _iconButton(
+                L10().scanBarcode,
+                FontAwesomeIcons.barcode,
+                callback: () {
+                  _scan(context);
+                }
             ),
-            Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    IconButton(
-                      icon: new FaIcon(FontAwesomeIcons.shapes),
-                      tooltip: L10().parts,
-                      onPressed: () { _parts(context); },
-                    ),
-                    Text(L10().parts),
-                  ],
-                ),
-                Column(
-                  children: <Widget>[
-
-                    IconButton(
-                      icon: new FaIcon(FontAwesomeIcons.search),
-                      tooltip: L10().searchParts,
-                      onPressed: _searchParts,
-                    ),
-                    Text(L10().searchParts),
-                  ],
-                ),
-                // TODO - Re-add starred parts link
-                /*
-                Column(
-                  children: <Widget>[
-                    IconButton(
-                      icon: FaIcon(FontAwesomeIcons.solidStar),
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => StarredPartWidget()));
-                      },
-                    ),
-                    Text("Starred Parts"),
-                  ]
-                ),
-                 */
-              ],
+            _iconButton(
+              L10().parts,
+              FontAwesomeIcons.shapes,
+              callback: () {
+                _parts(context);
+              }
             ),
-            Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            _iconButton(
+              L10().searchParts,
+              FontAwesomeIcons.search,
+              callback: () {
+                _searchParts();
+              }
+            ),
+            // TODO - Re-add starred parts link
+            /*
+            Column(
               children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    IconButton(
-                      icon: new FaIcon(FontAwesomeIcons.boxes),
-                      tooltip: L10().stock,
-                      onPressed: () { _stock(context); },
-                    ),
-                    Text(L10().stock),
-                  ],
+                IconButton(
+                  icon: FaIcon(FontAwesomeIcons.solidStar),
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => StarredPartWidget()));
+                  },
                 ),
-                Column(
-                  children: <Widget>[
-                    IconButton(
-                      icon: new FaIcon(FontAwesomeIcons.search),
-                      tooltip: L10().searchStock,
-                      onPressed: _searchStock,
-                    ),
-                    Text(L10().searchStock),
-                  ],
-                ),
+                Text("Starred Parts"),
               ]
             ),
-            Spacer(),
-            // TODO - Re-add these when the features actually do something..
+             */
+            _iconButton(
+              L10().stock,
+              FontAwesomeIcons.boxes,
+              callback: () {
+                _stock(context);
+              }
+            ),
+            _iconButton(
+              L10().searchStock,
+              FontAwesomeIcons.search,
+              callback: () {
+                _searchStock();
+              }
+            ),
+            _iconButton(
+              L10().purchaseOrders,
+              FontAwesomeIcons.shoppingCart,
+              callback: () {
+                // TODO
+              }
+            ),
+            _iconButton(
+              L10().suppliers,
+              FontAwesomeIcons.building,
+              callback: () {
+                _suppliers();
+              }
+            ),
+            _iconButton(
+              L10().manufacturers,
+              FontAwesomeIcons.industry,
+              callback: () {
+                // TODO
+              }
+            ),
             /*
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        Spacer(),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Column(
               children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    IconButton(
-                      icon: new FaIcon(FontAwesomeIcons.building),
-                      tooltip: "Suppliers",
-                        onPressed: _suppliers,
-                    ),
-                    Text("Suppliers"),
-                  ],
+                IconButton(
+                  icon: new FaIcon(FontAwesomeIcons.tools),
+                  tooltip: "Build",
+                  onPressed: _unsupported,
                 ),
-                Column(
-                  children: <Widget>[
-                    IconButton(
-                      icon: FaIcon(FontAwesomeIcons.industry),
-                      tooltip: "Manufacturers",
-                      onPressed: _manufacturers,
-                    ),
-                    Text("Manufacturers")
-                  ],
-                ),
-                Column(
-                  children: <Widget>[
-                    IconButton(
-                      icon: FaIcon(FontAwesomeIcons.userTie),
-                      tooltip: "Customers",
-                      onPressed: _customers,
-                    ),
-                    Text("Customers"),
-                  ]
-                )
+                Text("Build"),
               ],
             ),
-            Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            Column(
               children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    IconButton(
-                      icon: new FaIcon(FontAwesomeIcons.tools),
-                      tooltip: "Build",
-                      onPressed: _unsupported,
-                    ),
-                    Text("Build"),
-                  ],
+                IconButton(
+                  icon: new FaIcon(FontAwesomeIcons.shoppingCart),
+                  tooltip: "Order",
+                  onPressed: _unsupported,
                 ),
-                Column(
-                  children: <Widget>[
-                    IconButton(
-                      icon: new FaIcon(FontAwesomeIcons.shoppingCart),
-                      tooltip: "Order",
-                      onPressed: _unsupported,
-                    ),
-                    Text("Order"),
-                  ]
-                ),
-                Column(
-                  children: <Widget>[
-                    IconButton(
-                      icon: new FaIcon(FontAwesomeIcons.truck),
-                      tooltip: "Ship",
-                      onPressed: _unsupported,
-                    ),
-                    Text("Ship"),
-                  ]
-                )
-              ],
+                Text("Order"),
+              ]
             ),
-            Spacer(),
-            */
-            Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+            Column(
               children: <Widget>[
-                Expanded(
-                  child: _serverTile(),
+                IconButton(
+                  icon: new FaIcon(FontAwesomeIcons.truck),
+                  tooltip: "Ship",
+                  onPressed: _unsupported,
                 ),
-              ],
-            ),
-          ]),
+                Text("Ship"),
+              ]
+            )
+          ],
         ),
-      ),
+        Spacer(),
+        */
+            /*
+        Spacer(),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Expanded(
+              child: _serverTile(),
+            ),
+          ],
+        ),
+      ]),
+       */
+        ],
+      )
     );
   }
 }
