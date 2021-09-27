@@ -1,3 +1,5 @@
+import 'package:inventree/inventree/company.dart';
+
 import 'model.dart';
 
 // TODO: In the future, status codes should be retrieved from the server
@@ -8,7 +10,7 @@ const int PO_STATUS_CANCELLED = 40;
 const int PO_STATUS_LOST = 50;
 const int PO_STATUS_RETURNED = 60;
 
-class InvenTreePO extends InvenTreeModel {
+class InvenTreePurchaseOrder extends InvenTreeModel {
 
   @override
   String get URL => "order/po/";
@@ -26,7 +28,14 @@ class InvenTreePO extends InvenTreeModel {
     };
   }
 
-  InvenTreePO() : super();
+  InvenTreePurchaseOrder() : super();
+
+  @override
+  Map<String, String> defaultListFilters() {
+    return {
+      "supplier_detail": "true",
+    };
+  }
 
   String get issueDate => jsondata['issue_date'] ?? "";
 
@@ -44,7 +53,14 @@ class InvenTreePO extends InvenTreeModel {
 
   int get responsible => jsondata['responsible'] ?? -1;
 
-  int get supplier => jsondata['supplier'] ?? -1;
+  int get supplierId => jsondata['supplier'] ?? -1;
+
+  InvenTreeCompany get supplier {
+
+    dynamic supplier_detail = jsondata["supplier_detail"] ?? {};
+
+    return InvenTreeCompany.fromJson(supplier_detail);
+  }
 
   String get supplierReference => jsondata['supplier_reference'] ?? "";
 
@@ -56,11 +72,11 @@ class InvenTreePO extends InvenTreeModel {
 
   bool get isFailed => this.status == PO_STATUS_CANCELLED || this.status == PO_STATUS_LOST || this.status == PO_STATUS_RETURNED;
 
-  InvenTreePO.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+  InvenTreePurchaseOrder.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) {
-    return InvenTreePO.fromJson(json);
+    return InvenTreePurchaseOrder.fromJson(json);
   }
 }
 

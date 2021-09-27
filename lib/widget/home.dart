@@ -15,6 +15,7 @@ import 'package:inventree/settings/login.dart';
 import 'package:inventree/widget/category_display.dart';
 import 'package:inventree/widget/company_list.dart';
 import 'package:inventree/widget/location_display.dart';
+import 'package:inventree/widget/purchase_order_list.dart';
 import 'package:inventree/widget/search.dart';
 import 'package:inventree/widget/spinner.dart';
 import 'package:inventree/widget/drawer.dart';
@@ -85,6 +86,14 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
 
   void _showPurchaseOrders(BuildContext context) {
     if (!InvenTreeAPI().checkConnection(context)) return;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PurchaseOrderListWidget(
+        )
+      )
+    );
   }
 
 
@@ -238,7 +247,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
           children: [
             FaIcon(
               icon,
-              color: COLOR_CLICK,
+              color: callback == null ? Colors.grey : COLOR_CLICK,
             ),
             Divider(
               height: 10,
@@ -333,6 +342,10 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
                 callback: () {
                   _showPurchaseOrders(context);
                 }
+            ),
+            _iconButton(
+              L10().salesOrders,
+              FontAwesomeIcons.truck,
             ),
             _iconButton(
                 L10().suppliers,
