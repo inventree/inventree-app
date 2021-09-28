@@ -395,7 +395,7 @@ class APIFormField {
     // Render a "related field" based on the "model" type
 
     // Convert to JSON
-    Map<String, dynamic> data = item as Map<String, dynamic>;
+    var data = Map<String, dynamic>.from((item ?? {}) as Map);
 
     switch (model) {
       case "part":

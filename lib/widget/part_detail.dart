@@ -400,6 +400,12 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
     fields["part"]["hidden"] = true;
 
+    int? default_location = part.defaultLocation;
+
+    if (default_location != null) {
+      fields["location"]["value"] = default_location;
+    }
+
     InvenTreeStockItem().createForm(
         context,
         L10().stockItemCreate,

@@ -139,9 +139,9 @@ class InvenTreePart extends InvenTreeModel {
       "keywords": {},
       "link": {},
 
-      // Parent category
-      "category": {
-      },
+      "category": {},
+
+      "default_location": {},
 
       "units": {},
 
@@ -241,6 +241,8 @@ class InvenTreePart extends InvenTreeModel {
       }
     });
   }
+
+  int? get defaultLocation => jsondata["default_location"] as int?;
 
     // Get the number of stock on order for this Part
     double get onOrder => double.tryParse(jsondata["ordering"].toString()) ?? 0;
