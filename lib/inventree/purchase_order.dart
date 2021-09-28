@@ -52,7 +52,7 @@ class InvenTreePurchaseOrder extends InvenTreeModel {
 
   String get targetDate => jsondata['target_date'] ?? "";
 
-  int get lineItems => jsondata['line_items'] ?? 0;
+  int get lineItemCount => jsondata['line_items'] ?? 0;
 
   bool get overdue => jsondata['overdue'] ?? false;
 
@@ -144,9 +144,13 @@ class InvenTreePOLineItem extends InvenTreeModel {
     };
   }
 
+  bool get isComplete => received >= quantity;
+
   double get quantity => jsondata['quantity'] ?? 0;
 
   double get received => jsondata['received'] ?? 0;
+
+  double get outstanding => quantity - received;
 
   String get reference => jsondata['reference'] ?? "";
 
@@ -161,6 +165,17 @@ class InvenTreePOLineItem extends InvenTreeModel {
       return null;
     } else {
       return InvenTreePart.fromJson(part_detail);
+    }
+  }
+
+  InvenTreeSupplierPart? get supplierPart {
+
+    dynamic detail = jsondata["supplier_part_detail"] ?? null;
+
+    if (detail == null) {
+      return null;
+    } else {
+      return InvenTreeSupplierPart.fromJson(detail);
     }
   }
 

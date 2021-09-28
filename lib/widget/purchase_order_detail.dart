@@ -32,6 +32,8 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
   List<InvenTreePOLineItem> lines = [];
 
+  int completedLines = 0;
+
   @override
   String getAppBarTitle(BuildContext context) => L10().purchaseOrder;
 
@@ -60,6 +62,14 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
     lines = await order.getLineItems();
 
+    completedLines = 0;
+
+    for (var line in lines) {
+      if (line.isComplete) {
+        completedLines += 1;
+      }
+    }
+
   }
 
   void editOrder(BuildContext context) async {
@@ -73,27 +83,40 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
     );
   }
 
+  Widget headerTile(BuildContext context) {
+
+    InvenTreeCompany? supplier = order.supplier;
+
+    return Card(
+        child: ListTile(
+          title: Text(order.reference),
+          subtitle: Text(order.description),
+          leading: supplier == null ? null : InvenTreeAPI().getImage(supplier.thumbnail, width: 40, height: 40),
+        )
+    );
+
+  }
+
   List<Widget> orderTiles(BuildContext context) {
 
     List<Widget> tiles = [];
 
     InvenTreeCompany? supplier = order.supplier;
 
-    tiles.add(Card(
-      child: ListTile(
-        title: Text(order.reference),
-        subtitle: Text(order.description),
-        leading: supplier == null ? null : InvenTreeAPI().getImage(supplier.thumbnail, width: 40, height: 40),
-      )
-    ));
+    tiles.add(headerTile(context));
 
     if (supplier != null) {
       tiles.add(ListTile(
         title: Text(L10().supplier),
         subtitle: Text(supplier.name),
-        leading: FaIcon(FontAwesomeIcons.building),
+        leading: FaIcon(FontAwesomeIcons.building, color: COLOR_CLICK),
         onTap: () {
-          // TODO - Navigate to "supplier" page
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CompanyDetailWidget(supplier)
+            )
+          );
         },
       ));
     }
@@ -105,6 +128,30 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
         leading: FaIcon(FontAwesomeIcons.hashtag),
       ));
     }
+
+    tiles.add(ListTile(
+      title: Text(L10().lineItems),
+      leading: FaIcon(FontAwesomeIcons.clipboardList, color: COLOR_CLICK),
+      trailing: Text("${order.lineItemCount}"),
+      onTap: () {
+        setState(() {
+          // Switch to the "line items" tab
+          tabIndex = 1;
+        });
+      },
+    ));
+
+    tiles.add(ListTile(
+      title: Text(L10().received),
+      leading: FaIcon(FontAwesomeIcons.clipboardCheck, color: COLOR_CLICK),
+      trailing: Text("${completedLines}"),
+      onTap: () {
+        setState(() {
+          // Switch to the "received items" tab
+          tabIndex = 2;
+        });
+      },
+    ));
 
     if (order.issueDate.isNotEmpty) {
       tiles.add(ListTile(
@@ -126,6 +173,33 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
   }
 
+  List<Widget> lineTiles(BuildContext context) {
+
+    List<Widget> tiles = [];
+
+    tiles.add(headerTile(context));
+
+    for (var line in lines) {
+
+      InvenTreeSupplierPart? supplierPart = line.supplierPart;
+
+      if (supplierPart == null) {
+        continue;
+      } else {
+        tiles.add(
+          ListTile(
+            title: Text(supplierPart.SKU),
+            subtitle: Text(supplierPart.partName),
+            leading: InvenTreeAPI().getImage(supplierPart.partImage, width: 40, height: 40),
+            trailing: Text("${line.quantity}"),
+          )
+        );
+      }
+    }
+
+    return tiles;
+  }
+
   @override
   Widget getBody(BuildContext context) {
 
@@ -139,6 +213,10 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       case 0:
         return ListView(
           children: orderTiles(context)
+        );
+      case 1:
+        return ListView(
+          children: lineTiles(context)
         );
       case 2:
         // Stock items received against this order

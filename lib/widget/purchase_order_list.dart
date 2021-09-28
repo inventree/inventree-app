@@ -166,7 +166,7 @@ class _PaginatedPurchaseOrderListState extends State<_PaginatedPurchaseOrderList
         width: 40,
         height: 40,
       ),
-      trailing: Text("${order.lineItems}"),
+      trailing: Text("${order.lineItemCount}"),
       onTap: () async {
         Navigator.push(
           context,

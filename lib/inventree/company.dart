@@ -103,6 +103,10 @@ class InvenTreeSupplierPart extends InvenTreeModel {
 
   int get partId => jsondata['part'] ?? -1;
 
+  String get partImage => jsondata["part_detail"]["thumbnail"] ?? InvenTreeAPI.staticThumb;
+
+  String get partName => jsondata["part_detail"]["full_name"] ?? "";
+
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) {
     var part = InvenTreeSupplierPart.fromJson(json);
