@@ -9,6 +9,8 @@
 .history
 .svn/
 
+coverage/*
+
 # Sentry API key
 lib/dsn.dart
 
