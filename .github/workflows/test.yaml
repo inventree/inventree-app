@@ -52,9 +52,9 @@ jobs:
         uses: subosito/flutter-action@v1
         with:
           flutter-version: '2.2.3'
+      - run: flutter pub get
       - name: Check Gradle Version
         run: cd android && ./gradlew --version
-      - run: flutter pub get
       - run: cp lib/dummy_dsn.dart lib/dsn.dart
       - run: flutter build apk
 
