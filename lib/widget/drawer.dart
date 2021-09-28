@@ -1,6 +1,5 @@
 import "package:inventree/api.dart";
 import "package:inventree/barcode.dart";
-import "package:inventree/widget/company_list.dart";
 import "package:inventree/widget/search.dart";
 import "package:flutter/material.dart";
 import "package:inventree/l10.dart";
@@ -76,6 +75,7 @@ class InvenTreeDrawer extends StatelessWidget {
     Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(null)));
   }
 
+  /*
   void _showSuppliers() {
     if (!InvenTreeAPI().checkConnection(context)) return;
     _closeDrawer();
@@ -96,6 +96,7 @@ class InvenTreeDrawer extends StatelessWidget {
 
     Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyListWidget(L10().customers, {"is_customer": "true"})));
   }
+   */
 
   /*
    * Load settings widget

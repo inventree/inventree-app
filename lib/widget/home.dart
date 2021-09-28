@@ -1,4 +1,5 @@
 import "package:inventree/app_colors.dart";
+import "package:inventree/settings/settings.dart";
 import "package:inventree/user_profile.dart";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
@@ -16,9 +17,7 @@ import "package:inventree/widget/category_display.dart";
 import "package:inventree/widget/company_list.dart";
 import "package:inventree/widget/location_display.dart";
 import "package:inventree/widget/purchase_order_list.dart";
-import "package:inventree/widget/search.dart";
 import "package:inventree/widget/snacks.dart";
-import "package:inventree/widget/spinner.dart";
 import "package:inventree/widget/drawer.dart";
 
 class InvenTreeHomePage extends StatefulWidget {
@@ -42,22 +41,8 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
   // Selected user profile
   UserProfile? _profile;
 
-  void _searchParts() {
-    if (!InvenTreeAPI().checkConnection(context)) return;
-
-    showSearch(
-        context: context,
-        delegate: PartSearchDelegate(context)
-    );
-  }
-
-  void _searchStock() {
-    if (!InvenTreeAPI().checkConnection(context)) return;
-
-    showSearch(
-        context: context,
-        delegate: StockSearchDelegate(context)
-    );
+  void _search(BuildContext context) {
+    // TODO
   }
 
   void _scan(BuildContext context) {
@@ -72,12 +57,18 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));
   }
 
+  void _showSettings(BuildContext context) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeSettingsWidget()));
+  }
+
+  /*
   void _showStarredParts(BuildContext context) {
     if (!InvenTreeAPI().checkConnection(context)) return;
 
     // TODO
     // Navigator.push(context, MaterialPageRoute(builder: (context) => StarredPartWidget()));
   }
+   */
 
   void _showStock(BuildContext context) {
     if (!InvenTreeAPI().checkConnection(context)) return;
@@ -143,67 +134,6 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     setState(() {});
   }
 
-  ListTile _serverTile() {
-
-    // No profile selected
-    // Tap to select / create a profile
-    if (_profile == null) {
-      return ListTile(
-        title: Text(L10().profileNotSelected),
-        subtitle: Text(L10().profileTapToCreate),
-        leading: FaIcon(FontAwesomeIcons.server),
-        trailing: FaIcon(
-          FontAwesomeIcons.user,
-          color: COLOR_DANGER,
-        ),
-        onTap: () {
-          _selectProfile();
-        },
-      );
-    }
-
-    // Profile is selected ...
-    if (InvenTreeAPI().isConnecting()) {
-      return ListTile(
-        title: Text(L10().serverConnecting),
-        subtitle: Text("${InvenTreeAPI().baseUrl}"),
-        leading: FaIcon(FontAwesomeIcons.server),
-        trailing: Spinner(
-          icon: FontAwesomeIcons.spinner,
-          color: COLOR_PROGRESS,
-        ),
-        onTap: () {
-          _selectProfile();
-        }
-      );
-    } else if (InvenTreeAPI().isConnected()) {
-      return ListTile(
-        title: Text(L10().serverConnected),
-        subtitle: Text("${InvenTreeAPI().baseUrl}"),
-        leading: FaIcon(FontAwesomeIcons.server),
-        trailing: FaIcon(
-          FontAwesomeIcons.checkCircle,
-          color: COLOR_SUCCESS
-        ),
-        onTap: () {
-          _selectProfile();
-        },
-      );
-    } else {
-      return ListTile(
-        title: Text(L10().serverCouldNotConnect),
-        subtitle: Text("${_profile!.server}"),
-        leading: FaIcon(FontAwesomeIcons.server),
-        trailing: FaIcon(
-          FontAwesomeIcons.timesCircle,
-          color: COLOR_DANGER,
-        ),
-        onTap: () {
-          _selectProfile();
-        },
-      );
-    }
-  }
 
   Widget _iconButton(BuildContext context, String label, IconData icon, {Function()? callback, String role = "", String permission = ""}) {
 
@@ -230,6 +160,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
             ),
             Divider(
               height: 10,
+              thickness: 0,
             ),
             Text(
               label,
@@ -257,52 +188,35 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     );
   }
 
-
-  @override
-  Widget build(BuildContext context) {
-
-    return Scaffold(
-      key: _homeKey,
-      appBar: AppBar(
-        title: Text(L10().appTitle),
+  List<Widget> getGridTiles(BuildContext context) {
+    return [
+      _iconButton(
+          context,
+          L10().scanBarcode,
+          FontAwesomeIcons.barcode,
+          callback: () {
+            _scan(context);
+          }
       ),
-      drawer: InvenTreeDrawer(context),
-      body: ListView(
-        physics: ClampingScrollPhysics(),
-        shrinkWrap: true,
-        children: [
-          GridView.extent(
-            maxCrossAxisExtent: 140,
-            shrinkWrap: true,
-            physics: ClampingScrollPhysics(),
-            children: [
-            _iconButton(
-              context,
-              L10().scanBarcode,
-              FontAwesomeIcons.barcode,
-              callback: () {
-                _scan(context);
-              }
-            ),
-            _iconButton(
-              context,
-              L10().search,
-              FontAwesomeIcons.search,
-              callback: () {
-                // TODO: Launch "generic" search widget
-              }
-            ),
-            _iconButton(
-              context,
-              L10().parts,
-              FontAwesomeIcons.shapes,
-              callback: () {
-                _showParts(context);
-              }
-            ),
+      _iconButton(
+          context,
+          L10().search,
+          FontAwesomeIcons.search,
+          callback: () {
+            _search(context);
+          }
+      ),
+      _iconButton(
+          context,
+          L10().parts,
+          FontAwesomeIcons.shapes,
+          callback: () {
+            _showParts(context);
+          }
+      ),
 
-              // TODO - Re-add starred parts link
-              /*
+      // TODO - Re-add starred parts link
+      /*
             Column(
               children: <Widget>[
                 IconButton(
@@ -316,106 +230,89 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
             ),
              */
 
-            _iconButton(
-              context,
-              L10().stock,
-              FontAwesomeIcons.boxes,
-              callback: () {
-                _showStock(context);
-              }
+      _iconButton(
+          context,
+          L10().stock,
+          FontAwesomeIcons.boxes,
+          callback: () {
+            _showStock(context);
+          }
+      ),
+      _iconButton(
+          context,
+          L10().purchaseOrders,
+          FontAwesomeIcons.shoppingCart,
+          callback: () {
+            _showPurchaseOrders(context);
+          }
+      ),
+      _iconButton(
+        context,
+        L10().salesOrders,
+        FontAwesomeIcons.truck,
+      ),
+      _iconButton(
+          context,
+          L10().suppliers,
+          FontAwesomeIcons.building,
+          callback: () {
+            _showSuppliers(context);
+          }
+      ),
+      _iconButton(
+          context,
+          L10().manufacturers,
+          FontAwesomeIcons.industry,
+          callback: () {
+            _showManufacturers(context);
+          }
+      ),
+      _iconButton(
+          context,
+          L10().customers,
+          FontAwesomeIcons.userTie,
+          callback: () {
+            _showCustomers(context);
+          }
+      ),
+      _iconButton(
+        context,
+        L10().settings,
+        FontAwesomeIcons.cogs,
+        callback: () {
+          _showSettings(context);
+        }
+      )
+    ];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Scaffold(
+      key: _homeKey,
+      appBar: AppBar(
+        title: Text(L10().appTitle),
+        actions: [
+          IconButton(
+            icon: FaIcon(
+              FontAwesomeIcons.server,
+              color: InvenTreeAPI().isConnected() ? COLOR_SUCCESS : COLOR_DANGER,
             ),
-            _iconButton(
-              context,
-              L10().purchaseOrders,
-              FontAwesomeIcons.shoppingCart,
-              callback: () {
-                _showPurchaseOrders(context);
-              }
-            ),
-            _iconButton(
-              context,
-              L10().salesOrders,
-              FontAwesomeIcons.truck,
-            ),
-            _iconButton(
-              context,
-              L10().suppliers,
-              FontAwesomeIcons.building,
-              callback: () {
-                _showSuppliers(context);
-              }
-            ),
-            _iconButton(
-              context,
-              L10().manufacturers,
-              FontAwesomeIcons.industry,
-              callback: () {
-                _showManufacturers(context);
-              }
-            ),
-            _iconButton(
-              context,
-              L10().customers,
-              FontAwesomeIcons.userTie,
-              callback: () {
-                _showCustomers(context);
-              }
-            ),
-              /*
-        Spacer(),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Column(
-              children: <Widget>[
-                IconButton(
-                  icon: new FaIcon(FontAwesomeIcons.tools),
-                  tooltip: "Build",
-                  onPressed: _unsupported,
-                ),
-                Text("Build"),
-              ],
-            ),
-            Column(
-              children: <Widget>[
-                IconButton(
-                  icon: new FaIcon(FontAwesomeIcons.shoppingCart),
-                  tooltip: "Order",
-                  onPressed: _unsupported,
-                ),
-                Text("Order"),
-              ]
-            ),
-            Column(
-              children: <Widget>[
-                IconButton(
-                  icon: new FaIcon(FontAwesomeIcons.truck),
-                  tooltip: "Ship",
-                  onPressed: _unsupported,
-                ),
-                Text("Ship"),
-              ]
-            )
-          ],
-        ),
-        Spacer(),
-        */
-              /*
-        Spacer(),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              child: _serverTile(),
-            ),
-          ],
-        ),
-      ]),
-       */
-            ],
+            onPressed: _selectProfile,
           )
-        ]
+        ],
+      ),
+      drawer: InvenTreeDrawer(context),
+      body: ListView(
+        children: [
+          GridView.extent(
+            maxCrossAxisExtent: 140,
+            shrinkWrap: true,
+            physics: ClampingScrollPhysics(),
+            children: getGridTiles(context),
+          ),
+        ],
       ),
     );
   }
