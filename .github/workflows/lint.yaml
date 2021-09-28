@@ -18,8 +18,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Checkout submodules
-        uses: textbook/git-checkout-submodule-action@master
+        with:
+          submodules: recursive
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
