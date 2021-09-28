@@ -225,7 +225,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
   void _countStockDialog() async {
 
-    _quantityController.text = item.quantityString;
+    _quantityController.text = item.quantity.toString();
     _notesController.clear();
 
     showFormDialog(L10().countStock,
@@ -292,7 +292,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     int? location_pk;
 
-    _quantityController.text = "${item.quantityString}";
+    _quantityController.text = "${item.quantity}";
 
     showFormDialog(L10().transferStock,
         key: _moveStockKey,
