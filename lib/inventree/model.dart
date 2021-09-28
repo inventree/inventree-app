@@ -39,6 +39,11 @@ class InvenTreePageResponse {
  */
 class InvenTreeModel {
 
+  InvenTreeModel();
+
+  // Construct an InvenTreeModel from a JSON data object
+  InvenTreeModel.fromJson(this.jsondata);
+
   // Override the endpoint URL for each subclass
   String get URL => "";
 
@@ -115,19 +120,6 @@ class InvenTreeModel {
   // Accessor for the API
   var api = InvenTreeAPI();
 
-  // Default empty object constructor
-  InvenTreeModel() {
-    jsondata.clear();
-  }
-
-  // Construct an InvenTreeModel from a JSON data object
-  InvenTreeModel.fromJson(Map<String, dynamic> json) {
-
-    // Store the json object
-    jsondata = json;
-
-  }
-
   int get pk => (jsondata["pk"] ?? -1) as int;
 
   // Some common accessors
@@ -185,10 +177,14 @@ class InvenTreeModel {
 
   }
 
-  Map<String, String> defaultListFilters() { return Map<String, String>(); }
+  Map<String, String> defaultListFilters() {
+    return {};
+  }
 
   // A map of "default" headers to use when performing a GET request
-  Map<String, String> defaultGetFilters() { return Map<String, String>(); }
+  Map<String, String> defaultGetFilters() {
+    return {};
+  }
 
   /*
    * Reload this object, by requesting data from the server
@@ -357,7 +353,7 @@ class InvenTreeModel {
     }
 
     // Construct the response
-    InvenTreePageResponse page = new InvenTreePageResponse();
+    InvenTreePageResponse page = InvenTreePageResponse();
 
     var data = response.asMap();
 
@@ -458,8 +454,9 @@ class InvenTreeModel {
 
 class InvenTreeAttachment extends InvenTreeModel {
   // Class representing an "attachment" file
-
   InvenTreeAttachment() : super();
+
+  InvenTreeAttachment.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
   String get attachment => (jsondata["attachment"] ?? "") as String;
 
@@ -508,8 +505,6 @@ class InvenTreeAttachment extends InvenTreeModel {
       return null;
     }
   }
-
-  InvenTreeAttachment.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
   Future<bool> uploadAttachment(File attachment, {String comment = "", Map<String, String> fields = const {}}) async {
 

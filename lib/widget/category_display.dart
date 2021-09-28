@@ -32,6 +32,7 @@ class CategoryDisplayWidget extends StatefulWidget {
 
 class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
+  _CategoryDisplayState(this.category);
 
   @override
   String getAppBarTitle(BuildContext context) => L10().partCategory;
@@ -73,8 +74,6 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
         }
     );
   }
-
-  _CategoryDisplayState(this.category);
 
   // The local InvenTreePartCategory object
   final InvenTreePartCategory? category;
@@ -350,9 +349,10 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
  * Builder for displaying a list of PartCategory objects
  */
 class SubcategoryList extends StatelessWidget {
-  final List<InvenTreePartCategory> _categories;
 
   const SubcategoryList(this._categories);
+
+  final List<InvenTreePartCategory> _categories;
 
   void _openCategory(BuildContext context, int pk) {
 
@@ -397,11 +397,11 @@ class SubcategoryList extends StatelessWidget {
 
 class PaginatedPartList extends StatefulWidget {
 
+  PaginatedPartList(this.filters, {this.onTotalChanged});
+
   final Map<String, String> filters;
 
   Function(int)? onTotalChanged;
-
-  PaginatedPartList(this.filters, {this.onTotalChanged});
 
   @override
   _PaginatedPartListState createState() => _PaginatedPartListState(filters, onTotalChanged);
@@ -410,6 +410,8 @@ class PaginatedPartList extends StatefulWidget {
 
 class _PaginatedPartListState extends State<PaginatedPartList> {
 
+  _PaginatedPartListState(this.filters, this.onTotalChanged);
+
   static const _pageSize = 25;
 
   String _searchTerm = "";
@@ -417,8 +419,6 @@ class _PaginatedPartListState extends State<PaginatedPartList> {
   Function(int)? onTotalChanged;
 
   final Map<String, String> filters;
-
-  _PaginatedPartListState(this.filters, this.onTotalChanged);
 
   final PagingController<int, InvenTreePart> _pagingController = PagingController(firstPageKey: 0);
 

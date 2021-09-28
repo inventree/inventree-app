@@ -10,9 +10,9 @@ import "package:inventree/l10.dart";
 
 class PartNotesWidget extends StatefulWidget {
 
-  final InvenTreePart part;
-
   const PartNotesWidget(this.part, {Key? key}) : super(key: key);
+
+  final InvenTreePart part;
 
   @override
   _PartNotesState createState() => _PartNotesState(part);
@@ -21,9 +21,9 @@ class PartNotesWidget extends StatefulWidget {
 
 class _PartNotesState extends RefreshableState<PartNotesWidget> {
 
-  final InvenTreePart part;
-
   _PartNotesState(this.part);
+
+  final InvenTreePart part;
 
   @override
   Future<void> request() async {

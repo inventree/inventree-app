@@ -17,13 +17,13 @@ class InvenTreeLoginSettingsWidget extends StatefulWidget {
 
 class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
 
-  final GlobalKey<_InvenTreeLoginSettingsState> _loginKey = GlobalKey<_InvenTreeLoginSettingsState>();
-
-  List<UserProfile> profiles = [];
-
   _InvenTreeLoginSettingsState() {
     _reload();
   }
+
+  final GlobalKey<_InvenTreeLoginSettingsState> _loginKey = GlobalKey<_InvenTreeLoginSettingsState>();
+
+  List<UserProfile> profiles = [];
 
   Future <void> _reload() async {
 
@@ -237,9 +237,9 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
 
 class ProfileEditWidget extends StatefulWidget {
 
-  UserProfile? profile;
-
   ProfileEditWidget(this.profile) : super();
+
+  UserProfile? profile;
 
   @override
   _ProfileEditState createState() => _ProfileEditState(profile);
@@ -247,11 +247,11 @@ class ProfileEditWidget extends StatefulWidget {
 
 class _ProfileEditState extends State<ProfileEditWidget> {
 
-  UserProfile? profile;
-
   _ProfileEditState(this.profile) : super();
 
-  final formKey = new GlobalKey<FormState>();
+  UserProfile? profile;
+
+  final formKey = GlobalKey<FormState>();
 
   String name = "";
   String server = "";
@@ -359,7 +359,7 @@ class _ProfileEditState extends State<ProfileEditWidget> {
 
                     if (uri.hasScheme) {
                       print("Scheme: ${uri.scheme}");
-                      if (!(["http", "https"].contains(uri.scheme.toLowerCase()))) {
+                      if (!["http", "https"].contains(uri.scheme.toLowerCase())) {
                         return L10().serverStart;
                       }
                     } else {

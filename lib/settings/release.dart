@@ -6,9 +6,9 @@ import "package:inventree/l10.dart";
 
 class ReleaseNotesWidget extends StatelessWidget {
 
-  final String releaseNotes;
-
   const ReleaseNotesWidget(this.releaseNotes);
+
+  final String releaseNotes;
 
   @override
   Widget build (BuildContext context) {
@@ -27,9 +27,9 @@ class ReleaseNotesWidget extends StatelessWidget {
 
 class CreditsWidget extends StatelessWidget {
 
-  final String credits;
-
   const CreditsWidget(this.credits);
+
+  final String credits;
 
   @override
   Widget build (BuildContext context) {

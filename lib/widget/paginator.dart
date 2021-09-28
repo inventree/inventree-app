@@ -5,13 +5,13 @@ import "package:inventree/l10.dart";
 
 class PaginatedSearchWidget extends StatelessWidget {
 
+  PaginatedSearchWidget(this.controller, this.onChanged, this.results);
+
   Function onChanged;
 
   int results = 0;
 
   TextEditingController controller;
-
-  PaginatedSearchWidget(this.controller, this.onChanged, this.results);
 
   @override
   Widget build(BuildContext context) {

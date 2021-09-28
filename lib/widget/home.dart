@@ -31,13 +31,13 @@ class InvenTreeHomePage extends StatefulWidget {
 
 class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
 
-  final GlobalKey<_InvenTreeHomePageState> _homeKey = GlobalKey<_InvenTreeHomePageState>();
-
   _InvenTreeHomePageState() : super() {
 
     // Initially load the profile and attempt server connection
     _loadProfile();
   }
+
+  final GlobalKey<_InvenTreeHomePageState> _homeKey = GlobalKey<_InvenTreeHomePageState>();
 
   // Selected user profile
   UserProfile? _profile;
@@ -266,7 +266,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
       appBar: AppBar(
         title: Text(L10().appTitle),
       ),
-      drawer: new InvenTreeDrawer(context),
+      drawer: InvenTreeDrawer(context),
       body: ListView(
         physics: ClampingScrollPhysics(),
         shrinkWrap: true,

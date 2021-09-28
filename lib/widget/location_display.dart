@@ -31,6 +31,8 @@ class LocationDisplayWidget extends StatefulWidget {
 
 class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
+  _LocationDisplayState(this.location);
+
   final InvenTreeStockLocation? location;
 
   @override
@@ -91,8 +93,6 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       }
     );
   }
-
-  _LocationDisplayState(this.location);
 
   List<InvenTreeStockLocation> _sublocations = [];
 
@@ -428,9 +428,10 @@ List<Widget> detailTiles() {
 
 
 class SublocationList extends StatelessWidget {
-  final List<InvenTreeStockLocation> _locations;
 
   const SublocationList(this._locations);
+
+  final List<InvenTreeStockLocation> _locations;
 
   void _openLocation(BuildContext context, int pk) {
 
@@ -475,9 +476,9 @@ class SublocationList extends StatelessWidget {
 
 class PaginatedStockList extends StatefulWidget {
 
-  final Map<String, String> filters;
-
   const PaginatedStockList(this.filters);
+
+  final Map<String, String> filters;
 
   @override
   _PaginatedStockListState createState() => _PaginatedStockListState(filters);
@@ -486,13 +487,13 @@ class PaginatedStockList extends StatefulWidget {
 
 class _PaginatedStockListState extends State<PaginatedStockList> {
 
+  _PaginatedStockListState(this.filters);
+
   static const _pageSize = 25;
 
   String _searchTerm = "";
 
   final Map<String, String> filters;
-
-  _PaginatedStockListState(this.filters);
 
   final PagingController<int, InvenTreeStockItem> _pagingController = PagingController(firstPageKey: 0);
 

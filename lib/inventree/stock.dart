@@ -12,6 +12,10 @@ import "package:inventree/api.dart";
 
 class InvenTreeStockItemTestResult extends InvenTreeModel {
 
+  InvenTreeStockItemTestResult() : super();
+
+  InvenTreeStockItemTestResult.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+
   @override
   String get URL => "stock/test/";
 
@@ -41,10 +45,6 @@ class InvenTreeStockItemTestResult extends InvenTreeModel {
 
   String get date => (jsondata["date"] ?? "") as String;
 
-  InvenTreeStockItemTestResult() : super();
-
-  InvenTreeStockItemTestResult.fromJson(Map<String, dynamic> json) : super.fromJson(json);
-
   @override
   InvenTreeStockItemTestResult createFromJson(Map<String, dynamic> json) {
     var result = InvenTreeStockItemTestResult.fromJson(json);
@@ -55,6 +55,10 @@ class InvenTreeStockItemTestResult extends InvenTreeModel {
 
 
 class InvenTreeStockItem extends InvenTreeModel {
+
+  InvenTreeStockItem() : super();
+
+  InvenTreeStockItem.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
   // Stock status codes
   static const int OK = 10;
@@ -128,33 +132,23 @@ class InvenTreeStockItem extends InvenTreeModel {
   @override
   Map<String, String> defaultGetFilters() {
 
-    var headers = new Map<String, String>();
-
-    headers["part_detail"] = "true";
-    headers["location_detail"] = "true";
-    headers["supplier_detail"] = "true";
-    headers["cascade"] = "false";
-
-    return headers;
+    return {
+      "part_detail": "true",
+      "location_detail": "true",
+      "supplier_detail": "true",
+      "cascade": "false"
+    };
   }
 
   @override
   Map<String, String> defaultListFilters() {
 
-    var headers = new Map<String, String>();
-
-    headers["part_detail"] = "true";
-    headers["location_detail"] = "true";
-    headers["supplier_detail"] = "true";
-    headers["cascade"] = "false";
-
-    return headers;
-  }
-
-  InvenTreeStockItem() : super();
-
-  InvenTreeStockItem.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
-    // TODO
+    return {
+      "part_detail": "true",
+      "location_detail": "true",
+      "supplier_detail": "true",
+      "cascade": "false"
+    };
   }
 
   List<InvenTreePartTestTemplate> testTemplates = [];
@@ -533,6 +527,10 @@ class InvenTreeStockItem extends InvenTreeModel {
 
 class InvenTreeStockLocation extends InvenTreeModel {
 
+  InvenTreeStockLocation() : super();
+
+  InvenTreeStockLocation.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+
   @override
   String get URL => "stock/location/";
 
@@ -565,10 +563,6 @@ class InvenTreeStockLocation extends InvenTreeModel {
   }
 
   int get itemcount => (jsondata["items"] ?? 0) as int;
-
-  InvenTreeStockLocation() : super();
-
-  InvenTreeStockLocation.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) {

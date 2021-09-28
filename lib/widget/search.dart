@@ -17,18 +17,6 @@ import "package:inventree/api.dart";
 
 class PartSearchDelegate extends SearchDelegate<InvenTreePart?> {
 
-  final partSearchKey = GlobalKey<ScaffoldState>();
-
-  BuildContext context;
-
-  // What did we search for last time?
-  String _cachedQuery = "";
-
-  bool _searching = false;
-
-  // Custom filters for the part search
-  Map<String, String> _filters = {};
-
   PartSearchDelegate(this.context, {Map<String, String> filters = const {}}) {
 
     // Copy filter values
@@ -41,6 +29,18 @@ class PartSearchDelegate extends SearchDelegate<InvenTreePart?> {
       }
     }
   }
+
+  final partSearchKey = GlobalKey<ScaffoldState>();
+
+  BuildContext context;
+
+  // What did we search for last time?
+  String _cachedQuery = "";
+
+  bool _searching = false;
+
+  // Custom filters for the part search
+  Map<String, String> _filters = {};
 
   @override
   String get searchFieldLabel => L10().searchParts;
@@ -207,17 +207,6 @@ class PartSearchDelegate extends SearchDelegate<InvenTreePart?> {
 
 class StockSearchDelegate extends SearchDelegate<InvenTreeStockItem?> {
 
-  final stockSearchKey = GlobalKey<ScaffoldState>();
-
-  final BuildContext context;
-
-  String _cachedQuery = "";
-
-  bool _searching = false;
-
-  // Custom filters for the stock item search
-  Map<String, String> _filters = {};
-
   StockSearchDelegate(this.context, {Map<String, String> filters = const {}}) {
 
     // Copy filter values
@@ -230,6 +219,17 @@ class StockSearchDelegate extends SearchDelegate<InvenTreeStockItem?> {
       }
     }
   }
+
+  final stockSearchKey = GlobalKey<ScaffoldState>();
+
+  final BuildContext context;
+
+  String _cachedQuery = "";
+
+  bool _searching = false;
+
+  // Custom filters for the stock item search
+  Map<String, String> _filters = {};
 
   @override
   String get searchFieldLabel => L10().searchStock;

@@ -10,6 +10,10 @@ import "model.dart";
 
 class InvenTreePartCategory extends InvenTreeModel {
 
+  InvenTreePartCategory() : super();
+
+  InvenTreePartCategory.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+
   @override
   String get URL => "part/category/";
 
@@ -25,12 +29,11 @@ class InvenTreePartCategory extends InvenTreeModel {
 
   @override
   Map<String, String> defaultListFilters() {
-    var filters = new Map<String, String>();
 
-    filters["active"] = "true";
-    filters["cascade"] = "false";
-
-    return filters;
+    return {
+      "active": "true",
+      "cascade": "false"
+    };
   }
 
   String get pathstring => (jsondata["pathstring"] ?? "") as String;
@@ -54,10 +57,6 @@ class InvenTreePartCategory extends InvenTreeModel {
 
   int get partcount => (jsondata["parts"] ?? 0) as int;
 
-  InvenTreePartCategory() : super();
-
-  InvenTreePartCategory.fromJson(Map<String, dynamic> json) : super.fromJson(json);
-
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) {
     var cat = InvenTreePartCategory.fromJson(json);
@@ -71,6 +70,10 @@ class InvenTreePartCategory extends InvenTreeModel {
 
 class InvenTreePartTestTemplate extends InvenTreeModel {
 
+  InvenTreePartTestTemplate() : super();
+
+  InvenTreePartTestTemplate.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+
   @override
   String get URL => "part/test-template/";
 
@@ -83,10 +86,6 @@ class InvenTreePartTestTemplate extends InvenTreeModel {
   bool get requiresValue => (jsondata["requires_value"] ?? false) as bool;
 
   bool get requiresAttachment => (jsondata["requires_attachment"] ?? false) as bool;
-
-  InvenTreePartTestTemplate() : super();
-
-  InvenTreePartTestTemplate.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) {
@@ -122,6 +121,10 @@ class InvenTreePartTestTemplate extends InvenTreeModel {
 
 
 class InvenTreePart extends InvenTreeModel {
+
+  InvenTreePart() : super();
+
+  InvenTreePart.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
   @override
   String get URL => "part/";
@@ -377,12 +380,6 @@ class InvenTreePart extends InvenTreeModel {
     // Return the "starred" status of this part
     bool get starred => (jsondata["starred"] ?? false) as bool;
 
-    InvenTreePart() : super();
-
-  InvenTreePart.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
-    // TODO
-  }
-
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) {
 
@@ -397,10 +394,10 @@ class InvenTreePartAttachment extends InvenTreeAttachment {
 
   InvenTreePartAttachment() : super();
 
+  InvenTreePartAttachment.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+
   @override
   String get URL => "part/attachment/";
-
-  InvenTreePartAttachment.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) {

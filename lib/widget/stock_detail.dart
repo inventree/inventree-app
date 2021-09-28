@@ -35,6 +35,8 @@ class StockDetailWidget extends StatefulWidget {
 
 class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
+  _StockItemDisplayState(this.item);
+
   @override
   String getAppBarTitle(BuildContext context) => L10().stockItem;
 
@@ -45,8 +47,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   final _removeStockKey = GlobalKey<FormState>();
   final _countStockKey = GlobalKey<FormState>();
   final _moveStockKey = GlobalKey<FormState>();
-
-  _StockItemDisplayState(this.item);
 
   @override
   List<Widget> getAppBarActions(BuildContext context) {

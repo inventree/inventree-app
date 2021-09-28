@@ -26,6 +26,8 @@ class StockItemTestResultsWidget extends StatefulWidget {
 
 class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestResultsWidget> {
 
+  _StockItemTestResultDisplayState(this.item);
+
   @override
   String getAppBarTitle(BuildContext context) => L10().testResults;
 
@@ -48,8 +50,6 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
   }
 
   final InvenTreeStockItem item;
-
-  _StockItemTestResultDisplayState(this.item);
 
   Future <void> addTestResult(BuildContext context, {String name = "", bool nameIsEditable = true, bool result = false, String value = "", bool valueRequired = false, bool attachmentRequired = false}) async  {
 

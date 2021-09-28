@@ -34,9 +34,9 @@ class PartDetailWidget extends StatefulWidget {
 
 class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
-  InvenTreePart part;
-
   _PartDisplayState(this.part);
+
+  InvenTreePart part;
 
   @override
   String getAppBarTitle(BuildContext context) => L10().partDetails;

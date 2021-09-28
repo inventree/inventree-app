@@ -55,5 +55,7 @@ linter:
 
     sort_child_properties_last: false
 
+    directives_ordering: false
+
     # Blindly follow the Flutter code style, which prefers types everywhere
     always_specify_types: false

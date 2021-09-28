@@ -12,9 +12,9 @@ import "package:inventree/api.dart";
 
 class StockNotesWidget extends StatefulWidget {
 
-  final InvenTreeStockItem item;
-
   const StockNotesWidget(this.item, {Key? key}) : super(key: key);
+
+  final InvenTreeStockItem item;
 
   @override
   _StockNotesState createState() => _StockNotesState(item);
@@ -23,9 +23,9 @@ class StockNotesWidget extends StatefulWidget {
 
 class _StockNotesState extends RefreshableState<StockNotesWidget> {
 
-  final InvenTreeStockItem item;
-
   _StockNotesState(this.item);
+
+  final InvenTreeStockItem item;
 
   @override
   String getAppBarTitle(BuildContext context) => L10().stockItemNotes;

@@ -16,6 +16,15 @@ class UserProfile {
     this.selected = false,
   });
 
+  factory UserProfile.fromJson(int key, Map<String, dynamic> json, bool isSelected) => UserProfile(
+    key: key,
+    name: json["name"] as String,
+    server: json["server"] as String,
+    username: json["username"] as String,
+    password: json["password"] as String,
+    selected: isSelected,
+  );
+
   // ID of the profile
   int? key;
 
@@ -36,15 +45,6 @@ class UserProfile {
   // User ID (will be provided by the server on log-in)
   int user_id = -1;
 
-  factory UserProfile.fromJson(int key, Map<String, dynamic> json, bool isSelected) => UserProfile(
-    key: key,
-    name: json["name"] as String,
-    server: json["server"] as String,
-    username: json["username"] as String,
-    password: json["password"] as String,
-    selected: isSelected,
-  );
-
   Map<String, dynamic> toJson() => {
     "name": name,
     "server": server,
@@ -62,7 +62,7 @@ class UserProfileDBManager {
 
   final store = StoreRef("profiles");
 
-  Future<Database> get _db async => await InvenTreePreferencesDB.instance.database;
+  Future<Database> get _db async => InvenTreePreferencesDB.instance.database;
 
   Future<bool> profileNameExists(String name) async {
 

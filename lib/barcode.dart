@@ -32,21 +32,21 @@ class BarcodeHandler {
    * based on the response returned from the InvenTree server
    */
 
-    String getOverlayText(BuildContext context) => "Barcode Overlay";
+  BarcodeHandler();
 
-    BarcodeHandler();
+  String getOverlayText(BuildContext context) => "Barcode Overlay";
 
-    QRViewController? _controller;
+  QRViewController? _controller;
 
-    Future<void> successTone() async {
+  Future<void> successTone() async {
 
-      final bool en = await InvenTreeSettingsManager().getValue("barcodeSounds", true) as bool;
+    final bool en = await InvenTreeSettingsManager().getValue("barcodeSounds", true) as bool;
 
-      if (en) {
-        final player = AudioCache();
-        player.play("sounds/barcode_scan.mp3");
-      }
+    if (en) {
+      final player = AudioCache();
+      player.play("sounds/barcode_scan.mp3");
     }
+  }
 
     Future <void> failureTone() async {
 
@@ -266,9 +266,9 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
    * Barcode handler for assigning a new barcode to a stock item
    */
 
-  final InvenTreeStockItem item;
-
   StockItemBarcodeAssignmentHandler(this.item);
+
+  final InvenTreeStockItem item;
 
   @override
   String getOverlayText(BuildContext context) => L10().barcodeScanAssign;
@@ -334,9 +334,9 @@ class StockItemScanIntoLocationHandler extends BarcodeHandler {
    * Barcode handler for scanning a provided StockItem into a scanned StockLocation
    */
 
-  final InvenTreeStockItem item;
-
   StockItemScanIntoLocationHandler(this.item);
+
+  final InvenTreeStockItem item;
 
   @override
   String getOverlayText(BuildContext context) => L10().barcodeScanLocation;
@@ -396,11 +396,11 @@ class StockLocationScanInItemsHandler extends BarcodeHandler {
   /*
    * Barcode handler for scanning stock item(s) into the specified StockLocation
    */
-  
-  final InvenTreeStockLocation location;
-  
+
   StockLocationScanInItemsHandler(this.location);
-  
+
+  final InvenTreeStockLocation location;
+
   @override
   String getOverlayText(BuildContext context) => L10().barcodeScanItem;
 
@@ -466,9 +466,9 @@ class StockLocationScanInItemsHandler extends BarcodeHandler {
 
 class InvenTreeQRView extends StatefulWidget {
 
-  final BarcodeHandler _handler;
-
   const InvenTreeQRView(this._handler, {Key? key}) : super(key: key);
+
+  final BarcodeHandler _handler;
 
   @override
   State<StatefulWidget> createState() => _QRViewState(_handler);
@@ -476,6 +476,8 @@ class InvenTreeQRView extends StatefulWidget {
 
 
 class _QRViewState extends State<InvenTreeQRView> {
+
+  _QRViewState(this._handler) : super();
 
   final GlobalKey qrKey = GlobalKey(debugLabel: "QR");
 
@@ -495,8 +497,6 @@ class _QRViewState extends State<InvenTreeQRView> {
 
     _controller!.resumeCamera();
   }
-
-  _QRViewState(this._handler) : super();
 
   void _onViewCreated(BuildContext context, QRViewController controller) {
     _controller = controller;

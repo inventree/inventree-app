@@ -50,7 +50,7 @@ class APIResponse {
 
   bool clientError() => (statusCode >= 400) && (statusCode < 500);
 
-  bool serverError() => (statusCode >= 500);
+  bool serverError() => statusCode >= 500;
 
   bool isMap() {
     return data != null && data is Map<String, dynamic>;
@@ -86,8 +86,6 @@ class APIResponse {
  */
 class InvenTreeFileService extends FileService {
 
-  HttpClient? _client;
-
   InvenTreeFileService({HttpClient? client, bool strictHttps = false}) {
     _client = client ?? HttpClient();
 
@@ -98,6 +96,8 @@ class InvenTreeFileService extends FileService {
       };
     }
   }
+
+  HttpClient? _client;
 
   @override
   Future<FileServiceResponse> get(String url,
@@ -132,6 +132,12 @@ class InvenTreeFileService extends FileService {
 
 
 class InvenTreeAPI {
+
+  factory InvenTreeAPI() {
+    return _api;
+  }
+
+  InvenTreeAPI._internal();
 
   // Minimum required API version for server
   static const _minApiVersion = 7;
@@ -236,14 +242,7 @@ class InvenTreeAPI {
   }
 
   // Ensure we only ever create a single instance of the API class
-  static final InvenTreeAPI _api = new InvenTreeAPI._internal();
-
-  factory InvenTreeAPI() {
-    return _api;
-  }
-
-  InvenTreeAPI._internal();
-
+  static final InvenTreeAPI _api = InvenTreeAPI._internal();
 
   /*
    * Connect to the remote InvenTree server:
@@ -481,7 +480,7 @@ class InvenTreeAPI {
 
   // Perform a PATCH request
   Future<APIResponse> patch(String url, {Map<String, String> body = const {}, int? expectedStatusCode}) async {
-    var _body = Map<String, String>();
+    Map<String, String> _body = {};
 
     // Copy across provided data
     body.forEach((K, V) => _body[K] = V);
@@ -939,7 +938,7 @@ class InvenTreeAPI {
 
   // Return a list of request headers
   Map<String, String> defaultHeaders() {
-    var headers = Map<String, String>();
+    Map<String, String> headers = {};
 
     headers[HttpHeaders.authorizationHeader] = _authorizationHeader();
     headers[HttpHeaders.acceptHeader] = "application/json";
@@ -983,7 +982,7 @@ class InvenTreeAPI {
       )
     );
 
-    return new CachedNetworkImage(
+    return CachedNetworkImage(
       imageUrl: url,
       placeholder: (context, url) => CircularProgressIndicator(),
       errorWidget: (context, url, error) => FaIcon(FontAwesomeIcons.timesCircle, color: COLOR_DANGER),

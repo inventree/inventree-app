@@ -12,9 +12,9 @@ import "package:inventree/l10.dart";
 
 class InvenTreeAboutWidget extends StatelessWidget {
 
-  final PackageInfo info;
-
   const InvenTreeAboutWidget(this.info) : super();
+
+  final PackageInfo info;
 
   Future <void> _releaseNotes(BuildContext context) async {
 

@@ -10,9 +10,9 @@ import "package:inventree/l10.dart";
 
 class CompanyDetailWidget extends StatefulWidget {
 
-  final InvenTreeCompany company;
-
   const CompanyDetailWidget(this.company, {Key? key}) : super(key: key);
+
+  final InvenTreeCompany company;
 
   @override
   _CompanyDetailState createState() => _CompanyDetailState(company);

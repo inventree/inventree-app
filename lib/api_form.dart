@@ -209,7 +209,7 @@ class APIFormField {
   // Field for selecting and uploading files
   Widget _constructFileField() {
 
-    TextEditingController controller = new TextEditingController();
+    TextEditingController controller = TextEditingController();
 
     controller.text = (attachedfile?.path ?? L10().attachmentSelect).split("/").last;
 
@@ -506,7 +506,7 @@ class APIFormField {
   }
 
   TextStyle _labelStyle() {
-    return new TextStyle(
+    return TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 18,
       fontFamily: "arial",
@@ -516,7 +516,7 @@ class APIFormField {
   }
 
   TextStyle _helperStyle() {
-    return new TextStyle(
+    return TextStyle(
       fontStyle: FontStyle.italic,
       color: hasErrors() ? COLOR_DANGER : COLOR_GRAY,
     );
@@ -660,6 +660,18 @@ Future<void> launchApiForm(BuildContext context, String title, String url, Map<S
 
 class APIFormWidget extends StatefulWidget {
 
+  APIFormWidget(
+      this.title,
+      this.url,
+      this.fields,
+      this.method,
+      {
+        Key? key,
+        this.onSuccess,
+        this.fileField = "",
+      }
+      ) : super(key: key);
+
   //! Form title to display
   final String title;
 
@@ -675,18 +687,6 @@ class APIFormWidget extends StatefulWidget {
 
   Function(Map<String, dynamic>)? onSuccess;
 
-  APIFormWidget(
-      this.title,
-      this.url,
-      this.fields,
-      this.method,
-      {
-        Key? key,
-        this.onSuccess,
-        this.fileField = "",
-      }
-  ) : super(key: key);
-
   @override
   _APIFormWidgetState createState() => _APIFormWidgetState(title, url, fields, method, onSuccess, fileField);
 
@@ -695,7 +695,9 @@ class APIFormWidget extends StatefulWidget {
 
 class _APIFormWidgetState extends State<APIFormWidget> {
 
-  final _formKey = new GlobalKey<FormState>();
+  _APIFormWidgetState(this.title, this.url, this.fields, this.method, this.onSuccess, this.fileField) : super();
+
+  final _formKey = GlobalKey<FormState>();
 
   String title;
 
@@ -708,8 +710,6 @@ class _APIFormWidgetState extends State<APIFormWidget> {
   List<APIFormField> fields;
 
   Function(Map<String, dynamic>)? onSuccess;
-
-  _APIFormWidgetState(this.title, this.url, this.fields, this.method, this.onSuccess, this.fileField) : super();
 
   bool spacerRequired = false;
 
@@ -788,29 +788,36 @@ class _APIFormWidgetState extends State<APIFormWidget> {
           if (file != null) {
 
             // A valid file has been supplied
-            return await InvenTreeAPI().uploadFile(
+            final response = await InvenTreeAPI().uploadFile(
               url,
               file,
               name: fileField,
               fields: data,
             );
+
+            return response;
           }
         }
       }
     }
 
     if (method == "POST") {
-      return await InvenTreeAPI().post(
+      final response =  await InvenTreeAPI().post(
         url,
         body: data,
         expectedStatusCode: null
       );
+
+      return response;
+
     } else {
-      return await InvenTreeAPI().patch(
+      final response = await InvenTreeAPI().patch(
         url,
         body: data,
         expectedStatusCode: null
       );
+
+      return response;
     }
 
   }

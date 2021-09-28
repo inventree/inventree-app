@@ -13,6 +13,10 @@ const int PO_STATUS_RETURNED = 60;
 
 class InvenTreePurchaseOrder extends InvenTreeModel {
 
+  InvenTreePurchaseOrder() : super();
+
+  InvenTreePurchaseOrder.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+
   @override
   String get URL => "order/po/";
 
@@ -27,8 +31,6 @@ class InvenTreePurchaseOrder extends InvenTreeModel {
       "responsible": {},
     };
   }
-
-  InvenTreePurchaseOrder() : super();
 
   @override
   Map<String, String> defaultGetFilters() {
@@ -102,8 +104,6 @@ class InvenTreePurchaseOrder extends InvenTreeModel {
     return items;
   }
 
-  InvenTreePurchaseOrder.fromJson(Map<String, dynamic> json) : super.fromJson(json);
-
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) {
     return InvenTreePurchaseOrder.fromJson(json);
@@ -111,6 +111,11 @@ class InvenTreePurchaseOrder extends InvenTreeModel {
 }
 
 class InvenTreePOLineItem extends InvenTreeModel {
+
+  InvenTreePOLineItem() : super();
+
+  InvenTreePOLineItem.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+
   @override
   String get URL => "order/po-line/";
 
@@ -188,11 +193,6 @@ class InvenTreePOLineItem extends InvenTreeModel {
   int get destination => (jsondata["destination"] ?? -1) as int;
 
   Map<String, dynamic> get destinationDetail => (jsondata["destination_detail"] ?? {}) as Map<String, dynamic>;
-
-  InvenTreePOLineItem() : super();
-
-  InvenTreePOLineItem.fromJson(Map<String, dynamic> json)
-      : super.fromJson(json);
 
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) {

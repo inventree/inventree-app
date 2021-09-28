@@ -13,9 +13,9 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 class InvenTreeDrawer extends StatelessWidget {
 
-  final BuildContext context;
-
   const InvenTreeDrawer(this.context);
+
+  final BuildContext context;
 
   void _closeDrawer() {
     // Close the drawer

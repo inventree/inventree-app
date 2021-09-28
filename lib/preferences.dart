@@ -11,11 +11,11 @@ import "package:path/path.dart";
  */
 class InvenTreePreferencesDB {
 
+  InvenTreePreferencesDB._();
+
   static final InvenTreePreferencesDB _singleton = InvenTreePreferencesDB._();
 
   static InvenTreePreferencesDB get instance => _singleton;
-
-  InvenTreePreferencesDB._();
 
   Completer<Database> _dbOpenCompleter = Completer();
 
@@ -56,6 +56,12 @@ class InvenTreePreferencesDB {
 
 class InvenTreePreferences {
 
+  factory InvenTreePreferences() {
+    return _api;
+  }
+
+  InvenTreePreferences._internal();
+
   /* The following settings are not stored to persistent storage,
    * instead they are only used as "session preferences".
    * They are kept here as a convenience only.
@@ -74,11 +80,6 @@ class InvenTreePreferences {
   bool expandStockList = true;
 
   // Ensure we only ever create a single instance of the preferences class
-  static final InvenTreePreferences _api = new InvenTreePreferences._internal();
+  static final InvenTreePreferences _api = InvenTreePreferences._internal();
 
-  factory InvenTreePreferences() {
-    return _api;
-  }
-
-  InvenTreePreferences._internal();
 }

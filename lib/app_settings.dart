@@ -7,9 +7,15 @@ import "package:inventree/preferences.dart";
 
 class InvenTreeSettingsManager {
 
+  factory InvenTreeSettingsManager() {
+    return _manager;
+  }
+
+  InvenTreeSettingsManager._internal();
+
   final store = StoreRef("settings");
 
-  Future<Database> get _db async => await InvenTreePreferencesDB.instance.database;
+  Future<Database> get _db async => InvenTreePreferencesDB.instance.database;
 
   Future<dynamic> getValue(String key, dynamic backup) async {
 
@@ -39,11 +45,5 @@ class InvenTreeSettingsManager {
   }
 
   // Ensure we only ever create a single instance of this class
-  static final InvenTreeSettingsManager _manager = new InvenTreeSettingsManager._internal();
-
-  factory InvenTreeSettingsManager() {
-    return _manager;
-  }
-
-  InvenTreeSettingsManager._internal();
+  static final InvenTreeSettingsManager _manager = InvenTreeSettingsManager._internal();
 }

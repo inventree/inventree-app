@@ -5,9 +5,6 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:inventree/app_colors.dart";
 
 class Spinner extends StatefulWidget {
-  final IconData? icon;
-  final Duration duration;
-  final Color color;
 
   const Spinner({
     this.color = COLOR_GRAY_LIGHT,
@@ -15,6 +12,10 @@ class Spinner extends StatefulWidget {
     @required this.icon,
     this.duration = const Duration(milliseconds: 1800),
   }) : super(key: key);
+
+  final IconData? icon;
+  final Duration duration;
+  final Color color;
 
   @override
   _SpinnerState createState() => _SpinnerState();
