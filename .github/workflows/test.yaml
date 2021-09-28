@@ -52,9 +52,11 @@ jobs:
         uses: subosito/flutter-action@v1
         with:
           flutter-version: '2.2.3'
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: 6.7.1
       - run: flutter pub get
-      - name: Check Gradle Version
-        run: cd android && ./gradlew --version
       - run: cp lib/dummy_dsn.dart lib/dsn.dart
       - run: flutter build apk
 
