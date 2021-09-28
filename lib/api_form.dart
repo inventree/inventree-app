@@ -194,7 +194,7 @@ class APIFormField {
         labelStyle: _labelStyle(),
       ),
       initialValue: DateTime.tryParse((value ?? "") as String),
-      autovalidateMode: AutovalidateMode.always,
+      autovalidateMode: AutovalidateMode.disabled,
       validator: (e) {
         // TODO
       },
@@ -600,8 +600,8 @@ Future<void> launchApiForm(BuildContext context, String title, String url, Map<S
       continue;
     }
 
-    Map<String, dynamic> remoteField = (availableFields[fieldName] ?? {}) as Map<String, dynamic>;
-    Map<String, dynamic> localField = (fields[fieldName] ?? {}) as Map<String, dynamic>;
+    final remoteField = Map<String, dynamic>.from(availableFields[fieldName] as Map);
+    final localField = Map<String, dynamic>.from(fields[fieldName] as Map);
 
     // Override defined field parameters, if provided
     for (String key in localField.keys) {
