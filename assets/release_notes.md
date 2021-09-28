@@ -1,6 +1,15 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.5.0 - October 2021
+---
+
+- Display Purchase Order details
+- Edit Purchase Order information
+- Display Company details (supplier / manufacturer / customer)
+- Edit Company information
+- Fixed bug relating to stock transfer for parts with specified "units"
+
 ### 0.4.7 - September 2021
 ---
 
