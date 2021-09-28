@@ -224,8 +224,10 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
       data: {
         "parent": (pk > 0) ? pk : null,
       },
-      onSuccess: (data) async {
-        
+      onSuccess: (result) async {
+
+        Map<String, dynamic> data = result as Map<String, dynamic>;
+
         if (data.containsKey("pk")) {
           var cat = InvenTreePartCategory.fromJson(data);
 
@@ -252,7 +254,9 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
       data: {
         "category": (pk > 0) ? pk : null
       },
-      onSuccess: (data) async {
+      onSuccess: (result) async {
+
+        Map<String, dynamic> data = result as Map<String, dynamic>;
 
         if (data.containsKey("pk")) {
           var part = InvenTreePart.fromJson(data);
@@ -440,7 +444,8 @@ class _PaginatedPartListState extends State<PaginatedPartList> {
 
       params["search"] = _searchTerm;
 
-      final bool cascade = await InvenTreeSettingsManager().getValue("partSubcategory", true);
+      final bool cascade = await InvenTreeSettingsManager().getBool("partSubcategory", true);
+
       params["cascade"] = "${cascade}";
 
       final page = await InvenTreePart().listPaginated(_pageSize, pageKey, filters: params);

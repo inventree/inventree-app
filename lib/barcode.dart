@@ -101,8 +101,10 @@ class BarcodeHandler {
 
       _controller?.resumeCamera();
 
+      Map<String, dynamic> data = response.asMap();
+
       // Handle strange response from the server
-      if (!response.isValid() || response.data == null || !(response.data is Map)) {
+      if (!response.isValid() || !response.isMap()) {
         onBarcodeUnknown(context, {});
 
         // We want to know about this one!
@@ -118,12 +120,12 @@ class BarcodeHandler {
               "errorDetail": response.errorDetail,
             }
         );
-      } else if (response.data.containsKey('error')) {
-        onBarcodeUnknown(context, response.data);
-      } else if (response.data.containsKey('success')) {
-        onBarcodeMatched(context, response.data);
+      } else if (data.containsKey('error')) {
+        onBarcodeUnknown(context, data);
+      } else if (data.containsKey('success')) {
+        onBarcodeMatched(context, data);
       } else {
-        onBarcodeUnhandled(context, response.data);
+        onBarcodeUnhandled(context, data);
       }
     }
 }
@@ -294,35 +296,35 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
           L10().barcodeMissingHash,
       );
     } else {
+      String hash = (data['hash'] ?? '') as String;
 
-      // Send the 'hash' code as the UID for the stock item
-      item.update(
-        values: {
-          "uid": data['hash'],
-        }
-      ).then((result) {
-        if (result) {
+      if (hash.isNotEmpty) {
+        item.update(
+          values: {
+            "uid": hash,
+          }
+        ).then((result) {
+          if (result) {
+            failureTone();
 
-          failureTone();
+            Navigator.of(context).pop();
 
-          Navigator.of(context).pop();
+            showSnackIcon(
+                L10().barcodeAssigned,
+                success: true,
+                icon: FontAwesomeIcons.qrcode
+            );
+          } else {
+            successTone();
 
-          showSnackIcon(
-            L10().barcodeAssigned,
-            success: true,
-            icon: FontAwesomeIcons.qrcode
-          );
-        } else {
-
-          successTone();
-
-          showSnackIcon(
-              L10().barcodeNotAssigned,
-              success: false,
-              icon: FontAwesomeIcons.qrcode
-          );
-        }
-      });
+            showSnackIcon(
+                L10().barcodeNotAssigned,
+                success: false,
+                icon: FontAwesomeIcons.qrcode
+            );
+          }
+        });
+      }
     }
   }
 }

@@ -40,17 +40,6 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
 
   void _editProfile(BuildContext context, {UserProfile? userProfile, bool createNew = false}) {
 
-    var _name;
-    var _server;
-    var _username;
-    var _password;
-
-    UserProfile? profile;
-
-    if (userProfile != null) {
-      profile = userProfile;
-    }
-
     Navigator.push(
       context,
       MaterialPageRoute(

@@ -44,23 +44,23 @@ class InvenTreePurchaseOrder extends InvenTreeModel {
     };
   }
 
-  String get issueDate => jsondata['issue_date'] ?? "";
+  String get issueDate => (jsondata['issue_date'] ?? '') as String;
 
-  String get completeDate => jsondata['complete_date'] ?? "";
+  String get completeDate => (jsondata['complete_date'] ?? '') as String;
 
-  String get creationDate => jsondata['creation_date'] ?? "";
+  String get creationDate => (jsondata['creation_date'] ?? '') as String;
 
-  String get targetDate => jsondata['target_date'] ?? "";
+  String get targetDate => (jsondata['target_date'] ?? '') as String;
 
-  int get lineItemCount => jsondata['line_items'] ?? 0;
+  int get lineItemCount => (jsondata['line_items'] ?? 0) as int;
 
-  bool get overdue => jsondata['overdue'] ?? false;
+  bool get overdue => (jsondata['overdue'] ?? false) as bool;
 
-  String get reference => jsondata['reference'] ?? "";
+  String get reference => (jsondata['reference'] ?? '') as String;
 
-  int get responsible => jsondata['responsible'] ?? -1;
+  int get responsibleId => (jsondata['responsible'] ?? -1) as int;
 
-  int get supplierId => jsondata['supplier'] ?? -1;
+  int get supplierId => (jsondata['supplier'] ?? -1) as int;
 
   InvenTreeCompany? get supplier {
 
@@ -69,15 +69,15 @@ class InvenTreePurchaseOrder extends InvenTreeModel {
     if (supplier_detail == null) {
       return null;
     } else {
-      return InvenTreeCompany.fromJson(supplier_detail);
+      return InvenTreeCompany.fromJson(supplier_detail as Map<String, dynamic>);
     }
   }
 
-  String get supplierReference => jsondata['supplier_reference'] ?? "";
+  String get supplierReference => (jsondata['supplier_reference'] ?? '') as String;
 
-  int get status => jsondata['status'] ?? -1;
+  int get status => (jsondata['status'] ?? -1) as int;
 
-  String get statusText => jsondata['status_text'] ?? "";
+  String get statusText => (jsondata['status_text'] ?? '') as String;
 
   bool get isOpen => this.status == PO_STATUS_PENDING || this.status == PO_STATUS_PLACED;
 
@@ -146,25 +146,25 @@ class InvenTreePOLineItem extends InvenTreeModel {
 
   bool get isComplete => received >= quantity;
 
-  double get quantity => jsondata['quantity'] ?? 0;
+  double get quantity => (jsondata['quantity'] ?? 0) as double;
 
-  double get received => jsondata['received'] ?? 0;
+  double get received => (jsondata['received'] ?? 0) as double;
 
   double get outstanding => quantity - received;
 
-  String get reference => jsondata['reference'] ?? "";
+  String get reference => (jsondata['reference'] ?? '') as String;
 
-  int get orderId => jsondata['order'] ?? -1;
+  int get orderId => (jsondata['order'] ?? -1) as int;
 
-  int get supplirtPartId => jsondata['part'] ?? -1;
+  int get supplierPartId => (jsondata['part'] ?? -1) as int;
 
   InvenTreePart? get part {
-    dynamic part_detail = jsondata["part_detail"] ?? null;
+    dynamic part_detail = jsondata["part_detail"];
 
     if (part_detail == null) {
       return null;
     } else {
-      return InvenTreePart.fromJson(part_detail);
+      return InvenTreePart.fromJson(part_detail as Map<String, dynamic>);
     }
   }
 
@@ -175,19 +175,19 @@ class InvenTreePOLineItem extends InvenTreeModel {
     if (detail == null) {
       return null;
     } else {
-      return InvenTreeSupplierPart.fromJson(detail);
+      return InvenTreeSupplierPart.fromJson(detail as Map<String, dynamic>);
     }
   }
 
-  double get purchasePrice => double.parse(jsondata['purchase_price']);
+  double get purchasePrice => double.parse((jsondata['purchase_price'] ?? '') as String);
 
-  String get purchasePriceCurrency => jsondata['purchase_price_currency'] ?? "";
+  String get purchasePriceCurrency => (jsondata['purchase_price_currency'] ?? '') as String;
 
-  String get purchasePriceString => jsondata['purchase_price_string'] ?? "";
+  String get purchasePriceString => (jsondata['purchase_price_string'] ?? '') as String;
 
-  int get destination => jsondata['destination'] ?? -1;
+  int get destination => (jsondata['destination'] ?? -1) as int;
 
-  Map<String, dynamic> get destinationDetail => jsondata['destination_detail'];
+  Map<String, dynamic> get destinationDetail => (jsondata['destination_detail'] ?? {}) as Map<String, dynamic>;
 
   InvenTreePOLineItem() : super();
 

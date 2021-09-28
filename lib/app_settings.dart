@@ -22,6 +22,17 @@ class InvenTreeSettingsManager {
     return value;
   }
 
+  // Load a boolean setting
+  Future<bool> getBool(String key, bool backup) async {
+    final dynamic value = await getValue(key, backup);
+
+    if (value is bool) {
+      return value;
+    } else {
+      return backup;
+    }
+  }
+
   Future<void> setValue(String key, dynamic value) async {
 
     await store.record(key).put(await _db, value);

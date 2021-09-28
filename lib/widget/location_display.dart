@@ -146,7 +146,10 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       data: {
         "parent": (pk > 0) ? pk : null,
       },
-      onSuccess: (data) async {
+      onSuccess: (result) async {
+
+        Map<String, dynamic> data = result as Map<String, dynamic>;
+
         if (data.containsKey("pk")) {
           var loc = InvenTreeStockLocation.fromJson(data);
 
@@ -175,7 +178,10 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       data: {
         "location": pk,
       },
-      onSuccess: (data) async {
+      onSuccess: (result) async {
+
+        Map<String, dynamic> data = result as Map<String, dynamic>;
+
         if (data.containsKey("pk")) {
           var item = InvenTreeStockItem.fromJson(data);
 
@@ -515,7 +521,8 @@ class _PaginatedStockListState extends State<PaginatedStockList> {
       params["search"] = "${_searchTerm}";
 
       // Do we include stock items from sub-locations?
-      final bool cascade = await InvenTreeSettingsManager().getValue("stockSublocation", true);
+      final bool cascade = await InvenTreeSettingsManager().getBool("stockSublocation", true);
+
       params["cascade"] = "${cascade}";
 
       final page = await InvenTreeStockItem().listPaginated(_pageSize, pageKey, filters: params);

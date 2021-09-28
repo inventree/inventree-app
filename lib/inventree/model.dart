@@ -132,16 +132,16 @@ class InvenTreeModel {
   int get pk => (jsondata['pk'] ?? -1) as int;
 
   // Some common accessors
-  String get name => jsondata['name'] ?? '';
+  String get name => (jsondata['name'] ?? '') as String;
 
-  String get description => jsondata['description'] ?? '';
+  String get description => (jsondata['description'] ?? '') as String;
 
-  String get notes => jsondata['notes'] ?? '';
+  String get notes => (jsondata['notes'] ?? '') as String;
 
   int get parentId => (jsondata['parent'] ?? -1) as int;
 
   // Legacy API provided external link as "URL", while newer API uses "link"
-  String get link => jsondata['link'] ?? jsondata['URL'] ?? '';
+  String get link => (jsondata['link'] ?? jsondata['URL'] ?? '') as String;
 
   void goToInvenTreePage() async {
 
@@ -162,7 +162,7 @@ class InvenTreeModel {
     }
   }
 
-  String get keywords => jsondata['keywords'] ?? '';
+  String get keywords => (jsondata['keywords'] ?? '') as String;
 
   // Create a new object from JSON data (not a constructor!)
   InvenTreeModel createFromJson(Map<String, dynamic> json) {
@@ -224,7 +224,7 @@ class InvenTreeModel {
 
     }
 
-    jsondata = response.data;
+    jsondata = response.asMap();
 
     return true;
   }
@@ -297,12 +297,10 @@ class InvenTreeModel {
 
     }
 
-    return createFromJson(response.data);
+    return createFromJson(response.asMap());
   }
 
   Future<InvenTreeModel?> create(Map<String, dynamic> data) async {
-
-    print("CREATE: ${URL} ${data.toString()}");
 
     if (data.containsKey('pk')) {
       data.remove('pk');
@@ -340,7 +338,7 @@ class InvenTreeModel {
       return null;
     }
 
-    return createFromJson(response.data);
+    return createFromJson(response.asMap());
   }
 
   Future<InvenTreePageResponse?> listPaginated(int limit, int offset, {Map<String, String> filters = const {}}) async {
@@ -362,13 +360,15 @@ class InvenTreeModel {
     // Construct the response
     InvenTreePageResponse page = new InvenTreePageResponse();
 
-    if (response.data.containsKey("count") && response.data.containsKey("results")) {
-       page.count = response.data["count"] as int;
+    var data = response.asMap();
+
+    if (data.containsKey("count") && data.containsKey("results")) {
+       page.count = (data["count"] ?? 0) as int;
 
        page.results = [];
 
        for (var result in response.data["results"]) {
-         page.addResult(createFromJson(result));
+         page.addResult(createFromJson(result as Map<String, dynamic>));
        }
 
        return page;
@@ -396,20 +396,22 @@ class InvenTreeModel {
       return results;
     }
 
-    dynamic data;
+    List<dynamic> data = [];
 
-    if (response.data is List) {
-      data = response.data;
-    } else if (response.data.containsKey('results')) {
-      data = response.data['results'];
-    } else {
-      data = [];
+    if (response.isList()) {
+      data = response.asList();
+    } else if (response.isMap()) {
+      var mData = response.asMap();
+
+      if (mData.containsKey('results')) {
+        data = (response.data['results'] ?? []) as List<dynamic>;
+      }
     }
 
     for (var d in data) {
 
       // Create a new object (of the current class type
-      InvenTreeModel obj = createFromJson(d);
+      InvenTreeModel obj = createFromJson(d as Map<String, dynamic>);
 
       results.add(obj);
     }
@@ -460,7 +462,7 @@ class InvenTreeAttachment extends InvenTreeModel {
 
   InvenTreeAttachment() : super();
 
-  String get attachment => jsondata["attachment"] ?? '';
+  String get attachment => (jsondata["attachment"] ?? '') as String;
 
   // Return the filename of the attachment
   String get filename {
@@ -498,11 +500,11 @@ class InvenTreeAttachment extends InvenTreeModel {
     return FontAwesomeIcons.fileAlt;
   }
 
-  String get comment => jsondata["comment"] ?? '';
+  String get comment => (jsondata["comment"] ?? '') as String;
 
   DateTime? get uploadDate {
     if (jsondata.containsKey("upload_date")) {
-      return DateTime.tryParse(jsondata["upload_date"] ?? '');
+      return DateTime.tryParse((jsondata["upload_date"] ?? '') as String);
     } else {
       return null;
     }

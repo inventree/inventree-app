@@ -36,15 +36,15 @@ class APIFormField {
   final String name;
 
   // JSON data which defines the field
-  final dynamic data;
+  final Map<String, dynamic> data;
 
   dynamic initial_data;
 
   // Get the "api_url" associated with a related field
-  String get api_url => data["api_url"] ?? "";
+  String get api_url => (data["api_url"] ?? '') as String;
 
   // Get the "model" associated with a related field
-  String get model => data["model"] ?? "";
+  String get model => (data["model"] ?? '') as String;
 
   // Is this field hidden?
   bool get hidden => (data['hidden'] ?? false) as bool;
@@ -71,7 +71,7 @@ class APIFormField {
 
       if (f is Map) {
         f.forEach((key, value) {
-          _filters[key] = value.toString();
+          _filters[key as String] = value.toString();
         });
       }
     }
@@ -83,7 +83,7 @@ class APIFormField {
 
       if (f is Map) {
         f.forEach((key, value) {
-          _filters[key] = value.toString();
+          _filters[key as String] = value.toString();
         });
       }
     }
@@ -96,7 +96,7 @@ class APIFormField {
 
   // Return the error message associated with this field
   List<String> errorMessages() {
-    List<dynamic> errors = data['errors'] ?? [];
+    List<dynamic> errors = (data['errors'] ?? []) as List<dynamic>;
 
     List<String> messages = [];
 
@@ -118,7 +118,7 @@ class APIFormField {
 
   String get placeholderText => (data['placeholder'] ?? '').toString();
 
-  List<dynamic> get choices => data["choices"] ?? [];
+  List<dynamic> get choices => (data["choices"] ?? []) as List<dynamic>;
 
   Future<void> loadInitialData() async {
 
@@ -193,7 +193,7 @@ class APIFormField {
         labelText: label,
         labelStyle: _labelStyle(),
       ),
-      initialValue: DateTime.tryParse(value ?? ""),
+      initialValue: DateTime.tryParse((value ?? '') as String),
       autovalidateMode: AutovalidateMode.always,
       validator: (e) {
         // TODO
@@ -267,7 +267,7 @@ class APIFormField {
       autoFocusSearchBox: true,
       showClearButton: !required,
       itemAsString: (dynamic item) {
-        return item['display_name'];
+        return (item['display_name'] ?? '') as String;
       },
       onSaved: (item) {
         if (item == null) {
@@ -349,13 +349,16 @@ class APIFormField {
       onChanged: null,
       showClearButton: !required,
       itemAsString: (dynamic item) {
+
+        Map<String, dynamic> data = item as Map<String, dynamic>;
+
         switch (model) {
           case "part":
-            return InvenTreePart.fromJson(item).fullname;
+            return InvenTreePart.fromJson(data).fullname;
           case "partcategory":
-            return InvenTreePartCategory.fromJson(item).pathstring;
+            return InvenTreePartCategory.fromJson(data).pathstring;
           case "stocklocation":
-            return InvenTreeStockLocation.fromJson(item).pathstring;
+            return InvenTreeStockLocation.fromJson(data).pathstring;
           default:
             return "itemAsString not implemented for '${model}'";
         }
@@ -391,19 +394,13 @@ class APIFormField {
   Widget _renderRelatedField(dynamic item, bool selected, bool extended) {
     // Render a "related field" based on the "model" type
 
-    if (item == null) {
-      return Text(
-        helpText,
-        style: TextStyle(
-          fontStyle: FontStyle.italic
-        ),
-      );
-    }
+    // Convert to JSON
+    Map<String, dynamic> data = item as Map<String, dynamic>;
 
     switch (model) {
       case "part":
 
-        var part = InvenTreePart.fromJson(item);
+        var part = InvenTreePart.fromJson(data);
 
         return ListTile(
           title: Text(
@@ -419,7 +416,7 @@ class APIFormField {
 
       case "partcategory":
 
-        var cat = InvenTreePartCategory.fromJson(item);
+        var cat = InvenTreePartCategory.fromJson(data);
 
         return ListTile(
           title: Text(
@@ -433,7 +430,7 @@ class APIFormField {
         );
       case "stocklocation":
 
-        var loc = InvenTreeStockLocation.fromJson(item);
+        var loc = InvenTreeStockLocation.fromJson(data);
 
         return ListTile(
           title: Text(
@@ -446,7 +443,7 @@ class APIFormField {
           ) : null,
         );
       case "owner":
-        String name = item["name"] ?? "";
+        String name = (item["name"] ?? '') as String;
         bool isGroup = (item["label"] ?? "") == "group";
         return ListTile(
           title: Text(name),
@@ -481,7 +478,7 @@ class APIFormField {
       readOnly: readOnly,
       maxLines: multiline ? null : 1,
       expands: false,
-      initialValue: value ?? '',
+      initialValue: (value ?? '') as String,
       onSaved: (val) {
         data["value"] = val;
       },
@@ -501,7 +498,7 @@ class APIFormField {
       labelStyle: _labelStyle(),
       helperText: helpText,
       helperStyle: _helperStyle(),
-      initial: value,
+      initial: value as bool,
       onSaved: (val) {
         data['value'] = val;
       },
@@ -537,13 +534,17 @@ Map<String, dynamic> extractFields(APIResponse response) {
     return {};
   }
 
-  if (!response.data.containsKey("actions")) {
+  var data = response.asMap();
+
+  if (!data.containsKey("actions")) {
     return {};
   }
 
-  var actions = response.data["actions"];
+  var actions = response.data["actions"] as Map<String, dynamic>;
 
-  return actions["POST"] ?? actions["PUT"] ?? actions["PATCH"] ?? {};
+  dynamic result = actions["POST"] ?? actions["PUT"] ?? actions["PATCH"] ?? {};
+
+  return result as Map<String, dynamic>;
 }
 
 /*
@@ -599,8 +600,8 @@ Future<void> launchApiForm(BuildContext context, String title, String url, Map<S
       continue;
     }
 
-    var remoteField = availableFields[fieldName] ?? {};
-    var localField = fields[fieldName] ?? {};
+    Map<String, dynamic> remoteField = (availableFields[fieldName] ?? {}) as Map<String, dynamic>;
+    Map<String, dynamic> localField = (fields[fieldName] ?? {}) as Map<String, dynamic>;
 
     // Override defined field parameters, if provided
     for (String key in localField.keys) {

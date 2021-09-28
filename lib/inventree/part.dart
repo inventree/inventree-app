@@ -33,7 +33,7 @@ class InvenTreePartCategory extends InvenTreeModel {
     return filters;
   }
 
-  String get pathstring => jsondata['pathstring'] ?? '';
+  String get pathstring => (jsondata['pathstring'] ?? '') as String;
 
   String get parentpathstring {
     // TODO - Drive the refactor tractor through this
@@ -52,7 +52,7 @@ class InvenTreePartCategory extends InvenTreeModel {
     return p;
   }
 
-  int get partcount => jsondata['parts'] ?? 0;
+  int get partcount => (jsondata['parts'] ?? 0) as int;
 
   InvenTreePartCategory() : super();
 
@@ -74,17 +74,17 @@ class InvenTreePartTestTemplate extends InvenTreeModel {
   @override
   String get URL => "part/test-template/";
 
-  String get key => jsondata['key'] ?? '';
+  String get key => (jsondata['key'] ?? '') as String;
 
-  String get testName => jsondata['test_name'] ?? '';
+  String get testName => (jsondata['test_name'] ?? '') as String;
 
-  String get description => jsondata['description'] ?? '';
+  String get description => (jsondata['description'] ?? '') as String;
 
-  bool get required => jsondata['required'] ?? false;
+  bool get required => (jsondata['required'] ?? false) as bool;
 
-  bool get requiresValue => jsondata['requires_value'] ?? false;
+  bool get requiresValue => (jsondata['requires_value'] ?? false) as bool;
 
-  bool get requiresAttachment => jsondata['requires_attachment'] ?? false;
+  bool get requiresAttachment => (jsondata['requires_attachment'] ?? false) as bool;
 
   InvenTreePartTestTemplate() : super();
 
@@ -271,7 +271,7 @@ class InvenTreePart extends InvenTreeModel {
       return q;
     }
 
-    String get units => jsondata["units"] ?? "";
+    String get units => (jsondata["units"] as String) ?? "";
 
     // Get the number of units being build for this Part
     double get building => double.tryParse(jsondata['building'].toString()) ?? 0;
@@ -297,10 +297,10 @@ class InvenTreePart extends InvenTreeModel {
     bool get isTrackable => (jsondata['trackable'] ?? false) as bool;
 
     // Get the IPN (internal part number) for the Part instance
-    String get IPN => jsondata['IPN'] ?? '';
+    String get IPN => (jsondata['IPN'] ?? '') as String;
 
     // Get the revision string for the Part instance
-    String get revision => jsondata['revision'] ?? '';
+    String get revision => (jsondata['revision'] ?? '') as String;
 
     // Get the category ID for the Part instance (or 'null' if does not exist)
     int get categoryId => (jsondata['category'] ?? -1) as int;
@@ -312,7 +312,7 @@ class InvenTreePart extends InvenTreeModel {
 
       if (!jsondata.containsKey('category_detail')) return '';
 
-      return jsondata['category_detail']?['name'] ?? '';
+      return (jsondata['category_detail']?['name'] ?? '') as String;
     }
 
     // Get the category description for the Part instance
@@ -322,18 +322,18 @@ class InvenTreePart extends InvenTreeModel {
 
       if (!jsondata.containsKey('category_detail')) return '';
 
-      return jsondata['category_detail']?['description'] ?? '';
+      return (jsondata['category_detail']?['description'] ?? '') as String;
     }
     // Get the image URL for the Part instance
-    String get _image  => jsondata['image'] ?? '';
+    String get _image  => (jsondata['image'] ?? '') as String;
 
     // Get the thumbnail URL for the Part instance
-    String get _thumbnail => jsondata['thumbnail'] ?? '';
+    String get _thumbnail => (jsondata['thumbnail'] ?? '') as String;
 
     // Return the fully-qualified name for the Part instance
     String get fullname {
 
-      String fn = jsondata['full_name'] ?? '';
+      String fn = (jsondata['full_name'] ?? '') as String;
 
       if (fn.isNotEmpty) return fn;
 

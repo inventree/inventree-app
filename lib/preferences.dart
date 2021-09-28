@@ -34,7 +34,7 @@ class InvenTreePreferencesDB {
     return _dbOpenCompleter.future;
   }
 
-  Future _openDatabase() async {
+  Future<void> _openDatabase() async {
     // Get a platform-specific directory where persistent app data can be stored
     final appDocumentDir = await getApplicationDocumentsDirectory();
 

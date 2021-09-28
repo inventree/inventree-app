@@ -349,13 +349,13 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
             hint: L10().searchLocation,
             onChanged: null,
             itemAsString: (dynamic location) {
-              return location['pathstring'];
+              return (location['pathstring'] ?? '') as String;
             },
             onSaved: (dynamic location) {
               if (location == null) {
                 location_pk = null;
               } else {
-                location_pk = location['pk'];
+                location_pk = location['pk'] as int;
               }
             },
             isFilteredOnline: true,

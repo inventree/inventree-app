@@ -405,7 +405,10 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         data: {
           "part": "${part.pk}",
         },
-        onSuccess: (data) async {
+        onSuccess: (result) async {
+
+          Map<String, dynamic> data = result as Map<String, dynamic>;
+
           if (data.containsKey("pk")) {
             var item = InvenTreeStockItem.fromJson(data);
 

@@ -51,6 +51,31 @@ class APIResponse {
   bool clientError() => (statusCode >= 400) && (statusCode < 500);
 
   bool serverError() => (statusCode >= 500);
+
+  bool isMap() {
+    return data != null && data is Map<String, dynamic>;
+  }
+
+  Map<String, dynamic> asMap() {
+    if (isMap()) {
+      return data as Map<String, dynamic>;
+    } else {
+      // Empty map
+      return {};
+    }
+  }
+
+  bool isList() {
+    return data != null && data is List<dynamic>;
+  }
+
+  List<dynamic> asList() {
+    if (isList()) {
+      return data as List<dynamic>;
+    } else {
+      return [];
+    }
+  }
 }
 
 
@@ -268,8 +293,10 @@ class InvenTreeAPI {
       return false;
     }
 
+    var data = response.asMap();
+
     // We expect certain response from the server
-    if (response.data == null || !response.data.containsKey("server") || !response.data.containsKey("version") || !response.data.containsKey("instance")) {
+    if (!data.containsKey("server") || !data.containsKey("version") || !data.containsKey("instance")) {
 
       showServerError(
         L10().missingData,
@@ -280,11 +307,11 @@ class InvenTreeAPI {
     }
 
     // Record server information
-    _version = response.data["version"];
-    instance = response.data['instance'] ?? '';
+    _version = (data["version"] ?? '') as String;
+    instance = (data['instance'] ?? '') as String;
 
     // Default API version is 1 if not provided
-    _apiVersion = (response.data['apiVersion'] ?? 1) as int;
+    _apiVersion = (data['apiVersion'] ?? 1) as int;
 
     if (_apiVersion < _minApiVersion) {
 
@@ -333,7 +360,9 @@ class InvenTreeAPI {
       return false;
     }
 
-    if (response.data == null || !response.data.containsKey("token")) {
+    data = response.asMap();
+
+    if (!data.containsKey("token")) {
       showServerError(
           L10().tokenMissing,
           L10().tokenMissingFromResponse,
@@ -343,7 +372,7 @@ class InvenTreeAPI {
     }
 
     // Return the received token
-    _token = response.data["token"];
+    _token = (data["token"] ?? "") as String;
     print("Received token - $_token");
 
     // Request user role information
@@ -415,9 +444,11 @@ class InvenTreeAPI {
       return;
     }
 
-    if (response.data.containsKey('roles')) {
+    var data = response.asMap();
+
+    if (data.containsKey('roles')) {
       // Save a local copy of the user roles
-      roles = response.data['roles'];
+      roles = response.data['roles'] as Map<String, dynamic>;
     }
   }
 
@@ -438,7 +469,7 @@ class InvenTreeAPI {
     }
 
     try {
-      List<String> perms = List.from(roles[role]);
+      List<String> perms = List.from(roles[role] as List<dynamic>);
       return perms.contains(permission);
     } catch (error, stackTrace) {
       sentryReportError(error, stackTrace);
@@ -551,7 +582,7 @@ class InvenTreeAPI {
       showServerError(L10().connectionRefused, error.toString());
     } on TimeoutException {
       showTimeoutError();
-    } catch (error, stackTrace) {
+    } catch (error) {
       print("Error downloading image:");
       print(error.toString());
       showServerError(L10().downloadError, error.toString());
