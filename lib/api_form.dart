@@ -625,14 +625,8 @@ Future<void> launchApiForm(BuildContext context, String title, String url, Map<S
       }
     }
 
-    // Update fields with existing model data
-    for (String key in modelData.keys) {
-
-      dynamic value = modelData[key];
-
-      if (availableFields.containsKey(key)) {
-        availableFields[key]["value"] = value;
-      }
+    if (modelData.containsKey(fieldName)) {
+      remoteField["value"] = modelData[fieldName];
     }
 
     formFields.add(APIFormField(fieldName, remoteField));
