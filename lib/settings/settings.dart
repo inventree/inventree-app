@@ -1,18 +1,16 @@
-import 'package:inventree/app_colors.dart';
-import 'package:inventree/settings/about.dart';
-import 'package:inventree/settings/app_settings.dart';
-import 'package:inventree/settings/login.dart';
+import "package:inventree/app_colors.dart";
+import "package:inventree/settings/about.dart";
+import "package:inventree/settings/app_settings.dart";
+import "package:inventree/settings/login.dart";
 
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:inventree/l10.dart';
-import 'package:inventree/widget/submit_feedback.dart';
+import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:inventree/l10.dart";
+import "package:inventree/widget/submit_feedback.dart";
 
-import 'package:url_launcher/url_launcher.dart';
+import "package:url_launcher/url_launcher.dart";
 
-import 'login.dart';
-
-import 'package:package_info_plus/package_info_plus.dart';
+import "package:package_info_plus/package_info_plus.dart";
 
 class InvenTreeSettingsWidget extends StatefulWidget {
   // InvenTree settings view
@@ -95,30 +93,30 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
   }
 
 
-  void _openDocs() async {
+  Future <void> _openDocs() async {
     if (await canLaunch(docsUrl)) {
       await launch(docsUrl);
     }
   }
 
-  void _translate() async {
-    final String url = "https://crowdin.com/project/inventree";
+  Future <void> _translate() async {
+    const String url = "https://crowdin.com/project/inventree";
 
     if (await canLaunch(url)) {
       await launch(url);
     }
   }
 
-  void _editServerSettings() async {
+  Future <void> _editServerSettings() async {
 
     Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeLoginSettingsWidget()));
   }
 
-  void _editAppSettings() async {
+  Future <void> _editAppSettings() async {
     Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeAppSettingsWidget()));
   }
 
-  void _about() async {
+  Future <void> _about() async {
 
     PackageInfo.fromPlatform().then((PackageInfo info) {
       Navigator.push(context,
@@ -126,7 +124,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
     });
   }
 
-  void _submitFeedback(BuildContext context) async {
+  Future <void> _submitFeedback(BuildContext context) async {
 
     Navigator.push(
       context,

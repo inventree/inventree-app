@@ -1,14 +1,14 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:inventree/l10.dart';
+import "package:flutter/cupertino.dart";
+import "package:flutter/material.dart";
+import "package:flutter_markdown/flutter_markdown.dart";
+import "package:inventree/l10.dart";
 
 
 class ReleaseNotesWidget extends StatelessWidget {
 
   final String releaseNotes;
 
-  ReleaseNotesWidget(this.releaseNotes);
+  const ReleaseNotesWidget(this.releaseNotes);
 
   @override
   Widget build (BuildContext context) {
@@ -29,7 +29,7 @@ class CreditsWidget extends StatelessWidget {
 
   final String credits;
 
-  CreditsWidget(this.credits);
+  const CreditsWidget(this.credits);
 
   @override
   Widget build (BuildContext context) {

@@ -1,21 +1,20 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:inventree/api.dart';
-import 'package:inventree/app_colors.dart';
-import 'package:inventree/inventree/company.dart';
-import 'package:inventree/inventree/part.dart';
-import 'package:inventree/inventree/purchase_order.dart';
-import 'package:inventree/widget/company_detail.dart';
-import 'package:inventree/widget/refreshable_state.dart';
+import "package:flutter/cupertino.dart";
+import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
-import '../l10.dart';
-import 'location_display.dart';
+import "package:inventree/api.dart";
+import "package:inventree/app_colors.dart";
+import "package:inventree/inventree/company.dart";
+import "package:inventree/inventree/purchase_order.dart";
+import "package:inventree/widget/company_detail.dart";
+import "package:inventree/widget/refreshable_state.dart";
+import "package:inventree/l10.dart";
+import "package:inventree/widget/location_display.dart";
 
 
 class PurchaseOrderDetailWidget extends StatefulWidget {
 
-  PurchaseOrderDetailWidget(this.order, {Key? key}): super(key: key);
+  const PurchaseOrderDetailWidget(this.order, {Key? key}): super(key: key);
 
   final InvenTreePurchaseOrder order;
 
@@ -72,7 +71,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
   }
 
-  void editOrder(BuildContext context) async {
+  Future <void> editOrder(BuildContext context) async {
 
     order.editForm(
       context,

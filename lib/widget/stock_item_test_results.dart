@@ -1,27 +1,21 @@
-import 'package:inventree/api_form.dart';
-import 'package:inventree/app_colors.dart';
-import 'package:inventree/inventree/part.dart';
-import 'package:inventree/inventree/stock.dart';
-import 'package:inventree/inventree/model.dart';
-import 'package:inventree/api.dart';
-import 'package:inventree/widget/dialogs.dart';
-import 'package:inventree/widget/fields.dart';
-import 'package:inventree/widget/progress.dart';
-import 'package:inventree/widget/snacks.dart';
+import "package:inventree/app_colors.dart";
+import "package:inventree/inventree/part.dart";
+import "package:inventree/inventree/stock.dart";
+import "package:inventree/inventree/model.dart";
+import "package:inventree/api.dart";
+import "package:inventree/widget/progress.dart";
 
-import 'package:inventree/l10.dart';
+import "package:inventree/l10.dart";
 
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:inventree/widget/refreshable_state.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import "package:flutter/cupertino.dart";
+import "package:flutter/material.dart";
+import "package:inventree/widget/refreshable_state.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 
 class StockItemTestResultsWidget extends StatefulWidget {
 
-  StockItemTestResultsWidget(this.item, {Key? key}) : super(key: key);
+  const StockItemTestResultsWidget(this.item, {Key? key}) : super(key: key);
 
   final InvenTreeStockItem item;
 
@@ -31,8 +25,6 @@ class StockItemTestResultsWidget extends StatefulWidget {
 
 
 class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestResultsWidget> {
-
-  final _addResultKey = GlobalKey<FormState>();
 
   @override
   String getAppBarTitle(BuildContext context) => L10().testResults;
@@ -59,7 +51,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
 
   _StockItemTestResultDisplayState(this.item);
 
-  void addTestResult(BuildContext context, {String name = '', bool nameIsEditable = true, bool result = false, String value = '', bool valueRequired = false, bool attachmentRequired = false}) async  {
+  Future <void> addTestResult(BuildContext context, {String name = "", bool nameIsEditable = true, bool result = false, String value = "", bool valueRequired = false, bool attachmentRequired = false}) async  {
 
     InvenTreeStockItemTestResult().createForm(
       context,
@@ -165,7 +157,6 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
       String _test = "";
       bool _result = false;
       String _value = "";
-      String _notes = "";
 
       FaIcon _icon = FaIcon(FontAwesomeIcons.questionCircle, color: COLOR_BLUE);
       bool _valueRequired = false;
@@ -175,8 +166,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
         _result = item.passFailStatus();
         _test = item.testName;
         _required = item.required;
-        _value = item.latestResult()?.value ?? '';
-        _notes = item.latestResult()?.notes ?? '';
+        _value = item.latestResult()?.value ?? "";
         _valueRequired = item.requiresValue;
         _attachmentRequired = item.requiresAttachment;
       } else if (item is InvenTreeStockItemTestResult) {
@@ -184,7 +174,6 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
         _test = item.testName;
         _required = false;
         _value = item.value;
-        _notes = item.notes;
       }
 
       if (_result == true) {

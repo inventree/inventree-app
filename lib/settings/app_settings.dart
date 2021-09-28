@@ -1,12 +1,12 @@
 
-import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
+import "package:flutter/material.dart";
+import "package:flutter/cupertino.dart";
 
-import 'package:inventree/l10.dart';
+import "package:inventree/l10.dart";
 
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
-import 'package:inventree/app_settings.dart';
+import "package:inventree/app_settings.dart";
 
 class InvenTreeAppSettingsWidget extends StatefulWidget {
   @override
@@ -31,7 +31,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
     loadSettings();
   }
 
-  void loadSettings() async {
+  Future <void> loadSettings() async {
     barcodeSounds = await InvenTreeSettingsManager().getValue("barcodeSounds", true) as bool;
     serverSounds = await InvenTreeSettingsManager().getValue("serverSounds", true) as bool;
 
@@ -42,7 +42,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
     });
   }
 
-  void setBarcodeSounds(bool en) async {
+  Future <void> setBarcodeSounds(bool en) async {
 
     await InvenTreeSettingsManager().setValue("barcodeSounds", en);
     barcodeSounds = await InvenTreeSettingsManager().getBool("barcodeSounds", true);
@@ -51,7 +51,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
     });
   }
 
-  void setServerSounds(bool en) async {
+  Future <void> setServerSounds(bool en) async {
 
     await InvenTreeSettingsManager().setValue("serverSounds", en);
     serverSounds = await InvenTreeSettingsManager().getBool("serverSounds", true);
@@ -60,7 +60,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
     });
   }
 
-  void setPartSubcategory(bool en) async {
+  Future <void> setPartSubcategory(bool en) async {
     await InvenTreeSettingsManager().setValue("partSubcategory", en);
     partSubcategory = await InvenTreeSettingsManager().getBool("partSubcategory", true);
 
@@ -68,7 +68,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
     });
   }
 
-  void setStockSublocation(bool en) async {
+  Future <void> setStockSublocation(bool en) async {
     await InvenTreeSettingsManager().setValue("stockSublocation", en);
     stockSublocation = await InvenTreeSettingsManager().getBool("stockSublocation", true);
 

@@ -1,20 +1,18 @@
+import "package:inventree/inventree/part.dart";
+import "package:inventree/widget/part_detail.dart";
+import "package:inventree/widget/progress.dart";
+import "package:inventree/widget/refreshable_state.dart";
+import "package:flutter/cupertino.dart";
+import "package:flutter/material.dart";
 
+import "package:inventree/l10.dart";
 
-import 'package:inventree/inventree/part.dart';
-import 'package:inventree/widget/part_detail.dart';
-import 'package:inventree/widget/progress.dart';
-import 'package:inventree/widget/refreshable_state.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-
-import 'package:inventree/l10.dart';
-
-import '../api.dart';
+import "package:inventree/api.dart";
 
 
 class StarredPartWidget extends StatefulWidget {
 
-  StarredPartWidget({Key? key}) : super(key: key);
+  const StarredPartWidget({Key? key}) : super(key: key);
 
   @override
   _StarredPartState createState() => _StarredPartState();

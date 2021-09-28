@@ -1,7 +1,7 @@
-import 'package:inventree/widget/drawer.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import "package:inventree/widget/drawer.dart";
+import "package:flutter/cupertino.dart";
+import "package:flutter/material.dart";
+import "package:flutter/widgets.dart";
 
 
 abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
@@ -32,6 +32,7 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
 
   String getAppBarTitle(BuildContext context) { return "App Bar Title"; }
 
+  @override
   void initState() {
     super.initState();
     WidgetsBinding.instance?.addPostFrameCallback((_) => onBuild(_context!));

@@ -1,23 +1,22 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:inventree/inventree/company.dart';
-import 'package:inventree/inventree/sentry.dart';
-import 'package:inventree/widget/paginator.dart';
-import 'package:inventree/widget/purchase_order_detail.dart';
-import 'package:inventree/widget/refreshable_state.dart';
+import "package:flutter/cupertino.dart";
+import "package:flutter/material.dart";
+import "package:infinite_scroll_pagination/infinite_scroll_pagination.dart";
 
-import '../l10.dart';
-
-import 'package:inventree/api.dart';
-import 'package:inventree/inventree/purchase_order.dart';
+import "package:inventree/inventree/company.dart";
+import "package:inventree/inventree/sentry.dart";
+import "package:inventree/widget/paginator.dart";
+import "package:inventree/widget/purchase_order_detail.dart";
+import "package:inventree/widget/refreshable_state.dart";
+import "package:inventree/l10.dart";
+import "package:inventree/api.dart";
+import "package:inventree/inventree/purchase_order.dart";
 
 /*
  * Widget class for displaying a list of Purchase Orders
  */
 class PurchaseOrderListWidget extends StatefulWidget {
 
-  PurchaseOrderListWidget({this.filters = const {}, Key? key}) : super(key: key);
+  const PurchaseOrderListWidget({this.filters = const {}, Key? key}) : super(key: key);
 
   final Map<String, String> filters;
 
@@ -100,7 +99,7 @@ class _PaginatedPurchaseOrderListState extends State<_PaginatedPurchaseOrderList
 
       // Copy across provided filters
       for (String key in filters.keys) {
-        params[key] = filters[key] ?? '';
+        params[key] = filters[key] ?? "";
       }
 
       final page = await InvenTreePurchaseOrder().listPaginated(

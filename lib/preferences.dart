@@ -1,8 +1,10 @@
-import 'package:path_provider/path_provider.dart';
-import 'package:sembast/sembast.dart';
-import 'package:sembast/sembast_io.dart';
-import 'package:path/path.dart';
-import 'dart:async';
+import "dart:async";
+
+import "package:path_provider/path_provider.dart";
+import "package:sembast/sembast.dart";
+import "package:sembast/sembast_io.dart";
+import "package:path/path.dart";
+
 
 /*
  * Class for storing InvenTree preferences in a NoSql DB
@@ -43,7 +45,7 @@ class InvenTreePreferencesDB {
     print("Path: ${appDocumentDir.path}");
 
     // Path with the form: /platform-specific-directory/demo.db
-    final dbPath = join(appDocumentDir.path, 'InvenTreeSettings.db');
+    final dbPath = join(appDocumentDir.path, "InvenTreeSettings.db");
 
     final database = await databaseFactoryIo.openDatabase(dbPath);
 
@@ -55,7 +57,7 @@ class InvenTreePreferencesDB {
 class InvenTreePreferences {
 
   /* The following settings are not stored to persistent storage,
-   * instead they are only used as 'session preferences'.
+   * instead they are only used as "session preferences".
    * They are kept here as a convenience only.
    */
 

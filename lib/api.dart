@@ -1,25 +1,25 @@
-import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
+import "dart:async";
+import "dart:convert";
+import "dart:io";
 
-import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
-import 'package:inventree/app_colors.dart';
+import "package:flutter/foundation.dart";
+import "package:http/http.dart" as http;
+import "package:intl/intl.dart";
+import "package:inventree/app_colors.dart";
 
-import 'package:open_file/open_file.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import "package:open_file/open_file.dart";
+import "package:flutter/cupertino.dart";
+import "package:cached_network_image/cached_network_image.dart";
+import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_cache_manager/flutter_cache_manager.dart";
 
-import 'package:inventree/widget/dialogs.dart';
-import 'package:inventree/l10.dart';
-import 'package:inventree/inventree/sentry.dart';
-import 'package:inventree/user_profile.dart';
-import 'package:inventree/widget/snacks.dart';
-import 'package:path_provider/path_provider.dart';
+import "package:inventree/widget/dialogs.dart";
+import "package:inventree/l10.dart";
+import "package:inventree/inventree/sentry.dart";
+import "package:inventree/user_profile.dart";
+import "package:inventree/widget/snacks.dart";
+import "package:path_provider/path_provider.dart";
 
 
 /*
@@ -158,11 +158,12 @@ class InvenTreeAPI {
   String _makeUrl(String url) {
 
     // Strip leading slash
-    if (url.startsWith('/')) {
+    if (url.startsWith("/")) {
       url = url.substring(1, url.length);
     }
 
-    url = url.replaceAll('//', '/');
+    // Prevent double-slash
+    url = url.replaceAll("//", "/");
 
     return baseUrl + url;
   }
@@ -175,7 +176,7 @@ class InvenTreeAPI {
     if (endpoint.startsWith("/api/") || endpoint.startsWith("api/")) {
       return _makeUrl(endpoint);
     } else {
-      return _makeUrl("/api/" + endpoint);
+      return _makeUrl("/api/${endpoint}");
     }
   }
 
@@ -210,10 +211,10 @@ class InvenTreeAPI {
   }
 
   // Server instance information
-  String instance = '';
+  String instance = "";
 
   // Server version information
-  String _version = '';
+  String _version = "";
 
   // API version of the connected server
   int _apiVersion = 1;
@@ -272,8 +273,8 @@ class InvenTreeAPI {
       return false;
     }
 
-    if (!address.endsWith('/')) {
-      address = address + '/';
+    if (!address.endsWith("/")) {
+      address = address + "/";
     }
     /* TODO: Better URL validation
      * - If not a valid URL, return error
@@ -307,11 +308,11 @@ class InvenTreeAPI {
     }
 
     // Record server information
-    _version = (data["version"] ?? '') as String;
-    instance = (data['instance'] ?? '') as String;
+    _version = (data["version"] ?? "") as String;
+    instance = (data["instance"] ?? "") as String;
 
     // Default API version is 1 if not provided
-    _apiVersion = (data['apiVersion'] ?? 1) as int;
+    _apiVersion = (data["apiVersion"] ?? 1) as int;
 
     if (_apiVersion < _minApiVersion) {
 
@@ -388,7 +389,7 @@ class InvenTreeAPI {
 
     _connected = false;
     _connecting = false;
-    _token = '';
+    _token = "";
     profile = null;
   }
 
@@ -435,7 +436,7 @@ class InvenTreeAPI {
 
     // Next we request the permissions assigned to the current user
     // Note: 2021-02-27 this "roles" feature for the API was just introduced.
-    // Any 'older' version of the server allows any API method for any logged in user!
+    // Any "older" version of the server allows any API method for any logged in user!
     // We will return immediately, but request the user roles in the background
 
     var response = await get(_URL_GET_ROLES, expectedStatusCode: 200);
@@ -446,9 +447,9 @@ class InvenTreeAPI {
 
     var data = response.asMap();
 
-    if (data.containsKey('roles')) {
+    if (data.containsKey("roles")) {
       // Save a local copy of the user roles
-      roles = response.data['roles'] as Map<String, dynamic>;
+      roles = response.data["roles"] as Map<String, dynamic>;
     }
   }
 
@@ -456,7 +457,7 @@ class InvenTreeAPI {
     /*
      * Check if the user has the given role.permission assigned
      *e
-     * e.g. 'part', 'change'
+     * e.g. "part", "change"
      */
 
     // If we do not have enough information, assume permission is allowed
@@ -489,9 +490,9 @@ class InvenTreeAPI {
 
     if (request == null) {
       // Return an "invalid" APIResponse
-      return new APIResponse(
+      return APIResponse(
         url: url,
-        method: 'PATCH',
+        method: "PATCH",
         error: "HttpClientRequest is null"
       );
     }
@@ -535,7 +536,7 @@ class InvenTreeAPI {
 
     HttpClientRequest? _request;
 
-    var client = createClient(true);
+    var client = createClient(allowBadCert: true);
 
     // Attempt to open a connection to the server
     try {
@@ -543,8 +544,8 @@ class InvenTreeAPI {
 
       // Set headers
       _request.headers.set(HttpHeaders.authorizationHeader, _authorizationHeader());
-      _request.headers.set(HttpHeaders.acceptHeader, 'application/json');
-      _request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
+      _request.headers.set(HttpHeaders.acceptHeader, "application/json");
+      _request.headers.set(HttpHeaders.contentTypeHeader, "application/json");
       _request.headers.set(HttpHeaders.acceptLanguageHeader, Intl.getCurrentLocale());
 
     } on SocketException catch (error) {
@@ -684,9 +685,9 @@ class InvenTreeAPI {
 
     if (request == null) {
       // Return an "invalid" APIResponse
-      return new APIResponse(
+      return APIResponse(
         url: url,
-        method: 'OPTIONS'
+        method: "OPTIONS"
       );
     }
 
@@ -703,9 +704,9 @@ class InvenTreeAPI {
 
     if (request == null) {
       // Return an "invalid" APIResponse
-      return new APIResponse(
+      return APIResponse(
         url: url,
-        method: 'POST'
+        method: "POST"
       );
     }
 
@@ -716,14 +717,12 @@ class InvenTreeAPI {
     );
   }
 
-  HttpClient createClient(bool allowBadCert) {
+  HttpClient createClient({bool allowBadCert = true}) {
 
-    var client = new HttpClient();
+    var client = HttpClient();
 
-    client.badCertificateCallback = ((X509Certificate cert, String host, int port) {
+    client.badCertificateCallback = (X509Certificate cert, String host, int port) {
       // TODO - Introspection of actual certificate?
-
-      allowBadCert = true;
 
       if (allowBadCert) {
         return true;
@@ -734,7 +733,7 @@ class InvenTreeAPI {
         );
         return false;
       }
-    });
+    };
 
     // Set the connection timeout
     client.connectionTimeout = Duration(seconds: 30);
@@ -746,7 +745,7 @@ class InvenTreeAPI {
    * Initiate a HTTP request to the server
    *
    * @param url is the API endpoint
-   * @param method is the HTTP method e.g. 'POST' / 'PATCH' / 'GET' etc;
+   * @param method is the HTTP method e.g. "POST" / "PATCH" / "GET" etc;
    * @param params is the request parameters
    */
   Future<HttpClientRequest?> apiRequest(String url, String method, {Map<String, String> urlParams = const {}}) async {
@@ -763,7 +762,7 @@ class InvenTreeAPI {
     }
 
     // Remove extraneous character if present
-    if (_url.endsWith('&')) {
+    if (_url.endsWith("&")) {
       _url = _url.substring(0, _url.length - 1);
     }
 
@@ -781,7 +780,7 @@ class InvenTreeAPI {
 
     HttpClientRequest? _request;
 
-    var client = createClient(true);
+    var client = createClient(allowBadCert: true);
 
     // Attempt to open a connection to the server
     try {
@@ -789,8 +788,8 @@ class InvenTreeAPI {
 
       // Set headers
       _request.headers.set(HttpHeaders.authorizationHeader, _authorizationHeader());
-      _request.headers.set(HttpHeaders.acceptHeader, 'application/json');
-      _request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
+      _request.headers.set(HttpHeaders.acceptHeader, "application/json");
+      _request.headers.set(HttpHeaders.contentTypeHeader, "application/json");
       _request.headers.set(HttpHeaders.acceptLanguageHeader, Intl.getCurrentLocale());
 
       return _request;
@@ -824,7 +823,7 @@ class InvenTreeAPI {
       request.add(encoded_data);
     }
 
-    APIResponse response = new APIResponse(
+    APIResponse response = APIResponse(
       method: request.method,
       url: request.uri.toString()
     );
@@ -837,6 +836,19 @@ class InvenTreeAPI {
       // If the server returns a server error code, alert the user
       if (_response.statusCode >= 500) {
         showStatusCodeError(_response.statusCode);
+
+        sentryReportMessage(
+            "Server error",
+            context: {
+              "url": request.uri.toString(),
+              "method": request.method,
+              "statusCode": _response.statusCode.toString(),
+              "requestHeaders": request.headers.toString(),
+              "responseHeaders": _response.headers.toString(),
+              "responseData": response.data.toString(),
+            }
+        );
+
       } else {
         response.data = await responseToJson(_response) ?? {};
 
@@ -845,21 +857,6 @@ class InvenTreeAPI {
           // Expected status code not returned
           if (statusCode != _response.statusCode) {
             showStatusCodeError(_response.statusCode);
-          }
-
-          // Report any server errors
-          if (_response.statusCode >= 500) {
-            sentryReportMessage(
-                "Server error",
-                context: {
-                  "url": request.uri.toString(),
-                  "method": request.method,
-                  "statusCode": _response.statusCode.toString(),
-                  "requestHeaders": request.headers.toString(),
-                  "responseHeaders": _response.headers.toString(),
-                  "responseData": response.data.toString(),
-                }
-            );
           }
         }
       }
@@ -930,9 +927,9 @@ class InvenTreeAPI {
 
     if (request == null) {
       // Return an "invalid" APIResponse
-      return new APIResponse(
+      return APIResponse(
         url: url,
-        method: 'GET',
+        method: "GET",
         error: "HttpClientRequest is null",
       );
     }
@@ -945,8 +942,8 @@ class InvenTreeAPI {
     var headers = Map<String, String>();
 
     headers[HttpHeaders.authorizationHeader] = _authorizationHeader();
-    headers[HttpHeaders.acceptHeader] = 'application/json';
-    headers[HttpHeaders.contentTypeHeader] = 'application/json';
+    headers[HttpHeaders.acceptHeader] = "application/json";
+    headers[HttpHeaders.contentTypeHeader] = "application/json";
     headers[HttpHeaders.acceptLanguageHeader] = Intl.getCurrentLocale();
 
     return headers;
@@ -956,7 +953,7 @@ class InvenTreeAPI {
     if (_token.isNotEmpty) {
       return "Token $_token";
     } else if (profile != null) {
-      return "Basic " + base64Encode(utf8.encode('${profile?.username}:${profile?.password}'));
+      return "Basic " + base64Encode(utf8.encode("${profile?.username}:${profile?.password}"));
     } else {
       return "";
     }

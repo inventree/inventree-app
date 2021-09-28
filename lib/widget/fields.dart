@@ -1,15 +1,13 @@
+import "dart:async";
+import "dart:io";
 
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:inventree/l10.dart';
+import "package:file_picker/file_picker.dart";
+import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:image_picker/image_picker.dart";
+import "package:one_context/one_context.dart";
 
-import 'dart:async';
-import 'dart:io';
-
-import 'package:one_context/one_context.dart';
-
+import "package:inventree/l10.dart";
 
 
 class FilePickerDialog {
@@ -167,7 +165,7 @@ class CheckBoxField extends FormField<bool> {
 
 class StringField extends TextFormField {
 
-  StringField({String label = "", String? hint, String? initial, Function(String?)? onSaved, Function? validator, bool allowEmpty = false, bool isEnabled = true}) :
+  StringField({String label = "", String? hint, String? initial, Function(String?)? onSaved, Function(String?)? validator, bool allowEmpty = false, bool isEnabled = true}) :
       super(
         decoration: InputDecoration(
           labelText: allowEmpty ? label : label + "*",
@@ -182,7 +180,7 @@ class StringField extends TextFormField {
           }
 
           if (validator != null) {
-            return validator(value);
+            return validator(value) as String?;
           }
 
           return null;

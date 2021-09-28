@@ -1,12 +1,10 @@
+import "package:flutter/cupertino.dart";
+import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:inventree/inventree/sentry.dart";
+import "package:inventree/widget/snacks.dart";
 
-
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:inventree/inventree/sentry.dart';
-import 'package:inventree/widget/snacks.dart';
-
-import '../l10.dart';
+import "package:inventree/l10.dart";
 
 class SubmitFeedbackWidget extends StatefulWidget {
 
@@ -18,7 +16,7 @@ class SubmitFeedbackWidget extends StatefulWidget {
 
 class _SubmitFeedbackState extends State<SubmitFeedbackWidget> {
 
-  final _formkey = new GlobalKey<FormState>();
+  final _formkey = GlobalKey<FormState>();
 
   String message = "";
 
@@ -61,8 +59,6 @@ class _SubmitFeedbackState extends State<SubmitFeedbackWidget> {
         key: _formkey,
         child: SingleChildScrollView(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextFormField(

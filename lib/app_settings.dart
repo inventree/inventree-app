@@ -2,8 +2,8 @@
  * Class for managing app-level configuration options
  */
 
-import 'package:sembast/sembast.dart';
-import 'package:inventree/preferences.dart';
+import "package:sembast/sembast.dart";
+import "package:inventree/preferences.dart";
 
 class InvenTreeSettingsManager {
 

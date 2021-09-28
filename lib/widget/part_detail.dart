@@ -1,28 +1,28 @@
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:inventree/app_colors.dart';
-import 'package:inventree/inventree/stock.dart';
+import "package:flutter/cupertino.dart";
+import "package:flutter/foundation.dart";
+import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:inventree/app_colors.dart";
+import "package:inventree/inventree/stock.dart";
 
-import 'package:inventree/l10.dart';
-import 'package:inventree/widget/part_attachments_widget.dart';
-import 'package:inventree/widget/part_notes.dart';
-import 'package:inventree/widget/progress.dart';
-import 'package:inventree/inventree/part.dart';
-import 'package:inventree/widget/category_display.dart';
-import 'package:inventree/api.dart';
-import 'package:inventree/widget/refreshable_state.dart';
-import 'package:inventree/widget/part_image_widget.dart';
-import 'package:inventree/widget/stock_detail.dart';
+import "package:inventree/l10.dart";
+import "package:inventree/widget/part_attachments_widget.dart";
+import "package:inventree/widget/part_notes.dart";
+import "package:inventree/widget/progress.dart";
+import "package:inventree/inventree/part.dart";
+import "package:inventree/widget/category_display.dart";
+import "package:inventree/api.dart";
+import "package:inventree/widget/refreshable_state.dart";
+import "package:inventree/widget/part_image_widget.dart";
+import "package:inventree/widget/stock_detail.dart";
 
-import 'location_display.dart';
+import "pcakage:inventree/widget/location_display.dart";
 
 
 class PartDetailWidget extends StatefulWidget {
 
-  PartDetailWidget(this.part, {Key? key}) : super(key: key);
+  const PartDetailWidget(this.part, {Key? key}) : super(key: key);
 
   final InvenTreePart part;
 
@@ -46,7 +46,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
     List<Widget> actions = [];
 
-    if (InvenTreeAPI().checkPermission('part', 'view')) {
+    if (InvenTreeAPI().checkPermission("part", "view")) {
       actions.add(
         IconButton(
           icon: FaIcon(FontAwesomeIcons.globe),
@@ -55,7 +55,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       );
     }
 
-    if (InvenTreeAPI().checkPermission('part', 'change')) {
+    if (InvenTreeAPI().checkPermission("part", "change")) {
       actions.add(
         IconButton(
           icon: FaIcon(FontAwesomeIcons.edit),
@@ -89,9 +89,9 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     await part.getTestTemplates();
   }
 
-  void _toggleStar() async {
+  Future <void> _toggleStar() async {
 
-    if (InvenTreeAPI().checkPermission('part', 'view')) {
+    if (InvenTreeAPI().checkPermission("part", "view")) {
       await part.update(values: {"starred": "${!part.starred}"});
       refresh();
     }
@@ -327,7 +327,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     }
 
     // TODO - Add request tests?
-    if (false && part.isTrackable) {
+    /*
+    if (part.isTrackable) {
       tiles.add(ListTile(
           title: Text(L10().testsRequired),
           leading: FaIcon(FontAwesomeIcons.tasks),
@@ -336,6 +337,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         )
       );
     }
+     */
 
     // Notes field
     tiles.add(
@@ -453,7 +455,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       );
     }
     
-    if (false && !part.isActive && InvenTreeAPI().checkPermission('part', 'delete')) {
+    if (false && !part.isActive && InvenTreeAPI().checkPermission("part", "delete")) {
       tiles.add(
         ListTile(
           title: Text(L10().deletePart),

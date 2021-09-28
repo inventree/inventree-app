@@ -1,8 +1,6 @@
-// Pagination related widgets
-
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:inventree/l10.dart';
+import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:inventree/l10.dart";
 
 
 class PaginatedSearchWidget extends StatelessWidget {
@@ -44,9 +42,9 @@ class PaginatedSearchWidget extends StatelessWidget {
 
 class NoResultsWidget extends StatelessWidget {
 
-  final String description;
+  const NoResultsWidget(this.description);
 
-  NoResultsWidget(this.description);
+  final String description;
 
   @override
   Widget build(BuildContext context) {

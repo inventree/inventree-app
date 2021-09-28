@@ -1,23 +1,21 @@
-import 'dart:io';
+import "dart:io";
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import "package:flutter/cupertino.dart";
+import "package:flutter/foundation.dart";
+import "package:flutter/material.dart";
 
-import 'package:inventree/api.dart';
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:inventree/inventree/part.dart';
-import 'package:inventree/widget/fields.dart';
-import 'package:inventree/widget/refreshable_state.dart';
-import 'package:inventree/widget/snacks.dart';
-
-import '../l10.dart';
+import "package:inventree/api.dart";
+import "package:inventree/inventree/part.dart";
+import "package:inventree/widget/fields.dart";
+import "package:inventree/widget/refreshable_state.dart";
+import "package:inventree/widget/snacks.dart";
+import "package:inventree/l10.dart";
 
 class PartImageWidget extends StatefulWidget {
 
-  PartImageWidget(this.part, {Key? key}) : super(key: key);
+  const PartImageWidget(this.part, {Key? key}) : super(key: key);
 
   final InvenTreePart part;
 
@@ -46,7 +44,7 @@ class _PartImageState extends RefreshableState<PartImageWidget> {
 
     List<Widget> actions = [];
 
-    if (InvenTreeAPI().checkPermission('part', 'change')) {
+    if (InvenTreeAPI().checkPermission("part", "change")) {
 
       // File upload
       actions.add(

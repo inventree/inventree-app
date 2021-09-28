@@ -1,21 +1,21 @@
-import 'package:inventree/api.dart';
-import 'package:inventree/app_colors.dart';
-import 'package:inventree/app_settings.dart';
-import 'package:inventree/barcode.dart';
-import 'package:inventree/inventree/sentry.dart';
-import 'package:inventree/inventree/stock.dart';
-import 'package:inventree/widget/progress.dart';
+import "package:inventree/api.dart";
+import "package:inventree/app_colors.dart";
+import "package:inventree/app_settings.dart";
+import "package:inventree/barcode.dart";
+import "package:inventree/inventree/sentry.dart";
+import "package:inventree/inventree/stock.dart";
+import "package:inventree/widget/progress.dart";
 
-import 'package:inventree/widget/refreshable_state.dart';
-import 'package:inventree/widget/stock_detail.dart';
-import 'package:inventree/widget/paginator.dart';
-import 'package:inventree/l10.dart';
+import "package:inventree/widget/refreshable_state.dart";
+import "package:inventree/widget/stock_detail.dart";
+import "package:inventree/widget/paginator.dart";
+import "package:inventree/l10.dart";
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import "package:flutter/cupertino.dart";
+import "package:flutter/material.dart";
+import "package:flutter/foundation.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:infinite_scroll_pagination/infinite_scroll_pagination.dart";
 
 class LocationDisplayWidget extends StatefulWidget {
 
@@ -62,7 +62,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     );
      */
 
-    if ((location != null) && (InvenTreeAPI().checkPermission('stock_location', 'change'))) {
+    if ((location != null) && (InvenTreeAPI().checkPermission("stock_location", "change"))) {
       actions.add(
         IconButton(
           icon: FaIcon(FontAwesomeIcons.edit),
@@ -96,7 +96,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
   List<InvenTreeStockLocation> _sublocations = [];
 
-  String _locationFilter = '';
+  String _locationFilter = "";
 
   List<InvenTreeStockLocation> get sublocations {
     
@@ -340,7 +340,7 @@ List<Widget> detailTiles() {
 
     tiles.add(locationDescriptionCard(includeActions: false));
 
-    if (InvenTreeAPI().checkPermission('stock', 'add')) {
+    if (InvenTreeAPI().checkPermission("stock", "add")) {
 
       tiles.add(
         ListTile(
@@ -368,7 +368,7 @@ List<Widget> detailTiles() {
 
     if (location != null) {
       // Stock adjustment actions
-      if (InvenTreeAPI().checkPermission('stock', 'change')) {
+      if (InvenTreeAPI().checkPermission("stock", "change")) {
         // Scan items into location
         tiles.add(
             ListTile(
@@ -430,7 +430,7 @@ List<Widget> detailTiles() {
 class SublocationList extends StatelessWidget {
   final List<InvenTreeStockLocation> _locations;
 
-  SublocationList(this._locations);
+  const SublocationList(this._locations);
 
   void _openLocation(BuildContext context, int pk) {
 
@@ -446,7 +446,7 @@ class SublocationList extends StatelessWidget {
     InvenTreeStockLocation loc = _locations[index];
 
     return ListTile(
-      title: Text('${loc.name}'),
+      title: Text("${loc.name}"),
       subtitle: Text("${loc.description}"),
       trailing: Text("${loc.itemcount}"),
       onTap: () {
@@ -477,7 +477,7 @@ class PaginatedStockList extends StatefulWidget {
 
   final Map<String, String> filters;
 
-  PaginatedStockList(this.filters);
+  const PaginatedStockList(this.filters);
 
   @override
   _PaginatedStockListState createState() => _PaginatedStockListState(filters);
@@ -516,7 +516,7 @@ class _PaginatedStockListState extends State<PaginatedStockList> {
   Future<void> _fetchPage(int pageKey) async {
     try {
 
-      Map<String, String> params = this.filters;
+      Map<String, String> params = filters;
 
       params["search"] = "${_searchTerm}";
 

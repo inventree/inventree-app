@@ -1,27 +1,27 @@
 
-import 'package:inventree/api.dart';
-import 'package:inventree/app_colors.dart';
-import 'package:inventree/app_settings.dart';
-import 'package:inventree/inventree/part.dart';
-import 'package:inventree/inventree/sentry.dart';
-import 'package:inventree/widget/progress.dart';
+import "package:inventree/api.dart";
+import "package:inventree/app_colors.dart";
+import "package:inventree/app_settings.dart";
+import "package:inventree/inventree/part.dart";
+import "package:inventree/inventree/sentry.dart";
+import "package:inventree/widget/progress.dart";
 
-import 'package:inventree/l10.dart';
+import "package:inventree/l10.dart";
 
-import 'package:inventree/widget/part_detail.dart';
-import 'package:inventree/widget/refreshable_state.dart';
-import 'package:inventree/widget/paginator.dart';
+import "package:inventree/widget/part_detail.dart";
+import "package:inventree/widget/refreshable_state.dart";
+import "package:inventree/widget/paginator.dart";
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import "package:flutter/cupertino.dart";
+import "package:flutter/foundation.dart";
+import "package:flutter/material.dart";
 
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:infinite_scroll_pagination/infinite_scroll_pagination.dart";
 
 class CategoryDisplayWidget extends StatefulWidget {
 
-  CategoryDisplayWidget(this.category, {Key? key}) : super(key: key);
+  const CategoryDisplayWidget(this.category, {Key? key}) : super(key: key);
 
   final InvenTreePartCategory? category;
 
@@ -41,7 +41,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
     List<Widget> actions = [];
 
-    if ((category != null) && InvenTreeAPI().checkPermission('part_category', 'change')) {
+    if ((category != null) && InvenTreeAPI().checkPermission("part_category", "change")) {
       actions.add(
         IconButton(
           icon: FaIcon(FontAwesomeIcons.edit),
@@ -278,7 +278,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
       getCategoryDescriptionCard(extra: false),
     ];
 
-    if (InvenTreeAPI().checkPermission('part', 'add')) {
+    if (InvenTreeAPI().checkPermission("part", "add")) {
       tiles.add(
           ListTile(
             title: Text(L10().categoryCreate),
@@ -331,7 +331,9 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
         );
       case 1:
         return PaginatedPartList(
-          {"category": "${category?.pk ?? null}"},
+          {
+            "category": "${category?.pk ?? 'null'}"
+          },
         );
       case 2:
         return ListView(
@@ -350,7 +352,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 class SubcategoryList extends StatelessWidget {
   final List<InvenTreePartCategory> _categories;
 
-  SubcategoryList(this._categories);
+  const SubcategoryList(this._categories);
 
   void _openCategory(BuildContext context, int pk) {
 

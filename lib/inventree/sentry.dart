@@ -1,10 +1,10 @@
-import 'dart:io';
+import "dart:io";
 
-import 'package:device_info_plus/device_info_plus.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
+import "package:device_info_plus/device_info_plus.dart";
+import "package:package_info_plus/package_info_plus.dart";
+import "package:sentry_flutter/sentry_flutter.dart";
 
-import 'package:inventree/api.dart';
+import "package:inventree/api.dart";
 
 Future<Map<String, dynamic>> getDeviceInfo() async {
 
@@ -18,35 +18,35 @@ Future<Map<String, dynamic>> getDeviceInfo() async {
     final iosDeviceInfo = await deviceInfo.iosInfo;
 
     device_info = {
-      'name': iosDeviceInfo.name,
-      'model': iosDeviceInfo.model,
-      'systemName': iosDeviceInfo.systemName,
-      'systemVersion': iosDeviceInfo.systemVersion,
-      'localizedModel': iosDeviceInfo.localizedModel,
-      'utsname': iosDeviceInfo.utsname.sysname,
-      'identifierForVendor': iosDeviceInfo.identifierForVendor,
-      'isPhysicalDevice': iosDeviceInfo.isPhysicalDevice,
+      "name": iosDeviceInfo.name,
+      "model": iosDeviceInfo.model,
+      "systemName": iosDeviceInfo.systemName,
+      "systemVersion": iosDeviceInfo.systemVersion,
+      "localizedModel": iosDeviceInfo.localizedModel,
+      "utsname": iosDeviceInfo.utsname.sysname,
+      "identifierForVendor": iosDeviceInfo.identifierForVendor,
+      "isPhysicalDevice": iosDeviceInfo.isPhysicalDevice,
     };
 
   } else if (Platform.isAndroid) {
     final androidDeviceInfo = await deviceInfo.androidInfo;
 
     device_info = {
-      'type': androidDeviceInfo.type,
-      'model': androidDeviceInfo.model,
-      'device': androidDeviceInfo.device,
-      'id': androidDeviceInfo.id,
-      'androidId': androidDeviceInfo.androidId,
-      'brand': androidDeviceInfo.brand,
-      'display': androidDeviceInfo.display,
-      'hardware': androidDeviceInfo.hardware,
-      'manufacturer': androidDeviceInfo.manufacturer,
-      'product': androidDeviceInfo.product,
-      'version': androidDeviceInfo.version.release,
-      'supported32BitAbis': androidDeviceInfo.supported32BitAbis,
-      'supported64BitAbis': androidDeviceInfo.supported64BitAbis,
-      'supportedAbis': androidDeviceInfo.supportedAbis,
-      'isPhysicalDevice': androidDeviceInfo.isPhysicalDevice,
+      "type": androidDeviceInfo.type,
+      "model": androidDeviceInfo.model,
+      "device": androidDeviceInfo.device,
+      "id": androidDeviceInfo.id,
+      "androidId": androidDeviceInfo.androidId,
+      "brand": androidDeviceInfo.brand,
+      "display": androidDeviceInfo.display,
+      "hardware": androidDeviceInfo.hardware,
+      "manufacturer": androidDeviceInfo.manufacturer,
+      "product": androidDeviceInfo.product,
+      "version": androidDeviceInfo.version.release,
+      "supported32BitAbis": androidDeviceInfo.supported32BitAbis,
+      "supported64BitAbis": androidDeviceInfo.supported64BitAbis,
+      "supportedAbis": androidDeviceInfo.supportedAbis,
+      "isPhysicalDevice": androidDeviceInfo.isPhysicalDevice,
     };
   }
 
@@ -90,7 +90,7 @@ Future<bool> sentryReportMessage(String message, {Map<String, String>? context})
 
   if (isInDebugMode()) {
 
-    print('----- In dev mode. Not sending message to Sentry.io -----');
+    print("----- In dev mode. Not sending message to Sentry.io -----");
     return true;
   }
 
@@ -117,7 +117,7 @@ Future<bool> sentryReportMessage(String message, {Map<String, String>? context})
 
 Future<void> sentryReportError(dynamic error, dynamic stackTrace) async {
 
-  print('----- Sentry Intercepted error: $error -----');
+  print("----- Sentry Intercepted error: $error -----");
   print(stackTrace);
 
   // Errors thrown in development mode are unlikely to be interesting. You can
@@ -125,7 +125,7 @@ Future<void> sentryReportError(dynamic error, dynamic stackTrace) async {
   // the report.
   if (isInDebugMode()) {
 
-    print('----- In dev mode. Not sending report to Sentry.io -----');
+    print("----- In dev mode. Not sending report to Sentry.io -----");
     return;
   }
 

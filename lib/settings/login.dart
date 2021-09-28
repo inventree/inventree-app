@@ -1,15 +1,12 @@
-import 'package:inventree/app_colors.dart';
-import 'package:inventree/widget/dialogs.dart';
-import 'package:inventree/widget/fields.dart';
-import 'package:inventree/widget/spinner.dart';
+import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
-import 'package:inventree/l10.dart';
-
-import '../api.dart';
-import '../user_profile.dart';
+import "package:inventree/app_colors.dart";
+import "package:inventree/widget/dialogs.dart";
+import "package:inventree/widget/spinner.dart";
+import "package:inventree/l10.dart";
+import "package:inventree/api.dart";
+import "package:inventree/user_profile.dart";
 
 class InvenTreeLoginSettingsWidget extends StatefulWidget {
 
@@ -22,15 +19,13 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
 
   final GlobalKey<_InvenTreeLoginSettingsState> _loginKey = GlobalKey<_InvenTreeLoginSettingsState>();
 
-  final GlobalKey<FormState> _addProfileKey = new GlobalKey<FormState>();
-
   List<UserProfile> profiles = [];
 
   _InvenTreeLoginSettingsState() {
     _reload();
   }
 
-  void _reload() async {
+  Future <void> _reload() async {
 
     profiles = await UserProfileDBManager().getAllProfiles();
 
@@ -50,7 +45,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     });
   }
 
-  void _selectProfile(BuildContext context, UserProfile profile) async {
+  Future <void> _selectProfile(BuildContext context, UserProfile profile) async {
 
     // Disconnect InvenTree
     InvenTreeAPI().disconnectFromServer();
@@ -73,18 +68,18 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     _reload();
   }
 
-  void _deleteProfile(UserProfile profile) async {
+  Future <void> _deleteProfile(UserProfile profile) async {
 
     await UserProfileDBManager().deleteProfile(profile);
 
     _reload();
 
-    if (InvenTreeAPI().isConnected() && profile.key == (InvenTreeAPI().profile?.key ?? '')) {
+    if (InvenTreeAPI().isConnected() && profile.key == (InvenTreeAPI().profile?.key ?? "")) {
       InvenTreeAPI().disconnectFromServer();
     }
   }
 
-  void _updateProfile(UserProfile? profile) async {
+  Future <void> _updateProfile(UserProfile? profile) async {
 
     if (profile == null) {
       return;
@@ -92,7 +87,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
 
     _reload();
 
-    if (InvenTreeAPI().isConnected() && InvenTreeAPI().profile != null && profile.key == (InvenTreeAPI().profile?.key ?? '')) {
+    if (InvenTreeAPI().isConnected() && InvenTreeAPI().profile != null && profile.key == (InvenTreeAPI().profile?.key ?? "")) {
       // Attempt server login (this will load the newly selected profile
 
       InvenTreeAPI().connectToServer().then((result) {
@@ -108,7 +103,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     if (!profile.selected) return null;
 
     // Selected, but (for some reason) not the same as the API...
-    if ((InvenTreeAPI().profile?.key ?? '') != profile.key) {
+    if ((InvenTreeAPI().profile?.key ?? "") != profile.key) {
       return FaIcon(
         FontAwesomeIcons.questionCircle,
         color: COLOR_WARNING

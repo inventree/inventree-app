@@ -1,17 +1,17 @@
 
-import 'package:inventree/widget/part_detail.dart';
-import 'package:inventree/widget/progress.dart';
-import 'package:inventree/widget/snacks.dart';
-import 'package:inventree/widget/stock_detail.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:inventree/l10.dart';
+import "package:inventree/widget/part_detail.dart";
+import "package:inventree/widget/progress.dart";
+import "package:inventree/widget/snacks.dart";
+import "package:inventree/widget/stock_detail.dart";
+import "package:flutter/cupertino.dart";
+import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:inventree/l10.dart";
 
-import 'package:inventree/inventree/part.dart';
-import 'package:inventree/inventree/stock.dart';
+import "package:inventree/inventree/part.dart";
+import "package:inventree/inventree/stock.dart";
 
-import '../api.dart';
+import "package:inventree/api.dart";
 
 // TODO - Refactor duplicate code in this file!
 
@@ -101,7 +101,7 @@ class PartSearchDelegate extends SearchDelegate<InvenTreePart?> {
       IconButton(
         icon: FaIcon(FontAwesomeIcons.backspace),
         onPressed: () {
-          query = '';
+          query = "";
           search(context);
         },
       ),
@@ -119,7 +119,7 @@ class PartSearchDelegate extends SearchDelegate<InvenTreePart?> {
     return IconButton(
       icon: Icon(Icons.arrow_back),
       onPressed: () {
-        this.close(context, null);
+        close(context, null);
       }
     );
   }
@@ -289,7 +289,7 @@ class StockSearchDelegate extends SearchDelegate<InvenTreeStockItem?> {
       IconButton(
         icon: FaIcon(FontAwesomeIcons.backspace),
         onPressed: () {
-          query = '';
+          query = "";
           search(context);
         },
       ),
@@ -307,7 +307,7 @@ class StockSearchDelegate extends SearchDelegate<InvenTreeStockItem?> {
     return IconButton(
         icon: Icon(Icons.arrow_back),
         onPressed: () {
-          this.close(context, null);
+          close(context, null);
         }
     );
   }

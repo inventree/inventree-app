@@ -1,18 +1,17 @@
-import 'dart:async';
-import 'dart:io';
+import "dart:async";
+import "dart:io";
 
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:inventree/api.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:inventree/inventree/sentry.dart';
-import 'package:inventree/widget/dialogs.dart';
-import 'package:url_launcher/url_launcher.dart';
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:inventree/api.dart";
+import "package:flutter/cupertino.dart";
+import "package:inventree/inventree/sentry.dart";
+import "package:inventree/widget/dialogs.dart";
+import "package:url_launcher/url_launcher.dart";
 
-import 'package:path/path.dart' as path;
-import 'package:http/http.dart' as http;
+import "package:path/path.dart" as path;
 
-import '../l10.dart';
-import '../api_form.dart';
+import "package:inventree/l10.dart";
+import "package:inventree/api_form.dart";
 
 
 // Paginated response object
@@ -129,21 +128,21 @@ class InvenTreeModel {
 
   }
 
-  int get pk => (jsondata['pk'] ?? -1) as int;
+  int get pk => (jsondata["pk"] ?? -1) as int;
 
   // Some common accessors
-  String get name => (jsondata['name'] ?? '') as String;
+  String get name => (jsondata["name"] ?? "") as String;
 
-  String get description => (jsondata['description'] ?? '') as String;
+  String get description => (jsondata["description"] ?? "") as String;
 
-  String get notes => (jsondata['notes'] ?? '') as String;
+  String get notes => (jsondata["notes"] ?? "") as String;
 
-  int get parentId => (jsondata['parent'] ?? -1) as int;
+  int get parentId => (jsondata["parent"] ?? -1) as int;
 
   // Legacy API provided external link as "URL", while newer API uses "link"
-  String get link => (jsondata['link'] ?? jsondata['URL'] ?? '') as String;
+  String get link => (jsondata["link"] ?? jsondata["URL"] ?? "") as String;
 
-  void goToInvenTreePage() async {
+  Future <void> goToInvenTreePage() async {
 
     if (await canLaunch(webUrl)) {
       await launch(webUrl);
@@ -152,7 +151,7 @@ class InvenTreeModel {
     }
   }
 
-  void openLink() async {
+  Future <void> openLink() async {
 
     if (link.isNotEmpty) {
 
@@ -162,7 +161,7 @@ class InvenTreeModel {
     }
   }
 
-  String get keywords => (jsondata['keywords'] ?? '') as String;
+  String get keywords => (jsondata["keywords"] ?? "") as String;
 
   // Create a new object from JSON data (not a constructor!)
   InvenTreeModel createFromJson(Map<String, dynamic> json) {
@@ -198,7 +197,7 @@ class InvenTreeModel {
 
     var response = await api.get(url, params: defaultGetFilters(), expectedStatusCode: 200);
 
-    if (!response.isValid() || response.data == null || !(response.data is Map)) {
+    if (!response.isValid() || response.data == null || (response.data is! Map)) {
 
       // Report error
       if (response.statusCode > 0) {
@@ -267,12 +266,12 @@ class InvenTreeModel {
 
     // Override any default values
     for (String key in filters.keys) {
-      params[key] = filters[key] ?? '';
+      params[key] = filters[key] ?? "";
     }
 
     var response = await api.get(url, params: params);
 
-    if (!response.isValid() || response.data == null || !(response.data is Map)) {
+    if (!response.isValid() || response.data == null || response.data is! Map) {
 
       if (response.statusCode > 0) {
         await sentryReportMessage(
@@ -302,18 +301,18 @@ class InvenTreeModel {
 
   Future<InvenTreeModel?> create(Map<String, dynamic> data) async {
 
-    if (data.containsKey('pk')) {
-      data.remove('pk');
+    if (data.containsKey("pk")) {
+      data.remove("pk");
     }
 
-    if (data.containsKey('id')) {
-      data.remove('id');
+    if (data.containsKey("id")) {
+      data.remove("id");
     }
 
     var response = await api.post(URL, body: data);
 
     // Invalid response returned from server
-    if (!response.isValid() || response.data == null || !(response.data is Map)) {
+    if (!response.isValid() || response.data == null || response.data is! Map) {
 
       if (response.statusCode > 0) {
         await sentryReportMessage(
@@ -345,7 +344,7 @@ class InvenTreeModel {
     var params = defaultListFilters();
 
     for (String key in filters.keys) {
-      params[key] = filters[key] ?? '';
+      params[key] = filters[key] ?? "";
     }
 
     params["limit"] = "${limit}";
@@ -384,7 +383,7 @@ class InvenTreeModel {
     var params = defaultListFilters();
 
     for (String key in filters.keys) {
-      params[key] = filters[key] ?? '';
+      params[key] = filters[key] ?? "";
     }
 
     var response = await api.get(URL, params: params);
@@ -403,8 +402,8 @@ class InvenTreeModel {
     } else if (response.isMap()) {
       var mData = response.asMap();
 
-      if (mData.containsKey('results')) {
-        data = (response.data['results'] ?? []) as List<dynamic>;
+      if (mData.containsKey("results")) {
+        data = (response.data["results"] ?? []) as List<dynamic>;
       }
     }
 
@@ -423,9 +422,9 @@ class InvenTreeModel {
   // Provide a listing of objects at the endpoint
   // TODO - Static function which returns a list of objects (of this class)
 
-  // TODO - Define a 'delete' function
+  // TODO - Define a "delete" function
 
-  // TODO - Define a 'save' / 'update' function
+  // TODO - Define a "save" / "update" function
 
   // Override this function for each sub-class
   bool matchAgainstString(String filter) {
@@ -462,7 +461,7 @@ class InvenTreeAttachment extends InvenTreeModel {
 
   InvenTreeAttachment() : super();
 
-  String get attachment => (jsondata["attachment"] ?? '') as String;
+  String get attachment => (jsondata["attachment"] ?? "") as String;
 
   // Return the filename of the attachment
   String get filename {
@@ -500,11 +499,11 @@ class InvenTreeAttachment extends InvenTreeModel {
     return FontAwesomeIcons.fileAlt;
   }
 
-  String get comment => (jsondata["comment"] ?? '') as String;
+  String get comment => (jsondata["comment"] ?? "") as String;
 
   DateTime? get uploadDate {
     if (jsondata.containsKey("upload_date")) {
-      return DateTime.tryParse((jsondata["upload_date"] ?? '') as String);
+      return DateTime.tryParse((jsondata["upload_date"] ?? "") as String);
     } else {
       return null;
     }
@@ -517,8 +516,8 @@ class InvenTreeAttachment extends InvenTreeModel {
     final APIResponse response = await InvenTreeAPI().uploadFile(
         URL,
         attachment,
-        method: 'POST',
-        name: 'attachment',
+        method: "POST",
+        name: "attachment",
         fields: fields
     );
 

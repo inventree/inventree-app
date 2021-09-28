@@ -1,18 +1,18 @@
 
-import 'package:inventree/api.dart';
-import 'package:inventree/app_colors.dart';
-import 'package:inventree/inventree/company.dart';
-import 'package:inventree/widget/refreshable_state.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:inventree/l10.dart';
+import "package:inventree/api.dart";
+import "package:inventree/app_colors.dart";
+import "package:inventree/inventree/company.dart";
+import "package:inventree/widget/refreshable_state.dart";
+import "package:flutter/cupertino.dart";
+import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:inventree/l10.dart";
 
 class CompanyDetailWidget extends StatefulWidget {
 
   final InvenTreeCompany company;
 
-  CompanyDetailWidget(this.company, {Key? key}) : super(key: key);
+  const CompanyDetailWidget(this.company, {Key? key}) : super(key: key);
 
   @override
   _CompanyDetailState createState() => _CompanyDetailState(company);
@@ -62,7 +62,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
     await company.reload();
   }
 
-  void editCompany(BuildContext context) async {
+  Future <void> editCompany(BuildContext context) async {
 
     company.editForm(
       context,

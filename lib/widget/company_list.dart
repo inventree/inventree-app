@@ -1,16 +1,16 @@
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import "package:flutter/cupertino.dart";
+import "package:flutter/material.dart";
+import "package:infinite_scroll_pagination/infinite_scroll_pagination.dart";
 
-import 'package:inventree/api.dart';
-import 'package:inventree/inventree/company.dart';
-import 'package:inventree/inventree/sentry.dart';
-import 'package:inventree/widget/paginator.dart';
-import 'package:inventree/widget/refreshable_state.dart';
-import 'package:inventree/widget/company_detail.dart';
+import "package:inventree/api.dart";
+import "package:inventree/inventree/company.dart";
+import "package:inventree/inventree/sentry.dart";
+import "package:inventree/widget/paginator.dart";
+import "package:inventree/widget/refreshable_state.dart";
+import "package:inventree/widget/company_detail.dart";
 
-import '../l10.dart';
+import "package:inventree/l10.dart";
 
 
 class CompanyListWidget extends StatefulWidget {

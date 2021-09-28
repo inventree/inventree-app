@@ -1,12 +1,12 @@
 
-import 'package:inventree/app_settings.dart';
-import 'package:inventree/widget/snacks.dart';
-import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:inventree/l10.dart';
-import 'package:one_context/one_context.dart';
+import "package:inventree/app_settings.dart";
+import "package:inventree/widget/snacks.dart";
+import "package:audioplayers/audioplayers.dart";
+import "package:flutter/cupertino.dart";
+import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:inventree/l10.dart";
+import "package:one_context/one_context.dart";
 
 Future<void> confirmationDialog(String title, String text, {String? acceptText, String? rejectText, Function? onAccept, Function? onReject}) async {
 

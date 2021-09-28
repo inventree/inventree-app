@@ -1,21 +1,21 @@
-import 'package:inventree/api.dart';
-import 'package:inventree/barcode.dart';
-import 'package:inventree/widget/company_list.dart';
-import 'package:inventree/widget/search.dart';
-import 'package:flutter/material.dart';
-import 'package:inventree/l10.dart';
+import "package:inventree/api.dart";
+import "package:inventree/barcode.dart";
+import "package:inventree/widget/company_list.dart";
+import "package:inventree/widget/search.dart";
+import "package:flutter/material.dart";
+import "package:inventree/l10.dart";
 
-import 'package:inventree/widget/category_display.dart';
-import 'package:inventree/widget/location_display.dart';
+import "package:inventree/widget/category_display.dart";
+import "package:inventree/widget/location_display.dart";
 
-import 'package:inventree/settings/settings.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import "package:inventree/settings/settings.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 class InvenTreeDrawer extends StatelessWidget {
 
   final BuildContext context;
 
-  InvenTreeDrawer(this.context);
+  const InvenTreeDrawer(this.context);
 
   void _closeDrawer() {
     // Close the drawer
@@ -50,7 +50,7 @@ class InvenTreeDrawer extends StatelessWidget {
    * Launch the camera to scan a QR code.
    * Upon successful scan, data are passed off to be decoded.
    */
-  void _scan() async {
+  Future <void> _scan() async {
     if (!InvenTreeAPI().checkConnection(context)) return;
 
     _closeDrawer();

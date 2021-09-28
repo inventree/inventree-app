@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
+import "package:flutter/material.dart";
+import "package:flutter/cupertino.dart";
 
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:inventree/app_colors.dart';
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:inventree/app_colors.dart";
 
 class Spinner extends StatefulWidget {
   final IconData? icon;

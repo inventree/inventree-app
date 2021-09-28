@@ -1,19 +1,19 @@
-import 'package:inventree/l10.dart';
+import "dart:core";
 
-import 'package:inventree/api.dart';
+import "package:inventree/l10.dart";
 
-import 'dart:core';
+import "package:inventree/api.dart";
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:inventree/inventree/part.dart';
-import 'package:inventree/inventree/company.dart';
-import 'package:inventree/widget/company_detail.dart';
-import 'package:inventree/widget/refreshable_state.dart';
+import "package:flutter/cupertino.dart";
+import "package:flutter/material.dart";
+import "package:inventree/inventree/part.dart";
+import "package:inventree/inventree/company.dart";
+import "package:inventree/widget/company_detail.dart";
+import "package:inventree/widget/refreshable_state.dart";
 
 class PartSupplierWidget extends StatefulWidget {
 
-  PartSupplierWidget(this.part, {Key? key}) : super(key: key);
+  const PartSupplierWidget(this.part, {Key? key}) : super(key: key);
 
   final InvenTreePart part;
 

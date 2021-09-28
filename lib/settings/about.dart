@@ -1,22 +1,22 @@
-import 'package:inventree/api.dart';
-import 'package:inventree/app_colors.dart';
-import 'package:inventree/settings/release.dart';
+import "package:inventree/api.dart";
+import "package:inventree/app_colors.dart";
+import "package:inventree/settings/release.dart";
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:package_info_plus/package_info_plus.dart';
+import "package:flutter/cupertino.dart";
+import "package:flutter/material.dart";
+import "package:flutter/services.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:package_info_plus/package_info_plus.dart";
 
-import 'package:inventree/l10.dart';
+import "package:inventree/l10.dart";
 
 class InvenTreeAboutWidget extends StatelessWidget {
 
   final PackageInfo info;
 
-  InvenTreeAboutWidget(this.info) : super();
+  const InvenTreeAboutWidget(this.info) : super();
 
-  void _releaseNotes(BuildContext context) async {
+  Future <void> _releaseNotes(BuildContext context) async {
 
     // Load release notes from external file
     String notes = await rootBundle.loadString("assets/release_notes.md");
@@ -27,7 +27,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
     );
   }
 
-  void _credits(BuildContext context) async {
+  Future <void> _credits(BuildContext context) async {
 
     String notes = await rootBundle.loadString("assets/credits.md");
 

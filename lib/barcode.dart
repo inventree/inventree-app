@@ -1,26 +1,26 @@
-import 'package:inventree/app_settings.dart';
-import 'package:inventree/inventree/sentry.dart';
-import 'package:inventree/widget/dialogs.dart';
-import 'package:inventree/widget/snacks.dart';
-import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:one_context/one_context.dart';
+import "dart:io";
 
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import "package:inventree/app_settings.dart";
+import "package:inventree/inventree/sentry.dart";
+import "package:inventree/widget/dialogs.dart";
+import "package:inventree/widget/snacks.dart";
+import "package:audioplayers/audioplayers.dart";
+import "package:flutter/cupertino.dart";
+import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:one_context/one_context.dart";
 
-import 'package:inventree/inventree/stock.dart';
-import 'package:inventree/inventree/part.dart';
-import 'package:inventree/l10.dart';
+import "package:qr_code_scanner/qr_code_scanner.dart";
 
-import 'package:inventree/api.dart';
+import "package:inventree/inventree/stock.dart";
+import "package:inventree/inventree/part.dart";
+import "package:inventree/l10.dart";
 
-import 'package:inventree/widget/location_display.dart';
-import 'package:inventree/widget/part_detail.dart';
-import 'package:inventree/widget/stock_detail.dart';
+import "package:inventree/api.dart";
 
-import 'dart:io';
+import "package:inventree/widget/location_display.dart";
+import "package:inventree/widget/part_detail.dart";
+import "package:inventree/widget/stock_detail.dart";
 
 
 class BarcodeHandler {
@@ -38,7 +38,7 @@ class BarcodeHandler {
 
     QRViewController? _controller;
 
-    void successTone() async {
+    Future<void> successTone() async {
 
       final bool en = await InvenTreeSettingsManager().getValue("barcodeSounds", true) as bool;
 
@@ -48,7 +48,7 @@ class BarcodeHandler {
       }
     }
 
-    void failureTone() async {
+    Future <void> failureTone() async {
 
       final bool en = await InvenTreeSettingsManager().getValue("barcodeSounds", true) as bool;
 
@@ -120,9 +120,9 @@ class BarcodeHandler {
               "errorDetail": response.errorDetail,
             }
         );
-      } else if (data.containsKey('error')) {
+      } else if (data.containsKey("error")) {
         onBarcodeUnknown(context, data);
-      } else if (data.containsKey('success')) {
+      } else if (data.containsKey("success")) {
         onBarcodeMatched(context, data);
       } else {
         onBarcodeUnhandled(context, data);
@@ -158,9 +158,9 @@ class BarcodeScanHandler extends BarcodeHandler {
     int pk = -1;
 
     // A stocklocation has been passed?
-    if (data.containsKey('stocklocation')) {
+    if (data.containsKey("stocklocation")) {
 
-      pk = (data['stocklocation']?['pk'] ?? -1) as int;
+      pk = (data["stocklocation"]?["pk"] ?? -1) as int;
 
       if (pk > 0) {
 
@@ -182,9 +182,9 @@ class BarcodeScanHandler extends BarcodeHandler {
         );
       }
 
-    } else if (data.containsKey('stockitem')) {
+    } else if (data.containsKey("stockitem")) {
 
-      pk = (data['stockitem']?['pk'] ?? -1) as int;
+      pk = (data["stockitem"]?["pk"] ?? -1) as int;
 
       if (pk > 0) {
 
@@ -208,9 +208,9 @@ class BarcodeScanHandler extends BarcodeHandler {
             success: false
         );
       }
-    } else if (data.containsKey('part')) {
+    } else if (data.containsKey("part")) {
 
-      pk = (data['part']?['pk'] ?? -1) as int;
+      pk = (data["part"]?["pk"] ?? -1) as int;
 
       if (pk > 0) {
 
@@ -278,7 +278,7 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
 
     failureTone();
 
-    // If the barcode is known, we can't assign it to the stock item!
+    // If the barcode is known, we can"t assign it to the stock item!
     showSnackIcon(
       L10().barcodeInUse,
       icon: FontAwesomeIcons.qrcode,
@@ -296,7 +296,7 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
           L10().barcodeMissingHash,
       );
     } else {
-      String hash = (data['hash'] ?? '') as String;
+      String hash = (data["hash"] ?? "") as String;
 
       if (hash.isNotEmpty) {
         item.update(
@@ -343,10 +343,10 @@ class StockItemScanIntoLocationHandler extends BarcodeHandler {
 
   @override
   Future<void> onBarcodeMatched(BuildContext context, Map<String, dynamic> data) async {
-    // If the barcode points to a 'stocklocation', great!
-    if (data.containsKey('stocklocation')) {
+    // If the barcode points to a "stocklocation", great!
+    if (data.containsKey("stocklocation")) {
       // Extract location information
-      int location = (data['stocklocation']['pk'] ?? -1) as int;
+      int location = (data["stocklocation"]["pk"] ?? -1) as int;
 
       if (location == -1) {
         showSnackIcon(
@@ -408,11 +408,11 @@ class StockLocationScanInItemsHandler extends BarcodeHandler {
   Future<void> onBarcodeMatched(BuildContext context, Map<String, dynamic> data) async {
 
     // Returned barcode must match a stock item
-    if (data.containsKey('stockitem')) {
+    if (data.containsKey("stockitem")) {
 
-      int item_id = data['stockitem']['pk'] as int;
+      int item_id = data["stockitem"]["pk"] as int;
 
-      final InvenTreeStockItem? item = await InvenTreeStockItem().get(item_id) as InvenTreeStockItem;
+      final InvenTreeStockItem? item = await InvenTreeStockItem().get(item_id) as InvenTreeStockItem?;
 
       if (item == null) {
 
@@ -468,7 +468,7 @@ class InvenTreeQRView extends StatefulWidget {
 
   final BarcodeHandler _handler;
 
-  InvenTreeQRView(this._handler, {Key? key}) : super(key: key);
+  const InvenTreeQRView(this._handler, {Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _QRViewState(_handler);
@@ -477,7 +477,7 @@ class InvenTreeQRView extends StatefulWidget {
 
 class _QRViewState extends State<InvenTreeQRView> {
 
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  final GlobalKey qrKey = GlobalKey(debugLabel: "QR");
 
   QRViewController? _controller;
 

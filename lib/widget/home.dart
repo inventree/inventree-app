@@ -1,29 +1,29 @@
-import 'package:inventree/app_colors.dart';
-import 'package:inventree/user_profile.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import "package:inventree/app_colors.dart";
+import "package:inventree/user_profile.dart";
+import "package:flutter/cupertino.dart";
+import "package:flutter/material.dart";
 
-import 'package:inventree/l10.dart';
+import "package:inventree/l10.dart";
 
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
-import 'package:inventree/barcode.dart';
-import 'package:inventree/api.dart';
+import "package:inventree/barcode.dart";
+import "package:inventree/api.dart";
 
-import 'package:inventree/settings/login.dart';
+import "package:inventree/settings/login.dart";
 
-import 'package:inventree/widget/category_display.dart';
-import 'package:inventree/widget/company_list.dart';
-import 'package:inventree/widget/location_display.dart';
-import 'package:inventree/widget/purchase_order_list.dart';
-import 'package:inventree/widget/search.dart';
-import 'package:inventree/widget/snacks.dart';
-import 'package:inventree/widget/spinner.dart';
-import 'package:inventree/widget/drawer.dart';
+import "package:inventree/widget/category_display.dart";
+import "package:inventree/widget/company_list.dart";
+import "package:inventree/widget/location_display.dart";
+import "package:inventree/widget/purchase_order_list.dart";
+import "package:inventree/widget/search.dart";
+import "package:inventree/widget/snacks.dart";
+import "package:inventree/widget/spinner.dart";
+import "package:inventree/widget/drawer.dart";
 
 class InvenTreeHomePage extends StatefulWidget {
 
-  InvenTreeHomePage({Key? key}) : super(key: key);
+  const InvenTreeHomePage({Key? key}) : super(key: key);
 
   @override
   _InvenTreeHomePageState createState() => _InvenTreeHomePageState();
@@ -125,7 +125,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     });
   }
 
-  void _loadProfile() async {
+  Future <void> _loadProfile() async {
 
     _profile = await UserProfileDBManager().getSelectedProfile();
 
