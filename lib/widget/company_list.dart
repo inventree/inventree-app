@@ -15,11 +15,11 @@ import "package:inventree/l10.dart";
 
 class CompanyListWidget extends StatefulWidget {
 
-  CompanyListWidget(this.title, this.filters, {Key? key}) : super(key: key);
+  const CompanyListWidget(this.title, this.filters, {Key? key}) : super(key: key);
 
-  String title;
+  final String title;
 
-  Map<String, String> filters;
+  final Map<String, String> filters;
 
   @override
   _CompanyListWidgetState createState() => _CompanyListWidgetState(title, filters);
@@ -49,11 +49,11 @@ class _CompanyListWidgetState extends RefreshableState<CompanyListWidget> {
 
 class PaginatedCompanyList extends StatefulWidget {
 
-  PaginatedCompanyList(this.filters, {this.onTotalChanged});
+  const PaginatedCompanyList(this.filters, {this.onTotalChanged});
 
   final Map<String, String> filters;
 
-  Function(int)? onTotalChanged;
+  final Function(int)? onTotalChanged;
 
   @override
   _CompanyListState createState() => _CompanyListState(filters, onTotalChanged);

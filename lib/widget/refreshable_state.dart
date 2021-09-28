@@ -9,7 +9,7 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
   final refreshableKey = GlobalKey<ScaffoldState>();
 
   // Storage for context once "Build" is called
-  BuildContext? _context;
+  late BuildContext? _context;
 
   // Current tab index (used for widgets which display bottom tabs)
   int tabIndex = 0;

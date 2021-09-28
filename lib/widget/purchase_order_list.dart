@@ -43,11 +43,11 @@ class _PurchaseOrderListWidgetState extends RefreshableState<PurchaseOrderListWi
 
 class _PaginatedPurchaseOrderList extends StatefulWidget {
 
-  _PaginatedPurchaseOrderList(this.filters, {this.onTotalChanged});
+  const _PaginatedPurchaseOrderList(this.filters, {this.onTotalChanged});
 
   final Map<String, String> filters;
 
-  Function(int)? onTotalChanged;
+  final Function(int)? onTotalChanged;
 
   @override
   _PaginatedPurchaseOrderListState createState() => _PaginatedPurchaseOrderListState(filters, onTotalChanged);

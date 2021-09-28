@@ -55,7 +55,7 @@ class APIFormField {
   bool get multiline => (data["multiline"] ?? false) as bool;
 
   // Get the "value" as a string (look for "default" if not available)
-  dynamic get value => (data["value"] ?? data["default"]);
+  dynamic get value => data["value"] ?? data["default"];
 
   // Get the "default" as a string
   dynamic get defaultValue => data["default"];
@@ -92,7 +92,7 @@ class APIFormField {
 
   }
 
-  bool hasErrors() => errorMessages().length > 0;
+  bool hasErrors() => errorMessages().isNotEmpty;
 
   // Return the error message associated with this field
   List<String> errorMessages() {
@@ -660,7 +660,7 @@ Future<void> launchApiForm(BuildContext context, String title, String url, Map<S
 
 class APIFormWidget extends StatefulWidget {
 
-  APIFormWidget(
+  const APIFormWidget(
       this.title,
       this.url,
       this.fields,
@@ -685,7 +685,7 @@ class APIFormWidget extends StatefulWidget {
 
   final List<APIFormField> fields;
 
-  Function(Map<String, dynamic>)? onSuccess;
+  final Function(Map<String, dynamic>)? onSuccess;
 
   @override
   _APIFormWidgetState createState() => _APIFormWidgetState(title, url, fields, method, onSuccess, fileField);

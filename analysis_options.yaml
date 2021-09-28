@@ -35,6 +35,8 @@ linter:
 
     unnecessary_string_interpolations: false
 
+    prefer_interpolation_to_compose_strings: false
+
     no_logic_in_create_state: false
 
     parameter_assignments: false
@@ -59,3 +61,5 @@ linter:
 
     # Blindly follow the Flutter code style, which prefers types everywhere
     always_specify_types: false
+
+    avoid_unnecessary_containers: false

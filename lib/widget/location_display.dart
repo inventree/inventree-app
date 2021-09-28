@@ -313,13 +313,13 @@ List<Widget> detailTiles() {
           L10().sublocations,
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        trailing: sublocations.length > 0 ? Text("${sublocations.length}") : null,
+        trailing: sublocations.isNotEmpty ? Text("${sublocations.length}") : null,
       ),
     ];
 
     if (loading) {
       tiles.add(progressIndicator());
-    } else if (_sublocations.length > 0) {
+    } else if (_sublocations.isNotEmpty) {
       tiles.add(SublocationList(_sublocations));
     } else {
       tiles.add(ListTile(

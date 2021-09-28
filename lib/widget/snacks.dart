@@ -17,7 +17,11 @@ import "package:inventree/l10.dart";
 
 void showSnackIcon(String text, {IconData? icon, Function()? onAction, bool? success, String? actionText}) {
 
-  OneContext().hideCurrentSnackBar();
+  BuildContext? context = OneContext().context;
+
+  if (context != null) {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+  }
 
   Color backgroundColor = Colors.deepOrange;
 

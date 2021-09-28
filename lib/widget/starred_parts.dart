@@ -71,7 +71,7 @@ class _StarredPartState extends RefreshableState<StarredPartWidget> {
       return progressIndicator();
     }
 
-    if (starredParts.length == 0) {
+    if (starredParts.isEmpty) {
       return ListView(
         children: [
           ListTile(

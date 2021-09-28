@@ -49,7 +49,7 @@ class InvenTreeModel {
 
   // Override the web URL for each subclass
   // Note: If the WEB_URL is the same (except for /api/) as URL then just leave blank
-  String WEB_URL = "";
+  String get WEB_URL => "";
 
   String get webUrl {
 
@@ -118,7 +118,7 @@ class InvenTreeModel {
   Map<String, dynamic> jsondata = {};
 
   // Accessor for the API
-  var api = InvenTreeAPI();
+  InvenTreeAPI api = InvenTreeAPI();
 
   int get pk => (jsondata["pk"] ?? -1) as int;
 

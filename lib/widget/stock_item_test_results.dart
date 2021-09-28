@@ -142,7 +142,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
 
     var results = getTestResults();
 
-    if (results.length == 0) {
+    if (results.isEmpty) {
       tiles.add(ListTile(
         title: Text(L10().testResultNone),
         subtitle: Text(L10().testResultNoneDetail),

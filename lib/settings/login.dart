@@ -79,24 +79,6 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     }
   }
 
-  Future <void> _updateProfile(UserProfile? profile) async {
-
-    if (profile == null) {
-      return;
-    }
-
-    _reload();
-
-    if (InvenTreeAPI().isConnected() && InvenTreeAPI().profile != null && profile.key == (InvenTreeAPI().profile?.key ?? "")) {
-      // Attempt server login (this will load the newly selected profile
-
-      InvenTreeAPI().connectToServer().then((result) {
-        _reload();
-      });
-    }
-  }
-
-
   Widget? _getProfileIcon(UserProfile profile) {
 
     // Not selected? No icon for you!
@@ -134,7 +116,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
 
     List<Widget> children = [];
 
-    if (profiles.length > 0) {
+    if (profiles.isNotEmpty) {
       for (int idx = 0; idx < profiles.length; idx++) {
         UserProfile profile = profiles[idx];
 
@@ -237,9 +219,9 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
 
 class ProfileEditWidget extends StatefulWidget {
 
-  ProfileEditWidget(this.profile) : super();
+  const ProfileEditWidget(this.profile) : super();
 
-  UserProfile? profile;
+  final UserProfile? profile;
 
   @override
   _ProfileEditState createState() => _ProfileEditState(profile);

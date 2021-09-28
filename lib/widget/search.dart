@@ -86,7 +86,7 @@ class PartSearchDelegate extends SearchDelegate<InvenTreePart?> {
 
     showSnackIcon(
         "${partResults.length} ${L10().results}",
-        success: partResults.length > 0,
+        success: partResults.isNotEmpty,
         icon: FontAwesomeIcons.pollH,
     );
 
@@ -161,7 +161,7 @@ class PartSearchDelegate extends SearchDelegate<InvenTreePart?> {
 
     search(context);
 
-    if (query.length == 0) {
+    if (query.isEmpty) {
       return ListTile(
         title: Text(L10().queryEnter)
       );
@@ -174,7 +174,7 @@ class PartSearchDelegate extends SearchDelegate<InvenTreePart?> {
       );
     }
 
-    if (partResults.length == 0) {
+    if (partResults.isEmpty) {
       return ListTile(
         title: Text(L10().noResults),
         subtitle: Text(L10().queryNoResults + " '${query}'")
@@ -275,7 +275,7 @@ class StockSearchDelegate extends SearchDelegate<InvenTreeStockItem?> {
 
     showSnackIcon(
       "${itemResults.length} ${L10().results}",
-      success: itemResults.length > 0,
+      success: itemResults.isNotEmpty,
       icon: FontAwesomeIcons.pollH,
     );
 
@@ -349,7 +349,7 @@ class StockSearchDelegate extends SearchDelegate<InvenTreeStockItem?> {
 
     search(context);
 
-    if (query.length == 0) {
+    if (query.isEmpty) {
       return ListTile(
           title: Text(L10().queryEnter)
       );
@@ -362,7 +362,7 @@ class StockSearchDelegate extends SearchDelegate<InvenTreeStockItem?> {
       );
     }
 
-    if (itemResults.length == 0) {
+    if (itemResults.isEmpty) {
       return ListTile(
           title: Text(L10().noResults),
           subtitle: Text(L10().queryNoResults + " '${query}'")

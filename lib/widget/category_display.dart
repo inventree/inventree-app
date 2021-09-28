@@ -198,7 +198,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
     if (loading) {
       tiles.add(progressIndicator());
-    } else if (_subcategories.length == 0) {
+    } else if (_subcategories.isEmpty) {
       tiles.add(ListTile(
         title: Text(L10().noSubcategories),
         subtitle: Text(
@@ -301,7 +301,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
       }
     }
 
-    if (tiles.length == 0) {
+    if (tiles.isEmpty) {
       tiles.add(
         ListTile(
           title: Text(
@@ -397,11 +397,11 @@ class SubcategoryList extends StatelessWidget {
 
 class PaginatedPartList extends StatefulWidget {
 
-  PaginatedPartList(this.filters, {this.onTotalChanged});
+  const PaginatedPartList(this.filters, {this.onTotalChanged});
 
   final Map<String, String> filters;
 
-  Function(int)? onTotalChanged;
+  final Function(int)? onTotalChanged;
 
   @override
   _PaginatedPartListState createState() => _PaginatedPartListState(filters, onTotalChanged);

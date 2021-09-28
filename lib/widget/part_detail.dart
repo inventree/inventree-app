@@ -17,7 +17,7 @@ import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/part_image_widget.dart";
 import "package:inventree/widget/stock_detail.dart";
 
-import "pcakage:inventree/widget/location_display.dart";
+import "package:inventree/widget/location_display.dart";
 
 
 class PartDetailWidget extends StatefulWidget {
@@ -442,20 +442,22 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     );
 
     // TODO - Add this action back in once implemented
-    if (false) {
-      tiles.add(
-        ListTile(
-          title: Text(L10().barcodeScanItem),
-          leading: FaIcon(FontAwesomeIcons.box),
-          trailing: FaIcon(FontAwesomeIcons.qrcode),
-          onTap: () {
-            // TODO
-          },
-        ),
-      );
-    }
-    
-    if (false && !part.isActive && InvenTreeAPI().checkPermission("part", "delete")) {
+    /*
+    tiles.add(
+      ListTile(
+        title: Text(L10().barcodeScanItem),
+        leading: FaIcon(FontAwesomeIcons.box),
+        trailing: FaIcon(FontAwesomeIcons.qrcode),
+        onTap: () {
+          // TODO
+        },
+      ),
+    );
+    */
+
+    /*
+    // TODO: Implement part deletion
+    if (!part.isActive && InvenTreeAPI().checkPermission("part", "delete")) {
       tiles.add(
         ListTile(
           title: Text(L10().deletePart),
@@ -467,6 +469,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         )
       );
     }
+     */
 
     return tiles;
   }

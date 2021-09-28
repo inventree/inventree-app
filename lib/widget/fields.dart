@@ -194,7 +194,7 @@ class StringField extends TextFormField {
  */
 class QuantityField extends TextFormField {
 
-  QuantityField({String label = "", String hint = "", String initial = "", double? max, TextEditingController? controller}) :
+  QuantityField({String label = "", String hint = "", double? max, TextEditingController? controller}) :
       super(
         decoration: InputDecoration(
           labelText: label,

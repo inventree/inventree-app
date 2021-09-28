@@ -114,7 +114,7 @@ class InvenTreeStockItem extends InvenTreeModel {
   String get URL => "stock/";
 
   @override
-  String WEB_URL = "stock/item/";
+  String get WEB_URL => "stock/item/";
 
   @override
   Map<String, dynamic> formFields() {
@@ -549,7 +549,7 @@ class InvenTreeStockLocation extends InvenTreeModel {
     // TODO - Drive the refactor tractor through this
     List<String> psplit = pathstring.split("/");
 
-    if (psplit.length > 0) {
+    if (psplit.isNotEmpty) {
       psplit.removeLast();
     }
 

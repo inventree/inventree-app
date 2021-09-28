@@ -123,7 +123,7 @@ class _PartAttachmentDisplayState extends RefreshableState<PartAttachmentsWidget
       ));
     }
 
-    if (tiles.length == 0) {
+    if (tiles.isEmpty) {
       tiles.add(ListTile(
         title: Text(L10().attachmentNone),
         subtitle: Text(
