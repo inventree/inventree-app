@@ -17,6 +17,7 @@ import 'package:inventree/widget/company_list.dart';
 import 'package:inventree/widget/location_display.dart';
 import 'package:inventree/widget/purchase_order_list.dart';
 import 'package:inventree/widget/search.dart';
+import 'package:inventree/widget/snacks.dart';
 import 'package:inventree/widget/spinner.dart';
 import 'package:inventree/widget/drawer.dart';
 
@@ -204,37 +205,15 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     }
   }
 
-  Widget _header(String label) {
-    return Card(
-      margin: EdgeInsets.symmetric(
-        vertical: 1,
-        horizontal: 10,
-      ),
-      child: ListTile(
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: 10,
-          vertical: 1
-        ),
-        title: Text(
-          label,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
-  }
+  Widget _iconButton(BuildContext context, String label, IconData icon, {Function()? callback, String role = "", String permission = ""}) {
 
-  Widget _grid(List<Widget> children) {
-    return GridView.extent(
-      maxCrossAxisExtent: 140,
-      shrinkWrap: true,
-      physics: ClampingScrollPhysics(),
-      children: children,
-    );
-  }
+    bool connected = InvenTreeAPI().isConnected();
 
-  Widget _iconButton(String label, IconData icon, {Function()? callback}) {
+    bool allowed = true;
+
+    if (role.isNotEmpty || permission.isNotEmpty) {
+      allowed = InvenTreeAPI().checkPermission(role, permission);
+    }
 
     return GestureDetector(
       child: Card(
@@ -247,7 +226,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
           children: [
             FaIcon(
               icon,
-              color: callback == null ? Colors.grey : COLOR_CLICK,
+              color: connected && allowed ? COLOR_CLICK : Colors.grey,
             ),
             Divider(
               height: 10,
@@ -258,10 +237,26 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
           ]
         )
       ),
-      onTap: callback,
-    );
+      onTap: () {
 
+        if (!allowed) {
+          showSnackIcon(
+            L10().permissionRequired,
+            icon: FontAwesomeIcons.exclamationCircle,
+            success: false,
+          );
+
+          return;
+        }
+
+        if (callback != null) {
+          callback();
+        }
+
+      },
+    );
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -291,27 +286,34 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
         physics: ClampingScrollPhysics(),
         shrinkWrap: true,
         children: [
-          _grid([
+          GridView.extent(
+            maxCrossAxisExtent: 140,
+            shrinkWrap: true,
+            physics: ClampingScrollPhysics(),
+            children: [
             _iconButton(
-                L10().scanBarcode,
-                FontAwesomeIcons.barcode,
-                callback: () {
-                  _scan(context);
-                }
+              context,
+              L10().scanBarcode,
+              FontAwesomeIcons.barcode,
+              callback: () {
+                _scan(context);
+              }
             ),
             _iconButton(
-                L10().search,
-                FontAwesomeIcons.search,
-                callback: () {
-                  // TODO: Launch "generic" search widget
-                }
+              context,
+              L10().search,
+              FontAwesomeIcons.search,
+              callback: () {
+                // TODO: Launch "generic" search widget
+              }
             ),
             _iconButton(
-                L10().parts,
-                FontAwesomeIcons.shapes,
-                callback: () {
-                  _showParts(context);
-                }
+              context,
+              L10().parts,
+              FontAwesomeIcons.shapes,
+              callback: () {
+                _showParts(context);
+              }
             ),
 
               // TODO - Re-add starred parts link
@@ -330,38 +332,44 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
              */
 
             _iconButton(
-                L10().stock,
-                FontAwesomeIcons.boxes,
-                callback: () {
-                  _showStock(context);
-                }
+              context,
+              L10().stock,
+              FontAwesomeIcons.boxes,
+              callback: () {
+                _showStock(context);
+              }
             ),
             _iconButton(
-                L10().purchaseOrders,
-                FontAwesomeIcons.shoppingCart,
-                callback: () {
-                  _showPurchaseOrders(context);
-                }
+              context,
+              L10().purchaseOrders,
+              FontAwesomeIcons.shoppingCart,
+              callback: () {
+                _showPurchaseOrders(context);
+              }
             ),
             _iconButton(
+              context,
               L10().salesOrders,
               FontAwesomeIcons.truck,
             ),
             _iconButton(
-                L10().suppliers,
-                FontAwesomeIcons.building,
-                callback: () {
-                  _showSuppliers(context);
-                }
+              context,
+              L10().suppliers,
+              FontAwesomeIcons.building,
+              callback: () {
+                _showSuppliers(context);
+              }
             ),
             _iconButton(
-                L10().manufacturers,
-                FontAwesomeIcons.industry,
-                callback: () {
-                  _showManufacturers(context);
-                }
+              context,
+              L10().manufacturers,
+              FontAwesomeIcons.industry,
+              callback: () {
+                _showManufacturers(context);
+              }
             ),
             _iconButton(
+              context,
               L10().customers,
               FontAwesomeIcons.userTie,
               callback: () {

@@ -240,7 +240,7 @@ class InvenTreeAPI {
 
     if (address.isEmpty || username.isEmpty || password.isEmpty) {
       showSnackIcon(
-        "Incomplete profile details",
+        L10().incompleteDetails,
         icon: FontAwesomeIcons.exclamationCircle,
         success: false
       );
