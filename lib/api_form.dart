@@ -443,8 +443,8 @@ class APIFormField {
           ) : null,
         );
       case "owner":
-        String name = (item["name"] ?? "") as String;
-        bool isGroup = (item["label"] ?? "") == "group";
+        String name = (data["name"] ?? "") as String;
+        bool isGroup = (data["label"] ?? "") == "group";
         return ListTile(
           title: Text(name),
           leading: FaIcon(isGroup ? FontAwesomeIcons.users : FontAwesomeIcons.user),
