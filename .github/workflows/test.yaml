@@ -36,46 +36,46 @@ jobs:
       - run: flutter analyze
       - run: flutter test --coverage
 
-  android:
-    runs-on: macos-latest
+  #android:
+  #  runs-on: macos-latest
+  #
+  #  steps:
+  #    - name: Checkout code
+  #      uses: actions/checkout@v2
+  #      with:
+  #        submodules: recursive
+  #    - name: Setup Java
+  #      uses: actions/setup-java@v1
+  #      with:
+  #        java-version: '12.x'
+  #    - name: Setup Flutter
+  #      uses: subosito/flutter-action@v1
+  #      with:
+  #        flutter-version: '2.2.3'
+  #    - name: Setup Gradle
+  #      uses: gradle/gradle-build-action@v2
+  #      with:
+  #        gradle-version: 6.1.1
+  #    - run: flutter pub get
+  #    - run: cp lib/dummy_dsn.dart lib/dsn.dart
+  #    - run: flutter build apk
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          submodules: recursive
-      - name: Setup Java
-        uses: actions/setup-java@v1
-        with:
-          java-version: '12.x'
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v1
-        with:
-          flutter-version: '2.2.3'
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-        with:
-          gradle-version: 6.1.1
-      - run: flutter pub get
-      - run: cp lib/dummy_dsn.dart lib/dsn.dart
-      - run: flutter build apk
-
-  ios:
-    runs-on: macos-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-      with:
-        submodules: recursive
-    - name: Setup Java
-      uses: actions/setup-java@v1
-      with:
-        java-version: '12.x'
-    - name: Setup Flutter
-      uses: subosito/flutter-action@v1
-      with:
-        flutter-version: '2.2.3'
-    - run: flutter pub get
-    - run: cp lib/dummy_dsn.dart lib/dsn.dart
-    - run: flutter build ios --release --no-codesign
+  #ios:
+  #  runs-on: macos-latest
+  #
+  #  steps:
+  #  - name: Checkout code
+  #    uses: actions/checkout@v2
+  #    with:
+  #      submodules: recursive
+  #  - name: Setup Java
+  #    uses: actions/setup-java@v1
+  #    with:
+  #      java-version: '12.x'
+  #  - name: Setup Flutter
+  #    uses: subosito/flutter-action@v1
+  #    with:
+  #      flutter-version: '2.2.3'
+  #  - run: flutter pub get
+  #  - run: cp lib/dummy_dsn.dart lib/dsn.dart
+  #  - run: flutter build ios --release --no-codesign
