@@ -38,53 +38,125 @@ class APIFormField {
   // JSON data which defines the field
   final Map<String, dynamic> data;
 
+  // JSON field definition provided by the server
+  Map<String, dynamic> definition = {};
+
   dynamic initial_data;
 
+  // Return the "lookup path" for this field, within the server data
+  String get lookupPath {
+
+    // Simple top-level case
+    if (parent.isEmpty && !nested) {
+      return name;
+    }
+
+    List<String> path = [];
+
+    if (parent.isNotEmpty) {
+      path.add(parent);
+      path.add("child");
+    }
+
+    if (nested) {
+      path.add("children");
+      path.add(name);
+    }
+
+    return path.join(".");
+  }
+
+  /*
+   * Extract a field parameter from the provided field definition.
+   *
+   * - First the user-provided data is checked
+   * - Second, the server-provided definition is checked
+   * - Third, return null
+   */
+  dynamic getParameter(String key) {
+
+    if (data.containsKey(key)) {
+      return data[key];
+    } else if (definition.containsKey(key)) {
+      return definition[key];
+    } else {
+      return null;
+    }
+  }
+
   // Get the "api_url" associated with a related field
-  String get api_url => (data["api_url"] ?? "") as String;
+  String get api_url => (getParameter("api_url") ?? "") as String;
 
   // Get the "model" associated with a related field
-  String get model => (data["model"] ?? "") as String;
+  String get model => (getParameter("model") ?? "") as String;
 
   // Is this field hidden?
-  bool get hidden => (data["hidden"] ?? false) as bool;
+  bool get hidden => (getParameter("hidden") ?? false) as bool;
+
+  // Is this field nested? (Nested means part of an array)
+  // Note: This parameter is only defined locally
+  bool get nested => (data["nested"] ?? false) as bool;
+
+  // What is the "parent" field of this field?
+  // Note: This parameter is only defined locally
+  String get parent => (data["parent"] ?? "") as String;
 
   // Is this field read only?
-  bool get readOnly => (data["read_only"] ?? false) as bool;
+  bool get readOnly => (getParameter("read_only") ?? false) as bool;
 
-  bool get multiline => (data["multiline"] ?? false) as bool;
+  bool get multiline => (getParameter("multiline") ?? false) as bool;
 
   // Get the "value" as a string (look for "default" if not available)
-  dynamic get value => data["value"] ?? data["default"];
+  dynamic get value => getParameter("value") ?? data["default"];
 
   // Get the "default" as a string
-  dynamic get defaultValue => data["default"];
+  dynamic get defaultValue => getParameter("default");
 
+  // Construct a set of "filters" for this field (e.g. related field)
   Map<String, String> get filters {
 
     Map<String, String> _filters = {};
 
-    // Start with the provided "model" filters
-    if (data.containsKey("filters")) {
+    // Start with the field "definition" (provided by the server)
+    if (definition.containsKey("filters")) {
 
-      dynamic f = data["filters"];
+      try {
+        var fDef = definition["filters"] as Map<String, dynamic>;
 
-      if (f is Map) {
-        f.forEach((key, value) {
-          _filters[key as String] = value.toString();
+        fDef.forEach((String key, dynamic value) {
+          _filters[key] = value.toString();
         });
+
+      } catch (error) {
+        // pass
       }
     }
 
-    // Now, look at the provided "instance_filters"
-    if (data.containsKey("instance_filters")) {
+    // Next, look at any "instance_filters" provided by the server
+    if (definition.containsKey("instance_filters")) {
 
-      dynamic f = data["instance_filters"];
+      try {
+        var fIns = definition["instance_filters"] as Map<String, dynamic>;
 
-      if (f is Map) {
-        f.forEach((key, value) {
-          _filters[key as String] = value.toString();
+        fIns.forEach((String key, dynamic value) {
+          _filters[key] = value.toString();
         });
+      } catch (error) {
+        // pass
+      }
+
+    }
+
+    // Finally, augment or override with any filters provided by the calling function
+    if (data.containsKey("filters")) {
+      try {
+        var fDat = data["filters"] as Map<String, dynamic>;
+
+        fDat.forEach((String key, dynamic value) {
+          _filters[key] = value.toString();
+        });
+      } catch (error) {
+        // pass
       }
     }
 
@@ -108,17 +180,17 @@ class APIFormField {
   }
 
   // Is this field required?
-  bool get required => (data["required"] ?? false) as bool;
+  bool get required => (getParameter("required") ?? false) as bool;
 
-  String get type => (data["type"] ?? "").toString();
+  String get type => (getParameter("type") ?? "").toString();
 
-  String get label => (data["label"] ?? "").toString();
+  String get label => (getParameter("label") ?? "").toString();
 
-  String get helpText => (data["help_text"] ?? "").toString();
+  String get helpText => (getParameter("help_text") ?? "").toString();
 
-  String get placeholderText => (data["placeholder"] ?? "").toString();
+  String get placeholderText => (getParameter("placeholder") ?? "").toString();
 
-  List<dynamic> get choices => (data["choices"] ?? []) as List<dynamic>;
+  List<dynamic> get choices => (getParameter("choices") ?? []) as List<dynamic>;
 
   Future<void> loadInitialData() async {
 
@@ -548,6 +620,72 @@ Map<String, dynamic> extractFields(APIResponse response) {
 }
 
 /*
+ * Extract a field definition (map) from the provided JSON data.
+ *
+ * Notes:
+ * - If the field is a top-level item, the provided "path" may be a simple string (e.g. "quantity"),
+ * - If the field is buried in the JSON data, the "path" may use a dotted notation e.g. "items.child.children.quantity"
+ *
+ * The map "tree" is traversed based on the provided lookup string, which can use dotted notation.
+ * This allows complex paths to be used to lookup field information.
+ */
+Map<String, dynamic> extractFieldDefinition(Map<String, dynamic> data, String lookup) {
+
+  List<String> path = lookup.split(".");
+
+  // Shadow copy the data for path traversal
+  Map<String, dynamic> _data = data;
+
+  // Iterate through all but the last element of the path
+  for (int ii = 0; ii < (path.length - 1); ii++) {
+
+    String el = path[ii];
+
+    if (!_data.containsKey(el)) {
+      print("Could not find field definition for ${lookup}:");
+      print("- Key ${el} missing at index ${ii}");
+      return {};
+    }
+
+    try {
+      _data = _data[el] as Map<String, dynamic>;
+    } catch (error, stackTrace) {
+      print("Could not find sub-field element '${el}' for ${lookup}:");
+      print(error.toString());
+
+      // Report the error
+      sentryReportError(error, stackTrace);
+      return {};
+    }
+  }
+
+  String el = path.last;
+
+  if (!_data.containsKey(el)) {
+    print("Could not find field definition for ${lookup}");
+    print("- Final field path ${el} missing from data");
+    return {};
+  } else {
+
+    try {
+      Map<String, dynamic> definition = _data[el] as Map<String, dynamic>;
+
+      return definition;
+    } catch (error, stacktrace) {
+      print("Could not find field definition for ${lookup}");
+      print(error.toString());
+
+      // Report the error
+      sentryReportError(error, stacktrace);
+
+      return {};
+    }
+
+  }
+}
+
+
+/*
  * Launch an API-driven form,
  * which uses the OPTIONS metadata (at the provided URL)
  * to determine how the form elements should be rendered!
@@ -577,9 +715,10 @@ Future<void> launchApiForm(
     return;
   }
 
-  var availableFields = extractFields(options);
+  // List of fields defined by the server
+  Map<String, dynamic> serverFields = extractFields(options);
 
-  if (availableFields.isEmpty) {
+  if (serverFields.isEmpty) {
     // User does not have permission to perform this action
     showSnackIcon(
       L10().response403,
@@ -592,53 +731,32 @@ Future<void> launchApiForm(
   // Construct a list of APIFormField objects
   List<APIFormField> formFields = [];
 
-  // Iterate through the provided fields we wish to display
+  APIFormField field;
+
   for (String fieldName in fields.keys) {
 
-    // Check that the field is actually available at the API endpoint
-    if (!availableFields.containsKey(fieldName)) {
-      print("Field '${fieldName}' not available at '${url}'");
+    dynamic data = fields[fieldName];
 
-      sentryReportMessage(
-        "API form called with unknown field '${fieldName}'",
-        context: {
-          "url": url.toString(),
-        }
-      );
+    Map<String, dynamic> fieldData = {};
 
+    if (data is Map) {
+      fieldData = Map<String, dynamic>.from(data);
+    }
+
+    // Iterate through the provided fields we wish to display
+
+    field = APIFormField(fieldName, fieldData);
+
+    // Extract the definition of this field from the data received from the server
+    field.definition = extractFieldDefinition(serverFields, field.lookupPath);
+
+    // Skip fields with empty definitions
+    if (field.definition.isEmpty) {
+      print("ERROR: Empty field definition for field '${fieldName}'");
       continue;
     }
 
-    final remoteField = Map<String, dynamic>.from(availableFields[fieldName] as Map);
-    final localField = Map<String, dynamic>.from(fields[fieldName] as Map);
-
-    // Override defined field parameters, if provided
-    for (String key in localField.keys) {
-      // Special consideration must be taken here!
-      if (key == "filters") {
-
-        if (!remoteField.containsKey("filters")) {
-          remoteField["filters"] = {};
-        }
-
-        var filters = localField["filters"];
-
-        if (filters is Map) {
-          filters.forEach((key, value) {
-            remoteField["filters"][key] = value;
-          });
-        }
-
-      } else {
-        remoteField[key] = localField[key];
-      }
-    }
-
-    if (modelData.containsKey(fieldName)) {
-      remoteField["value"] = modelData[fieldName];
-    }
-
-    formFields.add(APIFormField(fieldName, remoteField));
+    formFields.add(field);
   }
 
   // Grab existing data for each form field
