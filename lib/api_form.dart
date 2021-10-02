@@ -343,7 +343,7 @@ class APIFormField {
             FilePickerDialog.pickFile(
               message: L10().attachmentSelect,
               onPicked: (file) {
-                print("${file.path}");
+                // print("${file.path}");
                 // Display the filename
                 controller.text = file.path.split("/").last;
 
@@ -1089,18 +1089,12 @@ class _APIFormWidgetState extends State<APIFormWidget> {
       }
     }
 
-    print("Submitting form data to server:");
-    print(data.toString());
-
     final response = await _submit(data);
 
     if (!response.isValid()) {
       showServerError(L10().serverError, L10().responseInvalid);
       return;
     }
-
-    print("Response: ${response.statusCode}");
-    print(response.data.toString());
 
     switch (response.statusCode) {
       case 200:
