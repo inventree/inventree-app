@@ -7,6 +7,7 @@ import "package:date_field/date_field.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
+import 'package:inventree/helpers.dart';
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/sentry.dart";
 import "package:inventree/inventree/stock.dart";
@@ -201,7 +202,15 @@ class APIFormField {
 
   // Return the error message associated with this field
   List<String> errorMessages() {
-    List<dynamic> errors = (data["errors"] ?? []) as List<dynamic>;
+
+    dynamic errors = data["errors"] ?? [];
+
+    // Handle the case where a single error message is returned
+    if (errors is String) {
+      errors = [errors];
+    }
+
+    errors = errors as List<dynamic>;
 
     List<String> messages = [];
 
@@ -395,7 +404,7 @@ class APIFormField {
         helperStyle: _helperStyle(),
         hintText: placeholderText,
       ),
-      initialValue: (value ?? 0).toString(),
+      initialValue: simpleNumberString(double.tryParse(value.toString()) ?? 0),
       keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
       validator: (value) {
 
@@ -871,6 +880,8 @@ class _APIFormWidgetState extends State<APIFormWidget> {
 
   final IconData icon;
 
+  List<String> nonFieldErrors = [];
+
   List<APIFormField> fields;
 
   Function(Map<String, dynamic>)? onSuccess;
@@ -880,6 +891,29 @@ class _APIFormWidgetState extends State<APIFormWidget> {
   List<Widget> _buildForm() {
 
     List<Widget> widgets = [];
+
+    // Display non-field errors first
+    if (nonFieldErrors.isNotEmpty) {
+      for (String error in nonFieldErrors) {
+        widgets.add(
+          ListTile(
+            title: Text(
+              error,
+              style: TextStyle(
+                color: COLOR_DANGER,
+              ),
+            ),
+            leading: FaIcon(
+              FontAwesomeIcons.exclamationCircle,
+              color: COLOR_DANGER
+            ),
+          )
+        );
+      }
+
+      widgets.add(Divider(height: 5));
+
+    }
 
     for (var field in fields) {
 
@@ -982,7 +1016,36 @@ class _APIFormWidgetState extends State<APIFormWidget> {
 
       return response;
     }
+  }
 
+  void extractNonFieldErrors(APIResponse response) {
+
+    List<String> errors = [];
+
+    Map<String, dynamic> data = response.asMap();
+
+    // Potential keys representing non-field errors
+    List<String> keys = [
+      "__all__",
+      "non_field_errors",
+      "errors",
+    ];
+
+    for (String key in keys) {
+      if (data.containsKey(key)) {
+        dynamic result = data[key];
+
+        if (result is String) {
+          errors.add(result);
+        } else if (result is List) {
+          result.forEach((element) {
+            errors.add(element.toString());
+          });
+        }
+      }
+    }
+
+    nonFieldErrors = errors;
   }
 
   /*
@@ -1073,12 +1136,12 @@ class _APIFormWidgetState extends State<APIFormWidget> {
           success: false
         );
 
-        print(response.data);
-
         // Update field errors
         for (var field in fields) {
           field.extractErrorMessages(response);
         }
+
+        extractNonFieldErrors(response);
 
         break;
       case 401:

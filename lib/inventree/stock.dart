@@ -1,6 +1,7 @@
 import "dart:async";
 
 import "package:intl/intl.dart";
+import 'package:inventree/helpers.dart';
 import "package:inventree/inventree/part.dart";
 import "package:flutter/cupertino.dart";
 
@@ -369,16 +370,11 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   double get quantity => double.tryParse(jsondata["quantity"].toString()) ?? 0;
 
-  String get quantityString {
+  String quantityString({bool includeUnits = false}){
 
-    String q = quantity.toString();
+    String q = simpleNumberString(quantity);
 
-    // Simplify integer values e.g. "1.0" becomes "1"
-    if (quantity.toInt() == quantity) {
-      q = quantity.toInt().toString();
-    }
-
-    if (units.isNotEmpty) {
+    if (includeUnits && units.isNotEmpty) {
       q += " ${units}";
     }
 
@@ -394,12 +390,7 @@ class InvenTreeStockItem extends InvenTreeModel {
       return "SN ${serialNumber}";
     }
 
-    // Is an integer?
-    if (quantity.toInt() == quantity) {
-      return "${quantity.toInt()}";
-    }
-
-    return "${quantity}";
+    return simpleNumberString(quantity);
   }
 
   String get locationName {
@@ -436,7 +427,7 @@ class InvenTreeStockItem extends InvenTreeModel {
     if (serialNumber.isNotEmpty) {
       return "SN: $serialNumber";
     } else {
-      return quantityString;
+      return simpleNumberString(quantity);
     }
   }
 
