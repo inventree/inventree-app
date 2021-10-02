@@ -181,9 +181,11 @@ class APIFormField {
   // Extract error messages from the server response
   void extractErrorMessages(APIResponse response) {
 
+    dynamic errors = null;
+
     if (isSimple) {
       // Simple fields are easily handled
-      data["errors"] = response.data[name];
+      errors = response.data[name];
     } else {
       if (parent.isNotEmpty) {
         dynamic parentElement = response.data[parent];
@@ -194,10 +196,12 @@ class APIFormField {
         }
 
         if (parentElement is Map) {
-          data["errors"] = parentElement[name];
+          errors = parentElement[name];
         }
       }
     }
+
+    data["errors"] = errors;
   }
 
   // Return the error message associated with this field
