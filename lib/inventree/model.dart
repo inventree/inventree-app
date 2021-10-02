@@ -118,7 +118,7 @@ class InvenTreeModel {
   Map<String, dynamic> jsondata = {};
 
   // Accessor for the API
-  InvenTreeAPI api = InvenTreeAPI();
+  InvenTreeAPI get api => InvenTreeAPI();
 
   int get pk => (jsondata["pk"] ?? -1) as int;
 
@@ -167,11 +167,19 @@ class InvenTreeModel {
   String get url => "${URL}/${pk}/".replaceAll("//", "/");
 
   // Search this Model type in the database
-  Future<List<InvenTreeModel>> search(BuildContext context, String searchTerm, {Map<String, String> filters = const {}}) async {
+  Future<List<InvenTreeModel>> search(String searchTerm, {Map<String, String> filters = const {}, int offset = 0, int limit = 25}) async {
 
-    filters["search"] = searchTerm;
+    Map<String, String> searchFilters = {};
 
-    final results = list(filters: filters);
+    for (String key in filters.keys) {
+      searchFilters[key] = filters[key] ?? "";
+    }
+
+    searchFilters["search"] = searchTerm;
+    searchFilters["offset"] = "${offset}";
+    searchFilters["limit"] = "${limit}";
+
+    final results = list(filters: searchFilters);
 
     return results;
 

@@ -327,13 +327,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
             },
             onFind: (String filter) async {
 
-              Map<String, String> _filters = {
-                "search": filter,
-                "offset": "0",
-                "limit": "25"
-              };
-
-              final List<InvenTreeModel> results = await InvenTreeStockLocation().list(filters: _filters);
+              final results = await InvenTreeStockLocation().search(filter);
 
               List<dynamic> items = [];
 

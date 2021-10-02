@@ -71,7 +71,7 @@ class PartSearchDelegate extends SearchDelegate<InvenTreePart?> {
 
     _filters["cascade"] = "true";
 
-    final results = await InvenTreePart().search(context, query, filters: _filters);
+    final results = await InvenTreePart().search(query, filters: _filters);
 
     partResults.clear();
 
@@ -260,8 +260,7 @@ class StockSearchDelegate extends SearchDelegate<InvenTreeStockItem?> {
     // Enable cascading part search by default
     _filters["cascade"] = "true";
 
-    final results = await InvenTreeStockItem().search(
-        context, query, filters: _filters);
+    final results = await InvenTreeStockItem().search(query, filters: _filters);
 
     itemResults.clear();
 

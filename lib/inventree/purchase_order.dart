@@ -20,6 +20,8 @@ class InvenTreePurchaseOrder extends InvenTreeModel {
   @override
   String get URL => "order/po/";
 
+  String get receive_url => "${url}receive/";
+
   @override
   Map<String, dynamic> formFields() {
     return {

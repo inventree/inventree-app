@@ -559,7 +559,16 @@ Map<String, dynamic> extractFields(APIResponse response) {
  * @param method is the HTTP method to use to send the form data to the server (e.g. POST / PATCH)
  */
 
-Future<void> launchApiForm(BuildContext context, String title, String url, Map<String, dynamic> fields, {String fileField = "", Map<String, dynamic> modelData = const {}, String method = "PATCH", Function(Map<String, dynamic>)? onSuccess, Function? onCancel}) async {
+Future<void> launchApiForm(
+    BuildContext context, String title, String url, Map<String, dynamic> fields,
+    {
+      String fileField = "",
+      Map<String, dynamic> modelData = const {},
+      String method = "PATCH",
+      Function(Map<String, dynamic>)? onSuccess,
+      Function? onCancel,
+      IconData icon = FontAwesomeIcons.save,
+    }) async {
 
   var options = await InvenTreeAPI().options(url);
 
@@ -641,12 +650,13 @@ Future<void> launchApiForm(BuildContext context, String title, String url, Map<S
   Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => APIFormWidget(
-        title,
-        url,
-        formFields,
-        method,
-        onSuccess: onSuccess,
-        fileField: fileField,
+      title,
+      url,
+      formFields,
+      method,
+      onSuccess: onSuccess,
+      fileField: fileField,
+      icon: icon,
     ))
   );
 }
@@ -663,6 +673,7 @@ class APIFormWidget extends StatefulWidget {
         Key? key,
         this.onSuccess,
         this.fileField = "",
+        this.icon = FontAwesomeIcons.save,
       }
       ) : super(key: key);
 
@@ -677,29 +688,34 @@ class APIFormWidget extends StatefulWidget {
 
   final String fileField;
 
+  // Icon
+  final IconData icon;
+
   final List<APIFormField> fields;
 
   final Function(Map<String, dynamic>)? onSuccess;
 
   @override
-  _APIFormWidgetState createState() => _APIFormWidgetState(title, url, fields, method, onSuccess, fileField);
+  _APIFormWidgetState createState() => _APIFormWidgetState(title, url, fields, method, onSuccess, fileField, icon);
 
 }
 
 
 class _APIFormWidgetState extends State<APIFormWidget> {
 
-  _APIFormWidgetState(this.title, this.url, this.fields, this.method, this.onSuccess, this.fileField) : super();
+  _APIFormWidgetState(this.title, this.url, this.fields, this.method, this.onSuccess, this.fileField, this.icon) : super();
 
   final _formKey = GlobalKey<FormState>();
 
-  String title;
+  final String title;
 
-  String url;
+  final String url;
 
-  String method;
+  final String method;
 
-  String fileField;
+  final String fileField;
+
+  final IconData icon;
 
   List<APIFormField> fields;
 
@@ -878,6 +894,12 @@ class _APIFormWidgetState extends State<APIFormWidget> {
           field.data["errors"] = response.data[field.name];
         }
         break;
+      case 405:
+        showSnackIcon(
+          L10().response405,
+          success: false,
+        );
+        break;
       // TODO: Other status codes?
     }
 
@@ -895,7 +917,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
         title: Text(title),
         actions: [
           IconButton(
-            icon: FaIcon(FontAwesomeIcons.save),
+            icon: FaIcon(icon),
             onPressed: () {
 
               if (_formKey.currentState!.validate()) {
