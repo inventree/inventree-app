@@ -885,7 +885,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
       case 400:
         // Form submission / validation error
         showSnackIcon(
-          L10().error,
+          L10().formError,
           success: false
         );
 
@@ -894,13 +894,42 @@ class _APIFormWidgetState extends State<APIFormWidget> {
           field.data["errors"] = response.data[field.name];
         }
         break;
-      case 405:
+      case 401:
         showSnackIcon(
-          L10().response405,
+          "401: " + L10().response401,
+          success: false
+        );
+        break;
+      case 403:
+        showSnackIcon(
+          "403: " + L10().response403,
           success: false,
         );
         break;
-      // TODO: Other status codes?
+      case 404:
+        showSnackIcon(
+          "404: " + L10().response404,
+          success: false,
+        );
+        break;
+      case 405:
+        showSnackIcon(
+          "405: " + L10().response405,
+          success: false,
+        );
+        break;
+      case 500:
+        showSnackIcon(
+          "500: " + L10().response500,
+          success: false,
+        );
+        break;
+      default:
+        showSnackIcon(
+          "${response.statusCode}: " + L10().responseInvalid,
+          success: false,
+        );
+        break;
     }
 
     setState(() {
