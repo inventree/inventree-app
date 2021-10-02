@@ -71,10 +71,10 @@ class APIFormField {
    *
    * - First the user-provided data is checked
    * - Second, the server-provided definition is checked
-   * - Third, return null
+   *
+   * - Finally, return null
    */
   dynamic getParameter(String key) {
-
     if (data.containsKey(key)) {
       return data[key];
     } else if (definition.containsKey(key)) {
@@ -107,7 +107,7 @@ class APIFormField {
   bool get multiline => (getParameter("multiline") ?? false) as bool;
 
   // Get the "value" as a string (look for "default" if not available)
-  dynamic get value => getParameter("value") ?? data["default"];
+  dynamic get value => data["value"] ?? data["instance_value"] ?? data["default"];
 
   // Get the "default" as a string
   dynamic get defaultValue => getParameter("default");
@@ -755,6 +755,9 @@ Future<void> launchApiForm(
       print("ERROR: Empty field definition for field '${fieldName}'");
       continue;
     }
+
+    // Add instance value to the field
+    field.data["instance_value"] = modelData[fieldName];
 
     formFields.add(field);
   }
