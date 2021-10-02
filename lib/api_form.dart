@@ -7,7 +7,7 @@ import "package:date_field/date_field.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
-import 'package:inventree/helpers.dart';
+import "package:inventree/helpers.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/sentry.dart";
 import "package:inventree/inventree/stock.dart";
@@ -181,7 +181,7 @@ class APIFormField {
   // Extract error messages from the server response
   void extractErrorMessages(APIResponse response) {
 
-    dynamic errors = null;
+    dynamic errors;
 
     if (isSimple) {
       // Simple fields are easily handled
@@ -1042,9 +1042,9 @@ class _APIFormWidgetState extends State<APIFormWidget> {
         if (result is String) {
           errors.add(result);
         } else if (result is List) {
-          result.forEach((element) {
+          for (dynamic element in result) {
             errors.add(element.toString());
-          });
+          }
         }
       }
     }
