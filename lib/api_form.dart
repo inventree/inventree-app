@@ -101,13 +101,24 @@ class APIFormField {
   // Note: This parameter is only defined locally
   String get parent => (data["parent"] ?? "") as String;
 
+  bool get isSimple => !nested && parent.isEmpty;
+
   // Is this field read only?
   bool get readOnly => (getParameter("read_only") ?? false) as bool;
 
   bool get multiline => (getParameter("multiline") ?? false) as bool;
 
   // Get the "value" as a string (look for "default" if not available)
-  dynamic get value => data["value"] ?? data["instance_value"] ?? data["default"];
+  dynamic get value => data["value"] ?? data["instance_value"] ?? defaultValue;
+
+  // Render value to string (for form submission)
+  String renderToString() {
+    if (value == null) {
+      return "";
+    } else {
+      return value.toString();
+    }
+  }
 
   // Get the "default" as a string
   dynamic get defaultValue => getParameter("default");
@@ -165,6 +176,28 @@ class APIFormField {
   }
 
   bool hasErrors() => errorMessages().isNotEmpty;
+
+  // Extract error messages from the server response
+  void extractErrorMessages(APIResponse response) {
+
+    if (isSimple) {
+      // Simple fields are easily handled
+      data["errors"] = response.data[name];
+    } else {
+      if (parent.isNotEmpty) {
+        dynamic parentElement = response.data[parent];
+
+        // Extract from list
+        if (parentElement is List) {
+          parentElement = parentElement[0];
+        }
+
+        if (parentElement is Map) {
+          data["errors"] = parentElement[name];
+        }
+      }
+    }
+  }
 
   // Return the error message associated with this field
   List<String> errorMessages() {
@@ -902,8 +935,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
     return widgets;
   }
 
-  Future<APIResponse> _submit(Map<String, String> data) async {
-
+  Future<APIResponse> _submit(Map<String, dynamic> data) async {
 
     // If a file upload is required, we have to handle the submission differently
     if (fileField.isNotEmpty) {
@@ -953,21 +985,49 @@ class _APIFormWidgetState extends State<APIFormWidget> {
 
   }
 
+  /*
+   * Submit the form data to the server, and handle the results
+   */
   Future<void> _save(BuildContext context) async {
 
     // Package up the form data
-    Map<String, String> data = {};
+    Map<String, dynamic> data = {};
+
+    // Iterate through and find "simple" top-level fields
 
     for (var field in fields) {
 
-      dynamic value = field.value;
-
-      if (value == null) {
-        data[field.name] = "";
+      if (field.isSimple) {
+        // Simple top-level field data
+        data[field.name] = field.renderToString();
       } else {
-        data[field.name] = value.toString();
+        // Not so simple... (WHY DID I MAKE THE API SO COMPLEX?)
+        if (field.parent.isNotEmpty) {
+
+          // TODO: This is a dirty hack, there *must* be a cleaner way?!
+
+          dynamic parent = data[field.parent] ?? {};
+
+          // In the case of a "nested" object, we need to extract the first item
+          if (parent is List) {
+            parent = parent.first;
+          }
+
+          parent[field.name] = field.renderToString();
+
+          // Nested fields must be handled as an array!
+          // For now, we only allow single length nested fields
+          if (field.nested) {
+            parent = [parent];
+          }
+
+          data[field.parent] = parent;
+        }
       }
     }
+
+    print("Submitting form data to server:");
+    print(data.toString());
 
     final response = await _submit(data);
 
@@ -975,6 +1035,9 @@ class _APIFormWidgetState extends State<APIFormWidget> {
       showServerError(L10().serverError, L10().responseInvalid);
       return;
     }
+
+    print("Response: ${response.statusCode}");
+    print(response.data.toString());
 
     switch (response.statusCode) {
       case 200:
@@ -1010,10 +1073,13 @@ class _APIFormWidgetState extends State<APIFormWidget> {
           success: false
         );
 
+        print(response.data);
+
         // Update field errors
         for (var field in fields) {
-          field.data["errors"] = response.data[field.name];
+          field.extractErrorMessages(response);
         }
+
         break;
       case 401:
         showSnackIcon(

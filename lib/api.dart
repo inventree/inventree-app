@@ -485,11 +485,9 @@ class InvenTreeAPI {
 
 
   // Perform a PATCH request
-  Future<APIResponse> patch(String url, {Map<String, String> body = const {}, int? expectedStatusCode}) async {
-    Map<String, String> _body = {};
+  Future<APIResponse> patch(String url, {Map<String, dynamic> body = const {}, int? expectedStatusCode}) async {
 
-    // Copy across provided data
-    body.forEach((K, V) => _body[K] = V);
+    Map<String, dynamic> _body = body;
 
     HttpClientRequest? request = await apiRequest(url, "PATCH");
 
@@ -599,7 +597,7 @@ class InvenTreeAPI {
    * Upload a file to the given URL
    */
   Future<APIResponse> uploadFile(String url, File f,
-      {String name = "attachment", String method="POST", Map<String, String>? fields}) async {
+      {String name = "attachment", String method="POST", Map<String, dynamic>? fields}) async {
     var _url = makeApiUrl(url);
 
     var request = http.MultipartRequest(method, Uri.parse(_url));
@@ -607,8 +605,13 @@ class InvenTreeAPI {
     request.headers.addAll(defaultHeaders());
 
     if (fields != null) {
-      fields.forEach((String key, String value) {
-        request.fields[key] = value;
+      fields.forEach((String key, dynamic value) {
+
+        if (value == null) {
+          request.fields[key] = "";
+        } else {
+          request.fields[key] = value.toString();
+        }
       });
     }
 

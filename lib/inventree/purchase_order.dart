@@ -85,6 +85,8 @@ class InvenTreePurchaseOrder extends InvenTreeModel {
 
   bool get isOpen => status == PO_STATUS_PENDING || status == PO_STATUS_PLACED;
 
+  bool get isPlaced => status == PO_STATUS_PLACED;
+
   bool get isFailed => status == PO_STATUS_CANCELLED || status == PO_STATUS_LOST || status == PO_STATUS_RETURNED;
 
   Future<List<InvenTreePOLineItem>> getLineItems() async {
