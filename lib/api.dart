@@ -244,6 +244,12 @@ class InvenTreeAPI {
   // Ensure we only ever create a single instance of the API class
   static final InvenTreeAPI _api = InvenTreeAPI._internal();
 
+  bool supportPoReceive() {
+
+    // API endpoint for receiving purchase order line items was introduced in v12
+    return _apiVersion >= 12;
+  }
+
   /*
    * Connect to the remote InvenTree server:
    *

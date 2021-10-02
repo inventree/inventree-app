@@ -172,6 +172,43 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
   }
 
+  void lineItemMenu(BuildContext context, InvenTreePOLineItem lineItem) {
+
+    List<Widget> children = [];
+
+    if (InvenTreeAPI().supportPoReceive()) {
+      children.add(
+        SimpleDialogOption(
+          onPressed: () {
+
+          },
+          child: ListTile(
+            title: Text(L10().receiveItem),
+            leading: FaIcon(FontAwesomeIcons.signInAlt),
+          )
+        )
+      );
+    }
+
+    // No valid actions available
+    if (children.isEmpty) {
+      return;
+    }
+
+    children.insert(0, Divider());
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: Text(L10().lineItem),
+          children: children,
+        );
+      }
+    );
+
+  }
+
   List<Widget> lineTiles(BuildContext context) {
 
     List<Widget> tiles = [];
@@ -190,7 +227,10 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
             title: Text(supplierPart.SKU),
             subtitle: Text(supplierPart.partName),
             leading: InvenTreeAPI().getImage(supplierPart.partImage, width: 40, height: 40),
-            trailing: Text("${line.quantity}"),
+            trailing: Text("${line.outstanding}"),
+            onLongPress: () {
+              lineItemMenu(context, line);
+            },
           )
         );
       }

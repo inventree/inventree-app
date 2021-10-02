@@ -246,11 +246,13 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
             _showPurchaseOrders(context);
           }
       ),
+      /*
       _iconButton(
         context,
         L10().salesOrders,
         FontAwesomeIcons.truck,
       ),
+       */
       _iconButton(
           context,
           L10().suppliers,
