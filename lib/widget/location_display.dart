@@ -580,7 +580,10 @@ class _PaginatedStockListState extends State<PaginatedStockList> {
         height: 40,
       ),
       trailing: Text("${item.displayQuantity}",
-        style: TextStyle(fontWeight: FontWeight.bold),
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: item.statusColor,
+        ),
       ),
       onTap: () {
         _openItem(context, item.pk);

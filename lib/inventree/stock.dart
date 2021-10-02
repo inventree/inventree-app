@@ -1,5 +1,6 @@
 import "dart:async";
 
+import 'package:flutter/material.dart';
 import "package:intl/intl.dart";
 import 'package:inventree/helpers.dart';
 import "package:inventree/inventree/part.dart";
@@ -98,7 +99,7 @@ class InvenTreeStockItem extends InvenTreeModel {
   Color get statusColor {
     switch (status) {
       case OK:
-        return Color(0xFF50aa51);
+        return Colors.black;
       case ATTENTION:
         return Color(0xFFfdc82a);
       case DAMAGED:

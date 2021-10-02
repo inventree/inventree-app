@@ -1,15 +1,25 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/api.dart";
+import 'package:inventree/api_form.dart';
 import "package:inventree/app_colors.dart";
+import 'package:inventree/helpers.dart';
 import "package:inventree/inventree/company.dart";
+import 'package:inventree/inventree/model.dart';
+import 'package:inventree/inventree/part.dart';
 import "package:inventree/inventree/purchase_order.dart";
+import 'package:inventree/inventree/stock.dart';
 import "package:inventree/widget/company_detail.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/widget/location_display.dart";
+import 'package:inventree/widget/snacks.dart';
+import 'package:one_context/one_context.dart';
+
+import 'dialogs.dart';
 
 
 class PurchaseOrderDetailWidget extends StatefulWidget {
@@ -172,15 +182,70 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
   }
 
+  void receiveLine(BuildContext context, InvenTreePOLineItem lineItem) {
+
+    Map<String, dynamic> fields = {
+      "line_item": {
+        "parent": "items",
+        "nested": true,
+        "hidden": true,
+        "value": lineItem.pk,
+      },
+      "quantity": {
+        "parent": "items",
+        "nested": true,
+        "value": lineItem.outstanding,
+      },
+      "status": {
+        "parent": "items",
+        "nested": true,
+      },
+      "location": {
+      }
+    };
+
+    // TODO: Pre-fill the "location" value if the part has a default location specified
+
+    launchApiForm(
+        context,
+        L10().receiveItem,
+        order.receive_url,
+        fields,
+        method: "POST",
+        icon: FontAwesomeIcons.signInAlt,
+        onSuccess: (data) async {
+          showSnackIcon(L10().receivedItem, success: true);
+          refresh();
+        }
+    );
+  }
+
   void lineItemMenu(BuildContext context, InvenTreePOLineItem lineItem) {
 
     List<Widget> children = [];
 
-    if (InvenTreeAPI().supportPoReceive()) {
+    children.add(
+      SimpleDialogOption(
+        onPressed: () {
+          OneContext().popDialog();
+
+          // TODO: Navigate to the "SupplierPart" display?
+        },
+        child: ListTile(
+          title: Text(L10().viewSupplierPart),
+          leading: FaIcon(FontAwesomeIcons.eye),
+        )
+      )
+    );
+
+    if (order.isPlaced && InvenTreeAPI().supportPoReceive()) {
       children.add(
         SimpleDialogOption(
           onPressed: () {
+            // Hide the dialog option
+            OneContext().popDialog();
 
+            receiveLine(context, lineItem);
           },
           child: ListTile(
             title: Text(L10().receiveItem),
@@ -219,15 +284,37 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
       InvenTreeSupplierPart? supplierPart = line.supplierPart;
 
-      if (supplierPart == null) {
-        continue;
-      } else {
+      if (supplierPart != null) {
+
+        String q = simpleNumberString(line.quantity);
+
+        Color c = Colors.black;
+
+        if (order.isOpen) {
+
+          q = simpleNumberString(line.received) + " / " + simpleNumberString(line.quantity);
+
+          if (line.isComplete) {
+            c = COLOR_SUCCESS;
+          } else {
+            c = COLOR_DANGER;
+          }
+        }
+
         tiles.add(
           ListTile(
             title: Text(supplierPart.SKU),
             subtitle: Text(supplierPart.partName),
             leading: InvenTreeAPI().getImage(supplierPart.partImage, width: 40, height: 40),
-            trailing: Text("${line.outstanding}"),
+            trailing: Text(
+              q,
+              style: TextStyle(
+                color: c,
+              ),
+            ),
+            onTap: () {
+              // TODO: ?
+            },
             onLongPress: () {
               lineItemMenu(context, line);
             },

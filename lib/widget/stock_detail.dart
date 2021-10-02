@@ -414,7 +414,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           ListTile(
             title: Text(L10().quantity),
             leading: FaIcon(FontAwesomeIcons.cubes),
-            trailing: Text("${item.quantityString}"),
+            trailing: Text("${item.quantityString()}"),
           )
       );
     }
