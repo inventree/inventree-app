@@ -185,6 +185,34 @@ class InvenTreeModel {
 
   }
 
+  // Return the number of results that would meet a particular "query"
+  Future<int> count({Map<String, String> filters = const {}, String search = ""} ) async {
+
+    var params = defaultListFilters();
+
+    filters.forEach((String key, String value) {
+      params[key] = value;
+    });
+
+    if (search.isNotEmpty) {
+      params["search"] = search;
+    }
+
+    // Limit to 1 result, for quick DB access
+    params["limit"] = "1";
+
+    var response = await api.get(URL, params: params);
+
+    if (response.isValid()) {
+      int n = int.tryParse(response.data["count"].toString()) ?? 0;
+
+      print("${URL} -> ${n} results");
+      return n;
+    } else {
+      return 0;
+    }
+}
+
   Map<String, String> defaultListFilters() {
     return {};
   }

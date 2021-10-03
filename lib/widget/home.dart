@@ -17,6 +17,7 @@ import "package:inventree/widget/category_display.dart";
 import "package:inventree/widget/company_list.dart";
 import "package:inventree/widget/location_display.dart";
 import "package:inventree/widget/purchase_order_list.dart";
+import 'package:inventree/widget/search.dart';
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/drawer.dart";
 
@@ -42,7 +43,15 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
   UserProfile? _profile;
 
   void _search(BuildContext context) {
-    // TODO
+    if (!InvenTreeAPI().checkConnection(context)) return;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SearchWidget()
+      )
+    );
+
   }
 
   void _scan(BuildContext context) {

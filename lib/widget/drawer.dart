@@ -5,6 +5,7 @@ import "package:inventree/l10.dart";
 
 import "package:inventree/settings/settings.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:inventree/widget/search.dart";
 
 class InvenTreeDrawer extends StatelessWidget {
 
@@ -35,7 +36,12 @@ class InvenTreeDrawer extends StatelessWidget {
 
     _closeDrawer();
 
-    // TODO: Open search dialog
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => SearchWidget()
+        )
+    );
   }
 
   /*
@@ -59,6 +65,7 @@ class InvenTreeDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return  Drawer(
         child: ListView(
             children: ListTile.divideTiles(
