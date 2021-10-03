@@ -174,6 +174,17 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
           }
         )
       );
+
+      // TODO: Display "supplied parts" count (click through to list of supplier parts)
+      /*
+      tiles.add(
+        ListTile(
+          title: Text(L10().suppliedParts),
+          leading: FaIcon(FontAwesomeIcons.shapes),
+          trailing: Text("${company.partSuppliedCount}"),
+        )
+      );
+       */
     }
 
     if (company.isManufacturer) {

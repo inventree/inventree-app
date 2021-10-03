@@ -48,6 +48,10 @@ class InvenTreeCompany extends InvenTreeModel {
 
   bool get isCustomer => (jsondata["is_customer"] ?? false) as bool;
 
+  int get partSuppliedCount => (jsondata["parts_supplied"] ?? 0) as int;
+
+  int get partManufacturedCount => (jsondata["parts_manufactured"] ?? 0) as int;
+
   // Request a list of purchase orders against this company
   Future<List<InvenTreePurchaseOrder>> getPurchaseOrders({bool? outstanding}) async {
 
