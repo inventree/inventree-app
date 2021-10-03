@@ -511,8 +511,15 @@ class UniqueBarcodeHandler extends BarcodeHandler {
         );
       } else {
 
+        successTone();
+
         // Close the barcode scanner
         Navigator.of(context).pop();
+
+        showSnackIcon(
+          L10().barcodeAssigned,
+          success: true
+        );
 
         callback(hash);
       }

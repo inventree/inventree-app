@@ -332,9 +332,9 @@ class APIFormField {
         trailing: IconButton(
           icon: FaIcon(FontAwesomeIcons.qrcode),
           onPressed: () async {
-
             var handler = UniqueBarcodeHandler((String hash) {
-              print("Scanned barcode: " + hash);
+              controller.text = hash;
+              data["value"] = hash;
             });
 
             Navigator.push(
