@@ -7,7 +7,7 @@ import "package:date_field/date_field.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
-import 'package:inventree/barcode.dart';
+import "package:inventree/barcode.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/sentry.dart";

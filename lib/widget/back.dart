@@ -7,8 +7,6 @@
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 
-import "package:inventree/widget/drawer.dart";
-
 Widget backButton(BuildContext context, GlobalKey<ScaffoldState> key) {
 
   return GestureDetector(

@@ -1,11 +1,7 @@
 import "package:inventree/api.dart";
 import "package:inventree/barcode.dart";
-import "package:inventree/widget/search.dart";
 import "package:flutter/material.dart";
 import "package:inventree/l10.dart";
-
-import "package:inventree/widget/category_display.dart";
-import "package:inventree/widget/location_display.dart";
 
 import "package:inventree/settings/settings.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";

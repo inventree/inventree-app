@@ -1,4 +1,4 @@
-import 'package:inventree/widget/back.dart';
+import "package:inventree/widget/back.dart";
 import "package:inventree/widget/drawer.dart";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
@@ -87,7 +87,7 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
 
     // Save the context for future use
     _context = context;
-    
+
     return Scaffold(
       key: refreshableKey,
       appBar: AppBar(
