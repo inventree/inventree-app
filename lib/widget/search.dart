@@ -3,6 +3,7 @@ import "dart:async";
 import 'package:inventree/inventree/company.dart';
 import 'package:inventree/inventree/purchase_order.dart';
 import "package:inventree/widget/part_detail.dart";
+import 'package:inventree/widget/part_list.dart';
 import "package:inventree/widget/progress.dart";
 import 'package:inventree/widget/purchase_order_list.dart';
 import 'package:inventree/widget/refreshable_state.dart';
@@ -161,7 +162,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
               onSearchTextChanged(text);
             },
           ),
-          trailing: IconButton(
+          leading: IconButton(
             icon: FaIcon(FontAwesomeIcons.backspace, color: Colors.red),
             onPressed: () {
               searchController.clear();
@@ -184,7 +185,16 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
           leading: FaIcon(FontAwesomeIcons.shapes),
           trailing: Text("${nPartResults}"),
           onTap: () {
-            // Show part results
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PartList(
+                        {
+                          "original_search": query
+                        }
+                    )
+                )
+            );
           }
         )
       );
