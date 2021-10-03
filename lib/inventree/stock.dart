@@ -473,6 +473,7 @@ class InvenTreeStockItem extends InvenTreeModel {
     return response.isValid();
   }
 
+  // TODO: Refactor this once the server supports API metadata for this action
   Future<bool> countStock(BuildContext context, double q, {String? notes}) async {
 
     final bool result = await adjustStock(context, "/stock/count/", q, notes: notes);
@@ -480,6 +481,7 @@ class InvenTreeStockItem extends InvenTreeModel {
     return result;
   }
 
+  // TODO: Refactor this once the server supports API metadata for this action
   Future<bool> addStock(BuildContext context, double q, {String? notes}) async {
 
     final bool result = await adjustStock(context,  "/stock/add/", q, notes: notes);
@@ -487,6 +489,7 @@ class InvenTreeStockItem extends InvenTreeModel {
     return result;
   }
 
+  // TODO: Refactor this once the server supports API metadata for this action
   Future<bool> removeStock(BuildContext context, double q, {String? notes}) async {
 
     final bool result = await adjustStock(context, "/stock/remove/", q, notes: notes);
@@ -494,6 +497,7 @@ class InvenTreeStockItem extends InvenTreeModel {
     return result;
   }
 
+  // TODO: Refactor this once the server supports API metadata for this action
   Future<bool> transferStock(int location, {double? quantity, String? notes}) async {
     if ((quantity == null) || (quantity < 0) || (quantity > this.quantity)) {
       quantity = this.quantity;

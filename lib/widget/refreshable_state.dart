@@ -1,3 +1,4 @@
+import 'package:inventree/widget/back.dart';
 import "package:inventree/widget/drawer.dart";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
@@ -66,6 +67,7 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
     return AppBar(
       title: Text(getAppBarTitle(context)),
       actions: getAppBarActions(context),
+      leading: backButton(context),
     );
   }
 
