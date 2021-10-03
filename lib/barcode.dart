@@ -1,10 +1,8 @@
 import "dart:io";
 
-import "package:inventree/app_settings.dart";
 import "package:inventree/inventree/sentry.dart";
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/snacks.dart";
-import "package:audioplayers/audioplayers.dart";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
@@ -15,7 +13,7 @@ import "package:qr_code_scanner/qr_code_scanner.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/l10.dart";
-
+import "package:inventree/helpers.dart";
 import "package:inventree/api.dart";
 
 import "package:inventree/widget/location_display.dart";
@@ -37,26 +35,6 @@ class BarcodeHandler {
   String getOverlayText(BuildContext context) => "Barcode Overlay";
 
   QRViewController? _controller;
-
-  Future<void> successTone() async {
-
-    final bool en = await InvenTreeSettingsManager().getValue("barcodeSounds", true) as bool;
-
-    if (en) {
-      final player = AudioCache();
-      player.play("sounds/barcode_scan.mp3");
-    }
-  }
-
-    Future <void> failureTone() async {
-
-      final bool en = await InvenTreeSettingsManager().getValue("barcodeSounds", true) as bool;
-
-      if (en) {
-        final player = AudioCache();
-        player.play("sounds/barcode_error.mp3");
-      }
-    }
 
     Future<void> onBarcodeMatched(BuildContext context, Map<String, dynamic> data) async {
       // Called when the server "matches" a barcode
@@ -260,75 +238,6 @@ class BarcodeScanHandler extends BarcodeHandler {
   }
 }
 
-
-class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
-  /*
-   * Barcode handler for assigning a new barcode to a stock item
-   */
-
-  StockItemBarcodeAssignmentHandler(this.item);
-
-  final InvenTreeStockItem item;
-
-  @override
-  String getOverlayText(BuildContext context) => L10().barcodeScanAssign;
-
-  @override
-  Future<void> onBarcodeMatched(BuildContext context, Map<String, dynamic> data) async {
-
-    failureTone();
-
-    // If the barcode is known, we can"t assign it to the stock item!
-    showSnackIcon(
-      L10().barcodeInUse,
-      icon: FontAwesomeIcons.qrcode,
-      success: false
-    );
-  }
-
-  @override
-  Future<void> onBarcodeUnknown(BuildContext context, Map<String, dynamic> data) async {
-    // If the barcode is unknown, we *can* assign it to the stock item!
-
-    if (!data.containsKey("hash")) {
-      showServerError(
-          L10().missingData,
-          L10().barcodeMissingHash,
-      );
-    } else {
-      String hash = (data["hash"] ?? "") as String;
-
-      if (hash.isNotEmpty) {
-        item.update(
-          values: {
-            "uid": hash,
-          }
-        ).then((result) {
-          if (result) {
-            successTone();
-
-            Navigator.of(context).pop();
-
-            showSnackIcon(
-                L10().barcodeAssigned,
-                success: true,
-                icon: FontAwesomeIcons.qrcode
-            );
-          } else {
-            failureTone();
-
-            showSnackIcon(
-                L10().barcodeNotAssigned,
-                success: false,
-                icon: FontAwesomeIcons.qrcode
-            );
-          }
-        });
-      }
-    }
-  }
-}
-
 class StockItemScanIntoLocationHandler extends BarcodeHandler {
   /*
    * Barcode handler for scanning a provided StockItem into a scanned StockLocation
@@ -469,13 +378,21 @@ class UniqueBarcodeHandler extends BarcodeHandler {
    * Barcode handler for finding a "unique" barcode (one that does not match an item in the database)
    */
 
-  UniqueBarcodeHandler(this.callback);
+  UniqueBarcodeHandler(this.callback, {this.overlayText = ""});
 
   // Callback function when a "unique" barcode hash is found
   final Function(String) callback;
 
+  final String overlayText;
+
   @override
-  String getOverlayText(BuildContext context) => L10().barcodeScanAssign;
+  String getOverlayText(BuildContext context) {
+    if (overlayText.isEmpty) {
+      return L10().barcodeScanAssign;
+    } else {
+      return overlayText;
+    }
+  }
 
   @override
   Future<void> onBarcodeMatched(BuildContext context, Map<String, dynamic> data) async {
@@ -515,11 +432,6 @@ class UniqueBarcodeHandler extends BarcodeHandler {
 
         // Close the barcode scanner
         Navigator.of(context).pop();
-
-        showSnackIcon(
-          L10().barcodeAssigned,
-          success: true
-        );
 
         callback(hash);
       }

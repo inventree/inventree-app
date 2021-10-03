@@ -16,7 +16,7 @@ import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 
 import "package:inventree/l10.dart";
-
+import "package:inventree/helpers.dart";
 import "package:inventree/api.dart";
 
 import "package:dropdown_search/dropdown_search.dart";
@@ -676,12 +676,31 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           leading: FaIcon(FontAwesomeIcons.barcode, color: COLOR_CLICK),
           trailing: FaIcon(FontAwesomeIcons.qrcode),
           onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => InvenTreeQRView(StockItemBarcodeAssignmentHandler(item)))
-            ).then((context) {
-              refresh();
+
+            var handler = UniqueBarcodeHandler((String hash) {
+              item.update(
+                values: {
+                  "uid": hash,
+                }
+              ).then((result) {
+                if (result) {
+                  successTone();
+
+                  showSnackIcon(
+                    L10().barcodeAssigned,
+                    success: true,
+                    icon: FontAwesomeIcons.qrcode
+                  );
+
+                  refresh();
+                }
+              });
             });
+
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => InvenTreeQRView(handler))
+            );
           }
         )
       );

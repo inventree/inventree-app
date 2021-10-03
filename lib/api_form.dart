@@ -335,6 +335,13 @@ class APIFormField {
             var handler = UniqueBarcodeHandler((String hash) {
               controller.text = hash;
               data["value"] = hash;
+
+              successTone();
+
+              showSnackIcon(
+                  L10().barcodeAssigned,
+                  success: true
+              );
             });
 
             Navigator.push(
