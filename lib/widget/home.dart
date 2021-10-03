@@ -1,25 +1,24 @@
-import "package:inventree/app_colors.dart";
-import "package:inventree/settings/settings.dart";
-import "package:inventree/user_profile.dart";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 
-import "package:inventree/l10.dart";
-
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
+import "package:inventree/app_colors.dart";
+import "package:inventree/settings/settings.dart";
+import "package:inventree/user_profile.dart";
+import "package:inventree/l10.dart";
 import "package:inventree/barcode.dart";
 import "package:inventree/api.dart";
-
 import "package:inventree/settings/login.dart";
-
 import "package:inventree/widget/category_display.dart";
 import "package:inventree/widget/company_list.dart";
 import "package:inventree/widget/location_display.dart";
+import "package:inventree/widget/part_list.dart";
 import "package:inventree/widget/purchase_order_list.dart";
 import "package:inventree/widget/search.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/drawer.dart";
+
 
 class InvenTreeHomePage extends StatefulWidget {
 
@@ -70,14 +69,18 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeSettingsWidget()));
   }
 
-  /*
   void _showStarredParts(BuildContext context) {
     if (!InvenTreeAPI().checkConnection(context)) return;
 
-    // TODO
-    // Navigator.push(context, MaterialPageRoute(builder: (context) => StarredPartWidget()));
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PartList({
+          "starred": "true"
+        })
+      )
+    );
   }
-   */
 
   void _showStock(BuildContext context) {
     if (!InvenTreeAPI().checkConnection(context)) return;
@@ -167,8 +170,9 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
               color: connected && allowed ? COLOR_CLICK : Colors.grey,
             ),
             Divider(
-              height: 10,
+              height: 12,
               thickness: 0,
+              color: Colors.transparent,
             ),
             Text(
               label,
@@ -222,22 +226,14 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
             _showParts(context);
           }
       ),
-
-      // TODO - Re-add starred parts link
-      /*
-            Column(
-              children: <Widget>[
-                IconButton(
-                  icon: FaIcon(FontAwesomeIcons.solidStar),
-                  onPressed: () {
-
-                  },
-                ),
-                Text("Starred Parts"),
-              ]
-            ),
-             */
-
+      _iconButton(
+        context,
+        L10().partsStarred,
+        FontAwesomeIcons.solidStar,
+        callback: () {
+          _showStarredParts(context);
+        }
+      ),
       _iconButton(
           context,
           L10().stock,
