@@ -17,7 +17,7 @@ import "package:inventree/widget/category_display.dart";
 import "package:inventree/widget/company_list.dart";
 import "package:inventree/widget/location_display.dart";
 import "package:inventree/widget/purchase_order_list.dart";
-import 'package:inventree/widget/search.dart';
+import "package:inventree/widget/search.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/drawer.dart";
 

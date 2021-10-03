@@ -1,15 +1,11 @@
+import "package:flutter/cupertino.dart";
+import "package:flutter/material.dart";
 
-
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:inventree/inventree/model.dart';
-import 'package:inventree/inventree/part.dart';
-import 'package:inventree/widget/category_display.dart';
-import 'package:inventree/widget/paginator.dart';
-import 'package:inventree/widget/part_list.dart';
-
-import 'package:inventree/widget/refreshable_state.dart';
+import "package:inventree/inventree/model.dart";
+import "package:inventree/inventree/part.dart";
+import "package:inventree/widget/category_display.dart";
+import "package:inventree/widget/paginator.dart";
+import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/l10.dart";
 
 class PartCategoryList extends StatefulWidget {

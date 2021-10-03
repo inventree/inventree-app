@@ -1,10 +1,8 @@
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
-import "package:infinite_scroll_pagination/infinite_scroll_pagination.dart";
 
 import "package:inventree/inventree/company.dart";
-import 'package:inventree/inventree/model.dart';
-import "package:inventree/inventree/sentry.dart";
+import "package:inventree/inventree/model.dart";
 import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/purchase_order_detail.dart";
 import "package:inventree/widget/refreshable_state.dart";

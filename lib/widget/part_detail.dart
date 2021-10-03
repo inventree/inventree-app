@@ -2,10 +2,11 @@
 import "package:flutter/cupertino.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
+
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
+
 import "package:inventree/app_colors.dart";
 import "package:inventree/inventree/stock.dart";
-
 import "package:inventree/l10.dart";
 import "package:inventree/widget/part_attachments_widget.dart";
 import "package:inventree/widget/part_notes.dart";
@@ -16,9 +17,7 @@ import "package:inventree/api.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/part_image_widget.dart";
 import "package:inventree/widget/stock_detail.dart";
-
-import "package:inventree/widget/location_display.dart";
-import 'package:inventree/widget/stock_list.dart';
+import "package:inventree/widget/stock_list.dart";
 
 
 class PartDetailWidget extends StatefulWidget {

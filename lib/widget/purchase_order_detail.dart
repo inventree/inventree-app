@@ -1,6 +1,8 @@
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
+
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:one_context/one_context.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/api_form.dart";
@@ -11,10 +13,8 @@ import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/widget/company_detail.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/l10.dart";
-import "package:inventree/widget/location_display.dart";
 import "package:inventree/widget/snacks.dart";
-import 'package:inventree/widget/stock_list.dart';
-import "package:one_context/one_context.dart";
+import "package:inventree/widget/stock_list.dart";
 
 
 class PurchaseOrderDetailWidget extends StatefulWidget {

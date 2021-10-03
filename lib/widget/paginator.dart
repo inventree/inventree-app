@@ -1,8 +1,10 @@
 import "package:flutter/material.dart";
+
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:inventree/inventree/model.dart';
-import 'package:inventree/inventree/sentry.dart';
+import "package:infinite_scroll_pagination/infinite_scroll_pagination.dart";
+
+import "package:inventree/inventree/model.dart";
+import "package:inventree/inventree/sentry.dart";
 import "package:inventree/l10.dart";
 
 

@@ -1,5 +1,4 @@
 import "dart:async";
-import "dart:io";
 
 import "package:inventree/api.dart";
 import "package:inventree/inventree/model.dart";

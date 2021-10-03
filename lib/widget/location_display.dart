@@ -1,22 +1,19 @@
-import "package:inventree/api.dart";
-import "package:inventree/app_colors.dart";
-import "package:inventree/app_settings.dart";
-import "package:inventree/barcode.dart";
-import "package:inventree/inventree/sentry.dart";
-import "package:inventree/inventree/stock.dart";
-import "package:inventree/widget/progress.dart";
-
-import "package:inventree/widget/refreshable_state.dart";
-import "package:inventree/widget/stock_detail.dart";
-import "package:inventree/widget/paginator.dart";
-import "package:inventree/l10.dart";
-
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter/foundation.dart";
+
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
-import "package:infinite_scroll_pagination/infinite_scroll_pagination.dart";
-import 'package:inventree/widget/stock_list.dart';
+
+import "package:inventree/api.dart";
+import "package:inventree/app_colors.dart";
+import "package:inventree/barcode.dart";
+import "package:inventree/inventree/stock.dart";
+import "package:inventree/widget/progress.dart";
+import "package:inventree/widget/refreshable_state.dart";
+import "package:inventree/widget/stock_detail.dart";
+import "package:inventree/l10.dart";
+import "package:inventree/widget/stock_list.dart";
+
 
 class LocationDisplayWidget extends StatefulWidget {
 

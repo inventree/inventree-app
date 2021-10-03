@@ -1,12 +1,10 @@
 import "package:flutter/material.dart";
-import "package:infinite_scroll_pagination/infinite_scroll_pagination.dart";
-import 'package:inventree/inventree/model.dart';
+
+import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/part.dart";
-import "package:inventree/inventree/sentry.dart";
 import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/part_detail.dart";
 import "package:inventree/widget/refreshable_state.dart";
-
 import "package:inventree/api.dart";
 import "package:inventree/app_settings.dart";
 import "package:inventree/l10.dart";
