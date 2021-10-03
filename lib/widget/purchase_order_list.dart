@@ -36,14 +36,14 @@ class _PurchaseOrderListWidgetState extends RefreshableState<PurchaseOrderListWi
 
   @override
   Widget getBody(BuildContext context) {
-    return _PaginatedPurchaseOrderList(filters);
+    return PaginatedPurchaseOrderList(filters);
   }
 }
 
 
-class _PaginatedPurchaseOrderList extends StatefulWidget {
+class PaginatedPurchaseOrderList extends StatefulWidget {
 
-  const _PaginatedPurchaseOrderList(this.filters, {this.onTotalChanged});
+  const PaginatedPurchaseOrderList(this.filters, {this.onTotalChanged});
 
   final Map<String, String> filters;
 
@@ -55,7 +55,7 @@ class _PaginatedPurchaseOrderList extends StatefulWidget {
 }
 
 
-class _PaginatedPurchaseOrderListState extends State<_PaginatedPurchaseOrderList> {
+class _PaginatedPurchaseOrderListState extends State<PaginatedPurchaseOrderList> {
 
   _PaginatedPurchaseOrderListState(this.filters, this.onTotalChanged);
 

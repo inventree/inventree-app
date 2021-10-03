@@ -392,7 +392,7 @@ class InvenTreeModel {
       String search = params["search"] ?? "";
       String original = params["original_search"] ?? "";
 
-      params["search"] = "${search} ${original}";
+      params["search"] = "${search} ${original}".trim();
 
       params.remove("original_search");
     }

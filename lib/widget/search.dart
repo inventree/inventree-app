@@ -4,6 +4,7 @@ import 'package:inventree/inventree/company.dart';
 import 'package:inventree/inventree/purchase_order.dart';
 import "package:inventree/widget/part_detail.dart";
 import "package:inventree/widget/progress.dart";
+import 'package:inventree/widget/purchase_order_list.dart';
 import 'package:inventree/widget/refreshable_state.dart';
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/stock_detail.dart";
@@ -13,6 +14,9 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/stock.dart";
+import 'package:inventree/widget/stock_list.dart';
+
+import 'company_list.dart';
 
 
 // Widget for performing database-wide search
@@ -204,6 +208,18 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
           title: Text(L10().stockItems),
           leading: FaIcon(FontAwesomeIcons.boxes),
           trailing: Text("${nStockResults}"),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => StockItemList(
+                  {
+                    "original_search": query,
+                  }
+                )
+              )
+            );
+          },
         )
       );
     }
@@ -251,6 +267,18 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
           title: Text(L10().purchaseOrders),
           leading: FaIcon(FontAwesomeIcons.shoppingCart),
           trailing: Text("${nPurchaseOrderResults}"),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PurchaseOrderListWidget(
+                  filters: {
+                    "original_search": query
+                  }
+                )
+              )
+            );
+          },
         )
       );
     }

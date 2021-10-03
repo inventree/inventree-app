@@ -13,6 +13,7 @@ import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/widget/location_display.dart";
 import "package:inventree/widget/snacks.dart";
+import 'package:inventree/widget/stock_list.dart';
 import "package:one_context/one_context.dart";
 
 
@@ -351,7 +352,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
           "purchase_order": "${order.pk}"
         };
 
-        return PaginatedStockList(filters);
+        return PaginatedStockItemList(filters);
 
       default:
         return ListView();

@@ -18,6 +18,7 @@ import "package:inventree/widget/part_image_widget.dart";
 import "package:inventree/widget/stock_detail.dart";
 
 import "package:inventree/widget/location_display.dart";
+import 'package:inventree/widget/stock_list.dart';
 
 
 class PartDetailWidget extends StatefulWidget {
@@ -494,7 +495,9 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         ),
       );
       case 1:
-        return PaginatedStockList({"part": "${part.pk}"});
+        return PaginatedStockItemList(
+          {"part": "${part.pk}"}
+        );
       case 2:
         return Center(
           child: ListView(
