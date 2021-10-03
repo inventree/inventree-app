@@ -7,13 +7,15 @@
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 
-Widget backButton(BuildContext context) {
+import "package:inventree/widget/drawer.dart";
+
+Widget backButton(BuildContext context, GlobalKey<ScaffoldState> key) {
 
   return GestureDetector(
     onLongPress: () {
-      while (Navigator.of(context).canPop()) {
-        Navigator.of(context).pop();
-      }
+      // Display the menu
+      key.currentState!.openDrawer();
+      print("hello?");
     },
     child: IconButton(
       icon: BackButtonIcon(),

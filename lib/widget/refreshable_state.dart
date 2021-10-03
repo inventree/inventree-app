@@ -62,15 +62,6 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
     });
   }
 
-  // Function to construct an appbar (override if needed)
-  AppBar getAppBar(BuildContext context) {
-    return AppBar(
-      title: Text(getAppBarTitle(context)),
-      actions: getAppBarActions(context),
-      leading: backButton(context),
-    );
-  }
-
   // Function to construct a drawer (override if needed)
   Widget getDrawer(BuildContext context) {
     return InvenTreeDrawer(context);
@@ -96,11 +87,15 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
 
     // Save the context for future use
     _context = context;
-
+    
     return Scaffold(
       key: refreshableKey,
-      appBar: getAppBar(context),
-      drawer: null,
+      appBar: AppBar(
+        title: Text(getAppBarTitle(context)),
+        actions: getAppBarActions(context),
+        leading: backButton(context, refreshableKey),
+      ),
+      drawer: getDrawer(context),
       floatingActionButton: getFab(context),
       body: Builder(
         builder: (BuildContext context) {
