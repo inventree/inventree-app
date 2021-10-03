@@ -186,7 +186,7 @@ class InvenTreeModel {
   }
 
   // Return the number of results that would meet a particular "query"
-  Future<int> count({Map<String, String> filters = const {}, String search = ""} ) async {
+  Future<int> count({Map<String, String> filters = const {}, String searchQuery = ""} ) async {
 
     var params = defaultListFilters();
 
@@ -194,8 +194,8 @@ class InvenTreeModel {
       params[key] = value;
     });
 
-    if (search.isNotEmpty) {
-      params["search"] = search;
+    if (searchQuery.isNotEmpty) {
+      params["search"] = searchQuery;
     }
 
     // Limit to 1 result, for quick DB access
@@ -381,6 +381,21 @@ class InvenTreeModel {
 
     params["limit"] = "${limit}";
     params["offset"] = "${offset}";
+
+    /* Special case: "original_search":
+     * - We may wish to provide an original "query" which is augmented by the user
+     * - Thus, "search" and "original_search" may both be provided
+     * - In such a case, we want to concatenate them together
+     */
+    if (params.containsKey("original_search")) {
+
+      String search = params["search"] ?? "";
+      String original = params["original_search"] ?? "";
+
+      params["search"] = "${search} ${original}";
+
+      params.remove("original_search");
+    }
 
     var response = await api.get(URL, params: params);
 

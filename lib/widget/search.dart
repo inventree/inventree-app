@@ -80,7 +80,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
 
     // Search parts
     InvenTreePart().count(
-      search: term
+      searchQuery: term
     ).then((int n) {
       setState(() {
         nPartResults = n;
@@ -89,7 +89,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
 
     // Search part categories
     InvenTreePartCategory().count(
-      search: term,
+      searchQuery: term,
     ).then((int n) {
       setState(() {
         nCategoryResults = n;
@@ -98,7 +98,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
 
     // Search stock items
     InvenTreeStockItem().count(
-      search: term
+      searchQuery: term
     ).then((int n) {
       setState(() {
         nStockResults = n;
@@ -107,7 +107,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
 
     // Search stock locations
     InvenTreeStockLocation().count(
-      search: term
+      searchQuery: term
     ).then((int n) {
       setState(() {
         nLocationResults = n;
@@ -116,7 +116,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
 
     // Search suppliers
     InvenTreeCompany().count(
-      search: term,
+      searchQuery: term,
       filters: {
         "is_supplier": "true",
       },
@@ -128,7 +128,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
 
     // Search purchase orders
     InvenTreePurchaseOrder().count(
-      search: term,
+      searchQuery: term,
       filters: {
         "outstanding": "true"
       }
@@ -167,6 +167,8 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
         )
       )
     );
+
+    String query = searchController.text;
 
     List<Widget> results = [];
 
@@ -223,7 +225,21 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
         ListTile(
           title: Text(L10().suppliers),
           leading: FaIcon(FontAwesomeIcons.building),
-          trailing: Text("${nSupplierResults}")
+          trailing: Text("${nSupplierResults}"),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CompanyListWidget(
+                  L10().suppliers,
+                  {
+                    "is_supplier": "true",
+                    "original_search": query
+                  }
+                )
+              )
+            );
+          },
         )
       );
     }
