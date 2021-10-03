@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 import "package:infinite_scroll_pagination/infinite_scroll_pagination.dart";
 
 import "package:inventree/inventree/company.dart";
+import 'package:inventree/inventree/model.dart';
 import "package:inventree/inventree/sentry.dart";
 import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/purchase_order_detail.dart";
@@ -43,117 +44,35 @@ class _PurchaseOrderListWidgetState extends RefreshableState<PurchaseOrderListWi
 
 class PaginatedPurchaseOrderList extends StatefulWidget {
 
-  const PaginatedPurchaseOrderList(this.filters, {this.onTotalChanged});
+  const PaginatedPurchaseOrderList(this.filters);
 
   final Map<String, String> filters;
 
-  final Function(int)? onTotalChanged;
-
   @override
-  _PaginatedPurchaseOrderListState createState() => _PaginatedPurchaseOrderListState(filters, onTotalChanged);
+  _PaginatedPurchaseOrderListState createState() => _PaginatedPurchaseOrderListState(filters);
 
 }
 
 
-class _PaginatedPurchaseOrderListState extends State<PaginatedPurchaseOrderList> {
+class _PaginatedPurchaseOrderListState extends PaginatedSearchState<PaginatedPurchaseOrderList> {
 
-  _PaginatedPurchaseOrderListState(this.filters, this.onTotalChanged);
-
-  static const _pageSize = 25;
-
-  String _searchTerm = "";
-
-  Function(int)? onTotalChanged;
-
-  final Map<String, String> filters;
-
-  final PagingController<int, InvenTreePurchaseOrder> _pagingController = PagingController(firstPageKey: 0);
-
-  final TextEditingController searchController = TextEditingController();
+  _PaginatedPurchaseOrderListState(Map<String, String> filters) : super(filters);
 
   @override
-  void initState() {
-    _pagingController.addPageRequestListener((pageKey) {
-      _fetchPage(pageKey);
-    });
+  Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
 
-    super.initState();
+    params["outstanding"] = "true";
+
+    final page = await InvenTreePurchaseOrder().listPaginated(limit, offset, filters: params);
+
+    return page;
+
   }
 
   @override
-  void dispose() {
-    _pagingController.dispose();
-    super.dispose();
-  }
+  Widget buildItem(BuildContext context, InvenTreeModel model) {
 
-  int resultCount = 0;
-
-  Future<void> _fetchPage(int pageKey) async {
-    try {
-      Map<String, String> params = {};
-
-      params["search"] = _searchTerm;
-
-      // Only return results for open purchase orders
-      params["outstanding"] = "true";
-
-      // Copy across provided filters
-      for (String key in filters.keys) {
-        params[key] = filters[key] ?? "";
-      }
-
-      final page = await InvenTreePurchaseOrder().listPaginated(
-        _pageSize,
-        pageKey,
-        filters: params
-      );
-
-      int pageLength = page?.length ?? 0;
-      int pageCount = page?.count ?? 0;
-
-      final isLastPage = pageLength < _pageSize;
-
-      List<InvenTreePurchaseOrder> orders = [];
-
-      if (page != null) {
-        for (var result in page.results) {
-          if (result is InvenTreePurchaseOrder) {
-            orders.add(result);
-          } else {
-            print("Result is not valid PurchaseOrder:");
-            print(result.jsondata);
-          }
-        }
-      }
-
-      if (isLastPage) {
-        _pagingController.appendLastPage(orders);
-      } else {
-        final int nextPageKey = pageKey + pageLength;
-        _pagingController.appendPage(orders, nextPageKey);
-      }
-
-      if (onTotalChanged != null) {
-        onTotalChanged!(pageCount);
-      }
-
-      setState(() {
-        resultCount = pageCount;
-      });
-    } catch (error, stackTrace) {
-      print("Error! - ${error.toString()}");
-      _pagingController.error = error;
-
-      sentryReportError(error, stackTrace);
-    }
-  }
-
-  void updateSearchTerm() {
-    _searchTerm = searchController.text;
-    _pagingController.refresh();
-  }
-
-  Widget _buildOrder(BuildContext context, InvenTreePurchaseOrder order) {
+    InvenTreePurchaseOrder order = model as InvenTreePurchaseOrder;
 
     InvenTreeCompany? supplier = order.supplier;
 
@@ -174,37 +93,6 @@ class _PaginatedPurchaseOrderListState extends State<PaginatedPurchaseOrderList>
           )
         );
       },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        PaginatedSearchWidget(searchController, updateSearchTerm, resultCount),
-        Expanded(
-            child: CustomScrollView(
-              shrinkWrap: true,
-              physics: ClampingScrollPhysics(),
-              scrollDirection: Axis.vertical,
-              slivers: [
-                PagedSliverList.separated(
-                  pagingController: _pagingController,
-                  builderDelegate: PagedChildBuilderDelegate<InvenTreePurchaseOrder>(
-                      itemBuilder: (context, item, index) {
-                        return _buildOrder(context, item);
-                      },
-                      noItemsFoundIndicatorBuilder: (context) {
-                        return NoResultsWidget(L10().companyNoResults);
-                      }
-                  ),
-                  separatorBuilder: (context, index) => const Divider(height: 1),
-                )
-              ],
-            )
-        )
-      ],
     );
   }
 }
