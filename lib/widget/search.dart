@@ -17,7 +17,9 @@ import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/stock.dart";
 import 'package:inventree/widget/stock_list.dart';
 
+import 'category_list.dart';
 import 'company_list.dart';
+import 'location_list.dart';
 
 
 // Widget for performing database-wide search
@@ -207,6 +209,18 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
           title: Text(L10().partCategories),
           leading: FaIcon(FontAwesomeIcons.sitemap),
           trailing: Text("${nCategoryResults}"),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PartCategoryList(
+                  {
+                    "original_search": query
+                  }
+                )
+              )
+            );
+          },
         )
       );
     }
@@ -241,6 +255,18 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
           title: Text(L10().stockLocations),
           leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
           trailing: Text("${nLocationResults}"),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => StockLocationList(
+                  {
+                    "original_search": query
+                  }
+                )
+              )
+            );
+          },
         )
       );
     }
