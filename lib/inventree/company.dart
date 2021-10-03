@@ -1,5 +1,9 @@
+import "dart:async";
+import "dart:io";
+
 import "package:inventree/api.dart";
 import "package:inventree/inventree/model.dart";
+import "package:inventree/inventree/purchase_order.dart";
 
 
 /*
@@ -43,6 +47,32 @@ class InvenTreeCompany extends InvenTreeModel {
   bool get isManufacturer => (jsondata["is_manufacturer"] ?? false)  as bool;
 
   bool get isCustomer => (jsondata["is_customer"] ?? false) as bool;
+
+  // Request a list of purchase orders against this company
+  Future<List<InvenTreePurchaseOrder>> getPurchaseOrders({bool? outstanding}) async {
+
+    Map<String, String> filters = {
+      "supplier": "${pk}"
+    };
+
+    if (outstanding != null) {
+      filters["outstanding"] = outstanding ? "true" : "false";
+    }
+
+    final List<InvenTreeModel> results = await InvenTreePurchaseOrder().list(
+      filters: filters
+    );
+
+    List<InvenTreePurchaseOrder> orders = [];
+
+    for (InvenTreeModel model in results) {
+      if (model is InvenTreePurchaseOrder) {
+        orders.add(model);
+      }
+    }
+
+    return orders;
+  }
 
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) {

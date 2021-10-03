@@ -2,11 +2,14 @@
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/inventree/company.dart";
+import "package:inventree/inventree/purchase_order.dart";
+import "package:inventree/widget/purchase_order_list.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:inventree/l10.dart";
+
 
 class CompanyDetailWidget extends StatefulWidget {
 
@@ -25,6 +28,8 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
   _CompanyDetailState(this.company);
 
   final InvenTreeCompany company;
+
+  List<InvenTreePurchaseOrder> outstandingOrders = [];
 
   @override
   String getAppBarTitle(BuildContext context) => L10().company;
@@ -60,6 +65,10 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
   @override
   Future<void> request() async {
     await company.reload();
+
+    if (company.isSupplier) {
+      outstandingOrders = await company.getPurchaseOrders(outstanding: true);
+    }
   }
 
   Future <void> editCompany(BuildContext context) async {
@@ -145,6 +154,26 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
       // TODO - Add list of purchase orders
 
       tiles.add(Divider());
+
+      tiles.add(
+        ListTile(
+          title: Text(L10().purchaseOrders),
+          leading: FaIcon(FontAwesomeIcons.shoppingCart, color: COLOR_CLICK),
+          trailing: Text("${outstandingOrders.length}"),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PurchaseOrderListWidget(
+                  filters: {
+                    "supplier": "${company.pk}"
+                  }
+                )
+              )
+            );
+          }
+        )
+      );
     }
 
     if (company.isManufacturer) {
