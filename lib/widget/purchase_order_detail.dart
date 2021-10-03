@@ -195,6 +195,13 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
         "nested": true,
       },
       "location": {
+      },
+      "barcode": {
+        "parent": "items",
+        "nested": true,
+        "type": "barcode",
+        "label": L10().barcodeAssign,
+        "required": false,
       }
     };
 

@@ -7,6 +7,7 @@ import "package:date_field/date_field.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
+import 'package:inventree/barcode.dart';
 import "package:inventree/helpers.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/sentry.dart";
@@ -269,7 +270,7 @@ class APIFormField {
   }
 
   // Construct a widget for this input
-  Widget constructField() {
+  Widget constructField(BuildContext context) {
     switch (type) {
       case "string":
       case "url":
@@ -288,6 +289,8 @@ class APIFormField {
         return _constructFileField();
       case "date":
         return _constructDateField();
+      case "barcode":
+        return _constructBarcodeField(context);
       default:
         return ListTile(
           title: Text(
@@ -298,6 +301,52 @@ class APIFormField {
           )
         );
     }
+  }
+
+  // Field for capturing a barcode
+  Widget _constructBarcodeField(BuildContext context) {
+
+    TextEditingController controller = TextEditingController();
+
+    String barcode = (value ?? "").toString();
+
+    if (barcode.isEmpty) {
+      barcode = L10().barcodeNotAssigned;
+    }
+
+    controller.text = barcode;
+
+    return InputDecorator(
+      decoration: InputDecoration(
+        labelText: required ? label + "*" : label,
+        labelStyle: _labelStyle(),
+        helperText: helpText,
+        helperStyle: _helperStyle(),
+        hintText: placeholderText,
+      ),
+      child: ListTile(
+        title: TextField(
+          readOnly: true,
+          controller: controller,
+        ),
+        trailing: IconButton(
+          icon: FaIcon(FontAwesomeIcons.qrcode),
+          onPressed: () async {
+
+            var handler = UniqueBarcodeHandler((String hash) {
+              print("Scanned barcode: " + hash);
+            });
+
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => InvenTreeQRView(handler)
+              )
+            );
+          },
+        ),
+      )
+    );
+
   }
 
   // Field for displaying and selecting dates
@@ -937,7 +986,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
         }
       }
 
-      widgets.add(field.constructField());
+      widgets.add(field.constructField(context));
 
       if (field.hasErrors()) {
         for (String error in field.errorMessages()) {

@@ -305,7 +305,7 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
           }
         ).then((result) {
           if (result) {
-            failureTone();
+            successTone();
 
             Navigator.of(context).pop();
 
@@ -315,7 +315,7 @@ class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
                 icon: FontAwesomeIcons.qrcode
             );
           } else {
-            successTone();
+            failureTone();
 
             showSnackIcon(
                 L10().barcodeNotAssigned,
@@ -459,6 +459,63 @@ class StockLocationScanInItemsHandler extends BarcodeHandler {
         L10().invalidStockItem,
         success: false,
       );
+    }
+  }
+}
+
+
+class UniqueBarcodeHandler extends BarcodeHandler {
+  /*
+   * Barcode handler for finding a "unique" barcode (one that does not match an item in the database)
+   */
+
+  UniqueBarcodeHandler(this.callback);
+
+  // Callback function when a "unique" barcode hash is found
+  final Function(String) callback;
+
+  @override
+  String getOverlayText(BuildContext context) => L10().barcodeScanAssign;
+
+  @override
+  Future<void> onBarcodeMatched(BuildContext context, Map<String, dynamic> data) async {
+
+    failureTone();
+
+    // If the barcode is known, we can"t assign it to the stock item!
+    showSnackIcon(
+        L10().barcodeInUse,
+        icon: FontAwesomeIcons.qrcode,
+        success: false
+    );
+  }
+
+  @override
+  Future<void> onBarcodeUnknown(BuildContext context, Map<String, dynamic> data) async {
+    // If the barcode is unknown, we *can* assign it to the stock item!
+
+    if (!data.containsKey("hash")) {
+      showServerError(
+        L10().missingData,
+        L10().barcodeMissingHash,
+      );
+    } else {
+      String hash = (data["hash"] ?? "") as String;
+
+      if (hash.isEmpty) {
+        failureTone();
+
+        showSnackIcon(
+          L10().barcodeError,
+          success: false,
+        );
+      } else {
+
+        // Close the barcode scanner
+        Navigator.of(context).pop();
+
+        callback(hash);
+      }
     }
   }
 }
