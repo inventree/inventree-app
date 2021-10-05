@@ -135,7 +135,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     final bool result = await item.addStock(context, quantity, notes: _notesController.text);
     _notesController.clear();
 
-    _stockUpdateMessage();
+    _stockUpdateMessage(result);
 
     refresh();
   }
@@ -168,7 +168,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         method: "POST",
         icon: FontAwesomeIcons.plusCircle,
         onSuccess: (data) async {
-          _stockUpdateMessage();
+          _stockUpdateMessage(true);
           refresh();
         }
       );
@@ -200,7 +200,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     );
   }
 
-  void _stockUpdateMessage({bool result = true}) {
+  void _stockUpdateMessage(bool result) {
 
     if (result) {
       showSnackIcon(L10().stockItemUpdated, success: true);
@@ -214,7 +214,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     final bool result = await item.removeStock(context, quantity, notes: _notesController.text);
 
-    _stockUpdateMessage();
+    _stockUpdateMessage(result);
 
     refresh();
 
@@ -247,7 +247,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           method: "POST",
           icon: FontAwesomeIcons.minusCircle,
           onSuccess: (data) async {
-            _stockUpdateMessage();
+            _stockUpdateMessage(true);
             refresh();
           }
       );
@@ -287,7 +287,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     final bool result = await item.countStock(context, quantity, notes: _notesController.text);
 
-    _stockUpdateMessage();
+    _stockUpdateMessage(result);
 
     refresh();
   }
@@ -320,7 +320,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           method: "POST",
           icon: FontAwesomeIcons.clipboardCheck,
           onSuccess: (data) async {
-            _stockUpdateMessage();
+            _stockUpdateMessage(true);
             refresh();
           }
       );
@@ -424,7 +424,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           method: "POST",
           icon: FontAwesomeIcons.dolly,
           onSuccess: (data) async {
-            _stockUpdateMessage();
+            _stockUpdateMessage(true);
             refresh();
           }
       );
