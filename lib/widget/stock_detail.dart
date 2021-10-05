@@ -241,7 +241,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
       launchApiForm(
           context,
-          L10().addStock,
+          L10().removeStock,
           InvenTreeStockItem.removeStockUrl(),
           fields,
           method: "POST",
@@ -314,11 +314,11 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
       launchApiForm(
           context,
-          L10().addStock,
+          L10().countStock,
           InvenTreeStockItem.countStockUrl(),
           fields,
           method: "POST",
-          icon: FontAwesomeIcons.plusCircle,
+          icon: FontAwesomeIcons.clipboardCheck,
           onSuccess: (data) async {
             _stockUpdateMessage();
             refresh();
