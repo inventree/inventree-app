@@ -4,11 +4,18 @@
 ### 0.5.0 - October 2021
 ---
 
+- Major UI overhaul
+- Adds many more options to the home screen
+- Adds global "drawer" - accessible via long-press of the "back" button
 - Display Purchase Order details
 - Edit Purchase Order information
+- Adds ability to receive stock items against purchase orders
 - Display Company details (supplier / manufacturer / customer)
 - Edit Company information
+- Improvements to stock adjustment actions
+- Improvements to barcode scanning
 - Fixed bug relating to stock transfer for parts with specified "units"
+- Multiple other small bug fixes
 
 ### 0.4.7 - September 2021
 ---
