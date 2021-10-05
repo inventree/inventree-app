@@ -115,6 +115,16 @@ class InvenTreeStockItem extends InvenTreeModel {
   @override
   String get URL => "stock/";
 
+  // URLs for performing stock actions
+
+  static String transferStockUrl() => "stock/transfer/";
+
+  static String countStockUrl() => "stock/count/";
+
+  static String addStockUrl() => "stock/add/";
+
+  static String removeStockUrl() => "stock/remove/";
+
   @override
   String get WEB_URL => "stock/item/";
 
@@ -474,7 +484,7 @@ class InvenTreeStockItem extends InvenTreeModel {
     return response.isValid();
   }
 
-  // TODO: Refactor this once the server supports API metadata for this action
+  // TODO: Remove this function when we deprecate support for the old API
   Future<bool> countStock(BuildContext context, double q, {String? notes}) async {
 
     final bool result = await adjustStock(context, "/stock/count/", q, notes: notes);
@@ -482,7 +492,7 @@ class InvenTreeStockItem extends InvenTreeModel {
     return result;
   }
 
-  // TODO: Refactor this once the server supports API metadata for this action
+  // TODO: Remove this function when we deprecate support for the old API
   Future<bool> addStock(BuildContext context, double q, {String? notes}) async {
 
     final bool result = await adjustStock(context,  "/stock/add/", q, notes: notes);
@@ -490,7 +500,7 @@ class InvenTreeStockItem extends InvenTreeModel {
     return result;
   }
 
-  // TODO: Refactor this once the server supports API metadata for this action
+  // TODO: Remove this function when we deprecate support for the old API
   Future<bool> removeStock(BuildContext context, double q, {String? notes}) async {
 
     final bool result = await adjustStock(context, "/stock/remove/", q, notes: notes);
@@ -498,7 +508,7 @@ class InvenTreeStockItem extends InvenTreeModel {
     return result;
   }
 
-  // TODO: Refactor this once the server supports API metadata for this action
+  // TODO: Remove this function when we deprecate support for the old API
   Future<bool> transferStock(int location, {double? quantity, String? notes}) async {
     if ((quantity == null) || (quantity < 0) || (quantity > this.quantity)) {
       quantity = this.quantity;

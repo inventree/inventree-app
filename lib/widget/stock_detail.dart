@@ -1,3 +1,9 @@
+import "package:flutter/cupertino.dart";
+import "package:flutter/material.dart";
+
+import "package:dropdown_search/dropdown_search.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+
 import "package:inventree/app_colors.dart";
 import "package:inventree/barcode.dart";
 import "package:inventree/inventree/model.dart";
@@ -12,15 +18,11 @@ import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/stock_item_test_results.dart";
 import "package:inventree/widget/stock_notes.dart";
-import "package:flutter/cupertino.dart";
-import "package:flutter/material.dart";
-
 import "package:inventree/l10.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/api.dart";
+import "package:inventree/api_form.dart";
 
-import "package:dropdown_search/dropdown_search.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 class StockDetailWidget extends StatefulWidget {
 
@@ -140,6 +142,39 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
   Future <void> _addStockDialog() async {
 
+    // TODO: In future, deprecate support for older API
+    if (InvenTreeAPI().supportModernStockTransactions()) {
+
+      Map<String, dynamic> fields = {
+        "pk": {
+          "parent": "items",
+          "nested": true,
+          "hidden": true,
+          "value": item.pk,
+        },
+        "quantity": {
+          "parent": "items",
+          "nested": true,
+          "value": 0,
+        },
+        "notes": {},
+      };
+
+      launchApiForm(
+        context,
+        L10().addStock,
+        InvenTreeStockItem.addStockUrl(),
+        fields,
+        method: "POST",
+        icon: FontAwesomeIcons.plusCircle,
+        onSuccess: (data) async {
+          refresh();
+        }
+      );
+
+      return;
+    }
+
     _quantityController.clear();
     _notesController.clear();
 
@@ -186,6 +221,38 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
   void _removeStockDialog() {
 
+    // TODO: In future, deprecate support for the older API
+    if (InvenTreeAPI().supportModernStockTransactions()) {
+      Map<String, dynamic> fields = {
+        "pk": {
+          "parent": "items",
+          "nested": true,
+          "hidden": true,
+          "value": item.pk,
+        },
+        "quantity": {
+          "parent": "items",
+          "nested": true,
+          "value": 0,
+        },
+        "notes": {},
+      };
+
+      launchApiForm(
+          context,
+          L10().addStock,
+          InvenTreeStockItem.removeStockUrl(),
+          fields,
+          method: "POST",
+          icon: FontAwesomeIcons.minusCircle,
+          onSuccess: (data) async {
+            refresh();
+          }
+      );
+
+      return;
+    }
+
     _quantityController.clear();
     _notesController.clear();
 
@@ -224,6 +291,39 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   }
 
   Future <void> _countStockDialog() async {
+
+    // TODO: In future, deprecate support for older API
+    if (InvenTreeAPI().supportModernStockTransactions()) {
+
+      Map<String, dynamic> fields = {
+        "pk": {
+          "parent": "items",
+          "nested": true,
+          "hidden": true,
+          "value": item.pk,
+        },
+        "quantity": {
+          "parent": "items",
+          "nested": true,
+          "value": item.quantity,
+        },
+        "notes": {},
+      };
+
+      launchApiForm(
+          context,
+          L10().addStock,
+          InvenTreeStockItem.countStockUrl(),
+          fields,
+          method: "POST",
+          icon: FontAwesomeIcons.plusCircle,
+          onSuccess: (data) async {
+            refresh();
+          }
+      );
+
+      return;
+    }
 
     _quantityController.text = item.quantity.toString();
     _notesController.clear();
@@ -271,6 +371,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   }
 
 
+  // TODO: Delete this function once support for old API is deprecated
   Future <void> _transferStock(int locationId) async {
 
     double quantity = double.tryParse(_quantityController.text) ?? item.quantity;
@@ -288,7 +389,44 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     }
   }
 
+  /*
+   * Launches an API Form to transfer this stock item to a new location
+   */
   Future <void> _transferStockDialog(BuildContext context) async {
+
+    // TODO: In future, deprecate support for older API
+    if (InvenTreeAPI().supportModernStockTransactions()) {
+
+      Map<String, dynamic> fields = {
+        "pk": {
+          "parent": "items",
+          "nested": true,
+          "hidden": true,
+          "value": item.pk,
+        },
+        "quantity": {
+          "parent": "items",
+          "nested": true,
+          "value": item.quantity,
+        },
+        "location": {},
+        "notes": {},
+      };
+
+      launchApiForm(
+          context,
+          L10().transferStock,
+          InvenTreeStockItem.transferStockUrl(),
+          fields,
+          method: "POST",
+          icon: FontAwesomeIcons.dolly,
+          onSuccess: (data) async {
+            refresh();
+          }
+      );
+
+      return;
+    }
 
     int? location_pk;
 
