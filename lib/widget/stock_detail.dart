@@ -168,6 +168,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         method: "POST",
         icon: FontAwesomeIcons.plusCircle,
         onSuccess: (data) async {
+          _stockUpdateMessage();
           refresh();
         }
       );
@@ -199,7 +200,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     );
   }
 
-  void _stockUpdateMessage(bool result) {
+  void _stockUpdateMessage({bool result = true}) {
 
     if (result) {
       showSnackIcon(L10().stockItemUpdated, success: true);
@@ -246,6 +247,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           method: "POST",
           icon: FontAwesomeIcons.minusCircle,
           onSuccess: (data) async {
+            _stockUpdateMessage();
             refresh();
           }
       );
@@ -318,6 +320,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           method: "POST",
           icon: FontAwesomeIcons.plusCircle,
           onSuccess: (data) async {
+            _stockUpdateMessage();
             refresh();
           }
       );
@@ -421,6 +424,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           method: "POST",
           icon: FontAwesomeIcons.dolly,
           onSuccess: (data) async {
+            _stockUpdateMessage();
             refresh();
           }
       );
