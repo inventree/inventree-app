@@ -225,6 +225,8 @@ class InvenTreeAPI {
   // API version of the connected server
   int _apiVersion = 1;
 
+  int get apiVersion => _apiVersion;
+
   // Getter for server version information
   String get version => _version;
 
@@ -244,10 +246,14 @@ class InvenTreeAPI {
   // Ensure we only ever create a single instance of the API class
   static final InvenTreeAPI _api = InvenTreeAPI._internal();
 
+  // API endpoint for receiving purchase order line items was introduced in v12
   bool supportPoReceive() {
+    return apiVersion >= 12;
+  }
 
-    // API endpoint for receiving purchase order line items was introduced in v12
-    return _apiVersion >= 12;
+  // "Modern" API transactions were implemented in API v14
+  bool supportModernStockTransactions() {
+    return apiVersion >= 14;
   }
 
   /*
