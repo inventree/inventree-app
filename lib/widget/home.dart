@@ -94,7 +94,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => PurchaseOrderListWidget()
+        builder: (context) => PurchaseOrderListWidget(filters: {})
       )
     );
   }

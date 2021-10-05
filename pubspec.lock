@@ -127,13 +127,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.3"
-  date_field:
+  datetime_picker_formfield:
     dependency: "direct main"
     description:
-      name: date_field
+      name: datetime_picker_formfield
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.2"
+    version: "2.0.0"
   device_info_plus:
     dependency: "direct main"
     description:

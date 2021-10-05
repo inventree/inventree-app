@@ -1,9 +1,10 @@
 import "dart:ui";
 import "dart:io";
 
+import "package:intl/intl.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:dropdown_search/dropdown_search.dart";
-import "package:date_field/date_field.dart";
+import "package:datetime_picker_formfield/datetime_picker_formfield.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
@@ -19,7 +20,6 @@ import "package:inventree/l10.dart";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:inventree/widget/snacks.dart";
-
 
 
 /*
@@ -114,11 +114,11 @@ class APIFormField {
   dynamic get value => data["value"] ?? data["instance_value"] ?? defaultValue;
 
   // Render value to string (for form submission)
-  String renderToString() {
-    if (value == null) {
+  String renderValueToString() {
+    if (data["value"] == null) {
       return "";
     } else {
-      return value.toString();
+      return data["value"].toString();
     }
   }
 
@@ -359,22 +359,37 @@ class APIFormField {
   // Field for displaying and selecting dates
   Widget _constructDateField() {
 
-    return DateTimeFormField(
-      mode: DateTimeFieldPickerMode.date,
+    DateTime? currentDate = DateTime.tryParse((value ?? "")as String);
+
+    return InputDecorator(
       decoration: InputDecoration(
-        helperText: helpText,
-        helperStyle: _helperStyle(),
         labelText: label,
         labelStyle: _labelStyle(),
+        helperStyle: _helperStyle(),
+        helperText: helpText,
       ),
-      initialValue: DateTime.tryParse((value ?? "") as String),
-      autovalidateMode: AutovalidateMode.disabled,
-      validator: (e) {
-        // TODO
-      },
-      onDateSelected: (DateTime dt) {
-        data["value"] = dt.toString().split(" ").first;
-      },
+      child: DateTimeField(
+        format: DateFormat("yyyy-MM-dd"),
+        initialValue: currentDate,
+        onChanged: (DateTime? time) {
+          // Save the time string
+          if (time == null) {
+            data["value"] = null;
+          } else {
+            data["value"] = time.toString().split(" ").first;
+          }
+        },
+        onShowPicker: (context, value) async {
+          final time = await showDatePicker(
+            context: context,
+            initialDate: currentDate ?? DateTime.now(),
+            firstDate: DateTime(1900),
+            lastDate: DateTime(2100),
+          );
+
+          return time;
+        },
+      )
     );
 
   }
@@ -403,7 +418,6 @@ class APIFormField {
             FilePickerDialog.pickFile(
               message: L10().attachmentSelect,
               onPicked: (file) {
-                // print("${file.path}");
                 // Display the filename
                 controller.text = file.path.split("/").last;
 
@@ -1122,7 +1136,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
 
       if (field.isSimple) {
         // Simple top-level field data
-        data[field.name] = field.renderToString();
+        data[field.name] = field.data["value"];
       } else {
         // Not so simple... (WHY DID I MAKE THE API SO COMPLEX?)
         if (field.parent.isNotEmpty) {
@@ -1136,7 +1150,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
             parent = parent.first;
           }
 
-          parent[field.name] = field.renderToString();
+          parent[field.name] = field.data["value"];
 
           // Nested fields must be handled as an array!
           // For now, we only allow single length nested fields
