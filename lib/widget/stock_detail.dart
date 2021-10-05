@@ -135,7 +135,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     final bool result = await item.addStock(context, quantity, notes: _notesController.text);
     _notesController.clear();
 
-    _stockUpdateMessage(result);
+    _stockUpdateMessage();
 
     refresh();
   }
@@ -214,7 +214,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     final bool result = await item.removeStock(context, quantity, notes: _notesController.text);
 
-    _stockUpdateMessage(result);
+    _stockUpdateMessage();
 
     refresh();
 
@@ -287,7 +287,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     final bool result = await item.countStock(context, quantity, notes: _notesController.text);
 
-    _stockUpdateMessage(result);
+    _stockUpdateMessage();
 
     refresh();
   }
