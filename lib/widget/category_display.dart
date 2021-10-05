@@ -1,27 +1,22 @@
+import "package:flutter/cupertino.dart";
+import "package:flutter/foundation.dart";
+import "package:flutter/material.dart";
 
-import 'package:inventree/api.dart';
-import 'package:inventree/app_colors.dart';
-import 'package:inventree/app_settings.dart';
-import 'package:inventree/inventree/part.dart';
-import 'package:inventree/inventree/sentry.dart';
-import 'package:inventree/widget/progress.dart';
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
-import 'package:inventree/l10.dart';
+import "package:inventree/api.dart";
+import "package:inventree/app_colors.dart";
+import "package:inventree/inventree/part.dart";
+import "package:inventree/widget/part_list.dart";
+import "package:inventree/widget/progress.dart";
+import "package:inventree/l10.dart";
+import "package:inventree/widget/part_detail.dart";
+import "package:inventree/widget/refreshable_state.dart";
 
-import 'package:inventree/widget/part_detail.dart';
-import 'package:inventree/widget/refreshable_state.dart';
-import 'package:inventree/widget/paginator.dart';
-
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class CategoryDisplayWidget extends StatefulWidget {
 
-  CategoryDisplayWidget(this.category, {Key? key}) : super(key: key);
+  const CategoryDisplayWidget(this.category, {Key? key}) : super(key: key);
 
   final InvenTreePartCategory? category;
 
@@ -32,6 +27,7 @@ class CategoryDisplayWidget extends StatefulWidget {
 
 class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
+  _CategoryDisplayState(this.category);
 
   @override
   String getAppBarTitle(BuildContext context) => L10().partCategory;
@@ -41,7 +37,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
     List<Widget> actions = [];
 
-    if ((category != null) && InvenTreeAPI().checkPermission('part_category', 'change')) {
+    if ((category != null) && InvenTreeAPI().checkPermission("part_category", "change")) {
       actions.add(
         IconButton(
           icon: FaIcon(FontAwesomeIcons.edit),
@@ -73,8 +69,6 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
         }
     );
   }
-
-  _CategoryDisplayState(this.category);
 
   // The local InvenTreePartCategory object
   final InvenTreePartCategory? category;
@@ -199,7 +193,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
     if (loading) {
       tiles.add(progressIndicator());
-    } else if (_subcategories.length == 0) {
+    } else if (_subcategories.isEmpty) {
       tiles.add(ListTile(
         title: Text(L10().noSubcategories),
         subtitle: Text(
@@ -224,8 +218,10 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
       data: {
         "parent": (pk > 0) ? pk : null,
       },
-      onSuccess: (data) async {
-        
+      onSuccess: (result) async {
+
+        Map<String, dynamic> data = result as Map<String, dynamic>;
+
         if (data.containsKey("pk")) {
           var cat = InvenTreePartCategory.fromJson(data);
 
@@ -252,7 +248,9 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
       data: {
         "category": (pk > 0) ? pk : null
       },
-      onSuccess: (data) async {
+      onSuccess: (result) async {
+
+        Map<String, dynamic> data = result as Map<String, dynamic>;
 
         if (data.containsKey("pk")) {
           var part = InvenTreePart.fromJson(data);
@@ -274,7 +272,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
       getCategoryDescriptionCard(extra: false),
     ];
 
-    if (InvenTreeAPI().checkPermission('part', 'add')) {
+    if (InvenTreeAPI().checkPermission("part", "add")) {
       tiles.add(
           ListTile(
             title: Text(L10().categoryCreate),
@@ -298,7 +296,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
       }
     }
 
-    if (tiles.length == 0) {
+    if (tiles.isEmpty) {
       tiles.add(
         ListTile(
           title: Text(
@@ -327,7 +325,9 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
         );
       case 1:
         return PaginatedPartList(
-          {"category": "${category?.pk ?? null}"},
+          {
+            "category": "${category?.pk ?? 'null'}"
+          },
         );
       case 2:
         return ListView(
@@ -344,9 +344,10 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
  * Builder for displaying a list of PartCategory objects
  */
 class SubcategoryList extends StatelessWidget {
-  final List<InvenTreePartCategory> _categories;
 
-  SubcategoryList(this._categories);
+  const SubcategoryList(this._categories);
+
+  final List<InvenTreePartCategory> _categories;
 
   void _openCategory(BuildContext context, int pk) {
 
@@ -379,172 +380,5 @@ class SubcategoryList extends StatelessWidget {
         physics: ClampingScrollPhysics(),
         separatorBuilder: (_, __) => const Divider(height: 3),
         itemBuilder: _build, itemCount: _categories.length);
-  }
-}
-
-
-/*
- * Widget for displaying a list of Part objects within a PartCategory display.
- *
- * Uses server-side pagination for snappy results
- */
-
-class PaginatedPartList extends StatefulWidget {
-
-  final Map<String, String> filters;
-
-  Function(int)? onTotalChanged;
-
-  PaginatedPartList(this.filters, {this.onTotalChanged});
-
-  @override
-  _PaginatedPartListState createState() => _PaginatedPartListState(filters, onTotalChanged);
-}
-
-
-class _PaginatedPartListState extends State<PaginatedPartList> {
-
-  static const _pageSize = 25;
-
-  String _searchTerm = "";
-
-  Function(int)? onTotalChanged;
-
-  final Map<String, String> filters;
-
-  _PaginatedPartListState(this.filters, this.onTotalChanged);
-
-  final PagingController<int, InvenTreePart> _pagingController = PagingController(firstPageKey: 0);
-
-  @override
-  void initState() {
-    _pagingController.addPageRequestListener((pageKey) {
-      _fetchPage(pageKey);
-    });
-
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _pagingController.dispose();
-    super.dispose();
-  }
-
-  int resultCount = 0;
-
-  Future<void> _fetchPage(int pageKey) async {
-    try {
-
-      Map<String, String> params = filters;
-
-      params["search"] = _searchTerm;
-
-      final bool cascade = await InvenTreeSettingsManager().getValue("partSubcategory", true);
-      params["cascade"] = "${cascade}";
-
-      final page = await InvenTreePart().listPaginated(_pageSize, pageKey, filters: params);
-      int pageLength = page?.length ?? 0;
-      int pageCount = page?.count ?? 0;
-
-      final isLastPage = pageLength < _pageSize;
-
-      // Construct a list of part objects
-      List<InvenTreePart> parts = [];
-
-      if (page != null) {
-        for (var result in page.results) {
-          if (result is InvenTreePart) {
-            parts.add(result);
-          }
-        }
-      }
-
-      if (isLastPage) {
-        _pagingController.appendLastPage(parts);
-      } else {
-        final int nextPageKey = pageKey + pageLength;
-        _pagingController.appendPage(parts, nextPageKey);
-      }
-
-      if (onTotalChanged != null) {
-        onTotalChanged!(pageCount);
-      }
-
-      setState(() {
-        resultCount = pageCount;
-      });
-
-    } catch (error, stackTrace) {
-      print("Error! - ${error.toString()}");
-      _pagingController.error = error;
-
-      sentryReportError(error, stackTrace);
-    }
-  }
-
-  void _openPart(BuildContext context, int pk) {
-    // Attempt to load the part information
-    InvenTreePart().get(pk).then((var part) {
-      if (part is InvenTreePart) {
-
-        Navigator.push(context, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
-      }
-    });
-  }
-
-  Widget _buildPart(BuildContext context, InvenTreePart part) {
-    return ListTile(
-      title: Text(part.fullname),
-      subtitle: Text("${part.description}"),
-      trailing: Text("${part.inStockString}"),
-      leading: InvenTreeAPI().getImage(
-        part.thumbnail,
-        width: 40,
-        height: 40,
-      ),
-      onTap: () {
-        _openPart(context, part.pk);
-      },
-    );
-  }
-
-  final TextEditingController searchController = TextEditingController();
-
-  void updateSearchTerm() {
-
-    _searchTerm = searchController.text;
-    _pagingController.refresh();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        PaginatedSearchWidget(searchController, updateSearchTerm, resultCount),
-        Expanded(
-          child: CustomScrollView(
-            shrinkWrap: true,
-            physics: ClampingScrollPhysics(),
-            scrollDirection: Axis.vertical,
-            slivers: [
-              PagedSliverList.separated(
-                  pagingController: _pagingController,
-                  builderDelegate: PagedChildBuilderDelegate<InvenTreePart>(
-                    itemBuilder: (context, item, index) {
-                      return _buildPart(context, item);
-                    },
-                    noItemsFoundIndicatorBuilder: (context) {
-                      return NoResultsWidget(L10().partNoResults);
-                    },
-                  ),
-                separatorBuilder: (context, index) => const Divider(height: 1),
-              )
-            ],
-          )
-        )
-      ],
-    );
   }
 }

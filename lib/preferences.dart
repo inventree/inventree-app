@@ -1,19 +1,21 @@
-import 'package:path_provider/path_provider.dart';
-import 'package:sembast/sembast.dart';
-import 'package:sembast/sembast_io.dart';
-import 'package:path/path.dart';
-import 'dart:async';
+import "dart:async";
+
+import "package:path_provider/path_provider.dart";
+import "package:sembast/sembast.dart";
+import "package:sembast/sembast_io.dart";
+import "package:path/path.dart";
+
 
 /*
  * Class for storing InvenTree preferences in a NoSql DB
  */
 class InvenTreePreferencesDB {
 
+  InvenTreePreferencesDB._();
+
   static final InvenTreePreferencesDB _singleton = InvenTreePreferencesDB._();
 
   static InvenTreePreferencesDB get instance => _singleton;
-
-  InvenTreePreferencesDB._();
 
   Completer<Database> _dbOpenCompleter = Completer();
 
@@ -34,7 +36,7 @@ class InvenTreePreferencesDB {
     return _dbOpenCompleter.future;
   }
 
-  Future _openDatabase() async {
+  Future<void> _openDatabase() async {
     // Get a platform-specific directory where persistent app data can be stored
     final appDocumentDir = await getApplicationDocumentsDirectory();
 
@@ -43,7 +45,7 @@ class InvenTreePreferencesDB {
     print("Path: ${appDocumentDir.path}");
 
     // Path with the form: /platform-specific-directory/demo.db
-    final dbPath = join(appDocumentDir.path, 'InvenTreeSettings.db');
+    final dbPath = join(appDocumentDir.path, "InvenTreeSettings.db");
 
     final database = await databaseFactoryIo.openDatabase(dbPath);
 
@@ -54,8 +56,14 @@ class InvenTreePreferencesDB {
 
 class InvenTreePreferences {
 
+  factory InvenTreePreferences() {
+    return _api;
+  }
+
+  InvenTreePreferences._internal();
+
   /* The following settings are not stored to persistent storage,
-   * instead they are only used as 'session preferences'.
+   * instead they are only used as "session preferences".
    * They are kept here as a convenience only.
    */
 
@@ -72,11 +80,6 @@ class InvenTreePreferences {
   bool expandStockList = true;
 
   // Ensure we only ever create a single instance of the preferences class
-  static final InvenTreePreferences _api = new InvenTreePreferences._internal();
+  static final InvenTreePreferences _api = InvenTreePreferences._internal();
 
-  factory InvenTreePreferences() {
-    return _api;
-  }
-
-  InvenTreePreferences._internal();
 }

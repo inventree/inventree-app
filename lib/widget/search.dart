@@ -1,393 +1,347 @@
+import "dart:async";
 
-import 'package:inventree/widget/part_detail.dart';
-import 'package:inventree/widget/progress.dart';
-import 'package:inventree/widget/snacks.dart';
-import 'package:inventree/widget/stock_detail.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:inventree/l10.dart';
+import "package:flutter/cupertino.dart";
+import "package:flutter/material.dart";
 
-import 'package:inventree/inventree/part.dart';
-import 'package:inventree/inventree/stock.dart';
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
-import '../api.dart';
+import "package:inventree/inventree/company.dart";
+import "package:inventree/inventree/purchase_order.dart";
+import "package:inventree/widget/part_list.dart";
+import "package:inventree/widget/purchase_order_list.dart";
+import "package:inventree/widget/refreshable_state.dart";
+import "package:inventree/l10.dart";
+import "package:inventree/inventree/part.dart";
+import "package:inventree/inventree/stock.dart";
+import "package:inventree/widget/stock_list.dart";
+import "package:inventree/widget/category_list.dart";
+import "package:inventree/widget/company_list.dart";
+import "package:inventree/widget/location_list.dart";
 
-// TODO - Refactor duplicate code in this file!
 
-class PartSearchDelegate extends SearchDelegate<InvenTreePart?> {
-
-  final partSearchKey = GlobalKey<ScaffoldState>();
-
-  BuildContext context;
-
-  // What did we search for last time?
-  String _cachedQuery = "";
-
-  bool _searching = false;
-
-  // Custom filters for the part search
-  Map<String, String> _filters = {};
-
-  PartSearchDelegate(this.context, {Map<String, String> filters = const {}}) {
-
-    // Copy filter values
-    for (String key in filters.keys) {
-
-      String? value = filters[key];
-
-      if (value != null) {
-        _filters[key] = value;
-      }
-    }
-  }
+// Widget for performing database-wide search
+class SearchWidget extends StatefulWidget {
 
   @override
-  String get searchFieldLabel => L10().searchParts;
+  _SearchDisplayState createState() => _SearchDisplayState();
 
-  // List of part results
-  List<InvenTreePart> partResults = [];
-
-  Future<void> search(BuildContext context) async {
-
-    // Search string too short!
-    if (query.length < 3) {
-      partResults.clear();
-      showResults(context);
-      return;
-    }
-
-    if (query == _cachedQuery) {
-      return;
-    }
-
-    _cachedQuery = query;
-
-    _searching = true;
-
-    print("Searching...");
-
-    showResults(context);
-
-    _filters["cascade"] = "true";
-
-    final results = await InvenTreePart().search(context, query, filters: _filters);
-
-    partResults.clear();
-
-    for (int idx = 0; idx < results.length; idx++) {
-      if (results[idx] is InvenTreePart) {
-        partResults.add(results[idx] as InvenTreePart);
-      }
-    }
-
-    print("Searching complete! Results: ${partResults.length}");
-    _searching = false;
-
-    showSnackIcon(
-        "${partResults.length} ${L10().results}",
-        success: partResults.length > 0,
-        icon: FontAwesomeIcons.pollH,
-    );
-
-    // For some reason, need to toggle between suggestions and results here...
-    showSuggestions(context);
-    showResults(context);
-  }
-
-  @override
-  List<Widget> buildActions(BuildContext context) {
-    return [
-      IconButton(
-        icon: FaIcon(FontAwesomeIcons.backspace),
-        onPressed: () {
-          query = '';
-          search(context);
-        },
-      ),
-      IconButton(
-        icon: FaIcon(FontAwesomeIcons.search),
-        onPressed: () {
-          search(context);
-        }
-      ),
-    ];
-  }
-
-  @override
-  Widget buildLeading(BuildContext context) {
-    return IconButton(
-      icon: Icon(Icons.arrow_back),
-      onPressed: () {
-        this.close(context, null);
-      }
-    );
-  }
-
-  Widget _partResult(BuildContext context, int index) {
-
-    InvenTreePart part = partResults[index];
-
-    return ListTile(
-      title: Text(part.fullname),
-      subtitle: Text(part.description),
-      leading: InvenTreeAPI().getImage(
-        part.thumbnail,
-        width: 40,
-        height: 40
-      ),
-      trailing: Text(part.inStockString),
-      onTap: () {
-        InvenTreePart().get(part.pk).then((var prt) {
-          if (prt is InvenTreePart) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => PartDetailWidget(prt))
-            );
-          }
-        });
-      }
-    );
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-
-    print("build results");
-
-    if (_searching) {
-      return progressIndicator();
-    }
-
-    search(context);
-
-    if (query.length == 0) {
-      return ListTile(
-        title: Text(L10().queryEnter)
-      );
-    }
-
-    if (query.length < 3) {
-      return ListTile(
-        title: Text(L10().queryShort),
-        subtitle: Text(L10().queryShortDetail)
-      );
-    }
-
-    if (partResults.length == 0) {
-      return ListTile(
-        title: Text(L10().noResults),
-        subtitle: Text(L10().queryNoResults + " '${query}'")
-      );
-    }
-
-    return ListView.separated(
-      shrinkWrap: true,
-      physics: ClampingScrollPhysics(),
-      separatorBuilder: (_, __) => const Divider(height: 3),
-      itemBuilder: _partResult,
-      itemCount: partResults.length,
-    );
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    // TODO - Implement
-    return Column();
-  }
-
-  // Ensure the search theme matches the app theme
-  @override
-  ThemeData appBarTheme(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    return theme;
-  }
 }
 
-
-class StockSearchDelegate extends SearchDelegate<InvenTreeStockItem?> {
-
-  final stockSearchKey = GlobalKey<ScaffoldState>();
-
-  final BuildContext context;
-
-  String _cachedQuery = "";
-
-  bool _searching = false;
-
-  // Custom filters for the stock item search
-  Map<String, String> _filters = {};
-
-  StockSearchDelegate(this.context, {Map<String, String> filters = const {}}) {
-
-    // Copy filter values
-    for (String key in filters.keys) {
-
-      String? value = filters[key];
-
-      if (value != null) {
-        _filters[key] = value;
-      }
-    }
-  }
+class _SearchDisplayState extends RefreshableState<SearchWidget> {
 
   @override
-  String get searchFieldLabel => L10().searchStock;
+  String getAppBarTitle(BuildContext context) => L10().search;
 
-  // List of StockItem results
-  List<InvenTreeStockItem> itemResults = [];
+  final TextEditingController searchController = TextEditingController();
 
-  Future<void> search(BuildContext context) async {
-    // Search string too short!
-    if (query.length < 3) {
-      itemResults.clear();
-      showResults(context);
+  Timer? debounceTimer;
+
+  int nPartResults = 0;
+
+  int nCategoryResults = 0;
+
+  int nStockResults = 0;
+
+  int nLocationResults = 0;
+
+  int nSupplierResults = 0;
+
+  int nPurchaseOrderResults = 0;
+
+  // Callback when the text is being edited
+  // Incorporates a debounce timer to restrict search frequency
+  void onSearchTextChanged(String text, {bool immediate = false}) {
+
+    if (debounceTimer?.isActive ?? false) {
+      debounceTimer!.cancel();
+    }
+
+    if (immediate) {
+      search(text);
+    } else {
+      debounceTimer = Timer(Duration(milliseconds: 250), () {
+        search(text);
+      });
+    }
+
+  }
+
+  Future<void> search(String term) async {
+
+    if (term.isEmpty) {
+      setState(() {
+        // Do not search on an empty string
+        nPartResults = 0;
+        nCategoryResults = 0;
+        nStockResults = 0;
+        nLocationResults = 0;
+        nSupplierResults = 0;
+        nPurchaseOrderResults = 0;
+      });
+
       return;
     }
 
-    if (query == _cachedQuery) {
-      return;
-    }
+    // Search parts
+    InvenTreePart().count(
+      searchQuery: term
+    ).then((int n) {
+      setState(() {
+        nPartResults = n;
+      });
+    });
 
-    _cachedQuery = query;
+    // Search part categories
+    InvenTreePartCategory().count(
+      searchQuery: term,
+    ).then((int n) {
+      setState(() {
+        nCategoryResults = n;
+      });
+    });
 
-    _searching = true;
+    // Search stock items
+    InvenTreeStockItem().count(
+      searchQuery: term
+    ).then((int n) {
+      setState(() {
+        nStockResults = n;
+      });
+    });
 
-    print("Searching...");
+    // Search stock locations
+    InvenTreeStockLocation().count(
+      searchQuery: term
+    ).then((int n) {
+      setState(() {
+        nLocationResults = n;
+      });
+    });
 
-    showResults(context);
+    // Search suppliers
+    InvenTreeCompany().count(
+      searchQuery: term,
+      filters: {
+        "is_supplier": "true",
+      },
+    ).then((int n) {
+      setState(() {
+        nSupplierResults = n;
+      });
+    });
 
-    // Enable cascading part search by default
-    _filters["cascade"] = "true";
-
-    final results = await InvenTreeStockItem().search(
-        context, query, filters: _filters);
-
-    itemResults.clear();
-
-    for (int idx = 0; idx < results.length; idx++) {
-      if (results[idx] is InvenTreeStockItem) {
-        itemResults.add(results[idx] as InvenTreeStockItem);
+    // Search purchase orders
+    InvenTreePurchaseOrder().count(
+      searchQuery: term,
+      filters: {
+        "outstanding": "true"
       }
-    }
+    ).then((int n) {
+      setState(() {
+        nPurchaseOrderResults = n;
+      });
+    });
 
-    _searching = false;
+  }
 
-    showSnackIcon(
-      "${itemResults.length} ${L10().results}",
-      success: itemResults.length > 0,
-      icon: FontAwesomeIcons.pollH,
+  List<Widget> _tiles(BuildContext context) {
+
+    List<Widget> tiles = [];
+
+    // Search input
+    tiles.add(
+      InputDecorator(
+        decoration: InputDecoration(
+        ),
+        child: ListTile(
+          title: TextField(
+            readOnly: false,
+            controller: searchController,
+            onChanged: (String text) {
+              onSearchTextChanged(text);
+            },
+          ),
+          leading: IconButton(
+            icon: FaIcon(FontAwesomeIcons.backspace, color: Colors.red),
+            onPressed: () {
+              searchController.clear();
+              onSearchTextChanged("", immediate: true);
+            },
+          ),
+        )
+      )
     );
 
-    showSuggestions(context);
-    showResults(context);
-  }
+    String query = searchController.text;
 
-  @override
-  List<Widget> buildActions(BuildContext context) {
-    return [
-      IconButton(
-        icon: FaIcon(FontAwesomeIcons.backspace),
-        onPressed: () {
-          query = '';
-          search(context);
-        },
-      ),
-      IconButton(
-          icon: FaIcon(FontAwesomeIcons.search),
-          onPressed: () {
-            search(context);
-          }
-      ),
-    ];
-  }
+    List<Widget> results = [];
 
-  @override
-  Widget buildLeading(BuildContext context) {
-    return IconButton(
-        icon: Icon(Icons.arrow_back),
-        onPressed: () {
-          this.close(context, null);
-        }
-    );
-  }
-
-  Widget _itemResult(BuildContext context, int index) {
-
-    InvenTreeStockItem item = itemResults[index];
-
-    return ListTile(
-      title: Text(item.partName),
-      subtitle: Text(item.locationName),
-      leading: InvenTreeAPI().getImage(
-        item.partThumbnail,
-        width: 40,
-        height: 40,
-      ),
-      trailing: Text(item.serialOrQuantityDisplay()),
-      onTap: () {
-        InvenTreeStockItem().get(item.pk).then((var it) {
-          if (it is InvenTreeStockItem) {
+    // Part Results
+    if (nPartResults > 0) {
+      results.add(
+        ListTile(
+          title: Text(L10().parts),
+          leading: FaIcon(FontAwesomeIcons.shapes),
+          trailing: Text("${nPartResults}"),
+          onTap: () {
             Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => StockDetailWidget(it))
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PartList(
+                        {
+                          "original_search": query
+                        }
+                    )
+                )
             );
           }
-        });
+        )
+      );
+    }
+
+    // Part Category Results
+    if (nCategoryResults > 0) {
+      results.add(
+        ListTile(
+          title: Text(L10().partCategories),
+          leading: FaIcon(FontAwesomeIcons.sitemap),
+          trailing: Text("${nCategoryResults}"),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PartCategoryList(
+                  {
+                    "original_search": query
+                  }
+                )
+              )
+            );
+          },
+        )
+      );
+    }
+
+    // Stock Item Results
+    if (nStockResults > 0) {
+      results.add(
+        ListTile(
+          title: Text(L10().stockItems),
+          leading: FaIcon(FontAwesomeIcons.boxes),
+          trailing: Text("${nStockResults}"),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => StockItemList(
+                  {
+                    "original_search": query,
+                  }
+                )
+              )
+            );
+          },
+        )
+      );
+    }
+
+    // Stock location results
+    if (nLocationResults > 0) {
+      results.add(
+        ListTile(
+          title: Text(L10().stockLocations),
+          leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
+          trailing: Text("${nLocationResults}"),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => StockLocationList(
+                  {
+                    "original_search": query
+                  }
+                )
+              )
+            );
+          },
+        )
+      );
+    }
+
+    // Suppliers
+    if (nSupplierResults > 0) {
+      results.add(
+        ListTile(
+          title: Text(L10().suppliers),
+          leading: FaIcon(FontAwesomeIcons.building),
+          trailing: Text("${nSupplierResults}"),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CompanyListWidget(
+                  L10().suppliers,
+                  {
+                    "is_supplier": "true",
+                    "original_search": query
+                  }
+                )
+              )
+            );
+          },
+        )
+      );
+    }
+
+    // Purchase orders
+    if (nPurchaseOrderResults > 0) {
+      results.add(
+        ListTile(
+          title: Text(L10().purchaseOrders),
+          leading: FaIcon(FontAwesomeIcons.shoppingCart),
+          trailing: Text("${nPurchaseOrderResults}"),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PurchaseOrderListWidget(
+                  filters: {
+                    "original_search": query
+                  }
+                )
+              )
+            );
+          },
+        )
+      );
+    }
+
+    if (results.isEmpty) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().queryNoResults),
+          leading: FaIcon(FontAwesomeIcons.search),
+        )
+      );
+    } else {
+      for (Widget result in results) {
+        tiles.add(result);
       }
+    }
+
+    return tiles;
+
+  }
+
+  @override
+  Widget getBody(BuildContext context) {
+    return Center(
+      child: ListView(
+        children: ListTile.divideTiles(
+          context: context,
+          tiles: _tiles(context),
+        ).toList()
+      )
     );
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-
-    search(context);
-
-    if (_searching) {
-      return progressIndicator();
-    }
-
-    search(context);
-
-    if (query.length == 0) {
-      return ListTile(
-          title: Text(L10().queryEnter)
-      );
-    }
-
-    if (query.length < 3) {
-      return ListTile(
-          title: Text(L10().queryShort),
-          subtitle: Text(L10().queryShortDetail)
-      );
-    }
-
-    if (itemResults.length == 0) {
-      return ListTile(
-          title: Text(L10().noResults),
-          subtitle: Text(L10().queryNoResults + " '${query}'")
-      );
-    }
-
-    return ListView.separated(
-      shrinkWrap: true,
-      physics: ClampingScrollPhysics(),
-      separatorBuilder: (_, __) => const Divider(height: 3),
-      itemBuilder: _itemResult,
-      itemCount: itemResults.length,
-    );
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    // TODO - Implement
-    return Column();
-  }
-
-  // Ensure the search theme matches the app theme
-  @override
-  ThemeData appBarTheme(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    return theme;
   }
 }

@@ -1,12 +1,12 @@
 
-import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
+import "package:flutter/material.dart";
+import "package:flutter/cupertino.dart";
 
-import 'package:inventree/l10.dart';
+import "package:inventree/l10.dart";
 
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
-import 'package:inventree/app_settings.dart';
+import "package:inventree/app_settings.dart";
 
 class InvenTreeAppSettingsWidget extends StatefulWidget {
   @override
@@ -15,9 +15,9 @@ class InvenTreeAppSettingsWidget extends StatefulWidget {
 
 class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
 
-  final GlobalKey<_InvenTreeAppSettingsState> _settingsKey = GlobalKey<_InvenTreeAppSettingsState>();
-
   _InvenTreeAppSettingsState();
+
+  final GlobalKey<_InvenTreeAppSettingsState> _settingsKey = GlobalKey<_InvenTreeAppSettingsState>();
 
   bool barcodeSounds = true;
   bool serverSounds = true;
@@ -31,7 +31,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
     loadSettings();
   }
 
-  void loadSettings() async {
+  Future <void> loadSettings() async {
     barcodeSounds = await InvenTreeSettingsManager().getValue("barcodeSounds", true) as bool;
     serverSounds = await InvenTreeSettingsManager().getValue("serverSounds", true) as bool;
 
@@ -42,35 +42,35 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
     });
   }
 
-  void setBarcodeSounds(bool en) async {
+  Future <void> setBarcodeSounds(bool en) async {
 
     await InvenTreeSettingsManager().setValue("barcodeSounds", en);
-    barcodeSounds = await InvenTreeSettingsManager().getValue("barcodeSounds", true);
+    barcodeSounds = await InvenTreeSettingsManager().getBool("barcodeSounds", true);
 
     setState(() {
     });
   }
 
-  void setServerSounds(bool en) async {
+  Future <void> setServerSounds(bool en) async {
 
     await InvenTreeSettingsManager().setValue("serverSounds", en);
-    serverSounds = await InvenTreeSettingsManager().getValue("serverSounds", true);
+    serverSounds = await InvenTreeSettingsManager().getBool("serverSounds", true);
 
     setState(() {
     });
   }
 
-  void setPartSubcategory(bool en) async {
+  Future <void> setPartSubcategory(bool en) async {
     await InvenTreeSettingsManager().setValue("partSubcategory", en);
-    partSubcategory = await InvenTreeSettingsManager().getValue("partSubcategory", true);
+    partSubcategory = await InvenTreeSettingsManager().getBool("partSubcategory", true);
 
     setState(() {
     });
   }
 
-  void setStockSublocation(bool en) async {
+  Future <void> setStockSublocation(bool en) async {
     await InvenTreeSettingsManager().setValue("stockSublocation", en);
-    stockSublocation = await InvenTreeSettingsManager().getValue("stockSublocation", true);
+    stockSublocation = await InvenTreeSettingsManager().getBool("stockSublocation", true);
 
     setState(() {
     });

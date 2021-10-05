@@ -12,11 +12,9 @@ import 'package:flutter/material.dart';
 class S implements WidgetsLocalizations {
   const S();
 
-  static const GeneratedLocalizationsDelegate delegate =
-      const GeneratedLocalizationsDelegate();
+  static const GeneratedLocalizationsDelegate delegate = GeneratedLocalizationsDelegate();
 
-  static S of(BuildContext context) =>
-      Localizations.of<S>(context, WidgetsLocalizations);
+  static S of(BuildContext context) => Localizations.of<S>(context, WidgetsLocalizations);
 
   @override
   TextDirection get textDirection => TextDirection.ltr;

@@ -1,20 +1,20 @@
 
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:inventree/inventree/stock.dart';
-import 'package:inventree/widget/refreshable_state.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:inventree/l10.dart';
+import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:inventree/inventree/stock.dart";
+import "package:inventree/widget/refreshable_state.dart";
+import "package:flutter/cupertino.dart";
+import "package:flutter_markdown/flutter_markdown.dart";
+import "package:inventree/l10.dart";
 
-import '../api.dart';
+import "package:inventree/api.dart";
 
 
 class StockNotesWidget extends StatefulWidget {
 
-  final InvenTreeStockItem item;
+  const StockNotesWidget(this.item, {Key? key}) : super(key: key);
 
-  StockNotesWidget(this.item, {Key? key}) : super(key: key);
+  final InvenTreeStockItem item;
 
   @override
   _StockNotesState createState() => _StockNotesState(item);
@@ -23,9 +23,9 @@ class StockNotesWidget extends StatefulWidget {
 
 class _StockNotesState extends RefreshableState<StockNotesWidget> {
 
-  final InvenTreeStockItem item;
-
   _StockNotesState(this.item);
+
+  final InvenTreeStockItem item;
 
   @override
   String getAppBarTitle(BuildContext context) => L10().stockItemNotes;
@@ -39,7 +39,7 @@ class _StockNotesState extends RefreshableState<StockNotesWidget> {
   List<Widget> getAppBarActions(BuildContext context) {
     List<Widget> actions = [];
 
-    if (InvenTreeAPI().checkPermission('stock', 'change')) {
+    if (InvenTreeAPI().checkPermission("stock", "change")) {
       actions.add(
           IconButton(
               icon: FaIcon(FontAwesomeIcons.edit),

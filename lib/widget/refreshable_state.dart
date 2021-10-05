@@ -1,7 +1,8 @@
-import 'package:inventree/widget/drawer.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import "package:inventree/widget/back.dart";
+import "package:inventree/widget/drawer.dart";
+import "package:flutter/cupertino.dart";
+import "package:flutter/material.dart";
+import "package:flutter/widgets.dart";
 
 
 abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
@@ -9,7 +10,7 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
   final refreshableKey = GlobalKey<ScaffoldState>();
 
   // Storage for context once "Build" is called
-  BuildContext? _context;
+  late BuildContext? _context;
 
   // Current tab index (used for widgets which display bottom tabs)
   int tabIndex = 0;
@@ -32,6 +33,7 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
 
   String getAppBarTitle(BuildContext context) { return "App Bar Title"; }
 
+  @override
   void initState() {
     super.initState();
     WidgetsBinding.instance?.addPostFrameCallback((_) => onBuild(_context!));
@@ -58,14 +60,6 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
     setState(() {
       loading = false;
     });
-  }
-
-  // Function to construct an appbar (override if needed)
-  AppBar getAppBar(BuildContext context) {
-    return AppBar(
-      title: Text(getAppBarTitle(context)),
-      actions: getAppBarActions(context),
-    );
   }
 
   // Function to construct a drawer (override if needed)
@@ -96,8 +90,12 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
 
     return Scaffold(
       key: refreshableKey,
-      appBar: getAppBar(context),
-      drawer: null,
+      appBar: AppBar(
+        title: Text(getAppBarTitle(context)),
+        actions: getAppBarActions(context),
+        leading: backButton(context, refreshableKey),
+      ),
+      drawer: getDrawer(context),
       floatingActionButton: getFab(context),
       body: Builder(
         builder: (BuildContext context) {

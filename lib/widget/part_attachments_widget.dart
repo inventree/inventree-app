@@ -1,23 +1,19 @@
+import "dart:io";
 
+import "package:flutter/cupertino.dart";
+import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:inventree/inventree/part.dart";
+import "package:inventree/widget/fields.dart";
+import "package:inventree/widget/refreshable_state.dart";
+import "package:inventree/widget/snacks.dart";
 
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:inventree/inventree/part.dart';
-import 'package:inventree/widget/fields.dart';
-import 'package:inventree/widget/refreshable_state.dart';
-import 'package:inventree/widget/snacks.dart';
-
-import 'dart:io';
-
-import '../api.dart';
-import '../l10.dart';
+import "package:inventree/api.dart";
+import "package:inventree/l10.dart";
 
 class PartAttachmentsWidget extends StatefulWidget {
 
-  PartAttachmentsWidget(this.part, {Key? key}) : super(key: key);
+  const PartAttachmentsWidget(this.part, {Key? key}) : super(key: key);
 
   final InvenTreePart part;
 
@@ -42,7 +38,7 @@ class _PartAttachmentDisplayState extends RefreshableState<PartAttachmentsWidget
 
     List<Widget> actions = [];
 
-    if (InvenTreeAPI().checkPermission('part', 'change')) {
+    if (InvenTreeAPI().checkPermission("part", "change")) {
 
       // File upload
       actions.add(
@@ -127,7 +123,7 @@ class _PartAttachmentDisplayState extends RefreshableState<PartAttachmentsWidget
       ));
     }
 
-    if (tiles.length == 0) {
+    if (tiles.isEmpty) {
       tiles.add(ListTile(
         title: Text(L10().attachmentNone),
         subtitle: Text(

@@ -2,8 +2,8 @@
 /*
  * Class for InvenTree user / login details
  */
-import 'package:sembast/sembast.dart';
-import 'preferences.dart';
+import "package:sembast/sembast.dart";
+import "preferences.dart";
 
 class UserProfile {
 
@@ -15,6 +15,15 @@ class UserProfile {
     this.password = "",
     this.selected = false,
   });
+
+  factory UserProfile.fromJson(int key, Map<String, dynamic> json, bool isSelected) => UserProfile(
+    key: key,
+    name: json["name"] as String,
+    server: json["server"] as String,
+    username: json["username"] as String,
+    password: json["password"] as String,
+    selected: isSelected,
+  );
 
   // ID of the profile
   int? key;
@@ -36,15 +45,6 @@ class UserProfile {
   // User ID (will be provided by the server on log-in)
   int user_id = -1;
 
-  factory UserProfile.fromJson(int key, Map<String, dynamic> json, bool isSelected) => UserProfile(
-    key: key,
-    name: json['name'],
-    server: json['server'],
-    username: json['username'],
-    password: json['password'],
-    selected: isSelected,
-  );
-
   Map<String, dynamic> toJson() => {
     "name": name,
     "server": server,
@@ -62,7 +62,7 @@ class UserProfileDBManager {
 
   final store = StoreRef("profiles");
 
-  Future<Database> get _db async => await InvenTreePreferencesDB.instance.database;
+  Future<Database> get _db async => InvenTreePreferencesDB.instance.database;
 
   Future<bool> profileNameExists(String name) async {
 
@@ -70,10 +70,10 @@ class UserProfileDBManager {
 
     final profiles = await store.find(await _db, finder: finder);
 
-    return profiles.length > 0;
+    return profiles.isNotEmpty;
   }
 
-  Future addProfile(UserProfile profile) async {
+  Future<void> addProfile(UserProfile profile) async {
 
     // Check if a profile already exists with the name
     final bool exists = await profileNameExists(profile.name);
@@ -83,7 +83,7 @@ class UserProfileDBManager {
       return;
     }
 
-    int key = await store.add(await _db, profile.toJson());
+    int key = await store.add(await _db, profile.toJson()) as int;
 
     print("Added user profile <${key}> - '${profile.name}'");
 
@@ -91,7 +91,7 @@ class UserProfileDBManager {
     profile.key = key;
   }
 
-  Future selectProfile(int key) async {
+  Future<void> selectProfile(int key) async {
     /*
      * Mark the particular profile as selected
      */
@@ -101,7 +101,7 @@ class UserProfileDBManager {
     return result;
   }
   
-  Future updateProfile(UserProfile profile) async {
+  Future<void> updateProfile(UserProfile profile) async {
     
     if (profile.key == null) {
       await addProfile(profile);
@@ -115,7 +115,7 @@ class UserProfileDBManager {
     return result;
   }
 
-  Future deleteProfile(UserProfile profile) async {
+  Future<void> deleteProfile(UserProfile profile) async {
     await store.record(profile.key).delete(await _db);
     print("Deleted user profile <${profile.key}> - '${profile.name}'");
   }
@@ -135,8 +135,8 @@ class UserProfileDBManager {
 
       if (profiles[idx].key is int && profiles[idx].key == selected) {
         return UserProfile.fromJson(
-          profiles[idx].key,
-          profiles[idx].value,
+          profiles[idx].key as int,
+          profiles[idx].value as Map<String, dynamic>,
           profiles[idx].key == selected,
         );
       }
@@ -161,8 +161,8 @@ class UserProfileDBManager {
       if (profiles[idx].key is int) {
         profileList.add(
             UserProfile.fromJson(
-              profiles[idx].key,
-              profiles[idx].value,
+              profiles[idx].key as int,
+              profiles[idx].value as Map<String, dynamic>,
               profiles[idx].key == selected,
             ));
       }

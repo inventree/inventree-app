@@ -1,25 +1,22 @@
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import "package:flutter/cupertino.dart";
+import "package:flutter/material.dart";
 
-import 'package:inventree/api.dart';
-import 'package:inventree/inventree/company.dart';
-import 'package:inventree/inventree/sentry.dart';
-import 'package:inventree/widget/paginator.dart';
-import 'package:inventree/widget/refreshable_state.dart';
-import 'package:inventree/widget/company_detail.dart';
-
-import '../l10.dart';
+import "package:inventree/api.dart";
+import "package:inventree/inventree/company.dart";
+import "package:inventree/inventree/model.dart";
+import "package:inventree/widget/paginator.dart";
+import "package:inventree/widget/refreshable_state.dart";
+import "package:inventree/widget/company_detail.dart";
 
 
 class CompanyListWidget extends StatefulWidget {
 
-  CompanyListWidget(this.title, this.filters, {Key? key}) : super(key: key);
+  const CompanyListWidget(this.title, this.filters, {Key? key}) : super(key: key);
 
-  String title;
+  final String title;
 
-  Map<String, String> filters;
+  final Map<String, String> filters;
 
   @override
   _CompanyListWidgetState createState() => _CompanyListWidgetState(title, filters);
@@ -49,103 +46,32 @@ class _CompanyListWidgetState extends RefreshableState<CompanyListWidget> {
 
 class PaginatedCompanyList extends StatefulWidget {
 
-  PaginatedCompanyList(this.filters, {this.onTotalChanged});
+  const PaginatedCompanyList(this.filters, {this.onTotalChanged});
 
   final Map<String, String> filters;
 
-  Function(int)? onTotalChanged;
+  final Function(int)? onTotalChanged;
 
   @override
-  _CompanyListState createState() => _CompanyListState(filters, onTotalChanged);
+  _CompanyListState createState() => _CompanyListState(filters);
 }
 
-class _CompanyListState extends State<PaginatedCompanyList> {
+class _CompanyListState extends PaginatedSearchState<PaginatedCompanyList> {
 
-  _CompanyListState(this.filters, this.onTotalChanged);
-  
-  static const _pageSize = 25;
+  _CompanyListState(Map<String, String> filters) : super(filters);
 
-  String _searchTerm = "";
-
-  Function(int)? onTotalChanged;
-  
-  final Map<String, String> filters;
-  
-  final PagingController<int, InvenTreeCompany> _pagingController = PagingController(firstPageKey: 0);
-
-  final TextEditingController searchController = TextEditingController();
-  
   @override
-  void initState() {
-    _pagingController.addPageRequestListener((pageKey) {
-      _fetchPage(pageKey);
-    });
-    
-    super.initState();
+  Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
+
+    final page = await InvenTreeCompany().listPaginated(limit, offset, filters: params);
+
+    return page;
   }
-  
+
   @override
-  void dispose() {
-    _pagingController.dispose();
-    super.dispose();
-  }
-  
-  int resultCount = 0;
-  
-  Future<void> _fetchPage(int pageKey) async {
-    try {
-      Map<String, String> params = filters;
+  Widget buildItem(BuildContext context, InvenTreeModel model) {
 
-      params["search"] = _searchTerm;
-
-      final page = await InvenTreeCompany().listPaginated(
-          _pageSize, pageKey, filters: params);
-
-      int pageLength = page?.length ?? 0;
-      int pageCount = page?.count ?? 0;
-
-      final isLastPage = pageLength < _pageSize;
-
-      List<InvenTreeCompany> companies = [];
-
-      if (page != null) {
-        for (var result in page.results) {
-          if (result is InvenTreeCompany) {
-            companies.add(result);
-          } else {
-            print(result.jsondata);
-          }
-        }
-      }
-
-      if (isLastPage) {
-        _pagingController.appendLastPage(companies);
-      } else {
-        final int nextPageKey = pageKey + pageLength;
-        _pagingController.appendPage(companies, nextPageKey);
-      }
-
-      if (onTotalChanged != null) {
-        onTotalChanged!(pageCount);
-      }
-
-      setState(() {
-        resultCount = pageCount;
-      });
-    } catch (error, stackTrace) {
-      print("Error! - ${error.toString()}");
-      _pagingController.error = error;
-      
-      sentryReportError(error, stackTrace);
-    }
-  }
-
-  void updateSearchTerm() {
-    _searchTerm = searchController.text;
-    _pagingController.refresh();
-  }
-
-  Widget _buildCompany(BuildContext context, InvenTreeCompany company) {
+    InvenTreeCompany company = model as InvenTreeCompany;
 
     return ListTile(
       title: Text(company.name),
@@ -160,36 +86,4 @@ class _CompanyListState extends State<PaginatedCompanyList> {
       },
     );
   }
-  
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        PaginatedSearchWidget(searchController, updateSearchTerm, resultCount),
-        Expanded(
-          child: CustomScrollView(
-            shrinkWrap: true,
-            physics: ClampingScrollPhysics(),
-            scrollDirection: Axis.vertical,
-            slivers: [
-              PagedSliverList.separated(
-                pagingController: _pagingController,
-                builderDelegate: PagedChildBuilderDelegate<InvenTreeCompany>(
-                  itemBuilder: (context, item, index) {
-                    return _buildCompany(context, item);
-                  },
-                  noItemsFoundIndicatorBuilder: (context) {
-                    return NoResultsWidget(L10().companyNoResults);
-                  }
-                ),
-                separatorBuilder: (context, index) => const Divider(height: 1),
-              )
-            ],
-          )
-        )
-      ],
-    );
-  }
-  
 }

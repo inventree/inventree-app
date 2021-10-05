@@ -1,26 +1,24 @@
-import 'package:inventree/app_settings.dart';
-import 'package:inventree/inventree/sentry.dart';
-import 'package:inventree/widget/dialogs.dart';
-import 'package:inventree/widget/snacks.dart';
-import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:one_context/one_context.dart';
+import "dart:io";
 
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import "package:inventree/inventree/sentry.dart";
+import "package:inventree/widget/dialogs.dart";
+import "package:inventree/widget/snacks.dart";
+import "package:flutter/cupertino.dart";
+import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:one_context/one_context.dart";
 
-import 'package:inventree/inventree/stock.dart';
-import 'package:inventree/inventree/part.dart';
-import 'package:inventree/l10.dart';
+import "package:qr_code_scanner/qr_code_scanner.dart";
 
-import 'package:inventree/api.dart';
+import "package:inventree/inventree/stock.dart";
+import "package:inventree/inventree/part.dart";
+import "package:inventree/l10.dart";
+import "package:inventree/helpers.dart";
+import "package:inventree/api.dart";
 
-import 'package:inventree/widget/location_display.dart';
-import 'package:inventree/widget/part_detail.dart';
-import 'package:inventree/widget/stock_detail.dart';
-
-import 'dart:io';
+import "package:inventree/widget/location_display.dart";
+import "package:inventree/widget/part_detail.dart";
+import "package:inventree/widget/stock_detail.dart";
 
 
 class BarcodeHandler {
@@ -32,31 +30,11 @@ class BarcodeHandler {
    * based on the response returned from the InvenTree server
    */
 
-    String getOverlayText(BuildContext context) => "Barcode Overlay";
+  BarcodeHandler();
 
-    BarcodeHandler();
+  String getOverlayText(BuildContext context) => "Barcode Overlay";
 
-    QRViewController? _controller;
-
-    void successTone() async {
-
-      final bool en = await InvenTreeSettingsManager().getValue("barcodeSounds", true) as bool;
-
-      if (en) {
-        final player = AudioCache();
-        player.play("sounds/barcode_scan.mp3");
-      }
-    }
-
-    void failureTone() async {
-
-      final bool en = await InvenTreeSettingsManager().getValue("barcodeSounds", true) as bool;
-
-      if (en) {
-        final player = AudioCache();
-        player.play("sounds/barcode_error.mp3");
-      }
-    }
+  QRViewController? _controller;
 
     Future<void> onBarcodeMatched(BuildContext context, Map<String, dynamic> data) async {
       // Called when the server "matches" a barcode
@@ -101,8 +79,10 @@ class BarcodeHandler {
 
       _controller?.resumeCamera();
 
+      Map<String, dynamic> data = response.asMap();
+
       // Handle strange response from the server
-      if (!response.isValid() || response.data == null || !(response.data is Map)) {
+      if (!response.isValid() || !response.isMap()) {
         onBarcodeUnknown(context, {});
 
         // We want to know about this one!
@@ -118,12 +98,12 @@ class BarcodeHandler {
               "errorDetail": response.errorDetail,
             }
         );
-      } else if (response.data.containsKey('error')) {
-        onBarcodeUnknown(context, response.data);
-      } else if (response.data.containsKey('success')) {
-        onBarcodeMatched(context, response.data);
+      } else if (data.containsKey("error")) {
+        onBarcodeUnknown(context, data);
+      } else if (data.containsKey("success")) {
+        onBarcodeMatched(context, data);
       } else {
-        onBarcodeUnhandled(context, response.data);
+        onBarcodeUnhandled(context, data);
       }
     }
 }
@@ -156,9 +136,9 @@ class BarcodeScanHandler extends BarcodeHandler {
     int pk = -1;
 
     // A stocklocation has been passed?
-    if (data.containsKey('stocklocation')) {
+    if (data.containsKey("stocklocation")) {
 
-      pk = (data['stocklocation']?['pk'] ?? -1) as int;
+      pk = (data["stocklocation"]?["pk"] ?? -1) as int;
 
       if (pk > 0) {
 
@@ -180,9 +160,9 @@ class BarcodeScanHandler extends BarcodeHandler {
         );
       }
 
-    } else if (data.containsKey('stockitem')) {
+    } else if (data.containsKey("stockitem")) {
 
-      pk = (data['stockitem']?['pk'] ?? -1) as int;
+      pk = (data["stockitem"]?["pk"] ?? -1) as int;
 
       if (pk > 0) {
 
@@ -206,9 +186,9 @@ class BarcodeScanHandler extends BarcodeHandler {
             success: false
         );
       }
-    } else if (data.containsKey('part')) {
+    } else if (data.containsKey("part")) {
 
-      pk = (data['part']?['pk'] ?? -1) as int;
+      pk = (data["part"]?["pk"] ?? -1) as int;
 
       if (pk > 0) {
 
@@ -258,93 +238,24 @@ class BarcodeScanHandler extends BarcodeHandler {
   }
 }
 
-
-class StockItemBarcodeAssignmentHandler extends BarcodeHandler {
-  /*
-   * Barcode handler for assigning a new barcode to a stock item
-   */
-
-  final InvenTreeStockItem item;
-
-  StockItemBarcodeAssignmentHandler(this.item);
-
-  @override
-  String getOverlayText(BuildContext context) => L10().barcodeScanAssign;
-
-  @override
-  Future<void> onBarcodeMatched(BuildContext context, Map<String, dynamic> data) async {
-
-    failureTone();
-
-    // If the barcode is known, we can't assign it to the stock item!
-    showSnackIcon(
-      L10().barcodeInUse,
-      icon: FontAwesomeIcons.qrcode,
-      success: false
-    );
-  }
-
-  @override
-  Future<void> onBarcodeUnknown(BuildContext context, Map<String, dynamic> data) async {
-    // If the barcode is unknown, we *can* assign it to the stock item!
-
-    if (!data.containsKey("hash")) {
-      showServerError(
-          L10().missingData,
-          L10().barcodeMissingHash,
-      );
-    } else {
-
-      // Send the 'hash' code as the UID for the stock item
-      item.update(
-        values: {
-          "uid": data['hash'],
-        }
-      ).then((result) {
-        if (result) {
-
-          failureTone();
-
-          Navigator.of(context).pop();
-
-          showSnackIcon(
-            L10().barcodeAssigned,
-            success: true,
-            icon: FontAwesomeIcons.qrcode
-          );
-        } else {
-
-          successTone();
-
-          showSnackIcon(
-              L10().barcodeNotAssigned,
-              success: false,
-              icon: FontAwesomeIcons.qrcode
-          );
-        }
-      });
-    }
-  }
-}
-
 class StockItemScanIntoLocationHandler extends BarcodeHandler {
   /*
    * Barcode handler for scanning a provided StockItem into a scanned StockLocation
    */
 
-  final InvenTreeStockItem item;
-
   StockItemScanIntoLocationHandler(this.item);
+
+  final InvenTreeStockItem item;
 
   @override
   String getOverlayText(BuildContext context) => L10().barcodeScanLocation;
 
   @override
   Future<void> onBarcodeMatched(BuildContext context, Map<String, dynamic> data) async {
-    // If the barcode points to a 'stocklocation', great!
-    if (data.containsKey('stocklocation')) {
+    // If the barcode points to a "stocklocation", great!
+    if (data.containsKey("stocklocation")) {
       // Extract location information
-      int location = (data['stocklocation']['pk'] ?? -1) as int;
+      int location = (data["stocklocation"]["pk"] ?? -1) as int;
 
       if (location == -1) {
         showSnackIcon(
@@ -394,11 +305,11 @@ class StockLocationScanInItemsHandler extends BarcodeHandler {
   /*
    * Barcode handler for scanning stock item(s) into the specified StockLocation
    */
-  
-  final InvenTreeStockLocation location;
-  
+
   StockLocationScanInItemsHandler(this.location);
-  
+
+  final InvenTreeStockLocation location;
+
   @override
   String getOverlayText(BuildContext context) => L10().barcodeScanItem;
 
@@ -406,11 +317,11 @@ class StockLocationScanInItemsHandler extends BarcodeHandler {
   Future<void> onBarcodeMatched(BuildContext context, Map<String, dynamic> data) async {
 
     // Returned barcode must match a stock item
-    if (data.containsKey('stockitem')) {
+    if (data.containsKey("stockitem")) {
 
-      int item_id = data['stockitem']['pk'] as int;
+      int item_id = data["stockitem"]["pk"] as int;
 
-      final InvenTreeStockItem? item = await InvenTreeStockItem().get(item_id) as InvenTreeStockItem;
+      final InvenTreeStockItem? item = await InvenTreeStockItem().get(item_id) as InvenTreeStockItem?;
 
       if (item == null) {
 
@@ -462,11 +373,78 @@ class StockLocationScanInItemsHandler extends BarcodeHandler {
 }
 
 
+class UniqueBarcodeHandler extends BarcodeHandler {
+  /*
+   * Barcode handler for finding a "unique" barcode (one that does not match an item in the database)
+   */
+
+  UniqueBarcodeHandler(this.callback, {this.overlayText = ""});
+
+  // Callback function when a "unique" barcode hash is found
+  final Function(String) callback;
+
+  final String overlayText;
+
+  @override
+  String getOverlayText(BuildContext context) {
+    if (overlayText.isEmpty) {
+      return L10().barcodeScanAssign;
+    } else {
+      return overlayText;
+    }
+  }
+
+  @override
+  Future<void> onBarcodeMatched(BuildContext context, Map<String, dynamic> data) async {
+
+    failureTone();
+
+    // If the barcode is known, we can"t assign it to the stock item!
+    showSnackIcon(
+        L10().barcodeInUse,
+        icon: FontAwesomeIcons.qrcode,
+        success: false
+    );
+  }
+
+  @override
+  Future<void> onBarcodeUnknown(BuildContext context, Map<String, dynamic> data) async {
+    // If the barcode is unknown, we *can* assign it to the stock item!
+
+    if (!data.containsKey("hash")) {
+      showServerError(
+        L10().missingData,
+        L10().barcodeMissingHash,
+      );
+    } else {
+      String hash = (data["hash"] ?? "") as String;
+
+      if (hash.isEmpty) {
+        failureTone();
+
+        showSnackIcon(
+          L10().barcodeError,
+          success: false,
+        );
+      } else {
+
+        successTone();
+
+        // Close the barcode scanner
+        Navigator.of(context).pop();
+
+        callback(hash);
+      }
+    }
+  }
+}
+
+
 class InvenTreeQRView extends StatefulWidget {
 
-  final BarcodeHandler _handler;
+  const InvenTreeQRView(this._handler, {Key? key}) : super(key: key);
 
-  InvenTreeQRView(this._handler, {Key? key}) : super(key: key);
+  final BarcodeHandler _handler;
 
   @override
   State<StatefulWidget> createState() => _QRViewState(_handler);
@@ -475,7 +453,9 @@ class InvenTreeQRView extends StatefulWidget {
 
 class _QRViewState extends State<InvenTreeQRView> {
 
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  _QRViewState(this._handler) : super();
+
+  final GlobalKey qrKey = GlobalKey(debugLabel: "QR");
 
   QRViewController? _controller;
 
@@ -493,8 +473,6 @@ class _QRViewState extends State<InvenTreeQRView> {
 
     _controller!.resumeCamera();
   }
-
-  _QRViewState(this._handler) : super();
 
   void _onViewCreated(BuildContext context, QRViewController controller) {
     _controller = controller;

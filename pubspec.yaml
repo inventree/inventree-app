@@ -13,40 +13,43 @@ environment:
   sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
+
+  audioplayers: ^0.20.1                   # Play audio files
+  cached_network_image: ^3.1.0            # Download and cache remote images
+  camera:                                 # Camera
+  cupertino_icons: ^1.0.3
+  datetime_picker_formfield: ^2.0.0       # Date / time picker
+  device_info_plus: ^2.1.0                # Information about the device
+  dropdown_search: 0.6.3                  # Dropdown autocomplete form fields
+  file_picker: ^4.0.0                     # Select files from the device
+
   flutter:
     sdk: flutter
 
   flutter_localizations:
     sdk: flutter
 
-  intl: ^0.17.0
-
-  cupertino_icons: ^1.0.3
-  http: ^0.13.0
-  cached_network_image: ^3.0.0            # Download and cache remote images
-  qr_code_scanner: ^0.5.2                 # Barcode scanning
-  package_info_plus: ^1.0.4               # App information introspection
-  device_info_plus: ^2.1.0                # Information about the device
-  font_awesome_flutter: ^9.1.0            # FontAwesome icon set
-  sentry_flutter: 5.0.0                   # Error reporting
-  image_picker: ^0.8.3                    # Select or take photos
-  file_picker: ^4.0.0                     # Select files from the device
-  url_launcher: 6.0.9                     # Open link in system browser
-  open_file: 3.2.1                        # Open local files
   flutter_markdown: ^0.6.2                # Rendering markdown
-  camera:                                 # Camera
-  path_provider: 2.0.2                    # Local file storage
-  sembast: ^3.1.0+2                       # NoSQL data storage
-  one_context: ^1.1.0                     # Dialogs without requiring context
+  font_awesome_flutter: ^9.1.0            # FontAwesome icon set
+  http: ^0.13.0
+  image_picker: ^0.8.3                    # Select or take photos
   infinite_scroll_pagination: ^3.1.0      # Let the server do all the work!
-  audioplayers: ^0.20.1                   # Play audio files
-  dropdown_search: 0.6.3                  # Dropdown autocomplete form fields
+  intl: ^0.17.0
+  one_context: ^1.1.0                     # Dialogs without requiring context
+  open_file: 3.2.1                        # Open local files
+  package_info_plus: ^1.0.4               # App information introspection
   path:
+  path_provider: 2.0.2                    # Local file storage
+  qr_code_scanner: ^0.5.2                 # Barcode scanning
+  sembast: ^3.1.0+2                       # NoSQL data storage
+  sentry_flutter: 5.0.0                   # Error reporting
+  url_launcher: 6.0.9                     # Open link in system browser
 
 dev_dependencies:
+  flutter_launcher_icons:
   flutter_test:
     sdk: flutter
-  flutter_launcher_icons:
+  lint: ^1.0.0
 
 flutter_icons:
   android: true

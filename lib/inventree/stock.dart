@@ -1,18 +1,22 @@
-import 'package:intl/intl.dart';
-import 'package:inventree/inventree/part.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart' as http;
-import 'model.dart';
-import 'package:inventree/l10.dart';
+import "dart:async";
 
+import "package:flutter/material.dart";
+import "package:intl/intl.dart";
+import "package:inventree/helpers.dart";
+import "package:inventree/inventree/part.dart";
+import "package:flutter/cupertino.dart";
 
-import 'dart:async';
-import 'dart:io';
+import "package:inventree/inventree/model.dart";
+import "package:inventree/l10.dart";
 
-import 'package:inventree/api.dart';
+import "package:inventree/api.dart";
 
 
 class InvenTreeStockItemTestResult extends InvenTreeModel {
+
+  InvenTreeStockItemTestResult() : super();
+
+  InvenTreeStockItemTestResult.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
   @override
   String get URL => "stock/test/";
@@ -31,23 +35,17 @@ class InvenTreeStockItemTestResult extends InvenTreeModel {
     };
   }
 
-  String get key => jsondata['key'] ?? '';
+  String get key => (jsondata["key"] ?? "") as String;
 
-  String get testName => jsondata['test'] ?? '';
+  String get testName => (jsondata["test"] ?? "") as String;
 
-  bool get result => jsondata['result'] ?? false;
+  bool get result => (jsondata["result"] ?? false) as bool;
 
-  String get value => jsondata['value'] ?? '';
+  String get value => (jsondata["value"] ?? "") as String;
 
-  String get notes => jsondata['notes'] ?? '';
+  String get attachment => (jsondata["attachment"] ?? "") as String;
 
-  String get attachment => jsondata['attachment'] ?? '';
-
-  String get date => jsondata['date'] ?? '';
-
-  InvenTreeStockItemTestResult() : super();
-
-  InvenTreeStockItemTestResult.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+  String get date => (jsondata["date"] ?? "") as String;
 
   @override
   InvenTreeStockItemTestResult createFromJson(Map<String, dynamic> json) {
@@ -59,6 +57,10 @@ class InvenTreeStockItemTestResult extends InvenTreeModel {
 
 
 class InvenTreeStockItem extends InvenTreeModel {
+
+  InvenTreeStockItem() : super();
+
+  InvenTreeStockItem.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
   // Stock status codes
   static const int OK = 10;
@@ -97,7 +99,7 @@ class InvenTreeStockItem extends InvenTreeModel {
   Color get statusColor {
     switch (status) {
       case OK:
-        return Color(0xFF50aa51);
+        return Colors.black;
       case ATTENTION:
         return Color(0xFFfdc82a);
       case DAMAGED:
@@ -114,7 +116,7 @@ class InvenTreeStockItem extends InvenTreeModel {
   String get URL => "stock/";
 
   @override
-  String WEB_URL = "stock/item/";
+  String get WEB_URL => "stock/item/";
 
   @override
   Map<String, dynamic> formFields() {
@@ -132,33 +134,24 @@ class InvenTreeStockItem extends InvenTreeModel {
   @override
   Map<String, String> defaultGetFilters() {
 
-    var headers = new Map<String, String>();
-
-    headers["part_detail"] = "true";
-    headers["location_detail"] = "true";
-    headers["supplier_detail"] = "true";
-    headers["cascade"] = "false";
-
-    return headers;
+    return {
+      "part_detail": "true",
+      "location_detail": "true",
+      "supplier_detail": "true",
+      "cascade": "false"
+    };
   }
 
   @override
   Map<String, String> defaultListFilters() {
 
-    var headers = new Map<String, String>();
-
-    headers["part_detail"] = "true";
-    headers["location_detail"] = "true";
-    headers["supplier_detail"] = "true";
-    headers["cascade"] = "false";
-
-    return headers;
-  }
-
-  InvenTreeStockItem() : super();
-
-  InvenTreeStockItem.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
-    // TODO
+    return {
+      "part_detail": "true",
+      "location_detail": "true",
+      "supplier_detail": "true",
+      "cascade": "false",
+      "in_stock": "true",
+    };
   }
 
   List<InvenTreePartTestTemplate> testTemplates = [];
@@ -204,17 +197,17 @@ class InvenTreeStockItem extends InvenTreeModel {
     });
   }
 
-  String get uid => jsondata['uid'] ?? '';
+  String get uid => (jsondata["uid"] ?? "") as String;
 
-  int get status => jsondata['status'] ?? -1;
+  int get status => (jsondata["status"] ?? -1) as int;
 
-  String get packaging => jsondata["packaging"] ?? "";
+  String get packaging => (jsondata["packaging"] ?? "") as String;
 
-  String get batch => jsondata["batch"] ?? "";
+  String get batch => (jsondata["batch"] ?? "") as String;
 
-  int get partId => jsondata['part'] ?? -1;
+  int get partId => (jsondata["part"] ?? -1) as int;
   
-  String get purchasePrice => jsondata['purchase_price'] ?? "";
+  String get purchasePrice => (jsondata["purchase_price"] ?? "") as String;
 
   bool get hasPurchasePrice {
 
@@ -223,12 +216,14 @@ class InvenTreeStockItem extends InvenTreeModel {
     return pp.isNotEmpty && pp.trim() != "-";
   }
 
-  int get trackingItemCount => (jsondata['tracking_items'] ?? 0) as int;
+  int get purchaseOrderId => (jsondata["purchase_order"] ?? -1) as int;
+
+  int get trackingItemCount => (jsondata["tracking_items"] ?? 0) as int;
 
   // Date of last update
   DateTime? get updatedDate {
     if (jsondata.containsKey("updated")) {
-      return DateTime.tryParse(jsondata["updated"] ?? '');
+      return DateTime.tryParse((jsondata["updated"] ?? "") as String);
     } else {
       return null;
     }
@@ -248,7 +243,7 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   DateTime? get stocktakeDate {
     if (jsondata.containsKey("stocktake_date")) {
-      return DateTime.tryParse(jsondata["stocktake_date"] ?? '');
+      return DateTime.tryParse((jsondata["stocktake_date"] ?? "") as String);
     } else {
       return null;
     }
@@ -268,45 +263,45 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   String get partName {
 
-    String nm = '';
+    String nm = "";
 
     // Use the detailed part information as priority
-    if (jsondata.containsKey('part_detail')) {
-      nm = jsondata['part_detail']['full_name'] ?? '';
+    if (jsondata.containsKey("part_detail")) {
+      nm = (jsondata["part_detail"]["full_name"] ?? "") as String;
     }
 
     // Backup if first value fails
     if (nm.isEmpty) {
-      nm = jsondata['part__name'] ?? '';
+      nm = (jsondata["part__name"] ?? "") as String;
     }
 
     return nm;
   }
 
   String get partDescription {
-    String desc = '';
+    String desc = "";
 
     // Use the detailed part description as priority
-    if (jsondata.containsKey('part_detail')) {
-      desc = jsondata['part_detail']['description'] ?? '';
+    if (jsondata.containsKey("part_detail")) {
+      desc = (jsondata["part_detail"]["description"] ?? "") as String;
     }
 
     if (desc.isEmpty) {
-      desc = jsondata['part__description'] ?? '';
+      desc = (jsondata["part__description"] ?? "") as String;
     }
 
     return desc;
   }
 
   String get partImage {
-    String img = '';
+    String img = "";
 
-    if (jsondata.containsKey('part_detail')) {
-      img = jsondata['part_detail']['thumbnail'] ?? '';
+    if (jsondata.containsKey("part_detail")) {
+      img = (jsondata["part_detail"]["thumbnail"] ?? "") as String;
     }
 
     if (img.isEmpty) {
-      img = jsondata['part__thumbnail'] ?? '';
+      img = (jsondata["part__thumbnail"] ?? "") as String;
     }
 
     return img;
@@ -319,107 +314,97 @@ class InvenTreeStockItem extends InvenTreeModel {
 
     String thumb = "";
 
-    thumb = jsondata['part_detail']?['thumbnail'] ?? '';
+    thumb = (jsondata["part_detail"]?["thumbnail"] ?? "") as String;
 
-    // Use 'image' as a backup
+    // Use "image" as a backup
     if (thumb.isEmpty) {
-      thumb = jsondata['part_detail']?['image'] ?? '';
+      thumb = (jsondata["part_detail"]?["image"] ?? "") as String;
     }
 
     // Try a different approach
     if (thumb.isEmpty) {
-      thumb = jsondata['part__thumbnail'] ?? '';
+      thumb = (jsondata["part__thumbnail"] ?? "") as String;
     }
 
-    // Still no thumbnail? Use the 'no image' image
+    // Still no thumbnail? Use the "no image" image
     if (thumb.isEmpty) thumb = InvenTreeAPI.staticThumb;
 
     return thumb;
   }
 
-  int get supplierPartId => (jsondata['supplier_part'] ?? -1) as int;
+  int get supplierPartId => (jsondata["supplier_part"] ?? -1) as int;
 
   String get supplierImage {
-    String thumb = '';
+    String thumb = "";
 
     if (jsondata.containsKey("supplier_detail")) {
-      thumb = jsondata['supplier_detail']['supplier_logo'] ?? '';
+      thumb = (jsondata["supplier_detail"]["supplier_logo"] ?? "") as String;
     }
 
     return thumb;
   }
 
   String get supplierName {
-    String sname = '';
+    String sname = "";
 
     if (jsondata.containsKey("supplier_detail")) {
-      sname = jsondata["supplier_detail"]["supplier_name"] ?? '';
+      sname = (jsondata["supplier_detail"]["supplier_name"] ?? "") as String;
     }
 
     return sname;
   }
 
   String get units {
-    return jsondata['part_detail']?['units'] ?? '';
+    return (jsondata["part_detail"]?["units"] ?? "") as String;
   }
 
   String get supplierSKU {
-    String sku = '';
+    String sku = "";
 
     if (jsondata.containsKey("supplier_detail")) {
-      sku = jsondata["supplier_detail"]["SKU"] ?? '';
+      sku = (jsondata["supplier_detail"]["SKU"] ?? "") as String;
     }
 
     return sku;
   }
 
-  String get serialNumber => jsondata['serial'] ?? "";
+  String get serialNumber => (jsondata["serial"] ?? "") as String;
 
-  double get quantity => double.tryParse(jsondata['quantity'].toString()) ?? 0;
+  double get quantity => double.tryParse(jsondata["quantity"].toString()) ?? 0;
 
-  String get quantityString {
+  String quantityString({bool includeUnits = false}){
 
-    String q = quantity.toString();
+    String q = simpleNumberString(quantity);
 
-    // Simplify integer values e.g. "1.0" becomes "1"
-    if (quantity.toInt() == quantity) {
-      q = quantity.toInt().toString();
-    }
-
-    if (units.isNotEmpty) {
+    if (includeUnits && units.isNotEmpty) {
       q += " ${units}";
     }
 
     return q;
   }
 
-  int get locationId => (jsondata['location'] ?? -1) as int;
+  int get locationId => (jsondata["location"] ?? -1) as int;
 
   bool isSerialized() => serialNumber.isNotEmpty && quantity.toInt() == 1;
 
   String serialOrQuantityDisplay() {
     if (isSerialized()) {
-      return 'SN ${serialNumber}';
+      return "SN ${serialNumber}";
     }
 
-    // Is an integer?
-    if (quantity.toInt() == quantity) {
-      return '${quantity.toInt()}';
-    }
-
-    return '${quantity}';
+    return simpleNumberString(quantity);
   }
 
   String get locationName {
-    String loc = '';
+    String loc = "";
 
-    if (locationId == -1 || !jsondata.containsKey('location_detail')) return 'Unknown Location';
+    if (locationId == -1 || !jsondata.containsKey("location_detail")) return "Unknown Location";
 
-    loc = jsondata['location_detail']['name'] ?? '';
+    loc = (jsondata["location_detail"]["name"] ?? "") as String;
 
     // Old-style name
     if (loc.isEmpty) {
-      loc = jsondata['location__name'] ?? '';
+      loc = (jsondata["location__name"] ?? "") as String;
     }
 
     return loc;
@@ -427,9 +412,9 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   String get locationPathString {
 
-    if (locationId == -1 || !jsondata.containsKey('location_detail')) return L10().locationNotSet;
+    if (locationId == -1 || !jsondata.containsKey("location_detail")) return L10().locationNotSet;
 
-    String _loc = jsondata['location_detail']['pathstring'] ?? '';
+    String _loc = (jsondata["location_detail"]["pathstring"] ?? "") as String;
 
     if (_loc.isNotEmpty) {
       return _loc;
@@ -444,7 +429,7 @@ class InvenTreeStockItem extends InvenTreeModel {
     if (serialNumber.isNotEmpty) {
       return "SN: $serialNumber";
     } else {
-      return quantityString;
+      return simpleNumberString(quantity);
     }
   }
 
@@ -481,7 +466,7 @@ class InvenTreeStockItem extends InvenTreeModel {
         "pk": "${pk}",
         "quantity": "${q}",
         },
-        "notes": notes ?? '',
+        "notes": notes ?? "",
       },
       expectedStatusCode: 200
     );
@@ -489,6 +474,7 @@ class InvenTreeStockItem extends InvenTreeModel {
     return response.isValid();
   }
 
+  // TODO: Refactor this once the server supports API metadata for this action
   Future<bool> countStock(BuildContext context, double q, {String? notes}) async {
 
     final bool result = await adjustStock(context, "/stock/count/", q, notes: notes);
@@ -496,6 +482,7 @@ class InvenTreeStockItem extends InvenTreeModel {
     return result;
   }
 
+  // TODO: Refactor this once the server supports API metadata for this action
   Future<bool> addStock(BuildContext context, double q, {String? notes}) async {
 
     final bool result = await adjustStock(context,  "/stock/add/", q, notes: notes);
@@ -503,6 +490,7 @@ class InvenTreeStockItem extends InvenTreeModel {
     return result;
   }
 
+  // TODO: Refactor this once the server supports API metadata for this action
   Future<bool> removeStock(BuildContext context, double q, {String? notes}) async {
 
     final bool result = await adjustStock(context, "/stock/remove/", q, notes: notes);
@@ -510,6 +498,7 @@ class InvenTreeStockItem extends InvenTreeModel {
     return result;
   }
 
+  // TODO: Refactor this once the server supports API metadata for this action
   Future<bool> transferStock(int location, {double? quantity, String? notes}) async {
     if ((quantity == null) || (quantity < 0) || (quantity > this.quantity)) {
       quantity = this.quantity;
@@ -535,10 +524,14 @@ class InvenTreeStockItem extends InvenTreeModel {
 
 class InvenTreeStockLocation extends InvenTreeModel {
 
+  InvenTreeStockLocation() : super();
+
+  InvenTreeStockLocation.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+
   @override
   String get URL => "stock/location/";
 
-  String get pathstring => jsondata['pathstring'] ?? '';
+  String get pathstring => (jsondata["pathstring"] ?? "") as String;
 
   @override
   Map<String, dynamic> formFields() {
@@ -551,13 +544,13 @@ class InvenTreeStockLocation extends InvenTreeModel {
 
   String get parentpathstring {
     // TODO - Drive the refactor tractor through this
-    List<String> psplit = pathstring.split('/');
+    List<String> psplit = pathstring.split("/");
 
-    if (psplit.length > 0) {
+    if (psplit.isNotEmpty) {
       psplit.removeLast();
     }
 
-    String p = psplit.join('/');
+    String p = psplit.join("/");
 
     if (p.isEmpty) {
       p = "Top level stock location";
@@ -566,11 +559,7 @@ class InvenTreeStockLocation extends InvenTreeModel {
     return p;
   }
 
-  int get itemcount => jsondata['items'] ?? 0;
-
-  InvenTreeStockLocation() : super();
-
-  InvenTreeStockLocation.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+  int get itemcount => (jsondata["items"] ?? 0) as int;
 
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) {

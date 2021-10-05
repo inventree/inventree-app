@@ -1,0 +1,65 @@
+include: package:lint/analysis_options.yaml
+
+analyzer:
+  exclude:
+    - [build/**]
+    - lib/generated/**
+  language:
+    strict-raw-types: true
+  strong-mode:
+    implicit-casts: false
+
+linter:
+  rules:
+  # ------ Disable individual rules ----- #
+  #                 ---                   #
+  # Turn off what you don't like.         #
+  # ------------------------------------- #
+
+    # Make constructors the first thing in every class
+    sort_constructors_first: true
+
+    prefer_double_quotes: true
+
+    prefer_final_locals: false
+
+    prefer_const_constructors: false
+
+    prefer_final_in_for_each: false
+
+    use_build_context_synchronously: false
+
+    avoid_redundant_argument_values: false
+
+    unnecessary_brace_in_string_interps: false
+
+    unnecessary_string_interpolations: false
+
+    prefer_interpolation_to_compose_strings: false
+
+    no_logic_in_create_state: false
+
+    parameter_assignments: false
+
+    non_constant_identifier_names: false
+
+    constant_identifier_names: false
+
+    package_prefixed_library_names: false
+
+    prefer_const_literals_to_create_immutables: false
+
+    avoid_print: false
+
+    avoid_positional_boolean_parameters: false
+
+    prefer_final_fields: false
+
+    sort_child_properties_last: false
+
+    directives_ordering: false
+
+    # Blindly follow the Flutter code style, which prefers types everywhere
+    always_specify_types: false
+
+    avoid_unnecessary_containers: false

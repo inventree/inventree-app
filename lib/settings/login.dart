@@ -1,15 +1,12 @@
-import 'package:inventree/app_colors.dart';
-import 'package:inventree/widget/dialogs.dart';
-import 'package:inventree/widget/fields.dart';
-import 'package:inventree/widget/spinner.dart';
+import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
-import 'package:inventree/l10.dart';
-
-import '../api.dart';
-import '../user_profile.dart';
+import "package:inventree/app_colors.dart";
+import "package:inventree/widget/dialogs.dart";
+import "package:inventree/widget/spinner.dart";
+import "package:inventree/l10.dart";
+import "package:inventree/api.dart";
+import "package:inventree/user_profile.dart";
 
 class InvenTreeLoginSettingsWidget extends StatefulWidget {
 
@@ -20,17 +17,15 @@ class InvenTreeLoginSettingsWidget extends StatefulWidget {
 
 class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
 
-  final GlobalKey<_InvenTreeLoginSettingsState> _loginKey = GlobalKey<_InvenTreeLoginSettingsState>();
-
-  final GlobalKey<FormState> _addProfileKey = new GlobalKey<FormState>();
-
-  List<UserProfile> profiles = [];
-
   _InvenTreeLoginSettingsState() {
     _reload();
   }
 
-  void _reload() async {
+  final GlobalKey<_InvenTreeLoginSettingsState> _loginKey = GlobalKey<_InvenTreeLoginSettingsState>();
+
+  List<UserProfile> profiles = [];
+
+  Future <void> _reload() async {
 
     profiles = await UserProfileDBManager().getAllProfiles();
 
@@ -39,17 +34,6 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
   }
 
   void _editProfile(BuildContext context, {UserProfile? userProfile, bool createNew = false}) {
-
-    var _name;
-    var _server;
-    var _username;
-    var _password;
-
-    UserProfile? profile;
-
-    if (userProfile != null) {
-      profile = userProfile;
-    }
 
     Navigator.push(
       context,
@@ -61,7 +45,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     });
   }
 
-  void _selectProfile(BuildContext context, UserProfile profile) async {
+  Future <void> _selectProfile(BuildContext context, UserProfile profile) async {
 
     // Disconnect InvenTree
     InvenTreeAPI().disconnectFromServer();
@@ -84,34 +68,16 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     _reload();
   }
 
-  void _deleteProfile(UserProfile profile) async {
+  Future <void> _deleteProfile(UserProfile profile) async {
 
     await UserProfileDBManager().deleteProfile(profile);
 
     _reload();
 
-    if (InvenTreeAPI().isConnected() && profile.key == (InvenTreeAPI().profile?.key ?? '')) {
+    if (InvenTreeAPI().isConnected() && profile.key == (InvenTreeAPI().profile?.key ?? "")) {
       InvenTreeAPI().disconnectFromServer();
     }
   }
-
-  void _updateProfile(UserProfile? profile) async {
-
-    if (profile == null) {
-      return;
-    }
-
-    _reload();
-
-    if (InvenTreeAPI().isConnected() && InvenTreeAPI().profile != null && profile.key == (InvenTreeAPI().profile?.key ?? '')) {
-      // Attempt server login (this will load the newly selected profile
-
-      InvenTreeAPI().connectToServer().then((result) {
-        _reload();
-      });
-    }
-  }
-
 
   Widget? _getProfileIcon(UserProfile profile) {
 
@@ -119,7 +85,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
     if (!profile.selected) return null;
 
     // Selected, but (for some reason) not the same as the API...
-    if ((InvenTreeAPI().profile?.key ?? '') != profile.key) {
+    if ((InvenTreeAPI().profile?.key ?? "") != profile.key) {
       return FaIcon(
         FontAwesomeIcons.questionCircle,
         color: COLOR_WARNING
@@ -150,7 +116,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
 
     List<Widget> children = [];
 
-    if (profiles.length > 0) {
+    if (profiles.isNotEmpty) {
       for (int idx = 0; idx < profiles.length; idx++) {
         UserProfile profile = profiles[idx];
 
@@ -253,9 +219,9 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
 
 class ProfileEditWidget extends StatefulWidget {
 
-  UserProfile? profile;
+  const ProfileEditWidget(this.profile) : super();
 
-  ProfileEditWidget(this.profile) : super();
+  final UserProfile? profile;
 
   @override
   _ProfileEditState createState() => _ProfileEditState(profile);
@@ -263,11 +229,11 @@ class ProfileEditWidget extends StatefulWidget {
 
 class _ProfileEditState extends State<ProfileEditWidget> {
 
-  UserProfile? profile;
-
   _ProfileEditState(this.profile) : super();
 
-  final formKey = new GlobalKey<FormState>();
+  UserProfile? profile;
+
+  final formKey = GlobalKey<FormState>();
 
   String name = "";
   String server = "";
@@ -375,7 +341,7 @@ class _ProfileEditState extends State<ProfileEditWidget> {
 
                     if (uri.hasScheme) {
                       print("Scheme: ${uri.scheme}");
-                      if (!(["http", "https"].contains(uri.scheme.toLowerCase()))) {
+                      if (!["http", "https"].contains(uri.scheme.toLowerCase())) {
                         return L10().serverStart;
                       }
                     } else {
