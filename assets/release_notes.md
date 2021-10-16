@@ -1,6 +1,11 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.5.1 - October 2021
+---
+
+- Bug fix for app title
+
 ### 0.5.0 - October 2021
 ---
 
