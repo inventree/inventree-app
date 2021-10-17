@@ -43,11 +43,11 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Take photos using the camera to upload to InvenTree</string>
+	<string>Camera permission is required to scan product barcodes and upload images to your InvenTree server</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Record videos using the camera to upload to InvenTree</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Select photos from library to upload to InvenTree</string>
+	<string>Select photos from library to upload to your InvenTree server</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
