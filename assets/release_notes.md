@@ -1,6 +1,11 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.5.2 - October 2021
+---
+
+- Display error message on HTTPS certificate error
+
 ### 0.5.1 - October 2021
 ---
 
