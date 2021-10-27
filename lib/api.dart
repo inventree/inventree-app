@@ -565,6 +565,11 @@ class InvenTreeAPI {
       print("TimeoutException at ${url}");
       showTimeoutError();
       return;
+    } on HandshakeException catch (error) {
+      print("HandshakeException at ${url}:");
+      print(error.toString());
+      showServerError(L10().serverCertificateError, error.toString());
+      return;
     } catch (error, stackTrace) {
       print("Server error at ${url}: ${error.toString()}");
       showServerError(L10().serverError, error.toString());
@@ -814,6 +819,16 @@ class InvenTreeAPI {
     } on TimeoutException {
       print("TimeoutException at ${url}");
       showTimeoutError();
+      return null;
+    } on CertificateException catch (error) {
+      print("CertificateException at ${url}:");
+      print(error.toString());
+      showServerError(L10().serverCertificateError, error.toString());
+      return null;
+    } on HandshakeException catch (error) {
+      print("HandshakeException at ${url}:");
+      print(error.toString());
+      showServerError(L10().serverCertificateError, error.toString());
       return null;
     } catch (error, stackTrace) {
       print("Server error at ${url}: ${error.toString()}");
