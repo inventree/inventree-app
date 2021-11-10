@@ -1,6 +1,11 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.
+---
+
+- Updated Italian language translations
+
 ### 0.5.2 - October 2021
 ---
 
