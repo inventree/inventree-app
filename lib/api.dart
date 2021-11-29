@@ -480,6 +480,10 @@ class InvenTreeAPI {
       return true;
     }
 
+    if (roles[role] == null) {
+      return true;
+    }
+
     try {
       List<String> perms = List.from(roles[role] as List<dynamic>);
       return perms.contains(permission);

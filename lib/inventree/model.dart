@@ -285,9 +285,6 @@ class InvenTreeModel {
   // Return the detail view for the associated pk
   Future<InvenTreeModel?> get(int pk, {Map<String, String> filters = const {}}) async {
 
-    // TODO - Add "timeout"
-    // TODO - Add error catching
-
     var url = path.join(URL, pk.toString());
 
     if (!url.endsWith("/")) {

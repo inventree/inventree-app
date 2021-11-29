@@ -1,10 +1,12 @@
 ## InvenTree App Release Notes
 ---
 
-### 0.
+### 0.5.3 - November 2021
 ---
 
+- Check for null value when reading user permissions
 - Updated Italian language translations
+- Updated French language translations
 
 ### 0.5.2 - October 2021
 ---
