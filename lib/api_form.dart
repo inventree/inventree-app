@@ -873,8 +873,15 @@ Future<void> launchApiForm(
     }
 
     // Add instance value to the field
-    field.data["instance_value"] = modelData[fieldName];
+    dynamic model_value = modelData[fieldName];
 
+    if (model_value != null) {
+      field.data["instance_value"] = model_value;
+
+      if (field.data["value"] == null) {
+        field.data["value"] = model_value;
+      }
+    }
     formFields.add(field);
   }
 

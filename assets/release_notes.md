@@ -1,6 +1,11 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.5.5 - January 2022
+---
+
+- Fixes bug in stock item creation form
+
 ### 0.5.4 - January 2022
 ---
 
