@@ -141,15 +141,11 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
 
   Future <void> _loadSettings() async {
 
-    print("_loadSettings");
-
     homeShowSubscribed = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_SUBSCRIBED, true) as bool;
     homeShowPo = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_PO, true) as bool;
     homeShowManufacturers = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_MANUFACTURERS, true) as bool;
     homeShowCustomers = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_CUSTOMERS, true) as bool;
     homeShowSuppliers = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_SUPPLIERS, true) as bool;
-
-    print("suppliers: ${homeShowSuppliers}");
 
     setState(() {
     });
