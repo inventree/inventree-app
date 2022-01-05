@@ -5,6 +5,21 @@
 import "package:sembast/sembast.dart";
 import "package:inventree/preferences.dart";
 
+// Settings key values
+const String INV_HOME_SHOW_SUBSCRIBED = "homeShowSubscribed";
+const String INV_HOME_SHOW_PO = "homeShowPo";
+const String INV_HOME_SHOW_MANUFACTURERS = "homeShowManufacturers";
+const String INV_HOME_SHOW_CUSTOMERS = "homeShowCustomers";
+const String INV_HOME_SHOW_SUPPLIERS = "homeShowSuppliers";
+
+const String INV_SOUNDS_BARCODE = "barcodeSounds";
+const String INV_SOUNDS_SERVER = "serverSounds";
+
+const String INV_PART_SUBCATEGORY = "partSubcategory";
+
+const String INV_STOCK_SUBLOCATION = "stockSublocation";
+
+
 class InvenTreeSettingsManager {
 
   factory InvenTreeSettingsManager() {

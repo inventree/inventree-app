@@ -18,7 +18,7 @@ String simpleNumberString(double number) {
 
 Future<void> successTone() async {
 
-  final bool en = await InvenTreeSettingsManager().getValue("barcodeSounds", true) as bool;
+  final bool en = await InvenTreeSettingsManager().getValue(INV_SOUNDS_BARCODE, true) as bool;
 
   if (en) {
     final player = AudioCache();
@@ -28,7 +28,7 @@ Future<void> successTone() async {
 
 Future <void> failureTone() async {
 
-  final bool en = await InvenTreeSettingsManager().getValue("barcodeSounds", true) as bool;
+  final bool en = await InvenTreeSettingsManager().getValue(INV_SOUNDS_BARCODE, true) as bool;
 
   if (en) {
     final player = AudioCache();

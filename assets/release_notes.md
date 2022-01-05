@@ -1,11 +1,12 @@
 ## InvenTree App Release Notes
 ---
 
-### 0.x.x - January 2022
+### 0.5.4 - January 2022
 ---
 
 - Enable usage of camera flash when scanning barcodes
 - Enable camera toggle when scanning barcodes
+- Configurable home screen actions
 - Updated icon set
 - Removed "upload error report" functionality (instead link to GitHub issues)
 - Updated multiple language translations

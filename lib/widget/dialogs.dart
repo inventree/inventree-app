@@ -106,7 +106,7 @@ Future<void> showServerError(String title, String description) async {
   }
 
   // Play a sound
-  final bool tones = await InvenTreeSettingsManager().getValue("serverSounds", true) as bool;
+  final bool tones = await InvenTreeSettingsManager().getValue(INV_SOUNDS_SERVER, true) as bool;
 
   if (tones) {
     final player = AudioCache();

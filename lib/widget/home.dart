@@ -19,6 +19,8 @@ import "package:inventree/widget/search.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/drawer.dart";
 
+import "../app_settings.dart";
+
 
 class InvenTreeHomePage extends StatefulWidget {
 
@@ -32,9 +34,19 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
 
   _InvenTreeHomePageState() : super() {
 
+    // Load display settings
+    _loadSettings();
+
     // Initially load the profile and attempt server connection
     _loadProfile();
+
   }
+
+  bool homeShowPo = true;
+  bool homeShowSubscribed = true;
+  bool homeShowManufacturers = true;
+  bool homeShowCustomers = true;
+  bool homeShowSuppliers = true;
 
   final GlobalKey<_InvenTreeHomePageState> _homeKey = GlobalKey<_InvenTreeHomePageState>();
 
@@ -127,6 +139,22 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     });
   }
 
+  Future <void> _loadSettings() async {
+
+    print("_loadSettings");
+
+    homeShowSubscribed = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_SUBSCRIBED, true) as bool;
+    homeShowPo = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_PO, true) as bool;
+    homeShowManufacturers = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_MANUFACTURERS, true) as bool;
+    homeShowCustomers = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_CUSTOMERS, true) as bool;
+    homeShowSuppliers = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_SUPPLIERS, true) as bool;
+
+    print("suppliers: ${homeShowSuppliers}");
+
+    setState(() {
+    });
+  }
+
   Future <void> _loadProfile() async {
 
     _profile = await UserProfileDBManager().getSelectedProfile();
@@ -201,95 +229,120 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
   }
 
   List<Widget> getGridTiles(BuildContext context) {
-    return [
-      _iconButton(
-          context,
-          L10().scanBarcode,
-          Icons.qr_code_scanner,
-          callback: () {
-            _scan(context);
-          }
-      ),
-      _iconButton(
-          context,
-          L10().search,
-          FontAwesomeIcons.search,
-          callback: () {
-            _search(context);
-          }
-      ),
-      _iconButton(
-          context,
-          L10().parts,
-          FontAwesomeIcons.shapes,
-          callback: () {
-            _showParts(context);
-          }
-      ),
-      _iconButton(
+
+    List<Widget> tiles = [];
+
+    // Barcode scanner
+    tiles.add(_iconButton(
+      context,
+      L10().scanBarcode,
+      Icons.qr_code_scanner,
+      callback: () {
+        _scan(context);
+      }
+    ));
+
+    // Search widget
+    tiles.add(_iconButton(
+      context,
+      L10().search,
+      FontAwesomeIcons.search,
+      callback: () {
+        _search(context);
+      }
+    ));
+
+    // Parts
+    tiles.add(_iconButton(
+      context,
+      L10().parts,
+      FontAwesomeIcons.shapes,
+      callback: () {
+        _showParts(context);
+      }
+    ));
+
+    // Starred parts
+    if (homeShowSubscribed) {
+      tiles.add(_iconButton(
         context,
         L10().partsStarred,
-        FontAwesomeIcons.solidStar,
+        FontAwesomeIcons.bell,
         callback: () {
           _showStarredParts(context);
         }
-      ),
-      _iconButton(
-          context,
-          L10().stock,
-          FontAwesomeIcons.boxes,
-          callback: () {
-            _showStock(context);
-          }
-      ),
-      _iconButton(
+      ));
+    }
+
+    // Stock button
+    tiles.add(_iconButton(
+        context,
+        L10().stock,
+        FontAwesomeIcons.boxes,
+        callback: () {
+          _showStock(context);
+        }
+    ));
+
+    // Purchase orderes
+    if (homeShowPo) {
+      tiles.add(_iconButton(
           context,
           L10().purchaseOrders,
           FontAwesomeIcons.shoppingCart,
           callback: () {
             _showPurchaseOrders(context);
           }
-      ),
-      /*
-      _iconButton(
-        context,
-        L10().salesOrders,
-        FontAwesomeIcons.truck,
-      ),
-       */
-      _iconButton(
+      ));
+    }
+
+    // Suppliers
+    if (homeShowSuppliers) {
+      tiles.add(_iconButton(
           context,
           L10().suppliers,
           FontAwesomeIcons.building,
           callback: () {
             _showSuppliers(context);
           }
-      ),
-      _iconButton(
+      ));
+    }
+
+    // Manufacturers
+    if (homeShowManufacturers) {
+      tiles.add(_iconButton(
           context,
           L10().manufacturers,
           FontAwesomeIcons.industry,
           callback: () {
             _showManufacturers(context);
           }
-      ),
-      _iconButton(
+      ));
+    }
+
+    // Customers
+    if (homeShowCustomers) {
+      tiles.add(_iconButton(
           context,
           L10().customers,
           FontAwesomeIcons.userTie,
           callback: () {
             _showCustomers(context);
           }
-      ),
-      _iconButton(
+      ));
+    }
+
+    // Settings
+    tiles.add(_iconButton(
         context,
         L10().settings,
         FontAwesomeIcons.cogs,
         callback: () {
           _showSettings(context);
         }
-      )
-    ];
+    ));
+
+    return tiles;
   }
 
   @override
