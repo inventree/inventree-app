@@ -50,7 +50,7 @@ class BarcodeHandler {
       showSnackIcon(
         L10().barcodeNoMatch,
         success: false,
-        icon: FontAwesomeIcons.qrcode
+        icon: Icons.qr_code,
       );
     }
 
@@ -402,7 +402,7 @@ class UniqueBarcodeHandler extends BarcodeHandler {
     // If the barcode is known, we can"t assign it to the stock item!
     showSnackIcon(
         L10().barcodeInUse,
-        icon: FontAwesomeIcons.qrcode,
+        icon: Icons.qr_code,
         success: false
     );
   }

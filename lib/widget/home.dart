@@ -205,7 +205,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
       _iconButton(
           context,
           L10().scanBarcode,
-          FontAwesomeIcons.barcode,
+          Icons.qr_code_scanner,
           callback: () {
             _scan(context);
           }

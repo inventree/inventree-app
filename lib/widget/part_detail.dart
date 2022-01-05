@@ -453,7 +453,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       ListTile(
         title: Text(L10().barcodeScanItem),
         leading: FaIcon(FontAwesomeIcons.box),
-        trailing: FaIcon(FontAwesomeIcons.qrcode),
+        trailing: Icon(Icons.qr_code),
         onTap: () {
           // TODO
         },

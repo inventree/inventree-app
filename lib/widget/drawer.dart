@@ -82,7 +82,7 @@ class InvenTreeDrawer extends StatelessWidget {
                 ListTile(
                   title: Text(L10().scanBarcode),
                   onTap: _scan,
-                  leading: FaIcon(FontAwesomeIcons.barcode),
+                  leading: Icon(Icons.qr_code_scanner),
                 ),
                 ListTile(
                   title: Text(L10().search),

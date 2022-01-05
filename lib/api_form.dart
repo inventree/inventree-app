@@ -330,7 +330,7 @@ class APIFormField {
           controller: controller,
         ),
         trailing: IconButton(
-          icon: FaIcon(FontAwesomeIcons.qrcode),
+          icon: Icon(Icons.qr_code),
           onPressed: () async {
             var handler = UniqueBarcodeHandler((String hash) {
               controller.text = hash;

@@ -798,7 +798,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       ListTile(
         title: Text(L10().scanIntoLocation),
         leading: FaIcon(FontAwesomeIcons.exchangeAlt, color: COLOR_CLICK),
-        trailing: FaIcon(FontAwesomeIcons.qrcode),
+        trailing: Icon(Icons.qr_code),
         onTap: () {
           Navigator.push(
             context,
@@ -815,8 +815,8 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       tiles.add(
         ListTile(
           title: Text(L10().barcodeAssign),
-          leading: FaIcon(FontAwesomeIcons.barcode, color: COLOR_CLICK),
-          trailing: FaIcon(FontAwesomeIcons.qrcode),
+          leading: Icon(Icons.qr_code),
+          trailing: Icon(Icons.qr_code_scanner),
           onTap: () {
 
             var handler = UniqueBarcodeHandler((String hash) {
@@ -831,7 +831,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
                   showSnackIcon(
                     L10().barcodeAssigned,
                     success: true,
-                    icon: FontAwesomeIcons.qrcode
+                    icon: Icons.qr_code,
                   );
 
                   refresh();
@@ -850,7 +850,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       tiles.add(
         ListTile(
           title: Text(L10().barcodeUnassign),
-          leading: FaIcon(FontAwesomeIcons.barcode, color: COLOR_CLICK),
+          leading: Icon(Icons.qr_code, color: COLOR_CLICK),
           onTap: () {
             _unassignBarcode(context);
           }

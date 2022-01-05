@@ -372,7 +372,7 @@ List<Widget> detailTiles() {
             ListTile(
               title: Text(L10().barcodeScanInItems),
               leading: FaIcon(FontAwesomeIcons.exchangeAlt, color: COLOR_CLICK),
-              trailing: FaIcon(FontAwesomeIcons.qrcode),
+              trailing: Icon(Icons.qr_code),
               onTap: () {
 
                 var _loc = location;
@@ -400,7 +400,7 @@ List<Widget> detailTiles() {
       ListTile(
         title: Text("Move Stock Location"),
         leading: FaIcon(FontAwesomeIcons.sitemap),
-        trailing: FaIcon(FontAwesomeIcons.qrcode),
+        trailing: Icon(Icons.qr_code),
       )
     );
      */
