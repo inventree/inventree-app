@@ -77,11 +77,11 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
               ),
 
               ListTile(
-                title: Text(L10().feedback),
-                subtitle: Text(L10().submitFeedback),
-                leading: FaIcon(FontAwesomeIcons.comments, color: COLOR_CLICK),
+                title: Text(L10().reportBug),
+                subtitle: Text(L10().reportBugDescription),
+                leading: FaIcon(FontAwesomeIcons.bug, color: COLOR_CLICK),
                 onTap: () {
-                  _submitFeedback(context);
+                  _reportBug(context);
                 },
               ),
 
@@ -124,14 +124,13 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
     });
   }
 
-  Future <void> _submitFeedback(BuildContext context) async {
+  Future <void> _reportBug(BuildContext context) async {
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SubmitFeedbackWidget(),
-      )
-    );
+    const String url = "https://github.com/inventree/InvenTree/issues/new?assignees=&labels=app%2C+bug&title=%5BApp%5D+Enter+bug+description";
+
+    if (await canLaunch(url)) {
+      await launch(url);
+    }
   }
 
 }

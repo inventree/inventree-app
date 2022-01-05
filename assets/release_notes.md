@@ -1,6 +1,12 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.x.x - January 2022
+---
+
+- Removed "upload error report" functionality (instead link to GitHub issues)
+- Updated multiple language translations
+
 ### 0.5.3 - November 2021
 ---
 
