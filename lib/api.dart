@@ -488,7 +488,16 @@ class InvenTreeAPI {
       List<String> perms = List.from(roles[role] as List<dynamic>);
       return perms.contains(permission);
     } catch (error, stackTrace) {
-      sentryReportError(error, stackTrace);
+      if (error is CastError) {
+        // Ignore CastError
+      } else if (error is TypeError) {
+        // Ignore TypeError
+      } else {
+        // Unknown error - report it!
+        sentryReportError(error, stackTrace);
+      }
+
+      // Unable to determine permission - assume true?
       return true;
     }
   }
