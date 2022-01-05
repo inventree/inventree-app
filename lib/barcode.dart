@@ -461,6 +461,19 @@ class _QRViewState extends State<InvenTreeQRView> {
 
   final BarcodeHandler _handler;
 
+  bool flash_status = false;
+
+  Future<void> updateFlashStatus() async {
+    final bool? status = await _controller?.getFlashStatus();
+
+    flash_status = status != null && status;
+
+    // Reload
+    setState(() {
+
+    });
+  }
+
   // In order to get hot reload to work we need to pause the camera if the platform
   // is android, or resume the camera if the platform is iOS.
   @override
@@ -494,6 +507,21 @@ class _QRViewState extends State<InvenTreeQRView> {
     return Scaffold(
         appBar: AppBar(
           title: Text(L10().scanBarcode),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.flip_camera_android),
+              onPressed: () {
+                _controller?.flipCamera();
+              }
+            ),
+            IconButton(
+              icon: flash_status ? Icon(Icons.flash_off) : Icon(Icons.flash_on),
+              onPressed: () {
+                _controller?.toggleFlash();
+                updateFlashStatus();
+              },
+            )
+          ],
         ),
         body: Stack(
           children: <Widget>[
