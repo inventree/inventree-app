@@ -455,10 +455,11 @@ class InvenTreeStockItem extends InvenTreeModel {
    * - Remove
    * - Count
    */
-  Future<bool> adjustStock(BuildContext context, String endpoint, double q, {String? notes}) async {
+  // TODO: Remove this function when we deprecate support for the old API
+  Future<bool> adjustStock(BuildContext context, String endpoint, double q, {String? notes, int? location}) async {
 
-    // Serialized stock cannot be adjusted
-    if (isSerialized()) {
+    // Serialized stock cannot be adjusted (unless it is a "transfer")
+    if (isSerialized() && location == null) {
       return false;
     }
 
@@ -467,18 +468,42 @@ class InvenTreeStockItem extends InvenTreeModel {
       return false;
     }
 
-    print("Adjust stock: ${endpoint}");
+    Map<String, dynamic> data = {};
+
+    // Note: Format of adjustment API was updated in API v14
+    if (InvenTreeAPI().supportModernStockTransactions()) {
+      // Modern (> 14) API
+      data = {
+        "items": [
+          {
+            "pk": "${pk}",
+            "quantity": "${quantity}",
+          }
+        ],
+      };
+    } else {
+      // Legacy (<= 14) API
+      data = {
+        "item": {
+          "pk": "${pk}",
+          "quantity": "${quantity}",
+        },
+      };
+    }
+
+    data["notes"] = notes ?? "";
+
+    if (location != null) {
+      data["location"] = location;
+    }
+
+    // Expected API return code depends on server API version
+    final int expected_response = InvenTreeAPI().supportModernStockTransactions() ? 201 : 200;
 
     var response = await api.post(
       endpoint,
-      body: {
-        "item": {
-        "pk": "${pk}",
-        "quantity": "${q}",
-        },
-        "notes": notes ?? "",
-      },
-      expectedStatusCode: 200
+      body: data,
+      expectedStatusCode: expected_response,
     );
 
     return response.isValid();
@@ -509,25 +534,23 @@ class InvenTreeStockItem extends InvenTreeModel {
   }
 
   // TODO: Remove this function when we deprecate support for the old API
-  Future<bool> transferStock(int location, {double? quantity, String? notes}) async {
-    if ((quantity == null) || (quantity < 0) || (quantity > this.quantity)) {
-      quantity = this.quantity;
+  Future<bool> transferStock(BuildContext context, int location, {double? quantity, String? notes}) async {
+
+    double q = this.quantity;
+
+    if (quantity != null) {
+      q = quantity;
     }
 
-    final response = await api.post(
+    final bool result = await adjustStock(
+      context,
       "/stock/transfer/",
-      body: {
-        "item": {
-          "pk": "${pk}",
-          "quantity": "${quantity}",
-        },
-        "location": "${location}",
-        "notes": notes ?? "",
-      },
-      expectedStatusCode: 200
+      q,
+      notes: notes,
+      location: location,
     );
 
-    return response.isValid() && response.statusCode == 200;
+    return result;
   }
 }
 
