@@ -458,8 +458,8 @@ class InvenTreeStockItem extends InvenTreeModel {
   // TODO: Remove this function when we deprecate support for the old API
   Future<bool> adjustStock(BuildContext context, String endpoint, double q, {String? notes, int? location}) async {
 
-    // Serialized stock cannot be adjusted
-    if (isSerialized()) {
+    // Serialized stock cannot be adjusted (unless it is a "transfer")
+    if (isSerialized() && location == null) {
       return false;
     }
 
@@ -467,8 +467,6 @@ class InvenTreeStockItem extends InvenTreeModel {
     if (q < 0) {
       return false;
     }
-
-    print("Adjust stock: ${endpoint}");
 
     Map<String, dynamic> data = {};
 
@@ -482,7 +480,6 @@ class InvenTreeStockItem extends InvenTreeModel {
             "quantity": "${quantity}",
           }
         ],
-        "notes": notes ?? ""
       };
     } else {
       // Legacy (<= 14) API
@@ -491,24 +488,22 @@ class InvenTreeStockItem extends InvenTreeModel {
           "pk": "${pk}",
           "quantity": "${quantity}",
         },
-        "notes": notes ?? "",
       };
     }
+
+    data["notes"] = notes ?? "";
 
     if (location != null) {
       data["location"] = location;
     }
 
+    // Expected API return code depends on server API version
+    final int expected_response = InvenTreeAPI().supportModernStockTransactions() ? 201 : 200;
+
     var response = await api.post(
       endpoint,
-      body: {
-        "item": {
-        "pk": "${pk}",
-        "quantity": "${q}",
-        },
-        "notes": notes ?? "",
-      },
-      expectedStatusCode: 200
+      body: data,
+      expectedStatusCode: expected_response,
     );
 
     return response.isValid();
