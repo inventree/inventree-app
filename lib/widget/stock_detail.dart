@@ -798,7 +798,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       ListTile(
         title: Text(L10().scanIntoLocation),
         leading: FaIcon(FontAwesomeIcons.exchangeAlt, color: COLOR_CLICK),
-        trailing: Icon(Icons.qr_code),
+        trailing: Icon(Icons.qr_code_scanner),
         onTap: () {
           Navigator.push(
             context,
