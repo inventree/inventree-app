@@ -536,8 +536,6 @@ class InvenTreeStockItem extends InvenTreeModel {
   // TODO: Remove this function when we deprecate support for the old API
   Future<bool> transferStock(BuildContext context, int location, {double? quantity, String? notes}) async {
 
-    print("transferStock()");
-
     double q = this.quantity;
 
     if (quantity != null) {
