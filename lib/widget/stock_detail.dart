@@ -383,7 +383,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     _quantityController.clear();
     _notesController.clear();
 
-    var result = await item.transferStock(locationId, quantity: quantity, notes: notes);
+    var result = await item.transferStock(context, locationId, quantity: quantity, notes: notes);
 
     refresh();
 

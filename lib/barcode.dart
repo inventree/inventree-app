@@ -267,7 +267,7 @@ class StockItemScanIntoLocationHandler extends BarcodeHandler {
       }
 
       // Transfer stock to specified location
-      final result = await item.transferStock(location);
+      final result = await item.transferStock(context, location);
 
       if (result) {
 
@@ -339,7 +339,7 @@ class StockLocationScanInItemsHandler extends BarcodeHandler {
             success: true
         );
       } else {
-        final result = await item.transferStock(location.pk);
+        final result = await item.transferStock(context, location.pk);
 
         if (result) {
 

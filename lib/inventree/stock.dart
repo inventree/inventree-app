@@ -455,7 +455,8 @@ class InvenTreeStockItem extends InvenTreeModel {
    * - Remove
    * - Count
    */
-  Future<bool> adjustStock(BuildContext context, String endpoint, double q, {String? notes}) async {
+  // TODO: Remove this function when we deprecate support for the old API
+  Future<bool> adjustStock(BuildContext context, String endpoint, double q, {String? notes, int? location}) async {
 
     // Serialized stock cannot be adjusted
     if (isSerialized()) {
@@ -468,6 +469,35 @@ class InvenTreeStockItem extends InvenTreeModel {
     }
 
     print("Adjust stock: ${endpoint}");
+
+    Map<String, dynamic> data = {};
+
+    // Note: Format of adjustment API was updated in API v14
+    if (InvenTreeAPI().supportModernStockTransactions()) {
+      // Modern (> 14) API
+      data = {
+        "items": [
+          {
+            "pk": "${pk}",
+            "quantity": "${quantity}",
+          }
+        ],
+        "notes": notes ?? ""
+      };
+    } else {
+      // Legacy (<= 14) API
+      data = {
+        "item": {
+          "pk": "${pk}",
+          "quantity": "${quantity}",
+        },
+        "notes": notes ?? "",
+      };
+    }
+
+    if (location != null) {
+      data["location"] = location;
+    }
 
     var response = await api.post(
       endpoint,
@@ -509,25 +539,25 @@ class InvenTreeStockItem extends InvenTreeModel {
   }
 
   // TODO: Remove this function when we deprecate support for the old API
-  Future<bool> transferStock(int location, {double? quantity, String? notes}) async {
-    if ((quantity == null) || (quantity < 0) || (quantity > this.quantity)) {
-      quantity = this.quantity;
+  Future<bool> transferStock(BuildContext context, int location, {double? quantity, String? notes}) async {
+
+    print("transferStock()");
+
+    double q = this.quantity;
+
+    if (quantity != null) {
+      q = quantity;
     }
 
-    final response = await api.post(
+    final bool result = await adjustStock(
+      context,
       "/stock/transfer/",
-      body: {
-        "item": {
-          "pk": "${pk}",
-          "quantity": "${quantity}",
-        },
-        "location": "${location}",
-        "notes": notes ?? "",
-      },
-      expectedStatusCode: 200
+      q,
+      notes: notes,
+      location: location,
     );
 
-    return response.isValid() && response.statusCode == 200;
+    return result;
   }
 }
 
