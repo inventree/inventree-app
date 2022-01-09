@@ -2,10 +2,12 @@ import "package:inventree/api.dart";
 import "package:inventree/barcode.dart";
 import "package:flutter/material.dart";
 import "package:inventree/l10.dart";
+import "package:inventree/settings/about.dart";
 
 import "package:inventree/settings/settings.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:inventree/widget/search.dart";
+import "package:package_info_plus/package_info_plus.dart";
 
 class InvenTreeDrawer extends StatelessWidget {
 
@@ -63,6 +65,18 @@ class InvenTreeDrawer extends StatelessWidget {
     Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeSettingsWidget()));
   }
 
+  /*
+   * Load "About" widget
+   */
+  Future<void> _about() async {
+    _closeDrawer();
+
+    PackageInfo.fromPlatform().then((PackageInfo info) {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => InvenTreeAboutWidget(info)));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -94,6 +108,11 @@ class InvenTreeDrawer extends StatelessWidget {
                   leading: Icon(Icons.settings),
                   onTap: _settings,
                 ),
+                ListTile(
+                  title: Text(L10().about),
+                  leading: FaIcon(FontAwesomeIcons.infoCircle),
+                  onTap: _about,
+                )
               ]
             ).toList(),
         )

@@ -9,6 +9,7 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:package_info_plus/package_info_plus.dart";
 
 import "package:inventree/l10.dart";
+import "package:url_launcher/url_launcher.dart";
 
 class InvenTreeAboutWidget extends StatelessWidget {
 
@@ -35,6 +36,32 @@ class InvenTreeAboutWidget extends StatelessWidget {
       context,
       MaterialPageRoute(builder: (context) => CreditsWidget(notes))
     );
+  }
+
+  Future <void> _openDocs() async {
+
+    const String docsUrl = "https://inventree.readthedocs.io/en/latest/app/app/";
+
+    if (await canLaunch(docsUrl)) {
+      await launch(docsUrl);
+    }
+  }
+
+  Future <void> _reportBug(BuildContext context) async {
+
+    const String url = "https://github.com/inventree/InvenTree/issues/new?assignees=&labels=app%2C+bug&title=%5BApp%5D+Enter+bug+description";
+
+    if (await canLaunch(url)) {
+      await launch(url);
+    }
+  }
+
+  Future <void> _translate() async {
+    const String url = "https://crowdin.com/project/inventree";
+
+    if (await canLaunch(url)) {
+      await launch(url);
+    }
   }
 
   @override
@@ -132,6 +159,39 @@ class InvenTreeAboutWidget extends StatelessWidget {
         onTap: () {
           _credits(context);
         }
+      )
+    );
+
+    tiles.add(
+      ListTile(
+        title: Text(L10().documentation),
+        subtitle: Text("https://inventree.readthedocs.io"),
+        leading: FaIcon(FontAwesomeIcons.book, color: COLOR_CLICK),
+        onTap: () {
+          _openDocs();
+        },
+      )
+    );
+
+    tiles.add(
+      ListTile(
+        title: Text(L10().translate),
+        subtitle: Text(L10().translateHelp),
+        leading: FaIcon(FontAwesomeIcons.language, color: COLOR_CLICK),
+        onTap: () {
+          _translate();
+        }
+      )
+    );
+
+    tiles.add(
+      ListTile(
+        title: Text(L10().reportBug),
+        subtitle: Text(L10().reportBugDescription),
+        leading: FaIcon(FontAwesomeIcons.bug, color: COLOR_CLICK),
+        onTap: () {
+        _reportBug(context);
+        },
       )
     );
 

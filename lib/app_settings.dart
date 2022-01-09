@@ -19,6 +19,7 @@ const String INV_PART_SUBCATEGORY = "partSubcategory";
 
 const String INV_STOCK_SUBLOCATION = "stockSublocation";
 
+const String INV_REPORT_ERRORS = "reportErrors";
 
 class InvenTreeSettingsManager {
 

@@ -1,6 +1,7 @@
 import "dart:io";
 
 import "package:device_info_plus/device_info_plus.dart";
+import "package:inventree/app_settings.dart";
 import "package:package_info_plus/package_info_plus.dart";
 import "package:sentry_flutter/sentry_flutter.dart";
 
@@ -94,6 +95,13 @@ Future<bool> sentryReportMessage(String message, {Map<String, String>? context})
     return true;
   }
 
+  final upload = await InvenTreeSettingsManager().getValue(INV_REPORT_ERRORS, true) as bool;
+
+  if (!upload) {
+    print("----- Error reporting disabled -----");
+    return true;
+  }
+
   Sentry.configureScope((scope) {
     scope.setExtra("server", server_info);
     scope.setExtra("app", app_info);
@@ -126,6 +134,13 @@ Future<void> sentryReportError(dynamic error, dynamic stackTrace) async {
   if (isInDebugMode()) {
 
     print("----- In dev mode. Not sending report to Sentry.io -----");
+    return;
+  }
+
+  final upload = await InvenTreeSettingsManager().getValue(INV_REPORT_ERRORS, true) as bool;
+
+  if (!upload) {
+    print("----- Error reporting disabled -----");
     return;
   }
 
