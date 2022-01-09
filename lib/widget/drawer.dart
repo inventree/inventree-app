@@ -2,12 +2,12 @@ import "package:inventree/api.dart";
 import "package:inventree/barcode.dart";
 import "package:flutter/material.dart";
 import "package:inventree/l10.dart";
-import 'package:inventree/settings/about.dart';
+import "package:inventree/settings/about.dart";
 
 import "package:inventree/settings/settings.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:inventree/widget/search.dart";
-import 'package:package_info_plus/package_info_plus.dart';
+import "package:package_info_plus/package_info_plus.dart";
 
 class InvenTreeDrawer extends StatelessWidget {
 

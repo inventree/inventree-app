@@ -9,7 +9,7 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:package_info_plus/package_info_plus.dart";
 
 import "package:inventree/l10.dart";
-import 'package:url_launcher/url_launcher.dart';
+import "package:url_launcher/url_launcher.dart";
 
 class InvenTreeAboutWidget extends StatelessWidget {
 
