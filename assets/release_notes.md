@@ -1,6 +1,13 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.5.6 - January 2022
+---
+
+- Fixes bug related to transferring stock via barcode scanning
+- Updated UI for settings
+- Adds ability to disable "upload error report" functionality
+
 ### 0.5.5 - January 2022
 ---
 
