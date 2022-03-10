@@ -87,7 +87,26 @@ Future<bool> sentryReportMessage(String message, {Map<String, String>? context})
   final app_info = await getAppInfo();
   final device_info = await getDeviceInfo();
 
-  print("Sending user message to Sentry: ${message}");
+  // Remove any sensitive information from a URL
+  if (context != null) {
+    if (context.containsKey("url")) {
+      final String url = context["url"] ?? "";
+
+      try {
+        final uri = Uri.parse(url);
+
+        // We don't care about the server address, only the path and query parameters!
+        // Overwrite the provided URL
+        context["url"] = uri.path + "?" + uri.query;
+
+      } catch (error) {
+        // Ignore if any errors are thrown here
+      }
+
+    }
+  }
+
+  print("Sending user message to Sentry: ${message}, ${context}");
 
   if (isInDebugMode()) {
 
