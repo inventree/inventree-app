@@ -16,6 +16,7 @@ import "package:inventree/widget/category_display.dart";
 import "package:inventree/api.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/part_image_widget.dart";
+import 'package:inventree/widget/snacks.dart';
 import "package:inventree/widget/stock_detail.dart";
 import "package:inventree/widget/stock_list.dart";
 
@@ -104,6 +105,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       L10().editPart,
       onSuccess: (data) async {
         refresh();
+        showSnackIcon(L10().partEdited, success: true);
       }
     );
   }

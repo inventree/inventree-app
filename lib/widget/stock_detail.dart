@@ -122,6 +122,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       fields: fields,
       onSuccess: (data) async {
         refresh();
+        showSnackIcon(L10().stockItemUpdated, success: true);
       }
     );
 
