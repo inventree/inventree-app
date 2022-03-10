@@ -9,6 +9,7 @@ import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:inventree/l10.dart";
+import "package:inventree/widget/snacks.dart";
 
 
 class CompanyDetailWidget extends StatefulWidget {
@@ -78,6 +79,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
       L10().companyEdit,
       onSuccess: (data) async {
         refresh();
+        showSnackIcon(L10().companyUpdated, success: true);
       }
     );
   }

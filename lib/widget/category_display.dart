@@ -9,6 +9,7 @@ import "package:inventree/app_colors.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/widget/part_list.dart";
 import "package:inventree/widget/progress.dart";
+import "package:inventree/widget/snacks.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/widget/part_detail.dart";
 import "package:inventree/widget/refreshable_state.dart";
@@ -66,6 +67,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
         L10().editCategory,
         onSuccess: (data) async {
           refresh();
+          showSnackIcon(L10().categoryUpdated, success: true);
         }
     );
   }

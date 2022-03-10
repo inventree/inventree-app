@@ -10,6 +10,7 @@ import "package:inventree/barcode.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
+import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/stock_detail.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/widget/stock_list.dart";
@@ -88,6 +89,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       L10().editLocation,
       onSuccess: (data) async {
         refresh();
+        showSnackIcon(L10().locationUpdated, success: true);
       }
     );
   }

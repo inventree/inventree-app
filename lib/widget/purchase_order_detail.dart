@@ -83,6 +83,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       L10().purchaseOrderEdit,
       onSuccess: (data) async {
         refresh();
+        showSnackIcon(L10().purchaseOrderUpdated, success: true);
       }
     );
   }
