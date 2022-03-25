@@ -304,6 +304,9 @@ class InvenTreeAPI {
 
     _BASE_URL = address;
 
+    // Clear the list of available plugins
+    plugins.clear();
+
     print("Connecting to ${apiUrl} -> username=${username}");
 
     APIResponse response;
@@ -398,8 +401,11 @@ class InvenTreeAPI {
     _token = (data["token"] ?? "") as String;
     print("Received token - $_token");
 
-    // Request user role information
-    await getUserRoles();
+    // Request user role information (async)
+    getUserRoles();
+
+    // Request plugin information (async)
+    getPluginInformation();
 
     // Ok, probably pretty good...
     return true;
@@ -461,7 +467,7 @@ class InvenTreeAPI {
     // Any "older" version of the server allows any API method for any logged in user!
     // We will return immediately, but request the user roles in the background
 
-    var response = await get(_URL_GET_ROLES, expectedStatusCode: 200);
+    final response = await get(_URL_GET_ROLES, expectedStatusCode: 200);
 
     if (!response.successful()) {
       return;
@@ -471,9 +477,34 @@ class InvenTreeAPI {
 
     if (data.containsKey("roles")) {
       // Save a local copy of the user roles
-      roles = response.data["roles"] as Map<String, dynamic>;
+      roles = (response.data["roles"] ?? {}) as Map<String, dynamic>;
     }
   }
+
+  // Request plugin information from the server
+  Future<void> getPluginInformation() async {
+
+    // The server does not support plugins, or they are not enabled
+    if (!pluginsEnabled()) {
+      plugins.clear();
+      return;
+    }
+
+    // Request a list of plugins from the server
+    final List<InvenTreeModel> results = await InvenTreePlugin().list();
+
+    for (var result in results) {
+      if (result is InvenTreePlugin) {
+        if (result.active) {
+          // Only add plugins that are active
+          plugins.add(result);
+        }
+      }
+    }
+
+    print("Discovered ${plugins.length} active plugins!");
+  }
+
 
   bool checkPermission(String role, String permission) {
     /*

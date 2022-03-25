@@ -510,7 +510,26 @@ class InvenTreePlugin extends InvenTreeModel {
   InvenTreePlugin.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
   @override
+  InvenTreeModel createFromJson(Map<String, dynamic> json) {
+    return InvenTreePlugin.fromJson(json);
+  }
+
+  @override
   String get URL => "plugin/";
+
+  String get key => (jsondata["key"] ?? "") as String;
+
+  bool get active => (jsondata["active"] ?? false) as bool;
+
+  // Return the metadata struct for this plugin
+  Map<String, dynamic> get _meta => (jsondata["meta"] ?? {}) as Map<String, dynamic>;
+
+  // Return the mixins struct for this plugin
+  Map<String, dynamic> get _mixins => (jsondata["mixins"] ?? {}) as Map<String, dynamic>;
+
+  bool supportsMixin(String mixin) {
+    return _mixins.containsKey(mixin);
+  }
 }
 
 
