@@ -778,8 +778,6 @@ Map<String, dynamic> extractFieldDefinition(Map<String, dynamic> data, String lo
   String el = path.last;
 
   if (!_data.containsKey(el)) {
-    print("Could not find field definition for ${lookup}");
-    print("- Final field path ${el} missing from data");
     return {};
   } else {
 
@@ -824,24 +822,28 @@ Future<void> launchApiForm(
       IconData icon = FontAwesomeIcons.save,
     }) async {
 
-  var options = await InvenTreeAPI().options(url);
-
-  // Invalid response from server
-  if (!options.isValid()) {
-    return;
-  }
-
   // List of fields defined by the server
-  Map<String, dynamic> serverFields = extractFields(options);
+  Map<String, dynamic> serverFields = {};
 
-  if (serverFields.isEmpty) {
-    // User does not have permission to perform this action
-    showSnackIcon(
-      L10().response403,
-      icon: FontAwesomeIcons.userTimes,
-    );
+  if (url.isNotEmpty) {
+    var options = await InvenTreeAPI().options(url);
 
-    return;
+    // Invalid response from server
+    if (!options.isValid()) {
+      return;
+    }
+
+    serverFields = extractFields(options);
+
+    if (serverFields.isEmpty) {
+      // User does not have permission to perform this action
+      showSnackIcon(
+        L10().response403,
+        icon: FontAwesomeIcons.userTimes,
+      );
+
+      return;
+    }
   }
 
   // Construct a list of APIFormField objects
@@ -868,8 +870,7 @@ Future<void> launchApiForm(
 
     // Skip fields with empty definitions
     if (field.definition.isEmpty) {
-      print("ERROR: Empty field definition for field '${fieldName}'");
-      continue;
+      print("Warning: Empty field definition for field '${fieldName}'");
     }
 
     // Add instance value to the field
@@ -1170,6 +1171,23 @@ class _APIFormWidgetState extends State<APIFormWidget> {
       }
     }
 
+    // Run custom onSuccess function
+    var successFunc = onSuccess;
+
+    // An "empty" URL means we don't want to submit the form anywhere
+    // Perhaps we just want to process the data?
+    if (url.isEmpty) {
+      // Hide the form
+      Navigator.pop(context);
+
+      if (successFunc != null) {
+        // Return the raw "submitted" data, rather than the server response
+        successFunc(data);
+      }
+
+      return;
+    }
+
     final response = await _submit(data);
 
     if (!response.isValid()) {
@@ -1186,9 +1204,6 @@ class _APIFormWidgetState extends State<APIFormWidget> {
         Navigator.pop(context);
 
         // TODO: Display a snackBar
-
-        // Run custom onSuccess function
-        var successFunc = onSuccess;
 
         if (successFunc != null) {
 

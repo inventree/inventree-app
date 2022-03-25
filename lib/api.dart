@@ -258,6 +258,9 @@ class InvenTreeAPI {
     return plugins;
   }
 
+  // Test if the provided plugin mixin is supported by any active plugins
+  bool supportsMixin(String mixin) => getPlugins(mixin: mixin).isNotEmpty;
+
   // Getter for server version information
   String get version => _version;
 
@@ -511,6 +514,8 @@ class InvenTreeAPI {
       return;
     }
 
+    print("Requesting plugin information");
+
     // Request a list of plugins from the server
     final List<InvenTreeModel> results = await InvenTreePlugin().list();
 
@@ -522,10 +527,7 @@ class InvenTreeAPI {
         }
       }
     }
-
-    print("Discovered ${_plugins.length} active plugins!");
   }
-
 
   bool checkPermission(String role, String permission) {
     /*

@@ -124,6 +124,11 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     // Clear the existing labels list
     labels.clear();
 
+    // If the server does not support label printing, don't bother!
+    if (!InvenTreeAPI().supportsMixin("labels")) {
+      return;
+    }
+
     InvenTreeAPI().get(
         "/label/stock/",
         params: {
