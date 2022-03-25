@@ -235,7 +235,28 @@ class InvenTreeAPI {
   // Returns True only if the server API version is new enough, and plugins are enabled
   bool pluginsEnabled() => apiVersion >= 34 && _pluginsEnabled;
 
-  List<InvenTreePlugin> plugins = [];
+  // Cached list of plugins (refreshed when we connect to the server)
+  List<InvenTreePlugin> _plugins = [];
+
+  // Return a list of plugins enabled on the server
+  // Can optionally filter by a particular 'mixin' type
+  List<InvenTreePlugin> getPlugins({String mixin = ""}) {
+    List<InvenTreePlugin> plugins = [];
+
+    for (var plugin in _plugins) {
+      // Do we wish to filter by a particular mixin?
+      if (mixin.isNotEmpty) {
+        if (!plugin.supportsMixin(mixin)) {
+          continue;
+        }
+      }
+
+      plugins.add(plugin);
+    }
+
+    // Return list of matching plugins
+    return plugins;
+  }
 
   // Getter for server version information
   String get version => _version;
@@ -305,7 +326,7 @@ class InvenTreeAPI {
     _BASE_URL = address;
 
     // Clear the list of available plugins
-    plugins.clear();
+    _plugins.clear();
 
     print("Connecting to ${apiUrl} -> username=${username}");
 
@@ -486,7 +507,7 @@ class InvenTreeAPI {
 
     // The server does not support plugins, or they are not enabled
     if (!pluginsEnabled()) {
-      plugins.clear();
+      _plugins.clear();
       return;
     }
 
@@ -497,12 +518,12 @@ class InvenTreeAPI {
       if (result is InvenTreePlugin) {
         if (result.active) {
           // Only add plugins that are active
-          plugins.add(result);
+          _plugins.add(result);
         }
       }
     }
 
-    print("Discovered ${plugins.length} active plugins!");
+    print("Discovered ${_plugins.length} active plugins!");
   }
 
 
