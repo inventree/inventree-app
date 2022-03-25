@@ -256,6 +256,11 @@ class InvenTreeAPI {
     return apiVersion >= 14;
   }
 
+  // True plugin support requires API v34 or newer
+  bool supportPlugins() {
+    return apiVersion >= 34;
+  }
+
   /*
    * Connect to the remote InvenTree server:
    *
