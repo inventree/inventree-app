@@ -149,6 +149,69 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     });
   }
 
+  /// Opens a popup dialog allowing user to select a label for printing
+  Future <void> _printLabel(BuildContext context) async {
+
+    var plugins = InvenTreeAPI().getPlugins(mixin: "labels");
+
+    dynamic initial_label;
+    dynamic initial_plugin;
+
+    List<Map<String, dynamic>> label_options = [];
+    List<Map<String, dynamic>> plugin_options = [];
+
+    for (var label in labels) {
+      label_options.add({
+        "display_name": label["description"],
+        "value": label["pk"],
+      });
+    }
+
+    for (var plugin in plugins) {
+      plugin_options.add({
+        "display_name": plugin.humanName,
+        "value": plugin.key,
+      });
+    }
+
+    if (labels.length == 1) {
+      initial_label =  labels.first["pk"];
+    }
+
+    if (plugins.length == 1) {
+      initial_plugin = plugins.first.key;
+    }
+
+    Map<String, dynamic> fields = {
+      "label": {
+        "label": "Label Template",
+        "type": "choice",
+        "value": initial_label,
+        "choices": label_options,
+        "required": true,
+      },
+      "plugin": {
+        "label": "Printer",
+        "type": "choice",
+        "value": initial_plugin,
+        "choices": plugin_options,
+        "required": true,
+      }
+    };
+
+    launchApiForm(
+      context,
+      L10().printLabel,
+      "",
+      fields,
+      icon: FontAwesomeIcons.print,
+      onSuccess: (data) async {
+        print("Printing...");
+        print(data.toString());
+      },
+    );
+  }
+
   Future <void> _editStockItem(BuildContext context) async {
 
     var fields = InvenTreeStockItem().formFields();
@@ -908,7 +971,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           title: Text(L10().printLabel),
           leading: FaIcon(FontAwesomeIcons.print, color: COLOR_CLICK),
           onTap: () {
-            // TODO
+            _printLabel(context);
           },
         ),
       );

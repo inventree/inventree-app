@@ -524,6 +524,8 @@ class InvenTreePlugin extends InvenTreeModel {
   // Return the metadata struct for this plugin
   Map<String, dynamic> get _meta => (jsondata["meta"] ?? {}) as Map<String, dynamic>;
 
+  String get humanName => (_meta["human_name"] ?? "") as String;
+
   // Return the mixins struct for this plugin
   Map<String, dynamic> get _mixins => (jsondata["mixins"] ?? {}) as Map<String, dynamic>;
 
