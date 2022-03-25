@@ -333,6 +333,7 @@ class InvenTreeAPI {
 
     // Default API version is 1 if not provided
     _apiVersion = (data["apiVersion"] ?? 1) as int;
+    _pluginsEnabled = (data["plugins_enabled"] ?? false) as bool;
 
     if (_apiVersion < _minApiVersion) {
 
@@ -347,13 +348,11 @@ class InvenTreeAPI {
 
       showServerError(
         L10().serverOld,
-        message
+        message,
       );
 
       return false;
     }
-
-    _pluginsEnabled = (data["plugins_enabled"] ?? false) as bool;
 
     /**
      * Request user token information from the server

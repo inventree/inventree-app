@@ -84,6 +84,10 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   // StockItem object
   final InvenTreeStockItem item;
 
+  // Is label printing enabled for this StockItem?
+  // This will be determined when the widget is loaded
+  List<Map<String, dynamic>> labels = [];
+
   // Part object
   InvenTreePart? part;
 
@@ -103,8 +107,41 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     // Request part information
     part = await InvenTreePart().get(item.partId) as InvenTreePart?;
 
-    // Request test results...
-    await item.getTestResults();
+    // Request test results (async)
+    item.getTestResults().then((value) {
+      setState(() {
+        // Update
+      });
+    });
+
+    // Request information on labels available for this stock item
+    if (InvenTreeAPI().pluginsEnabled()) {
+      _getLabels();
+    }
+  }
+
+  Future <void> _getLabels() async {
+    // Clear the existing labels list
+    labels.clear();
+
+    InvenTreeAPI().get(
+        "/label/stock/",
+        params: {
+          "enabled": "true",
+          "item": "${item.pk}",
+        },
+    ).then((APIResponse response) {
+      if (response.isValid() && response.statusCode == 200) {
+        for (var label in response.data) {
+          if (label is Map<String, dynamic>) {
+            labels.add(label);
+          }
+        }
+
+        setState(() {
+        });
+      }
+    });
   }
 
   Future <void> _editStockItem(BuildContext context) async {
@@ -856,6 +893,19 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
             _unassignBarcode(context);
           }
         )
+      );
+    }
+
+    // Print label (if label printing plugins exist)
+    if (labels.isNotEmpty) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().printLabel),
+          leading: FaIcon(FontAwesomeIcons.print, color: COLOR_CLICK),
+          onTap: () {
+            // TODO
+          },
+        ),
       );
     }
 
