@@ -227,6 +227,10 @@ class InvenTreeAPI {
 
   int get apiVersion => _apiVersion;
 
+  bool _pluginsEnabled = false;
+
+  bool pluginsEnabled() => supportPlugins() && _pluginsEnabled;
+
   // Getter for server version information
   String get version => _version;
 
@@ -348,6 +352,8 @@ class InvenTreeAPI {
 
       return false;
     }
+
+    _pluginsEnabled = (data["plugins_enabled"] ?? false) as bool;
 
     /**
      * Request user token information from the server
