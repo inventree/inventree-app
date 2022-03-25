@@ -17,6 +17,7 @@ import "package:flutter_cache_manager/flutter_cache_manager.dart";
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/inventree/sentry.dart";
+import "package:inventree/inventree/model.dart";
 import "package:inventree/user_profile.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:path_provider/path_provider.dart";
@@ -227,9 +228,14 @@ class InvenTreeAPI {
 
   int get apiVersion => _apiVersion;
 
+  // Are plugins enabled on the server?
   bool _pluginsEnabled = false;
 
-  bool pluginsEnabled() => supportPlugins() && _pluginsEnabled;
+  // True plugin support requires API v34 or newer
+  // Returns True only if the server API version is new enough, and plugins are enabled
+  bool pluginsEnabled() => apiVersion >= 34 && _pluginsEnabled;
+
+  List<InvenTreePlugin> plugins = [];
 
   // Getter for server version information
   String get version => _version;
@@ -258,11 +264,6 @@ class InvenTreeAPI {
   // "Modern" API transactions were implemented in API v14
   bool supportModernStockTransactions() {
     return apiVersion >= 14;
-  }
-
-  // True plugin support requires API v34 or newer
-  bool supportPlugins() {
-    return apiVersion >= 34;
   }
 
   /*

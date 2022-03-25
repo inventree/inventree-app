@@ -500,6 +500,20 @@ class InvenTreeModel {
 }
 
 
+/**
+ * Class representing a single plugin instance
+ */
+class InvenTreePlugin extends InvenTreeModel {
+
+  InvenTreePlugin() : super();
+
+  InvenTreePlugin.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+
+  @override
+  String get URL => "plugin/";
+}
+
+
 class InvenTreeAttachment extends InvenTreeModel {
   // Class representing an "attachment" file
   InvenTreeAttachment() : super();
