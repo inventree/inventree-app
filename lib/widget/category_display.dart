@@ -89,7 +89,11 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
     // Update the category
     if (category != null) {
-      await category!.reload();
+      final bool result = await category?.reload() ?? false;
+
+      if (!result) {
+        Navigator.of(context).pop();
+      }
     }
 
     // Request a list of sub-categories under this one

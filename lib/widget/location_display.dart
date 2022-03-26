@@ -119,7 +119,11 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
     // Reload location information
     if (location != null) {
-      await location?.reload();
+      final bool result = await location?.reload() ?? false;
+
+      if (!result) {
+        Navigator.of(context).pop();
+      }
     }
 
     // Request a list of sub-locations under this one
