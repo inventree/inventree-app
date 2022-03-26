@@ -31,7 +31,7 @@ class _StockNotesState extends RefreshableState<StockNotesWidget> {
   String getAppBarTitle(BuildContext context) => L10().stockItemNotes;
 
   @override
-  Future<void> request() async {
+  Future<void> request(BuildContext context) async {
     await item.reload();
   }
 
@@ -54,7 +54,7 @@ class _StockNotesState extends RefreshableState<StockNotesWidget> {
                     }
                   },
                   onSuccess: (data) async {
-                    refresh();
+                    refresh(context);
                   }
                 );
               }

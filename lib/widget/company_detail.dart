@@ -64,7 +64,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
   }
 
   @override
-  Future<void> request() async {
+  Future<void> request(BuildContext context) async {
     await company.reload();
 
     if (company.isSupplier) {
@@ -78,7 +78,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
       context,
       L10().companyEdit,
       onSuccess: (data) async {
-        refresh();
+        refresh(context);
         showSnackIcon(L10().companyUpdated, success: true);
       }
     );

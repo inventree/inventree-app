@@ -22,6 +22,7 @@ import "package:inventree/l10.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/api.dart";
 import "package:inventree/api_form.dart";
+import 'package:one_context/one_context.dart';
 
 
 class StockDetailWidget extends StatefulWidget {
@@ -96,13 +97,20 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     // Load part data if not already loaded
     if (part == null) {
-      refresh();
+      refresh(context);
     }
   }
 
   @override
-  Future<void> request() async {
-    await item.reload();
+  Future<void> request(BuildContext context) async {
+
+    final bool result = await item.reload();
+
+    // Could not load this stock item for some reason
+    // Perhaps it has been depleted?
+    if (!result || item.pk == -1) {
+      Navigator.of(context).pop();
+    }
 
     // Request part information
     part = await InvenTreePart().get(item.partId) as InvenTreePart?;
@@ -244,7 +252,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       L10().editItem,
       fields: fields,
       onSuccess: (data) async {
-        refresh();
+        refresh(context);
         showSnackIcon(L10().stockItemUpdated, success: true);
       }
     );
@@ -261,7 +269,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     _stockUpdateMessage(result);
 
-    refresh();
+    refresh(context);
   }
 
   Future <void> _addStockDialog() async {
@@ -293,7 +301,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         icon: FontAwesomeIcons.plusCircle,
         onSuccess: (data) async {
           _stockUpdateMessage(true);
-          refresh();
+          refresh(context);
         }
       );
 
@@ -340,7 +348,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     _stockUpdateMessage(result);
 
-    refresh();
+    refresh(context);
 
   }
 
@@ -372,7 +380,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           icon: FontAwesomeIcons.minusCircle,
           onSuccess: (data) async {
             _stockUpdateMessage(true);
-            refresh();
+            refresh(context);
           }
       );
 
@@ -413,7 +421,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     _stockUpdateMessage(result);
 
-    refresh();
+    refresh(context);
   }
 
   Future <void> _countStockDialog() async {
@@ -445,7 +453,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           icon: FontAwesomeIcons.clipboardCheck,
           onSuccess: (data) async {
             _stockUpdateMessage(true);
-            refresh();
+            refresh(context);
           }
       );
 
@@ -494,7 +502,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     }
 
-    refresh();
+    refresh(context);
   }
 
 
@@ -509,7 +517,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     var result = await item.transferStock(context, locationId, quantity: quantity, notes: notes);
 
-    refresh();
+    refresh(context);
 
     if (result) {
       showSnackIcon(L10().stockItemTransferred, success: true);
@@ -549,7 +557,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           icon: FontAwesomeIcons.dolly,
           onSuccess: (data) async {
             _stockUpdateMessage(true);
-            refresh();
+            refresh(context);
           }
       );
 
@@ -801,7 +809,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
                     MaterialPageRoute(
                         builder: (context) => StockItemTestResultsWidget(item))
                 ).then((context) {
-                  refresh();
+                  refresh(context);
                 });
               }
           )
@@ -928,7 +936,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
             context,
             MaterialPageRoute(builder: (context) => InvenTreeQRView(StockItemScanIntoLocationHandler(item)))
           ).then((context) {
-            refresh();
+            refresh(context);
           });
         },
       )
@@ -958,7 +966,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
                     icon: Icons.qr_code,
                   );
 
-                  refresh();
+                  refresh(context);
                 }
               });
             });

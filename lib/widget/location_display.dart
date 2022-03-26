@@ -88,7 +88,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       context,
       L10().editLocation,
       onSuccess: (data) async {
-        refresh();
+        refresh(context);
         showSnackIcon(L10().locationUpdated, success: true);
       }
     );
@@ -109,11 +109,11 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
   @override
   Future<void> onBuild(BuildContext context) async {
-    refresh();
+    refresh(context);
   }
 
   @override
-  Future<void> request() async {
+  Future<void> request(BuildContext context) async {
 
     int pk = location?.pk ?? -1;
 
@@ -385,8 +385,8 @@ List<Widget> detailTiles() {
                       MaterialPageRoute(builder: (context) =>
                           InvenTreeQRView(
                               StockLocationScanInItemsHandler(_loc)))
-                  ).then((context) {
-                    refresh();
+                  ).then((value) {
+                    refresh(context);
                   });
                 }
               },

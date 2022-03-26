@@ -77,7 +77,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   @override
   Future<void> onBuild(BuildContext context) async {
-    refresh();
+    refresh(context);
 
     setState(() {
 
@@ -85,7 +85,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   }
 
   @override
-  Future<void> request() async {
+  Future<void> request(BuildContext context) async {
     await part.reload();
     await part.getTestTemplates();
   }
@@ -94,7 +94,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
     if (InvenTreeAPI().checkPermission("part", "view")) {
       await part.update(values: {"starred": "${!part.starred}"});
-      refresh();
+      refresh(context);
     }
   }
 
@@ -104,7 +104,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       context,
       L10().editPart,
       onSuccess: (data) async {
-        refresh();
+        refresh(context);
         showSnackIcon(L10().partEdited, success: true);
       }
     );
@@ -130,7 +130,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
                   builder: (context) => PartImageWidget(part)
                 )
               ).then((value) {
-                refresh();
+                refresh(context);
               });
             }),
         ),
