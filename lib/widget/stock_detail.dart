@@ -205,9 +205,27 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       "",
       fields,
       icon: FontAwesomeIcons.print,
-      onSuccess: (data) async {
-        print("Printing...");
-        print(data.toString());
+      onSuccess: (Map<String, dynamic> data) async {
+        int labelId = (data["label"] ?? -1) as int;
+        String pluginKey = (data["plugin"] ?? "") as String;
+
+        if (labelId != -1 && pluginKey.isNotEmpty) {
+          String url = "/label/stock/${labelId}/print/?item=${item.pk}&plugin=${pluginKey}";
+
+          InvenTreeAPI().get(url).then((APIResponse response) {
+            if (response.isValid() && response.statusCode == 200) {
+              showSnackIcon(
+                L10().printLabelSuccess,
+                success: true
+              );
+            } else {
+              showSnackIcon(
+                L10().printLabelFailure,
+                success: false,
+              );
+            }
+          });
+        }
       },
     );
   }
