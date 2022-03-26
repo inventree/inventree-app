@@ -86,7 +86,14 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   @override
   Future<void> request(BuildContext context) async {
-    await part.reload();
+
+    final bool result = await part.reload();
+
+    if (!result || part.pk == -1) {
+      // Part could not be loaded, for some reason
+      Navigator.of(context).pop();
+    }
+
     await part.getTestTemplates();
   }
 
