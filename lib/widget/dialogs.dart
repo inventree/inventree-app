@@ -8,7 +8,7 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:inventree/l10.dart";
 import "package:one_context/one_context.dart";
 
-Future<void> confirmationDialog(String title, String text, {String? acceptText, String? rejectText, Function? onAccept, Function? onReject}) async {
+Future<void> confirmationDialog(String title, String text, {IconData icon = FontAwesomeIcons.questionCircle, String? acceptText, String? rejectText, Function? onAccept, Function? onReject}) async {
 
   String _accept = acceptText ?? L10().ok;
   String _reject = rejectText ?? L10().cancel;
@@ -18,7 +18,7 @@ Future<void> confirmationDialog(String title, String text, {String? acceptText, 
       return AlertDialog(
         title: ListTile(
           title: Text(title),
-          leading: FaIcon(FontAwesomeIcons.questionCircle),
+          leading: FaIcon(icon),
         ),
         content: Text(text),
         actions: [

@@ -157,6 +157,27 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     });
   }
 
+  /// Delete the stock item from the database
+  Future<void> _deleteItem(BuildContext context) async {
+
+    confirmationDialog(
+      L10().stockItemDelete,
+      L10().stockItemDeleteConfirm,
+      icon: FontAwesomeIcons.trashAlt,
+      onAccept: () async {
+        final bool result = await item.delete();
+        
+        if (result) {
+          Navigator.of(context).pop();
+          showSnackIcon(L10().stockItemDeleteSuccess, success: true);
+        } else {
+          showSnackIcon(L10().stockItemDeleteFailure, success: false);
+        }
+      },
+    );
+
+  }
+
   /// Opens a popup dialog allowing user to select a label for printing
   Future <void> _printLabel(BuildContext context) async {
 
@@ -1000,6 +1021,19 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
             _printLabel(context);
           },
         ),
+      );
+    }
+
+    // If the user has permission to delete this stock item
+    if (InvenTreeAPI().checkPermission("stock", "delete")) {
+      tiles.add(
+        ListTile(
+          title: Text("Delete Stock Item"),
+          leading: FaIcon(FontAwesomeIcons.trashAlt, color: COLOR_DANGER),
+          onTap: () {
+            _deleteItem(context);
+          },
+        )
       );
     }
 

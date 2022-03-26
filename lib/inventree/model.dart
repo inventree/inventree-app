@@ -222,6 +222,38 @@ class InvenTreeModel {
     return {};
   }
 
+  /// Delete the instance on the remote server
+  /// Returns true if the operation was successful, else false
+  Future<bool> delete() async {
+    var response = await api.delete(url);
+
+    if (!response.isValid() || response.data == null || (response.data is! Map)) {
+
+      if (response.statusCode > 0) {
+        await sentryReportMessage(
+          "InvenTreeModel.delete() returned invalid response",
+          context: {
+            "url": url,
+            "statusCode": response.statusCode.toString(),
+            "data": response.data?.toString() ?? "null",
+            "error": response.error,
+            "errorDetail": response.errorDetail,
+          }
+        );
+      }
+
+      showServerError(
+        L10().serverError,
+        L10().errorDelete,
+      );
+
+      return false;
+    }
+
+    // Status code should be 204 for "record deleted"
+    return response.statusCode == 204;
+  }
+
   /*
    * Reload this object, by requesting data from the server
    */
@@ -242,7 +274,7 @@ class InvenTreeModel {
               "valid": response.isValid().toString(),
               "error": response.error,
               "errorDetail": response.errorDetail,
-            }
+            },
         );
       }
 
@@ -465,8 +497,6 @@ class InvenTreeModel {
 
   // Provide a listing of objects at the endpoint
   // TODO - Static function which returns a list of objects (of this class)
-
-  // TODO - Define a "delete" function
 
   // TODO - Define a "save" / "update" function
 
