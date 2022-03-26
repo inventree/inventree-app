@@ -22,7 +22,6 @@ import "package:inventree/l10.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/api.dart";
 import "package:inventree/api_form.dart";
-import 'package:one_context/one_context.dart';
 
 
 class StockDetailWidget extends StatefulWidget {
@@ -842,7 +841,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => StockItemTestResultsWidget(item))
-                ).then((context) {
+                ).then((ctx) {
                   refresh(context);
                 });
               }
@@ -969,7 +968,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => InvenTreeQRView(StockItemScanIntoLocationHandler(item)))
-          ).then((context) {
+          ).then((ctx) {
             refresh(context);
           });
         },
