@@ -27,7 +27,7 @@ class _StarredPartState extends RefreshableState<StarredPartWidget> {
   String getAppBarTitle(BuildContext context) => L10().partsStarred;
 
   @override
-  Future<void> request() async {
+  Future<void> request(BuildContext context) async {
 
     final parts = await InvenTreePart().list(filters: {"starred": "true"});
 
