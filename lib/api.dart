@@ -17,6 +17,7 @@ import "package:flutter_cache_manager/flutter_cache_manager.dart";
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/inventree/sentry.dart";
+import "package:inventree/inventree/model.dart";
 import "package:inventree/user_profile.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:path_provider/path_provider.dart";
@@ -227,6 +228,39 @@ class InvenTreeAPI {
 
   int get apiVersion => _apiVersion;
 
+  // Are plugins enabled on the server?
+  bool _pluginsEnabled = false;
+
+  // True plugin support requires API v34 or newer
+  // Returns True only if the server API version is new enough, and plugins are enabled
+  bool pluginsEnabled() => apiVersion >= 34 && _pluginsEnabled;
+
+  // Cached list of plugins (refreshed when we connect to the server)
+  List<InvenTreePlugin> _plugins = [];
+
+  // Return a list of plugins enabled on the server
+  // Can optionally filter by a particular 'mixin' type
+  List<InvenTreePlugin> getPlugins({String mixin = ""}) {
+    List<InvenTreePlugin> plugins = [];
+
+    for (var plugin in _plugins) {
+      // Do we wish to filter by a particular mixin?
+      if (mixin.isNotEmpty) {
+        if (!plugin.supportsMixin(mixin)) {
+          continue;
+        }
+      }
+
+      plugins.add(plugin);
+    }
+
+    // Return list of matching plugins
+    return plugins;
+  }
+
+  // Test if the provided plugin mixin is supported by any active plugins
+  bool supportsMixin(String mixin) => getPlugins(mixin: mixin).isNotEmpty;
+
   // Getter for server version information
   String get version => _version;
 
@@ -294,6 +328,9 @@ class InvenTreeAPI {
 
     _BASE_URL = address;
 
+    // Clear the list of available plugins
+    _plugins.clear();
+
     print("Connecting to ${apiUrl} -> username=${username}");
 
     APIResponse response;
@@ -324,6 +361,7 @@ class InvenTreeAPI {
 
     // Default API version is 1 if not provided
     _apiVersion = (data["apiVersion"] ?? 1) as int;
+    _pluginsEnabled = (data["plugins_enabled"] ?? false) as bool;
 
     if (_apiVersion < _minApiVersion) {
 
@@ -338,7 +376,7 @@ class InvenTreeAPI {
 
       showServerError(
         L10().serverOld,
-        message
+        message,
       );
 
       return false;
@@ -387,8 +425,11 @@ class InvenTreeAPI {
     _token = (data["token"] ?? "") as String;
     print("Received token - $_token");
 
-    // Request user role information
-    await getUserRoles();
+    // Request user role information (async)
+    getUserRoles();
+
+    // Request plugin information (async)
+    getPluginInformation();
 
     // Ok, probably pretty good...
     return true;
@@ -450,7 +491,7 @@ class InvenTreeAPI {
     // Any "older" version of the server allows any API method for any logged in user!
     // We will return immediately, but request the user roles in the background
 
-    var response = await get(_URL_GET_ROLES, expectedStatusCode: 200);
+    final response = await get(_URL_GET_ROLES, expectedStatusCode: 200);
 
     if (!response.successful()) {
       return;
@@ -460,7 +501,31 @@ class InvenTreeAPI {
 
     if (data.containsKey("roles")) {
       // Save a local copy of the user roles
-      roles = response.data["roles"] as Map<String, dynamic>;
+      roles = (response.data["roles"] ?? {}) as Map<String, dynamic>;
+    }
+  }
+
+  // Request plugin information from the server
+  Future<void> getPluginInformation() async {
+
+    // The server does not support plugins, or they are not enabled
+    if (!pluginsEnabled()) {
+      _plugins.clear();
+      return;
+    }
+
+    print("Requesting plugin information");
+
+    // Request a list of plugins from the server
+    final List<InvenTreeModel> results = await InvenTreePlugin().list();
+
+    for (var result in results) {
+      if (result is InvenTreePlugin) {
+        if (result.active) {
+          // Only add plugins that are active
+          _plugins.add(result);
+        }
+      }
     }
   }
 

@@ -84,6 +84,10 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   // StockItem object
   final InvenTreeStockItem item;
 
+  // Is label printing enabled for this StockItem?
+  // This will be determined when the widget is loaded
+  List<Map<String, dynamic>> labels = [];
+
   // Part object
   InvenTreePart? part;
 
@@ -103,8 +107,127 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     // Request part information
     part = await InvenTreePart().get(item.partId) as InvenTreePart?;
 
-    // Request test results...
-    await item.getTestResults();
+    // Request test results (async)
+    item.getTestResults().then((value) {
+      setState(() {
+        // Update
+      });
+    });
+
+    // Request information on labels available for this stock item
+    if (InvenTreeAPI().pluginsEnabled()) {
+      _getLabels();
+    }
+  }
+
+  Future <void> _getLabels() async {
+    // Clear the existing labels list
+    labels.clear();
+
+    // If the server does not support label printing, don't bother!
+    if (!InvenTreeAPI().supportsMixin("labels")) {
+      return;
+    }
+
+    InvenTreeAPI().get(
+        "/label/stock/",
+        params: {
+          "enabled": "true",
+          "item": "${item.pk}",
+        },
+    ).then((APIResponse response) {
+      if (response.isValid() && response.statusCode == 200) {
+        for (var label in response.data) {
+          if (label is Map<String, dynamic>) {
+            labels.add(label);
+          }
+        }
+
+        setState(() {
+        });
+      }
+    });
+  }
+
+  /// Opens a popup dialog allowing user to select a label for printing
+  Future <void> _printLabel(BuildContext context) async {
+
+    var plugins = InvenTreeAPI().getPlugins(mixin: "labels");
+
+    dynamic initial_label;
+    dynamic initial_plugin;
+
+    List<Map<String, dynamic>> label_options = [];
+    List<Map<String, dynamic>> plugin_options = [];
+
+    for (var label in labels) {
+      label_options.add({
+        "display_name": label["description"],
+        "value": label["pk"],
+      });
+    }
+
+    for (var plugin in plugins) {
+      plugin_options.add({
+        "display_name": plugin.humanName,
+        "value": plugin.key,
+      });
+    }
+
+    if (labels.length == 1) {
+      initial_label =  labels.first["pk"];
+    }
+
+    if (plugins.length == 1) {
+      initial_plugin = plugins.first.key;
+    }
+
+    Map<String, dynamic> fields = {
+      "label": {
+        "label": "Label Template",
+        "type": "choice",
+        "value": initial_label,
+        "choices": label_options,
+        "required": true,
+      },
+      "plugin": {
+        "label": "Printer",
+        "type": "choice",
+        "value": initial_plugin,
+        "choices": plugin_options,
+        "required": true,
+      }
+    };
+
+    launchApiForm(
+      context,
+      L10().printLabel,
+      "",
+      fields,
+      icon: FontAwesomeIcons.print,
+      onSuccess: (Map<String, dynamic> data) async {
+        int labelId = (data["label"] ?? -1) as int;
+        String pluginKey = (data["plugin"] ?? "") as String;
+
+        if (labelId != -1 && pluginKey.isNotEmpty) {
+          String url = "/label/stock/${labelId}/print/?item=${item.pk}&plugin=${pluginKey}";
+
+          InvenTreeAPI().get(url).then((APIResponse response) {
+            if (response.isValid() && response.statusCode == 200) {
+              showSnackIcon(
+                L10().printLabelSuccess,
+                success: true
+              );
+            } else {
+              showSnackIcon(
+                L10().printLabelFailure,
+                success: false,
+              );
+            }
+          });
+        }
+      },
+    );
   }
 
   Future <void> _editStockItem(BuildContext context) async {
@@ -856,6 +979,19 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
             _unassignBarcode(context);
           }
         )
+      );
+    }
+
+    // Print label (if label printing plugins exist)
+    if (labels.isNotEmpty) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().printLabel),
+          leading: FaIcon(FontAwesomeIcons.print, color: COLOR_CLICK),
+          onTap: () {
+            _printLabel(context);
+          },
+        ),
       );
     }
 

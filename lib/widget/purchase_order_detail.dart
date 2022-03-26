@@ -227,6 +227,8 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
     List<Widget> children = [];
 
+    // TODO: Add in this option once the SupplierPart detail view is implemented
+    /*
     children.add(
       SimpleDialogOption(
         onPressed: () {
@@ -240,6 +242,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
         )
       )
     );
+     */
 
     if (order.isPlaced && InvenTreeAPI().supportPoReceive()) {
       children.add(
