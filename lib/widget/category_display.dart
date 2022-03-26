@@ -66,7 +66,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
         context,
         L10().editCategory,
         onSuccess: (data) async {
-          refresh();
+          refresh(context);
           showSnackIcon(L10().categoryUpdated, success: true);
         }
     );
@@ -79,17 +79,21 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
   @override
   Future<void> onBuild(BuildContext context) async {
-    refresh();
+    refresh(context);
   }
 
   @override
-  Future<void> request() async {
+  Future<void> request(BuildContext context) async {
 
     int pk = category?.pk ?? -1;
 
     // Update the category
     if (category != null) {
-      await category!.reload();
+      final bool result = await category?.reload() ?? false;
+
+      if (!result) {
+        Navigator.of(context).pop();
+      }
     }
 
     // Request a list of sub-categories under this one
@@ -234,7 +238,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
             )
           );
         } else {
-          refresh();
+          refresh(context);
         }
       }
     );

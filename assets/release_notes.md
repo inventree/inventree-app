@@ -5,6 +5,7 @@
 ---
 
 - Enables printing of stock item labels
+- Allow users to manually delete stock items
 
 ### 0.5.6 - January 2022
 ---

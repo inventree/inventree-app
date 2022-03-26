@@ -32,7 +32,7 @@ class _PartImageState extends RefreshableState<PartImageWidget> {
   final InvenTreePart part;
 
   @override
-  Future<void> request() async {
+  Future<void> request(BuildContext context) async {
     await part.reload();
   }
 
@@ -60,7 +60,7 @@ class _PartImageState extends RefreshableState<PartImageWidget> {
                   showSnackIcon(L10().uploadFailed, success: false);
                 }
 
-                refresh();
+                refresh(context);
               }
             );
 

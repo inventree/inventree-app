@@ -918,7 +918,7 @@ class InvenTreeAPI {
   /*
    * Complete an API request, and return an APIResponse object
    */
-  Future<APIResponse> completeRequest(HttpClientRequest request, {String? data, int? statusCode}) async {
+  Future<APIResponse> completeRequest(HttpClientRequest request, {String? data, int? statusCode, bool ignoreResponse = false}) async {
 
     if (data != null && data.isNotEmpty) {
 
@@ -955,7 +955,12 @@ class InvenTreeAPI {
         );
 
       } else {
-        response.data = await responseToJson(_response) ?? {};
+
+        if (ignoreResponse) {
+          response.data = {};
+        } else {
+          response.data = await responseToJson(_response) ?? {};
+        }
 
         if (statusCode != null) {
 
@@ -1040,6 +1045,31 @@ class InvenTreeAPI {
     }
 
     return completeRequest(request);
+  }
+
+  /*
+   * Perform a HTTP DELETE request
+   */
+  Future<APIResponse> delete(String url) async {
+
+    HttpClientRequest? request = await apiRequest(
+      url,
+      "DELETE",
+    );
+
+    if (request == null) {
+      // Return an "invalid" APIResponse object
+      return APIResponse(
+        url: url,
+        method: "DELETE",
+        error: "HttpClientRequest is null",
+      );
+    }
+
+    return completeRequest(
+      request,
+      ignoreResponse: true,
+    );
   }
 
   // Return a list of request headers

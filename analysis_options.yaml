@@ -63,3 +63,7 @@ linter:
     always_specify_types: false
 
     avoid_unnecessary_containers: false
+
+    require_trailing_commas: false
+
+    eol_at_end_of_file: false

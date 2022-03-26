@@ -44,7 +44,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
   }
 
   @override
-  Future<void> request() async {
+  Future<void> request(BuildContext context) async {
     await item.getTestTemplates();
     await item.getTestResults();
   }
@@ -61,7 +61,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
         "test": "${name}",
       },
       onSuccess: (data) {
-        refresh();
+        refresh(context);
       },
       fileField: "attachment",
     );

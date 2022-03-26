@@ -72,11 +72,11 @@ class _PartAttachmentDisplayState extends RefreshableState<PartAttachmentsWidget
       showSnackIcon(L10().uploadFailed, success: false);
     }
 
-    refresh();
+    refresh(context);
   }
 
   @override
-  Future<void> request() async {
+  Future<void> request(BuildContext context) async {
 
     await InvenTreePartAttachment().list(
       filters: {

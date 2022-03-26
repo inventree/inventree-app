@@ -32,7 +32,7 @@ class _PartSupplierState extends RefreshableState<PartSupplierWidget> {
   List<InvenTreeSupplierPart> _supplierParts = [];
 
   @override
-  Future<void> request() async {
+  Future<void> request(BuildContext context) async {
     // TODO - Request list of suppliers for the part
     await part.reload();
     _supplierParts = await part.getSupplierParts();

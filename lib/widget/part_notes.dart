@@ -26,7 +26,7 @@ class _PartNotesState extends RefreshableState<PartNotesWidget> {
   final InvenTreePart part;
 
   @override
-  Future<void> request() async {
+  Future<void> request(BuildContext context) async {
     await part.reload();
   }
 
@@ -53,7 +53,7 @@ class _PartNotesState extends RefreshableState<PartNotesWidget> {
                 }
               },
               onSuccess: (data) async {
-                refresh();
+                refresh(context);
               }
             );
           }

@@ -61,7 +61,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
   }
 
   @override
-  Future<void> request() async {
+  Future<void> request(BuildContext context) async {
     await order.reload();
 
     lines = await order.getLineItems();
@@ -82,7 +82,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       context,
       L10().purchaseOrderEdit,
       onSuccess: (data) async {
-        refresh();
+        refresh(context);
         showSnackIcon(L10().purchaseOrderUpdated, success: true);
       }
     );
@@ -218,7 +218,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
         icon: FontAwesomeIcons.signInAlt,
         onSuccess: (data) async {
           showSnackIcon(L10().receivedItem, success: true);
-          refresh();
+          refresh(context);
         }
     );
   }

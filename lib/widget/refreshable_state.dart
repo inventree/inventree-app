@@ -41,21 +41,21 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
 
   // Function called after the widget is first build
   Future<void> onBuild(BuildContext context) async {
-    refresh();
+    refresh(context);
   }
 
   // Function to request data for this page
-  Future<void> request() async {
+  Future<void> request(BuildContext context) async {
     return;
   }
 
-  Future<void> refresh() async {
+  Future<void> refresh(BuildContext context) async {
 
     setState(() {
       loading = true;
     });
 
-    await request();
+    await request(context);
 
     setState(() {
       loading = false;
@@ -100,7 +100,9 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
       body: Builder(
         builder: (BuildContext context) {
           return RefreshIndicator(
-              onRefresh: refresh,
+              onRefresh: () async {
+                refresh(context);
+              },
               child: getBody(context)
           );
         }
