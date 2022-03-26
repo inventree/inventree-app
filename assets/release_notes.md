@@ -1,6 +1,11 @@
 ## InvenTree App Release Notes
 ---
 
+### x.x.x - March 2022
+---
+
+- Enables printing of stock item labels
+
 ### 0.5.6 - January 2022
 ---
 
