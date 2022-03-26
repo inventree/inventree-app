@@ -230,6 +230,8 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   int get trackingItemCount => (jsondata["tracking_items"] ?? 0) as int;
 
+  bool get isBuilding => (jsondata["is_building"] ?? false) as bool;
+
   // Date of last update
   DateTime? get updatedDate {
     if (jsondata.containsKey("updated")) {
