@@ -500,7 +500,7 @@ class InvenTreeModel {
 }
 
 
-/**
+/*
  * Class representing a single plugin instance
  */
 class InvenTreePlugin extends InvenTreeModel {
