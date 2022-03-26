@@ -706,7 +706,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
                 });
               }
             },
-          )
+          ),
       );
     } else {
       tiles.add(
@@ -715,6 +715,19 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
             leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
             subtitle: Text(L10().locationNotSet),
           )
+      );
+    }
+
+    if (item.isBuilding) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().inProduction),
+          leading: FaIcon(FontAwesomeIcons.tools),
+          subtitle: Text(L10().inProductionDetail),
+          onTap: () {
+            // TODO: Click through to the "build order"
+          },
+        )
       );
     }
 
