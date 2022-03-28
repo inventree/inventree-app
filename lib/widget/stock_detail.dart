@@ -16,13 +16,14 @@ import "package:inventree/widget/part_detail.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
-import 'package:inventree/widget/stock_item_history.dart';
+import "package:inventree/widget/stock_item_history.dart";
 import "package:inventree/widget/stock_item_test_results.dart";
 import "package:inventree/widget/stock_notes.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/api.dart";
 import "package:inventree/api_form.dart";
+import "package:inventree/app_settings.dart";
 
 
 class StockDetailWidget extends StatefulWidget {
@@ -50,6 +51,8 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   final _removeStockKey = GlobalKey<FormState>();
   final _countStockKey = GlobalKey<FormState>();
   final _moveStockKey = GlobalKey<FormState>();
+
+  bool stockShowHistory = false;
 
   @override
   List<Widget> getAppBarActions(BuildContext context) {
@@ -105,6 +108,8 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   Future<void> request(BuildContext context) async {
 
     final bool result = await item.reload();
+
+    stockShowHistory = await InvenTreeSettingsManager().getValue(INV_STOCK_SHOW_HISTORY, false) as bool;
 
     // Could not load this stock item for some reason
     // Perhaps it has been depleted?
@@ -862,11 +867,11 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     // TODO - Is this stock item linked to a PurchaseOrder?
 
-    if (item.trackingItemCount > 0) {
+    if (stockShowHistory && item.trackingItemCount > 0) {
       tiles.add(
         ListTile(
           title: Text(L10().history),
-          leading: FaIcon(FontAwesomeIcons.history),
+          leading: FaIcon(FontAwesomeIcons.history, color: COLOR_CLICK),
           trailing: Text("${item.trackingItemCount}"),
           onTap: () {
             Navigator.push(

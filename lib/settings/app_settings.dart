@@ -28,6 +28,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
 
   // Stock settings
   bool stockSublocation = false;
+  bool stockShowHistory = false;
 
   bool reportErrors = true;
 
@@ -48,6 +49,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
     partSubcategory = await InvenTreeSettingsManager().getValue(INV_PART_SUBCATEGORY, true) as bool;
 
     stockSublocation = await InvenTreeSettingsManager().getValue(INV_STOCK_SUBLOCATION, true) as bool;
+    stockShowHistory = await InvenTreeSettingsManager().getValue(INV_STOCK_SHOW_HISTORY, false) as bool;
 
     reportErrors = await InvenTreeSettingsManager().getValue(INV_REPORT_ERRORS, true) as bool;
 
@@ -105,6 +107,20 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
                   InvenTreeSettingsManager().setValue(INV_STOCK_SUBLOCATION, value);
                   setState(() {
                     stockSublocation = value;
+                  });
+                },
+              ),
+            ),
+            ListTile(
+              title: Text(L10().stockItemHistory),
+              subtitle: Text(L10().stockItemHistoryDetail),
+              leading: FaIcon(FontAwesomeIcons.history),
+              trailing: Switch(
+                value: stockShowHistory,
+                onChanged: (bool value) {
+                  InvenTreeSettingsManager().setValue(INV_STOCK_SHOW_HISTORY, value);
+                  setState(() {
+                    stockShowHistory = value;
                   });
                 },
               ),
