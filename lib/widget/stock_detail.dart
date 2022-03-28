@@ -16,6 +16,7 @@ import "package:inventree/widget/part_detail.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
+import 'package:inventree/widget/stock_item_history.dart';
 import "package:inventree/widget/stock_item_test_results.dart";
 import "package:inventree/widget/stock_notes.dart";
 import "package:inventree/l10.dart";
@@ -861,8 +862,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     // TODO - Is this stock item linked to a PurchaseOrder?
 
-    // TODO - Re-enable stock item history display
-    /*
     if (item.trackingItemCount > 0) {
       tiles.add(
         ListTile(
@@ -870,15 +869,17 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           leading: FaIcon(FontAwesomeIcons.history),
           trailing: Text("${item.trackingItemCount}"),
           onTap: () {
-            // TODO: Load tracking history
-
-            // TODO: Push tracking history page to the route
-
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => StockItemHistoryWidget(item))
+              ).then((ctx) {
+                refresh(context);
+            });
           },
         )
       );
     }
-     */
 
     // Notes field
     tiles.add(
