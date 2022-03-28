@@ -104,7 +104,7 @@ class InvenTreeStockItemHistory extends InvenTreeModel {
 
     // Serial number takes priority here
     if (deltas.containsKey("serial")) {
-      var serial = (deltas["serial"] ?? "") as String;
+      var serial = (deltas["serial"] ?? "").toString();
       return "# ${serial}";
     } else if (deltas.containsKey("quantity")) {
       double q = (deltas["quantity"] ?? 0) as double;
