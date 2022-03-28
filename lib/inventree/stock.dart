@@ -56,6 +56,67 @@ class InvenTreeStockItemTestResult extends InvenTreeModel {
 }
 
 
+class InvenTreeStockItemHistory extends InvenTreeModel {
+
+  InvenTreeStockItemHistory() : super();
+
+  InvenTreeStockItemHistory.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+
+  @override
+  InvenTreeModel createFromJson(Map<String, dynamic> json) {
+    return InvenTreeStockItemHistory.fromJson(json);
+  }
+
+  @override
+  String get URL => "stock/track/";
+
+  @override
+  Map<String, String> defaultListFilters() {
+
+    // By default, order by decreasing date
+    return {
+      "ordering": "-date",
+    };
+  }
+
+  DateTime? get date {
+    if (jsondata.containsKey("date")) {
+      return DateTime.tryParse((jsondata["date"] ?? "") as String);
+    } else {
+      return null;
+    }
+  }
+
+  String get dateString {
+    var d = date;
+
+    if (d == null) {
+      return "";
+    }
+
+    return DateFormat("yyyy-MM-dd").format(d);
+  }
+
+  String get label => (jsondata["label"] ?? "") as String;
+
+  String get quantityString {
+    Map<String, dynamic> deltas = (jsondata["deltas"] ?? {}) as Map<String, dynamic>;
+
+    // Serial number takes priority here
+    if (deltas.containsKey("serial")) {
+      var serial = (deltas["serial"] ?? "") as String;
+      return "# ${serial}";
+    } else if (deltas.containsKey("quantity")) {
+      double q = (deltas["quantity"] ?? 0) as double;
+
+      return simpleNumberString(q);
+    } else {
+      return "";
+    }
+  }
+}
+
+
 class InvenTreeStockItem extends InvenTreeModel {
 
   InvenTreeStockItem() : super();

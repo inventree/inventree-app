@@ -18,6 +18,7 @@ const String INV_SOUNDS_SERVER = "serverSounds";
 const String INV_PART_SUBCATEGORY = "partSubcategory";
 
 const String INV_STOCK_SUBLOCATION = "stockSublocation";
+const String INV_STOCK_SHOW_HISTORY = "stockShowHistory";
 
 const String INV_REPORT_ERRORS = "reportErrors";
 
