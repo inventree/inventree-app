@@ -70,9 +70,7 @@ class PaginatedSearchState<T extends StatefulWidget> extends State<T> {
 
       if (page != null) {
         for (var result in page.results) {
-          if (result is InvenTreeModel) {
             items.add(result);
-          }
         }
       }
 

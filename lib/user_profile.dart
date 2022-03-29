@@ -1,9 +1,7 @@
 
-/*
- * Class for InvenTree user / login details
- */
 import "package:sembast/sembast.dart";
-import "preferences.dart";
+
+import "package:inventree/preferences.dart";
 
 class UserProfile {
 

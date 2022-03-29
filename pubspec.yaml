@@ -29,10 +29,9 @@ dependencies:
   device_info_plus: ^3.2.2                # Information about the device
   dropdown_search: ^0.6.3                  # Dropdown autocomplete form fields
   file_picker: ^4.5.1                     # Select files from the device
-
-
+  flutter_cache_manager: ^3.3.0
   flutter_markdown: ^0.6.9                # Rendering markdown
-  font_awesome_flutter: ^10.1.0            # FontAwesome icon set
+  font_awesome_flutter: ^9.1.0            # FontAwesome icon set
   http: ^0.13.4
   image_picker: ^0.8.3                    # Select or take photos
   infinite_scroll_pagination: ^3.1.0      # Let the server do all the work!
