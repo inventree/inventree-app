@@ -48,9 +48,9 @@ class FilePickerDialog {
       if (path != null) {
         return File(path);
       }
-
-      return null;
     }
+
+    return null;
   }
 
   // Present a dialog to pick a file, either from local file system or from camera

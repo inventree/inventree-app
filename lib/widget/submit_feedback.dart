@@ -71,6 +71,8 @@ class _SubmitFeedbackState extends State<SubmitFeedbackWidget> {
                   if (value == null || value.trim().isEmpty) {
                     return L10().valueCannotBeEmpty;
                   }
+
+                  return null;
                 },
                 onSaved: (value) {
                   if (value != null) {

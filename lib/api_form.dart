@@ -486,6 +486,8 @@ class APIFormField {
         if (quantity == null) {
           return L10().numberInvalid;
         }
+
+        return null;
       },
       onSaved: (val) {
         data["value"] = val;
@@ -673,6 +675,8 @@ class APIFormField {
         if (required && (value == null || value.isEmpty)) {
           // return L10().valueCannotBeEmpty;
         }
+
+        return null;
       },
     );
   }

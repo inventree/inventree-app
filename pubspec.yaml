@@ -15,12 +15,6 @@ environment:
 
 dependencies:
 
-  flutter:
-    sdk: flutter
-
-  flutter_localizations:
-    sdk: flutter
-
   audioplayers: ^0.20.1                   # Play audio files
   cached_network_image: ^3.2.0            # Download and cache remote images
   camera: ^0.9.4                       # Camera
@@ -29,7 +23,11 @@ dependencies:
   device_info_plus: ^3.2.2                # Information about the device
   dropdown_search: ^0.6.3                  # Dropdown autocomplete form fields
   file_picker: ^4.5.1                     # Select files from the device
+  flutter:
+    sdk: flutter
   flutter_cache_manager: ^3.3.0
+  flutter_localizations:
+    sdk: flutter
   flutter_markdown: ^0.6.9                # Rendering markdown
   font_awesome_flutter: ^9.1.0            # FontAwesome icon set
   http: ^0.13.4

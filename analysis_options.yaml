@@ -57,6 +57,10 @@ linter:
 
     sort_child_properties_last: false
 
+    depend_on_referenced_packages: false
+
+    noop_primitive_operations: false
+
     directives_ordering: false
 
     # Blindly follow the Flutter code style, which prefers types everywhere
@@ -70,4 +74,4 @@ linter:
 
     avoid_dynamic_calls: false
 
-    body_might_complete_normally_nullable: false
+    avoid_classes_with_only_static_members: false

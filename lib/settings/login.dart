@@ -303,6 +303,8 @@ class _ProfileEditState extends State<ProfileEditWidget> {
                   if (value == null || value.trim().isEmpty) {
                     return L10().valueCannotBeEmpty;
                   }
+
+                  return null;
                 }
               ),
               TextFormField(
@@ -348,6 +350,9 @@ class _ProfileEditState extends State<ProfileEditWidget> {
                       return L10().invalidHost;
                     }
                   }
+
+                  // Everything is OK
+                  return null;
                 },
               ),
               TextFormField(
@@ -365,6 +370,8 @@ class _ProfileEditState extends State<ProfileEditWidget> {
                   if (value == null || value.trim().isEmpty) {
                     return L10().usernameEmpty;
                   }
+
+                  return null;
                 },
               ),
               TextFormField(
@@ -383,6 +390,8 @@ class _ProfileEditState extends State<ProfileEditWidget> {
                   if (value == null || value.trim().isEmpty) {
                     return L10().passwordEmpty;
                   }
+
+                  return null;
                 }
               )
             ]
