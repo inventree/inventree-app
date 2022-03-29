@@ -91,7 +91,7 @@ class InvenTreeFileService extends FileService {
     _client = client ?? HttpClient();
 
     if (_client != null) {
-      _client?.badCertificateCallback = (cert, host, port) {
+      _client!.badCertificateCallback = (cert, host, port) {
         print("BAD CERTIFICATE CALLBACK FOR IMAGE REQUEST");
         return !strictHttps;
       };

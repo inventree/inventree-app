@@ -69,6 +69,10 @@ class BarcodeHandler {
 
       print("Scanned barcode data: ${barcode}");
 
+      if (barcode.isEmpty) {
+        return;
+      }
+
       var response = await InvenTreeAPI().post(
           url,
           body: {
@@ -491,7 +495,10 @@ class _QRViewState extends State<InvenTreeQRView> {
     _controller = controller;
     controller.scannedDataStream.listen((barcode) {
       _controller?.pauseCamera();
-      _handler.processBarcode(context, _controller, barcode.code);
+
+      if (barcode.code != null) {
+        _handler.processBarcode(context, _controller, barcode.code ?? "");
+      }
     });
   }
 
