@@ -30,7 +30,7 @@ jobs:
       - name: Setup Flutter 
         uses: subosito/flutter-action@v1
         with:
-          flutter-version: '2.2.3'
+          flutter-version: '2.10.3'
       - run: flutter pub get
       - run: cp lib/dummy_dsn.dart lib/dsn.dart
       - run: flutter analyze
