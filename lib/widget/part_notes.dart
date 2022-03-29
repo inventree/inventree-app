@@ -3,7 +3,6 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:inventree/api.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/widget/refreshable_state.dart";
-import "package:flutter/cupertino.dart";
 import "package:flutter_markdown/flutter_markdown.dart";
 import "package:inventree/l10.dart";
 

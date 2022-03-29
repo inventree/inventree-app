@@ -8,7 +8,6 @@ import "package:intl/intl.dart";
 import "package:inventree/app_colors.dart";
 
 import "package:open_file/open_file.dart";
-import "package:flutter/cupertino.dart";
 import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";

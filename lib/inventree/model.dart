@@ -3,7 +3,7 @@ import "dart:io";
 
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:inventree/api.dart";
-import "package:flutter/cupertino.dart";
+import "package:flutter/material.dart";
 import "package:inventree/inventree/sentry.dart";
 import "package:inventree/widget/dialogs.dart";
 import "package:url_launcher/url_launcher.dart";

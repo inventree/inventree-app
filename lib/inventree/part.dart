@@ -3,10 +3,11 @@ import "dart:io";
 import "package:inventree/api.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/inventree/company.dart";
-import "package:flutter/cupertino.dart";
+import "package:flutter/material.dart";
 import "package:inventree/l10.dart";
 
-import "model.dart";
+import "package:inventree/inventree/model.dart";
+
 
 class InvenTreePartCategory extends InvenTreeModel {
 

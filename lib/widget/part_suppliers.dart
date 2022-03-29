@@ -4,7 +4,6 @@ import "package:inventree/l10.dart";
 
 import "package:inventree/api.dart";
 
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/company.dart";

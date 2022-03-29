@@ -2,7 +2,6 @@ import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/settings/release.dart";
 
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";

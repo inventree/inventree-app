@@ -5,7 +5,6 @@ import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/widget/purchase_order_list.dart";
 import "package:inventree/widget/refreshable_state.dart";
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:inventree/l10.dart";

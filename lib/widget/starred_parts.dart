@@ -2,7 +2,6 @@ import "package:inventree/inventree/part.dart";
 import "package:inventree/widget/part_detail.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 
 import "package:inventree/l10.dart";

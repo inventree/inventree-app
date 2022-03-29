@@ -3,11 +3,9 @@ import "dart:async";
 import "package:flutter_localizations/flutter_localizations.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:one_context/one_context.dart";
 import "package:package_info_plus/package_info_plus.dart";
-import "package:flutter/foundation.dart";
 import "package:sentry_flutter/sentry_flutter.dart";
 
 import "package:inventree/inventree/sentry.dart";

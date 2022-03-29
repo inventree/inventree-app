@@ -1,5 +1,3 @@
-
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 
 import "package:inventree/inventree/model.dart";
@@ -10,6 +8,7 @@ import "package:inventree/l10.dart";
 import "package:inventree/app_settings.dart";
 import "package:inventree/widget/stock_detail.dart";
 import "package:inventree/api.dart";
+
 
 class StockItemList extends StatefulWidget {
 

@@ -1,6 +1,5 @@
 
 import "package:flutter/material.dart";
-import "package:flutter/cupertino.dart";
 
 import "package:inventree/l10.dart";
 

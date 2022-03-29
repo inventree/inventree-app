@@ -4,7 +4,6 @@
  * Long-pressing on this will return the user to the home screen
  */
 
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 
 Widget backButton(BuildContext context, GlobalKey<ScaffoldState> key) {

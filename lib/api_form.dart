@@ -17,7 +17,6 @@ import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/fields.dart";
 import "package:inventree/l10.dart";
 
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:inventree/widget/snacks.dart";
 

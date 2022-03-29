@@ -1,8 +1,6 @@
 import "package:inventree/widget/back.dart";
 import "package:inventree/widget/drawer.dart";
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
-import "package:flutter/widgets.dart";
 
 
 abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
