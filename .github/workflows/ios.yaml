@@ -1,0 +1,38 @@
+# Build iOS version of the app
+
+name: iOS
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  
+jobs:
+
+  build:
+    runs-on: macos-latest
+  
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    - name: Setup Java
+      uses: actions/setup-java@v1
+      with:
+        java-version: '12.x'
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v1
+      with:
+        flutter-version: '2.10.3'
+    - name: Build for iOS
+      run: |
+        pod init
+        flutter pub get
+        cp lib/dummy_dsn.dart lib/dsn.dart
+        pod repo update
+        pod install
+        flutter build ios --release --no-codesign
