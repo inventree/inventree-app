@@ -170,7 +170,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
     int pk = location?.pk ?? -1;
 
-    if (pk <= 0) {
+    if (location != null && pk <= 0) {
       return;
     }
 
@@ -178,7 +178,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       context,
       L10().stockItemCreate,
       data: {
-        "location": pk,
+        "location": location != null ? pk : null,
       },
       onSuccess: (result) async {
 
