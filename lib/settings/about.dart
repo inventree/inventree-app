@@ -83,6 +83,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
             title: Text(L10().address),
             subtitle: Text(InvenTreeAPI().baseUrl.isNotEmpty ? InvenTreeAPI().baseUrl : L10().notConnected),
             leading: FaIcon(FontAwesomeIcons.globe),
+            trailing: InvenTreeAPI().isConnected() ? FaIcon(FontAwesomeIcons.checkCircle, color: COLOR_SUCCESS) : FaIcon(FontAwesomeIcons.timesCircle, color: COLOR_DANGER),
           )
       );
 

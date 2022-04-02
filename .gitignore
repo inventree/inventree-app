@@ -30,6 +30,7 @@ android/key.properties
 ios/Flutter/flutter_export_environment.sh
 ios/Flutter/Flutter.podspec
 ios/build
+ios/Podfile.lock
 **/doc/api/
 .dart_tool/
 .flutter-plugins
