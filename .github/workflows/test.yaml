@@ -83,4 +83,5 @@ jobs:
        flutter pub get
        cp lib/dummy_dsn.dart lib/dsn.dart
        pod repo update
+       pod install
        flutter build ios --release --no-codesign
