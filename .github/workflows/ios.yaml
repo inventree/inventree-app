@@ -30,9 +30,11 @@ jobs:
         flutter-version: '2.10.3'
     - name: Build for iOS
       run: |
+        cd ios
         pod init
-        flutter pub get
-        cp lib/dummy_dsn.dart lib/dsn.dart
         pod repo update
         pod install
+        cd ..
+        flutter pub get
+        cp lib/dummy_dsn.dart lib/dsn.dart
         flutter build ios --release --no-codesign
