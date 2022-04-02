@@ -22,7 +22,7 @@ Future<void> main() async {
     PackageInfo info = await PackageInfo.fromPlatform();
     String pkg = info.packageName;
     String version = info.version;
-    String build = info.buildNumber333;
+    String build = info.buildNumber;
 
     String release = "${pkg}@${version}:${build}";
 
