@@ -6,6 +6,7 @@
 
 - Enables printing of stock item labels
 - Allow users to manually delete stock items
+- Adds option to enable or disable strict HTTPs certificate checks
 - Multiple bug fixes for form entry
 - Adds translation support for Hungarian
 - Adds translation support for Indonesian
