@@ -558,6 +558,9 @@ class APIFormField {
       popupItemBuilder: (context, item, isSelected) {
         return _renderRelatedField(item, isSelected, true);
       },
+      emptyBuilder: (context, item) {
+        return _renderEmptyResult();
+      },
       onSaved: (item) {
         if (item != null) {
           data["value"] = item["pk"];
@@ -650,8 +653,20 @@ class APIFormField {
           subtitle: Text("Model '${model}' rendering not supported"),
         );
     }
-
   }
+
+  // Construct a widget to instruct the user that no results were found
+  Widget _renderEmptyResult() {
+    return ListTile(
+      leading: FaIcon(FontAwesomeIcons.search),
+      title: Text(L10().noResults),
+      subtitle: Text(
+        L10().queryNoResults,
+        style: TextStyle(fontStyle: FontStyle.italic),
+      ),
+    );
+  }
+
 
   // Construct a string input element
   Widget _constructString() {
