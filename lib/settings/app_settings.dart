@@ -29,6 +29,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
   bool stockShowHistory = false;
 
   bool reportErrors = true;
+  bool strictHttps = false;
 
   @override
   void initState() {
@@ -50,6 +51,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
     stockShowHistory = await InvenTreeSettingsManager().getValue(INV_STOCK_SHOW_HISTORY, false) as bool;
 
     reportErrors = await InvenTreeSettingsManager().getValue(INV_REPORT_ERRORS, true) as bool;
+    strictHttps = await InvenTreeSettingsManager().getValue(INV_STRICT_HTTPS, false) as bool;
 
     setState(() {
     });
@@ -163,15 +165,29 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
             Divider(height: 1),
             ListTile(
               title: Text(
-                L10().errorReporting,
+                L10().appSettings,
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              leading: FaIcon(FontAwesomeIcons.bug),
+              leading: FaIcon(FontAwesomeIcons.mobile),
+            ),
+            ListTile(
+              title: Text(L10().strictHttps),
+              subtitle: Text(L10().strictHttpsDetails),
+              leading: FaIcon(FontAwesomeIcons.lock),
+              trailing: Switch(
+                value: strictHttps,
+                onChanged: (bool value) {
+                  InvenTreeSettingsManager().setValue(INV_STRICT_HTTPS, value);
+                  setState(() {
+                    strictHttps = value;
+                  });
+                },
+              ),
             ),
             ListTile(
               title: Text(L10().errorReportUpload),
               subtitle: Text(L10().errorReportUploadDetails),
-              leading: FaIcon(FontAwesomeIcons.cloudUploadAlt),
+              leading: FaIcon(FontAwesomeIcons.bug),
               trailing: Switch(
                 value: reportErrors,
                 onChanged: (bool value) {

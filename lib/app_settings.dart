@@ -22,6 +22,8 @@ const String INV_STOCK_SHOW_HISTORY = "stockShowHistory";
 
 const String INV_REPORT_ERRORS = "reportErrors";
 
+const String INV_STRICT_HTTPS = "strictHttps";
+
 class InvenTreeSettingsManager {
 
   factory InvenTreeSettingsManager() {

@@ -6,6 +6,7 @@ import "package:flutter/foundation.dart";
 import "package:http/http.dart" as http;
 import "package:intl/intl.dart";
 import "package:inventree/app_colors.dart";
+import "package:inventree/app_settings.dart";
 
 import "package:open_file/open_file.dart";
 import "package:cached_network_image/cached_network_image.dart";
@@ -82,7 +83,7 @@ class APIResponse {
 /*
  * Custom FileService for caching network images
  * Requires a custom badCertificateCallback,
- * so we can accept "dodgy" certificates
+ * so we can accept "dodgy" (e.g. self-signed) certificates
  */
 class InvenTreeFileService extends FileService {
 
@@ -141,6 +142,8 @@ class InvenTreeAPI {
 
   // Minimum required API version for server
   static const _minApiVersion = 7;
+
+  bool _strictHttps = false;
 
   // Endpoint for requesting an API token
   static const _URL_GET_TOKEN = "user/token/";
@@ -307,6 +310,9 @@ class InvenTreeAPI {
     address = address.trim();
     username = username.trim();
     password = password.trim();
+
+    // Cache the "strictHttps" setting, so we can use it later without async requirement
+    _strictHttps = await InvenTreeSettingsManager().getValue(INV_STRICT_HTTPS, false) as bool;
 
     if (address.isEmpty || username.isEmpty || password.isEmpty) {
       showSnackIcon(
@@ -620,7 +626,9 @@ class InvenTreeAPI {
 
     HttpClientRequest? _request;
 
-    var client = createClient(allowBadCert: true);
+    final bool strictHttps = await InvenTreeSettingsManager().getValue(INV_STRICT_HTTPS, false) as bool;
+
+    var client = createClient(strictHttps: strictHttps);
 
     // Attempt to open a connection to the server
     try {
@@ -811,22 +819,22 @@ class InvenTreeAPI {
     );
   }
 
-  HttpClient createClient({bool allowBadCert = true}) {
+  HttpClient createClient({bool strictHttps = false}) {
 
     var client = HttpClient();
 
     client.badCertificateCallback = (X509Certificate cert, String host, int port) {
-      // TODO - Introspection of actual certificate?
 
-      if (allowBadCert) {
-        return true;
-      } else {
+      if (strictHttps) {
         showServerError(
           L10().serverCertificateError,
           L10().serverCertificateInvalid,
         );
         return false;
       }
+
+      // Strict HTTPs not enforced, so we'll ignore the bad cert
+      return true;
     };
 
     // Set the connection timeout
@@ -874,7 +882,9 @@ class InvenTreeAPI {
 
     HttpClientRequest? _request;
 
-    var client = createClient(allowBadCert: true);
+    final bool strictHttps = await InvenTreeSettingsManager().getValue(INV_STRICT_HTTPS, false) as bool;
+
+    var client = createClient(strictHttps: strictHttps);
 
     // Attempt to open a connection to the server
     try {
@@ -1113,7 +1123,9 @@ class InvenTreeAPI {
     CacheManager manager = CacheManager(
       Config(
         key,
-        fileService: InvenTreeFileService(),
+        fileService: InvenTreeFileService(
+          strictHttps: _strictHttps,
+        ),
       )
     );
 
