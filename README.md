@@ -1,7 +1,6 @@
 # InvenTree Mobile App
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-![CI](https://github.com/inventree/inventree-app/actions/workflows/lint.yaml/badge.svg)
 ![Android](https://github.com/inventree/inventree-app/actions/workflows/android.yaml/badge.svg)
 ![iOS](https://github.com/inventree/inventree-app/actions/workflows/ios.yaml/badge.svg)
 
