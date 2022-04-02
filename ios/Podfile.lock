@@ -58,12 +58,12 @@ PODS:
   - SDWebImage (5.11.1):
     - SDWebImage/Core (= 5.11.1)
   - SDWebImage/Core (5.11.1)
-  - Sentry (6.2.1):
-    - Sentry/Core (= 6.2.1)
-  - Sentry/Core (6.2.1)
+  - Sentry (6.4.1):
+    - Sentry/Core (= 6.4.1)
+  - Sentry/Core (6.4.1)
   - sentry_flutter (0.0.1):
     - Flutter
-    - Sentry (~> 6.2.1)
+    - Sentry (~> 6.4.1)
   - shared_preferences (0.0.1):
     - Flutter
   - sqflite (0.0.2):
