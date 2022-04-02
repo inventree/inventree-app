@@ -7,7 +7,10 @@
 - Enables printing of stock item labels
 - Allow users to manually delete stock items
 - Multiple bug fixes for form entry
-- Updated translations
+- Adds translation support for Hungarian
+- Adds translation support for Indonesian
+- Adds translation support for Portuguese
+- Increased translation coverage
 
 ### 0.5.6 - January 2022
 ---
