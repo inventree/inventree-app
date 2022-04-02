@@ -31,7 +31,6 @@ jobs:
     - name: Build for iOS
       run: |
         cd ios
-        pod init
         pod repo update
         pod install
         cd ..
