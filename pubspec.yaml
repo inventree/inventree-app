@@ -8,7 +8,7 @@ description: InvenTree stock management
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-version: 0.5.6+36
+version: 0.6.0+37
 
 environment:
   sdk: ">=2.16.0 <3.0.0"
