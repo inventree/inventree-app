@@ -48,7 +48,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
 
   Future <void> _reportBug(BuildContext context) async {
 
-    const String url = "https://github.com/inventree/InvenTree/issues/new?assignees=&labels=app%2C+bug&title=%5BApp%5D+Enter+bug+description";
+    const String url = "https://github.com/inventree/inventree-app/issues/new?title=Enter+bug+description";
 
     if (await canLaunch(url)) {
       await launch(url);
