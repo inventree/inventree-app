@@ -218,10 +218,10 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     // Stock information
     tiles.add(
       ListTile(
-        title: Text(L10().stock),
+        title: Text(L10().availableStock),
         subtitle: Text(L10().stockDetails),
         leading: FaIcon(FontAwesomeIcons.boxes, color: COLOR_CLICK),
-        trailing: Text("${part.inStockString}"),
+        trailing: Text(part.availableStockString),
         onTap: () {
           setState(() {
             tabIndex = 1;
@@ -230,47 +230,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       ),
     );
 
-    // Keywords?
-    if (part.keywords.isNotEmpty) {
-      tiles.add(
-          ListTile(
-            title: Text("${part.keywords}"),
-            leading: FaIcon(FontAwesomeIcons.key),
-          )
-      );
-    }
-
-    // External link?
-    if (part.link.isNotEmpty) {
-      tiles.add(
-          ListTile(
-            title: Text("${part.link}"),
-            leading: FaIcon(FontAwesomeIcons.link, color: COLOR_CLICK),
-            onTap: () {
-              part.openLink();
-            },
-          )
-      );
-    }
-
     // Tiles for "purchaseable" parts
     if (part.isPurchaseable) {
-
-      tiles.add(
-          ListTile(
-            title: Text(L10().suppliers),
-            leading: FaIcon(FontAwesomeIcons.industry),
-            trailing: Text("${part.supplierCount}"),
-            /* TODO:
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => PartSupplierWidget(part))
-              );
-            },
-             */
-          )
-      );
 
       // On order
       tiles.add(
@@ -317,6 +278,29 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       }
     }
 
+    // Keywords?
+    if (part.keywords.isNotEmpty) {
+      tiles.add(
+          ListTile(
+            title: Text("${part.keywords}"),
+            leading: FaIcon(FontAwesomeIcons.key),
+          )
+      );
+    }
+
+    // External link?
+    if (part.link.isNotEmpty) {
+      tiles.add(
+          ListTile(
+            title: Text("${part.link}"),
+            leading: FaIcon(FontAwesomeIcons.link, color: COLOR_CLICK),
+            onTap: () {
+              part.openLink();
+            },
+          )
+      );
+    }
+
     // Tiles for "component" part
     if (part.isComponent && part.usedInCount > 0) {
 
@@ -332,6 +316,25 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         )
       );
     }
+
+    if (part.isPurchaseable) {
+      tiles.add(
+          ListTile(
+            title: Text(L10().suppliers),
+            leading: FaIcon(FontAwesomeIcons.industry),
+            trailing: Text("${part.supplierCount}"),
+            /* TODO:
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PartSupplierWidget(part))
+                );
+              },
+               */
+          )
+      );
+    }
+
 
     // TODO - Add request tests?
     /*

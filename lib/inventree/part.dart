@@ -1,6 +1,7 @@
 import "dart:io";
 
 import "package:inventree/api.dart";
+import "package:inventree/helpers.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/inventree/company.dart";
 import "package:flutter/material.dart";
@@ -250,11 +251,7 @@ class InvenTreePart extends InvenTreeModel {
 
     String get onOrderString {
 
-      if (onOrder == onOrder.toInt()) {
-        return onOrder.toInt().toString();
-      } else {
-        return onOrder.toString();
-      }
+      return simpleNumberString(onOrder);
     }
 
     // Get the stock count for this Part
@@ -262,11 +259,27 @@ class InvenTreePart extends InvenTreeModel {
 
     String get inStockString {
 
-      String q = inStock.toString();
+      String q = simpleNumberString(inStock);
 
-      if (inStock == inStock.toInt()) {
-        q = inStock.toInt().toString();
+      if (units.isNotEmpty) {
+        q += " ${units}";
       }
+
+      return q;
+    }
+
+    // Get the 'available stock' for this Part
+    double get availableStock {
+      // Note that the 'available_stock' was not added until API v35
+      if (jsondata.containsKey("available_stock")) {
+        return double.tryParse(jsondata["available_stock"].toString()) ?? 0;
+      } else {
+        return inStock;
+      }
+    }
+
+    String get availableStockString {
+      String q = simpleNumberString(availableStock);
 
       if (units.isNotEmpty) {
         q += " ${units}";
