@@ -269,19 +269,34 @@ class InvenTreePart extends InvenTreeModel {
     }
 
     // Get the 'available stock' for this Part
-    double get availableStock {
+    double get unallocatedStock {
+
       // Note that the 'available_stock' was not added until API v35
-      if (jsondata.containsKey("available_stock")) {
-        return double.tryParse(jsondata["available_stock"].toString()) ?? 0;
+      if (jsondata.containsKey("unallocated_stock")) {
+        return double.tryParse(jsondata["unallocated_stock"].toString()) ?? 0;
       } else {
         return inStock;
       }
     }
 
-    String get availableStockString {
-      String q = simpleNumberString(availableStock);
+    String get unallocatedStockString {
+      String q = simpleNumberString(unallocatedStock);
 
       if (units.isNotEmpty) {
+        q += " ${units}";
+      }
+
+      return q;
+    }
+
+    String stockString({bool includeUnits = true}) {
+      String q = unallocatedStockString;
+
+      if (unallocatedStock != inStock) {
+        q += " / ${inStockString}";
+      }
+
+      if (includeUnits && units.isNotEmpty) {
         q += " ${units}";
       }
 

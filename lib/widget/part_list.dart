@@ -87,7 +87,7 @@ class _PaginatedPartListState extends PaginatedSearchState<PaginatedPartList> {
     return ListTile(
       title: Text(part.fullname),
       subtitle: Text(part.description),
-      trailing: Text(part.availableStockString),
+      trailing: Text(part.stockString()),
       leading: InvenTreeAPI().getImage(
         part.thumbnail,
         width: 40,

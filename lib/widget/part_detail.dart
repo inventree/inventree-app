@@ -204,24 +204,24 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       );
     } else {
       tiles.add(
-        ListTile(
-          title: Text(L10().partCategory),
-          subtitle: Text(L10().partCategoryTopLevel),
-          leading: FaIcon(FontAwesomeIcons.sitemap, color: COLOR_CLICK),
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));
-          },
-        )
+          ListTile(
+            title: Text(L10().partCategory),
+            subtitle: Text(L10().partCategoryTopLevel),
+            leading: FaIcon(FontAwesomeIcons.sitemap, color: COLOR_CLICK),
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => CategoryDisplayWidget(null)));
+            },
+          )
       );
     }
 
-    // Stock information
     tiles.add(
       ListTile(
         title: Text(L10().availableStock),
         subtitle: Text(L10().stockDetails),
         leading: FaIcon(FontAwesomeIcons.boxes, color: COLOR_CLICK),
-        trailing: Text(part.availableStockString),
+        trailing: Text(part.stockString()),
         onTap: () {
           setState(() {
             tabIndex = 1;
