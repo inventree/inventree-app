@@ -5,6 +5,7 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/l10.dart";
+import "package:inventree/helpers.dart";
 import "package:inventree/widget/part_attachments_widget.dart";
 import "package:inventree/widget/part_notes.dart";
 import "package:inventree/widget/progress.dart";
@@ -307,7 +308,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
             ListTile(
               title: Text(L10().building),
               leading: FaIcon(FontAwesomeIcons.tools),
-              trailing: Text("${part.building}"),
+              trailing: Text("${simpleNumberString(part.building)}"),
               onTap: () {
                 // TODO
               },
