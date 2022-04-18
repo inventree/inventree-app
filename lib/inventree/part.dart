@@ -1,6 +1,7 @@
 import "dart:io";
 
 import "package:inventree/api.dart";
+import "package:inventree/helpers.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/inventree/company.dart";
 import "package:flutter/material.dart";
@@ -250,11 +251,7 @@ class InvenTreePart extends InvenTreeModel {
 
     String get onOrderString {
 
-      if (onOrder == onOrder.toInt()) {
-        return onOrder.toInt().toString();
-      } else {
-        return onOrder.toString();
-      }
+      return simpleNumberString(onOrder);
     }
 
     // Get the stock count for this Part
@@ -262,13 +259,44 @@ class InvenTreePart extends InvenTreeModel {
 
     String get inStockString {
 
-      String q = inStock.toString();
-
-      if (inStock == inStock.toInt()) {
-        q = inStock.toInt().toString();
-      }
+      String q = simpleNumberString(inStock);
 
       if (units.isNotEmpty) {
+        q += " ${units}";
+      }
+
+      return q;
+    }
+
+    // Get the 'available stock' for this Part
+    double get unallocatedStock {
+
+      // Note that the 'available_stock' was not added until API v35
+      if (jsondata.containsKey("unallocated_stock")) {
+        return double.tryParse(jsondata["unallocated_stock"].toString()) ?? 0;
+      } else {
+        return inStock;
+      }
+    }
+
+    String get unallocatedStockString {
+      String q = simpleNumberString(unallocatedStock);
+
+      if (units.isNotEmpty) {
+        q += " ${units}";
+      }
+
+      return q;
+    }
+
+    String stockString({bool includeUnits = true}) {
+      String q = unallocatedStockString;
+
+      if (unallocatedStock != inStock) {
+        q += " / ${inStockString}";
+      }
+
+      if (includeUnits && units.isNotEmpty) {
         q += " ${units}";
       }
 

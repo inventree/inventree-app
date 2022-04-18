@@ -5,6 +5,7 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/l10.dart";
+import "package:inventree/helpers.dart";
 import "package:inventree/widget/part_attachments_widget.dart";
 import "package:inventree/widget/part_notes.dart";
 import "package:inventree/widget/progress.dart";
@@ -203,24 +204,24 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       );
     } else {
       tiles.add(
-        ListTile(
-          title: Text(L10().partCategory),
-          subtitle: Text(L10().partCategoryTopLevel),
-          leading: FaIcon(FontAwesomeIcons.sitemap, color: COLOR_CLICK),
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));
-          },
-        )
+          ListTile(
+            title: Text(L10().partCategory),
+            subtitle: Text(L10().partCategoryTopLevel),
+            leading: FaIcon(FontAwesomeIcons.sitemap, color: COLOR_CLICK),
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => CategoryDisplayWidget(null)));
+            },
+          )
       );
     }
 
-    // Stock information
     tiles.add(
       ListTile(
-        title: Text(L10().stock),
+        title: Text(L10().availableStock),
         subtitle: Text(L10().stockDetails),
         leading: FaIcon(FontAwesomeIcons.boxes, color: COLOR_CLICK),
-        trailing: Text("${part.inStockString}"),
+        trailing: Text(part.stockString()),
         onTap: () {
           setState(() {
             tabIndex = 1;
@@ -229,47 +230,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       ),
     );
 
-    // Keywords?
-    if (part.keywords.isNotEmpty) {
-      tiles.add(
-          ListTile(
-            title: Text("${part.keywords}"),
-            leading: FaIcon(FontAwesomeIcons.key),
-          )
-      );
-    }
-
-    // External link?
-    if (part.link.isNotEmpty) {
-      tiles.add(
-          ListTile(
-            title: Text("${part.link}"),
-            leading: FaIcon(FontAwesomeIcons.link, color: COLOR_CLICK),
-            onTap: () {
-              part.openLink();
-            },
-          )
-      );
-    }
-
     // Tiles for "purchaseable" parts
     if (part.isPurchaseable) {
-
-      tiles.add(
-          ListTile(
-            title: Text(L10().suppliers),
-            leading: FaIcon(FontAwesomeIcons.industry),
-            trailing: Text("${part.supplierCount}"),
-            /* TODO:
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => PartSupplierWidget(part))
-              );
-            },
-             */
-          )
-      );
 
       // On order
       tiles.add(
@@ -307,13 +269,36 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
             ListTile(
               title: Text(L10().building),
               leading: FaIcon(FontAwesomeIcons.tools),
-              trailing: Text("${part.building}"),
+              trailing: Text("${simpleNumberString(part.building)}"),
               onTap: () {
                 // TODO
               },
             )
         );
       }
+    }
+
+    // Keywords?
+    if (part.keywords.isNotEmpty) {
+      tiles.add(
+          ListTile(
+            title: Text("${part.keywords}"),
+            leading: FaIcon(FontAwesomeIcons.key),
+          )
+      );
+    }
+
+    // External link?
+    if (part.link.isNotEmpty) {
+      tiles.add(
+          ListTile(
+            title: Text("${part.link}"),
+            leading: FaIcon(FontAwesomeIcons.link, color: COLOR_CLICK),
+            onTap: () {
+              part.openLink();
+            },
+          )
+      );
     }
 
     // Tiles for "component" part
@@ -331,6 +316,25 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         )
       );
     }
+
+    if (part.isPurchaseable) {
+      tiles.add(
+          ListTile(
+            title: Text(L10().suppliers),
+            leading: FaIcon(FontAwesomeIcons.industry),
+            trailing: Text("${part.supplierCount}"),
+            /* TODO:
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PartSupplierWidget(part))
+                );
+              },
+               */
+          )
+      );
+    }
+
 
     // TODO - Add request tests?
     /*
