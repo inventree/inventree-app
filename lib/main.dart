@@ -75,7 +75,9 @@ class InvenTreeApp extends StatelessWidget {
         const Locale("de", ""),   // German
         const Locale("el", ""),   // Greek
         const Locale("en", ""),   // English
-        const Locale("es", ""),   // Spanish
+        const Locale("es-ES", ""),   // Spanish
+        const Locale("es-MX", ""),   // Spanish (mexican)
+        const Locale("fa", ""),   // Farsi (Persian)
         const Locale("fr", ""),   // French
         const Locale("he", ""),   // Hebrew
         const Locale("hu", ""),   // Hungarian
