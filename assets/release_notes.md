@@ -8,10 +8,11 @@
 - Allow users to manually delete stock items
 - Adds option to enable or disable strict HTTPs certificate checks
 - Multiple bug fixes for form entry
+- Adds translation support for Czech
+- Adds translation support for Farsi (Persian)
 - Adds translation support for Hungarian
 - Adds translation support for Indonesian
 - Adds translation support for Portuguese
-- Adds translation support for Farsi (Persian)
 - Increased translation coverage
 
 ### 0.5.6 - January 2022
