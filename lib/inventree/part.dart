@@ -305,6 +305,9 @@ class InvenTreePart extends InvenTreeModel {
 
     String get units => (jsondata["units"] ?? "") as String;
 
+    // Get the ID of the Part that this part is a variant of (or null)
+    int? get variantOf => jsondata["variant_of"] as int?;
+
     // Get the number of units being build for this Part
     double get building => double.tryParse(jsondata["building"].toString()) ?? 0;
 

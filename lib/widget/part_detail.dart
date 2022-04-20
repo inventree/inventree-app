@@ -37,6 +37,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   InvenTreePart part;
 
+  InvenTreePart? parentPart;
+
   @override
   String getAppBarTitle(BuildContext context) => L10().partDetails;
 
@@ -90,6 +92,21 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     if (!result || part.pk == -1) {
       // Part could not be loaded, for some reason
       Navigator.of(context).pop();
+    }
+
+    // If the part points to a parent "template" part, request that too
+    int? templatePartId = part.variantOf;
+
+    if (templatePartId == null) {
+      parentPart = null;
+    } else {
+      final result = await InvenTreePart().get(templatePartId);
+
+      if (result != null && result is InvenTreePart) {
+        parentPart = result;
+      } else {
+        parentPart = null;
+      }
     }
 
     await part.getTestTemplates();
@@ -178,6 +195,26 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
               FontAwesomeIcons.exclamationCircle,
               color: COLOR_DANGER
           ),
+        )
+      );
+    }
+
+    if (parentPart != null) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().templatePart),
+          subtitle: Text(parentPart!.fullname),
+          leading: InvenTreeAPI().getImage(
+            parentPart!.thumbnail,
+            width: 32,
+            height: 32,
+          ),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => PartDetailWidget(parentPart!))
+            );
+          }
         )
       );
     }
