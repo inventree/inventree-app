@@ -72,6 +72,7 @@ class InvenTreeApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: [
+        const Locale("cs", ""),   // Czech
         const Locale("de", ""),   // German
         const Locale("el", ""),   // Greek
         const Locale("en", ""),   // English
