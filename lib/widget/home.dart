@@ -182,8 +182,8 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     return GestureDetector(
       child: Card(
         margin: EdgeInsets.symmetric(
-          vertical: 10,
-          horizontal: 10
+          vertical: 12,
+          horizontal: 12
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -193,12 +193,13 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
               color: connected && allowed ? COLOR_CLICK : Colors.grey,
             ),
             Divider(
-              height: 12,
+              height: 15,
               thickness: 0,
               color: Colors.transparent,
             ),
             Text(
               label,
+              textAlign: TextAlign.center,
             ),
           ]
         )
