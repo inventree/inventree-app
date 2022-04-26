@@ -13,6 +13,7 @@
 - Adds translation support for Hungarian
 - Adds translation support for Indonesian
 - Adds translation support for Portuguese
+- Adds translation support for Portuguese (Brazilian)
 - Increased translation coverage
 
 ### 0.5.6 - January 2022
