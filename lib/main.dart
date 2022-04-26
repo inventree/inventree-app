@@ -90,6 +90,7 @@ class InvenTreeApp extends StatelessWidget {
         const Locale("no", ""),   // Norwegian
         const Locale("pl", ""),   // Polish
         const Locale("pt", ""),   // Portuguese
+        const Locale("pt-BR", ""),
         const Locale("ru", ""),   // Russian
         const Locale("sv", ""),   // Swedish
         const Locale("th", ""),   // Thai
