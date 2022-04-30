@@ -1,6 +1,11 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.6.1 - April 2022
+---
+
+- Fixes critical bug which prevented app launch on Android
+
 ### 0.6.0 - April 2022
 ---
 
