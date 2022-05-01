@@ -1,0 +1,1085 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "InvenTree",
+  "@appTitle": {
+    "description": "InvenTree application title string"
+  },
+
+  "ok": "OK",
+  "@ok": {
+    "description": "OK"
+  },
+
+  "about": "About",
+  "@about": {},
+
+  "accountDetails": "Account Details",
+  "@accountDetails": {},
+
+  "actions": "Actions",
+  "@actions": {
+    "description": ""
+  },
+
+  "actionsNone": "No actions available",
+  "@actionsNone": {},
+
+  "add": "Add",
+  "@add": {
+    "description": "add"
+  },
+
+  "addStock": "Add Stock",
+  "@addStock": {
+    "description": "add stock"
+  },
+
+  "address": "Address",
+  "@address": {},
+
+  "appAbout": "About InvenTree",
+  "@appAbout": {},
+
+  "appCredits": "Additional app credits",
+  "@appCredits": {},
+
+  "appDetails": "App Details",
+  "@appDetails": {},
+
+  "appReleaseNotes": "Display app release notes",
+  "@appReleaseNotes": {},
+
+  "appSettings": "App Settings",
+  "@appSettings": {},
+
+  "appSettingsDetails": "Configure InvenTree app settings",
+  "@appSettingsDetails": {},
+
+  "attachments": "Attachments",
+  "@attachments": {},
+
+  "attachImage": "Attach Image",
+  "@attachImage": {
+    "description": "Attach an image"
+  },
+
+  "attachmentNone": "No attachments found",
+  "@attachmentNone": {},
+
+  "attachmentNonePartDetail": "No attachments found for this part",
+  "@attachmentNonePartDetail": {},
+
+  "attachmentSelect": "Select attachment",
+  "@attachmentSelect": {},
+
+  "attention": "Attention",
+  "@attention": {},
+
+  "availableStock": "Available Stock",
+  "@availableStock": {},
+
+  "barcodeAssign": "Assign Barcode",
+  "@barcodeAssign": {},
+
+  "barcodeAssigned": "Barcode assigned",
+  "@barcodeAssigned": {},
+
+  "barcodeError": "Barcode scan error",
+  "@barcodeError": {},
+
+  "barcodeInUse": "Barcode already assigned",
+  "@barcodeInUse": {},
+
+  "barcodeMissingHash": "Barcode hash data missing from response",
+  "@barcodeMissingHash": {},
+
+  "barcodeNoMatch": "No match for barcode",
+  "@barcodeNoMatch": {},
+
+  "barcodeNotAssigned": "Barcode not assigned",
+  "@barcodeNotAssigned": {},
+
+  "barcodeScanAssign": "Scan to assign barcode",
+  "@barcodeScanAssign": {},
+
+  "barcodeScanGeneral":  "Scan an InvenTree barcode",
+  "@barcodeScanGeneral": {},
+
+  "barcodeScanInItems": "Scan stock items into location",
+  "@barcodeScanInItems": {},
+
+  "barcodeScanLocation": "Scan stock location",
+  "@barcodeScanLocation": {},
+
+  "barcodeScanIntoLocationSuccess": "Scanned into location",
+  "@barcodeScanIntoLocationSuccess": {},
+
+  "barcodeScanIntoLocationFailure": "Item not scanned in",
+  "@barcodeScanIntoLocationFailure": {},
+
+  "barcodeScanItem": "Scan stock item",
+  "@barcodeScanItem": {},
+
+  "barcodeTones": "Barcode Tones",
+  "@barcodeTones": {},
+
+  "barcodeUnassign": "Unassign Barcode",
+  "@barcodeUnassign": {},
+
+  "barcodeUnknown": "Barcode is not recognized",
+  "@barcodeUnknown": {},
+
+  "batchCode": "Batch Code",
+  "@batchCode": {},
+
+  "billOfMaterials": "Bill of Materials",
+  "@billOfMaterials": {},
+
+  "bom": "BOM",
+  "@bom": {},
+
+  "build": "Build",
+  "@build": {},
+
+  "building": "Building",
+  "@building": {},
+
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel"
+  },
+
+  "category": "Category",
+  "@category": {},
+
+  "categoryCreate": "New Category",
+  "@categoryCreate": {},
+
+  "categoryCreateDetail": "Create new part category",
+  "@categoryCreateDetail": {},
+
+  "categoryUpdated": "Part category updated",
+  "@categoryUpdated": {},
+
+  "company": "Company",
+  "@company": {},
+
+  "companyEdit": "Edit Company",
+  "@companyEdit": {},
+
+  "companyNoResults": "No companies matching query",
+  "@companyNoResults": {},
+
+  "companyUpdated": "Company details updated",
+  "@companyUpdated": {},
+
+  "companies": "Companies",
+  "@companies": {},
+
+  "configureServer": "Configure server settings",
+  "@configureServer": {},
+
+  "connectionRefused": "Connection Refused",
+  "@connectionRefused": {},
+
+  "count": "Count",
+  "@count": {
+    "description": "Count"
+  },
+
+  "countStock": "Count Stock",
+  "@countStock": {
+    "description": "Count Stock"
+  },
+
+  "credits": "Credits",
+  "@credits": {},
+
+  "customers": "Customers",
+  "@customers": {},
+
+  "damaged": "Damaged",
+  "@damaged": {},
+
+  "delete": "Delete",
+  "@delete": {},
+
+  "deletePart": "Delete Part",
+  "@deletePart": {},
+
+  "deletePartDetail": "Remove this part from the database",
+  "@deletePartDetail": {},
+
+  "description": "Description",
+  "@description": {},
+
+  "destroyed": "Destroyed",
+  "@destroyed": {},
+
+  "details": "Details",
+  "@details": {
+    "description": "details"
+  },
+
+  "documentation": "Documentation",
+  "@documentation": {},
+
+  "downloading": "Downloading File",
+  "@downloading": {},
+
+  "downloadError": "Download Error",
+  "@downloadError": {},
+
+  "edit": "Edit",
+  "@edit": {
+    "description": "edit"
+  },
+
+  "editCategory": "Edit Category",
+  "@editCategory": {},
+
+  "editLocation": "Edit Location",
+  "@editLocation": {},
+
+  "editNotes": "Edit Notes",
+  "@editNotes": {},
+
+  "editPart": "Edit Part",
+  "@editPart": {
+    "description": "edit part"
+  },
+
+  "editItem": "Edit Stock Item",
+  "@editItem": {},
+
+  "enterPassword": "Enter password",
+  "@enterPassword": {},
+
+  "enterUsername": "Enter username",
+  "@enterUsername": {},
+
+  "error": "Error",
+  "@error": {
+    "description": "Error"
+  },
+
+  "errorCreate": "Error creating database entry",
+  "@errorCreate": {},
+
+  "errorDelete": "Error deleting database entry",
+  "@errorDelete": {},
+
+  "errorDetails": "Error Details",
+  "@errorDetails": {},
+
+  "errorFetch":  "Error fetching data from server",
+  "@errorFetch": {},
+
+  "errorReporting": "Error Reporting",
+  "@errorReporting": {},
+
+  "errorReportUpload": "Upload Error Reports",
+  "@errorReportUpload": {},
+
+  "errorReportUploadDetails": "Upload anonymous error reports and crash logs",
+  "@errorReportUploadDetails": {},
+
+  "feedback": "Feedback",
+  "@feedback": {},
+
+  "feedbackError": "Error submitting feedback",
+  "@feedbackError": {},
+
+  "feedbackSuccess": "Feedback submitted",
+  "@feedbackSuccess": {},
+
+  "formatException": "Format Exception",
+  "@formatException": {},
+
+  "formatExceptionJson": "JSON data format exception",
+  "@formatExceptionJson": {},
+
+  "formError": "Form Error",
+  "@formError": {},
+
+  "history": "History",
+  "@history": {
+    "description": "history"
+  },
+
+  "homeScreen": "Home Screen",
+  "@homeScreen": {},
+
+  "homeScreenSettings": "Configure home screen settings",
+  "@homeScreenSettings": {},
+
+  "homeShowPo":  "Show Purchase Orders",
+  "@homeShowPo": {},
+
+  "homeShowSubscribed": "Subscribed Parts",
+  "@homeShowSubscribed": {},
+
+  "homeShowSubscribedDescription": "Show subscribed parts on home screen",
+  "@homeShowSubscsribedDescription": {},
+
+  "homeShowPoDescription": "Show purchase order button on home screen",
+  "@homeShowPoDescription": {},
+
+  "homeShowSuppliers": "Show Suppliers",
+  "@homeShowSuppliers": {},
+
+  "homeShowSuppliersDescription": "Show suppliers button on home screen",
+  "@homeShowSupplierDescription": {},
+
+  "homeShowManufacturers": "Show Manufacturers",
+  "@homeShowManufacturers": {},
+
+  "homeShowManufacturersDescription": "Show manufacturers button on home screen",
+  "@homeShowManufacturersDescription": {},
+
+  "homeShowCustomers": "Show Customers",
+  "@homeShowCustomers": {},
+
+  "homeShowCustomersDescription": "Show customers button on home screen",
+  "@homeShowCustomersDescription": {},
+
+  "imageUploadFailure": "Image upload failed",
+  "@imageUploadFailure": {},
+
+  "imageUploadSuccess": "Image uploaded",
+  "@imageUploadSuccess": {},
+
+  "inactive": "Inactive",
+  "@inactive": {},
+
+  "inactiveDetail": "This part is marked as inactive",
+  "@inactiveDetail": {},
+
+  "includeSubcategories": "Include Subcategories",
+  "@includeSubcategories": {},
+
+  "includeSubcategoriesDetail": "Display subcategory parts in list view",
+  "@includeSubcategoriesDetail": {},
+
+  "includeSublocations": "Include Sublocations",
+  "@includeSublocations": {},
+
+  "includeSublocationsDetail": "Display sublocation items in list view",
+  "@includeSublocationsDetail": {},
+
+  "incompleteDetails": "Incomplete profile details",
+  "@incompleteDetails": {},
+
+  "internalPartNumber": "Internal Part Number",
+  "@internalPartNumber": {},
+
+  "info": "Info",
+  "@info": {},
+
+  "inProduction": "In Production",
+  "@inProduction": {},
+
+  "inProductionDetail": "This stock item is in production",
+  "@inProductionDetail": {},
+
+  "invalidHost": "Invalid hostname",
+  "@invalidHost": {},
+
+  "invalidHostDetails": "Provided hostname is not valid",
+  "@invalidHostDetails": {},
+
+  "invalidPart": "Invalid Part",
+  "@invalidPart": {},
+
+  "invalidPartCategory": "Invalid Part Category",
+  "@invalidPartCategory": {},
+
+  "invalidStockLocation": "Invalid Stock Location",
+  "@invalidStockLocation": {},
+
+  "invalidStockItem": "Invalid Stock Item",
+  "@invalidStockItem": {},
+
+  "invalidUsernamePassword": "Invalid username / password combination",
+  "@invalidUsernamePassword": {},
+
+  "issueDate": "Issue Date",
+  "@issueDate": {},
+
+  "itemInLocation": "Item already in location",
+  "@itemInLocation": {},
+
+  "keywords": "Keywords",
+  "@keywords": {},
+
+  "lastStocktake": "Last Stocktake",
+  "@lastStocktake": {},
+
+  "lastUpdated": "Last Updated",
+  "@lastUpdated": {},
+
+  "lineItem": "Line Item",
+  "@lineItem": {},
+
+  "lineItems": "Line Items",
+  "@lineItems": {},
+
+  "locationCreate": "New Location",
+  "@locationCreate": {},
+
+  "locationCreateDetail": "Create new stock location",
+  "@locationCreateDetail": {},
+
+  "locationNotSet": "No location specified",
+  "@locationNotSet": {},
+
+  "locationUpdated": "Stock location updated",
+  "@locationUpdated": {},
+
+  "link": "Link",
+  "@link": {},
+
+  "lost": "Lost",
+  "@lost": {},
+
+  "manufacturers": "Manufacturers",
+  "@manufacturers": {},
+
+  "missingData": "Missing Data",
+  "@missingData": {},
+
+  "name": "Name",
+  "@name": {
+  },
+
+  "notConnected": "Not Connected",
+  "@notConnected": {},
+
+  "notes": "Notes",
+  "@notes": {
+    "description": "Notes"
+  },
+
+  "noResponse": "No Response from Server",
+  "@noResponse": {},
+
+  "noResults": "No Results",
+  "@noResults": {},
+
+  "noSubcategories": "No Subcategories",
+  "@noSubcategories": {},
+
+  "noSubcategoriesAvailable": "No subcategories available",
+  "@noSubcategoriesAvailable": {},
+
+  "numberInvalid": "Invalid number",
+  "@numberInvalid": {},
+
+  "onOrder": "On Order",
+  "@onOrder": {},
+
+  "onOrderDetails": "Items currently on order",
+  "@onOrderDetails": {},
+
+  "packaging": "Packaging",
+  "@packaging": {},
+
+  "packageName": "Package Name",
+  "@packageName": {},
+
+  "parent": "Parent",
+  "@parent": {},
+
+  "parentCategory": "Parent Category",
+  "@parentCategory": {},
+
+  "parentLocation": "Parent Location",
+  "@parentLocation": {},
+
+  "part": "Part",
+  "@part": {
+    "description": "Part (single)"
+  },
+
+  "partCreate": "New Part",
+  "@partCreate": {},
+
+  "partCreateDetail": "Create new part in this category",
+  "@partCreateDetail": {},
+
+  "partEdited": "Part updated",
+  "@partEdited": {},
+
+  "parts": "Parts",
+  "@parts": {
+    "description": "Part (multiple)"
+  },
+
+  "partsNone": "No Parts",
+  "@partsNone": {},
+
+  "partNoResults": "No parts matching query",
+  "@partNoResults": {},
+
+  "partsStarred": "Subscribed Parts",
+  "@partsStarred": {},
+
+  "partsStarredNone": "No starred parts available",
+  "@partsStarredNone": {},
+
+  "partSuppliers": "Part Suppliers",
+  "@partSuppliers": {},
+
+  "partCategory": "Part Category",
+  "@partCategory": {},
+
+  "partCategoryTopLevel": "Top level part category",
+  "@partCategoryTopLevel": {},
+
+  "partCategories": "Part Categories",
+  "@partCategories": {},
+
+  "partDetails": "Part Details",
+  "@partDetails": {},
+
+  "partNotes": "Part Notes",
+  "@partNotes": {},
+
+  "partStock": "Part Stock",
+  "@partStock": {
+    "description": "part stock"
+  },
+
+  "password": "Password",
+  "@password": {},
+
+  "passwordEmpty": "Password cannot be empty",
+  "@passwordEmpty": {},
+
+  "permissionAccountDenied": "Your account does not have the required permissions to perform this action",
+  "@permissionAccountDenied": {},
+
+  "permissionRequired": "Permission Required",
+  "@permissionRequired": {},
+
+  "printLabel": "Print Label",
+  "@printLabel": {},
+
+  "printLabelFailure": "Label printing failed",
+  "@printLabelFailure": {},
+
+  "printLabelSuccess": "Label sent to printer",
+  "@printLabelSuccess": {},
+
+  "profile": "Profile",
+  "@profile": {},
+
+  "profileAdd": "Add Server Profile",
+  "@profileAdd": {},
+
+  "profileConnect": "Connect to Server",
+  "@profileConnect": {},
+
+  "profileEdit": "Edit Server Profile",
+  "@profileEdit": {},
+
+  "profileDelete": "Delete Server Profile",
+  "@profileDelete": {},
+
+  "profileName": "Profile Name",
+  "@profileName": {},
+
+  "profileNone": "No profiles available",
+  "@profileNone": {},
+
+  "profileNotSelected": "No Profile Selected",
+  "@profileNotSelected": {},
+
+  "profileSelect": "Select InvenTree Server",
+  "@profileSelect": {},
+
+  "profileTapToCreate": "Tap to create or select a profile",
+  "@profileTapToCreate": {},
+
+  "purchaseOrder": "Purchase Order",
+  "@purchaseOrder": {},
+
+  "purchaseOrderEdit": "Edit Purchase Order",
+  "@purchaseOrderEdit": {},
+
+  "purchaseOrders": "Purchase Orders",
+  "@purchaseOrders": {},
+
+  "purchaseOrderUpdated": "Purchase order updated",
+  "@purchaseOrderUpdated": {},
+
+  "purchasePrice": "Purchase Price",
+  "@purchasePrice": {},
+
+  "quantity": "Quantity",
+  "@quantity": {
+    "description": "Quantity"
+  },
+
+  "quantityEmpty": "Quantity is empty",
+  "@quantityEmpty": {},
+
+  "quantityInvalid": "Quantity is invalid",
+  "@quantityInvalid": {},
+
+  "quantityPositive": "Quantity must be positive",
+  "@quantityPositive": {},
+
+  "queryNoResults": "No results for query",
+  "@queryNoResults": {},
+
+  "received": "Received",
+  "@received": {},
+
+  "receiveItem": "Receive Item",
+  "@receiveItem": {},
+
+  "receivedItem": "Received Stock Item",
+  "@receivedItem": {},
+
+  "refresh": "Refresh",
+  "@refresh": {},
+
+  "refreshing": "Refreshing",
+  "@refreshing": {},
+
+  "rejected": "Rejected",
+  "@rejected": {},
+
+  "releaseNotes": "Release Notes",
+  "@releaseNotes": {},
+
+  "remove": "Remove",
+  "@remove": {
+    "description": "remove"
+  },
+
+  "removeStock": "Remove Stock",
+  "@removeStock": {
+    "description": "remove stock"
+  },
+
+  "reportBug": "Report Bug",
+  "@reportBug": {},
+
+  "reportBugDescription": "Submit bug report (requires GitHub account)",
+  "@reportBugDescription": {},
+
+  "results": "Results",
+  "@results": {},
+
+  "request": "Request",
+  "@request": {},
+
+  "requestingData": "Requesting Data",
+  "@requestingData": {},
+
+  "required": "Required",
+  "@required": {
+    "description": "This field is required"
+  },
+
+  "response400": "Bad Request",
+  "@response400": {},
+
+  "response401": "Unauthorized",
+  "@response401": {},
+
+  "response403": "Permission Denied",
+  "@response403": {},
+
+  "response404": "Resource Not Found",
+  "@response404": {},
+
+  "response405": "Method Not Allowed",
+  "@response405": {},
+
+  "response429": "Too Many Requests",
+  "@response429": {},
+
+  "response500": "Internal Server Error",
+  "@response500": {},
+
+  "response501": "Not Implemented",
+  "@response501": {},
+
+  "response502": "Bad Gateway",
+  "@response502": {},
+
+  "response503": "Service Unavailable",
+  "@response503": {},
+
+  "response504": "Gateway Timeout",
+  "@response504": {},
+
+  "response505": "HTTP Version Not Supported",
+  "@response505": {},
+
+  "responseData": "Response data",
+  "@responseData": {},
+
+  "responseInvalid": "Invalid Response Code",
+  "@responseInvalid": {},
+
+  "responseUnknown": "Unknown Response",
+  "@responseUnknown": {},
+
+  "result": "Result",
+  "@result": {
+    "description": ""
+  },
+
+  "returned": "Returned",
+  "@returned": {},
+
+  "salesOrders": "Sales Orders",
+  "@salesOrders": {},
+
+  "save": "Save",
+  "@save": {
+    "description": "Save"
+  },
+
+  "scanBarcode": "Scan Barcode",
+  "@scanBarcode": {
+  },
+
+  "scanIntoLocation": "Scan Into Location",
+  "@scanIntoLocation": {},
+
+  "search": "Search",
+  "@search": {
+    "description": "search"
+  },
+
+  "searchLocation": "Search for location",
+  "@searchLocation": {},
+
+  "searchParts": "Search Parts",
+  "@searchParts": {},
+
+  "searchStock": "Search Stock",
+  "@searchStock": {},
+
+  "select": "Select",
+  "@select": {},
+
+  "selectFile": "Select File",
+  "@selectFile": {},
+
+  "selectImage": "Select Image",
+  "@selectImage": {},
+
+  "selectLocation": "Select a location",
+  "@selectLocation": {},
+
+  "send": "Send",
+  "@send": {},
+
+  "serialNumber": "Serial Number",
+  "@serialNumber": {},
+
+  "server": "Server",
+  "@server": {},
+
+  "serverAddress": "Server Address",
+  "@serverAddress": {},
+
+  "serverApiRequired": "Required API Version",
+  "@serverApiRequired": {},
+
+  "serverApiVersion": "Server API Version",
+  "@serverApiVersion": {},
+
+  "serverAuthenticationError": "Authentication Error",
+  "@serverAuthenticationError": {},
+
+  "serverCertificateError": "Cerficate Error",
+  "@serverCertificateError": {},
+
+  "serverCertificateInvalid": "Server HTTPS certificate is invalid",
+  "@serverCertificateInvalid": {},
+
+  "serverConnected": "Connected to Server",
+  "@serverConnected": {},
+
+  "serverConnecting": "Connecting to server",
+  "@serverConnecting": {},
+
+  "serverCouldNotConnect": "Could not connect to server",
+  "@serverCouldNotConnect": {},
+
+  "serverEmpty": "Server cannot be empty",
+  "@serverEmpty": {},
+
+  "serverError":  "Server Error",
+  "@serverError": {},
+
+  "serverDetails": "Server Details",
+  "@serverDetails": {},
+
+  "serverMissingData": "Server response missing required fields",
+  "@serverMissingData": {},
+
+  "serverOld": "Old Server Version",
+  "@serverOld": {},
+
+  "serverSettings": "Server Settings",
+  "@serverSettings": {},
+
+  "serverStart": "Server must start with http[s]",
+  "@serverStart": {},
+
+  "settings": "Settings",
+  "@settings": {},
+
+  "serverInstance": "Server Instance",
+  "@serverInstance": {},
+
+  "serverNotConnected": "Server not connected",
+  "@serverNotConnected": {},
+
+  "sounds": "Sounds",
+  "@sounds": {},
+
+  "soundOnBarcodeAction": "Play audible tone on barcode action",
+  "@soundOnBarcodeAction": {},
+
+  "soundOnServerError": "Play audible tone on server error",
+  "@soundOnServerError": {},
+
+  "status": "Status",
+  "@status": {},
+
+  "statusCode": "Status Code",
+  "@statusCode": {},
+
+  "stock": "Stock",
+  "@stock": {
+    "description": "stock"
+  },
+
+  "stockDetails": "Current available stock quantity",
+  "@stockDetails": {},
+
+  "stockItem": "Stock Item",
+  "@stockItem": {
+    "description": "stock item title"
+  },
+
+  "stockItems": "Stock Items",
+  "@stockItems": {},
+
+  "stockItemCreate": "New Stock Item",
+  "@stockItemCreate": {},
+
+  "stockItemCreateDetail": "Create new stock item in this location",
+  "@stockItemCreateDetail": {},
+
+  "stockItemDelete": "Delete Stock Item",
+  "@stockItemDelete": {},
+
+  "stockItemDeleteConfirm": "Are you sure you want to delete this stock item?",
+  "@stockItemDeleteConfirm": {},
+
+  "stockItemDeleteFailure": "Could not delete stock item",
+  "@stockItemDeleteFailure": {},
+
+  "stockItemDeleteSuccess": "Stock item deleted",
+  "@stockItemDeleteSuccess": {},
+
+  "stockItemHistory": "Stock History",
+  "@stockItemHistory": {},
+
+  "stockItemHistoryDetail": "Display historical stock tracking information",
+  "@stockItemHistoryDetail": {},
+
+  "stockItemTransferred": "Stock item transferred",
+  "@stockItemTransferred": {},
+
+  "stockItemUpdated": "Stock item updated",
+  "@stockItemUpdated": {},
+
+  "stockItemsNotAvailable": "No stock items available",
+  "@stockItemsNotAvailable": {},
+
+  "stockItemNotes": "Stock Item Notes",
+  "@stockItemNotes": {},
+
+  "stockItemUpdateSuccess": "Stock item updated",
+  "@stockItemUpdateSuccess": {},
+
+  "stockItemUpdateFailure": "Stock item update failed",
+  "@stockItemUpdateFailure": {},
+
+  "stockLocation": "Stock Location",
+  "@stockLocation": {
+    "description": "stock location"
+  },
+
+  "stockLocations": "Stock Locations",
+  "@stockLocations": {},
+
+  "stockTopLevel": "Top level stock location",
+  "@stockTopLevel": {},
+
+  "strictHttps": "Use Strict HTTPS",
+  "@strictHttps": {},
+
+  "strictHttpsDetails": "Enforce strict checking of HTTPs certificates",
+  "@strictHttpsDetails": {},
+
+  "subcategory": "Subcategory",
+  "@subcategory": {},
+
+  "subcategories": "Subcategories",
+  "@subcategories": {},
+
+  "sublocation": "Sublocation",
+  "@sublocation": {},
+
+  "sublocations": "Sublocations",
+  "@sublocations": {},
+
+  "sublocationNone": "No Sublocations",
+  "@sublocationNone": {},
+
+  "sublocationNoneDetail": "No sublocations available",
+  "@sublocationNoneDetail": {},
+
+  "submitFeedback": "Submit Feedback",
+  "@submitFeedback": {},
+
+  "suppliedParts": "Supplied Parts",
+  "@suppliedParts": {},
+
+  "supplier": "Supplier",
+  "@supplier": {},
+
+  "suppliers": "Suppliers",
+  "@suppliers": {},
+
+  "supplierReference": "Supplier Reference",
+  "@supplierReference": {},
+
+  "takePicture": "Take Picture",
+  "@takePicture": {},
+
+  "targetDate": "Target Date",
+  "@targetDate": {},
+
+  "templatePart": "Parent Template Part",
+  "@templatePart": {},
+
+  "testName": "Test Name",
+  "@testName": {},
+
+  "testPassedOrFailed": "Test passed or failed",
+  "@testPassedOrFailed": {},
+
+  "testsRequired": "Required Tests",
+  "@testsRequired": {},
+
+  "testResults": "Test Results",
+  "@testResults": {
+    "description": ""
+  },
+
+  "testResultAdd": "Add Test Result",
+  "@testResultAdd": {},
+
+  "testResultNone": "No Test Results",
+  "@testResultNone": {},
+
+  "testResultNoneDetail": "No test results available",
+  "@testResultNoneDetail": {},
+
+  "testResultUploadFail": "Error uploading test result",
+  "@testResultUploadFail": {},
+
+  "testResultUploadPass": "Test result uploaded",
+  "@testResultUploadPass": {},
+
+  "timeout": "Timeout",
+  "@timeout": {
+    "description": ""
+  },
+
+  "tokenError": "Token Error",
+  "@tokenError": {},
+
+  "tokenMissing": "Missing Token",
+  "@tokenMissing": {},
+
+  "tokenMissingFromResponse": "Access token missing from response",
+  "@tokenMissingFromResponse": {},
+
+  "transfer": "Transfer",
+  "@transfer": {
+    "description": "transfer"
+  },
+
+  "transferStock": "Transfer Stock",
+  "@transferStock": {
+    "description": "transfer stock"
+  },
+
+  "translate": "Translate",
+  "@translate": {},
+
+  "translateHelp": "Help translate the InvenTree app",
+  "@translateHelp": {},
+
+  "units": "Units",
+  "@units": {},
+
+  "unknownResponse": "Unknown Response",
+  "@unknownResponse": {},
+
+  "upload": "Upload",
+  "@upload": {},
+
+  "uploadFailed": "File upload failed",
+  "@uploadFailed": {},
+
+  "uploadSuccess": "File uploaded",
+  "@uploadSuccess": {},
+
+  "usedIn": "Used In",
+  "@usedIn": {},
+
+  "usedInDetails": "Assemblies which require this part",
+  "@usedInDetails": {},
+
+  "username": "Username",
+  "@username": {},
+
+  "usernameEmpty": "Username cannot be empty",
+  "@usernameEmpty": {},
+
+  "value": "Value",
+  "@value": {
+    "description": "value"
+  },
+
+  "valueCannotBeEmpty": "Value cannot be empty",
+  "@valueCannotBeEmpty": {},
+
+  "valueRequired": "Value is required",
+  "@valueRequired": {},
+
+  "version": "Version",
+  "@version": {},
+
+  "viewSupplierPart": "View Supplier Part",
+  "@viewSupplierPart": {},
+
+  "website": "Website",
+  "@website": {}
+}
