@@ -74,6 +74,10 @@ if __name__ == '__main__':
 
     here = os.path.abspath(os.path.dirname(__file__))
 
+    # Ensure the 'collected' output directory exists
+    output_dir = os.path.join(here, 'collected')
+    os.makedirs(output_dir, exist_ok=True)
+
     for item in os.listdir(here):
 
         # Ignore the output directory
