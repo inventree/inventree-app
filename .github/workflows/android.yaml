@@ -32,10 +32,6 @@ jobs:
       uses: gradle/gradle-build-action@v2
       with:
         gradle-version: 6.1.1
-    - name: Collect Translations
-      run: |
-        cd lib/l10n
-        python3 collect_translations.py
     - name: Build for Android
       run: |
         flutter pub get
