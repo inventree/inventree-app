@@ -1,9 +1,5 @@
 {
-    "@@locale": "ko",
-    "appTitle": "InvenTree",
-    "@appTitle": {
-        "description": "InvenTree application title string"
-    },
+    "@@locale": "en",
     "add": "추가",
     "@add": {
         "description": "add"
