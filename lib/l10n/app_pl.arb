@@ -1,13 +1,5 @@
 {
-    "@@locale": "pl",
-    "appTitle": "InvenTree",
-    "@appTitle": {
-        "description": "InvenTree application title string"
-    },
-    "ok": "OK",
-    "@ok": {
-        "description": "OK"
-    },
+    "@@locale": "en",
     "about": "O nas",
     "@about": {},
     "accountDetails": "Szczegóły konta",
@@ -92,8 +84,6 @@
     "@batchCode": {},
     "billOfMaterials": "Zestawienie materiałów",
     "@billOfMaterials": {},
-    "bom": "BOM",
-    "@bom": {},
     "build": "Budowa",
     "@build": {},
     "building": "Budowanie",
@@ -256,8 +246,6 @@
     "@incompleteDetails": {},
     "internalPartNumber": "Wewnętrzny numer części",
     "@internalPartNumber": {},
-    "info": "Info",
-    "@info": {},
     "inProduction": "W produkcji",
     "@inProduction": {},
     "inProductionDetail": "Ten przedmiot magazynowy jest w produkcji",
@@ -298,8 +286,6 @@
     "@locationNotSet": {},
     "locationUpdated": "Lokalizacja stanu magazynowego została zaktualizowana",
     "@locationUpdated": {},
-    "link": "Link",
-    "@link": {},
     "lost": "Zagubiono",
     "@lost": {},
     "manufacturers": "Producenci",
@@ -582,8 +568,6 @@
     "@soundOnBarcodeAction": {},
     "soundOnServerError": "Odtwarzaj dźwięk podczas błędu serwera",
     "@soundOnServerError": {},
-    "status": "Status",
-    "@status": {},
     "statusCode": "Kod statusu",
     "@statusCode": {},
     "stock": "Stan",
