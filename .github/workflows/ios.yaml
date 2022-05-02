@@ -28,6 +28,10 @@ jobs:
       uses: subosito/flutter-action@v1
       with:
         flutter-version: '2.10.3'
+    - name: Collect Translations
+      run: |
+        cd lib/l10n
+        python3 collect_translations.py
     - name: Build for iOS
       run: |
         flutter pub get

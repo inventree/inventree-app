@@ -1,0 +1,3 @@
+files:
+  - source: app_en.arb
+    translation: app_%two_letters_code%.arb

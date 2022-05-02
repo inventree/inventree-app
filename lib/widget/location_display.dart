@@ -117,7 +117,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
     // Reload location information
     if (location != null) {
-      final bool result = await location?.reload() ?? false;
+      final bool result = await location!.reload();
 
       if (!result) {
         Navigator.of(context).pop();

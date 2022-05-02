@@ -18,7 +18,7 @@ Ensure that the translation files have been updated, and copied into the correct
 
 ```
 cd lib/l10n
-python update_translations.py
+python collect_translations.py
 ```
 
 ### Build Appbundle
