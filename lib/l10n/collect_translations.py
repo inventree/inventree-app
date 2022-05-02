@@ -105,7 +105,7 @@ def generate_locale_list(locales):
                 lc = locale
                 cc = ''
             
-            output.write(f'    const Locale("{lc}", "{cc}"),   // Translations available in app_{locale}.arb\n')
+            output.write(f'    Locale("{lc}", "{cc}"),   // Translations available in app_{locale}.arb\n')
 
         output.write("];\n")
         output.write("")
