@@ -1,13 +1,5 @@
 {
-    "@@locale": "hu",
-    "appTitle": "InvenTree",
-    "@appTitle": {
-        "description": "InvenTree application title string"
-    },
-    "ok": "OK",
-    "@ok": {
-        "description": "OK"
-    },
+    "@@locale": "en",
     "about": "Névjegy",
     "@about": {},
     "accountDetails": "Felhasználó adatok",
@@ -300,8 +292,6 @@
     "@locationNotSet": {},
     "locationUpdated": "Készlet hely adatai frissítve",
     "@locationUpdated": {},
-    "link": "Link",
-    "@link": {},
     "lost": "Elveszett",
     "@lost": {},
     "manufacturers": "Gyártók",
