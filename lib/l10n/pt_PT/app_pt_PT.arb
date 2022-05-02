@@ -1,13 +1,5 @@
 {
-    "@@locale": "pt",
-    "appTitle": "InvenTree",
-    "@appTitle": {
-        "description": "InvenTree application title string"
-    },
-    "ok": "OK",
-    "@ok": {
-        "description": "OK"
-    },
+    "@@locale": "en",
     "about": "Sobre",
     "@about": {},
     "accountDetails": "Detalhes da Conta",

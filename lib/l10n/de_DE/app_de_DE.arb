@@ -1,13 +1,5 @@
 {
-    "@@locale": "de",
-    "appTitle": "InvenTree",
-    "@appTitle": {
-        "description": "InvenTree application title string"
-    },
-    "ok": "OK",
-    "@ok": {
-        "description": "OK"
-    },
+    "@@locale": "en",
     "about": "Über",
     "@about": {},
     "accountDetails": "Konto Details",
@@ -150,10 +142,6 @@
     "@description": {},
     "destroyed": "Vernichtet",
     "@destroyed": {},
-    "details": "Details",
-    "@details": {
-        "description": "details"
-    },
     "documentation": "Dokumentation",
     "@documentation": {},
     "downloading": "Datei wird heruntergeladen",
@@ -198,8 +186,6 @@
     "@errorReportUpload": {},
     "errorReportUploadDetails": "Anonyme Fehlerberichte und Absturzprotokolle hochladen",
     "@errorReportUploadDetails": {},
-    "feedback": "Feedback",
-    "@feedback": {},
     "feedbackError": "Fehler beim Senden des Feedbacks",
     "@feedbackError": {},
     "feedbackSuccess": "Feedback gesendet",
@@ -258,8 +244,6 @@
     "@incompleteDetails": {},
     "internalPartNumber": "Interne Teilenummer",
     "@internalPartNumber": {},
-    "info": "Info",
-    "@info": {},
     "inProduction": "In Produktion",
     "@inProduction": {},
     "inProductionDetail": "Dieser Lagerbestand ist in der Produktion",
@@ -300,16 +284,12 @@
     "@locationNotSet": {},
     "locationUpdated": "Lagerort aktualisiert",
     "@locationUpdated": {},
-    "link": "Link",
-    "@link": {},
     "lost": "Verloren",
     "@lost": {},
     "manufacturers": "Hersteller",
     "@manufacturers": {},
     "missingData": "Fehlende Daten",
     "@missingData": {},
-    "name": "Name",
-    "@name": {},
     "notConnected": "Nicht verbunden",
     "@notConnected": {},
     "notes": "Notizen",
@@ -538,8 +518,6 @@
     "@send": {},
     "serialNumber": "Seriennummer",
     "@serialNumber": {},
-    "server": "Server",
-    "@server": {},
     "serverAddress": "Serveradresse",
     "@serverAddress": {},
     "serverApiRequired": "Erforderliche API-Version",
@@ -584,8 +562,6 @@
     "@soundOnBarcodeAction": {},
     "soundOnServerError": "Ton bei Serverfehler abspielen",
     "@soundOnServerError": {},
-    "status": "Status",
-    "@status": {},
     "statusCode": "Statuscode",
     "@statusCode": {},
     "stock": "Bestand",
@@ -736,10 +712,6 @@
     "@valueCannotBeEmpty": {},
     "valueRequired": "Wert erforderlich",
     "@valueRequired": {},
-    "version": "Version",
-    "@version": {},
     "viewSupplierPart": "Zulieferer-Teil anzeigen",
-    "@viewSupplierPart": {},
-    "website": "Website",
-    "@website": {}
+    "@viewSupplierPart": {}
 }

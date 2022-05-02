@@ -1,13 +1,5 @@
 {
-    "@@locale": "ja",
-    "appTitle": "InvenTree",
-    "@appTitle": {
-        "description": "InvenTree application title string"
-    },
-    "ok": "OK",
-    "@ok": {
-        "description": "OK"
-    },
+    "@@locale": "en",
     "about": "概要",
     "@about": {},
     "accountDetails": "アカウントの詳細",
@@ -84,16 +76,10 @@
     "@barcodeScanIntoLocationFailure": {},
     "barcodeScanItem": "在庫アイテムをスキャン",
     "@barcodeScanItem": {},
-    "barcodeTones": "Barcode Tones",
-    "@barcodeTones": {},
     "barcodeUnassign": "バーコードの割り当てを解除",
     "@barcodeUnassign": {},
     "barcodeUnknown": "バーコードが認識されません",
     "@barcodeUnknown": {},
-    "billOfMaterials": "Bill of Materials",
-    "@billOfMaterials": {},
-    "bom": "BOM",
-    "@bom": {},
     "build": "ビルド",
     "@build": {},
     "building": "ビルド",
