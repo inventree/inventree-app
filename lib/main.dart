@@ -71,9 +71,9 @@ class InvenTreeApp extends StatelessWidget {
       localizationsDelegates: [
         I18N.delegate,
         GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
       ],
-      locale: const Locale("hu"),
       supportedLocales: supported_locales,
     );
   }
