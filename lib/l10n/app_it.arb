@@ -1,13 +1,5 @@
 {
-    "@@locale": "it",
-    "appTitle": "InvenTree",
-    "@appTitle": {
-        "description": "InvenTree application title string"
-    },
-    "ok": "OK",
-    "@ok": {
-        "description": "OK"
-    },
+    "@@locale": "en",
     "about": "Info",
     "@about": {},
     "accountDetails": "Dettagli account",
@@ -176,8 +168,6 @@
     "@includeSubcategories": {},
     "incompleteDetails": "Ti preghiamo di completare i dati del tuo account",
     "@incompleteDetails": {},
-    "info": "Info",
-    "@info": {},
     "invalidHost": "Nome host non valido",
     "@invalidHost": {},
     "invalidHostDetails": "Il nome host fornito non è valido",
@@ -232,8 +222,6 @@
     },
     "partSuppliers": "Fornitori articoli",
     "@partSuppliers": {},
-    "password": "Password",
-    "@password": {},
     "passwordEmpty": "La password non può essere vuota",
     "@passwordEmpty": {},
     "permissionAccountDenied": "Non disponi dei permessi per eseguire l'azione",
@@ -366,8 +354,6 @@
     "@send": {},
     "serialNumber": "Numero seriale",
     "@serialNumber": {},
-    "server": "Server",
-    "@server": {},
     "serverAddress": "Indirizzo del server",
     "@serverAddress": {},
     "serverApiRequired": "Versione API Richiesta",
