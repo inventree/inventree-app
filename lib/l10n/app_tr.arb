@@ -1,9 +1,5 @@
 {
-    "@@locale": "tr",
-    "appTitle": "InvenTree",
-    "@appTitle": {
-        "description": "InvenTree application title string"
-    },
+    "@@locale": "en",
     "ok": "TAMAM",
     "@ok": {
         "description": "OK"
@@ -92,8 +88,6 @@
     "@batchCode": {},
     "billOfMaterials": "Fatura materyalleri",
     "@billOfMaterials": {},
-    "bom": "BOM",
-    "@bom": {},
     "build": "Oluştur",
     "@build": {},
     "building": "Oluşturma",
