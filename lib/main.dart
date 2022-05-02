@@ -12,6 +12,9 @@ import "package:inventree/inventree/sentry.dart";
 import "package:inventree/dsn.dart";
 import "package:inventree/widget/home.dart";
 
+// Supported translations are automatically updated
+import "package:inventree/l10n/supported_locales.dart";
+
 
 Future<void> main() async {
 
@@ -69,36 +72,9 @@ class InvenTreeApp extends StatelessWidget {
         I18N.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: [
-        const Locale("cs", ""),   // Czech
-        const Locale("de", ""),   // German
-        const Locale("el", ""),   // Greek
-        const Locale("en", ""),   // English
-        const Locale("es-ES", ""),   // Spanish
-        const Locale("es-MX", ""),   // Spanish (mexican)
-        const Locale("fa", ""),   // Farsi (Persian)
-        const Locale("fr", ""),   // French
-        const Locale("he", ""),   // Hebrew
-        const Locale("hu", ""),   // Hungarian
-        const Locale("id", ""),   // Indonesian
-        const Locale("it", ""),   // Italian
-        const Locale("ja", ""),   // Japanese
-        const Locale("ko", ""),   // Korean
-        const Locale("nl", ""),   // Dutch
-        const Locale("no", ""),   // Norwegian
-        const Locale("pl", ""),   // Polish
-        const Locale("pt", ""),   // Portuguese
-        const Locale("pt-BR", ""),
-        const Locale("ru", ""),   // Russian
-        const Locale("sv", ""),   // Swedish
-        const Locale("th", ""),   // Thai
-        const Locale("tr", ""),   // Turkish
-        const Locale("vi", ""),   // Vietnamese
-        const Locale("zh-CN", ""),   // Chinese
-      ],
-
+      locale: const Locale("hu"),
+      supportedLocales: supported_locales,
     );
   }
 }

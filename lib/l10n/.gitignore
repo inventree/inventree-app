@@ -1,2 +1,3 @@
 # Do not track the collected translation files
 collected/
+supported_locales.dart
