@@ -1,21 +1,9 @@
 {
-    "@@locale": "fr",
-    "appTitle": "InvenTree",
-    "@appTitle": {
-        "description": "InvenTree application title string"
-    },
-    "ok": "OK",
-    "@ok": {
-        "description": "OK"
-    },
+    "@@locale": "en",
     "about": "À propos",
     "@about": {},
     "accountDetails": "Détails du compte",
     "@accountDetails": {},
-    "actions": "Actions",
-    "@actions": {
-        "description": ""
-    },
     "actionsNone": "Aucune action disponible",
     "@actionsNone": {},
     "add": "Ajouter",
@@ -52,8 +40,6 @@
     "@attachmentNonePartDetail": {},
     "attachmentSelect": "Sélectionner une pièce jointe",
     "@attachmentSelect": {},
-    "attention": "Attention",
-    "@attention": {},
     "availableStock": "Stock disponible",
     "@availableStock": {},
     "barcodeAssign": "Affecter un code-barres",
@@ -94,8 +80,6 @@
     "@batchCode": {},
     "billOfMaterials": "Liste des matériaux",
     "@billOfMaterials": {},
-    "bom": "BOM",
-    "@bom": {},
     "build": "Assemblage",
     "@build": {},
     "building": "Assemblage en cours",
@@ -146,16 +130,12 @@
     "@deletePart": {},
     "deletePartDetail": "Supprimer cette pièce de la base de données",
     "@deletePartDetail": {},
-    "description": "Description",
-    "@description": {},
     "destroyed": "Détruit",
     "@destroyed": {},
     "details": "Détails",
     "@details": {
         "description": "details"
     },
-    "documentation": "Documentation",
-    "@documentation": {},
     "downloading": "Téléchargement du fichier",
     "@downloading": {},
     "downloadError": "Erreur lors du téléchargement",
@@ -312,10 +292,6 @@
     "@name": {},
     "notConnected": "Non connecté",
     "@notConnected": {},
-    "notes": "Notes",
-    "@notes": {
-        "description": "Notes"
-    },
     "noResponse": "Aucune réponse du serveur",
     "@noResponse": {},
     "noResults": "Aucun résultat",
@@ -334,8 +310,6 @@
     "@packaging": {},
     "packageName": "Nom du package",
     "@packageName": {},
-    "parent": "Parent",
-    "@parent": {},
     "parentCategory": "Catégorie parent",
     "@parentCategory": {},
     "parentLocation": "Emplacement parent",
@@ -588,10 +562,6 @@
     "@status": {},
     "statusCode": "Code d'état",
     "@statusCode": {},
-    "stock": "Stock",
-    "@stock": {
-        "description": "stock"
-    },
     "stockDetails": "Quantité actuelle de stock disponible",
     "@stockDetails": {},
     "stockItem": "Article en stock",
@@ -734,8 +704,6 @@
     "@valueCannotBeEmpty": {},
     "valueRequired": "La valeur est requise",
     "@valueRequired": {},
-    "version": "Version",
-    "@version": {},
     "viewSupplierPart": "Voir la pièce du fournisseur",
     "@viewSupplierPart": {},
     "website": "Site web",
