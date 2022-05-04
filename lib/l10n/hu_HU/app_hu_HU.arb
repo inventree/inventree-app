@@ -214,8 +214,8 @@
     "@history": {
         "description": "history"
     },
-    "homeScreen": "Főképernyő",
     "@homeScreen": {},
+    "homeScreen": "Főképernyő",
     "homeScreenSettings": "Főképernyő beállítások konfigurálása",
     "@homeScreenSettings": {},
     "homeShowPo": "Beszerzési rendelések megjelenítése",
