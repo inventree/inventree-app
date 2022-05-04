@@ -41,11 +41,11 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
 
   }
 
-  bool homeShowPo = true;
-  bool homeShowSubscribed = true;
-  bool homeShowManufacturers = true;
-  bool homeShowCustomers = true;
-  bool homeShowSuppliers = true;
+  bool homeShowPo = false;
+  bool homeShowSubscribed = false;
+  bool homeShowManufacturers = false;
+  bool homeShowCustomers = false;
+  bool homeShowSuppliers = false;
 
   final GlobalKey<_InvenTreeHomePageState> _homeKey = GlobalKey<_InvenTreeHomePageState>();
 
@@ -169,7 +169,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
   }
 
 
-  Widget _iconButton(BuildContext context, String label, IconData icon, {Function()? callback, String role = "", String permission = ""}) {
+  Widget _listTile(BuildContext context, String label, IconData icon, {Function()? callback, String role = "", String permission = ""}) {
 
     bool connected = InvenTreeAPI().isConnected();
 
@@ -182,27 +182,13 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     return GestureDetector(
       child: Card(
         margin: EdgeInsets.symmetric(
-          vertical: 12,
+          vertical: 5,
           horizontal: 12
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            FaIcon(
-              icon,
-              color: connected && allowed ? COLOR_CLICK : Colors.grey,
-            ),
-            Divider(
-              height: 15,
-              thickness: 0,
-              color: Colors.transparent,
-            ),
-            Text(
-              label,
-              textAlign: TextAlign.center,
-            ),
-          ]
-        )
+        child: ListTile(
+          leading: FaIcon(icon, color: connected && allowed ? COLOR_CLICK : Colors.grey),
+          title: Text(label),
+        ),
       ),
       onTap: () {
 
@@ -224,12 +210,12 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     );
   }
 
-  List<Widget> getGridTiles(BuildContext context) {
+  List<Widget> getListTiles(BuildContext context) {
 
     List<Widget> tiles = [];
 
     // Barcode scanner
-    tiles.add(_iconButton(
+    tiles.add(_listTile(
       context,
       L10().scanBarcode,
       Icons.qr_code_scanner,
@@ -239,7 +225,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     ));
 
     // Search widget
-    tiles.add(_iconButton(
+    tiles.add(_listTile(
       context,
       L10().search,
       FontAwesomeIcons.search,
@@ -249,7 +235,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     ));
 
     // Parts
-    tiles.add(_iconButton(
+    tiles.add(_listTile(
       context,
       L10().parts,
       FontAwesomeIcons.shapes,
@@ -260,7 +246,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
 
     // Starred parts
     if (homeShowSubscribed) {
-      tiles.add(_iconButton(
+      tiles.add(_listTile(
         context,
         L10().partsStarred,
         FontAwesomeIcons.bell,
@@ -271,7 +257,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     }
 
     // Stock button
-    tiles.add(_iconButton(
+    tiles.add(_listTile(
         context,
         L10().stock,
         FontAwesomeIcons.boxes,
@@ -282,7 +268,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
 
     // Purchase orderes
     if (homeShowPo) {
-      tiles.add(_iconButton(
+      tiles.add(_listTile(
           context,
           L10().purchaseOrders,
           FontAwesomeIcons.shoppingCart,
@@ -294,7 +280,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
 
     // Suppliers
     if (homeShowSuppliers) {
-      tiles.add(_iconButton(
+      tiles.add(_listTile(
           context,
           L10().suppliers,
           FontAwesomeIcons.building,
@@ -306,7 +292,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
 
     // Manufacturers
     if (homeShowManufacturers) {
-      tiles.add(_iconButton(
+      tiles.add(_listTile(
           context,
           L10().manufacturers,
           FontAwesomeIcons.industry,
@@ -318,7 +304,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
 
     // Customers
     if (homeShowCustomers) {
-      tiles.add(_iconButton(
+      tiles.add(_listTile(
           context,
           L10().customers,
           FontAwesomeIcons.userTie,
@@ -329,7 +315,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     }
 
     // Settings
-    tiles.add(_iconButton(
+    tiles.add(_listTile(
         context,
         L10().settings,
         FontAwesomeIcons.cogs,
@@ -360,15 +346,9 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
       ),
       drawer: InvenTreeDrawer(context),
       body: ListView(
-        children: [
-          GridView.extent(
-            maxCrossAxisExtent: 140,
-            shrinkWrap: true,
-            physics: ClampingScrollPhysics(),
-            children: getGridTiles(context),
-          ),
-        ],
-      ),
+        scrollDirection: Axis.vertical,
+        children: getListTiles(context),
+      )
     );
   }
 }
