@@ -55,7 +55,6 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
   // Selected user profile
   UserProfile? _profile;
 
-
   void _scan(BuildContext context) {
     if (!InvenTreeAPI().checkConnection(context)) return;
 
@@ -316,7 +315,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
   Widget getBody(BuildContext context) {
     switch (_tabIndex) {
       case 1: // Search widget
-        return SearchWidget();
+        return SearchWidget(false);
       case 2: // Notification widget
       case 0: // Home widget
       default:

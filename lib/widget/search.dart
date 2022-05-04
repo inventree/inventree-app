@@ -21,15 +21,32 @@ import "package:inventree/widget/location_list.dart";
 // Widget for performing database-wide search
 class SearchWidget extends StatefulWidget {
 
+  SearchWidget(this.hasAppbar);
+
+  final bool hasAppbar;
+
   @override
-  _SearchDisplayState createState() => _SearchDisplayState();
+  _SearchDisplayState createState() => _SearchDisplayState(hasAppbar);
 
 }
 
-class _SearchDisplayState extends State<SearchWidget> {
+class _SearchDisplayState extends RefreshableState<SearchWidget> {
+
+  _SearchDisplayState(this.hasAppBar) : super();
+
+  final bool hasAppBar;
 
   @override
   String getAppBarTitle(BuildContext context) => L10().search;
+
+  @override
+  AppBar? buildAppBar(BuildContext context) {
+    if (hasAppBar) {
+      return super.buildAppBar(context);
+    } else {
+      return null;
+    }
+  }
 
   final TextEditingController searchController = TextEditingController();
 
@@ -333,7 +350,7 @@ class _SearchDisplayState extends State<SearchWidget> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget getBody(BuildContext context) {
     return Center(
       child: ListView(
         children: ListTile.divideTiles(

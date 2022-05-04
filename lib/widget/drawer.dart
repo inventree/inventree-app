@@ -41,7 +41,7 @@ class InvenTreeDrawer extends StatelessWidget {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => SearchWidget()
+            builder: (context) => SearchWidget(true)
         )
     );
   }
