@@ -5,6 +5,7 @@
 ---
 
 - Refactor home screen display
+- Display unread notifications on home screen
 
 ### 0.6.2 - April 2022
 ---
