@@ -200,8 +200,8 @@
     "@history": {
         "description": "history"
     },
-    "homeScreen": "Startseite",
     "@homeScreen": {},
+    "homeScreen": "Startseite",
     "homeScreenSettings": "Einstellungen für Startseite konfigurieren",
     "@homeScreenSettings": {},
     "homeShowPo": "Bestellungen anzeigen",
