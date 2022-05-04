@@ -640,6 +640,9 @@
   "quantityPositive": "Quantity must be positive",
   "@quantityPositive": {},
 
+  "queryEmpty": "Enter search query",
+  "@queryEmpty": {},
+
   "queryNoResults": "No results for query",
   "@queryNoResults": {},
 

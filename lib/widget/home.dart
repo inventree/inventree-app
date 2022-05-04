@@ -378,11 +378,11 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
             icon: _notificationCounter == 0 ? FaIcon(FontAwesomeIcons.bell) : Stack(
               children: <Widget>[
                 FaIcon(FontAwesomeIcons.bell),
-                new Positioned(
+                Positioned(
                   right: 0,
-                  child: new Container(
+                  child: Container(
                     padding: EdgeInsets.all(2),
-                    decoration: new BoxDecoration(
+                    decoration: BoxDecoration(
                       color: Colors.red,
                       borderRadius: BorderRadius.circular(20),
                     ),
@@ -390,9 +390,9 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
                       minWidth: 12,
                       minHeight: 12,
                     ),
-                    child: new Text(
+                    child: Text(
                       "${_notificationCounter}",
-                      style: new TextStyle(
+                      style: TextStyle(
                         color: Colors.white,
                         fontSize: 9,
                       ),

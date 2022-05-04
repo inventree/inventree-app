@@ -21,7 +21,7 @@ import "package:inventree/widget/location_list.dart";
 // Widget for performing database-wide search
 class SearchWidget extends StatefulWidget {
 
-  SearchWidget(this.hasAppbar);
+  const SearchWidget(this.hasAppbar);
 
   final bool hasAppbar;
 
@@ -172,12 +172,15 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
         child: ListTile(
           title: TextField(
             readOnly: false,
+            decoration: InputDecoration(
+              helperText: L10().queryEmpty,
+            ),
             controller: searchController,
             onChanged: (String text) {
               onSearchTextChanged(text);
             },
           ),
-          leading: IconButton(
+          trailing: IconButton(
             icon: FaIcon(FontAwesomeIcons.backspace, color: Colors.red),
             onPressed: () {
               searchController.clear();
@@ -332,7 +335,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
       );
     }
 
-    if (results.isEmpty) {
+    if (results.isEmpty && searchController.text.isNotEmpty) {
       tiles.add(
         ListTile(
           title: Text(L10().queryNoResults),
