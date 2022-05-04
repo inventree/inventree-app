@@ -202,8 +202,8 @@
     "@history": {
         "description": "history"
     },
-    "homeScreen": "Ekran główny",
     "@homeScreen": {},
+    "homeScreen": "Ekran główny",
     "homeScreenSettings": "Konfiguruj ustawienia ekranu głównego",
     "@homeScreenSettings": {},
     "homeShowPo": "Pokaż zamówienia zakupu",
