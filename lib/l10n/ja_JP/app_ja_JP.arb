@@ -198,8 +198,8 @@
     "@history": {
         "description": "history"
     },
-    "homeScreen": "ホーム画面",
     "@homeScreen": {},
+    "homeScreen": "ホーム画面",
     "homeScreenSettings": "ホーム画面の設定",
     "@homeScreenSettings": {},
     "homeShowPo": "注文書を表示",
