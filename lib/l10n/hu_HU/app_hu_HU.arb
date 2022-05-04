@@ -214,6 +214,7 @@
     "@history": {
         "description": "history"
     },
+    "home": "Főoldal",
     "@homeScreen": {},
     "homeScreen": "Főképernyő",
     "homeScreenSettings": "Főképernyő beállítások konfigurálása",
@@ -316,6 +317,10 @@
     "@notes": {
         "description": "Notes"
     },
+    "notifications": "Értesítések",
+    "@notifications": {},
+    "notificationsEmpty": "Nincsenek olvasatlan értesítések",
+    "@notificationsEmpty": {},
     "noResponse": "Nincs válasz a kiszolgálótól",
     "@noResponse": {},
     "noResults": "Nincs találat",
@@ -432,6 +437,8 @@
     "@quantityInvalid": {},
     "quantityPositive": "Mennyiség pozitív kell legyen",
     "@quantityPositive": {},
+    "queryEmpty": "Add meg a keresési lekérdezést",
+    "@queryEmpty": {},
     "queryNoResults": "Nincs találat",
     "@queryNoResults": {},
     "received": "Beérkezett",
