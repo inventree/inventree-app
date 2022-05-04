@@ -41,6 +41,9 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
 
   }
 
+  // Index of bottom navigation bar
+  int _tabIndex = 0;
+
   bool homeShowPo = false;
   bool homeShowSubscribed = false;
   bool homeShowManufacturers = false;
@@ -52,17 +55,6 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
   // Selected user profile
   UserProfile? _profile;
 
-  void _search(BuildContext context) {
-    if (!InvenTreeAPI().checkConnection(context)) return;
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SearchWidget()
-      )
-    );
-
-  }
 
   void _scan(BuildContext context) {
     if (!InvenTreeAPI().checkConnection(context)) return;
@@ -224,16 +216,6 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
       }
     ));
 
-    // Search widget
-    tiles.add(_listTile(
-      context,
-      L10().search,
-      FontAwesomeIcons.search,
-      callback: () {
-        _search(context);
-      }
-    ));
-
     // Parts
     tiles.add(_listTile(
       context,
@@ -327,6 +309,52 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     return tiles;
   }
 
+  /*
+   * Return the main body widget for display.
+   * This depends on the current value of _tabIndex
+   */
+  Widget getBody(BuildContext context) {
+    switch (_tabIndex) {
+      case 1: // Search widget
+        return SearchWidget();
+      case 2: // Notification widget
+      case 0: // Home widget
+      default:
+        return ListView(
+          scrollDirection: Axis.vertical,
+          children: getListTiles(context),
+      );
+    }
+  }
+
+  /*
+   * Construct the bottom navigation bar
+   */
+  List<BottomNavigationBarItem> getNavBarItems(BuildContext context) {
+
+    List<BottomNavigationBarItem> items = <BottomNavigationBarItem>[
+      BottomNavigationBarItem(
+        icon: FaIcon(FontAwesomeIcons.home),
+        label: L10().home,
+      ),
+      BottomNavigationBarItem(
+        icon: FaIcon(FontAwesomeIcons.search),
+        label: L10().search,
+      ),
+    ];
+
+    if (InvenTreeAPI().supportsNotifications) {
+      items.add(
+          BottomNavigationBarItem(
+            icon: FaIcon(FontAwesomeIcons.bell),
+            label: L10().notifications,
+          )
+      );
+    }
+
+    return items;
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -345,10 +373,16 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
         ],
       ),
       drawer: InvenTreeDrawer(context),
-      body: ListView(
-        scrollDirection: Axis.vertical,
-        children: getListTiles(context),
-      )
+      body: getBody(context),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _tabIndex,
+        onTap: (int index) {
+          setState(() {
+            _tabIndex = index;
+          });
+        },
+        items: getNavBarItems(context),
+      ),
     );
   }
 }

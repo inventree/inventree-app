@@ -308,6 +308,9 @@
     "description": "history"
   },
 
+  "home": "Home",
+  "@homeScreen": {},
+
   "homeScreen": "Home Screen",
   "@homeScreen": {},
 
@@ -460,6 +463,9 @@
   "@notes": {
     "description": "Notes"
   },
+
+  "notifications": "Notifications",
+  "@notifications": {},
 
   "noResponse": "No Response from Server",
   "@noResponse": {},

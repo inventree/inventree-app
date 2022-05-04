@@ -26,7 +26,7 @@ class SearchWidget extends StatefulWidget {
 
 }
 
-class _SearchDisplayState extends RefreshableState<SearchWidget> {
+class _SearchDisplayState extends State<SearchWidget> {
 
   @override
   String getAppBarTitle(BuildContext context) => L10().search;
@@ -333,7 +333,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
   }
 
   @override
-  Widget getBody(BuildContext context) {
+  Widget build(BuildContext context) {
     return Center(
       child: ListView(
         children: ListTile.divideTiles(

@@ -174,7 +174,6 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
           icon: FaIcon(FontAwesomeIcons.shapes),
           label: L10().parts,
         ),
-        // TODO - Add the "actions" item back in
         BottomNavigationBarItem(
           icon: FaIcon(FontAwesomeIcons.wrench),
           label: L10().actions
