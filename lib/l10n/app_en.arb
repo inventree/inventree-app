@@ -467,6 +467,9 @@
   "notifications": "Notifications",
   "@notifications": {},
 
+   "notificationsEmpty": "No unread notifications",
+   "@notificationsEmpty": {},
+
   "noResponse": "No Response from Server",
   "@noResponse": {},
 

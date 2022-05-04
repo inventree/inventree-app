@@ -1,8 +1,15 @@
 
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:inventree/widget/refreshable_state.dart';
+import "package:flutter/cupertino.dart";
+import "package:flutter/material.dart";
+
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+
+import "package:inventree/l10.dart";
+import "package:inventree/inventree/model.dart";
+import "package:inventree/inventree/notification.dart";
+import "package:inventree/widget/refreshable_state.dart";
+
 
 class NotificationWidget extends StatefulWidget {
 
@@ -16,6 +23,8 @@ class _NotificationState extends RefreshableState<NotificationWidget> {
 
   _NotificationState() : super();
 
+  List<InvenTreeNotification> notifications = [];
+
   @override
   AppBar? buildAppBar(BuildContext context) {
     // No app bar for the notification widget
@@ -24,7 +33,14 @@ class _NotificationState extends RefreshableState<NotificationWidget> {
 
   @override
   Future<void> request (BuildContext context) async {
-    print("requesting notifications!");
+
+    final results = await InvenTreeNotification().list();
+
+    for (InvenTreeModel n in results) {
+      if (n is InvenTreeNotification) {
+        notifications.add(n);
+      }
+    }
   }
 
   List<Widget> renderNotifications(BuildContext context) {
@@ -33,10 +49,29 @@ class _NotificationState extends RefreshableState<NotificationWidget> {
 
     tiles.add(
       ListTile(
-        title: Text("Not"),
-        subtitle: Text("subtitle yatyayaya"),
+        title: Text(
+          L10().notifications,
+        ),
+        subtitle: notifications.isEmpty ? Text(L10().notificationsEmpty) : null,
+        leading: notifications.isEmpty ? FaIcon(FontAwesomeIcons.bellSlash) : FaIcon(FontAwesomeIcons.bell),
+        trailing: Text("${notifications.length}"),
       )
     );
+
+    for (var notification in notifications) {
+      tiles.add(
+        ListTile(
+          title: Text(notification.name),
+          subtitle: Text(notification.message),
+          trailing: IconButton(
+            icon: FaIcon(FontAwesomeIcons.bookmark),
+            onPressed: () async {
+
+            },
+          ),
+        )
+      );
+    }
 
     return tiles;
 
