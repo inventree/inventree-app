@@ -42,7 +42,7 @@ class InvenTreeNotification extends InvenTreeModel {
    */
   Future<void> dismiss() async {
 
-    final response = await api.post(
+    await api.post(
       "${url}read/",
     );
 
