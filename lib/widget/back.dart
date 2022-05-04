@@ -12,7 +12,6 @@ Widget backButton(BuildContext context, GlobalKey<ScaffoldState> key) {
     onLongPress: () {
       // Display the menu
       key.currentState!.openDrawer();
-      print("hello?");
     },
     child: IconButton(
       icon: BackButtonIcon(),

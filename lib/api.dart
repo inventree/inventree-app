@@ -230,6 +230,9 @@ class InvenTreeAPI {
 
   int get apiVersion => _apiVersion;
 
+  // Notification support requires API v25 or newer
+  bool get supportsNotifications => isConnected() && apiVersion >= 25;
+
   // Are plugins enabled on the server?
   bool _pluginsEnabled = false;
 
@@ -428,6 +431,7 @@ class InvenTreeAPI {
 
     // Return the received token
     _token = (data["token"] ?? "") as String;
+
     print("Received token - $_token");
 
     // Request user role information (async)

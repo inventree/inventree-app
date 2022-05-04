@@ -308,6 +308,9 @@
     "description": "history"
   },
 
+  "home": "Home",
+  "@homeScreen": {},
+
   "homeScreen": "Home Screen",
   "@homeScreen": {},
 
@@ -460,6 +463,12 @@
   "@notes": {
     "description": "Notes"
   },
+
+  "notifications": "Notifications",
+  "@notifications": {},
+
+   "notificationsEmpty": "No unread notifications",
+   "@notificationsEmpty": {},
 
   "noResponse": "No Response from Server",
   "@noResponse": {},
@@ -630,6 +639,9 @@
 
   "quantityPositive": "Quantity must be positive",
   "@quantityPositive": {},
+
+  "queryEmpty": "Enter search query",
+  "@queryEmpty": {},
 
   "queryNoResults": "No results for query",
   "@queryNoResults": {},

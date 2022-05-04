@@ -28,7 +28,7 @@ class _StockListState extends RefreshableState<StockItemList> {
   final Map<String, String> filters;
 
   @override
-  String getAppBarTitle(BuildContext context) => L10().purchaseOrders;
+  String getAppBarTitle(BuildContext context) => L10().stockItems;
 
   @override
   Widget getBody(BuildContext context) {

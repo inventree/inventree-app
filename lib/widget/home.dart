@@ -1,24 +1,29 @@
+import "dart:async";
+
 import "package:flutter/material.dart";
 
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
+import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
+import "package:inventree/app_settings.dart";
+import "package:inventree/barcode.dart";
+import "package:inventree/l10.dart";
+import "package:inventree/settings/login.dart";
 import "package:inventree/settings/settings.dart";
 import "package:inventree/user_profile.dart";
-import "package:inventree/l10.dart";
-import "package:inventree/barcode.dart";
-import "package:inventree/api.dart";
-import "package:inventree/settings/login.dart";
+
+import "package:inventree/inventree/notification.dart";
+
 import "package:inventree/widget/category_display.dart";
 import "package:inventree/widget/company_list.dart";
+import "package:inventree/widget/drawer.dart";
 import "package:inventree/widget/location_display.dart";
+import "package:inventree/widget/notifications.dart";
 import "package:inventree/widget/part_list.dart";
 import "package:inventree/widget/purchase_order_list.dart";
 import "package:inventree/widget/search.dart";
 import "package:inventree/widget/snacks.dart";
-import "package:inventree/widget/drawer.dart";
-
-import "package:inventree/app_settings.dart";
 
 
 class InvenTreeHomePage extends StatefulWidget {
@@ -32,14 +37,28 @@ class InvenTreeHomePage extends StatefulWidget {
 class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
 
   _InvenTreeHomePageState() : super() {
-
     // Load display settings
     _loadSettings();
 
     // Initially load the profile and attempt server connection
     _loadProfile();
 
+    _refreshNotifications();
+
+    // Refresh notifications every ~30 seconds
+    Timer.periodic(
+        Duration(
+          milliseconds: 30000,
+        ), (timer) {
+      _refreshNotifications();
+    });
   }
+
+  // Index of bottom navigation bar
+  int _tabIndex = 0;
+
+  // Number of outstanding notifications
+  int _notificationCounter = 0;
 
   bool homeShowPo = false;
   bool homeShowSubscribed = false;
@@ -51,18 +70,6 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
 
   // Selected user profile
   UserProfile? _profile;
-
-  void _search(BuildContext context) {
-    if (!InvenTreeAPI().checkConnection(context)) return;
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SearchWidget()
-      )
-    );
-
-  }
 
   void _scan(BuildContext context) {
     if (!InvenTreeAPI().checkConnection(context)) return;
@@ -168,6 +175,18 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     setState(() {});
   }
 
+  /*
+   * Refresh the number of active notifications for this user
+   */
+  Future<void> _refreshNotifications() async {
+
+    final notifications = await InvenTreeNotification().list();
+
+    setState(() {
+      _notificationCounter = notifications.length;
+    });
+  }
+
 
   Widget _listTile(BuildContext context, String label, IconData icon, {Function()? callback, String role = "", String permission = ""}) {
 
@@ -221,16 +240,6 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
       Icons.qr_code_scanner,
       callback: () {
         _scan(context);
-      }
-    ));
-
-    // Search widget
-    tiles.add(_listTile(
-      context,
-      L10().search,
-      FontAwesomeIcons.search,
-      callback: () {
-        _search(context);
       }
     ));
 
@@ -327,6 +336,79 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     return tiles;
   }
 
+  /*
+   * Return the main body widget for display.
+   * This depends on the current value of _tabIndex
+   */
+  Widget getBody(BuildContext context) {
+    switch (_tabIndex) {
+      case 1: // Search widget
+        return SearchWidget(false);
+      case 2: // Notification widget
+        return NotificationWidget();
+      case 0: // Home widget
+      default:
+        return ListView(
+          scrollDirection: Axis.vertical,
+          children: getListTiles(context),
+      );
+    }
+  }
+
+  /*
+   * Construct the bottom navigation bar
+   */
+  List<BottomNavigationBarItem> getNavBarItems(BuildContext context) {
+
+    List<BottomNavigationBarItem> items = <BottomNavigationBarItem>[
+      BottomNavigationBarItem(
+        icon: FaIcon(FontAwesomeIcons.home),
+        label: L10().home,
+      ),
+      BottomNavigationBarItem(
+        icon: FaIcon(FontAwesomeIcons.search),
+        label: L10().search,
+      ),
+    ];
+
+    if (InvenTreeAPI().supportsNotifications) {
+      items.add(
+          BottomNavigationBarItem(
+            icon: _notificationCounter == 0 ? FaIcon(FontAwesomeIcons.bell) : Stack(
+              children: <Widget>[
+                FaIcon(FontAwesomeIcons.bell),
+                Positioned(
+                  right: 0,
+                  child: Container(
+                    padding: EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    constraints: BoxConstraints(
+                      minWidth: 12,
+                      minHeight: 12,
+                    ),
+                    child: Text(
+                      "${_notificationCounter}",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 9,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                )
+              ],
+            ),
+            label: L10().notifications,
+          )
+      );
+    }
+
+    return items;
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -345,10 +427,18 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
         ],
       ),
       drawer: InvenTreeDrawer(context),
-      body: ListView(
-        scrollDirection: Axis.vertical,
-        children: getListTiles(context),
-      )
+      body: getBody(context),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _tabIndex,
+        onTap: (int index) {
+          setState(() {
+            _tabIndex = index;
+          });
+
+          _refreshNotifications();
+        },
+        items: getNavBarItems(context),
+      ),
     );
   }
 }
