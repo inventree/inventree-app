@@ -18,6 +18,15 @@ class InvenTreeNotification extends InvenTreeModel {
   @override
   String get URL => "notifications/";
 
+  @override
+  Map<String, String> defaultListFilters() {
+
+    // By default, only return 'unread' notifications
+    return {
+      "read": "false",
+    };
+  }
+
   String get message => (jsondata["message"] ?? "") as String;
 
   DateTime? get creationDate {
@@ -26,6 +35,17 @@ class InvenTreeNotification extends InvenTreeModel {
     } else {
       return null;
     }
+  }
+
+  /*
+   * Dismiss this notification (mark as read)
+   */
+  Future<void> dismiss() async {
+
+    final response = await api.post(
+      "${url}read/",
+    );
+
   }
 
 }

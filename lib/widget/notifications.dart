@@ -36,11 +36,21 @@ class _NotificationState extends RefreshableState<NotificationWidget> {
 
     final results = await InvenTreeNotification().list();
 
+    notifications.clear();
+
     for (InvenTreeModel n in results) {
       if (n is InvenTreeNotification) {
         notifications.add(n);
       }
     }
+  }
+
+  Future<void> dismissNotification(BuildContext context, InvenTreeNotification notification) async {
+
+    await notification.dismiss();
+
+    refresh(context);
+
   }
 
   List<Widget> renderNotifications(BuildContext context) {
@@ -66,7 +76,7 @@ class _NotificationState extends RefreshableState<NotificationWidget> {
           trailing: IconButton(
             icon: FaIcon(FontAwesomeIcons.bookmark),
             onPressed: () async {
-
+              dismissNotification(context, notification);
             },
           ),
         )
