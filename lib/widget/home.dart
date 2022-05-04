@@ -2,23 +2,24 @@ import "package:flutter/material.dart";
 
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
+import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
+import "package:inventree/app_settings.dart";
+import "package:inventree/barcode.dart";
+import "package:inventree/l10.dart";
+import "package:inventree/settings/login.dart";
 import "package:inventree/settings/settings.dart";
 import "package:inventree/user_profile.dart";
-import "package:inventree/l10.dart";
-import "package:inventree/barcode.dart";
-import "package:inventree/api.dart";
-import "package:inventree/settings/login.dart";
+
 import "package:inventree/widget/category_display.dart";
 import "package:inventree/widget/company_list.dart";
+import "package:inventree/widget/drawer.dart";
 import "package:inventree/widget/location_display.dart";
+import "package:inventree/widget/notifications.dart";
 import "package:inventree/widget/part_list.dart";
 import "package:inventree/widget/purchase_order_list.dart";
 import "package:inventree/widget/search.dart";
 import "package:inventree/widget/snacks.dart";
-import "package:inventree/widget/drawer.dart";
-
-import "package:inventree/app_settings.dart";
 
 
 class InvenTreeHomePage extends StatefulWidget {
@@ -317,6 +318,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
       case 1: // Search widget
         return SearchWidget(false);
       case 2: // Notification widget
+        return NotificationWidget();
       case 0: // Home widget
       default:
         return ListView(
