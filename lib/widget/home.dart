@@ -1,3 +1,5 @@
+import "dart:async";
+
 import "package:flutter/material.dart";
 
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
@@ -10,6 +12,9 @@ import "package:inventree/l10.dart";
 import "package:inventree/settings/login.dart";
 import "package:inventree/settings/settings.dart";
 import "package:inventree/user_profile.dart";
+
+import "package:inventree/inventree/model.dart";
+import "package:inventree/inventree/notification.dart";
 
 import "package:inventree/widget/category_display.dart";
 import "package:inventree/widget/company_list.dart";
@@ -33,17 +38,28 @@ class InvenTreeHomePage extends StatefulWidget {
 class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
 
   _InvenTreeHomePageState() : super() {
-
     // Load display settings
     _loadSettings();
 
     // Initially load the profile and attempt server connection
     _loadProfile();
 
+    _refreshNotifications();
+
+    // Refresh notifications every ~30 seconds
+    Timer.periodic(
+        Duration(
+          milliseconds: 30000,
+        ), (timer) {
+      _refreshNotifications();
+    });
   }
 
   // Index of bottom navigation bar
   int _tabIndex = 0;
+
+  // Number of outstanding notifications
+  int _notificationCounter = 0;
 
   bool homeShowPo = false;
   bool homeShowSubscribed = false;
@@ -158,6 +174,18 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     }
 
     setState(() {});
+  }
+
+  /*
+   * Refresh the number of active notifications for this user
+   */
+  Future<void> _refreshNotifications() async {
+
+    final notifications = await InvenTreeNotification().list();
+
+    setState(() {
+      _notificationCounter = notifications.length;
+    });
   }
 
 
@@ -347,7 +375,33 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     if (InvenTreeAPI().supportsNotifications) {
       items.add(
           BottomNavigationBarItem(
-            icon: FaIcon(FontAwesomeIcons.bell),
+            icon: _notificationCounter == 0 ? FaIcon(FontAwesomeIcons.bell) : Stack(
+              children: <Widget>[
+                FaIcon(FontAwesomeIcons.bell),
+                new Positioned(
+                  right: 0,
+                  child: new Container(
+                    padding: EdgeInsets.all(2),
+                    decoration: new BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    constraints: BoxConstraints(
+                      minWidth: 12,
+                      minHeight: 12,
+                    ),
+                    child: new Text(
+                      "${_notificationCounter}",
+                      style: new TextStyle(
+                        color: Colors.white,
+                        fontSize: 9,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                )
+              ],
+            ),
             label: L10().notifications,
           )
       );
@@ -381,6 +435,8 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
           setState(() {
             _tabIndex = index;
           });
+
+          _refreshNotifications();
         },
         items: getNavBarItems(context),
       ),

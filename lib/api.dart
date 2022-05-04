@@ -431,6 +431,7 @@ class InvenTreeAPI {
 
     // Return the received token
     _token = (data["token"] ?? "") as String;
+
     print("Received token - $_token");
 
     // Request user role information (async)
