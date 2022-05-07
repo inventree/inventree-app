@@ -1,5 +1,13 @@
 {
     "@@locale": "en",
+    "appTitle": "InvenTree",
+    "@appTitle": {
+        "description": "InvenTree application title string"
+    },
+    "ok": "OK",
+    "@ok": {
+        "description": "OK"
+    },
     "about": "Névjegy",
     "@about": {},
     "accountDetails": "Felhasználó adatok",
@@ -206,8 +214,9 @@
     "@history": {
         "description": "history"
     },
-    "homeScreen": "Főképernyő",
+    "home": "Főoldal",
     "@homeScreen": {},
+    "homeScreen": "Főképernyő",
     "homeScreenSettings": "Főképernyő beállítások konfigurálása",
     "@homeScreenSettings": {},
     "homeShowPo": "Beszerzési rendelések megjelenítése",
@@ -292,6 +301,8 @@
     "@locationNotSet": {},
     "locationUpdated": "Készlet hely adatai frissítve",
     "@locationUpdated": {},
+    "link": "Link",
+    "@link": {},
     "lost": "Elveszett",
     "@lost": {},
     "manufacturers": "Gyártók",
@@ -306,6 +317,10 @@
     "@notes": {
         "description": "Notes"
     },
+    "notifications": "Értesítések",
+    "@notifications": {},
+    "notificationsEmpty": "Nincsenek olvasatlan értesítések",
+    "@notificationsEmpty": {},
     "noResponse": "Nincs válasz a kiszolgálótól",
     "@noResponse": {},
     "noResults": "Nincs találat",
@@ -422,6 +437,8 @@
     "@quantityInvalid": {},
     "quantityPositive": "Mennyiség pozitív kell legyen",
     "@quantityPositive": {},
+    "queryEmpty": "Add meg a keresési lekérdezést",
+    "@queryEmpty": {},
     "queryNoResults": "Nincs találat",
     "@queryNoResults": {},
     "received": "Beérkezett",
