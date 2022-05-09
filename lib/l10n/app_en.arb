@@ -590,6 +590,12 @@
   "pluginPrinter": "Printer",
   "@pluginPrinter": {},
 
+  "pluginSupport": "Plugin Support Enabled",
+  "@pluginSupport": {},
+
+  "pluginSupportDetail": "The server supports custom plugins",
+  "@pluginSupportDetail": {},
+
   "printLabelFailure": "Label printing failed",
   "@printLabelFailure": {},
 
