@@ -67,6 +67,18 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     }
 
+    if (InvenTreeAPI().supportsMixin("locate")) {
+      actions.add(
+        IconButton(
+          icon: FaIcon(FontAwesomeIcons.searchLocation),
+          tooltip: L10().locateItem,
+          onPressed: () async {
+            InvenTreeAPI().locateItemOrLocation(context, item: item.pk);
+          },
+        )
+      );
+    }
+
     if (InvenTreeAPI().checkPermission("stock", "change")) {
       actions.add(
           IconButton(
