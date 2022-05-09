@@ -217,14 +217,14 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     Map<String, dynamic> fields = {
       "label": {
-        "label": "Label Template",
+        "label": L10().labelTemplate,
         "type": "choice",
         "value": initial_label,
         "choices": label_options,
         "required": true,
       },
       "plugin": {
-        "label": "Printer",
+        "label": L10().pluginPrinter,
         "type": "choice",
         "value": initial_plugin,
         "choices": plugin_options,

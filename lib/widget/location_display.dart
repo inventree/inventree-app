@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/api.dart";
+import 'package:inventree/api_form.dart';
 import "package:inventree/app_colors.dart";
 import "package:inventree/barcode.dart";
 import "package:inventree/inventree/stock.dart";
@@ -61,17 +62,97 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     );
      */
 
-    if ((location != null) && (InvenTreeAPI().checkPermission("stock_location", "change"))) {
-      actions.add(
-        IconButton(
-          icon: FaIcon(FontAwesomeIcons.edit),
-          tooltip: L10().edit,
-          onPressed: () { _editLocationDialog(context); },
-        )
-      );
+    if (location != null) {
+
+      // Add "locate" button
+      if (InvenTreeAPI().supportsMixin("locate")) {
+        actions.add(
+          IconButton(
+            icon: FaIcon(FontAwesomeIcons.searchLocation),
+            tooltip: L10().locateLocation,
+            onPressed: () async {
+              _locateStockLocation(context);
+            },
+          )
+        );
+      }
+
+      // Add "edit" button
+      if (InvenTreeAPI().checkPermission("stock_location", "change")) {
+        actions.add(
+            IconButton(
+              icon: FaIcon(FontAwesomeIcons.edit),
+              tooltip: L10().edit,
+              onPressed: () { _editLocationDialog(context); },
+            )
+        );
+      }
     }
 
     return actions;
+  }
+
+  Future<void> _locateStockLocation(BuildContext context) async {
+
+    final _loc = location;
+
+    if (_loc != null) {
+
+      final plugins = InvenTreeAPI().getPlugins(mixin: "locate");
+
+      if (plugins.isEmpty) {
+        // TODO: Error message here
+        return;
+      }
+
+      String plugin_name = "";
+
+      if (plugins.length == 1) {
+        plugin_name = plugins.first.key;
+      } else {
+        // User selects which plugin to use
+        List<Map<String, dynamic>> plugin_options = [];
+
+        for (var plugin in plugins) {
+          plugin_options.add({
+            "display_name": plugin.humanName,
+            "value": plugin.key,
+          });
+        }
+
+        Map<String, dynamic> fields = {
+          "plugin": {
+            "label": L10().plugin,
+            "type": "choice",
+            "value": plugins.first.key,
+            "choices": plugin_options,
+            "required": true,
+          }
+        };
+
+        await launchApiForm(
+          context,
+          L10().locateLocation,
+          "",
+          fields,
+          icon: FontAwesomeIcons.searchLocation,
+          onSuccess: (Map<String, dynamic> data) async {
+            plugin_name = (data["plugin"] ?? "") as String;
+          }
+        );
+      }
+
+      print("plugin: ${plugin_name}");
+
+      InvenTreeAPI().post(
+        "/api/locate/",
+        body: {
+          "plugin": plugin_name,
+          "location": "${_loc.pk}",
+        },
+        expectedStatusCode: 200,
+      );
+    }
   }
 
   void _editLocationDialog(BuildContext context) {
