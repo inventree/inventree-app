@@ -47,6 +47,14 @@ class InvenTreeModel {
   // Update whenever the model is loaded from the server
   DateTime? lastReload;
 
+  bool reloadedWithin(Duration d) {
+    if (lastReload == null) {
+      return false;
+    } else {
+      return lastReload!.add(d).isAfter(DateTime.now());
+    }
+  }
+
   // Override the endpoint URL for each subclass
   String get URL => "";
 
@@ -320,7 +328,7 @@ class InvenTreeModel {
   }
 
   // Return the detail view for the associated pk
-  Future<InvenTreeModel?> get(int pk, {Map<String, String> filters = const {}}) async {
+  Future<InvenTreeModel?> getModel(String pk, {Map<String, String> filters = const {}}) async {
 
     var url = path.join(URL, pk.toString());
 
@@ -365,6 +373,10 @@ class InvenTreeModel {
     lastReload = DateTime.now();
 
     return createFromJson(response.asMap());
+  }
+
+  Future<InvenTreeModel?> get(int pk, {Map<String, String> filters = const {}}) async {
+    return getModel(pk.toString(), filters: filters);
   }
 
   Future<InvenTreeModel?> create(Map<String, dynamic> data) async {

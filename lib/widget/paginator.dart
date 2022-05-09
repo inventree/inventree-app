@@ -44,7 +44,6 @@ class PaginatedSearchState<T extends StatefulWidget> extends State<T> {
 
   Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
 
-    print("Blank request page");
     // Default implementation returns null - must be overridden
     return null;
   }
