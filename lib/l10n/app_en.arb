@@ -608,6 +608,9 @@
   "profileSelect": "Select InvenTree Server",
   "@profileSelect": {},
 
+  "profileSelectOrCreate": "Select server or create a new profile",
+  "@profileSelectOrCreate": {},
+
   "profileTapToCreate": "Tap to create or select a profile",
   "@profileTapToCreate": {},
 

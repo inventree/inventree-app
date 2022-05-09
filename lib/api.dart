@@ -193,6 +193,7 @@ class InvenTreeAPI {
 
   UserProfile? profile;
 
+  // Available user roles (permissions) are loaded when connecting to the server
   Map<String, dynamic> roles = {};
 
   // Authentication token (initially empty, must be requested)
@@ -454,6 +455,9 @@ class InvenTreeAPI {
     profile = null;
   }
 
+  /*
+   * Public facing connection function
+   */
   Future<bool> connectToServer() async {
 
     // Ensure server is first disconnected
