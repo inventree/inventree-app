@@ -22,7 +22,7 @@ import "package:inventree/user_profile.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:path_provider/path_provider.dart";
 
-import 'api_form.dart';
+import "package:inventree/api_form.dart";
 
 
 /*
@@ -1202,7 +1202,7 @@ class InvenTreeAPI {
     }
   }
 
-  /**
+  /*
    * Send a request to the server to locate / identify either a StockItem or StockLocation
    */
   Future<void> locateItemOrLocation(BuildContext context, {int? item, int? location}) async {
