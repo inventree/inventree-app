@@ -92,69 +92,21 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     return actions;
   }
 
+  /*
+   * Request identification of this location
+   */
   Future<void> _locateStockLocation(BuildContext context) async {
 
     final _loc = location;
 
     if (_loc != null) {
-
-      final plugins = InvenTreeAPI().getPlugins(mixin: "locate");
-
-      if (plugins.isEmpty) {
-        // TODO: Error message here
-        return;
-      }
-
-      String plugin_name = "";
-
-      if (plugins.length == 1) {
-        plugin_name = plugins.first.key;
-      } else {
-        // User selects which plugin to use
-        List<Map<String, dynamic>> plugin_options = [];
-
-        for (var plugin in plugins) {
-          plugin_options.add({
-            "display_name": plugin.humanName,
-            "value": plugin.key,
-          });
-        }
-
-        Map<String, dynamic> fields = {
-          "plugin": {
-            "label": L10().plugin,
-            "type": "choice",
-            "value": plugins.first.key,
-            "choices": plugin_options,
-            "required": true,
-          }
-        };
-
-        await launchApiForm(
-          context,
-          L10().locateLocation,
-          "",
-          fields,
-          icon: FontAwesomeIcons.searchLocation,
-          onSuccess: (Map<String, dynamic> data) async {
-            plugin_name = (data["plugin"] ?? "") as String;
-          }
-        );
-      }
-
-      print("plugin: ${plugin_name}");
-
-      InvenTreeAPI().post(
-        "/api/locate/",
-        body: {
-          "plugin": plugin_name,
-          "location": "${_loc.pk}",
-        },
-        expectedStatusCode: 200,
-      );
+      InvenTreeAPI().locateItemOrLocation(context, location: _loc.pk);
     }
   }
 
+  /*
+   * Launch a dialog form to edit this stock location
+   */
   void _editLocationDialog(BuildContext context) {
 
     final _loc = location;

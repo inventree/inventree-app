@@ -707,6 +707,9 @@
   "request": "Request",
   "@request": {},
 
+  "requestSuccessful": "Request successful",
+  "@requestSuccessful": {},
+
   "requestingData": "Requesting Data",
   "@requestingData": {},
 
