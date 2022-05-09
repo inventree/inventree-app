@@ -1150,7 +1150,7 @@ class InvenTreeAPI {
     );
   }
 
-  bool get supportsSettings => isConnected() && apiVersion >= 45;
+  bool get supportsSettings => isConnected() && apiVersion >= 46;
 
   // Keep a record of which settings we have received from the server
   Map<String, InvenTreeGlobalSetting> _globalSettings = {};
