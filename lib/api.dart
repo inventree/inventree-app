@@ -1157,7 +1157,6 @@ class InvenTreeAPI {
   Map<String, InvenTreeUserSetting> _userSettings = {};
 
   Future<String> getGlobalSetting(String key) async {
-
     if (!supportsSettings) return "";
 
     InvenTreeGlobalSetting? setting = _globalSettings[key];
@@ -1171,6 +1170,26 @@ class InvenTreeAPI {
     if (response is InvenTreeGlobalSetting) {
       response.lastReload = DateTime.now();
       _globalSettings[key] = response;
+      return response.value;
+    } else {
+      return "";
+    }
+  }
+
+  Future<String> getUserSetting(String key) async {
+    if (!supportsSettings) return "";
+
+    InvenTreeUserSetting? setting = _userSettings[key];
+
+    if ((setting != null) && setting.reloadedWithin(Duration(minutes: 5))) {
+      return setting.value;
+    }
+
+    final response = await InvenTreeGlobalSetting().getModel(key);
+
+    if (response is InvenTreeUserSetting) {
+      response.lastReload = DateTime.now();
+      _userSettings[key] = response;
       return response.value;
     } else {
       return "";
