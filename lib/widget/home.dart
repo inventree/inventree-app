@@ -290,6 +290,8 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
       ));
     }
 
+    // TODO: Add these tiles back in once the features are fleshed out
+    /*
     // Suppliers
     if (homeShowSuppliers) {
       tiles.add(_listTile(
@@ -325,6 +327,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
           }
       ));
     }
+     */
 
     // Settings
     tiles.add(_listTile(
