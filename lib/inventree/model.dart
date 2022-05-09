@@ -44,6 +44,9 @@ class InvenTreeModel {
   // Construct an InvenTreeModel from a JSON data object
   InvenTreeModel.fromJson(this.jsondata);
 
+  // Update whenever the model is loaded from the server
+  DateTime? lastReload;
+
   // Override the endpoint URL for each subclass
   String get URL => "";
 
@@ -287,6 +290,8 @@ class InvenTreeModel {
 
     }
 
+    lastReload = DateTime.now();
+
     jsondata = response.asMap();
 
     return true;
@@ -356,6 +361,8 @@ class InvenTreeModel {
       return null;
 
     }
+
+    lastReload = DateTime.now();
 
     return createFromJson(response.asMap());
   }
