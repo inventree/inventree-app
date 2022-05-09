@@ -7,6 +7,8 @@
 - Refactor home screen display
 - Display unread notifications on home screen
 - Fixes duplicated display of units when showing stock quantity
+- Improve rendering of home screen when server is not connected
+- Adds ability to load global and user settings from the server
 
 ### 0.6.2 - April 2022
 ---
