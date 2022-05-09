@@ -572,6 +572,50 @@ class InvenTreePlugin extends InvenTreeModel {
 }
 
 
+/*
+ * Class representing a 'setting' object on the InvenTree server.
+ * There are two sorts of settings available from the server, via the API:
+ * - GlobalSetting (applicable to all users)
+ * - UserSetting (applicable only to the current user)
+ */
+class InvenTreeGlobalSetting extends InvenTreeModel {
+
+  InvenTreeGlobalSetting() : super();
+
+  InvenTreeGlobalSetting.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+
+  @override
+  InvenTreeGlobalSetting createFromJson(Map<String, dynamic> json) {
+    return InvenTreeGlobalSetting.fromJson(json);
+  }
+
+  @override
+  String get URL => "settings/global/";
+
+  String get key => (jsondata["key"] ?? "") as String;
+
+  String get value => (jsondata["value"] ?? "") as String;
+
+  String get type => (jsondata["type"] ?? "") as String;
+
+}
+
+class InvenTreeUserSetting extends InvenTreeGlobalSetting {
+
+  InvenTreeUserSetting() : super();
+
+  InvenTreeUserSetting.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+
+  @override
+  InvenTreeGlobalSetting createFromJson(Map<String, dynamic> json) {
+    return InvenTreeGlobalSetting.fromJson(json);
+  }
+
+  @override
+  String get URL => "settings/user/";
+}
+
+
 class InvenTreeAttachment extends InvenTreeModel {
   // Class representing an "attachment" file
   InvenTreeAttachment() : super();
