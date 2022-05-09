@@ -102,6 +102,18 @@ class InvenTreeAboutWidget extends StatelessWidget {
           leading: FaIcon(FontAwesomeIcons.server),
         )
       );
+
+      // Display extra tile if the server supports plugins
+      if (InvenTreeAPI().pluginsEnabled()) {
+        tiles.add(
+          ListTile(
+            title: Text(L10().pluginSupport),
+            subtitle: Text(L10().pluginSupportDetail),
+            leading: FaIcon(FontAwesomeIcons.plug),
+          )
+        );
+      }
+
     } else {
       tiles.add(
         ListTile(

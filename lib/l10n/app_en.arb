@@ -416,6 +416,9 @@
   "keywords": "Keywords",
   "@keywords": {},
 
+  "labelTemplate": "Label Template",
+  "@labelTemplate": {},
+
   "lastStocktake": "Last Stocktake",
   "@lastStocktake": {},
 
@@ -427,6 +430,12 @@
 
   "lineItems": "Line Items",
   "@lineItems": {},
+
+  "locateItem": "Locate stock item",
+  "@locateItem": {},
+
+  "locateLocation": "Locate stock location",
+  "@locateLocation": {},
 
   "locationCreate": "New Location",
   "@locationCreate": {},
@@ -575,6 +584,18 @@
   "printLabel": "Print Label",
   "@printLabel": {},
 
+  "plugin": "Plugin",
+  "@plugin": {},
+
+  "pluginPrinter": "Printer",
+  "@pluginPrinter": {},
+
+  "pluginSupport": "Plugin Support Enabled",
+  "@pluginSupport": {},
+
+  "pluginSupportDetail": "The server supports custom plugins",
+  "@pluginSupportDetail": {},
+
   "printLabelFailure": "Label printing failed",
   "@printLabelFailure": {},
 
@@ -691,6 +712,9 @@
 
   "request": "Request",
   "@request": {},
+
+  "requestSuccessful": "Request successful",
+  "@requestSuccessful": {},
 
   "requestingData": "Requesting Data",
   "@requestingData": {},

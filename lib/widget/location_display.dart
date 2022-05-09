@@ -61,19 +61,51 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     );
      */
 
-    if ((location != null) && (InvenTreeAPI().checkPermission("stock_location", "change"))) {
-      actions.add(
-        IconButton(
-          icon: FaIcon(FontAwesomeIcons.edit),
-          tooltip: L10().edit,
-          onPressed: () { _editLocationDialog(context); },
-        )
-      );
+    if (location != null) {
+
+      // Add "locate" button
+      if (InvenTreeAPI().supportsMixin("locate")) {
+        actions.add(
+          IconButton(
+            icon: FaIcon(FontAwesomeIcons.searchLocation),
+            tooltip: L10().locateLocation,
+            onPressed: () async {
+              _locateStockLocation(context);
+            },
+          )
+        );
+      }
+
+      // Add "edit" button
+      if (InvenTreeAPI().checkPermission("stock_location", "change")) {
+        actions.add(
+            IconButton(
+              icon: FaIcon(FontAwesomeIcons.edit),
+              tooltip: L10().edit,
+              onPressed: () { _editLocationDialog(context); },
+            )
+        );
+      }
     }
 
     return actions;
   }
 
+  /*
+   * Request identification of this location
+   */
+  Future<void> _locateStockLocation(BuildContext context) async {
+
+    final _loc = location;
+
+    if (_loc != null) {
+      InvenTreeAPI().locateItemOrLocation(context, location: _loc.pk);
+    }
+  }
+
+  /*
+   * Launch a dialog form to edit this stock location
+   */
   void _editLocationDialog(BuildContext context) {
 
     final _loc = location;

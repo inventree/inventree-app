@@ -7,6 +7,7 @@
 - Refactor home screen display
 - Display unread notifications on home screen
 - Fixes duplicated display of units when showing stock quantity
+- Adds ability to locate / identify stock items or locations (requires server plugin)
 - Improve rendering of home screen when server is not connected
 - Adds ability to load global and user settings from the server
 

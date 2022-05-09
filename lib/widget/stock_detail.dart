@@ -67,6 +67,18 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     }
 
+    if (InvenTreeAPI().supportsMixin("locate")) {
+      actions.add(
+        IconButton(
+          icon: FaIcon(FontAwesomeIcons.searchLocation),
+          tooltip: L10().locateItem,
+          onPressed: () async {
+            InvenTreeAPI().locateItemOrLocation(context, item: item.pk);
+          },
+        )
+      );
+    }
+
     if (InvenTreeAPI().checkPermission("stock", "change")) {
       actions.add(
           IconButton(
@@ -217,14 +229,14 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     Map<String, dynamic> fields = {
       "label": {
-        "label": "Label Template",
+        "label": L10().labelTemplate,
         "type": "choice",
         "value": initial_label,
         "choices": label_options,
         "required": true,
       },
       "plugin": {
-        "label": "Printer",
+        "label": L10().pluginPrinter,
         "type": "choice",
         "value": initial_plugin,
         "choices": plugin_options,

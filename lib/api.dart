@@ -22,6 +22,8 @@ import "package:inventree/user_profile.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:path_provider/path_provider.dart";
 
+import "package:inventree/api_form.dart";
+
 
 /*
  * Class representing an API response from the server
@@ -1200,4 +1202,80 @@ class InvenTreeAPI {
     }
   }
 
+  /*
+   * Send a request to the server to locate / identify either a StockItem or StockLocation
+   */
+  Future<void> locateItemOrLocation(BuildContext context, {int? item, int? location}) async {
+
+    var plugins = getPlugins(mixin: "locate");
+
+    print("locateItemOrLocation");
+
+    if (plugins.isEmpty) {
+      // TODO: Error message
+      return;
+    }
+
+    String plugin_name = "";
+
+    if (plugins.length == 1) {
+      plugin_name = plugins.first.key;
+    } else {
+      // User selects which plugin to use
+      List<Map<String, dynamic>> plugin_options = [];
+
+      for (var plugin in plugins) {
+        plugin_options.add({
+          "display_name": plugin.humanName,
+          "value": plugin.key,
+        });
+      }
+
+      Map<String, dynamic> fields = {
+        "plugin": {
+          "label": L10().plugin,
+          "type": "choice",
+          "value": plugins.first.key,
+          "choices": plugin_options,
+          "required": true,
+        }
+      };
+
+      await launchApiForm(
+          context,
+          L10().locateLocation,
+          "",
+          fields,
+          icon: FontAwesomeIcons.searchLocation,
+          onSuccess: (Map<String, dynamic> data) async {
+            plugin_name = (data["plugin"] ?? "") as String;
+          }
+      );
+    }
+
+    Map<String, dynamic> body = {
+      "plugin": plugin_name,
+    };
+
+    if (item != null) {
+      body["item"] = item.toString();
+    }
+
+    if (location != null) {
+      body["location"] = location.toString();
+    }
+
+    post(
+      "/api/locate/",
+      body: body,
+      expectedStatusCode: 200,
+    ).then((APIResponse response) {
+      if (response.successful()) {
+        showSnackIcon(
+          L10().requestSuccessful,
+          success: true,
+        );
+      }
+    });
+  }
 }
