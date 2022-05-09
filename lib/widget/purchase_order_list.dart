@@ -55,8 +55,13 @@ class _PaginatedPurchaseOrderListState extends PaginatedSearchState<PaginatedPur
 
   _PaginatedPurchaseOrderListState(Map<String, String> filters) : super(filters);
 
+  // Purchase order prefix
+  String _poPrefix = "";
+
   @override
   Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
+
+    _poPrefix = await InvenTreeAPI().getGlobalSetting("PURCHASEORDER_REFERENCE_PREFIX");
 
     params["outstanding"] = "true";
 
@@ -72,9 +77,9 @@ class _PaginatedPurchaseOrderListState extends PaginatedSearchState<PaginatedPur
     InvenTreePurchaseOrder order = model as InvenTreePurchaseOrder;
 
     InvenTreeCompany? supplier = order.supplier;
-
+    
     return ListTile(
-      title: Text(order.reference),
+      title: Text("${_poPrefix}${order.reference}"),
       subtitle: Text(order.description),
       leading: supplier == null ? null : InvenTreeAPI().getImage(
         supplier.thumbnail,

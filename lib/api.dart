@@ -453,6 +453,10 @@ class InvenTreeAPI {
     _connecting = false;
     _token = "";
     profile = null;
+
+    // Clear received settings
+    _globalSettings.clear();
+    _userSettings.clear();
   }
 
   /*
@@ -492,7 +496,9 @@ class InvenTreeAPI {
     return _connected;
   }
 
-
+  /*
+   * Request the user roles (permissions) from the InvenTree server
+   */
   Future<void> getUserRoles() async {
 
     roles.clear();
@@ -1147,4 +1153,51 @@ class InvenTreeAPI {
       cacheManager: manager,
     );
   }
+
+  bool get supportsSettings => isConnected() && apiVersion >= 46;
+
+  // Keep a record of which settings we have received from the server
+  Map<String, InvenTreeGlobalSetting> _globalSettings = {};
+  Map<String, InvenTreeUserSetting> _userSettings = {};
+
+  Future<String> getGlobalSetting(String key) async {
+    if (!supportsSettings) return "";
+
+    InvenTreeGlobalSetting? setting = _globalSettings[key];
+
+    if ((setting != null) && setting.reloadedWithin(Duration(minutes: 5))) {
+      return setting.value;
+    }
+
+    final response = await InvenTreeGlobalSetting().getModel(key);
+
+    if (response is InvenTreeGlobalSetting) {
+      response.lastReload = DateTime.now();
+      _globalSettings[key] = response;
+      return response.value;
+    } else {
+      return "";
+    }
+  }
+
+  Future<String> getUserSetting(String key) async {
+    if (!supportsSettings) return "";
+
+    InvenTreeUserSetting? setting = _userSettings[key];
+
+    if ((setting != null) && setting.reloadedWithin(Duration(minutes: 5))) {
+      return setting.value;
+    }
+
+    final response = await InvenTreeGlobalSetting().getModel(key);
+
+    if (response is InvenTreeUserSetting) {
+      response.lastReload = DateTime.now();
+      _userSettings[key] = response;
+      return response.value;
+    } else {
+      return "";
+    }
+  }
+
 }

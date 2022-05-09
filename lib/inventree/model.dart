@@ -44,6 +44,17 @@ class InvenTreeModel {
   // Construct an InvenTreeModel from a JSON data object
   InvenTreeModel.fromJson(this.jsondata);
 
+  // Update whenever the model is loaded from the server
+  DateTime? lastReload;
+
+  bool reloadedWithin(Duration d) {
+    if (lastReload == null) {
+      return false;
+    } else {
+      return lastReload!.add(d).isAfter(DateTime.now());
+    }
+  }
+
   // Override the endpoint URL for each subclass
   String get URL => "";
 
@@ -287,6 +298,8 @@ class InvenTreeModel {
 
     }
 
+    lastReload = DateTime.now();
+
     jsondata = response.asMap();
 
     return true;
@@ -315,7 +328,7 @@ class InvenTreeModel {
   }
 
   // Return the detail view for the associated pk
-  Future<InvenTreeModel?> get(int pk, {Map<String, String> filters = const {}}) async {
+  Future<InvenTreeModel?> getModel(String pk, {Map<String, String> filters = const {}}) async {
 
     var url = path.join(URL, pk.toString());
 
@@ -357,7 +370,13 @@ class InvenTreeModel {
 
     }
 
+    lastReload = DateTime.now();
+
     return createFromJson(response.asMap());
+  }
+
+  Future<InvenTreeModel?> get(int pk, {Map<String, String> filters = const {}}) async {
+    return getModel(pk.toString(), filters: filters);
   }
 
   Future<InvenTreeModel?> create(Map<String, dynamic> data) async {
@@ -562,6 +581,50 @@ class InvenTreePlugin extends InvenTreeModel {
   bool supportsMixin(String mixin) {
     return _mixins.containsKey(mixin);
   }
+}
+
+
+/*
+ * Class representing a 'setting' object on the InvenTree server.
+ * There are two sorts of settings available from the server, via the API:
+ * - GlobalSetting (applicable to all users)
+ * - UserSetting (applicable only to the current user)
+ */
+class InvenTreeGlobalSetting extends InvenTreeModel {
+
+  InvenTreeGlobalSetting() : super();
+
+  InvenTreeGlobalSetting.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+
+  @override
+  InvenTreeGlobalSetting createFromJson(Map<String, dynamic> json) {
+    return InvenTreeGlobalSetting.fromJson(json);
+  }
+
+  @override
+  String get URL => "settings/global/";
+
+  String get key => (jsondata["key"] ?? "") as String;
+
+  String get value => (jsondata["value"] ?? "") as String;
+
+  String get type => (jsondata["type"] ?? "") as String;
+
+}
+
+class InvenTreeUserSetting extends InvenTreeGlobalSetting {
+
+  InvenTreeUserSetting() : super();
+
+  InvenTreeUserSetting.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+
+  @override
+  InvenTreeGlobalSetting createFromJson(Map<String, dynamic> json) {
+    return InvenTreeGlobalSetting.fromJson(json);
+  }
+
+  @override
+  String get URL => "settings/user/";
 }
 
 
