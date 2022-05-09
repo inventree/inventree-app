@@ -229,6 +229,9 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     );
   }
 
+  /*
+   * Constructs a list of tiles for the main screen
+   */
   List<Widget> getListTiles(BuildContext context) {
 
     List<Widget> tiles = [];
@@ -337,10 +340,42 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
   }
 
   /*
+   * If the app is not connected to an InvenTree server,
+   * display a connection status widget
+   */
+  Widget _connectionStatusWidget(BuildContext context) {
+    return Center(
+      child: Column(
+        children: [
+          Image.asset(
+            "assets/image/icon.png",
+            color: Colors.white.withOpacity(0.2),
+            colorBlendMode: BlendMode.modulate,
+            scale: 0.5,
+          ),
+          Spacer(),
+          ListTile(
+            title: Text(L10().serverNotConnected),
+            subtitle: Text(L10().profileSelectOrCreate),
+            trailing: FaIcon(FontAwesomeIcons.server, color: COLOR_CLICK),
+            leading: FaIcon(FontAwesomeIcons.exclamationCircle, color: COLOR_DANGER),
+            onTap: _selectProfile,
+          )
+        ]
+      ),
+    );
+  }
+
+  /*
    * Return the main body widget for display.
    * This depends on the current value of _tabIndex
    */
   Widget getBody(BuildContext context) {
+
+    if (!InvenTreeAPI().isConnected()) {
+      return _connectionStatusWidget(context);
+    }
+
     switch (_tabIndex) {
       case 1: // Search widget
         return SearchWidget(false);
@@ -412,6 +447,8 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
   @override
   Widget build(BuildContext context) {
 
+    var connected = InvenTreeAPI().isConnected();
+
     return Scaffold(
       key: _homeKey,
       appBar: AppBar(
@@ -420,7 +457,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
           IconButton(
             icon: FaIcon(
               FontAwesomeIcons.server,
-              color: InvenTreeAPI().isConnected() ? COLOR_SUCCESS : COLOR_DANGER,
+              color: connected ? COLOR_SUCCESS : COLOR_DANGER,
             ),
             onPressed: _selectProfile,
           )
@@ -428,7 +465,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
       ),
       drawer: InvenTreeDrawer(context),
       body: getBody(context),
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: connected ? BottomNavigationBar(
         currentIndex: _tabIndex,
         onTap: (int index) {
           setState(() {
@@ -438,7 +475,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
           _refreshNotifications();
         },
         items: getNavBarItems(context),
-      ),
+      ) : null,
     );
   }
 }
