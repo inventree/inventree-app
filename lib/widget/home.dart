@@ -180,6 +180,10 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
    */
   Future<void> _refreshNotifications() async {
 
+    if (!InvenTreeAPI().isConnected()) {
+      return;
+    }
+
     final notifications = await InvenTreeNotification().list();
 
     setState(() {

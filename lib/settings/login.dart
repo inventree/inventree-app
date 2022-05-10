@@ -240,6 +240,8 @@ class _ProfileEditState extends State<ProfileEditWidget> {
   String username = "";
   String password = "";
 
+  bool _obscured = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -379,10 +381,18 @@ class _ProfileEditState extends State<ProfileEditWidget> {
                   labelText: L10().password,
                   labelStyle: TextStyle(fontWeight: FontWeight.bold),
                   hintText: L10().enterPassword,
+                  suffixIcon: IconButton(
+                    icon: _obscured ? FaIcon(FontAwesomeIcons.eye) : FaIcon(FontAwesomeIcons.solidEyeSlash),
+                    onPressed: () {
+                      setState(() {
+                        _obscured = !_obscured;
+                      });
+                    },
+                  ),
                 ),
                 initialValue: profile?.password ?? "",
                 keyboardType: TextInputType.visiblePassword,
-                obscureText: true,
+                obscureText: _obscured,
                 onSaved: (value) {
                   password = value ?? "";
                 },

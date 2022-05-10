@@ -77,7 +77,7 @@ class BarcodeHandler {
           body: {
             "barcode": barcode,
           },
-          expectedStatusCode: 200
+          expectedStatusCode: null,  // Do not show an error on "unexpected code"
       );
 
       _controller?.resumeCamera();
@@ -90,7 +90,7 @@ class BarcodeHandler {
 
         // We want to know about this one!
         await sentryReportMessage(
-            "BarcodeHandler.processBarcode returned strange value",
+            "BarcodeHandler.processBarcode returned unexpected value",
             context: {
               "data": response.data?.toString() ?? "null",
               "barcode": barcode,
@@ -99,9 +99,10 @@ class BarcodeHandler {
               "valid": response.isValid().toString(),
               "error": response.error,
               "errorDetail": response.errorDetail,
+              "overlayText": getOverlayText(context),
             }
         );
-      } else if (data.containsKey("error")) {
+      } else if ((response.statusCode >= 400) || data.containsKey("error")) {
         onBarcodeUnknown(context, data);
       } else if (data.containsKey("success")) {
         onBarcodeMatched(context, data);
