@@ -99,6 +99,7 @@ class BarcodeHandler {
               "valid": response.isValid().toString(),
               "error": response.error,
               "errorDetail": response.errorDetail,
+              "overlayText": getOverlayText(context),
             }
         );
       } else if (data.containsKey("error")) {

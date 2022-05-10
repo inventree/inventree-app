@@ -233,7 +233,7 @@ class InvenTreeModel {
     return {};
   }
 
-  Future<void> reportModelError(String title, APIResponse response, {Map<String, String> context = {}}) async {
+  Future<void> reportModelError(String title, APIResponse response, {Map<String, String> context = const {}}) async {
 
     String dataString = response.data?.toString() ?? "null";
 
