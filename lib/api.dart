@@ -332,10 +332,6 @@ class InvenTreeAPI {
     if (!address.endsWith("/")) {
       address = address + "/";
     }
-    /* TODO: Better URL validation
-     * - If not a valid URL, return error
-     * - If no port supplied, append a default port
-     */
 
     _BASE_URL = address;
 
