@@ -233,6 +233,32 @@ class InvenTreeModel {
     return {};
   }
 
+  Future<void> reportModelError(String title, APIResponse response, {Map<String, String> context = {}}) async {
+
+    String dataString = response.data?.toString() ?? "null";
+
+    if (dataString.length > 500) {
+      dataString = dataString.substring(0, 500);
+    }
+
+    // Add some default context data
+
+    context["url"] = response.url.toString();
+    context["statusCode"] = response.statusCode.toString();
+    context["responseData"] = dataString;
+    context["valid"] = response.isValid().toString();
+    context["error"] = response.error;
+    context["errorDetail"] = response.errorDetail;
+    context["isNull"] = response.data == null ? "true" : "false";
+    context["dataType"] = response.data?.runtimeType.toString() ?? "null";
+    context["model"] = URL;
+
+    await sentryReportMessage(
+      title,
+      context: context,
+    );
+  }
+
   /// Delete the instance on the remote server
   /// Returns true if the operation was successful, else false
   Future<bool> delete() async {
@@ -240,18 +266,10 @@ class InvenTreeModel {
 
     if (!response.isValid() || response.data == null || (response.data is! Map)) {
 
-      if (response.statusCode > 0) {
-        await sentryReportMessage(
-          "InvenTreeModel.delete() returned invalid response",
-          context: {
-            "url": url,
-            "statusCode": response.statusCode.toString(),
-            "data": response.data?.toString() ?? "null",
-            "error": response.error,
-            "errorDetail": response.errorDetail,
-          }
-        );
-      }
+      reportModelError(
+        "InvenTreeModel.delete() returned invalid response",
+        response,
+      );
 
       showServerError(
         L10().serverError,
@@ -274,20 +292,13 @@ class InvenTreeModel {
 
     if (!response.isValid() || response.data == null || (response.data is! Map)) {
 
-      // Report error
-      if (response.statusCode > 0) {
-        await sentryReportMessage(
-            "InvenTreeModel.reload() returned invalid response",
-            context: {
-              "url": url,
-              "statusCode": response.statusCode.toString(),
-              "data": response.data?.toString() ?? "null",
-              "valid": response.isValid().toString(),
-              "error": response.error,
-              "errorDetail": response.errorDetail,
-            },
-        );
-      }
+      reportModelError(
+        "InvenTreeModel.reload() returned invalid response",
+        response,
+        context: {
+          "pk": pk.toString(),
+        }
+      );
 
       showServerError(
         L10().serverError,
@@ -347,19 +358,15 @@ class InvenTreeModel {
 
     if (!response.isValid() || response.data == null || response.data is! Map) {
 
-      if (response.statusCode > 0) {
-        await sentryReportMessage(
-            "InvenTreeModel.get() returned invalid response",
-            context: {
-              "url": url,
-              "statusCode": response.statusCode.toString(),
-              "data": response.data?.toString() ?? "null",
-              "valid": response.isValid().toString(),
-              "error": response.error,
-              "errorDetail": response.errorDetail,
-            }
-        );
-      }
+      // Report error
+      reportModelError(
+          "InvenTreeModel.getModel() returned invalid response",
+          response,
+          context: {
+            "filters": filters.toString(),
+            "pk": pk,
+          }
+      );
 
       showServerError(
         L10().serverError,
@@ -394,25 +401,18 @@ class InvenTreeModel {
     // Invalid response returned from server
     if (!response.isValid() || response.data == null || response.data is! Map) {
 
-      if (response.statusCode > 0) {
-        await sentryReportMessage(
-            "InvenTreeModel.create() returned invalid response",
-            context: {
-              "url": url,
-              "statusCode": response.statusCode.toString(),
-              "data": response.data?.toString() ?? "null",
-              "valid": response.isValid().toString(),
-              "error": response.error,
-              "errorDetail": response.errorDetail,
-            }
-        );
-      }
+      reportModelError(
+          "InvenTreeModel.create() returned invalid response",
+          response,
+          context: {
+            "pk": pk.toString(),
+          }
+      );
 
       showServerError(
         L10().serverError,
         L10().errorCreate,
       );
-
 
       return null;
     }
