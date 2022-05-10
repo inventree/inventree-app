@@ -16,7 +16,6 @@ import "package:inventree/user_profile.dart";
 import "package:inventree/inventree/notification.dart";
 
 import "package:inventree/widget/category_display.dart";
-import "package:inventree/widget/company_list.dart";
 import "package:inventree/widget/drawer.dart";
 import "package:inventree/widget/location_display.dart";
 import "package:inventree/widget/notifications.dart";
@@ -117,7 +116,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     );
   }
 
-
+  /*
   void _showSuppliers(BuildContext context) {
     if (!InvenTreeAPI().checkConnection(context)) return;
 
@@ -135,6 +134,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
 
     Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyListWidget(L10().customers, {"is_customer": "true"})));
   }
+   */
 
   void _selectProfile() {
     Navigator.push(
