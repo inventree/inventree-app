@@ -86,7 +86,10 @@ class PaginatedSearchState<T extends StatefulWidget> extends State<T> {
     } catch (error, stackTrace) {
       _pagingController.error = error;
 
-      sentryReportError(error, stackTrace);
+      sentryReportError(
+        "paginator.fetchPage",
+        error, stackTrace,
+      );
     }
   }
 

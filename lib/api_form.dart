@@ -788,7 +788,14 @@ Map<String, dynamic> extractFieldDefinition(Map<String, dynamic> data, String lo
       print(error.toString());
 
       // Report the error
-      sentryReportError(error, stackTrace);
+      sentryReportError(
+        "apiForm.extractFieldDefinition : path traversal",
+        error, stackTrace,
+        context: {
+          "path": path.toString(),
+          "el": el,
+        }
+      );
       return {};
     }
   }
@@ -808,7 +815,13 @@ Map<String, dynamic> extractFieldDefinition(Map<String, dynamic> data, String lo
       print(error.toString());
 
       // Report the error
-      sentryReportError(error, stacktrace);
+      sentryReportError(
+        "apiForm.extractFieldDefinition : as map",
+        error, stacktrace,
+        context: {
+          "el": el.toString(),
+        }
+      );
 
       return {};
     }
