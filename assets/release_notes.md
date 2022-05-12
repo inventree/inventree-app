@@ -5,11 +5,12 @@
 ---
 
 - Refactor home screen display
-- Display unread notifications on home screen
+- Display notification messages from InvenTree server
 - Fixes duplicated display of units when showing stock quantity
 - Adds ability to locate / identify stock items or locations (requires server plugin)
 - Improve rendering of home screen when server is not connected
 - Adds ability to load global and user settings from the server
+- Translation updates
 
 ### 0.6.2 - April 2022
 ---
