@@ -574,7 +574,15 @@ class InvenTreeAPI {
         // Ignore TypeError
       } else {
         // Unknown error - report it!
-        sentryReportError(error, stackTrace);
+        sentryReportError(
+          "api.checkPermission",
+          error, stackTrace,
+          context: {
+            "role": role,
+            "permission": permission,
+            "error": error.toString(),
+         }
+        );
       }
 
       // Unable to determine permission - assume true?
@@ -668,7 +676,10 @@ class InvenTreeAPI {
     } catch (error, stackTrace) {
       print("Server error at ${url}: ${error.toString()}");
       showServerError(L10().serverError, error.toString());
-      sentryReportError(error, stackTrace);
+      sentryReportError(
+        "api.downloadFile : client.openUrl",
+        error, stackTrace,
+      );
       return;
     }
 
@@ -692,10 +703,14 @@ class InvenTreeAPI {
       showServerError(L10().connectionRefused, error.toString());
     } on TimeoutException {
       showTimeoutError();
-    } catch (error) {
+    } catch (error, stackTrace) {
       print("Error downloading image:");
       print(error.toString());
       showServerError(L10().downloadError, error.toString());
+      sentryReportError(
+        "api.downloadFile : client.closeRequest",
+        error, stackTrace,
+      );
     }
   }
 
@@ -779,7 +794,10 @@ class InvenTreeAPI {
       response.error = "TimeoutException";
     } catch (error, stackTrace) {
       showServerError(L10().serverError, error.toString());
-      sentryReportError(error, stackTrace);
+      sentryReportError(
+        "api.uploadFile",
+        error, stackTrace
+      );
       response.error = "UnknownError";
       response.errorDetail = error.toString();
     }
@@ -930,7 +948,14 @@ class InvenTreeAPI {
     } catch (error, stackTrace) {
       print("Server error at ${url}: ${error.toString()}");
       showServerError(L10().serverError, error.toString());
-      sentryReportError(error, stackTrace);
+      sentryReportError(
+        "api.apiRequest : openUrl",
+        error, stackTrace,
+        context: {
+          "url": url,
+          "method": method,
+        }
+      );
       return null;
     }
   }
@@ -996,13 +1021,16 @@ class InvenTreeAPI {
       showServerError(L10().connectionRefused, error.toString());
       response.error = "SocketException";
       response.errorDetail = error.toString();
-
+    } on CertificateException catch (error) {
+      print("CertificateException at ${request.uri.toString()}:");
+      print(error.toString());
+      showServerError(L10().serverCertificateError, error.toString());
     } on TimeoutException {
       showTimeoutError();
       response.error = "TimeoutException";
     } catch (error, stackTrace) {
       showServerError(L10().serverError, error.toString());
-      sentryReportError(error, stackTrace);
+      sentryReportError("api.completeRequest", error, stackTrace);
       response.error = "UnknownError";
       response.errorDetail = error.toString();
     }

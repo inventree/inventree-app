@@ -142,7 +142,7 @@ Future<bool> sentryReportMessage(String message, {Map<String, String>? context})
 }
 
 
-Future<void> sentryReportError(dynamic error, dynamic stackTrace) async {
+Future<void> sentryReportError(String source, dynamic error, dynamic stackTrace, {Map<String, String> context = const {}}) async {
 
   print("----- Sentry Intercepted error: $error -----");
   print(stackTrace);
@@ -167,10 +167,14 @@ Future<void> sentryReportError(dynamic error, dynamic stackTrace) async {
   final app_info = await getAppInfo();
   final device_info = await getDeviceInfo();
 
+  // Ensure we pass the 'source' of the error
+  context["source"] = source;
+
   Sentry.configureScope((scope) {
     scope.setExtra("server", server_info);
     scope.setExtra("app", app_info);
     scope.setExtra("device", device_info);
+    scope.setExtra("context", context);
   });
 
   Sentry.captureException(error, stackTrace: stackTrace).catchError((error) {

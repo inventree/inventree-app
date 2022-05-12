@@ -39,7 +39,15 @@ Future<void> main() async {
     FlutterError.onError = (FlutterErrorDetails details) async {
 
       // Ensure that the error gets reported to sentry!
-      await sentryReportError(details.exception, details.stack);
+      await sentryReportError(
+        "FlutterError.onError",
+        details.exception, details.stack,
+        context: {
+          "context": details.context.toString(),
+          "summary": details.summary.toString(),
+          "library": details.library ?? "null",
+        }
+      );
     };
 
     runApp(
@@ -47,7 +55,7 @@ Future<void> main() async {
     );
 
   }, (Object error, StackTrace stackTrace) async {
-    sentryReportError(error, stackTrace);
+    sentryReportError("main.runZonedGuarded", error, stackTrace);
   });
 
 }
