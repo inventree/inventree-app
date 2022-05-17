@@ -1,7 +1,7 @@
 ## InvenTree App Release Notes
 ---
 
-### 0.7.0 -
+### 0.7.0 - May 2022
 ---
 
 - Refactor home screen display
