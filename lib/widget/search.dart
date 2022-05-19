@@ -4,7 +4,6 @@ import "package:flutter/material.dart";
 
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
-import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/widget/part_list.dart";
 import "package:inventree/widget/purchase_order_list.dart";
@@ -37,6 +36,19 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
   final bool hasAppBar;
 
   @override
+  void initState() {
+    super.initState();
+
+    _focusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   String getAppBarTitle(BuildContext context) => L10().search;
 
   @override
@@ -52,6 +64,17 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
 
   Timer? debounceTimer;
 
+  bool isSearching() {
+
+    if (searchController.text.isEmpty) {
+      return false;
+    }
+
+    return nSearchResults < 5;
+  }
+
+  int nSearchResults = 0;
+
   int nPartResults = 0;
 
   int nCategoryResults = 0;
@@ -63,6 +86,8 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
   int nSupplierResults = 0;
 
   int nPurchaseOrderResults = 0;
+
+  late FocusNode _focusNode;
 
   // Callback when the text is being edited
   // Incorporates a debounce timer to restrict search frequency
@@ -79,72 +104,88 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
         search(text);
       });
     }
-
   }
 
+  /*
+   * Initiate multiple search requests to the server.
+   * Each request returns at *some point* in the future,
+   * by which time the search input may have changed, giving unexpected results.
+   *
+   * So, each request only causes an update *if* the search term is still the same when it completes
+   */
   Future<void> search(String term) async {
 
-    if (term.isEmpty) {
-      setState(() {
-        // Do not search on an empty string
-        nPartResults = 0;
-        nCategoryResults = 0;
-        nStockResults = 0;
-        nLocationResults = 0;
-        nSupplierResults = 0;
-        nPurchaseOrderResults = 0;
-      });
+    setState(() {
+      // Do not search on an empty string
+      nPartResults = 0;
+      nCategoryResults = 0;
+      nStockResults = 0;
+      nLocationResults = 0;
+      nSupplierResults = 0;
+      nPurchaseOrderResults = 0;
 
+      nSearchResults = 0;
+    });
+
+    if (term.isEmpty) {
       return;
     }
 
     // Search parts
-    InvenTreePart().count(
-      searchQuery: term
-    ).then((int n) {
-      setState(() {
-        nPartResults = n;
-      });
+    InvenTreePart().count(searchQuery: term).then((int n) {
+      if (term == searchController.text) {
+        setState(() {
+          nPartResults = n;
+          nSearchResults++;
+        });
+      }
     });
 
     // Search part categories
-    InvenTreePartCategory().count(
-      searchQuery: term,
-    ).then((int n) {
-      setState(() {
-        nCategoryResults = n;
-      });
+    InvenTreePartCategory().count(searchQuery: term,).then((int n) {
+      if (term == searchController.text) {
+        setState(() {
+          nCategoryResults = n;
+          nSearchResults++;
+        });
+      }
     });
 
     // Search stock items
-    InvenTreeStockItem().count(
-      searchQuery: term
-    ).then((int n) {
-      setState(() {
-        nStockResults = n;
-      });
+    InvenTreeStockItem().count(searchQuery: term).then((int n) {
+      if (term == searchController.text) {
+        setState(() {
+          nStockResults = n;
+          nSearchResults++;
+        });
+      }
     });
 
     // Search stock locations
-    InvenTreeStockLocation().count(
-      searchQuery: term
-    ).then((int n) {
-      setState(() {
-        nLocationResults = n;
-      });
+    InvenTreeStockLocation().count(searchQuery: term).then((int n) {
+      if (term == searchController.text) {
+        setState(() {
+          nLocationResults = n;
+
+          nSearchResults++;
+        });
+      }
     });
 
+    // TDOO: Re-implement this once display for companies has been fixed
+    /*
     // Search suppliers
-    InvenTreeCompany().count(
-      searchQuery: term,
+    InvenTreeCompany().count(searchQuery: term,
       filters: {
         "is_supplier": "true",
       },
     ).then((int n) {
       setState(() {
         nSupplierResults = n;
+        nSearchResults++;
       });
     });
+     */
 
     // Search purchase orders
     InvenTreePurchaseOrder().count(
@@ -153,9 +194,12 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
         "outstanding": "true"
       }
     ).then((int n) {
-      setState(() {
-        nPurchaseOrderResults = n;
-      });
+      if (term == searchController.text) {
+        setState(() {
+          nPurchaseOrderResults = n;
+          nSearchResults++;
+        });
+      }
     });
 
   }
@@ -166,29 +210,31 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
 
     // Search input
     tiles.add(
-      InputDecorator(
+      TextFormField(
         decoration: InputDecoration(
-        ),
-        child: ListTile(
-          title: TextField(
-            readOnly: false,
-            decoration: InputDecoration(
-              helperText: L10().queryEmpty,
-            ),
-            controller: searchController,
-            onChanged: (String text) {
-              onSearchTextChanged(text);
-            },
+          hintText: L10().queryEmpty,
+          prefixIcon: IconButton(
+            icon: FaIcon(FontAwesomeIcons.search),
+            onPressed: null,
           ),
-          trailing: IconButton(
+          suffixIcon: IconButton(
             icon: FaIcon(FontAwesomeIcons.backspace, color: Colors.red),
             onPressed: () {
               searchController.clear();
               onSearchTextChanged("", immediate: true);
-            },
+              _focusNode.requestFocus();
+            }
           ),
-        )
-      )
+        ),
+        readOnly: false,
+        autofocus: true,
+        autocorrect: false,
+        focusNode: _focusNode,
+        controller: searchController,
+        onChanged: (String text) {
+          onSearchTextChanged(text);
+        },
+      ),
     );
 
     String query = searchController.text;
@@ -335,7 +381,17 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
       );
     }
 
-    if (results.isEmpty && searchController.text.isNotEmpty) {
+    if (isSearching()) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().searching),
+          leading: FaIcon(FontAwesomeIcons.search),
+          trailing: CircularProgressIndicator(),
+        )
+      );
+    }
+
+    if (!isSearching() && results.isEmpty && searchController.text.isNotEmpty) {
       tiles.add(
         ListTile(
           title: Text(L10().queryNoResults),
@@ -348,8 +404,11 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
       }
     }
 
-    return tiles;
+    if (!_focusNode.hasFocus) {
+      _focusNode.requestFocus();
+    }
 
+    return tiles;
   }
 
   @override

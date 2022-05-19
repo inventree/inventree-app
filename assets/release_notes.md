@@ -1,6 +1,11 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.7.1 - May 2022
+---
+
+- Fixes issue which prevented text input in search window
+
 ### 0.7.0 - May 2022
 ---
 

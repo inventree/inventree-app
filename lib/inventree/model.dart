@@ -216,8 +216,6 @@ class InvenTreeModel {
 
     if (response.isValid()) {
       int n = int.tryParse(response.data["count"].toString()) ?? 0;
-
-      print("${URL} -> ${n} results");
       return n;
     } else {
       return 0;
