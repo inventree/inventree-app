@@ -4,7 +4,6 @@ import "package:flutter/material.dart";
 
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
-import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/widget/part_list.dart";
 import "package:inventree/widget/purchase_order_list.dart";
@@ -71,7 +70,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
       return false;
     }
 
-    return nSearchResults < 6;
+    return nSearchResults < 5;
   }
 
   int nSearchResults = 0;
@@ -405,8 +404,11 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
       }
     }
 
-    return tiles;
+    if (!_focusNode.hasFocus) {
+      _focusNode.requestFocus();
+    }
 
+    return tiles;
   }
 
   @override
