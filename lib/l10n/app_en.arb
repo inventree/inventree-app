@@ -797,6 +797,9 @@
     "description": "search"
   },
 
+  "searching": "Searching",
+  "@searching": {},
+
   "searchLocation": "Search for location",
   "@searchLocation": {},
 
