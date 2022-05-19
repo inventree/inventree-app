@@ -37,6 +37,19 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
   final bool hasAppBar;
 
   @override
+  void initState() {
+    super.initState();
+
+    _focusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   String getAppBarTitle(BuildContext context) => L10().search;
 
   @override
@@ -52,6 +65,17 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
 
   Timer? debounceTimer;
 
+  bool isSearching() {
+
+    if (searchController.text.isEmpty) {
+      return false;
+    }
+
+    return nSearchResults < 6;
+  }
+
+  int nSearchResults = 0;
+
   int nPartResults = 0;
 
   int nCategoryResults = 0;
@@ -63,6 +87,8 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
   int nSupplierResults = 0;
 
   int nPurchaseOrderResults = 0;
+
+  late FocusNode _focusNode;
 
   // Callback when the text is being edited
   // Incorporates a debounce timer to restrict search frequency
@@ -84,6 +110,10 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
 
   Future<void> search(String term) async {
 
+    setState(() {
+      nSearchResults = 0;
+    });
+
     if (term.isEmpty) {
       setState(() {
         // Do not search on an empty string
@@ -93,6 +123,8 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
         nLocationResults = 0;
         nSupplierResults = 0;
         nPurchaseOrderResults = 0;
+
+        nSearchResults = 0;
       });
 
       return;
@@ -104,6 +136,8 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
     ).then((int n) {
       setState(() {
         nPartResults = n;
+
+        nSearchResults++;
       });
     });
 
@@ -113,6 +147,8 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
     ).then((int n) {
       setState(() {
         nCategoryResults = n;
+
+        nSearchResults++;
       });
     });
 
@@ -122,6 +158,8 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
     ).then((int n) {
       setState(() {
         nStockResults = n;
+
+        nSearchResults++;
       });
     });
 
@@ -131,6 +169,8 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
     ).then((int n) {
       setState(() {
         nLocationResults = n;
+
+        nSearchResults++;
       });
     });
 
@@ -143,6 +183,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
     ).then((int n) {
       setState(() {
         nSupplierResults = n;
+        nSearchResults++;
       });
     });
 
@@ -155,6 +196,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
     ).then((int n) {
       setState(() {
         nPurchaseOrderResults = n;
+        nSearchResults++;
       });
     });
 
@@ -166,29 +208,31 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
 
     // Search input
     tiles.add(
-      InputDecorator(
+      TextFormField(
         decoration: InputDecoration(
-        ),
-        child: ListTile(
-          title: TextField(
-            readOnly: false,
-            decoration: InputDecoration(
-              helperText: L10().queryEmpty,
-            ),
-            controller: searchController,
-            onChanged: (String text) {
-              onSearchTextChanged(text);
-            },
+          hintText: L10().queryEmpty,
+          prefixIcon: IconButton(
+            icon: FaIcon(FontAwesomeIcons.search),
+            onPressed: null,
           ),
-          trailing: IconButton(
+          suffixIcon: IconButton(
             icon: FaIcon(FontAwesomeIcons.backspace, color: Colors.red),
             onPressed: () {
               searchController.clear();
               onSearchTextChanged("", immediate: true);
-            },
+              _focusNode.requestFocus();
+            }
           ),
-        )
-      )
+        ),
+        readOnly: false,
+        autofocus: true,
+        autocorrect: false,
+        focusNode: _focusNode,
+        controller: searchController,
+        onChanged: (String text) {
+          onSearchTextChanged(text);
+        },
+      ),
     );
 
     String query = searchController.text;
@@ -335,7 +379,17 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
       );
     }
 
-    if (results.isEmpty && searchController.text.isNotEmpty) {
+    if (isSearching()) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().searching),
+          leading: FaIcon(FontAwesomeIcons.search),
+          trailing: CircularProgressIndicator(),
+        )
+      );
+    }
+
+    if (!isSearching() && results.isEmpty && searchController.text.isNotEmpty) {
       tiles.add(
         ListTile(
           title: Text(L10().queryNoResults),
