@@ -105,78 +105,78 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
         search(text);
       });
     }
-
   }
 
+  /*
+   * Initiate multiple search requests to the server.
+   * Each request returns at *some point* in the future,
+   * by which time the search input may have changed, giving unexpected results.
+   *
+   * So, each request only causes an update *if* the search term is still the same when it completes
+   */
   Future<void> search(String term) async {
 
     setState(() {
+      // Do not search on an empty string
+      nPartResults = 0;
+      nCategoryResults = 0;
+      nStockResults = 0;
+      nLocationResults = 0;
+      nSupplierResults = 0;
+      nPurchaseOrderResults = 0;
+
       nSearchResults = 0;
     });
 
     if (term.isEmpty) {
-      setState(() {
-        // Do not search on an empty string
-        nPartResults = 0;
-        nCategoryResults = 0;
-        nStockResults = 0;
-        nLocationResults = 0;
-        nSupplierResults = 0;
-        nPurchaseOrderResults = 0;
-
-        nSearchResults = 0;
-      });
-
       return;
     }
 
     // Search parts
-    InvenTreePart().count(
-      searchQuery: term
-    ).then((int n) {
-      setState(() {
-        nPartResults = n;
-
-        nSearchResults++;
-      });
+    InvenTreePart().count(searchQuery: term).then((int n) {
+      if (term == searchController.text) {
+        setState(() {
+          nPartResults = n;
+          nSearchResults++;
+        });
+      }
     });
 
     // Search part categories
-    InvenTreePartCategory().count(
-      searchQuery: term,
-    ).then((int n) {
-      setState(() {
-        nCategoryResults = n;
-
-        nSearchResults++;
-      });
+    InvenTreePartCategory().count(searchQuery: term,).then((int n) {
+      if (term == searchController.text) {
+        setState(() {
+          nCategoryResults = n;
+          nSearchResults++;
+        });
+      }
     });
 
     // Search stock items
-    InvenTreeStockItem().count(
-      searchQuery: term
-    ).then((int n) {
-      setState(() {
-        nStockResults = n;
-
-        nSearchResults++;
-      });
+    InvenTreeStockItem().count(searchQuery: term).then((int n) {
+      if (term == searchController.text) {
+        setState(() {
+          nStockResults = n;
+          nSearchResults++;
+        });
+      }
     });
 
     // Search stock locations
-    InvenTreeStockLocation().count(
-      searchQuery: term
-    ).then((int n) {
-      setState(() {
-        nLocationResults = n;
+    InvenTreeStockLocation().count(searchQuery: term).then((int n) {
+      if (term == searchController.text) {
+        setState(() {
+          nLocationResults = n;
 
-        nSearchResults++;
-      });
+          nSearchResults++;
+        });
+      }
     });
 
+    // TDOO: Re-implement this once display for companies has been fixed
+    /*
     // Search suppliers
-    InvenTreeCompany().count(
-      searchQuery: term,
+    InvenTreeCompany().count(searchQuery: term,
       filters: {
         "is_supplier": "true",
       },
@@ -186,6 +186,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
         nSearchResults++;
       });
     });
+     */
 
     // Search purchase orders
     InvenTreePurchaseOrder().count(
@@ -194,10 +195,12 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
         "outstanding": "true"
       }
     ).then((int n) {
-      setState(() {
-        nPurchaseOrderResults = n;
-        nSearchResults++;
-      });
+      if (term == searchController.text) {
+        setState(() {
+          nPurchaseOrderResults = n;
+          nSearchResults++;
+        });
+      }
     });
 
   }
