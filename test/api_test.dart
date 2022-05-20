@@ -92,16 +92,31 @@ void main() {
       expect(result, equals(true));
     });
 
-    // Ensure that we can select a user profile
     test("Select Profile", () async {
+      // Ensure that we can select a user profile
       final prf = await UserProfileDBManager().getSelectedProfile();
 
       expect(prf, isNot(null));
 
-      expect(prf?.name, equals("Test Profile"));
-      expect(prf?.username, equals("testuser"));
-      expect(prf?.password, equals("testpassword"));
-      expect(prf?.server, equals("http://localhost:12345"));
+      if (prf != null) {
+        UserProfile p = prf;
+
+        expect(p.name, equals("Test Profile"));
+        expect(p.username, equals("testuser"));
+        expect(p.password, equals("testpassword"));
+        expect(p.server, equals("http://localhost:12345"));
+
+        // Test that we can update the profile
+        p.name = "different name";
+
+        bool result = await UserProfileDBManager().updateProfile(p);
+        expect(result, equals(true));
+
+        // Trying to update with an invalid value will fail!
+        p.password = "";
+        result = await UserProfileDBManager().updateProfile(p);
+        expect(result, equals(false));
+      }
     });
   });
 
