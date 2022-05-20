@@ -2,18 +2,14 @@
  * Unit tests for the API class
  */
 
-import 'package:test/test.dart';
-
-import 'package:inventree/api.dart';
-import 'package:inventree/user_profile.dart';
+import "package:test/test.dart";
+import "package:inventree/user_profile.dart";
 
 void main() {
 
   setUp(() async {
     // Ensure we have a user profile available
     // This profile will match the dockerized InvenTree setup, running locally
-
-    print("Creating user profile");
     await UserProfileDBManager().addProfile(UserProfile(
       username: "testuser",
       password: "testpassword""",

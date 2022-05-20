@@ -35,4 +35,7 @@ jobs:
       - run: flutter pub get
       - run: cp lib/dummy_dsn.dart lib/dsn.dart
       - run: flutter analyze
-      - run: flutter test --coverage
+      - name: Run Unit Tests
+        run: |
+          flutter test --coverage
+          coveralls
