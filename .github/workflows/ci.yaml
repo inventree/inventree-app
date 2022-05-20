@@ -12,11 +12,8 @@ on:
 
 jobs:
 
-  lint:
+  test:
     runs-on: ubuntu-latest
-
-    env:
-      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
 
     steps:
       - name: Checkout code
