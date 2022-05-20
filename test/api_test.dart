@@ -27,15 +27,29 @@ void main() {
 
   });
 
-  test("Select Profile", () async {
+  // Run a set of tests for user profile functionality
+  group("Profile Tests", () async {
+
+    test("Profile Name Check", () async {
+      bool result = false;
+
+      result = await UserProfileDBManager().profileNameExists("doesnotexist");
+      expect(result, equals(false));
+
+      result = await UserProfileDBManager().profileNameExists("testuser");
+      expect(result, equals(true));
+    });
+
     // Ensure that we can select a user profile
-    final prf = await UserProfileDBManager().getSelectedProfile();
+    test("Select Profile", () async {
+      final prf = await UserProfileDBManager().getSelectedProfile();
 
-    expect(prf, isNot(null));
+      expect(prf, isNot(null));
 
-    expect(prf?.username, equals("testuser"));
-    expect(prf?.password, equals("testpassword"));
-    expect(prf?.server, equals("http://localhost:12345"));
+      expect(prf?.username, equals("testuser"));
+      expect(prf?.password, equals("testpassword"));
+      expect(prf?.server, equals("http://localhost:12345"));
+    });
   });
 
 }
