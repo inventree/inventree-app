@@ -1,6 +1,6 @@
 # Run flutter linting checks
 
-name: lint
+name: CI
 
 on:
   push:
