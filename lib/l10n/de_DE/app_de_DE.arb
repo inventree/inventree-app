@@ -285,6 +285,8 @@
     "@itemInLocation": {},
     "keywords": "Schlüsselwörter",
     "@keywords": {},
+    "labelTemplate": "Label Vorlage",
+    "@labelTemplate": {},
     "lastStocktake": "Letzte Inventur",
     "@lastStocktake": {},
     "lastUpdated": "Letzte Änderung",
@@ -539,6 +541,8 @@
     "@search": {
         "description": "search"
     },
+    "searching": "Suche",
+    "@searching": {},
     "searchLocation": "Lagerort suchen",
     "@searchLocation": {},
     "searchParts": "Teile suchen",
