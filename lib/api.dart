@@ -201,6 +201,8 @@ class InvenTreeAPI {
   // Authentication token (initially empty, must be requested)
   String _token = "";
 
+  bool get hasToken => _token.isNotEmpty;
+
   /*
    * Check server connection and display messages if not connected.
    * Useful as a precursor check before performing operations.
@@ -278,7 +280,7 @@ class InvenTreeAPI {
   bool _connecting = false;
 
   bool isConnected() {
-    return profile != null && _connected && baseUrl.isNotEmpty && _token.isNotEmpty;
+    return profile != null && _connected && baseUrl.isNotEmpty && hasToken;
   }
 
   bool isConnecting() {
