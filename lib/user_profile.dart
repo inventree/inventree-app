@@ -151,7 +151,11 @@ class UserProfileDBManager {
 
     final profiles = await store.find(await _db);
 
+    print("getSelectedProfile() - ${profiles.length} profiles available - selected = ${selected}");
+
     for (int idx = 0; idx < profiles.length; idx++) {
+
+      print("- Checking ${idx} - key = ${profiles[idx].key} - ${profiles[idx].value.toString()}");
 
       if (profiles[idx].key is int && profiles[idx].key == selected) {
         return UserProfile.fromJson(

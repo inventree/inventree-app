@@ -76,7 +76,7 @@ void main() {
 
         // TODO: Test the the right 'error message' is returned
         // TODO: The request above should throw a 'SockeException'
-        
+
         // Test incorrect login details
         profile.server = "http://localhost:12345";
         profile.username = "invalidusername";
