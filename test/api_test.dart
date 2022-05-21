@@ -15,6 +15,9 @@ void main() {
 
     if (! await UserProfileDBManager().profileNameExists("Test Profile")) {
       // Create and select a profile to user
+
+      print("TEST: Creating profile for user 'testuser'");
+
       await UserProfileDBManager().addProfile(UserProfile(
         name: "Test Profile",
         server: "http://localhost:12345",
@@ -30,6 +33,7 @@ void main() {
     // as they can get overwritten by subsequent tests
 
     if (prf != null) {
+      prf.name = "Test Profile";
       prf.server = "http://localhost:12345";
       prf.username = "testuser";
       prf.password = "testpassword";
@@ -72,7 +76,7 @@ void main() {
 
         // TODO: Test the the right 'error message' is returned
         // TODO: The request above should throw a 'SockeException'
-
+        
         // Test incorrect login details
         profile.server = "http://localhost:12345";
         profile.username = "invalidusername";
