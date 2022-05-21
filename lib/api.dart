@@ -16,6 +16,7 @@ import "package:flutter_cache_manager/flutter_cache_manager.dart";
 
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/l10.dart";
+import "package:inventree/helpers.dart";
 import "package:inventree/inventree/sentry.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/user_profile.dart";

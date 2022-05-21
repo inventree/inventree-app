@@ -1,6 +1,7 @@
 
 import "package:sembast/sembast.dart";
 
+import "package:inventree/helpers.dart";
 import "package:inventree/preferences.dart";
 
 class UserProfile {
@@ -85,7 +86,7 @@ class UserProfileDBManager {
   Future<bool> addProfile(UserProfile profile) async {
 
     if (profile.name.isEmpty || profile.username.isEmpty || profile.password.isEmpty) {
-      print("Profile missing required values - not adding to database");
+      debug("addProfile() : Profile missing required values - not adding to database");
       return false;
     }
 
@@ -93,7 +94,7 @@ class UserProfileDBManager {
     final bool exists = await profileNameExists(profile.name);
 
     if (exists) {
-      print("UserProfile '${profile.name}' already exists");
+      debug("addProfile() : UserProfile '${profile.name}' already exists");
       return false;
     }
 
@@ -120,7 +121,7 @@ class UserProfileDBManager {
 
     // Prevent invalid profile data from being updated
     if (profile.name.isEmpty || profile.username.isEmpty || profile.password.isEmpty) {
-      print("Profile missing required values - not updating");
+      debug("updateProfile() : Profile missing required values - not updating");
       return false;
     }
 
@@ -151,11 +152,11 @@ class UserProfileDBManager {
 
     final profiles = await store.find(await _db);
 
-    print("getSelectedProfile() - ${profiles.length} profiles available - selected = ${selected}");
+    debug("getSelectedProfile() : ${profiles.length} profiles available - selected = ${selected}");
 
     for (int idx = 0; idx < profiles.length; idx++) {
 
-      print("- Checking ${idx} - key = ${profiles[idx].key} - ${profiles[idx].value.toString()}");
+      debug("- Checking ${idx} - key = ${profiles[idx].key} - ${profiles[idx].value.toString()}");
 
       if (profiles[idx].key is int && profiles[idx].key == selected) {
         return UserProfile.fromJson(
