@@ -18,8 +18,18 @@ if __name__ == '__main__':
 
         f.write("// ignore_for_file: unused_import\n\n")
 
+        skips = [
+            'generated',
+            'l10n',
+            'dummy_dsn.dart',
+        ]
+
         for path in dart_files:
             path = str(path)
+
+            if any([s in path for s in skips]):
+                continue
+
             # Remove leading 'lib\' text
             path = path[4:]
             path = path.replace('\\', '/')
