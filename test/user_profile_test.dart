@@ -15,7 +15,7 @@ void main() {
     var profiles = await UserProfileDBManager().getAllProfiles();
 
     for (var prf in profiles) {
-      UserProfileDBManager().deleteProfile(prf);
+      await UserProfileDBManager().deleteProfile(prf);
     }
 
     // Check that there are *no* profiles in the database
