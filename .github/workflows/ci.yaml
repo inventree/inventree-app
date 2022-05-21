@@ -40,6 +40,8 @@ jobs:
       - run: flutter analyze
       - name: Run Unit Tests
         run: |
+          apt-get install lcov
           pip install -Ur requirements.txt
           flutter test --coverage
+          genhtml coverage/lcov.info -o coverage/html
           coveralls

@@ -6,6 +6,26 @@ import "package:sembast/sembast_io.dart";
 import "package:path/path.dart";
 
 
+// Settings key values
+const String INV_HOME_SHOW_SUBSCRIBED = "homeShowSubscribed";
+const String INV_HOME_SHOW_PO = "homeShowPo";
+const String INV_HOME_SHOW_MANUFACTURERS = "homeShowManufacturers";
+const String INV_HOME_SHOW_CUSTOMERS = "homeShowCustomers";
+const String INV_HOME_SHOW_SUPPLIERS = "homeShowSuppliers";
+
+const String INV_SOUNDS_BARCODE = "barcodeSounds";
+const String INV_SOUNDS_SERVER = "serverSounds";
+
+const String INV_PART_SUBCATEGORY = "partSubcategory";
+
+const String INV_STOCK_SUBLOCATION = "stockSublocation";
+const String INV_STOCK_SHOW_HISTORY = "stockShowHistory";
+
+const String INV_REPORT_ERRORS = "reportErrors";
+
+const String INV_STRICT_HTTPS = "strictHttps";
+
+
 /*
  * Class for storing InvenTree preferences in a NoSql DB
  */
@@ -54,32 +74,50 @@ class InvenTreePreferencesDB {
   }
 }
 
-class InvenTreePreferences {
 
-  factory InvenTreePreferences() {
-    return _api;
+/*
+ * InvenTree setings manager class.
+ * Provides functions for loading and saving settings, with provision for default values
+ */
+class InvenTreeSettingsManager {
+
+  factory InvenTreeSettingsManager() {
+    return _manager;
   }
 
-  InvenTreePreferences._internal();
+  InvenTreeSettingsManager._internal();
 
-  /* The following settings are not stored to persistent storage,
-   * instead they are only used as "session preferences".
-   * They are kept here as a convenience only.
-   */
+  final store = StoreRef("settings");
 
-  // Expand subcategory list in PartCategory view
-  bool expandCategoryList = false;
+  Future<Database> get _db async => InvenTreePreferencesDB.instance.database;
 
-  // Expand part list in PartCategory view
-  bool expandPartList = true;
+  Future<dynamic> getValue(String key, dynamic backup) async {
 
-  // Expand sublocation list in StockLocation view
-  bool expandLocationList = false;
+    final value = await store.record(key).get(await _db);
 
-  // Expand item list in StockLocation view
-  bool expandStockList = true;
+    if (value == null) {
+      return backup;
+    }
 
-  // Ensure we only ever create a single instance of the preferences class
-  static final InvenTreePreferences _api = InvenTreePreferences._internal();
+    return value;
+  }
 
+  // Load a boolean setting
+  Future<bool> getBool(String key, bool backup) async {
+    final dynamic value = await getValue(key, backup);
+
+    if (value is bool) {
+      return value;
+    } else {
+      return backup;
+    }
+  }
+
+  Future<void> setValue(String key, dynamic value) async {
+
+    await store.record(key).put(await _db, value);
+  }
+
+  // Ensure we only ever create a single instance of this class
+  static final InvenTreeSettingsManager _manager = InvenTreeSettingsManager._internal();
 }
