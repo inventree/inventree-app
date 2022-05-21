@@ -107,13 +107,6 @@ class UserProfileDBManager {
   }
 
   /*
-   * Mark the particular profile as selected
-   */
-  Future<void> selectProfile(int key) async {
-    await store.record("selected").put(await _db, key);
-  }
-
-  /*
    * Update the selected profile in the database.
    * The unique integer <key> is used to determine if the profile already exists.
    */
@@ -195,5 +188,33 @@ class UserProfileDBManager {
     }
 
     return profileList;
+  }
+
+  /*
+   * Mark the particular profile as selected
+   */
+  Future<void> selectProfile(int key) async {
+    await store.record("selected").put(await _db, key);
+  }
+
+  /*
+   * Look-up and select a profile by name.
+   * Return true if the profile was selected
+   */
+  Future<bool> selectProfileByName(String name) async {
+    var profiles = await getAllProfiles();
+
+    for (var prf in profiles) {
+      if (prf.name == name) {
+        int key = prf.key ?? -1;
+
+        if (key >= 0) {
+          await selectProfile(key);
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 }

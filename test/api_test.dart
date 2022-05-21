@@ -41,6 +41,10 @@ void main() {
       await UserProfileDBManager().updateProfile(prf);
     }
 
+    // Ensure the profile is selected
+    assert(! await UserProfileDBManager().selectProfileByName("Missing Profile"));
+    assert(await UserProfileDBManager().selectProfileByName("Test Profile"));
+
   });
 
   group("Login Tests:", () {
