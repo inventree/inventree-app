@@ -31,5 +31,5 @@ if __name__ == '__main__':
         f.write("// It has been created to ensure that *all* source file are included in coverage data\n")
         f.write("// Reference: https://github.com/flutter/flutter/issues/27997#issue-410722816\n\n")
 
-        f.write("// Do not actually test anything!")
+        f.write("// Do not actually test anything!\n")
         f.write("void main() {}\n")
