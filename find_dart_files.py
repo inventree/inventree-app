@@ -21,7 +21,7 @@ if __name__ == '__main__':
         skips = [
             'generated',
             'l10n',
-            'dummy_dsn.dart',
+            'dsn.dart',
         ]
 
         for path in dart_files:
