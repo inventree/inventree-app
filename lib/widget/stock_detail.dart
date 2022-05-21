@@ -311,7 +311,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   Future <void> _addStockDialog() async {
 
     // TODO: In future, deprecate support for older API
-    if (InvenTreeAPI().supportModernStockTransactions()) {
+    if (InvenTreeAPI().supportsModernStockTransactions) {
 
       Map<String, dynamic> fields = {
         "pk": {
@@ -391,7 +391,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   void _removeStockDialog() {
 
     // TODO: In future, deprecate support for the older API
-    if (InvenTreeAPI().supportModernStockTransactions()) {
+    if (InvenTreeAPI().supportsModernStockTransactions) {
       Map<String, dynamic> fields = {
         "pk": {
           "parent": "items",
@@ -463,7 +463,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   Future <void> _countStockDialog() async {
 
     // TODO: In future, deprecate support for older API
-    if (InvenTreeAPI().supportModernStockTransactions()) {
+    if (InvenTreeAPI().supportsModernStockTransactions) {
 
       Map<String, dynamic> fields = {
         "pk": {
@@ -566,7 +566,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   Future <void> _transferStockDialog(BuildContext context) async {
 
     // TODO: In future, deprecate support for older API
-    if (InvenTreeAPI().supportModernStockTransactions()) {
+    if (InvenTreeAPI().supportsModernStockTransactions) {
 
       Map<String, dynamic> fields = {
         "pk": {

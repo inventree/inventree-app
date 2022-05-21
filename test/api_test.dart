@@ -5,6 +5,7 @@
 import "package:test/test.dart";
 
 import "package:inventree/api.dart";
+import "package:inventree/helpers.dart";
 import "package:inventree/user_profile.dart";
 
 
@@ -91,11 +92,12 @@ void main() {
         assert(!result);
 
         // TODO: Test that the connection attempt above throws an authentication error
+
+        assert(!api.checkConnection());
+
       } else {
         assert(false);
       }
-
-
 
     });
 
@@ -107,12 +109,34 @@ void main() {
       final bool result = await api.connectToServer();
 
       // Check expected values
-      expect(result, equals(true));
-      expect(api.hasToken, equals(true));
+      assert(result);
+      assert(api.hasToken);
       expect(api.baseUrl, equals("http://localhost:12345/"));
 
-      expect(api.isConnected(), equals(true));
-      expect(api.isConnecting(), equals(false));
+      assert(api.isConnected());
+      assert(!api.isConnecting());
+      assert(api.checkConnection());
     });
+
+    test("Version Checks", () async {
+      // Test server version information
+      var api = InvenTreeAPI();
+
+      assert(await api.connectToServer());
+
+      // Check supported functions
+      assert(api.apiVersion >= 50);
+      assert(api.supportsSettings);
+      assert(api.supportsNotifications);
+      assert(api.supportsModernStockTransactions);
+      assert(api.supportsPoReceive);
+
+      // Check available permissions
+      assert(api.checkPermission("part", "change"));
+      assert(api.checkPermission("stocklocation", "delete"));
+      assert(api.checkPermission("part", "weirdpermission"));
+      assert(api.checkPermission("blah", "bloo"));
+    });
+
   });
 }

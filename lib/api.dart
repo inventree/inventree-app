@@ -208,7 +208,7 @@ class InvenTreeAPI {
    * Check server connection and display messages if not connected.
    * Useful as a precursor check before performing operations.
    */
-  bool checkConnection(BuildContext context) {
+  bool checkConnection() {
     // Firstly, is the server connected?
     if (!isConnected()) {
 
@@ -292,14 +292,10 @@ class InvenTreeAPI {
   static final InvenTreeAPI _api = InvenTreeAPI._internal();
 
   // API endpoint for receiving purchase order line items was introduced in v12
-  bool supportPoReceive() {
-    return apiVersion >= 12;
-  }
+  bool get supportsPoReceive => apiVersion >= 12;
 
   // "Modern" API transactions were implemented in API v14
-  bool supportModernStockTransactions() {
-    return apiVersion >= 14;
-  }
+  bool get supportsModernStockTransactions => apiVersion >= 14;
 
   /*
    * Connect to the remote InvenTree server:

@@ -34,7 +34,7 @@ class InvenTreeDrawer extends StatelessWidget {
 
   void _search() {
 
-    if (!InvenTreeAPI().checkConnection(context)) return;
+    if (!InvenTreeAPI().checkConnection()) return;
 
     _closeDrawer();
 
@@ -51,7 +51,7 @@ class InvenTreeDrawer extends StatelessWidget {
    * Upon successful scan, data are passed off to be decoded.
    */
   Future <void> _scan() async {
-    if (!InvenTreeAPI().checkConnection(context)) return;
+    if (!InvenTreeAPI().checkConnection()) return;
 
     _closeDrawer();
     scanQrCode(context);
