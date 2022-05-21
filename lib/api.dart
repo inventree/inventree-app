@@ -341,7 +341,7 @@ class InvenTreeAPI {
     // Clear the list of available plugins
     _plugins.clear();
 
-    print("Connecting to ${apiUrl} -> username=${username}");
+    debug("Connecting to ${apiUrl} -> username=${username}");
 
     APIResponse response;
 
@@ -434,7 +434,7 @@ class InvenTreeAPI {
     // Return the received token
     _token = (data["token"] ?? "") as String;
 
-    print("Received token - $_token");
+    debug("Received token from server");
 
     // Request user role information (async)
     getUserRoles();
@@ -448,7 +448,7 @@ class InvenTreeAPI {
   }
 
   void disconnectFromServer() {
-    print("InvenTreeAPI().disconnectFromServer()");
+    debug("API : disconnectFromServer()");
 
     _connected = false;
     _connecting = false;
@@ -504,7 +504,7 @@ class InvenTreeAPI {
 
     roles.clear();
 
-    print("Requesting user role data");
+    debug("API: Requesting user role data");
 
     // Next we request the permissions assigned to the current user
     // Note: 2021-02-27 this "roles" feature for the API was just introduced.
@@ -534,7 +534,7 @@ class InvenTreeAPI {
       return;
     }
 
-    print("Requesting plugin information");
+    debug("API: getPluginInformation()");
 
     // Request a list of plugins from the server
     final List<InvenTreeModel> results = await InvenTreePlugin().list();
@@ -664,7 +664,7 @@ class InvenTreeAPI {
       _request.headers.set(HttpHeaders.acceptLanguageHeader, Intl.getCurrentLocale());
 
     } on SocketException catch (error) {
-      print("SocketException at ${url}: ${error.toString()}");
+      debug("SocketException at ${url}: ${error.toString()}");
       showServerError(L10().connectionRefused, error.toString());
       return;
     } on TimeoutException {
@@ -673,7 +673,7 @@ class InvenTreeAPI {
       return;
     } on HandshakeException catch (error) {
       print("HandshakeException at ${url}:");
-      print(error.toString());
+      debug(error.toString());
       showServerError(L10().serverCertificateError, error.toString());
       return;
     } catch (error, stackTrace) {
@@ -1235,8 +1235,6 @@ class InvenTreeAPI {
   Future<void> locateItemOrLocation(BuildContext context, {int? item, int? location}) async {
 
     var plugins = getPlugins(mixin: "locate");
-
-    print("locateItemOrLocation");
 
     if (plugins.isEmpty) {
       // TODO: Error message

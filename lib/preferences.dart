@@ -60,16 +60,11 @@ class InvenTreePreferencesDB {
     // Get a platform-specific directory where persistent app data can be stored
     final appDocumentDir = await getApplicationDocumentsDirectory();
 
-    print("Documents Dir: ${appDocumentDir.toString()}");
-
-    print("Path: ${appDocumentDir.path}");
-
     // Path with the form: /platform-specific-directory/demo.db
     final dbPath = join(appDocumentDir.path, "InvenTreeSettings.db");
 
     final database = await databaseFactoryIo.openDatabase(dbPath);
 
-    // Any code awaiting the Completer's future will now start executing
     _dbOpenCompleter.complete(database);
   }
 }
