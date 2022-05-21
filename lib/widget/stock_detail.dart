@@ -19,7 +19,6 @@ import "package:inventree/widget/stock_item_history.dart";
 import "package:inventree/widget/stock_item_test_results.dart";
 import "package:inventree/widget/stock_notes.dart";
 import "package:inventree/l10.dart";
-import "package:inventree/helpers.dart";
 import "package:inventree/api.dart";
 import "package:inventree/api_form.dart";
 import "package:inventree/preferences.dart";
@@ -1008,7 +1007,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
                 }
               ).then((result) {
                 if (result) {
-                  successTone();
+                  barcodeSuccessTone();
 
                   showSnackIcon(
                     L10().barcodeAssigned,
