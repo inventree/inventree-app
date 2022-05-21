@@ -66,15 +66,28 @@ void main() {
       if (profile != null) {
         profile.server = "http://localhost:5555";
         await UserProfileDBManager().updateProfile(profile);
+
+        bool result = await api.connectToServer();
+        assert(!result);
+
+        // TODO: Test the the right 'error message' is returned
+        // TODO: The request above should throw a 'SockeException'
+
+        // Test incorrect login details
+        profile.server = "http://localhost:12345";
+        profile.username = "invalidusername";
+
+        await UserProfileDBManager().updateProfile(profile);
+
+        await api.connectToServer();
+        assert(!result);
+
+        // TODO: Test that the connection attempt above throws an authentication error
+      } else {
+        assert(false);
       }
 
-      bool result = await api.connectToServer();
 
-      assert(!result);
-
-      // TODO: Test the the right 'error message' is returned
-
-      // TODO: Test incorrect login details
 
     });
 
