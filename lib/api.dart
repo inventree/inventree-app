@@ -6,7 +6,7 @@ import "package:flutter/foundation.dart";
 import "package:http/http.dart" as http;
 import "package:intl/intl.dart";
 import "package:inventree/app_colors.dart";
-import "package:inventree/app_settings.dart";
+import "package:inventree/preferences.dart";
 
 import "package:open_file/open_file.dart";
 import "package:cached_network_image/cached_network_image.dart";

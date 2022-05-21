@@ -3,7 +3,7 @@ import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/l10.dart";
-import "package:inventree/app_settings.dart";
+import "package:inventree/preferences.dart";
 
 
 class InvenTreeAppSettingsWidget extends StatefulWidget {

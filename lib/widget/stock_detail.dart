@@ -22,7 +22,7 @@ import "package:inventree/l10.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/api.dart";
 import "package:inventree/api_form.dart";
-import "package:inventree/app_settings.dart";
+import "package:inventree/preferences.dart";
 
 
 class StockDetailWidget extends StatefulWidget {

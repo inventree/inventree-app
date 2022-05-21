@@ -6,7 +6,7 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
-import "package:inventree/app_settings.dart";
+import "package:inventree/preferences.dart";
 import "package:inventree/barcode.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/settings/login.dart";

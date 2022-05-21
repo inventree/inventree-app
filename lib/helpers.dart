@@ -8,7 +8,8 @@
  */
 
 import "package:audioplayers/audioplayers.dart";
-import "package:inventree/app_settings.dart";
+
+import "package:inventree/preferences.dart";
 
 String simpleNumberString(double number) {
   // Ref: https://stackoverflow.com/questions/55152175/how-to-remove-trailing-zeros-using-dart
