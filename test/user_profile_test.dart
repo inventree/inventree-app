@@ -106,6 +106,8 @@ void main() {
         expect(p.password, equals("testpassword"));
         expect(p.server, equals("http://localhost:12345"));
 
+        expect(p.toString(), equals("<${p.key}> Test Profile : http://localhost:12345 - testuser:testpassword"));
+
         // Test that we can update the profile
         p.name = "different name";
 
