@@ -35,13 +35,14 @@ jobs:
         run: |
           cd lib/l10n
           python3 collect_translations.py
-      - run: flutter pub get
-      - run: cp lib/dummy_dsn.dart lib/dsn.dart
-      - run: flutter analyze
       - name: Run Unit Tests
         run: |
-          apt-get install lcov
-          pip install -Ur requirements.txt
+          cp lib/dummy_dsn.dart lib/dsn.dart
+          flutter pub get
+          flutter analyze
           flutter test --coverage
-          genhtml coverage/lcov.info -o coverage/html
-          coveralls
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
