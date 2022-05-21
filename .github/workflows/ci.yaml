@@ -38,6 +38,7 @@ jobs:
       - name: Run Unit Tests
         run: |
           cp lib/dummy_dsn.dart lib/dsn.dart
+          python3 find_dart_files.py
           flutter pub get
           flutter analyze
           flutter test --coverage

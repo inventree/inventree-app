@@ -11,6 +11,9 @@
 
 coverage/*
 
+# This file is auto-generated as part of the CI process
+test/test_touch_files.dart
+
 # Sentry API key
 lib/dsn.dart
 
