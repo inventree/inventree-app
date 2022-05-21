@@ -10,17 +10,32 @@ import "package:inventree/user_profile.dart";
 
 
 void main() {
-  
+
   setUp(() async {
-    
-    // Create and select a profile to user
-    await UserProfileDBManager().addProfile(UserProfile(
-      name: "Test Profile",
-      server: "http://localhost:12345",
-      username: "testuser",
-      password: "testpassword",
-      selected: true,
-    ));
+
+    if (! await UserProfileDBManager().profileNameExists("Test Profile")) {
+      // Create and select a profile to user
+      await UserProfileDBManager().addProfile(UserProfile(
+        name: "Test Profile",
+        server: "http://localhost:12345",
+        username: "testuser",
+        password: "testpassword",
+        selected: true,
+      ));
+    }
+
+    var prf = await UserProfileDBManager().getSelectedProfile();
+
+    // Ensure that the server settings are correct by default,
+    // as they can get overwritten by subsequent tests
+
+    if (prf != null) {
+      prf.server = "http://localhost:12345";
+      prf.username = "testuser";
+      prf.password = "testpassword";
+
+      await UserProfileDBManager().updateProfile(prf);
+    }
 
   });
 
