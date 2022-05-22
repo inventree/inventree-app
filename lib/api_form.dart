@@ -335,7 +335,7 @@ class APIFormField {
               controller.text = hash;
               data["value"] = hash;
 
-              successTone();
+              barcodeSuccessTone();
 
               showSnackIcon(
                   L10().barcodeAssigned,

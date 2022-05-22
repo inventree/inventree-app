@@ -1,5 +1,3 @@
-
-
 import "dart:ui";
 
 const Color COLOR_GRAY = Color.fromRGBO(50, 50, 50, 1);

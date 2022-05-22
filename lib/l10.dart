@@ -7,16 +7,18 @@ import "package:flutter/material.dart";
 // Shortcut function to reduce boilerplate!
 I18N L10()
 {
-  BuildContext? _ctx = OneContext().context;
+  if (OneContext.hasContext) {
+    BuildContext? _ctx = OneContext().context;
 
-  if (_ctx != null) {
-    I18N? i18n = I18N.of(_ctx);
+    if (_ctx != null) {
+      I18N? i18n = I18N.of(_ctx);
 
-    if (i18n != null) {
-      return i18n;
+      if (i18n != null) {
+        return i18n;
+      }
     }
   }
 
   // Fallback for "null" context
-   return I18NEn();
+  return I18NEn();
 }

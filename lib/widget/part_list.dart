@@ -6,7 +6,7 @@ import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/part_detail.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/api.dart";
-import "package:inventree/app_settings.dart";
+import "package:inventree/preferences.dart";
 import "package:inventree/l10.dart";
 
 

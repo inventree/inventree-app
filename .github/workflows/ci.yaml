@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  INVENTREE_DB_ENGINE: django.db.backends.sqlite3
+  INVENTREE_DB_NAME: ../inventree_unit_test_db.sqlite3
+  INVENTREE_MEDIA_ROOT: ../test_inventree_media
+  INVENTREE_STATIC_ROOT: ../test_inventree_static
+  INVENTREE_ADMIN_USER: testuser
+  INVENTREE_ADMIN_PASSWORD: testpassword
+  INVENTREE_ADMIN_EMAIL: test@test.com
+  INVENTREE_PYTHON_TEST_SERVER: http://localhost:12345
+  INVENTREE_PYTHON_TEST_USERNAME: testuser
+  INVENTREE_PYTHON_TEST_PASSWORD: testpassword
+jobs:
+
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: '12.x'
+      - name: Setup Flutter 
+        uses: subosito/flutter-action@v1
+        with:
+          flutter-version: '2.10.3'
+      - name: Collect Translation Files
+        run: |
+          cd lib/l10n
+          python3 collect_translations.py
+      - name: Static Analysis Tests
+        run: |
+          cp lib/dummy_dsn.dart lib/dsn.dart
+          python3 find_dart_files.py
+          flutter pub get
+          flutter analyze
+
+      - name: Start InvenTree Server
+        run: |
+          sudo apt-get install python3-dev python3-pip python3-venv python3-wheel g++
+          pip3 install invoke
+          git clone --depth 1 https://github.com/inventree/inventree ./inventree_server
+          cd inventree_server
+          invoke install
+          invoke migrate
+          invoke import-fixtures
+          invoke server -a 127.0.0.1:12345 &
+          invoke wait
+      - name: Unit Tests
+        run: |
+          flutter test --coverage
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
