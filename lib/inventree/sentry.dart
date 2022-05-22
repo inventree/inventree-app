@@ -129,6 +129,9 @@ Future<bool> sentryReportMessage(String message, {Map<String, String>? context})
     if (context != null) {
       scope.setExtra("context", context);
     }
+
+    // Catch stacktrace data if possible
+    scope.setExtra("stacktrace", StackTrace.current.toString());
   });
 
   try {
