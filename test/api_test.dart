@@ -127,7 +127,6 @@ void main() {
       assert(api.apiVersion >= 50);
       assert(api.supportsSettings);
       assert(api.supportsNotifications);
-      assert(api.supportsModernStockTransactions);
       assert(api.supportsPoReceive);
 
       // Check available permissions

@@ -1,15 +1,12 @@
 import "package:flutter/material.dart";
 
-import "package:dropdown_search/dropdown_search.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/app_colors.dart";
 import "package:inventree/barcode.dart";
-import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/widget/dialogs.dart";
-import "package:inventree/widget/fields.dart";
 import "package:inventree/widget/location_display.dart";
 import "package:inventree/widget/part_detail.dart";
 import "package:inventree/widget/progress.dart";
@@ -41,14 +38,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
   @override
   String getAppBarTitle(BuildContext context) => L10().stockItem;
-
-  final TextEditingController _quantityController = TextEditingController();
-  final TextEditingController _notesController = TextEditingController();
-
-  final _addStockKey = GlobalKey<FormState>();
-  final _removeStockKey = GlobalKey<FormState>();
-  final _countStockKey = GlobalKey<FormState>();
-  final _moveStockKey = GlobalKey<FormState>();
 
   bool stockShowHistory = false;
 
