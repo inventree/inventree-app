@@ -6,7 +6,7 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
-import "package:inventree/app_settings.dart";
+import "package:inventree/preferences.dart";
 import "package:inventree/barcode.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/settings/login.dart";
@@ -71,13 +71,13 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
   UserProfile? _profile;
 
   void _scan(BuildContext context) {
-    if (!InvenTreeAPI().checkConnection(context)) return;
+    if (!InvenTreeAPI().checkConnection()) return;
 
     scanQrCode(context);
   }
 
   void _showParts(BuildContext context) {
-    if (!InvenTreeAPI().checkConnection(context)) return;
+    if (!InvenTreeAPI().checkConnection()) return;
 
     Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));
   }
@@ -87,7 +87,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
   }
 
   void _showStarredParts(BuildContext context) {
-    if (!InvenTreeAPI().checkConnection(context)) return;
+    if (!InvenTreeAPI().checkConnection()) return;
 
     Navigator.push(
       context,
@@ -100,13 +100,13 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
   }
 
   void _showStock(BuildContext context) {
-    if (!InvenTreeAPI().checkConnection(context)) return;
+    if (!InvenTreeAPI().checkConnection()) return;
 
     Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(null)));
   }
 
   void _showPurchaseOrders(BuildContext context) {
-    if (!InvenTreeAPI().checkConnection(context)) return;
+    if (!InvenTreeAPI().checkConnection()) return;
 
     Navigator.push(
       context,
@@ -118,19 +118,19 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
 
   /*
   void _showSuppliers(BuildContext context) {
-    if (!InvenTreeAPI().checkConnection(context)) return;
+    if (!InvenTreeAPI().checkConnection()) return;
 
     Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyListWidget(L10().suppliers, {"is_supplier": "true"})));
   }
 
   void _showManufacturers(BuildContext context) {
-    if (!InvenTreeAPI().checkConnection(context)) return;
+    if (!InvenTreeAPI().checkConnection()) return;
 
     Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyListWidget(L10().manufacturers, {"is_manufacturer": "true"})));
   }
 
   void _showCustomers(BuildContext context) {
-    if (!InvenTreeAPI().checkConnection(context)) return;
+    if (!InvenTreeAPI().checkConnection()) return;
 
     Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyListWidget(L10().customers, {"is_customer": "true"})));
   }

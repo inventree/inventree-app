@@ -6,7 +6,7 @@ import "package:flutter/foundation.dart";
 import "package:http/http.dart" as http;
 import "package:intl/intl.dart";
 import "package:inventree/app_colors.dart";
-import "package:inventree/app_settings.dart";
+import "package:inventree/preferences.dart";
 
 import "package:open_file/open_file.dart";
 import "package:cached_network_image/cached_network_image.dart";
@@ -16,6 +16,7 @@ import "package:flutter_cache_manager/flutter_cache_manager.dart";
 
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/l10.dart";
+import "package:inventree/helpers.dart";
 import "package:inventree/inventree/sentry.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/user_profile.dart";
@@ -201,11 +202,13 @@ class InvenTreeAPI {
   // Authentication token (initially empty, must be requested)
   String _token = "";
 
+  bool get hasToken => _token.isNotEmpty;
+
   /*
    * Check server connection and display messages if not connected.
    * Useful as a precursor check before performing operations.
    */
-  bool checkConnection(BuildContext context) {
+  bool checkConnection() {
     // Firstly, is the server connected?
     if (!isConnected()) {
 
@@ -278,7 +281,7 @@ class InvenTreeAPI {
   bool _connecting = false;
 
   bool isConnected() {
-    return profile != null && _connected && baseUrl.isNotEmpty && _token.isNotEmpty;
+    return profile != null && _connected && baseUrl.isNotEmpty && hasToken;
   }
 
   bool isConnecting() {
@@ -289,14 +292,10 @@ class InvenTreeAPI {
   static final InvenTreeAPI _api = InvenTreeAPI._internal();
 
   // API endpoint for receiving purchase order line items was introduced in v12
-  bool supportPoReceive() {
-    return apiVersion >= 12;
-  }
+  bool get supportsPoReceive => apiVersion >= 12;
 
   // "Modern" API transactions were implemented in API v14
-  bool supportModernStockTransactions() {
-    return apiVersion >= 14;
-  }
+  bool get supportsModernStockTransactions => apiVersion >= 14;
 
   /*
    * Connect to the remote InvenTree server:
@@ -338,7 +337,7 @@ class InvenTreeAPI {
     // Clear the list of available plugins
     _plugins.clear();
 
-    print("Connecting to ${apiUrl} -> username=${username}");
+    debug("Connecting to ${apiUrl} -> username=${username}");
 
     APIResponse response;
 
@@ -431,7 +430,7 @@ class InvenTreeAPI {
     // Return the received token
     _token = (data["token"] ?? "") as String;
 
-    print("Received token - $_token");
+    debug("Received token from server");
 
     // Request user role information (async)
     getUserRoles();
@@ -445,7 +444,7 @@ class InvenTreeAPI {
   }
 
   void disconnectFromServer() {
-    print("InvenTreeAPI().disconnectFromServer()");
+    debug("API : disconnectFromServer()");
 
     _connected = false;
     _connecting = false;
@@ -501,7 +500,7 @@ class InvenTreeAPI {
 
     roles.clear();
 
-    print("Requesting user role data");
+    debug("API: Requesting user role data");
 
     // Next we request the permissions assigned to the current user
     // Note: 2021-02-27 this "roles" feature for the API was just introduced.
@@ -531,7 +530,7 @@ class InvenTreeAPI {
       return;
     }
 
-    print("Requesting plugin information");
+    debug("API: getPluginInformation()");
 
     // Request a list of plugins from the server
     final List<InvenTreeModel> results = await InvenTreePlugin().list();
@@ -661,7 +660,7 @@ class InvenTreeAPI {
       _request.headers.set(HttpHeaders.acceptLanguageHeader, Intl.getCurrentLocale());
 
     } on SocketException catch (error) {
-      print("SocketException at ${url}: ${error.toString()}");
+      debug("SocketException at ${url}: ${error.toString()}");
       showServerError(L10().connectionRefused, error.toString());
       return;
     } on TimeoutException {
@@ -670,7 +669,7 @@ class InvenTreeAPI {
       return;
     } on HandshakeException catch (error) {
       print("HandshakeException at ${url}:");
-      print(error.toString());
+      debug(error.toString());
       showServerError(L10().serverCertificateError, error.toString());
       return;
     } catch (error, stackTrace) {
@@ -1232,8 +1231,6 @@ class InvenTreeAPI {
   Future<void> locateItemOrLocation(BuildContext context, {int? item, int? location}) async {
 
     var plugins = getPlugins(mixin: "locate");
-
-    print("locateItemOrLocation");
 
     if (plugins.isEmpty) {
       // TODO: Error message

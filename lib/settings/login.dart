@@ -344,7 +344,6 @@ class _ProfileEditState extends State<ProfileEditWidget> {
                     Uri uri = Uri.parse(value);
 
                     if (uri.hasScheme) {
-                      print("Scheme: ${uri.scheme}");
                       if (!["http", "https"].contains(uri.scheme.toLowerCase())) {
                         return L10().serverStart;
                       }

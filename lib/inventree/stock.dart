@@ -533,7 +533,7 @@ class InvenTreeStockItem extends InvenTreeModel {
     Map<String, dynamic> data = {};
 
     // Note: Format of adjustment API was updated in API v14
-    if (api.supportModernStockTransactions()) {
+    if (api.supportsModernStockTransactions) {
       // Modern (> 14) API
       data = {
         "items": [
@@ -560,7 +560,7 @@ class InvenTreeStockItem extends InvenTreeModel {
     }
 
     // Expected API return code depends on server API version
-    final int expected_response = api.supportModernStockTransactions() ? 201 : 200;
+    final int expected_response = api.supportsModernStockTransactions ? 201 : 200;
 
     var response = await api.post(
       endpoint,

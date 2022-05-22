@@ -11,13 +11,36 @@ import "package:qr_code_scanner/qr_code_scanner.dart";
 
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/inventree/part.dart";
-import "package:inventree/l10.dart";
-import "package:inventree/helpers.dart";
 import "package:inventree/api.dart";
+import "package:inventree/helpers.dart";
+import "package:inventree/l10.dart";
+import "package:inventree/preferences.dart";
 
 import "package:inventree/widget/location_display.dart";
 import "package:inventree/widget/part_detail.dart";
 import "package:inventree/widget/stock_detail.dart";
+
+
+/*
+ * Play an audible 'success' alert to the user.
+ */
+Future<void> barcodeSuccessTone() async {
+
+  final bool en = await InvenTreeSettingsManager().getValue(INV_SOUNDS_BARCODE, true) as bool;
+
+  if (en) {
+    playAudioFile("sounds/barcode_scan.mp3");
+  }
+}
+
+Future <void> barcodeFailureTone() async {
+
+  final bool en = await InvenTreeSettingsManager().getValue(INV_SOUNDS_BARCODE, true) as bool;
+
+  if (en) {
+    playAudioFile("sounds/barcode_error.mp3");
+  }
+}
 
 
 class BarcodeHandler {
@@ -44,7 +67,7 @@ class BarcodeHandler {
       // Called when the server does not know about a barcode
       // Override this function
 
-      failureTone();
+      barcodeFailureTone();
 
       showSnackIcon(
         L10().barcodeNoMatch,
@@ -55,7 +78,7 @@ class BarcodeHandler {
 
     Future<void> onBarcodeUnhandled(BuildContext context, Map<String, dynamic> data) async {
 
-      failureTone();
+      barcodeFailureTone();
 
       // Called when the server returns an unhandled response
       showServerError(L10().responseUnknown, data.toString());
@@ -125,7 +148,7 @@ class BarcodeScanHandler extends BarcodeHandler {
   @override
   Future<void> onBarcodeUnknown(BuildContext context, Map<String, dynamic> data) async {
 
-    failureTone();
+    barcodeFailureTone();
 
     showSnackIcon(
         L10().barcodeNoMatch,
@@ -146,7 +169,7 @@ class BarcodeScanHandler extends BarcodeHandler {
 
       if (pk > 0) {
 
-        successTone();
+        barcodeSuccessTone();
 
         InvenTreeStockLocation().get(pk).then((var loc) {
           if (loc is InvenTreeStockLocation) {
@@ -156,7 +179,7 @@ class BarcodeScanHandler extends BarcodeHandler {
         });
       } else {
 
-        failureTone();
+        barcodeFailureTone();
 
         showSnackIcon(
           L10().invalidStockLocation,
@@ -170,7 +193,7 @@ class BarcodeScanHandler extends BarcodeHandler {
 
       if (pk > 0) {
 
-        successTone();
+        barcodeSuccessTone();
 
         InvenTreeStockItem().get(pk).then((var item) {
 
@@ -183,7 +206,7 @@ class BarcodeScanHandler extends BarcodeHandler {
         });
       } else {
 
-        failureTone();
+        barcodeFailureTone();
 
         showSnackIcon(
             L10().invalidStockItem,
@@ -196,7 +219,7 @@ class BarcodeScanHandler extends BarcodeHandler {
 
       if (pk > 0) {
 
-        successTone();
+        barcodeSuccessTone();
 
         InvenTreePart().get(pk).then((var part) {
 
@@ -209,7 +232,7 @@ class BarcodeScanHandler extends BarcodeHandler {
         });
       } else {
 
-        failureTone();
+        barcodeFailureTone();
 
         showSnackIcon(
             L10().invalidPart,
@@ -218,7 +241,7 @@ class BarcodeScanHandler extends BarcodeHandler {
       }
     } else {
 
-      failureTone();
+      barcodeFailureTone();
 
       showSnackIcon(
         L10().barcodeUnknown,
@@ -275,7 +298,7 @@ class StockItemScanIntoLocationHandler extends BarcodeHandler {
 
       if (result) {
 
-        successTone();
+        barcodeSuccessTone();
 
         Navigator.of(context).pop();
 
@@ -285,7 +308,7 @@ class StockItemScanIntoLocationHandler extends BarcodeHandler {
         );
       } else {
 
-        failureTone();
+        barcodeFailureTone();
 
         showSnackIcon(
           L10().barcodeScanIntoLocationFailure,
@@ -294,7 +317,7 @@ class StockItemScanIntoLocationHandler extends BarcodeHandler {
       }
     } else {
 
-      failureTone();
+      barcodeFailureTone();
 
       showSnackIcon(
         L10().invalidStockLocation,
@@ -329,14 +352,14 @@ class StockLocationScanInItemsHandler extends BarcodeHandler {
 
       if (item == null) {
 
-        failureTone();
+        barcodeFailureTone();
 
         showSnackIcon(
           L10().invalidStockItem,
           success: false,
         );
       } else if (item.locationId == location.pk) {
-        failureTone();
+        barcodeFailureTone();
 
         showSnackIcon(
             L10().itemInLocation,
@@ -347,7 +370,7 @@ class StockLocationScanInItemsHandler extends BarcodeHandler {
 
         if (result) {
 
-          successTone();
+          barcodeSuccessTone();
 
           showSnackIcon(
             L10().barcodeScanIntoLocationSuccess,
@@ -355,7 +378,7 @@ class StockLocationScanInItemsHandler extends BarcodeHandler {
           );
         } else {
 
-          failureTone();
+          barcodeFailureTone();
 
           showSnackIcon(
             L10().barcodeScanIntoLocationFailure,
@@ -365,7 +388,7 @@ class StockLocationScanInItemsHandler extends BarcodeHandler {
       }
     } else {
 
-      failureTone();
+      barcodeFailureTone();
 
       // Does not match a valid stock item!
       showSnackIcon(
@@ -401,7 +424,7 @@ class UniqueBarcodeHandler extends BarcodeHandler {
   @override
   Future<void> onBarcodeMatched(BuildContext context, Map<String, dynamic> data) async {
 
-    failureTone();
+    barcodeFailureTone();
 
     // If the barcode is known, we can"t assign it to the stock item!
     showSnackIcon(
@@ -424,7 +447,7 @@ class UniqueBarcodeHandler extends BarcodeHandler {
       String hash = (data["hash"] ?? "") as String;
 
       if (hash.isEmpty) {
-        failureTone();
+        barcodeFailureTone();
 
         showSnackIcon(
           L10().barcodeError,
@@ -432,7 +455,7 @@ class UniqueBarcodeHandler extends BarcodeHandler {
         );
       } else {
 
-        successTone();
+        barcodeSuccessTone();
 
         // Close the barcode scanner
         Navigator.of(context).pop();

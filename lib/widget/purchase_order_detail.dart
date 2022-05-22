@@ -247,7 +247,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
     );
      */
 
-    if (order.isPlaced && InvenTreeAPI().supportPoReceive()) {
+    if (order.isPlaced && InvenTreeAPI().supportsPoReceive) {
       children.add(
         SimpleDialogOption(
           onPressed: () {

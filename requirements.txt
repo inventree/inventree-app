@@ -1,0 +1,4 @@
+# Python requirements for devops
+
+coverage==5.3                           # Unit test coverage
+coveralls==2.1.2                        # Coveralls linking (for code coverage reporting)

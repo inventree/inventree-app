@@ -1,20 +1,18 @@
-
-/*
- * Display a snackbar with:
- *
- * a) Text on the left
- * b) Icon on the right
- *
- * | Text          <icon> |
- */
-
 import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:one_context/one_context.dart";
 import "package:inventree/l10.dart";
 
 
+/*
+ * Display a configurable 'snackbar' at the bottom of the screen
+ */
 void showSnackIcon(String text, {IconData? icon, Function()? onAction, bool? success, String? actionText}) {
+
+  // Escape quickly if we do not have context
+  if (!OneContext.hasContext) {
+    return;
+  }
 
   BuildContext? context = OneContext().context;
 

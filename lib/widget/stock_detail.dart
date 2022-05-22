@@ -19,10 +19,9 @@ import "package:inventree/widget/stock_item_history.dart";
 import "package:inventree/widget/stock_item_test_results.dart";
 import "package:inventree/widget/stock_notes.dart";
 import "package:inventree/l10.dart";
-import "package:inventree/helpers.dart";
 import "package:inventree/api.dart";
 import "package:inventree/api_form.dart";
-import "package:inventree/app_settings.dart";
+import "package:inventree/preferences.dart";
 
 
 class StockDetailWidget extends StatefulWidget {
@@ -312,7 +311,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   Future <void> _addStockDialog() async {
 
     // TODO: In future, deprecate support for older API
-    if (InvenTreeAPI().supportModernStockTransactions()) {
+    if (InvenTreeAPI().supportsModernStockTransactions) {
 
       Map<String, dynamic> fields = {
         "pk": {
@@ -392,7 +391,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   void _removeStockDialog() {
 
     // TODO: In future, deprecate support for the older API
-    if (InvenTreeAPI().supportModernStockTransactions()) {
+    if (InvenTreeAPI().supportsModernStockTransactions) {
       Map<String, dynamic> fields = {
         "pk": {
           "parent": "items",
@@ -464,7 +463,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   Future <void> _countStockDialog() async {
 
     // TODO: In future, deprecate support for older API
-    if (InvenTreeAPI().supportModernStockTransactions()) {
+    if (InvenTreeAPI().supportsModernStockTransactions) {
 
       Map<String, dynamic> fields = {
         "pk": {
@@ -567,7 +566,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   Future <void> _transferStockDialog(BuildContext context) async {
 
     // TODO: In future, deprecate support for older API
-    if (InvenTreeAPI().supportModernStockTransactions()) {
+    if (InvenTreeAPI().supportsModernStockTransactions) {
 
       Map<String, dynamic> fields = {
         "pk": {
@@ -1008,7 +1007,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
                 }
               ).then((result) {
                 if (result) {
-                  successTone();
+                  barcodeSuccessTone();
 
                   showSnackIcon(
                     L10().barcodeAssigned,
