@@ -545,6 +545,8 @@
     "@search": {
         "description": "search"
     },
+    "searching": "Keresés",
+    "@searching": {},
     "searchLocation": "Hely keresése",
     "@searchLocation": {},
     "searchParts": "Alkatrészek keresése",
