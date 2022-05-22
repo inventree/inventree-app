@@ -1,15 +1,12 @@
 import "package:flutter/material.dart";
 
-import "package:dropdown_search/dropdown_search.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/app_colors.dart";
 import "package:inventree/barcode.dart";
-import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/widget/dialogs.dart";
-import "package:inventree/widget/fields.dart";
 import "package:inventree/widget/location_display.dart";
 import "package:inventree/widget/part_detail.dart";
 import "package:inventree/widget/progress.dart";
@@ -41,14 +38,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
   @override
   String getAppBarTitle(BuildContext context) => L10().stockItem;
-
-  final TextEditingController _quantityController = TextEditingController();
-  final TextEditingController _notesController = TextEditingController();
-
-  final _addStockKey = GlobalKey<FormState>();
-  final _removeStockKey = GlobalKey<FormState>();
-  final _countStockKey = GlobalKey<FormState>();
-  final _moveStockKey = GlobalKey<FormState>();
 
   bool stockShowHistory = false;
 
@@ -295,76 +284,37 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
   }
 
-  Future <void> _addStock() async {
-
-    double quantity = double.parse(_quantityController.text);
-    _quantityController.clear();
-
-    final bool result = await item.addStock(context, quantity, notes: _notesController.text);
-    _notesController.clear();
-
-    _stockUpdateMessage(result);
-
-    refresh(context);
-  }
-
+  /*
+   * Launch a dialog to 'add' quantity to this StockItem
+   */
   Future <void> _addStockDialog() async {
 
-    // TODO: In future, deprecate support for older API
-    if (InvenTreeAPI().supportsModernStockTransactions) {
-
-      Map<String, dynamic> fields = {
-        "pk": {
-          "parent": "items",
-          "nested": true,
-          "hidden": true,
-          "value": item.pk,
-        },
-        "quantity": {
-          "parent": "items",
-          "nested": true,
-          "value": 0,
-        },
-        "notes": {},
-      };
-
-      launchApiForm(
-        context,
-        L10().addStock,
-        InvenTreeStockItem.addStockUrl(),
-        fields,
-        method: "POST",
-        icon: FontAwesomeIcons.plusCircle,
-        onSuccess: (data) async {
-          _stockUpdateMessage(true);
-          refresh(context);
-        }
-      );
-
-      return;
-    }
-
-    _quantityController.clear();
-    _notesController.clear();
-
-    showFormDialog( L10().addStock,
-      key: _addStockKey,
-      callback: () {
-        _addStock();
+    Map<String, dynamic> fields = {
+      "pk": {
+        "parent": "items",
+        "nested": true,
+        "hidden": true,
+        "value": item.pk,
       },
-      fields: <Widget> [
-        Text("Current stock: ${item.quantity}"),
-        QuantityField(
-          label: L10().addStock,
-          controller: _quantityController,
-        ),
-        TextFormField(
-          decoration: InputDecoration(
-            labelText: L10().notes,
-          ),
-          controller: _notesController,
-        )
-      ],
+      "quantity": {
+        "parent": "items",
+        "nested": true,
+        "value": 0,
+      },
+      "notes": {},
+    };
+
+    launchApiForm(
+      context,
+      L10().addStock,
+      InvenTreeStockItem.addStockUrl(),
+      fields,
+      method: "POST",
+      icon: FontAwesomeIcons.plusCircle,
+      onSuccess: (data) async {
+        _stockUpdateMessage(true);
+        refresh(context);
+      }
     );
   }
 
@@ -375,149 +325,68 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     }
   }
 
-  Future <void> _removeStock() async {
-
-    double quantity = double.parse(_quantityController.text);
-    _quantityController.clear();
-
-    final bool result = await item.removeStock(context, quantity, notes: _notesController.text);
-
-    _stockUpdateMessage(result);
-
-    refresh(context);
-
-  }
-
+  /*
+   * Launch a dialog to 'remove' quantity from this StockItem
+   */
   void _removeStockDialog() {
 
-    // TODO: In future, deprecate support for the older API
-    if (InvenTreeAPI().supportsModernStockTransactions) {
-      Map<String, dynamic> fields = {
-        "pk": {
-          "parent": "items",
-          "nested": true,
-          "hidden": true,
-          "value": item.pk,
-        },
-        "quantity": {
-          "parent": "items",
-          "nested": true,
-          "value": 0,
-        },
-        "notes": {},
-      };
+    Map<String, dynamic> fields = {
+      "pk": {
+        "parent": "items",
+        "nested": true,
+        "hidden": true,
+        "value": item.pk,
+      },
+      "quantity": {
+        "parent": "items",
+        "nested": true,
+        "value": 0,
+      },
+      "notes": {},
+    };
 
-      launchApiForm(
-          context,
-          L10().removeStock,
-          InvenTreeStockItem.removeStockUrl(),
-          fields,
-          method: "POST",
-          icon: FontAwesomeIcons.minusCircle,
-          onSuccess: (data) async {
-            _stockUpdateMessage(true);
-            refresh(context);
-          }
-      );
-
-      return;
-    }
-
-    _quantityController.clear();
-    _notesController.clear();
-
-    showFormDialog(L10().removeStock,
-        key: _removeStockKey,
-        callback: () {
-          _removeStock();
-        },
-        fields: <Widget>[
-          Text("Current stock: ${item.quantity}"),
-          QuantityField(
-            label: L10().removeStock,
-            controller: _quantityController,
-            max: item.quantity,
-          ),
-          TextFormField(
-            decoration: InputDecoration(
-              labelText: L10().notes,
-            ),
-            controller: _notesController,
-          ),
-        ],
+    launchApiForm(
+        context,
+        L10().removeStock,
+        InvenTreeStockItem.removeStockUrl(),
+        fields,
+        method: "POST",
+        icon: FontAwesomeIcons.minusCircle,
+        onSuccess: (data) async {
+          _stockUpdateMessage(true);
+          refresh(context);
+        }
     );
-  }
-
-  Future <void> _countStock() async {
-
-    double quantity = double.parse(_quantityController.text);
-    _quantityController.clear();
-
-    final bool result = await item.countStock(context, quantity, notes: _notesController.text);
-
-    _stockUpdateMessage(result);
-
-    refresh(context);
   }
 
   Future <void> _countStockDialog() async {
 
-    // TODO: In future, deprecate support for older API
-    if (InvenTreeAPI().supportsModernStockTransactions) {
-
-      Map<String, dynamic> fields = {
-        "pk": {
-          "parent": "items",
-          "nested": true,
-          "hidden": true,
-          "value": item.pk,
-        },
-        "quantity": {
-          "parent": "items",
-          "nested": true,
-          "value": item.quantity,
-        },
-        "notes": {},
-      };
-
-      launchApiForm(
-          context,
-          L10().countStock,
-          InvenTreeStockItem.countStockUrl(),
-          fields,
-          method: "POST",
-          icon: FontAwesomeIcons.clipboardCheck,
-          onSuccess: (data) async {
-            _stockUpdateMessage(true);
-            refresh(context);
-          }
-      );
-
-      return;
-    }
-
-    _quantityController.text = item.quantity.toString();
-    _notesController.clear();
-
-    showFormDialog(L10().countStock,
-      key: _countStockKey,
-      callback: () {
-        _countStock();
+    Map<String, dynamic> fields = {
+      "pk": {
+        "parent": "items",
+        "nested": true,
+        "hidden": true,
+        "value": item.pk,
       },
-      acceptText: L10().count,
-      fields: <Widget> [
-        QuantityField(
-          label: L10().countStock,
-          hint: "${item.quantityString}",
-          controller: _quantityController,
-        ),
-        TextFormField(
-          decoration: InputDecoration(
-            labelText: L10().notes,
-          ),
-          controller: _notesController,
-        )
-      ]
+      "quantity": {
+        "parent": "items",
+        "nested": true,
+        "value": item.quantity,
+      },
+      "notes": {},
+    };
+
+    launchApiForm(
+        context,
+        L10().countStock,
+        InvenTreeStockItem.countStockUrl(),
+        fields,
+        method: "POST",
+        icon: FontAwesomeIcons.clipboardCheck,
+        onSuccess: (data) async {
+          _stockUpdateMessage(true);
+          refresh(context);
+        }
     );
   }
 
@@ -542,130 +411,43 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   }
 
 
-  // TODO: Delete this function once support for old API is deprecated
-  Future <void> _transferStock(int locationId) async {
-
-    double quantity = double.tryParse(_quantityController.text) ?? item.quantity;
-    String notes = _notesController.text;
-
-    _quantityController.clear();
-    _notesController.clear();
-
-    var result = await item.transferStock(context, locationId, quantity: quantity, notes: notes);
-
-    refresh(context);
-
-    if (result) {
-      showSnackIcon(L10().stockItemTransferred, success: true);
-    }
-  }
-
   /*
    * Launches an API Form to transfer this stock item to a new location
    */
   Future <void> _transferStockDialog(BuildContext context) async {
 
-    // TODO: In future, deprecate support for older API
-    if (InvenTreeAPI().supportsModernStockTransactions) {
+    Map<String, dynamic> fields = {
+      "pk": {
+        "parent": "items",
+        "nested": true,
+        "hidden": true,
+        "value": item.pk,
+      },
+      "quantity": {
+        "parent": "items",
+        "nested": true,
+        "value": item.quantity,
+      },
+      "location": {},
+      "notes": {},
+    };
 
-      Map<String, dynamic> fields = {
-        "pk": {
-          "parent": "items",
-          "nested": true,
-          "hidden": true,
-          "value": item.pk,
-        },
-        "quantity": {
-          "parent": "items",
-          "nested": true,
-          "value": item.quantity,
-        },
-        "location": {},
-        "notes": {},
-      };
-
-      launchApiForm(
-          context,
-          L10().transferStock,
-          InvenTreeStockItem.transferStockUrl(),
-          fields,
-          method: "POST",
-          icon: FontAwesomeIcons.dolly,
-          onSuccess: (data) async {
-            _stockUpdateMessage(true);
-            refresh(context);
-          }
-      );
-
-      return;
+    if (item.isSerialized()) {
+      // Prevent editing of 'quantity' field if the item is serialized
+      fields["quantity"]["hidden"] = true;
     }
 
-    int? location_pk;
-
-    _quantityController.text = "${item.quantity}";
-
-    showFormDialog(L10().transferStock,
-        key: _moveStockKey,
-        callback: () {
-          var _pk = location_pk;
-
-          if (_pk != null) {
-            _transferStock(_pk);
-          }
-        },
-        fields: <Widget>[
-          QuantityField(
-            label: L10().quantity,
-            controller: _quantityController,
-            max: item.quantity,
-          ),
-          DropdownSearch<dynamic>(
-            mode: Mode.BOTTOM_SHEET,
-            showSelectedItem: false,
-            autoFocusSearchBox: true,
-            selectedItem: null,
-            errorBuilder: (context, entry, exception) {
-              print("entry: $entry");
-              print(exception.toString());
-
-              return Text(
-                exception.toString(),
-                style: TextStyle(
-                  fontSize: 10,
-                )
-              );
-            },
-            onFind: (String filter) async {
-
-              final results = await InvenTreeStockLocation().search(filter);
-
-              List<dynamic> items = [];
-
-              for (InvenTreeModel loc in results) {
-                if (loc is InvenTreeStockLocation) {
-                  items.add(loc.jsondata);
-                }
-              }
-
-              return items;
-            },
-            label: L10().stockLocation,
-            hint: L10().searchLocation,
-            onChanged: null,
-            itemAsString: (dynamic location) {
-              return (location["pathstring"] ?? "") as String;
-            },
-            onSaved: (dynamic location) {
-              if (location == null) {
-                location_pk = null;
-              } else {
-                location_pk = location["pk"] as int;
-              }
-            },
-            isFilteredOnline: true,
-            showSearchBox:  true,
-          ),
-        ],
+    launchApiForm(
+        context,
+        L10().transferStock,
+        InvenTreeStockItem.transferStockUrl(),
+        fields,
+        method: "POST",
+        icon: FontAwesomeIcons.dolly,
+        onSuccess: (data) async {
+          _stockUpdateMessage(true);
+          refresh(context);
+        }
     );
   }
 
