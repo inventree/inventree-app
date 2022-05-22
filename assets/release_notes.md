@@ -5,6 +5,9 @@
 ---
 
 - Fixes issue which prevented text input in search window
+- Remove support for legacy stock adjustment API
+- App now requires server API version 20 (or newer)
+- Updated translation files
 
 ### 0.7.0 - May 2022
 ---

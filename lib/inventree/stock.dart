@@ -517,7 +517,6 @@ class InvenTreeStockItem extends InvenTreeModel {
    * - Remove
    * - Count
    */
-  // TODO: Remove this function when we deprecate support for the old API
   Future<bool> adjustStock(BuildContext context, String endpoint, double q, {String? notes, int? location}) async {
 
     // Serialized stock cannot be adjusted (unless it is a "transfer")
@@ -532,46 +531,29 @@ class InvenTreeStockItem extends InvenTreeModel {
 
     Map<String, dynamic> data = {};
 
-    // Note: Format of adjustment API was updated in API v14
-    if (api.supportsModernStockTransactions) {
-      // Modern (> 14) API
-      data = {
-        "items": [
-          {
-            "pk": "${pk}",
-            "quantity": "${quantity}",
-          }
-        ],
-      };
-    } else {
-      // Legacy (<= 14) API
-      data = {
-        "item": {
+    data = {
+      "items": [
+        {
           "pk": "${pk}",
           "quantity": "${quantity}",
-        },
-      };
-    }
-
-    data["notes"] = notes ?? "";
+        }
+      ],
+      "notes": notes ?? "",
+    };
 
     if (location != null) {
       data["location"] = location;
     }
 
-    // Expected API return code depends on server API version
-    final int expected_response = api.supportsModernStockTransactions ? 201 : 200;
-
     var response = await api.post(
       endpoint,
       body: data,
-      expectedStatusCode: expected_response,
+      expectedStatusCode: 200,
     );
 
     return response.isValid();
   }
 
-  // TODO: Remove this function when we deprecate support for the old API
   Future<bool> countStock(BuildContext context, double q, {String? notes}) async {
 
     final bool result = await adjustStock(context, "/stock/count/", q, notes: notes);
@@ -579,7 +561,6 @@ class InvenTreeStockItem extends InvenTreeModel {
     return result;
   }
 
-  // TODO: Remove this function when we deprecate support for the old API
   Future<bool> addStock(BuildContext context, double q, {String? notes}) async {
 
     final bool result = await adjustStock(context,  "/stock/add/", q, notes: notes);
@@ -587,7 +568,6 @@ class InvenTreeStockItem extends InvenTreeModel {
     return result;
   }
 
-  // TODO: Remove this function when we deprecate support for the old API
   Future<bool> removeStock(BuildContext context, double q, {String? notes}) async {
 
     final bool result = await adjustStock(context, "/stock/remove/", q, notes: notes);
@@ -595,7 +575,6 @@ class InvenTreeStockItem extends InvenTreeModel {
     return result;
   }
 
-  // TODO: Remove this function when we deprecate support for the old API
   Future<bool> transferStock(BuildContext context, int location, {double? quantity, String? notes}) async {
 
     double q = this.quantity;

@@ -1161,6 +1161,72 @@ class _APIFormWidgetState extends State<APIFormWidget> {
     nonFieldErrors = errors;
   }
 
+  /* Check for errors relating to an *unhandled* field name
+  * These errors will not be displayed and potentially confuse the user
+  * So, we need to know if these are ever happening
+  */
+  void checkInvalidErrors(APIResponse response) {
+    var errors = response.asMap();
+
+    for (String fieldName in errors.keys) {
+
+      bool match = false;
+
+      switch (fieldName) {
+        case "__all__":
+        case "non_field_errors":
+        case "errors":
+          // ignore these global fields
+          match = true;
+          continue;
+        default:
+          for (var field in fields) {
+
+            // Hidden fields can't display errors, so we won't match
+            if (field.hidden) {
+              continue;
+            }
+
+            if (field.name == fieldName) {
+              // Direct Match found!
+              match = true;
+              break;
+            } else if (field.parent == fieldName) {
+
+              var error = errors[fieldName];
+
+              if (error is List) {
+                for (var el in error) {
+                  if (el is Map && el.containsKey(field.name)) {
+                    match = true;
+                    break;
+                  }
+                }
+              } else if (error is Map && error.containsKey(field.name)) {
+                match = true;
+                break;
+              }
+            }
+          }
+
+          break;
+      }
+
+      if (!match) {
+        // Match for an unknown / unsupported field
+        sentryReportMessage(
+          "API form returned error for unsupported field",
+          context: {
+            "url": response.url,
+            "status_code": response.statusCode.toString(),
+            "field": fieldName,
+            "error_message": response.data.toString(),
+          }
+        );
+      }
+    }
+  }
+
   /*
    * Submit the form data to the server, and handle the results
    */
@@ -1234,8 +1300,6 @@ class _APIFormWidgetState extends State<APIFormWidget> {
         // Hide this form
         Navigator.pop(context);
 
-        // TODO: Display a snackBar
-
         if (successFunc != null) {
 
           // Ensure the response is a valid JSON structure
@@ -1263,7 +1327,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
         }
 
         extractNonFieldErrors(response);
-
+        checkInvalidErrors(response);
         break;
       case 401:
         showSnackIcon(
