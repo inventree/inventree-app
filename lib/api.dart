@@ -144,7 +144,7 @@ class InvenTreeAPI {
   InvenTreeAPI._internal();
 
   // Minimum required API version for server
-  static const _minApiVersion = 7;
+  static const _minApiVersion = 20;
 
   bool _strictHttps = false;
 
@@ -293,9 +293,6 @@ class InvenTreeAPI {
 
   // API endpoint for receiving purchase order line items was introduced in v12
   bool get supportsPoReceive => apiVersion >= 12;
-
-  // "Modern" API transactions were implemented in API v14
-  bool get supportsModernStockTransactions => apiVersion >= 14;
 
   /*
    * Connect to the remote InvenTree server:
