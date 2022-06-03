@@ -270,6 +270,7 @@ class InvenTreeModel {
       );
 
       showServerError(
+        url,
         L10().serverError,
         L10().errorDelete,
       );
@@ -299,6 +300,7 @@ class InvenTreeModel {
       );
 
       showServerError(
+        url,
         L10().serverError,
         L10().errorFetch,
       );
@@ -367,6 +369,7 @@ class InvenTreeModel {
       );
 
       showServerError(
+        url,
         L10().serverError,
         L10().errorFetch,
       );
@@ -408,6 +411,7 @@ class InvenTreeModel {
       );
 
       showServerError(
+        URL,
         L10().serverError,
         L10().errorCreate,
       );

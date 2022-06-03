@@ -81,7 +81,7 @@ class BarcodeHandler {
       barcodeFailureTone();
 
       // Called when the server returns an unhandled response
-      showServerError(L10().responseUnknown, data.toString());
+      showServerError("barcode/", L10().responseUnknown, data.toString());
 
       _controller?.resumeCamera();
     }
@@ -440,6 +440,7 @@ class UniqueBarcodeHandler extends BarcodeHandler {
 
     if (!data.containsKey("hash")) {
       showServerError(
+        "barcode/",
         L10().missingData,
         L10().barcodeMissingHash,
       );

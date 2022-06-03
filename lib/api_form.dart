@@ -1288,7 +1288,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
     final response = await _submit(data);
 
     if (!response.isValid()) {
-      showServerError(L10().serverError, L10().responseInvalid);
+      showServerError(url, L10().serverError, L10().responseInvalid);
       return;
     }
 

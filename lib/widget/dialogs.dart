@@ -7,6 +7,7 @@ import "package:inventree/l10.dart";
 import "package:inventree/preferences.dart";
 import "package:inventree/widget/snacks.dart";
 
+
 Future<void> confirmationDialog(String title, String text, {IconData icon = FontAwesomeIcons.questionCircle, String? acceptText, String? rejectText, Function? onAccept, Function? onReject}) async {
 
   String _accept = acceptText ?? L10().ok;
@@ -50,30 +51,6 @@ Future<void> confirmationDialog(String title, String text, {IconData icon = Font
 }
 
 
-Future<void> showInfoDialog(String title, String description, {IconData icon = FontAwesomeIcons.info, String? info, Function()? onDismissed}) async {
-
-  String _info = info ?? L10().info;
-
-  OneContext().showDialog(
-    builder: (BuildContext context) => SimpleDialog(
-      title: ListTile(
-        title: Text(_info),
-        leading: FaIcon(icon),
-      ),
-      children: <Widget>[
-        ListTile(
-          title: Text(title),
-          subtitle: Text(description)
-        )
-      ]
-    )
-  ).then((value) {
-    if (onDismissed != null) {
-      onDismissed();
-    }
-  });
-}
-
 Future<void> showErrorDialog(String title, String description, {IconData icon = FontAwesomeIcons.exclamationCircle, String? error, Function? onDismissed}) async {
 
   String _error = error ?? L10().error;
@@ -98,7 +75,19 @@ Future<void> showErrorDialog(String title, String description, {IconData icon = 
   });
 }
 
-Future<void> showServerError(String title, String description) async {
+/*
+ * Display a message indicating the nature of a server / API error
+ */
+Future<void> showServerError(String url, String title, String description) async {
+
+  if (!OneContext.hasContext) {
+    return;
+  }
+
+  // We ignore error messages for certain URLs
+  if (url.contains("notifications")) {
+    return;
+  }
 
   if (title.isEmpty) {
     title = L10().serverError;
@@ -126,7 +115,10 @@ Future<void> showServerError(String title, String description) async {
   );
 }
 
-Future<void> showStatusCodeError(int status) async {
+/*
+ * Displays an error indicating that the server returned an unexpected status code
+ */
+Future<void> showStatusCodeError(String url, int status) async {
 
   String msg = L10().responseInvalid;
   String extra = "${L10().statusCode}: ${status}";
@@ -173,68 +165,16 @@ Future<void> showStatusCodeError(int status) async {
   }
 
   showServerError(
+    url,
     msg,
     extra,
   );
 }
 
-Future<void> showTimeoutError() async {
-  await showServerError(L10().timeout, L10().noResponse);
-}
 
-void showFormDialog(String title, {String? acceptText, String? cancelText, GlobalKey<FormState>? key, List<Widget>? fields, Function? callback}) {
-
-
-  String _accept = acceptText ?? L10().save;
-  String _cancel = cancelText ?? L10().cancel;
-
-  List<Widget> _fields = fields ?? [];
-
-  OneContext().showDialog(
-    builder: (BuildContext context) {
-      return AlertDialog(
-          title: Text(title),
-          actions: <Widget>[
-            TextButton(
-                child: Text(_cancel),
-                onPressed: () {
-                  // Close the form
-                  Navigator.pop(context);
-                }
-            ),
-            TextButton(
-                child: Text(_accept),
-                onPressed: () {
-
-                  var _key = key;
-
-                  if (_key != null && _key.currentState != null) {
-                    if (_key.currentState!.validate()) {
-                      _key.currentState!.save();
-
-                      Navigator.pop(context);
-
-                      // Callback
-                      if (callback != null) {
-                        callback();
-                      }
-                    }
-                  }
-                }
-            )
-          ],
-          content: Form(
-              key: key,
-              child: SingleChildScrollView(
-                  child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: _fields
-                  )
-              )
-          )
-      );
-    }
-  );
+/*
+ * Displays a message indicating that the server timed out on a certain request
+ */
+Future<void> showTimeoutError(String url) async {
+  await showServerError(url, L10().timeout, L10().noResponse);
 }
