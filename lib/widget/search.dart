@@ -8,6 +8,7 @@ import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/widget/part_list.dart";
 import "package:inventree/widget/purchase_order_list.dart";
 import "package:inventree/widget/refreshable_state.dart";
+import "package:inventree/api.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/stock.dart";
@@ -115,6 +116,8 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
    */
   Future<void> search(String term) async {
 
+    var api = InvenTreeAPI();
+
     setState(() {
       // Do not search on an empty string
       nPartResults = 0;
@@ -132,45 +135,53 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
     }
 
     // Search parts
-    InvenTreePart().count(searchQuery: term).then((int n) {
-      if (term == searchController.text) {
-        setState(() {
-          nPartResults = n;
-          nSearchResults++;
-        });
-      }
-    });
+    if (api.checkPermission("part", "view")) {
+      InvenTreePart().count(searchQuery: term).then((int n) {
+        if (term == searchController.text) {
+          setState(() {
+            nPartResults = n;
+            nSearchResults++;
+          });
+        }
+      });
+    }
 
     // Search part categories
-    InvenTreePartCategory().count(searchQuery: term,).then((int n) {
-      if (term == searchController.text) {
-        setState(() {
-          nCategoryResults = n;
-          nSearchResults++;
-        });
-      }
-    });
+    if (api.checkPermission("part_category", "view")) {
+      InvenTreePartCategory().count(searchQuery: term,).then((int n) {
+        if (term == searchController.text) {
+          setState(() {
+            nCategoryResults = n;
+            nSearchResults++;
+          });
+        }
+      });
+    }
 
     // Search stock items
-    InvenTreeStockItem().count(searchQuery: term).then((int n) {
-      if (term == searchController.text) {
-        setState(() {
-          nStockResults = n;
-          nSearchResults++;
-        });
-      }
-    });
+    if (api.checkPermission("stock", "view")) {
+      InvenTreeStockItem().count(searchQuery: term).then((int n) {
+        if (term == searchController.text) {
+          setState(() {
+            nStockResults = n;
+            nSearchResults++;
+          });
+        }
+      });
+    }
 
     // Search stock locations
-    InvenTreeStockLocation().count(searchQuery: term).then((int n) {
-      if (term == searchController.text) {
-        setState(() {
-          nLocationResults = n;
+    if (api.checkPermission("stock_location", "view")) {
+      InvenTreeStockLocation().count(searchQuery: term).then((int n) {
+        if (term == searchController.text) {
+          setState(() {
+            nLocationResults = n;
 
-          nSearchResults++;
-        });
-      }
-    });
+            nSearchResults++;
+          });
+        }
+      });
+    }
 
     // TDOO: Re-implement this once display for companies has been fixed
     /*
@@ -188,20 +199,21 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
      */
 
     // Search purchase orders
-    InvenTreePurchaseOrder().count(
-      searchQuery: term,
-      filters: {
-        "outstanding": "true"
-      }
-    ).then((int n) {
-      if (term == searchController.text) {
-        setState(() {
-          nPurchaseOrderResults = n;
-          nSearchResults++;
-        });
-      }
-    });
-
+    if (api.checkPermission("purchase_order", "view")) {
+      InvenTreePurchaseOrder().count(
+          searchQuery: term,
+          filters: {
+            "outstanding": "true"
+          }
+      ).then((int n) {
+        if (term == searchController.text) {
+          setState(() {
+            nPurchaseOrderResults = n;
+            nSearchResults++;
+          });
+        }
+      });
+    }
   }
 
   List<Widget> _tiles(BuildContext context) {
