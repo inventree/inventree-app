@@ -2,7 +2,7 @@
  * Unit tests for accessing various model classes via the API
  */
 
-import 'package:inventree/inventree/model.dart';
+import "package:inventree/inventree/model.dart";
 import "package:test/test.dart";
 
 import "package:inventree/api.dart";
