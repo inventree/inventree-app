@@ -39,6 +39,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   InvenTreePart? parentPart;
 
+  int attachmentCount = 0;
+
   @override
   String getAppBarTitle(BuildContext context) => L10().partDetails;
 
@@ -110,6 +112,12 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     }
 
     await part.getTestTemplates();
+
+    attachmentCount = await InvenTreePartAttachment().count(
+      filters: {
+        "part": part.pk.toString()
+      }
+    );
   }
 
   Future <void> _toggleStar() async {
@@ -405,7 +413,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       ListTile(
         title: Text(L10().attachments),
         leading: FaIcon(FontAwesomeIcons.fileAlt, color: COLOR_CLICK),
-        trailing: Text(""),
+        trailing: attachmentCount > 0 ? Text(attachmentCount.toString()) : null,
         onTap: () {
           Navigator.push(
             context,
