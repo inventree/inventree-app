@@ -129,10 +129,13 @@ void main() {
       assert(api.supportsNotifications);
       assert(api.supportsPoReceive);
 
+      // Ensure we can request (and receive) user roles
+      assert(await api.getUserRoles());
+
       // Check available permissions
       assert(api.checkPermission("part", "change"));
       assert(api.checkPermission("stocklocation", "delete"));
-      assert(api.checkPermission("part", "weirdpermission"));
+      assert(!api.checkPermission("part", "weirdpermission"));
       assert(api.checkPermission("blah", "bloo"));
     });
 
