@@ -664,6 +664,9 @@
   "quantityPositive": "Quantity must be positive",
   "@quantityPositive": {},
 
+  "quarantined": "Quarantined",
+  "@quarantined": {},
+
   "queryEmpty": "Enter search query",
   "@queryEmpty": {},
 

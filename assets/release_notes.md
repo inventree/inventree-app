@@ -1,6 +1,11 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.7.2 - June 2022
+---
+
+- Add "quarantined" status flag for stock items
+
 ### 0.7.1 - May 2022
 ---
 
