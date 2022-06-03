@@ -423,6 +423,9 @@ class InvenTreePartAttachment extends InvenTreeAttachment {
   InvenTreePartAttachment.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
   @override
+  String get REFERENCE_FIELD => "part";
+
+  @override
   String get URL => "part/attachment/";
 
   @override
