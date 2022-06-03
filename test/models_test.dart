@@ -25,6 +25,33 @@ void main() {
     assert(await InvenTreeAPI().connectToServer());
   });
 
+  group("Category Tests:", () {
+    test("Basics", () async {
+      assert(InvenTreePartCategory().URL == "part/category/");
+    });
+
+    test("List Categories", () async {
+      List<InvenTreeModel> results;
+
+      // List *all* categories
+      results = await InvenTreePartCategory().list();
+      assert(results.length == 8);
+
+      for (var result in results) {
+        assert(result is InvenTreePartCategory);
+      }
+
+      // Filter by parent category
+      results = await InvenTreePartCategory().list(
+        filters: {
+          "parent": "1",
+        }
+      );
+
+      assert(results.length == 3);
+    });
+  });
+
   group("Part Tests:", () {
 
     test("Basics", () async {
