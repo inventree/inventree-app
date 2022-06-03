@@ -341,7 +341,7 @@ class InvenTreeAPI {
     response = await get("", expectedStatusCode: 200);
 
     if (!response.successful()) {
-      showStatusCodeError(response.statusCode);
+      showStatusCodeError(apiUrl, response.statusCode);
       return false;
     }
 
@@ -351,6 +351,7 @@ class InvenTreeAPI {
     if (!data.containsKey("server") || !data.containsKey("version") || !data.containsKey("instance")) {
 
       showServerError(
+        apiUrl,
         L10().missingData,
         L10().serverMissingData,
       );
@@ -378,6 +379,7 @@ class InvenTreeAPI {
       message += "Ensure your InvenTree server version is up to date!";
 
       showServerError(
+        apiUrl,
         L10().serverOld,
         message,
       );
@@ -401,12 +403,13 @@ class InvenTreeAPI {
         case 401:
         case 403:
           showServerError(
+            apiUrl,
             L10().serverAuthenticationError,
             L10().invalidUsernamePassword,
           );
           break;
         default:
-          showStatusCodeError(response.statusCode);
+          showStatusCodeError(apiUrl, response.statusCode);
           break;
       }
 
@@ -417,6 +420,7 @@ class InvenTreeAPI {
 
     if (!data.containsKey("token")) {
       showServerError(
+          apiUrl,
           L10().tokenMissing,
           L10().tokenMissingFromResponse,
       );
@@ -631,12 +635,12 @@ class InvenTreeAPI {
     Uri? _uri = Uri.tryParse(makeUrl(url));
 
     if (_uri == null) {
-      showServerError(L10().invalidHost, L10().invalidHostDetails);
+      showServerError(url, L10().invalidHost, L10().invalidHostDetails);
       return;
     }
 
     if (_uri.host.isEmpty) {
-      showServerError(L10().invalidHost, L10().invalidHostDetails);
+      showServerError(url, L10().invalidHost, L10().invalidHostDetails);
       return;
     }
 
@@ -644,7 +648,7 @@ class InvenTreeAPI {
 
     final bool strictHttps = await InvenTreeSettingsManager().getValue(INV_STRICT_HTTPS, false) as bool;
 
-    var client = createClient(strictHttps: strictHttps);
+    var client = createClient(url, strictHttps: strictHttps);
 
     // Attempt to open a connection to the server
     try {
@@ -658,20 +662,20 @@ class InvenTreeAPI {
 
     } on SocketException catch (error) {
       debug("SocketException at ${url}: ${error.toString()}");
-      showServerError(L10().connectionRefused, error.toString());
+      showServerError(url, L10().connectionRefused, error.toString());
       return;
     } on TimeoutException {
       print("TimeoutException at ${url}");
-      showTimeoutError();
+      showTimeoutError(url);
       return;
     } on HandshakeException catch (error) {
       print("HandshakeException at ${url}:");
       debug(error.toString());
-      showServerError(L10().serverCertificateError, error.toString());
+      showServerError(url, L10().serverCertificateError, error.toString());
       return;
     } catch (error, stackTrace) {
       print("Server error at ${url}: ${error.toString()}");
-      showServerError(L10().serverError, error.toString());
+      showServerError(url, L10().serverError, error.toString());
       sentryReportError(
         "api.downloadFile : client.openUrl",
         error, stackTrace,
@@ -693,16 +697,16 @@ class InvenTreeAPI {
           OpenFile.open(local_path);
         }
       } else {
-        showStatusCodeError(response.statusCode);
+        showStatusCodeError(url, response.statusCode);
       }
     } on SocketException catch (error) {
-      showServerError(L10().connectionRefused, error.toString());
+      showServerError(url, L10().connectionRefused, error.toString());
     } on TimeoutException {
-      showTimeoutError();
+      showTimeoutError(url);
     } catch (error, stackTrace) {
       print("Error downloading image:");
       print(error.toString());
-      showServerError(L10().downloadError, error.toString());
+      showServerError(url, L10().downloadError, error.toString());
       sentryReportError(
         "api.downloadFile : client.closeRequest",
         error, stackTrace,
@@ -767,11 +771,12 @@ class InvenTreeAPI {
         );
       }
     } on SocketException catch (error) {
-      showServerError(L10().connectionRefused, error.toString());
+      showServerError(url, L10().connectionRefused, error.toString());
       response.error = "SocketException";
       response.errorDetail = error.toString();
     } on FormatException {
       showServerError(
+        url,
         L10().formatException,
         L10().formatExceptionJson + ":\n${jsondata}"
       );
@@ -786,10 +791,10 @@ class InvenTreeAPI {
       );
 
     } on TimeoutException {
-      showTimeoutError();
+      showTimeoutError(url);
       response.error = "TimeoutException";
     } catch (error, stackTrace) {
-      showServerError(L10().serverError, error.toString());
+      showServerError(url, L10().serverError, error.toString());
       sentryReportError(
         "api.uploadFile",
         error, stackTrace
@@ -845,7 +850,7 @@ class InvenTreeAPI {
     );
   }
 
-  HttpClient createClient({bool strictHttps = false}) {
+  HttpClient createClient(String url, {bool strictHttps = false}) {
 
     var client = HttpClient();
 
@@ -853,6 +858,7 @@ class InvenTreeAPI {
 
       if (strictHttps) {
         showServerError(
+          url,
           L10().serverCertificateError,
           L10().serverCertificateInvalid,
         );
@@ -897,12 +903,12 @@ class InvenTreeAPI {
     Uri? _uri = Uri.tryParse(_url);
 
     if (_uri == null) {
-      showServerError(L10().invalidHost, L10().invalidHostDetails);
+      showServerError(url, L10().invalidHost, L10().invalidHostDetails);
       return null;
     }
 
     if (_uri.host.isEmpty) {
-      showServerError(L10().invalidHost, L10().invalidHostDetails);
+      showServerError(url, L10().invalidHost, L10().invalidHostDetails);
       return null;
     }
 
@@ -910,7 +916,7 @@ class InvenTreeAPI {
 
     final bool strictHttps = await InvenTreeSettingsManager().getValue(INV_STRICT_HTTPS, false) as bool;
 
-    var client = createClient(strictHttps: strictHttps);
+    var client = createClient(url, strictHttps: strictHttps);
 
     // Attempt to open a connection to the server
     try {
@@ -925,25 +931,25 @@ class InvenTreeAPI {
       return _request;
     } on SocketException catch (error) {
       print("SocketException at ${url}: ${error.toString()}");
-      showServerError(L10().connectionRefused, error.toString());
+      showServerError(url, L10().connectionRefused, error.toString());
       return null;
     } on TimeoutException {
       print("TimeoutException at ${url}");
-      showTimeoutError();
+      showTimeoutError(url);
       return null;
     } on CertificateException catch (error) {
       print("CertificateException at ${url}:");
       print(error.toString());
-      showServerError(L10().serverCertificateError, error.toString());
+      showServerError(url, L10().serverCertificateError, error.toString());
       return null;
     } on HandshakeException catch (error) {
       print("HandshakeException at ${url}:");
       print(error.toString());
-      showServerError(L10().serverCertificateError, error.toString());
+      showServerError(url, L10().serverCertificateError, error.toString());
       return null;
     } catch (error, stackTrace) {
       print("Server error at ${url}: ${error.toString()}");
-      showServerError(L10().serverError, error.toString());
+      showServerError(url, L10().serverError, error.toString());
       sentryReportError(
         "api.apiRequest : openUrl",
         error, stackTrace,
@@ -975,6 +981,8 @@ class InvenTreeAPI {
       url: request.uri.toString()
     );
 
+    String url = request.uri.toString();
+
     try {
       HttpClientResponse? _response = await request.close().timeout(Duration(seconds: 10));
 
@@ -982,7 +990,7 @@ class InvenTreeAPI {
 
       // If the server returns a server error code, alert the user
       if (_response.statusCode >= 500) {
-        showStatusCodeError(_response.statusCode);
+        showStatusCodeError(url, _response.statusCode);
 
         sentryReportMessage(
             "Server error",
@@ -1001,31 +1009,31 @@ class InvenTreeAPI {
         if (ignoreResponse) {
           response.data = {};
         } else {
-          response.data = await responseToJson(_response) ?? {};
+          response.data = await responseToJson(url, _response) ?? {};
         }
 
         if (statusCode != null) {
 
           // Expected status code not returned
           if (statusCode != _response.statusCode) {
-            showStatusCodeError(_response.statusCode);
+            showStatusCodeError(url, _response.statusCode);
           }
         }
       }
 
     } on SocketException catch (error) {
-      showServerError(L10().connectionRefused, error.toString());
+      showServerError(url, L10().connectionRefused, error.toString());
       response.error = "SocketException";
       response.errorDetail = error.toString();
     } on CertificateException catch (error) {
       print("CertificateException at ${request.uri.toString()}:");
       print(error.toString());
-      showServerError(L10().serverCertificateError, error.toString());
+      showServerError(url, L10().serverCertificateError, error.toString());
     } on TimeoutException {
-      showTimeoutError();
+      showTimeoutError(url);
       response.error = "TimeoutException";
     } catch (error, stackTrace) {
-      showServerError(L10().serverError, error.toString());
+      showServerError(url, L10().serverError, error.toString());
       sentryReportError("api.completeRequest", error, stackTrace);
       response.error = "UnknownError";
       response.errorDetail = error.toString();
@@ -1038,7 +1046,7 @@ class InvenTreeAPI {
   /*
    * Convert a HttpClientResponse response object to JSON
    */
-  dynamic responseToJson(HttpClientResponse response) async {
+  dynamic responseToJson(String url, HttpClientResponse response) async {
 
     String body = await response.transform(utf8.decoder).join();
 
@@ -1058,6 +1066,7 @@ class InvenTreeAPI {
       );
 
       showServerError(
+        url,
         L10().formatException,
         L10().formatExceptionJson + ":\n${body}"
       );
