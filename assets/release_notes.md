@@ -5,6 +5,8 @@
 ---
 
 - Add "quarantined" status flag for stock items
+- Extends attachment support to stock items
+- Extends attachment support to purchase orders
 
 ### 0.7.1 - May 2022
 ---
