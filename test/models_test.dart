@@ -27,6 +27,10 @@ void main() {
 
   group("Part Tests:", () {
 
+    test("Basics", () async {
+      assert(InvenTreePart().URL == "part/");
+    });
+
     test("List Parts", () async {
       List<InvenTreeModel> results;
 
@@ -47,6 +51,64 @@ void main() {
       );
 
       assert(results.length == 2);
+    });
+
+    test("Part Detail", () async {
+      final result = await InvenTreePart().get(1);
+
+      assert(result != null);
+      assert(result is InvenTreePart);
+
+      if (result != null) {
+        InvenTreePart part = result as InvenTreePart;
+
+        // Check some basic properties of the part
+        assert(part.name == "M2x4 LPHS");
+        assert(part.fullname == "M2x4 LPHS");
+        assert(part.description == "M2x4 low profile head screw");
+        assert(part.categoryId == 8);
+        assert(part.categoryName == "Fasteners");
+        assert(part.image == part.thumbnail);
+        assert(part.thumbnail == "/static/img/blank_image.thumbnail.png");
+
+        // Stock information
+        assert(part.unallocatedStockString == "9000");
+        assert(part.inStockString == "9000");
+      }
+
+    });
+
+    test("Part Adjust", () async {
+      // Test that we can update part data
+      final result = await InvenTreePart().get(1);
+
+      assert(result != null);
+      assert(result is InvenTreePart);
+
+      if (result != null) {
+        InvenTreePart part = result as InvenTreePart;
+        assert(part.name == "M2x4 LPHS");
+
+        // Change the name to something else
+        assert(await part.update(
+          values: {
+            "name": "Woogle",
+          }
+        ));
+
+        assert(await part.reload());
+        assert(part.name == "Woogle");
+
+        // And change it back again
+        assert(await part.update(
+          values: {
+            "name": "M2x4 LPHS"
+          }
+        ));
+
+        assert(await part.reload());
+        assert(part.name == "M2x4 LPHS");
+      }
     });
 
   });
