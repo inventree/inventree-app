@@ -497,7 +497,7 @@ class InvenTreeAPI {
   /*
    * Request the user roles (permissions) from the InvenTree server
    */
-  Future<void> getUserRoles() async {
+  Future<bool> getUserRoles() async {
 
     roles.clear();
 
@@ -511,7 +511,7 @@ class InvenTreeAPI {
     final response = await get(_URL_GET_ROLES, expectedStatusCode: 200);
 
     if (!response.successful()) {
-      return;
+      return false;
     }
 
     var data = response.asMap();
@@ -519,6 +519,10 @@ class InvenTreeAPI {
     if (data.containsKey("roles")) {
       // Save a local copy of the user roles
       roles = (response.data["roles"] ?? {}) as Map<String, dynamic>;
+
+      return true;
+    } else {
+      return false;
     }
   }
 
