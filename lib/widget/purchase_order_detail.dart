@@ -9,6 +9,7 @@ import "package:inventree/app_colors.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/purchase_order.dart";
+import "package:inventree/widget/attachment_widget.dart";
 import "package:inventree/widget/company_detail.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/l10.dart";
@@ -36,6 +37,8 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
   List<InvenTreePOLineItem> lines = [];
 
   int completedLines = 0;
+
+  int attachmentCount = 0;
 
   String _poPrefix = "";
 
@@ -77,6 +80,12 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
         completedLines += 1;
       }
     }
+
+    attachmentCount = await InvenTreePurchaseOrderAttachment().count(
+      filters: {
+        "order": order.pk.toString()
+      }
+    );
   }
 
   Future <void> editOrder(BuildContext context) async {
@@ -176,6 +185,26 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
         leading: FaIcon(FontAwesomeIcons.calendarAlt),
       ));
     }
+
+    // Attachments
+    tiles.add(
+        ListTile(
+          title: Text(L10().attachments),
+          leading: FaIcon(FontAwesomeIcons.fileAlt, color: COLOR_CLICK),
+          trailing: attachmentCount > 0 ? Text(attachmentCount.toString()) : null,
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => AttachmentWidget(
+                        InvenTreePurchaseOrderAttachment(),
+                        order.pk,
+                        InvenTreeAPI().checkPermission("purchase_order", "change"))
+                )
+            );
+          },
+        )
+    );
 
     return tiles;
 

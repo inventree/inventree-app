@@ -203,3 +203,24 @@ class InvenTreePOLineItem extends InvenTreeModel {
     return InvenTreePOLineItem.fromJson(json);
   }
 }
+
+/*
+ * Class representing an attachment file against a StockItem object
+ */
+class InvenTreePurchaseOrderAttachment extends InvenTreeAttachment {
+
+  InvenTreePurchaseOrderAttachment() : super();
+
+  InvenTreePurchaseOrderAttachment.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+
+  @override
+  String get REFERENCE_FIELD => "order";
+
+  @override
+  String get URL => "order/po/attachment/";
+
+  @override
+  InvenTreeModel createFromJson(Map<String, dynamic> json) {
+    return InvenTreePurchaseOrderAttachment.fromJson(json);
+  }
+}

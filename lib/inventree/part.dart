@@ -415,12 +415,17 @@ class InvenTreePart extends InvenTreeModel {
   }
 }
 
-
+/*
+ * Class representing an attachment file against a Part object
+ */
 class InvenTreePartAttachment extends InvenTreeAttachment {
 
   InvenTreePartAttachment() : super();
 
   InvenTreePartAttachment.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+
+  @override
+  String get REFERENCE_FIELD => "part";
 
   @override
   String get URL => "part/attachment/";

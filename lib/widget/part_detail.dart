@@ -6,7 +6,7 @@ import "package:inventree/app_colors.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/helpers.dart";
-import "package:inventree/widget/part_attachments_widget.dart";
+import "package:inventree/widget/attachment_widget.dart";
 import "package:inventree/widget/part_notes.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/inventree/part.dart";
@@ -38,6 +38,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   InvenTreePart part;
 
   InvenTreePart? parentPart;
+
+  int attachmentCount = 0;
 
   @override
   String getAppBarTitle(BuildContext context) => L10().partDetails;
@@ -110,6 +112,12 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     }
 
     await part.getTestTemplates();
+
+    attachmentCount = await InvenTreePartAttachment().count(
+      filters: {
+        "part": part.pk.toString()
+      }
+    );
   }
 
   Future <void> _toggleStar() async {
@@ -405,12 +413,15 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       ListTile(
         title: Text(L10().attachments),
         leading: FaIcon(FontAwesomeIcons.fileAlt, color: COLOR_CLICK),
-        trailing: Text(""),
+        trailing: attachmentCount > 0 ? Text(attachmentCount.toString()) : null,
         onTap: () {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => PartAttachmentsWidget(part)
+              builder: (context) => AttachmentWidget(
+                  InvenTreePartAttachment(),
+                  part.pk,
+                  InvenTreeAPI().checkPermission("part", "change"))
             )
           );
         },

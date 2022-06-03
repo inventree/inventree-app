@@ -7,6 +7,7 @@ import "package:inventree/barcode.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/widget/dialogs.dart";
+import "package:inventree/widget/attachment_widget.dart";
 import "package:inventree/widget/location_display.dart";
 import "package:inventree/widget/part_detail.dart";
 import "package:inventree/widget/progress.dart";
@@ -94,6 +95,8 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   // Part object
   InvenTreePart? part;
 
+  int attachmentCount = 0;
+
   @override
   Future<void> onBuild(BuildContext context) async {
 
@@ -125,6 +128,12 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         // Update
       });
     });
+
+    attachmentCount = await InvenTreeStockItemAttachment().count(
+      filters: {
+        "stock_item": item.pk.toString()
+      }
+    );
 
     // Request information on labels available for this stock item
     if (InvenTreeAPI().pluginsEnabled()) {
@@ -692,6 +701,25 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           // TODO: Make this widget editable?
         }
       )
+    );
+
+    tiles.add(
+        ListTile(
+          title: Text(L10().attachments),
+          leading: FaIcon(FontAwesomeIcons.fileAlt, color: COLOR_CLICK),
+          trailing: attachmentCount > 0 ? Text(attachmentCount.toString()) : null,
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => AttachmentWidget(
+                        InvenTreeStockItemAttachment(),
+                        item.pk,
+                        InvenTreeAPI().checkPermission("stock", "change"))
+                )
+            );
+          },
+        )
     );
 
     return tiles;
