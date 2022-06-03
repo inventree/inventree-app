@@ -129,11 +129,12 @@ class InvenTreeStockItem extends InvenTreeModel {
   static const int DESTROYED = 60;
   static const int REJECTED = 65;
   static const int LOST = 70;
+  static const int QUARANTINED = 75;
   static const int RETURNED = 85;
 
-  String statusLabel(BuildContext context) {
+  String statusLabel() {
 
-    // TODO: Delete me - The translated status values are provided by the API!
+    // TODO: Delete me - The translated status values should be provided by the API!
 
     switch (status) {
       case OK:
@@ -148,6 +149,8 @@ class InvenTreeStockItem extends InvenTreeModel {
         return L10().rejected;
       case LOST:
         return L10().lost;
+      case QUARANTINED:
+        return L10().quarantined;
       case RETURNED:
         return L10().returned;
       default:
@@ -166,6 +169,8 @@ class InvenTreeStockItem extends InvenTreeModel {
       case DESTROYED:
       case REJECTED:
         return Color(0xFFe35a57);
+      case QUARANTINED:
+        return Color(0xFF0DCAF0);
       case LOST:
       default:
         return Color(0xFFAAAAAA);
