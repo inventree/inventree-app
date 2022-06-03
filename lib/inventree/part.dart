@@ -415,7 +415,9 @@ class InvenTreePart extends InvenTreeModel {
   }
 }
 
-
+/*
+ * Class representing an attachment file against a Part object
+ */
 class InvenTreePartAttachment extends InvenTreeAttachment {
 
   InvenTreePartAttachment() : super();
