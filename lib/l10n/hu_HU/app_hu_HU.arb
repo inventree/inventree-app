@@ -453,6 +453,8 @@
     "@quantityInvalid": {},
     "quantityPositive": "Mennyiség pozitív kell legyen",
     "@quantityPositive": {},
+    "quarantined": "Karanténban",
+    "@quarantined": {},
     "queryEmpty": "Add meg a keresési lekérdezést",
     "@queryEmpty": {},
     "queryNoResults": "Nincs találat",
