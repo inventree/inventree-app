@@ -48,8 +48,6 @@
     },
     "attachmentNone": "Geen bijlagen gevonden",
     "@attachmentNone": {},
-    "attachmentNonePartDetail": "Geen bijlagen voor dit onderdeel gevonden",
-    "@attachmentNonePartDetail": {},
     "attachmentSelect": "Bijlage selecteren",
     "@attachmentSelect": {},
     "attention": "Let op",
