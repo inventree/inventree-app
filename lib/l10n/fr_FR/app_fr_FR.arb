@@ -48,8 +48,6 @@
     },
     "attachmentNone": "Aucune pièce jointe trouvée",
     "@attachmentNone": {},
-    "attachmentNonePartDetail": "Aucune pièce jointe trouvée pour cette pièce",
-    "@attachmentNonePartDetail": {},
     "attachmentSelect": "Sélectionner une pièce jointe",
     "@attachmentSelect": {},
     "attention": "Avertissement",
