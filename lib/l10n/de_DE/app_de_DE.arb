@@ -48,8 +48,6 @@
     },
     "attachmentNone": "Keine Anhänge gefunden",
     "@attachmentNone": {},
-    "attachmentNonePartDetail": "Keine Anhänge für dieses Teil gefunden",
-    "@attachmentNonePartDetail": {},
     "attachmentSelect": "Anhang auswählen",
     "@attachmentSelect": {},
     "attention": "Achtung",
