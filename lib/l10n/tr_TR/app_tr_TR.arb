@@ -44,8 +44,6 @@
     },
     "attachmentNone": "Hiçbir ek bulunamadı",
     "@attachmentNone": {},
-    "attachmentNonePartDetail": "Bu parça için ekler bulunamadı",
-    "@attachmentNonePartDetail": {},
     "attachmentSelect": "Ek seçin",
     "@attachmentSelect": {},
     "attention": "Dikkat",
