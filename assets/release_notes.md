@@ -1,6 +1,11 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.7.3 - June 2022
+---
+
+-
+
 ### 0.7.2 - June 2022
 ---
 

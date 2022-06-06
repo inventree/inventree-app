@@ -129,7 +129,7 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
       tiles.add(ListTile(
         title: Text(L10().attachmentNone),
         subtitle: Text(
-          L10().attachmentNonePartDetail,
+          L10().attachmentNoneDetail,
           style: TextStyle(fontStyle: FontStyle.italic),
         ),
       ));

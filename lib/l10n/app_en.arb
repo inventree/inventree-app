@@ -67,8 +67,8 @@
   "attachmentNone": "No attachments found",
   "@attachmentNone": {},
 
-  "attachmentNonePartDetail": "No attachments found for this part",
-  "@attachmentNonePartDetail": {},
+  "attachmentNoneDetail": "No attachments found",
+  "@attachmentNoneDetail": {},
 
   "attachmentSelect": "Select attachment",
   "@attachmentSelect": {},
