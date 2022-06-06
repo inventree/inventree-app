@@ -40,8 +40,6 @@
     },
     "attachmentNone": "Nie znaleziono załączników",
     "@attachmentNone": {},
-    "attachmentNonePartDetail": "Brak załączników dla tego komponentu",
-    "@attachmentNonePartDetail": {},
     "attachmentSelect": "Wybierz załącznik",
     "@attachmentSelect": {},
     "attention": "Uwaga",
