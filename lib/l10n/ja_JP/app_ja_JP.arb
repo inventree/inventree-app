@@ -40,8 +40,6 @@
     },
     "attachmentNone": "添付ファイルが見つかりません。",
     "@attachmentNone": {},
-    "attachmentNonePartDetail": "この部品の添付ファイルが見つかりません",
-    "@attachmentNonePartDetail": {},
     "attachmentSelect": "添付ファイルを選択",
     "@attachmentSelect": {},
     "attention": "注意",
