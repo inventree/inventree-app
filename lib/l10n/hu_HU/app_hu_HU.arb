@@ -48,6 +48,8 @@
     },
     "attachmentNone": "Nem találhatók mellékletek",
     "@attachmentNone": {},
+    "attachmentNoneDetail": "Nem találhatók mellékletek",
+    "@attachmentNoneDetail": {},
     "attachmentSelect": "Melléklet kiválasztása",
     "@attachmentSelect": {},
     "attention": "Figyelem",
