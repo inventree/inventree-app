@@ -641,6 +641,10 @@
     "@stockItemsNotAvailable": {},
     "stockItemNotes": "Opmerkingen Voorraadartikel",
     "@stockItemNotes": {},
+    "stockItemUpdateSuccess": "Voorraadartikel bijgewerkt",
+    "@stockItemUpdateSuccess": {},
+    "stockItemUpdateFailure": "Voorraadartikel bijwerken mislukt",
+    "@stockItemUpdateFailure": {},
     "stockLocation": "Voorraadlocatie",
     "@stockLocation": {
         "description": "stock location"
