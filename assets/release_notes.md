@@ -4,7 +4,8 @@
 ### 0.7.3 - June 2022
 ---
 
--
+- Adds ability to display link URLs in attachments view
+- Updated translations
 
 ### 0.7.2 - June 2022
 ---

@@ -9,11 +9,13 @@ import "dart:io";
 
 import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:inventree/app_colors.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/widget/fields.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/l10.dart";
+import "package:url_launcher/url_launcher.dart";
 
 class AttachmentWidget extends StatefulWidget {
 
@@ -114,15 +116,32 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
 
     List<Widget> tiles = [];
 
+    // An "attachment" can either be a file, or a URL
     for (var attachment in attachments) {
-      tiles.add(ListTile(
-        title: Text(attachment.filename),
-        subtitle: Text(attachment.comment),
-        leading: FaIcon(attachment.icon),
-        onTap: () async {
-          await attachment.downloadAttachment();
-        },
-      ));
+
+      if (attachment.filename.isNotEmpty) {
+        tiles.add(ListTile(
+          title: Text(attachment.filename),
+          subtitle: Text(attachment.comment),
+          leading: FaIcon(attachment.icon, color: COLOR_CLICK),
+          onTap: () async {
+            await attachment.downloadAttachment();
+          },
+        ));
+      }
+
+      else if (attachment.link.isNotEmpty) {
+        tiles.add(ListTile(
+          title: Text(attachment.link),
+          subtitle: Text(attachment.comment),
+          leading: FaIcon(FontAwesomeIcons.link, color: COLOR_CLICK),
+          onTap: () async {
+            if (await canLaunch(attachment.link)) {
+              await launch(attachment.link);
+            }
+          }
+        ));
+      }
     }
 
     if (tiles.isEmpty) {
