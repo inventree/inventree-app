@@ -40,8 +40,6 @@
     },
     "attachmentNone": "Não foram encontrados quaisquer anexos",
     "@attachmentNone": {},
-    "attachmentNonePartDetail": "Nenhum anexo encontrado para esta peça",
-    "@attachmentNonePartDetail": {},
     "attachmentSelect": "Selecionar anexo",
     "@attachmentSelect": {},
     "attention": "Aviso",

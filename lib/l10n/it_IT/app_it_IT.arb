@@ -36,8 +36,6 @@
     },
     "attachmentNone": "Nessun allegato trovato",
     "@attachmentNone": {},
-    "attachmentNonePartDetail": "Nessun allegato trovato in questa parte",
-    "@attachmentNonePartDetail": {},
     "attachmentSelect": "Seleziona allegato",
     "@attachmentSelect": {},
     "attention": "Attenzione",
