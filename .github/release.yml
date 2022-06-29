@@ -4,11 +4,15 @@ changelog:
   exclude:
     labels:
       - wontfix
+      - translation
   categories:
     - title: Breaking Changes
       labels:
         - Semver-Major
         - breaking
+    - title: Security Patches
+      labels:
+        - security
     - title: New Features
       labels:
         - Semver-Minor
@@ -23,7 +27,6 @@ changelog:
         - setup
         - demo
         - CI
-        - security
     - title: Other Changes
       labels:
         - "*"
