@@ -10,6 +10,7 @@ import "package:inventree/helpers.dart";
 import "package:inventree/inventree/part.dart";
 
 import "package:inventree/widget/attachment_widget.dart";
+import "package:inventree/widget/bom_list.dart";
 import "package:inventree/widget/part_list.dart";
 import "package:inventree/widget/part_notes.dart";
 import "package:inventree/widget/progress.dart";
@@ -136,8 +137,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         "variant_of": part.pk.toString(),
       }
     );
-
-    print("Variant count: ${variantCount}");
   }
 
   Future <void> _toggleStar() async {
@@ -286,7 +285,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       tiles.add(
           ListTile(
             title: Text(L10().variants),
-            leading: FaIcon(FontAwesomeIcons.sitemap, color: COLOR_CLICK),
+            leading: FaIcon(FontAwesomeIcons.shapes, color: COLOR_CLICK),
             trailing: Text(variantCount.toString()),
             onTap: () {
               Navigator.push(
@@ -310,7 +309,12 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         title: Text(L10().availableStock),
         subtitle: Text(L10().stockDetails),
         leading: FaIcon(FontAwesomeIcons.boxes, color: COLOR_CLICK),
-        trailing: Text(part.stockString()),
+        trailing: Text(
+          part.stockString(),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         onTap: () {
           setState(() {
             tabIndex = 1;
@@ -350,12 +354,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => PartList(
-                        {
-                          "in_bom_for": part.pk.toString(),
-                        },
-                        title: L10().billOfMaterials,
-                      )
+                      builder: (context) => BomList(part)
                     )
                   );
                 }

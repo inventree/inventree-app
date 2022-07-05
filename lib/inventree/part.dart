@@ -10,6 +10,9 @@ import "package:inventree/l10.dart";
 import "package:inventree/inventree/model.dart";
 
 
+/*
+ * Class representing the PartCategory database model
+ */
 class InvenTreePartCategory extends InvenTreeModel {
 
   InvenTreePartCategory() : super();
@@ -70,6 +73,9 @@ class InvenTreePartCategory extends InvenTreeModel {
 }
 
 
+/*
+ * Class representing the PartTestTemplate database model
+ */
 class InvenTreePartTestTemplate extends InvenTreeModel {
 
   InvenTreePartTestTemplate() : super();
@@ -122,6 +128,9 @@ class InvenTreePartTestTemplate extends InvenTreeModel {
 }
 
 
+/*
+ * Class representing the Part database model
+ */
 class InvenTreePart extends InvenTreeModel {
 
   InvenTreePart() : super();
@@ -218,7 +227,6 @@ class InvenTreePart extends InvenTreeModel {
 
     return _supplierParts;
   }
-
 
   // Cached list of test templates
   List<InvenTreePartTestTemplate> testingTemplates = [];
