@@ -655,6 +655,9 @@
     "description": "Quantity"
   },
 
+  "quantityAvailable": "Quantity Available",
+  "@quantityAvailable": {},
+
   "quantityEmpty": "Quantity is empty",
   "@quantityEmpty": {},
 

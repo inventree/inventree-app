@@ -451,7 +451,14 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   String quantityString({bool includeUnits = false}){
 
-    String q = simpleNumberString(quantity);
+    String q = "";
+
+    if (allocated > 0) {
+      q += simpleNumberString(available);
+      q += " / ";
+    }
+
+    q += simpleNumberString(quantity);
 
     if (includeUnits && units.isNotEmpty) {
       q += " ${units}";
@@ -460,6 +467,10 @@ class InvenTreeStockItem extends InvenTreeModel {
     return q;
   }
 
+  double get allocated => double.tryParse(jsondata["allocated"].toString()) ?? 0;
+
+  double get available => quantity - allocated;
+
   int get locationId => (jsondata["location"] ?? -1) as int;
 
   bool isSerialized() => serialNumber.isNotEmpty && quantity.toInt() == 1;
@@ -467,9 +478,11 @@ class InvenTreeStockItem extends InvenTreeModel {
   String serialOrQuantityDisplay() {
     if (isSerialized()) {
       return "SN ${serialNumber}";
+    } else if (allocated > 0) {
+      return "${available} / ${quantity}";
+    } else {
+      return simpleNumberString(quantity);
     }
-
-    return simpleNumberString(quantity);
   }
 
   String get locationName {
