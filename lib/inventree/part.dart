@@ -303,9 +303,6 @@ class InvenTreePart extends InvenTreeModel {
     // Get the number of units being build for this Part
     double get building => double.tryParse(jsondata["building"].toString()) ?? 0;
 
-    // Get the number of BOM items in this Part (if it is an assembly)
-    int get bomItemCount => (jsondata["bom_items"] ?? 0) as int;
-
     // Get the number of BOMs this Part is used in (if it is a component)
     int get usedInCount => (jsondata["used_in"] ?? 0) as int;
 

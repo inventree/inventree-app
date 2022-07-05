@@ -2,16 +2,18 @@ import "package:flutter/material.dart";
 
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
+import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/helpers.dart";
+import "package:inventree/inventree/part.dart";
+
 import "package:inventree/widget/attachment_widget.dart";
+import "package:inventree/widget/part_list.dart";
 import "package:inventree/widget/part_notes.dart";
 import "package:inventree/widget/progress.dart";
-import "package:inventree/inventree/part.dart";
 import "package:inventree/widget/category_display.dart";
-import "package:inventree/api.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/part_image_widget.dart";
 import "package:inventree/widget/snacks.dart";
@@ -40,6 +42,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   InvenTreePart? parentPart;
 
   int attachmentCount = 0;
+
+  int bomCount = 0;
 
   @override
   String getAppBarTitle(BuildContext context) => L10().partDetails;
@@ -116,6 +120,12 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     attachmentCount = await InvenTreePartAttachment().count(
       filters: {
         "part": part.pk.toString()
+      }
+    );
+
+    bomCount = await InvenTreePart().count(
+      filters: {
+        "in_bom_for": part.pk.toString(),
       }
     );
   }
@@ -296,14 +306,24 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     // Tiles for an "assembly" part
     if (part.isAssembly) {
 
-      if (part.bomItemCount > 0) {
+      if (bomCount > 0) {
         tiles.add(
             ListTile(
                 title: Text(L10().billOfMaterials),
-                leading: FaIcon(FontAwesomeIcons.thList),
-                trailing: Text("${part.bomItemCount}"),
+                leading: FaIcon(FontAwesomeIcons.thList, color: COLOR_CLICK),
+                trailing: Text("${bomCount}"),
                 onTap: () {
-                  // TODO
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PartList(
+                        {
+                          "in_bom_for": "${part.pk}",
+                        },
+                        title: L10().billOfMaterials,
+                      )
+                    )
+                  );
                 }
             )
         );
@@ -583,7 +603,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           icon: FaIcon(FontAwesomeIcons.boxes),
           label: L10().stock
         ),
-        // TODO - Add part actions
         BottomNavigationBarItem(
           icon: FaIcon(FontAwesomeIcons.wrench),
           label: L10().actions,
