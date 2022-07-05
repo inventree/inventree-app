@@ -1119,6 +1119,9 @@
   "valueRequired": "Value is required",
   "@valueRequired": {},
 
+  "variants": "Variants",
+  "@variants": {},
+
   "version": "Version",
   "@version": {},
 

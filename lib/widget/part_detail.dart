@@ -45,6 +45,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   int bomCount = 0;
 
+  int variantCount = 0;
+
   @override
   String getAppBarTitle(BuildContext context) => L10().partDetails;
 
@@ -128,6 +130,14 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         "in_bom_for": part.pk.toString(),
       }
     );
+
+    variantCount = await InvenTreePart().count(
+      filters: {
+        "variant_of": part.pk.toString(),
+      }
+    );
+
+    print("Variant count: ${variantCount}");
   }
 
   Future <void> _toggleStar() async {
@@ -271,6 +281,30 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       );
     }
 
+    // Display number of "variant" parts if any exist
+    if (variantCount > 0) {
+      tiles.add(
+          ListTile(
+            title: Text(L10().variants),
+            leading: FaIcon(FontAwesomeIcons.sitemap, color: COLOR_CLICK),
+            trailing: Text(variantCount.toString()),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => PartList(
+                          {
+                            "variant_of": part.pk.toString(),
+                          },
+                          title: L10().variants
+                      )
+                  )
+              );
+            },
+          )
+      );
+    }
+
     tiles.add(
       ListTile(
         title: Text(L10().availableStock),
@@ -311,14 +345,14 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
             ListTile(
                 title: Text(L10().billOfMaterials),
                 leading: FaIcon(FontAwesomeIcons.thList, color: COLOR_CLICK),
-                trailing: Text("${bomCount}"),
+                trailing: Text(bomCount.toString()),
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => PartList(
                         {
-                          "in_bom_for": "${part.pk}",
+                          "in_bom_for": part.pk.toString(),
                         },
                         title: L10().billOfMaterials,
                       )
