@@ -1,6 +1,14 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.8.0 - July 2022
+---
+
+- Display part variants in the part detail view
+- Display Bill of Materials in the part detail view
+- Indicate available quantity in stock detail view
+- Adds configurable filtering to various list views
+
 ### 0.7.3 - June 2022
 ---
 
