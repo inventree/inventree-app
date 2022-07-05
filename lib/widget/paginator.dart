@@ -44,7 +44,8 @@ abstract class PaginatedState<T extends StatefulWidget> extends RefreshableState
   Future<String> orderingField() async {
     dynamic field = await InvenTreeSettingsManager().getValue("${prefix}ordering_field", null);
 
-    if (field != null) {
+    if (field != null && orderingOptions.containsKey(field.toString())) {
+      // A valid ordering field has been found
       return field.toString();
     } else if (orderingOptions.isNotEmpty) {
       // By default, return the first specified key
@@ -121,6 +122,9 @@ abstract class PaginatedState<T extends StatefulWidget> extends RefreshableState
         // Save values to settings
         await InvenTreeSettingsManager().setValue("${prefix}ordering_field", f);
         await InvenTreeSettingsManager().setValue("${prefix}ordering_order", o);
+
+        // Refresh the widget
+        setState(() {});
       }
     );
   }
@@ -136,14 +140,14 @@ class PaginatedSearchState<T extends StatefulWidget> extends State<T> {
 
   static const _pageSize = 25;
 
+  // Prefix for storing and loading pagination options
+  // Override in implementing class
+  String get prefix => "prefix_";
+
   // Search query term
   String searchTerm = "";
 
   int resultCount = 0;
-
-  // List of variables by which the list can be "ordered".
-  // Override in any implementing sub-class
-  List<String> orderingFilters = [];
 
   // Text controller
   final TextEditingController searchController = TextEditingController();
@@ -172,11 +176,19 @@ class PaginatedSearchState<T extends StatefulWidget> extends State<T> {
     return null;
   }
 
+  Future<String> get ordering async {
+    dynamic field = await InvenTreeSettingsManager().getValue("${prefix}ordering_field", "");
+    dynamic order = await InvenTreeSettingsManager().getValue("${prefix}ordering_order", "+");
+
+    return "${order}${field}";
+  }
+
   Future<void> _fetchPage(int pageKey) async {
     try {
       Map<String, String> params = filters;
 
       params["search"] = "${searchTerm}";
+      params["ordering"] = await ordering;
 
       final page = await requestPage(
         _pageSize,
@@ -299,7 +311,10 @@ class PaginatedSearchWidget extends StatelessWidget {
       ),
       trailing: Text(
         "${results}",
-        style: TextStyle(fontWeight: FontWeight.bold),
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontStyle: FontStyle.italic
+        ),
       ),
     );
   }

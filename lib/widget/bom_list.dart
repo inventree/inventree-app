@@ -47,7 +47,7 @@ class _BomListState extends PaginatedState<BomList> {
   @override
   Map<String, String> get orderingOptions => {
     "quantity": L10().quantity,
-    "part": L10().part,
+    "sub_part": L10().part,
   };
 
   @override
@@ -83,6 +83,9 @@ class _PaginatedBomListState extends PaginatedSearchState<PaginatedBomList> {
   Function(int)? onTotalChanged;
 
   @override
+  String get prefix => "bom_";
+
+  @override
   Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
 
     final page = await InvenTreeBomItem().listPaginated(limit, offset, filters: params);
@@ -102,7 +105,7 @@ class _PaginatedBomListState extends PaginatedSearchState<PaginatedBomList> {
 
     return ListTile(
       title: Text(title),
-      subtitle: Text(description),
+      subtitle: Text(bomItem.reference),
       trailing: Text(
         simpleNumberString(bomItem.quantity),
         style: TextStyle(fontWeight: FontWeight.bold),

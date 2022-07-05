@@ -34,6 +34,9 @@ class InvenTreeBomItem extends InvenTreeModel {
     };
   }
 
+  // Extract the 'reference' value associated with this BomItem
+  String get reference => (jsondata["reference"] ?? "") as String;
+
   // Extract the 'quantity' value associated with this BomItem
   double get quantity => double.tryParse(jsondata["quantity"].toString()) ?? 0;
 
