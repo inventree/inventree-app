@@ -2,16 +2,19 @@ import "package:flutter/material.dart";
 
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
+import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/helpers.dart";
+import "package:inventree/inventree/part.dart";
+
 import "package:inventree/widget/attachment_widget.dart";
+import "package:inventree/widget/bom_list.dart";
+import "package:inventree/widget/part_list.dart";
 import "package:inventree/widget/part_notes.dart";
 import "package:inventree/widget/progress.dart";
-import "package:inventree/inventree/part.dart";
 import "package:inventree/widget/category_display.dart";
-import "package:inventree/api.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/part_image_widget.dart";
 import "package:inventree/widget/snacks.dart";
@@ -40,6 +43,10 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   InvenTreePart? parentPart;
 
   int attachmentCount = 0;
+
+  int bomCount = 0;
+
+  int variantCount = 0;
 
   @override
   String getAppBarTitle(BuildContext context) => L10().partDetails;
@@ -116,6 +123,18 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     attachmentCount = await InvenTreePartAttachment().count(
       filters: {
         "part": part.pk.toString()
+      }
+    );
+
+    bomCount = await InvenTreePart().count(
+      filters: {
+        "in_bom_for": part.pk.toString(),
+      }
+    );
+
+    variantCount = await InvenTreePart().count(
+      filters: {
+        "variant_of": part.pk.toString(),
       }
     );
   }
@@ -261,12 +280,41 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       );
     }
 
+    // Display number of "variant" parts if any exist
+    if (variantCount > 0) {
+      tiles.add(
+          ListTile(
+            title: Text(L10().variants),
+            leading: FaIcon(FontAwesomeIcons.shapes, color: COLOR_CLICK),
+            trailing: Text(variantCount.toString()),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => PartList(
+                          {
+                            "variant_of": part.pk.toString(),
+                          },
+                          title: L10().variants
+                      )
+                  )
+              );
+            },
+          )
+      );
+    }
+
     tiles.add(
       ListTile(
         title: Text(L10().availableStock),
         subtitle: Text(L10().stockDetails),
         leading: FaIcon(FontAwesomeIcons.boxes, color: COLOR_CLICK),
-        trailing: Text(part.stockString()),
+        trailing: Text(
+          part.stockString(),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         onTap: () {
           setState(() {
             tabIndex = 1;
@@ -296,14 +344,19 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     // Tiles for an "assembly" part
     if (part.isAssembly) {
 
-      if (part.bomItemCount > 0) {
+      if (bomCount > 0) {
         tiles.add(
             ListTile(
                 title: Text(L10().billOfMaterials),
-                leading: FaIcon(FontAwesomeIcons.thList),
-                trailing: Text("${part.bomItemCount}"),
+                leading: FaIcon(FontAwesomeIcons.thList, color: COLOR_CLICK),
+                trailing: Text(bomCount.toString()),
                 onTap: () {
-                  // TODO
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BomList(part)
+                    )
+                  );
                 }
             )
         );
@@ -583,7 +636,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           icon: FaIcon(FontAwesomeIcons.boxes),
           label: L10().stock
         ),
-        // TODO - Add part actions
         BottomNavigationBarItem(
           icon: FaIcon(FontAwesomeIcons.wrench),
           label: L10().actions,

@@ -12,23 +12,27 @@ import "package:inventree/l10.dart";
 
 class PartList extends StatefulWidget {
 
-  const PartList(this.filters);
+  const PartList(this.filters, {this.title = ""});
+
+  final String title;
 
   final Map<String, String> filters;
 
   @override
-  _PartListState createState() => _PartListState(filters);
+  _PartListState createState() => _PartListState(filters, title);
 }
 
 
 class _PartListState extends RefreshableState<PartList> {
 
-  _PartListState(this.filters);
+  _PartListState(this.filters, this.title);
+
+  final String title;
 
   final Map<String, String> filters;
 
   @override
-  String getAppBarTitle(BuildContext context) => L10().parts;
+  String getAppBarTitle(BuildContext context) => title.isNotEmpty ? title : L10().parts;
 
   @override
   Widget getBody(BuildContext context) {

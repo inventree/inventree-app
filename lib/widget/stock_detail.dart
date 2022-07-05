@@ -513,7 +513,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     } else {
       tiles.add(
           ListTile(
-            title: Text(L10().quantity),
+            title: item.allocated > 0 ? Text(L10().quantityAvailable) : Text(L10().quantity),
             leading: FaIcon(FontAwesomeIcons.cubes),
             trailing: Text("${item.quantityString()}"),
           )
