@@ -1,8 +1,9 @@
 
-
 import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/api.dart";
+import "package:inventree/api_form.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/inventree/bom.dart";
 import "package:inventree/l10.dart";
@@ -13,6 +14,7 @@ import "package:inventree/inventree/part.dart";
 import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/part_detail.dart";
 import "package:inventree/widget/refreshable_state.dart";
+
 
 
 /*
@@ -30,7 +32,7 @@ class BomList extends StatefulWidget {
 }
 
 
-class _BomListState extends RefreshableState<BomList> {
+class _BomListState extends PaginatedState<BomList> {
 
   _BomListState(this.parent);
 
@@ -38,6 +40,15 @@ class _BomListState extends RefreshableState<BomList> {
 
   @override
   String getAppBarTitle(BuildContext context) => L10().billOfMaterials;
+
+  @override
+  String get prefix => "bom_";
+
+  @override
+  Map<String, String> get orderingOptions => {
+    "quantity": L10().quantity,
+    "part": L10().part,
+  };
 
   @override
   Widget getBody(BuildContext context) {

@@ -10,11 +10,11 @@ dependencies:
 
   audioplayers: ^0.20.1                   # Play audio files
   cached_network_image: ^3.2.0            # Download and cache remote images
-  camera: ^0.9.4                       # Camera
+  camera: ^0.9.4                          # Camera
   cupertino_icons: ^1.0.3
   datetime_picker_formfield: ^2.0.0       # Date / time picker
   device_info_plus: ^3.2.2                # Information about the device
-  dropdown_search: ^0.6.3                  # Dropdown autocomplete form fields
+  dropdown_search: ^0.6.3                 # Dropdown autocomplete form fields
   file_picker: ^4.5.1                     # Select files from the device
   flutter:
     sdk: flutter
@@ -28,14 +28,14 @@ dependencies:
   infinite_scroll_pagination: ^3.1.0      # Let the server do all the work!
   intl: ^0.17.0
   one_context: ^1.1.0                     # Dialogs without requiring context
-  open_file: ^3.2.1                        # Open local files
+  open_file: ^3.2.1                       # Open local files
   package_info_plus: ^1.0.4               # App information introspection
   path: ^1.8.0
-  path_provider: ^2.0.2                    # Local file storage
+  path_provider: ^2.0.2                   # Local file storage
   qr_code_scanner: ^0.7.0                 # Barcode scanning
   sembast: ^3.1.0+2                       # NoSQL data storage
-  sentry_flutter: ^6.4.0                   # Error reporting
-  url_launcher: ^6.0.9                     # Open link in system browser
+  sentry_flutter: ^6.4.0                  # Error reporting
+  url_launcher: ^6.0.9                    # Open link in system browser
 
 dev_dependencies:
   flutter_launcher_icons: ^0.9.0
