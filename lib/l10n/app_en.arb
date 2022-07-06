@@ -425,6 +425,9 @@
   "lastUpdated": "Last Updated",
   "@lastUpdated": {},
 
+  "level": "Level",
+  "@level": {},
+
   "lineItem": "Line Item",
   "@lineItem": {},
 
