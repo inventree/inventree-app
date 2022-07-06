@@ -4,6 +4,7 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:infinite_scroll_pagination/infinite_scroll_pagination.dart";
 
 import "package:inventree/api_form.dart";
+import 'package:inventree/app_colors.dart';
 import "package:inventree/l10.dart";
 
 import "package:inventree/inventree/model.dart";
@@ -118,7 +119,7 @@ class PaginatedSearchState<T extends StatefulWidget> extends State<T> with BaseW
 
     launchApiForm(
       context,
-      "...filtering...",
+      L10().filteringOptions,
       "",
       fields,
       icon: FontAwesomeIcons.checkCircle,
@@ -142,6 +143,15 @@ class PaginatedSearchState<T extends StatefulWidget> extends State<T> with BaseW
   String searchTerm = "";
 
   int resultCount = 0;
+
+  String resultsString() {
+
+    if (resultCount <= 0) {
+      return noResultsText;
+    } else {
+      return "${resultCount} ${L10().results}";
+    }
+  }
 
   // Text controller
   final TextEditingController searchController = TextEditingController();
@@ -274,13 +284,16 @@ class PaginatedSearchState<T extends StatefulWidget> extends State<T> with BaseW
   Widget buildSearchInput(BuildContext context) {
     return ListTile(
       leading: orderingOptions.isEmpty ? null : GestureDetector(
-        child: FaIcon(FontAwesomeIcons.sort),
+        child: FaIcon(FontAwesomeIcons.sort, color: COLOR_CLICK),
         onTap: () async {
           _saveOrderingOptions(context);
         },
       ),
       trailing: GestureDetector(
-        child: FaIcon(searchController.text.isEmpty ? FontAwesomeIcons.search : FontAwesomeIcons.backspace),
+        child: FaIcon(
+          searchController.text.isEmpty ? FontAwesomeIcons.search : FontAwesomeIcons.backspace,
+          color: searchController.text.isNotEmpty ? COLOR_DANGER : COLOR_CLICK,
+        ),
         onTap: () {
           searchController.clear();
           updateSearchTerm();
@@ -293,7 +306,7 @@ class PaginatedSearchState<T extends StatefulWidget> extends State<T> with BaseW
         },
         decoration: InputDecoration(
           hintText: L10().search,
-          helperText: resultCount.toString(),
+          helperText: resultsString(),
         ),
       )
     );

@@ -294,6 +294,9 @@
   "feedbackSuccess": "Feedback submitted",
   "@feedbackSuccess": {},
 
+  "filteringOptions": "Filtering Options",
+  "@filteringOptions": {},
+
   "formatException": "Format Exception",
   "@formatException": {},
 
