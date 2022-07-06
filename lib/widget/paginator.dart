@@ -4,7 +4,7 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:infinite_scroll_pagination/infinite_scroll_pagination.dart";
 
 import "package:inventree/api_form.dart";
-import 'package:inventree/app_colors.dart';
+import "package:inventree/app_colors.dart";
 import "package:inventree/l10.dart";
 
 import "package:inventree/inventree/model.dart";
@@ -117,6 +117,7 @@ class PaginatedSearchState<T extends StatefulWidget> extends State<T> with BaseW
       }
     };
 
+    // Launch an interactive form for the user to select options
     launchApiForm(
       context,
       L10().filteringOptions,
@@ -174,18 +175,32 @@ class PaginatedSearchState<T extends StatefulWidget> extends State<T> with BaseW
     super.dispose();
   }
 
+  /*
+   * Custom function to request a single page of results from the server.
+   * Each implementing class must override this function,
+   * and return an InvenTreePageResponse object with the correct data format
+   */
   Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
 
     // Default implementation returns null - must be overridden
     return null;
   }
 
+  /*
+   * Request a single page of results from the server
+   */
   Future<void> _fetchPage(int pageKey) async {
     try {
       Map<String, String> params = filters;
 
+      // Include user search term
       params["search"] = "${searchTerm}";
-      params["ordering"] = await orderingString;
+
+      // Use custom query ordering if available
+      String o = await orderingString;
+      if (o.isNotEmpty) {
+        params["ordering"] = o;
+      }
 
       final page = await requestPage(
         _pageSize,
@@ -226,6 +241,7 @@ class PaginatedSearchState<T extends StatefulWidget> extends State<T> with BaseW
     }
   }
 
+  // Callback function when the search term is updated
   void updateSearchTerm() {
     searchTerm = searchController.text;
     _pagingController.refresh();
