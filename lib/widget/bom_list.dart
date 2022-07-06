@@ -18,48 +18,6 @@ import "package:inventree/widget/refreshable_state.dart";
 
 
 /*
- * Widget for displaying a list of BomItems for the specified 'parent' Part instance
- */
-class BomList extends StatefulWidget {
-
-  const BomList(this.parent);
-
-  final InvenTreePart parent;
-
-  @override
-  _BomListState createState() => _BomListState(parent);
-
-}
-
-
-class _BomListState extends PaginatedState<BomList> {
-
-  _BomListState(this.parent);
-
-  final InvenTreePart parent;
-
-  @override
-  String getAppBarTitle(BuildContext context) => L10().billOfMaterials;
-
-  @override
-  String get prefix => "bom_";
-
-  @override
-  Map<String, String> get orderingOptions => {
-    "quantity": L10().quantity,
-    "sub_part": L10().part,
-  };
-
-  @override
-  Widget getBody(BuildContext context) {
-    return PaginatedBomList({
-      "part": parent.pk.toString(),
-    });
-  }
-}
-
-
-/*
  * Create a paginated widget displaying a list of BomItem objects
  */
 class PaginatedBomList extends StatefulWidget {
@@ -78,12 +36,22 @@ class PaginatedBomList extends StatefulWidget {
 
 class _PaginatedBomListState extends PaginatedSearchState<PaginatedBomList> {
 
-  _PaginatedBomListState(Map<String, String> filters, this.onTotalChanged) : super(filters);
+  _PaginatedBomListState(Map<String, String> filters, this.onTotalChanged) : super(filters, fullscreen: true);
 
   Function(int)? onTotalChanged;
 
   @override
   String get prefix => "bom_";
+
+  @override
+  Map<String, String> get orderingOptions => {
+    "quantity": L10().quantity,
+    "sub_part": L10().part,
+  };
+
+
+  @override
+  String getAppBarTitle(BuildContext context) => L10().billOfMaterials;
 
   @override
   Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {

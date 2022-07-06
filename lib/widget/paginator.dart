@@ -14,31 +14,31 @@ import "package:inventree/widget/refreshable_state.dart";
 
 
 /*
- * Generic widget class for displaying a "paginated list".
- * Provides some basic functionality for adjusting ordering and filtering options
+ * Generic stateful widget for displaying paginated data retrieved via the API
+ *
+ * - Can be displayed as "full screen" (with app-bar and drawer)
+ * - Can be displayed as a standalone widget
  */
-abstract class PaginatedState<T extends StatefulWidget> extends RefreshableState<T> {
+class PaginatedSearchState<T extends StatefulWidget> extends State<T> with BaseWidgetProperties {
+
+  PaginatedSearchState(this.filters, {this.fullscreen = true});
+
+  final _key = GlobalKey<ScaffoldState>();
+
+  final Map<String, String> filters;
+
+  static const _pageSize = 25;
+
+  // Determine if this widget is shown "fullscreen" (i.e. with appbar)
+  final bool fullscreen;
 
   // Prefix for storing and loading pagination options
+  // Override in implementing class
   String get prefix => "prefix_";
 
-  // Ordering options for this paginated state (override in implementing class)
+  // Return a map of sorting options available for this list
+  // Should be overridden by an implementing subclass
   Map<String, String> get orderingOptions => {};
-
-  @override
-  List<Widget> getAppBarActions(BuildContext context) {
-    List<Widget> actions = [];
-
-    // If ordering options have been provided
-    if (orderingOptions.isNotEmpty) {
-      actions.add(IconButton(
-        icon: FaIcon(FontAwesomeIcons.sort),
-        onPressed: () => _updateFilters(context),
-      ));
-    }
-
-    return actions;
-  }
 
   // Return the selected ordering "field" for this list widget
   Future<String> orderingField() async {
@@ -62,9 +62,21 @@ abstract class PaginatedState<T extends StatefulWidget> extends RefreshableState
     return order == "+" ? "+" : "-";
   }
 
-  // Update the (configurable) filters for this paginated list
-  Future<void> _updateFilters(BuildContext context) async {
+  // Return string for determining 'ordering' of paginated list
+  Future<String> get orderingString async {
+    dynamic field = await orderingField();
+    dynamic order = await orderingOrder();
 
+    // Return an empty string if no field is provided
+    if (field.toString().isEmpty) {
+      return "";
+    }
+
+    return "${order}${field}";
+  }
+
+  // Update the (configurable) filters for this paginated list
+  Future<void> _saveOrderingOptions(BuildContext context) async {
     // Retrieve stored setting
     dynamic _field = await orderingField();
     dynamic _order = await orderingOrder();
@@ -96,12 +108,12 @@ abstract class PaginatedState<T extends StatefulWidget> extends RefreshableState
         "value": _order,
         "choices": [
           {
-            "value": "+",
-            "display_name": "Ascending",
+          "value": "+",
+          "display_name": "Ascending",
           },
           {
-            "value": "-",
-            "display_name": "Descending",
+          "value": "-",
+          "display_name": "Descending",
           }
         ]
       }
@@ -123,26 +135,11 @@ abstract class PaginatedState<T extends StatefulWidget> extends RefreshableState
         await InvenTreeSettingsManager().setValue("${prefix}ordering_field", f);
         await InvenTreeSettingsManager().setValue("${prefix}ordering_order", o);
 
-        // Refresh the widget
-        setState(() {});
+        // Refresh data from the server
+        _pagingController.refresh();
       }
     );
   }
-
-}
-
-
-class PaginatedSearchState<T extends StatefulWidget> extends State<T> {
-
-  PaginatedSearchState(this.filters);
-
-  final Map<String, String> filters;
-
-  static const _pageSize = 25;
-
-  // Prefix for storing and loading pagination options
-  // Override in implementing class
-  String get prefix => "prefix_";
 
   // Search query term
   String searchTerm = "";
@@ -176,19 +173,12 @@ class PaginatedSearchState<T extends StatefulWidget> extends State<T> {
     return null;
   }
 
-  Future<String> get ordering async {
-    dynamic field = await InvenTreeSettingsManager().getValue("${prefix}ordering_field", "");
-    dynamic order = await InvenTreeSettingsManager().getValue("${prefix}ordering_order", "+");
-
-    return "${order}${field}";
-  }
-
   Future<void> _fetchPage(int pageKey) async {
     try {
       Map<String, String> params = filters;
 
       params["search"] = "${searchTerm}";
-      params["ordering"] = await ordering;
+      params["ordering"] = await orderingString;
 
       final page = await requestPage(
         _pageSize,
@@ -234,6 +224,8 @@ class PaginatedSearchState<T extends StatefulWidget> extends State<T> {
     _pagingController.refresh();
   }
 
+  // Function to construct a single paginated item
+  // Must be overridden in an implementing subclass
   Widget buildItem(BuildContext context, InvenTreeModel item) {
 
     // This method must be overridden by the child class
@@ -243,10 +235,31 @@ class PaginatedSearchState<T extends StatefulWidget> extends State<T> {
     );
   }
 
+  // Return a string which is displayed when there are no results
+  // Can be overridden by an implementing subclass
   String get noResultsText => L10().noResults;
 
   @override
   Widget build (BuildContext context) {
+
+    if (fullscreen) {
+      return Scaffold(
+        key: _key,
+        appBar: buildAppBar(context, _key),
+        drawer: getDrawer(context),
+        body: Builder(
+          builder: (BuildContext ctx) {
+            return getBody(ctx);
+          }
+        )
+      );
+    } else {
+      return getBody(context);
+    }
+  }
+
+  @override
+  Widget getBody(BuildContext context) {
     return Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -275,6 +288,21 @@ class PaginatedSearchState<T extends StatefulWidget> extends State<T> {
           )
         ]
     );
+  }
+
+  @override
+  List<Widget> getAppBarActions(BuildContext context) {
+    List<Widget> actions = [];
+
+    // If ordering options have been provided
+    if (orderingOptions.isNotEmpty) {
+      actions.add(IconButton(
+        icon: FaIcon(FontAwesomeIcons.sort),
+        onPressed: () => _saveOrderingOptions(context),
+      ));
+    }
+
+    return actions;
   }
 
 }

@@ -3,7 +3,53 @@ import "package:inventree/widget/drawer.dart";
 import "package:flutter/material.dart";
 
 
-abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
+/*
+ * Simple mixin class which defines simple methods for defining widget properties
+ */
+mixin BaseWidgetProperties {
+
+  // Return a list of appBar actions (default = None)
+  List<Widget> getAppBarActions(BuildContext context) {
+    return [];
+  }
+
+  // Return a title for the appBar
+  String getAppBarTitle(BuildContext context) { return "--- app bar ---"; }
+
+  // Function to construct a drawer (override if needed)
+  Widget getDrawer(BuildContext context) {
+    return InvenTreeDrawer(context);
+  }
+
+  // Function to construct a body (MUST BE PROVIDED)
+  Widget getBody(BuildContext context) {
+
+    // Default return is an empty ListView
+    return ListView();
+  }
+
+  Widget? getBottomNavBar(BuildContext context) {
+    return null;
+  }
+
+  AppBar? buildAppBar(BuildContext context, GlobalKey<ScaffoldState> key) {
+    return AppBar(
+      title: Text(getAppBarTitle(context)),
+      actions: getAppBarActions(context),
+      leading: backButton(context, key),
+    );
+  }
+
+}
+
+
+/*
+ * Abstract base class which provides generic "refresh" functionality.
+ *
+ * - Drag down and release to 'refresh' the widget
+ * - Define some method which runs to 'refresh' the widget state
+ */
+abstract class RefreshableState<T extends StatefulWidget> extends State<T> with BaseWidgetProperties {
 
   final refreshableKey = GlobalKey<ScaffoldState>();
 
@@ -24,12 +70,6 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
       tabIndex = index;
     });
   }
-
-  List<Widget> getAppBarActions(BuildContext context) {
-    return [];
-  }
-
-  String getAppBarTitle(BuildContext context) { return "App Bar Title"; }
 
   @override
   void initState() {
@@ -60,34 +100,6 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
     });
   }
 
-  // Function to construct a drawer (override if needed)
-  Widget getDrawer(BuildContext context) {
-    return InvenTreeDrawer(context);
-  }
-
-  // Function to construct a body (MUST BE PROVIDED)
-  Widget getBody(BuildContext context) {
-
-    // Default return is an empty ListView
-    return ListView();
-  }
-
-  Widget? getBottomNavBar(BuildContext context) {
-    return null;
-  }
-
-  Widget? getFab(BuildContext context) {
-    return null;
-  }
-
-  AppBar? buildAppBar(BuildContext context) {
-    return AppBar(
-      title: Text(getAppBarTitle(context)),
-      actions: getAppBarActions(context),
-      leading: backButton(context, refreshableKey),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
 
@@ -96,9 +108,8 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> {
 
     return Scaffold(
       key: refreshableKey,
-      appBar: buildAppBar(context),
+      appBar: buildAppBar(context, refreshableKey),
       drawer: getDrawer(context),
-      floatingActionButton: getFab(context),
       body: Builder(
         builder: (BuildContext context) {
           return RefreshIndicator(
