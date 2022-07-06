@@ -16,6 +16,35 @@ import "package:inventree/widget/part_detail.dart";
 import "package:inventree/widget/refreshable_state.dart";
 
 
+/*
+ * Widget for displaying a Bill of Materials for a specified Part instance
+ */
+class BillOfMaterialsWidget extends StatefulWidget {
+
+  const BillOfMaterialsWidget(this.part, {Key? key}) : super(key: key);
+
+  final InvenTreePart part;
+
+  @override
+  _BillOfMaterialsState createState() => _BillOfMaterialsState(part);
+}
+
+class _BillOfMaterialsState extends RefreshableState<BillOfMaterialsWidget> {
+  _BillOfMaterialsState(this.part);
+
+  final InvenTreePart part;
+
+  @override
+  String getAppBarTitle(BuildContext context) => L10().billOfMaterials;
+
+  @override
+  Widget getBody(BuildContext context) {
+    return PaginatedBomList({
+      "part": part.pk.toString(),
+    });
+  }
+}
+
 
 /*
  * Create a paginated widget displaying a list of BomItem objects
@@ -31,12 +60,13 @@ class PaginatedBomList extends StatefulWidget {
   @override
   _PaginatedBomListState createState() => _PaginatedBomListState(filters, onTotalChanged);
 
+
 }
 
 
 class _PaginatedBomListState extends PaginatedSearchState<PaginatedBomList> {
 
-  _PaginatedBomListState(Map<String, String> filters, this.onTotalChanged) : super(filters, fullscreen: true);
+  _PaginatedBomListState(Map<String, String> filters, this.onTotalChanged) : super(filters);
 
   Function(int)? onTotalChanged;
 
@@ -48,10 +78,6 @@ class _PaginatedBomListState extends PaginatedSearchState<PaginatedBomList> {
     "quantity": L10().quantity,
     "sub_part": L10().part,
   };
-
-
-  @override
-  String getAppBarTitle(BuildContext context) => L10().billOfMaterials;
 
   @override
   Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {

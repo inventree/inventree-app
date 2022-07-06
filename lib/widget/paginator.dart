@@ -21,16 +21,13 @@ import "package:inventree/widget/refreshable_state.dart";
  */
 class PaginatedSearchState<T extends StatefulWidget> extends State<T> with BaseWidgetProperties {
 
-  PaginatedSearchState(this.filters, {this.fullscreen = true});
+  PaginatedSearchState(this.filters);
 
   final _key = GlobalKey<ScaffoldState>();
 
   final Map<String, String> filters;
 
   static const _pageSize = 25;
-
-  // Determine if this widget is shown "fullscreen" (i.e. with appbar)
-  final bool fullscreen;
 
   // Prefix for storing and loading pagination options
   // Override in implementing class
@@ -242,35 +239,16 @@ class PaginatedSearchState<T extends StatefulWidget> extends State<T> with BaseW
   @override
   Widget build (BuildContext context) {
 
-    if (fullscreen) {
-      return Scaffold(
-        key: _key,
-        appBar: buildAppBar(context, _key),
-        drawer: getDrawer(context),
-        body: Builder(
-          builder: (BuildContext ctx) {
-            return getBody(ctx);
-          }
-        )
-      );
-    } else {
-      return getBody(context);
-    }
-  }
-
-  @override
-  Widget getBody(BuildContext context) {
     return Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          PaginatedSearchWidget(searchController, updateSearchTerm, resultCount),
+          buildSearchInput(context),
           Expanded(
               child: CustomScrollView(
                   shrinkWrap: true,
                   physics: ClampingScrollPhysics(),
                   scrollDirection: Axis.vertical,
                   slivers: <Widget>[
-                    // TODO - Search input
                     PagedSliverList.separated(
                       pagingController: _pagingController,
                       builderDelegate: PagedChildBuilderDelegate<InvenTreeModel>(
@@ -290,63 +268,38 @@ class PaginatedSearchState<T extends StatefulWidget> extends State<T> with BaseW
     );
   }
 
-  @override
-  List<Widget> getAppBarActions(BuildContext context) {
-    List<Widget> actions = [];
-
-    // If ordering options have been provided
-    if (orderingOptions.isNotEmpty) {
-      actions.add(IconButton(
-        icon: FaIcon(FontAwesomeIcons.sort),
-        onPressed: () => _saveOrderingOptions(context),
-      ));
-    }
-
-    return actions;
-  }
-
-}
-
-
-class PaginatedSearchWidget extends StatelessWidget {
-
-  const PaginatedSearchWidget(this.controller, this.onChanged, this.results);
-
-  final Function onChanged;
-
-  final int results;
-
-  final TextEditingController controller;
-
-  @override
-  Widget build(BuildContext context) {
+  /*
+   * Construct a search input text field for the user to enter a search term
+   */
+  Widget buildSearchInput(BuildContext context) {
     return ListTile(
-      leading: GestureDetector(
-        child: FaIcon(controller.text.isEmpty ? FontAwesomeIcons.search : FontAwesomeIcons.backspace),
+      leading: orderingOptions.isEmpty ? null : GestureDetector(
+        child: FaIcon(FontAwesomeIcons.sort),
+        onTap: () async {
+          _saveOrderingOptions(context);
+        },
+      ),
+      trailing: GestureDetector(
+        child: FaIcon(searchController.text.isEmpty ? FontAwesomeIcons.search : FontAwesomeIcons.backspace),
         onTap: () {
-          controller.clear();
-          onChanged();
+          searchController.clear();
+          updateSearchTerm();
         },
       ),
       title: TextFormField(
-        controller: controller,
+        controller: searchController,
         onChanged: (value) {
-          onChanged();
+          updateSearchTerm();
         },
         decoration: InputDecoration(
           hintText: L10().search,
+          helperText: resultCount.toString(),
         ),
-      ),
-      trailing: Text(
-        "${results}",
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontStyle: FontStyle.italic
-        ),
-      ),
+      )
     );
   }
 }
+
 
 class NoResultsWidget extends StatelessWidget {
 
