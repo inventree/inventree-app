@@ -691,6 +691,9 @@
   "receivedItem": "Received Stock Item",
   "@receivedItem": {},
 
+  "reference": "Reference",
+  "@reference": {},
+
   "refresh": "Refresh",
   "@refresh": {},
 

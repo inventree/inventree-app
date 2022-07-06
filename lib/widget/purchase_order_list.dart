@@ -59,6 +59,17 @@ class _PaginatedPurchaseOrderListState extends PaginatedSearchState<PaginatedPur
   String _poPrefix = "";
 
   @override
+  String get prefix => "po_";
+
+  @override
+  Map<String, String> get orderingOptions => {
+    "reference": L10().reference,
+    "supplier__name": L10().supplier,
+    "status": L10().status,
+    "target_date": L10().targetDate,
+  };
+
+  @override
   Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
 
     _poPrefix = await InvenTreeAPI().getGlobalSetting("PURCHASEORDER_REFERENCE_PREFIX");
