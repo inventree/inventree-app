@@ -62,6 +62,16 @@ class _PaginatedPartListState extends PaginatedSearchState<PaginatedPartList> {
   Function(int)? onTotalChanged;
 
   @override
+  String get prefix => "part_";
+
+  @override
+  Map<String, String> get orderingOptions => {
+    "name": L10().name,
+    "in_stock": L10().stock,
+    "IPN": L10().internalPartNumber,
+  };
+
+  @override
   Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
 
     final bool cascade = await InvenTreeSettingsManager().getBool(INV_PART_SUBCATEGORY, true);
