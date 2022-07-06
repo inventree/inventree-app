@@ -51,6 +51,15 @@ class _PaginatedPartCategoryListState extends PaginatedSearchState<PaginatedPart
   _PaginatedPartCategoryListState(Map<String, String> filters) : super(filters);
 
   @override
+  String get prefix => "category_";
+
+  @override
+  Map<String, String> get orderingOptions => {
+    "name": L10().name,
+    "level": L10().level,
+  };
+
+  @override
   Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
 
     final page = await InvenTreePartCategory().listPaginated(limit, offset, filters: params);

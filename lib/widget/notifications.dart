@@ -24,7 +24,7 @@ class _NotificationState extends RefreshableState<NotificationWidget> {
   List<InvenTreeNotification> notifications = [];
 
   @override
-  AppBar? buildAppBar(BuildContext context) {
+  AppBar? buildAppBar(BuildContext context, GlobalKey<ScaffoldState> key) {
     // No app bar for the notification widget
     return null;
   }

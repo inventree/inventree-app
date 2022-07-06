@@ -1,5 +1,4 @@
 
-
 import "package:flutter/material.dart";
 
 import "package:inventree/api.dart";
@@ -16,25 +15,22 @@ import "package:inventree/widget/refreshable_state.dart";
 
 
 /*
- * Widget for displaying a list of BomItems for the specified 'parent' Part instance
+ * Widget for displaying a Bill of Materials for a specified Part instance
  */
-class BomList extends StatefulWidget {
+class BillOfMaterialsWidget extends StatefulWidget {
 
-  const BomList(this.parent);
+  const BillOfMaterialsWidget(this.part, {Key? key}) : super(key: key);
 
-  final InvenTreePart parent;
+  final InvenTreePart part;
 
   @override
-  _BomListState createState() => _BomListState(parent);
-
+  _BillOfMaterialsState createState() => _BillOfMaterialsState(part);
 }
 
+class _BillOfMaterialsState extends RefreshableState<BillOfMaterialsWidget> {
+  _BillOfMaterialsState(this.part);
 
-class _BomListState extends RefreshableState<BomList> {
-
-  _BomListState(this.parent);
-
-  final InvenTreePart parent;
+  final InvenTreePart part;
 
   @override
   String getAppBarTitle(BuildContext context) => L10().billOfMaterials;
@@ -42,7 +38,7 @@ class _BomListState extends RefreshableState<BomList> {
   @override
   Widget getBody(BuildContext context) {
     return PaginatedBomList({
-      "part": parent.pk.toString(),
+      "part": part.pk.toString(),
     });
   }
 }
@@ -62,6 +58,7 @@ class PaginatedBomList extends StatefulWidget {
   @override
   _PaginatedBomListState createState() => _PaginatedBomListState(filters, onTotalChanged);
 
+
 }
 
 
@@ -70,6 +67,15 @@ class _PaginatedBomListState extends PaginatedSearchState<PaginatedBomList> {
   _PaginatedBomListState(Map<String, String> filters, this.onTotalChanged) : super(filters);
 
   Function(int)? onTotalChanged;
+
+  @override
+  String get prefix => "bom_";
+
+  @override
+  Map<String, String> get orderingOptions => {
+    "quantity": L10().quantity,
+    "sub_part": L10().part,
+  };
 
   @override
   Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
@@ -87,11 +93,10 @@ class _PaginatedBomListState extends PaginatedSearchState<PaginatedBomList> {
     InvenTreePart? subPart = bomItem.subPart;
 
     String title = subPart?.fullname ?? "error - no name";
-    String description = subPart?.description ?? "error - no description";
 
     return ListTile(
       title: Text(title),
-      subtitle: Text(description),
+      subtitle: Text(bomItem.reference),
       trailing: Text(
         simpleNumberString(bomItem.quantity),
         style: TextStyle(fontWeight: FontWeight.bold),

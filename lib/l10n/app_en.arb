@@ -294,6 +294,9 @@
   "feedbackSuccess": "Feedback submitted",
   "@feedbackSuccess": {},
 
+  "filteringOptions": "Filtering Options",
+  "@filteringOptions": {},
+
   "formatException": "Format Exception",
   "@formatException": {},
 
@@ -424,6 +427,9 @@
 
   "lastUpdated": "Last Updated",
   "@lastUpdated": {},
+
+  "level": "Level",
+  "@level": {},
 
   "lineItem": "Line Item",
   "@lineItem": {},
@@ -684,6 +690,9 @@
 
   "receivedItem": "Received Stock Item",
   "@receivedItem": {},
+
+  "reference": "Reference",
+  "@reference": {},
 
   "refresh": "Refresh",
   "@refresh": {},

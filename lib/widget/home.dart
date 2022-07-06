@@ -192,7 +192,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
   }
 
 
-  Widget _listTile(BuildContext context, String label, IconData icon, {Function()? callback, String role = "", String permission = ""}) {
+  Widget _listTile(BuildContext context, String label, IconData icon, {Function()? callback, String role = "", String permission = "", Widget? trailing}) {
 
     bool connected = InvenTreeAPI().isConnected();
 
@@ -211,6 +211,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
         child: ListTile(
           leading: FaIcon(icon, color: connected && allowed ? COLOR_CLICK : Colors.grey),
           title: Text(label),
+          trailing: trailing,
         ),
       ),
       onTap: () {
@@ -257,7 +258,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
       FontAwesomeIcons.shapes,
       callback: () {
         _showParts(context);
-      }
+      },
     ));
 
     // Starred parts

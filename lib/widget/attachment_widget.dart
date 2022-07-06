@@ -1,9 +1,3 @@
-/*
- * A generic widget for displaying a list of attachments.
- *
- * To allow use with different "types" of attachments,
- * we pass a subclassed instance of the InvenTreeAttachment model.
- */
 
 import "dart:io";
 
@@ -17,6 +11,12 @@ import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/l10.dart";
 import "package:url_launcher/url_launcher.dart";
 
+/*
+ * A generic widget for displaying a list of attachments.
+ *
+ * To allow use with different "types" of attachments,
+ * we pass a subclassed instance of the InvenTreeAttachment model.
+ */
 class AttachmentWidget extends StatefulWidget {
 
   const AttachmentWidget(this.attachment, this.referenceId, this.hasUploadPermission) : super();

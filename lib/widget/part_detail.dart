@@ -354,7 +354,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => BomList(part)
+                      builder: (context) => BillOfMaterialsWidget(part)
                     )
                   );
                 }
