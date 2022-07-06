@@ -1,9 +1,7 @@
 
 import "package:flutter/material.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/api.dart";
-import "package:inventree/api_form.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/inventree/bom.dart";
 import "package:inventree/l10.dart";
@@ -95,7 +93,6 @@ class _PaginatedBomListState extends PaginatedSearchState<PaginatedBomList> {
     InvenTreePart? subPart = bomItem.subPart;
 
     String title = subPart?.fullname ?? "error - no name";
-    String description = subPart?.description ?? "error - no description";
 
     return ListTile(
       title: Text(title),

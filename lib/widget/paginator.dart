@@ -24,8 +24,6 @@ class PaginatedSearchState<T extends StatefulWidget> extends State<T> with BaseW
 
   PaginatedSearchState(this.filters);
 
-  final _key = GlobalKey<ScaffoldState>();
-
   final Map<String, String> filters;
 
   static const _pageSize = 25;
