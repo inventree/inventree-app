@@ -328,11 +328,11 @@ class StockItemScanIntoLocationHandler extends BarcodeHandler {
 }
 
 
+/*
+ * Barcode handler for scanning stock item(s) into the specified StockLocation
+ */
 class StockLocationScanInItemsHandler extends BarcodeHandler {
-  /*
-   * Barcode handler for scanning stock item(s) into the specified StockLocation
-   */
-
+  
   StockLocationScanInItemsHandler(this.location);
 
   final InvenTreeStockLocation location;

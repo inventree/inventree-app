@@ -381,6 +381,7 @@ List<Widget> detailTiles() {
           title: Text(L10().locationCreate),
           subtitle: Text(L10().locationCreateDetail),
           leading: FaIcon(FontAwesomeIcons.sitemap, color: COLOR_CLICK),
+          trailing: FaIcon(FontAwesomeIcons.plusCircle, color: COLOR_CLICK),
           onTap: () async {
             _newLocation(context);
           },
@@ -392,6 +393,7 @@ List<Widget> detailTiles() {
           title: Text(L10().stockItemCreate),
           subtitle: Text(L10().stockItemCreateDetail),
           leading: FaIcon(FontAwesomeIcons.boxes, color: COLOR_CLICK),
+          trailing: FaIcon(FontAwesomeIcons.plusCircle, color: COLOR_CLICK),
           onTap: () async {
             _newStockItem(context);
           },
@@ -401,9 +403,9 @@ List<Widget> detailTiles() {
     }
 
     if (location != null) {
-      // Stock adjustment actions
+
+      // Scan stock item into location
       if (InvenTreeAPI().checkPermission("stock", "change")) {
-        // Scan items into location
         tiles.add(
             ListTile(
               title: Text(L10().barcodeScanInItems),
@@ -426,6 +428,20 @@ List<Widget> detailTiles() {
               },
             )
         );
+
+        // Scan this location into another one
+        if (InvenTreeAPI().checkPermission("stock_location", "change")) {
+          tiles.add(
+            ListTile(
+              title: Text(L10().scanIntoLocation),
+              leading: FaIcon(FontAwesomeIcons.signInAlt, color: COLOR_CLICK),
+              trailing: Icon(Icons.qr_code),
+              onTap: () {
+                // TODO
+              }
+            )
+          );
+        }
       }
     }
 
