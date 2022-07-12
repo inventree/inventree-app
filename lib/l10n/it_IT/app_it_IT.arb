@@ -1,5 +1,13 @@
 {
     "@@locale": "en",
+    "appTitle": "InvenTree",
+    "@appTitle": {
+        "description": "InvenTree application title string"
+    },
+    "ok": "Ok",
+    "@ok": {
+        "description": "OK"
+    },
     "about": "Info",
     "@about": {},
     "accountDetails": "Dettagli account",
@@ -13,6 +21,10 @@
     "add": "Aggiungi",
     "@add": {
         "description": "add"
+    },
+    "addStock": "Aggiungi Giacenza",
+    "@addStock": {
+        "description": "add stock"
     },
     "address": "Indirizzo",
     "@address": {},
@@ -36,10 +48,14 @@
     },
     "attachmentNone": "Nessun allegato trovato",
     "@attachmentNone": {},
+    "attachmentNoneDetail": "Nessun allegato trovato",
+    "@attachmentNoneDetail": {},
     "attachmentSelect": "Seleziona allegato",
     "@attachmentSelect": {},
     "attention": "Attenzione",
     "@attention": {},
+    "availableStock": "Giacenza Disponibile",
+    "@availableStock": {},
     "barcodeAssign": "Assegna Codice A Barre",
     "@barcodeAssign": {},
     "barcodeAssigned": "Codice a barre assegnato",
@@ -124,6 +140,8 @@
     },
     "editCategory": "Modifica Categoria",
     "@editCategory": {},
+    "editNotes": "Modifica Note",
+    "@editNotes": {},
     "enterPassword": "Inserire la password",
     "@enterPassword": {},
     "enterUsername": "Inserisci nome utente",
@@ -154,6 +172,7 @@
     "@history": {
         "description": "history"
     },
+    "home": "Home",
     "@homeShowSubscsribedDescription": {},
     "@homeShowSupplierDescription": {},
     "imageUploadFailure": "Il caricamento della foto è fallito",
@@ -166,6 +185,8 @@
     "@includeSubcategories": {},
     "incompleteDetails": "Ti preghiamo di completare i dati del tuo account",
     "@incompleteDetails": {},
+    "info": "Info",
+    "@info": {},
     "invalidHost": "Nome host non valido",
     "@invalidHost": {},
     "invalidHostDetails": "Il nome host fornito non è valido",
