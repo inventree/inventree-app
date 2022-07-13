@@ -43,8 +43,8 @@ class InvenTreePartCategory extends InvenTreeModel {
 
   String get pathstring => (jsondata["pathstring"] ?? "") as String;
 
-  String get parentpathstring {
-    // TODO - Drive the refactor tractor through this
+  String get parentPathString {
+
     List<String> psplit = pathstring.split("/");
 
     if (psplit.isNotEmpty) {

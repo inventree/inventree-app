@@ -210,6 +210,9 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
   }
 
+  /*
+   * Receive a specified PurchaseOrderLineItem into stock
+   */
   void receiveLine(BuildContext context, InvenTreePOLineItem lineItem) {
 
     Map<String, dynamic> fields = {

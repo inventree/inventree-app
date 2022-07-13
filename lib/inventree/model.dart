@@ -107,6 +107,9 @@ class InvenTreeModel {
 
   }
 
+  /*
+   * Launch a modal form to edit the fields available to this model instance.
+   */
   Future<void> editForm(BuildContext context, String title, {Map<String, dynamic> fields=const {}, Function(dynamic)? onSuccess}) async {
 
     if (fields.isEmpty) {

@@ -40,27 +40,6 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
     List<Widget> actions = [];
 
-    /*
-    actions.add(
-      IconButton(
-        icon: FaIcon(FontAwesomeIcons.search),
-        onPressed: () {
-
-          Map<String, String> filters = {};
-
-          if (location != null) {
-            filters["location"] = "${location.pk}";
-          }
-
-          showSearch(
-            context: context,
-            delegate: StockSearchDelegate(context, filters: filters)
-          );
-        }
-      ),
-    );
-     */
-
     if (location != null) {
 
       // Add "locate" button
@@ -252,7 +231,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
         children.add(
             ListTile(
               title: Text(L10().parentLocation),
-              subtitle: Text("${location!.parentpathstring}"),
+              subtitle: Text("${location!.parentPathString}"),
               leading: FaIcon(FontAwesomeIcons.levelUpAlt, color: COLOR_CLICK),
               onTap: () {
 
