@@ -433,7 +433,55 @@ class ScanParentLocationHandler extends BarcodeHandler {
 
   @override
   Future<void> onBarcodeMatched(BuildContext context, Map<String, dynamic> data) async {
-    // TODO
+    // We expect the barcode points to a "stocklocation"
+    if (data.containsKey("stocklocation")) {
+      int _loc = (data["stocklocation"]["pk"] ?? -1) as int;
+
+      if (_loc == -1) {
+        showSnackIcon(
+          L10().invalidStockLocation,
+          success: false,
+        );
+
+        return;
+      }
+
+      final result = await location.update(
+        values: {
+          "parent": _loc.toString(),
+        },
+      );
+
+      if (result) {
+        // New parent location was successfully updated
+        barcodeSuccessTone();
+
+        // Close the barcode scanner
+        Navigator.of(context).pop();
+
+        showSnackIcon(
+          L10().barcodeScanIntoLocationSuccess,
+          success: true
+        );
+      } else {
+        // An error occured
+        barcodeFailureTone();
+
+        showSnackIcon(
+          L10().barcodeScanIntoLocationFailure,
+          success: false,
+        );
+      }
+
+    } else {
+      // Something other than a StockLocation was scanned
+      barcodeFailureTone();
+
+      showSnackIcon(
+        L10().barcodeScanIntoLocationFailure,
+        success: false,
+      );
+    }
   }
 
 }
