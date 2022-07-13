@@ -106,7 +106,7 @@
   "barcodeScanGeneral":  "Scan an InvenTree barcode",
   "@barcodeScanGeneral": {},
 
-  "barcodeScanInItems": "Scan stock items into location",
+  "barcodeScanInItems": "Scan stock item into this location",
   "@barcodeScanInItems": {},
 
   "barcodeScanLocation": "Scan stock location",

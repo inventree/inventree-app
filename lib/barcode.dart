@@ -43,14 +43,14 @@ Future <void> barcodeFailureTone() async {
 }
 
 
+/* Generic class which "handles" a barcode, by communicating with the InvenTree server,
+ * and handling match / unknown / error cases.
+ *
+ * Override functionality of this class to perform custom actions,
+ * based on the response returned from the InvenTree server
+ */
 class BarcodeHandler {
-  /*
-   * Class which "handles" a barcode, by communicating with the InvenTree server,
-   * and handling match / unknown / error cases.
-   *
-   * Override functionality of this class to perform custom actions,
-   * based on the response returned from the InvenTree server
-   */
+
 
   BarcodeHandler();
 
@@ -135,12 +135,18 @@ class BarcodeHandler {
     }
 }
 
-
+/*
+ * Class for general barcode scanning.
+ * Scan *any* barcode without context, and then redirect app to correct view.
+ *
+ * Handles scanning of:
+ *
+ * - StockLocation
+ * - StockItem
+ * - Part
+ */
 class BarcodeScanHandler extends BarcodeHandler {
-  /*
-   * Class for general barcode scanning.
-   * Scan *any* barcode without context, and then redirect app to correct view
-   */
+
 
   @override
   String getOverlayText(BuildContext context) => L10().barcodeScanGeneral;
@@ -265,10 +271,15 @@ class BarcodeScanHandler extends BarcodeHandler {
   }
 }
 
+
+/*
+ * Barcode handler for scanning a provided StockItem into a scanned StockLocation.
+ *
+ * - The class is initialized by passing a valid StockItem object
+ * - Expects to scan barcode for a StockLocation
+ * - The StockItem is transferred into the scanned location
+ */
 class StockItemScanIntoLocationHandler extends BarcodeHandler {
-  /*
-   * Barcode handler for scanning a provided StockItem into a scanned StockLocation
-   */
 
   StockItemScanIntoLocationHandler(this.item);
 
@@ -329,10 +340,14 @@ class StockItemScanIntoLocationHandler extends BarcodeHandler {
 
 
 /*
- * Barcode handler for scanning stock item(s) into the specified StockLocation
+ * Barcode handler for scanning stock item(s) into the specified StockLocation.
+ *
+ * - The class is initialized by passing a valid StockLocation object
+ * - Expects to scan a barcode for a StockItem
+ * - The scanned StockItem is transferred into the provided StockLocation
  */
 class StockLocationScanInItemsHandler extends BarcodeHandler {
-  
+
   StockLocationScanInItemsHandler(this.location);
 
   final InvenTreeStockLocation location;
@@ -400,10 +415,35 @@ class StockLocationScanInItemsHandler extends BarcodeHandler {
 }
 
 
+/*
+ * Barcode handler class for scanning a StockLocation into another StockLocation
+ *
+ * - The class is initialized by passing a valid StockLocation object
+ * - Expects to scan barcode for another *parent* StockLocation
+ * - The scanned StockLocation is set as the "parent" of the provided StockLocation
+ */
+class ScanParentLocationHandler extends BarcodeHandler {
+
+  ScanParentLocationHandler(this.location);
+
+  final InvenTreeStockLocation location;
+
+  @override
+  String getOverlayText(BuildContext context) => L10().barcodeScanLocation;
+
+  @override
+  Future<void> onBarcodeMatched(BuildContext context, Map<String, dynamic> data) async {
+    // TODO
+  }
+
+}
+
+
+/*
+ * Barcode handler for finding a "unique" barcode (one that does not match an item in the database)
+ */
 class UniqueBarcodeHandler extends BarcodeHandler {
-  /*
-   * Barcode handler for finding a "unique" barcode (one that does not match an item in the database)
-   */
+
 
   UniqueBarcodeHandler(this.callback, {this.overlayText = ""});
 

@@ -408,9 +408,10 @@ List<Widget> detailTiles() {
       if (InvenTreeAPI().checkPermission("stock", "change")) {
         tiles.add(
             ListTile(
-              title: Text(L10().barcodeScanInItems),
+              title: Text(L10().barcodeScanItem),
+              subtitle: Text(L10().barcodeScanInItems),
               leading: FaIcon(FontAwesomeIcons.exchangeAlt, color: COLOR_CLICK),
-              trailing: Icon(Icons.qr_code),
+              trailing: Icon(Icons.qr_code, color: COLOR_CLICK),
               onTap: () {
 
                 var _loc = location;
@@ -433,11 +434,23 @@ List<Widget> detailTiles() {
         if (InvenTreeAPI().checkPermission("stock_location", "change")) {
           tiles.add(
             ListTile(
-              title: Text(L10().scanIntoLocation),
+              title: Text(L10().barcodeScanLocation),
+              subtitle: Text(L10().scanIntoLocation),
               leading: FaIcon(FontAwesomeIcons.signInAlt, color: COLOR_CLICK),
-              trailing: Icon(Icons.qr_code),
+              trailing: Icon(Icons.qr_code, color: COLOR_CLICK),
               onTap: () {
-                // TODO
+                var _loc = location;
+
+                if (_loc != null) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) =>
+                          InvenTreeQRView(
+                              ScanParentLocationHandler(_loc)))
+                  ).then((value) {
+                    refresh(context);
+                  });
+                }
               }
             )
           );
