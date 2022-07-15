@@ -112,32 +112,40 @@ void main() {
       assert(result != null);
       assert(result is InvenTreePart);
 
+      APIResponse? response;
+
       if (result != null) {
         InvenTreePart part = result as InvenTreePart;
         assert(part.name == "M2x4 LPHS");
 
         // Change the name to something else
-        assert(await part.update(
+
+        response = await part.update(
           values: {
             "name": "Woogle",
           }
-        ));
+        );
+
+        assert(response.isValid());
+        assert(response.statusCode == 200);
 
         assert(await part.reload());
         assert(part.name == "Woogle");
 
         // And change it back again
-        assert(await part.update(
+        response = await part.update(
           values: {
             "name": "M2x4 LPHS"
           }
-        ));
+        );
+
+        assert(response.isValid());
+        assert(response.statusCode == 200);
 
         assert(await part.reload());
         assert(part.name == "M2x4 LPHS");
       }
     });
-
   });
 
 }
