@@ -9,6 +9,9 @@ import "package:inventree/preferences.dart";
 import "package:inventree/widget/snacks.dart";
 
 
+/*
+ * Display a "confirmation" dialog allowing the user to accept or reject an action
+ */
 Future<void> confirmationDialog(String title, String text, {IconData icon = FontAwesomeIcons.questionCircle, String? acceptText, String? rejectText, Function? onAccept, Function? onReject}) async {
 
   String _accept = acceptText ?? L10().ok;
@@ -69,11 +72,8 @@ Future<void> showErrorDialog(String title, {String description = "", APIResponse
         title: Text(description),
       )
     );
-  }
-
-  // Look for extra error information in the provided APIResponse object
-  if (response != null) {
-
+  } else if (response != null) {
+    // Look for extra error information in the provided APIResponse object
     switch (response.statusCode) {
       case 400:  // Bad request (typically bad input)
         if (response.data is Map<String, dynamic>) {

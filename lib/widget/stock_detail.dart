@@ -782,6 +782,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     tiles.add(
       ListTile(
         title: Text(L10().transferStock),
+        subtitle: Text(L10().transferStockDetail),
         leading: FaIcon(FontAwesomeIcons.exchangeAlt, color: COLOR_CLICK),
         onTap: () { _transferStockDialog(context); },
       )
@@ -791,6 +792,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     tiles.add(
       ListTile(
         title: Text(L10().scanIntoLocation),
+        subtitle: Text(L10().scanIntoLocationDetail),
         leading: FaIcon(FontAwesomeIcons.exchangeAlt, color: COLOR_CLICK),
         trailing: Icon(Icons.qr_code_scanner),
         onTap: () {
@@ -809,6 +811,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       tiles.add(
         ListTile(
           title: Text(L10().barcodeAssign),
+          subtitle: Text(L10().barcodeAssignDetail),
           leading: Icon(Icons.qr_code),
           trailing: Icon(Icons.qr_code_scanner),
           onTap: () {

@@ -82,6 +82,9 @@
   "barcodeAssign": "Assign Barcode",
   "@barcodeAssign": {},
 
+  "barcodeAssignDetail": "Scan custom barcode to assign",
+  "@barcodeAssignDetail": {},
+
   "barcodeAssigned": "Barcode assigned",
   "@barcodeAssigned": {},
 
@@ -807,6 +810,9 @@
   "scanIntoLocation": "Scan Into Location",
   "@scanIntoLocation": {},
 
+  "scanIntoLocationDetail": "Scan this item into location",
+  "@scanIntoLocationDetail": {},
+
   "search": "Search",
   "@search": {
     "description": "search"
@@ -1086,6 +1092,9 @@
   "@transferStock": {
     "description": "transfer stock"
   },
+
+  "transferStockDetail": "Transfer item to a different location",
+  "@transferStockDetail": {},
 
   "transferStockLocation": "Transfer Stock Location",
   "@transferStockLocation": {},
