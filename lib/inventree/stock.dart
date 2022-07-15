@@ -566,10 +566,9 @@ class InvenTreeStockItem extends InvenTreeModel {
     var response = await api.post(
       endpoint,
       body: data,
-      expectedStatusCode: 200,
     );
 
-    return response.isValid();
+    return response.isValid() && (response.statusCode == 200 || response.statusCode == 201);
   }
 
   Future<bool> countStock(double q, {String? notes}) async {
