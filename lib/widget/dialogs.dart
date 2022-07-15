@@ -71,14 +71,8 @@ Future<void> showErrorDialog(String title, {String description = "", APIResponse
     );
   }
 
-  print("showErrorDialog!");
-
-  // Look for extra error information in the provided APIresponse object
+  // Look for extra error information in the provided APIResponse object
   if (response != null) {
-
-    print("Response: ${response.statusCode}");
-    print("Data:");
-    print(response.data.toString());
 
     switch (response.statusCode) {
       case 400:  // Bad request (typically bad input)
