@@ -437,18 +437,6 @@ List<Widget> detailTiles() {
       }
     }
 
-    // Move location into another location
-    // TODO: Implement this!
-    /*
-    tiles.add(
-      ListTile(
-        title: Text("Move Stock Location"),
-        leading: FaIcon(FontAwesomeIcons.sitemap),
-        trailing: Icon(Icons.qr_code),
-      )
-    );
-     */
-
     if (tiles.length <= 1) {
       tiles.add(
         ListTile(
