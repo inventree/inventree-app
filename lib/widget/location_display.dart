@@ -413,8 +413,8 @@ List<Widget> detailTiles() {
         if (InvenTreeAPI().checkPermission("stock_location", "change")) {
           tiles.add(
             ListTile(
-              title: Text(L10().barcodeScanLocation),
-              subtitle: Text(L10().scanIntoLocation),
+              title: Text(L10().transferStockLocation),
+              subtitle: Text(L10().transferStockLocationDetail),
               leading: FaIcon(FontAwesomeIcons.signInAlt, color: COLOR_CLICK),
               trailing: Icon(Icons.qr_code, color: COLOR_CLICK),
               onTap: () {
