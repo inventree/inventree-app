@@ -402,20 +402,23 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
   Future<void> _unassignBarcode(BuildContext context) async {
 
-    final bool result = await item.update(values: {"uid": ""});
+    final response = await item.update(values: {"uid": ""});
 
-    if (result) {
-      showSnackIcon(
-        L10().stockItemUpdateSuccess,
-        success: true
-      );
-    } else {
-      showSnackIcon(
-        L10().stockItemUpdateFailure,
-        success: false,
-      );
+    switch (response.statusCode) {
+      case 200:
+      case 201:
+        showSnackIcon(
+            L10().stockItemUpdateSuccess,
+            success: true
+        );
+        break;
+      default:
+        showSnackIcon(
+          L10().stockItemUpdateFailure,
+          success: false,
+        );
+        break;
     }
-
     refresh(context);
   }
 
@@ -815,17 +818,23 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
                 values: {
                   "uid": hash,
                 }
-              ).then((result) {
-                if (result) {
-                  barcodeSuccessTone();
+              ).then((response) {
 
-                  showSnackIcon(
-                    L10().barcodeAssigned,
-                    success: true,
-                    icon: Icons.qr_code,
-                  );
+                switch (response.statusCode) {
+                  case 200:
+                  case 201:
+                    barcodeSuccessTone();
 
-                  refresh(context);
+                    showSnackIcon(
+                      L10().barcodeAssigned,
+                      success: true,
+                      icon: Icons.qr_code,
+                    );
+
+                    refresh(context);
+                    break;
+                  default:
+                    break;
                 }
               });
             });

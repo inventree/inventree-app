@@ -320,7 +320,7 @@ class InvenTreeModel {
   }
 
   // POST data to update the model
-  Future<bool> update({Map<String, String> values = const {}}) async {
+  Future<APIResponse> update({Map<String, String> values = const {}, int? expectedStatusCode = 200}) async {
 
     var url = path.join(URL, pk.toString());
 
@@ -328,17 +328,13 @@ class InvenTreeModel {
       url += "/";
     }
 
-    var response = await api.patch(
+    final response = await api.patch(
       url,
       body: values,
-      expectedStatusCode: 200
+      expectedStatusCode: expectedStatusCode,
     );
 
-    if (!response.isValid()) {
-      return false;
-    }
-
-    return true;
+    return response;
   }
 
   // Return the detail view for the associated pk

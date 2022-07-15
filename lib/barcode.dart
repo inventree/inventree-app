@@ -466,15 +466,46 @@ class ScanParentLocationHandler extends BarcodeScanStockLocationHandler {
     final result = await location.update(
       values: {
         "parent": locationId.toString(),
-      }
+      },
+      expectedStatusCode: null,
     );
 
-    showSnackIcon(
-      result ? L10().barcodeScanIntoLocationSuccess : L10().barcodeScanIntoLocationFailure,
-      success: result
-    );
-
-    return result;
+    switch (result.statusCode) {
+      case 200:
+      case 201:
+        showSnackIcon(L10().barcodeScanIntoLocationSuccess, success: true);
+        return true;
+      case 400: // Data error
+        showSnackIcon(
+            L10().barcodeScanIntoLocationFailure,
+            success: false,
+            actionText: L10().details,
+            onAction: () {
+              showErrorDialog(
+                "error",
+                result.data.toString(),
+                error: L10().serverError,
+                icon: FontAwesomeIcons.server,
+              );
+            }
+        );
+        return false;
+      default:
+        showSnackIcon(
+            L10().serverError,
+            success: false,
+            actionText: L10().details,
+            onAction: () {
+              showErrorDialog(
+                "error",
+                result.data.toString(),
+                error: L10().serverError,
+                icon: FontAwesomeIcons.server,
+              );
+            }
+        );
+        return false;
+    }
   }
 }
 
