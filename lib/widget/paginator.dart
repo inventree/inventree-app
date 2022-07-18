@@ -206,6 +206,12 @@ class PaginatedSearchState<T extends StatefulWidget> extends State<T> with BaseW
         params
       );
 
+      // We may have disposed of the widget while the request was in progress
+      // If this is the case, abort
+      if (!mounted) {
+        return;
+      }
+
       int pageLength = page?.length ?? 0;
       int pageCount = page?.count ?? 0;
 
