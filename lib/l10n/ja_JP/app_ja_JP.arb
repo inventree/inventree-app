@@ -64,8 +64,6 @@
     "@barcodeScanAssign": {},
     "barcodeScanGeneral": "InvenTree バーコードをスキャンする",
     "@barcodeScanGeneral": {},
-    "barcodeScanInItems": "在庫アイテムを在庫場所にスキャン",
-    "@barcodeScanInItems": {},
     "barcodeScanLocation": "在庫場所をスキャン",
     "@barcodeScanLocation": {},
     "barcodeScanIntoLocationSuccess": "スキャンされた在庫場所",
