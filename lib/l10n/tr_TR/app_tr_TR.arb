@@ -66,8 +66,6 @@
     "@barcodeScanAssign": {},
     "barcodeScanGeneral": "Bir Iventree barkodu tara",
     "@barcodeScanGeneral": {},
-    "barcodeScanInItems": "Stok öğelerini konum içine tara",
-    "@barcodeScanInItems": {},
     "barcodeScanLocation": "Stok konumu tara",
     "@barcodeScanLocation": {},
     "barcodeScanIntoLocationSuccess": "Konuma tarandı",
