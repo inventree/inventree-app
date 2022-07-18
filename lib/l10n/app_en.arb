@@ -82,6 +82,9 @@
   "barcodeAssign": "Assign Barcode",
   "@barcodeAssign": {},
 
+  "barcodeAssignDetail": "Scan custom barcode to assign",
+  "@barcodeAssignDetail": {},
+
   "barcodeAssigned": "Barcode assigned",
   "@barcodeAssigned": {},
 
@@ -106,7 +109,7 @@
   "barcodeScanGeneral":  "Scan an InvenTree barcode",
   "@barcodeScanGeneral": {},
 
-  "barcodeScanInItems": "Scan stock items into location",
+  "barcodeScanInItems": "Scan stock items into this location",
   "@barcodeScanInItems": {},
 
   "barcodeScanLocation": "Scan stock location",
@@ -807,6 +810,9 @@
   "scanIntoLocation": "Scan Into Location",
   "@scanIntoLocation": {},
 
+  "scanIntoLocationDetail": "Scan this item into location",
+  "@scanIntoLocationDetail": {},
+
   "search": "Search",
   "@search": {
     "description": "search"
@@ -1086,6 +1092,15 @@
   "@transferStock": {
     "description": "transfer stock"
   },
+
+  "transferStockDetail": "Transfer item to a different location",
+  "@transferStockDetail": {},
+
+  "transferStockLocation": "Transfer Stock Location",
+  "@transferStockLocation": {},
+
+  "transferStockLocationDetail": "Transfer this stock location into another",
+  "@transferStockLocationDetail": {},
 
   "translate": "Translate",
   "@translate": {},

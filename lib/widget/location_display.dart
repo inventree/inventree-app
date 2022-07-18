@@ -40,27 +40,6 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
     List<Widget> actions = [];
 
-    /*
-    actions.add(
-      IconButton(
-        icon: FaIcon(FontAwesomeIcons.search),
-        onPressed: () {
-
-          Map<String, String> filters = {};
-
-          if (location != null) {
-            filters["location"] = "${location.pk}";
-          }
-
-          showSearch(
-            context: context,
-            delegate: StockSearchDelegate(context, filters: filters)
-          );
-        }
-      ),
-    );
-     */
-
     if (location != null) {
 
       // Add "locate" button
@@ -252,7 +231,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
         children.add(
             ListTile(
               title: Text(L10().parentLocation),
-              subtitle: Text("${location!.parentpathstring}"),
+              subtitle: Text("${location!.parentPathString}"),
               leading: FaIcon(FontAwesomeIcons.levelUpAlt, color: COLOR_CLICK),
               onTap: () {
 
@@ -381,6 +360,7 @@ List<Widget> detailTiles() {
           title: Text(L10().locationCreate),
           subtitle: Text(L10().locationCreateDetail),
           leading: FaIcon(FontAwesomeIcons.sitemap, color: COLOR_CLICK),
+          trailing: FaIcon(FontAwesomeIcons.plusCircle, color: COLOR_CLICK),
           onTap: () async {
             _newLocation(context);
           },
@@ -392,6 +372,7 @@ List<Widget> detailTiles() {
           title: Text(L10().stockItemCreate),
           subtitle: Text(L10().stockItemCreateDetail),
           leading: FaIcon(FontAwesomeIcons.boxes, color: COLOR_CLICK),
+          trailing: FaIcon(FontAwesomeIcons.plusCircle, color: COLOR_CLICK),
           onTap: () async {
             _newStockItem(context);
           },
@@ -401,14 +382,15 @@ List<Widget> detailTiles() {
     }
 
     if (location != null) {
-      // Stock adjustment actions
+
+      // Scan stock item into location
       if (InvenTreeAPI().checkPermission("stock", "change")) {
-        // Scan items into location
         tiles.add(
             ListTile(
-              title: Text(L10().barcodeScanInItems),
+              title: Text(L10().barcodeScanItem),
+              subtitle: Text(L10().barcodeScanInItems),
               leading: FaIcon(FontAwesomeIcons.exchangeAlt, color: COLOR_CLICK),
-              trailing: Icon(Icons.qr_code),
+              trailing: Icon(Icons.qr_code, color: COLOR_CLICK),
               onTap: () {
 
                 var _loc = location;
@@ -426,20 +408,34 @@ List<Widget> detailTiles() {
               },
             )
         );
+
+        // Scan this location into another one
+        if (InvenTreeAPI().checkPermission("stock_location", "change")) {
+          tiles.add(
+            ListTile(
+              title: Text(L10().transferStockLocation),
+              subtitle: Text(L10().transferStockLocationDetail),
+              leading: FaIcon(FontAwesomeIcons.signInAlt, color: COLOR_CLICK),
+              trailing: Icon(Icons.qr_code, color: COLOR_CLICK),
+              onTap: () {
+                var _loc = location;
+
+                if (_loc != null) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) =>
+                          InvenTreeQRView(
+                              ScanParentLocationHandler(_loc)))
+                  ).then((value) {
+                    refresh(context);
+                  });
+                }
+              }
+            )
+          );
+        }
       }
     }
-
-    // Move location into another location
-    // TODO: Implement this!
-    /*
-    tiles.add(
-      ListTile(
-        title: Text("Move Stock Location"),
-        leading: FaIcon(FontAwesomeIcons.sitemap),
-        trailing: Icon(Icons.qr_code),
-      )
-    );
-     */
 
     if (tiles.length <= 1) {
       tiles.add(

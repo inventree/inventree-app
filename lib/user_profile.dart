@@ -57,6 +57,9 @@ class UserProfile {
   }
 }
 
+/*
+ * Class for storing and managing user (server) profiles
+ */
 class UserProfileDBManager {
 
   final store = StoreRef("profiles");
@@ -96,6 +99,8 @@ class UserProfileDBManager {
     if (exists) {
       debug("addProfile() : UserProfile '${profile.name}' already exists");
       return false;
+    } else {
+      debug("Adding new profile: '${profile.name}'");
     }
 
     int key = await store.add(await _db, profile.toJson()) as int;
@@ -149,8 +154,6 @@ class UserProfileDBManager {
 
     for (int idx = 0; idx < profiles.length; idx++) {
 
-      debug("- Checking ${idx} - key = ${profiles[idx].key} - ${profiles[idx].value.toString()}");
-
       if (profiles[idx].key is int && profiles[idx].key == selected) {
         return UserProfile.fromJson(
           profiles[idx].key as int,
@@ -188,6 +191,24 @@ class UserProfileDBManager {
     }
 
     return profileList;
+  }
+
+  /*
+   * Retrieve a profile by name (or null if no match exists)
+   */
+  Future<UserProfile?> getProfileByName(String name) async {
+    final profiles = await getAllProfiles();
+
+    UserProfile? prf;
+
+    for (UserProfile profile in profiles) {
+      if (profile.name == name) {
+        prf = profile;
+        break;
+      }
+    }
+
+    return prf;
   }
 
   /*

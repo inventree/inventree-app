@@ -59,7 +59,7 @@ class _PaginatedStockItemListState extends PaginatedSearchState<PaginatedStockIt
   Map<String, String> get orderingOptions => {
     "part__name": L10().name,
     "part__IPN": L10().internalPartNumber,
-    "quantity": L10().quantity,
+    "stock": L10().quantity,
     "status": L10().status,
     "batch": L10().batchCode,
     "updated": L10().lastUpdated,

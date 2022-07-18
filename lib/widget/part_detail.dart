@@ -381,7 +381,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       tiles.add(
           ListTile(
             title: Text("${part.keywords}"),
-            leading: FaIcon(FontAwesomeIcons.key),
+            leading: FaIcon(FontAwesomeIcons.tags),
           )
       );
     }

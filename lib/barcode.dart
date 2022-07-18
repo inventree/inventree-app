@@ -43,14 +43,13 @@ Future <void> barcodeFailureTone() async {
 }
 
 
+/* Generic class which "handles" a barcode, by communicating with the InvenTree server,
+ * and handling match / unknown / error cases.
+ *
+ * Override functionality of this class to perform custom actions,
+ * based on the response returned from the InvenTree server
+ */
 class BarcodeHandler {
-  /*
-   * Class which "handles" a barcode, by communicating with the InvenTree server,
-   * and handling match / unknown / error cases.
-   *
-   * Override functionality of this class to perform custom actions,
-   * based on the response returned from the InvenTree server
-   */
 
   BarcodeHandler();
 
@@ -58,12 +57,12 @@ class BarcodeHandler {
 
   QRViewController? _controller;
 
-    Future<void> onBarcodeMatched(BuildContext context, Map<String, dynamic> data) async {
+    Future<void> onBarcodeMatched(Map<String, dynamic> data) async {
       // Called when the server "matches" a barcode
       // Override this function
     }
 
-    Future<void> onBarcodeUnknown(BuildContext context, Map<String, dynamic> data) async {
+    Future<void> onBarcodeUnknown(Map<String, dynamic> data) async {
       // Called when the server does not know about a barcode
       // Override this function
 
@@ -76,7 +75,7 @@ class BarcodeHandler {
       );
     }
 
-    Future<void> onBarcodeUnhandled(BuildContext context, Map<String, dynamic> data) async {
+    Future<void> onBarcodeUnhandled(Map<String, dynamic> data) async {
 
       barcodeFailureTone();
 
@@ -86,12 +85,27 @@ class BarcodeHandler {
       _controller?.resumeCamera();
     }
 
-    Future<void> processBarcode(BuildContext context, QRViewController? _controller, String barcode, {String url = "barcode/"}) async {
+    /*
+     * Base function to capture and process barcode data.
+     */
+    Future<void> processBarcode(QRViewController? _controller, String barcode, {String url = "barcode/"}) async {
       this._controller = _controller;
 
-      print("Scanned barcode data: ${barcode}");
+      debug("Scanned barcode data: '${barcode}'");
 
+      barcode = barcode.trim();
+
+      // Empty barcode is invalid
       if (barcode.isEmpty) {
+
+        barcodeFailureTone();
+
+        showSnackIcon(
+          L10().barcodeError,
+          icon: FontAwesomeIcons.exclamationCircle,
+          success: false
+        );
+
         return;
       }
 
@@ -109,7 +123,9 @@ class BarcodeHandler {
 
       // Handle strange response from the server
       if (!response.isValid() || !response.isMap()) {
-        onBarcodeUnknown(context, {});
+        onBarcodeUnknown({});
+
+        showSnackIcon(L10().serverError, success: false);
 
         // We want to know about this one!
         await sentryReportMessage(
@@ -122,31 +138,36 @@ class BarcodeHandler {
               "valid": response.isValid().toString(),
               "error": response.error,
               "errorDetail": response.errorDetail,
-              "overlayText": getOverlayText(context),
+              "className": "${this}",
             }
         );
-      } else if ((response.statusCode >= 400) || data.containsKey("error")) {
-        onBarcodeUnknown(context, data);
       } else if (data.containsKey("success")) {
-        onBarcodeMatched(context, data);
+        await onBarcodeMatched(data);
+      } else if ((response.statusCode >= 400) || data.containsKey("error")) {
+        await onBarcodeUnknown(data);
       } else {
-        onBarcodeUnhandled(context, data);
+        await onBarcodeUnhandled(data);
       }
     }
 }
 
-
+/*
+ * Class for general barcode scanning.
+ * Scan *any* barcode without context, and then redirect app to correct view.
+ *
+ * Handles scanning of:
+ *
+ * - StockLocation
+ * - StockItem
+ * - Part
+ */
 class BarcodeScanHandler extends BarcodeHandler {
-  /*
-   * Class for general barcode scanning.
-   * Scan *any* barcode without context, and then redirect app to correct view
-   */
 
   @override
   String getOverlayText(BuildContext context) => L10().barcodeScanGeneral;
 
   @override
-  Future<void> onBarcodeUnknown(BuildContext context, Map<String, dynamic> data) async {
+  Future<void> onBarcodeUnknown(Map<String, dynamic> data) async {
 
     barcodeFailureTone();
 
@@ -158,7 +179,7 @@ class BarcodeScanHandler extends BarcodeHandler {
   }
 
   @override
-  Future<void> onBarcodeMatched(BuildContext context, Map<String, dynamic> data) async {
+  Future<void> onBarcodeMatched(Map<String, dynamic> data) async {
 
     int pk = -1;
 
@@ -173,8 +194,13 @@ class BarcodeScanHandler extends BarcodeHandler {
 
         InvenTreeStockLocation().get(pk).then((var loc) {
           if (loc is InvenTreeStockLocation) {
-              Navigator.of(context).pop();
-              Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(loc)));
+            showSnackIcon(
+              L10().stockLocation,
+              success: true,
+              icon: Icons.qr_code,
+            );
+            OneContext().pop();
+            OneContext().navigator.push(MaterialPageRoute(builder: (context) => LocationDisplayWidget(loc)));
           }
         });
       } else {
@@ -196,13 +222,15 @@ class BarcodeScanHandler extends BarcodeHandler {
         barcodeSuccessTone();
 
         InvenTreeStockItem().get(pk).then((var item) {
-
-            // Dispose of the barcode scanner
-            Navigator.of(context).pop();
-
-            if (item is InvenTreeStockItem) {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => StockDetailWidget(item)));
-            }
+          showSnackIcon(
+            L10().stockItem,
+            success: true,
+            icon: Icons.qr_code,
+          );
+          OneContext().pop();
+          if (item is InvenTreeStockItem) {
+            OneContext().push(MaterialPageRoute(builder: (context) => StockDetailWidget(item)));
+          }
         });
       } else {
 
@@ -222,13 +250,17 @@ class BarcodeScanHandler extends BarcodeHandler {
         barcodeSuccessTone();
 
         InvenTreePart().get(pk).then((var part) {
+          showSnackIcon(
+            L10().part,
+            success: true,
+            icon: Icons.qr_code,
+          );
+          // Dismiss the barcode scanner
+          OneContext().pop();
 
-            // Dismiss the barcode scanner
-            Navigator.of(context).pop();
-
-            if (part is InvenTreePart) {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
-            }
+          if (part is InvenTreePart) {
+            OneContext().push(MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
+          }
         });
       } else {
 
@@ -265,73 +297,148 @@ class BarcodeScanHandler extends BarcodeHandler {
   }
 }
 
-class StockItemScanIntoLocationHandler extends BarcodeHandler {
-  /*
-   * Barcode handler for scanning a provided StockItem into a scanned StockLocation
-   */
+
+/*
+ * Generic class for scanning a StockLocation.
+ *
+ * - Validates that the scanned barcode matches a valid StockLocation
+ * - Runs a "callback" function if a valid StockLocation is found
+ */
+class BarcodeScanStockLocationHandler extends BarcodeHandler {
+
+  @override
+  String getOverlayText(BuildContext context) => L10().barcodeScanLocation;
+
+  @override
+  Future<void> onBarcodeMatched(Map<String, dynamic> data) async {
+
+    // We expect that the barcode points to a 'stocklocation'
+    if (data.containsKey("stocklocation")) {
+      int _loc = (data["stocklocation"]["pk"] ?? -1) as int;
+
+      // A valid stock location!
+      if (_loc > 0) {
+
+        debug("Scanned stock location ${_loc}");
+
+        final bool result = await onLocationScanned(_loc);
+
+        if (result && OneContext.hasContext) {
+          OneContext().pop();
+        }
+
+        return;
+      }
+    }
+
+    // If we get to this point, something went wrong during the scan process
+    barcodeFailureTone();
+
+    showSnackIcon(
+      L10().invalidStockLocation,
+      success: false,
+    );
+  }
+
+  // Callback function which runs when a valid StockLocation is scanned
+  // If this function returns 'true' the barcode scanning dialog will be closed
+  Future<bool> onLocationScanned(int locationId) async {
+    // Re-implement this for particular subclass
+    return false;
+  }
+
+}
+
+
+/*
+ * Generic class for scanning a StockItem
+ *
+ * - Validates that the scanned barcode matches a valid StockItem
+ * - Runs a "callback" function if a valid StockItem is found
+ */
+class BarcodeScanStockItemHandler extends BarcodeHandler {
+
+  @override
+  String getOverlayText(BuildContext context) => L10().barcodeScanItem;
+
+  @override
+  Future<void> onBarcodeMatched(Map<String, dynamic> data) async {
+    // We expect that the barcode points to a 'stockitem'
+    if (data.containsKey("stockitem")) {
+      int _item = (data["stockitem"]["pk"] ?? -1) as int;
+
+      // A valid stock location!
+      if (_item > 0) {
+
+        barcodeSuccessTone();
+
+        final bool result = await onItemScanned(_item);
+
+        if (result && OneContext.hasContext) {
+          OneContext().pop();
+        }
+
+        return;
+      }
+    }
+
+    // If we get to this point, something went wrong during the scan process
+    barcodeFailureTone();
+
+    showSnackIcon(
+      L10().invalidStockItem,
+      success: false,
+    );
+  }
+
+  // Callback function which runs when a valid StockItem is scanned
+  Future<bool> onItemScanned(int itemId) async {
+    // Re-implement this for particular subclass
+    return false;
+  }
+
+}
+
+
+/*
+ * Barcode handler for scanning a provided StockItem into a scanned StockLocation.
+ *
+ * - The class is initialized by passing a valid StockItem object
+ * - Expects to scan barcode for a StockLocation
+ * - The StockItem is transferred into the scanned location
+ */
+class StockItemScanIntoLocationHandler extends BarcodeScanStockLocationHandler {
 
   StockItemScanIntoLocationHandler(this.item);
 
   final InvenTreeStockItem item;
 
   @override
-  String getOverlayText(BuildContext context) => L10().barcodeScanLocation;
+  Future<bool> onLocationScanned(int locationId) async {
 
-  @override
-  Future<void> onBarcodeMatched(BuildContext context, Map<String, dynamic> data) async {
-    // If the barcode points to a "stocklocation", great!
-    if (data.containsKey("stocklocation")) {
-      // Extract location information
-      int location = (data["stocklocation"]["pk"] ?? -1) as int;
+    final result = await item.transferStock(locationId);
 
-      if (location == -1) {
-        showSnackIcon(
-          L10().invalidStockLocation,
-          success: false,
-        );
-
-        return;
-      }
-
-      // Transfer stock to specified location
-      final result = await item.transferStock(context, location);
-
-      if (result) {
-
-        barcodeSuccessTone();
-
-        Navigator.of(context).pop();
-
-        showSnackIcon(
-          L10().barcodeScanIntoLocationSuccess,
-          success: true,
-        );
-      } else {
-
-        barcodeFailureTone();
-
-        showSnackIcon(
-          L10().barcodeScanIntoLocationFailure,
-          success: false
-        );
-      }
+    if (result) {
+      barcodeSuccessTone();
+      showSnackIcon(L10().barcodeScanIntoLocationSuccess, success: true);
     } else {
-
       barcodeFailureTone();
-
-      showSnackIcon(
-        L10().invalidStockLocation,
-        success: false,
-      );
+      showSnackIcon(L10().barcodeScanIntoLocationFailure, success: false);
     }
+
+    return result;
   }
 }
 
 
-class StockLocationScanInItemsHandler extends BarcodeHandler {
-  /*
-   * Barcode handler for scanning stock item(s) into the specified StockLocation
-   */
+/*
+ * Barcode handler for scanning stock item(s) into the specified StockLocation.
+ *
+ * - The class is initialized by passing a valid StockLocation object
+ * - Expects to scan a barcode for a StockItem
+ * - The scanned StockItem is transferred into the provided StockLocation
+ */
+class StockLocationScanInItemsHandler extends BarcodeScanStockItemHandler {
 
   StockLocationScanInItemsHandler(this.location);
 
@@ -341,69 +448,91 @@ class StockLocationScanInItemsHandler extends BarcodeHandler {
   String getOverlayText(BuildContext context) => L10().barcodeScanItem;
 
   @override
-  Future<void> onBarcodeMatched(BuildContext context, Map<String, dynamic> data) async {
+  Future<bool> onItemScanned(int itemId) async {
 
-    // Returned barcode must match a stock item
-    if (data.containsKey("stockitem")) {
+    final InvenTreeStockItem? item = await InvenTreeStockItem().get(itemId) as InvenTreeStockItem?;
 
-      int item_id = data["stockitem"]["pk"] as int;
+    bool result = false;
 
-      final InvenTreeStockItem? item = await InvenTreeStockItem().get(item_id) as InvenTreeStockItem?;
+    if (item != null) {
 
-      if (item == null) {
-
+      // Item is already *in* the specified location
+      if (item.locationId == location.pk) {
         barcodeFailureTone();
-
-        showSnackIcon(
-          L10().invalidStockItem,
-          success: false,
-        );
-      } else if (item.locationId == location.pk) {
-        barcodeFailureTone();
-
-        showSnackIcon(
-            L10().itemInLocation,
-            success: true
-        );
+        showSnackIcon(L10().itemInLocation, success: true);
+        return false;
       } else {
-        final result = await item.transferStock(context, location.pk);
-
-        if (result) {
-
-          barcodeSuccessTone();
-
-          showSnackIcon(
-            L10().barcodeScanIntoLocationSuccess,
-            success: true
-          );
-        } else {
-
-          barcodeFailureTone();
-
-          showSnackIcon(
-            L10().barcodeScanIntoLocationFailure,
-            success: false
-          );
-        }
+        result = await item.transferStock(location.pk);
       }
-    } else {
+    }
 
-      barcodeFailureTone();
+    showSnackIcon(
+      result ? L10().barcodeScanIntoLocationSuccess : L10().barcodeScanIntoLocationFailure,
+      success: result
+    );
 
-      // Does not match a valid stock item!
-      showSnackIcon(
-        L10().invalidStockItem,
-        success: false,
-      );
+    // We always return false here, to ensure the barcode scan dialog remains open
+    return false;
+  }
+}
+
+
+/*
+ * Barcode handler class for scanning a StockLocation into another StockLocation
+ *
+ * - The class is initialized by passing a valid StockLocation object
+ * - Expects to scan barcode for another *parent* StockLocation
+ * - The scanned StockLocation is set as the "parent" of the provided StockLocation
+ */
+class ScanParentLocationHandler extends BarcodeScanStockLocationHandler {
+
+  ScanParentLocationHandler(this.location);
+
+  final InvenTreeStockLocation location;
+
+  @override
+  Future<bool> onLocationScanned(int locationId) async {
+
+    final response = await location.update(
+      values: {
+        "parent": locationId.toString(),
+      },
+      expectedStatusCode: null,
+    );
+
+    switch (response.statusCode) {
+      case 200:
+      case 201:
+        barcodeSuccessTone();
+        showSnackIcon(L10().barcodeScanIntoLocationSuccess, success: true);
+        return true;
+      case 400:  // Invalid parent location chosen
+        barcodeFailureTone();
+        showSnackIcon(L10().invalidStockLocation, success: false);
+        return false;
+      default:
+        barcodeFailureTone();
+        showSnackIcon(
+            L10().barcodeScanIntoLocationFailure,
+            success: false,
+            actionText: L10().details,
+            onAction: () {
+              showErrorDialog(
+                L10().barcodeError,
+                response: response,
+              );
+            }
+        );
+        return false;
     }
   }
 }
 
 
+/*
+ * Barcode handler for finding a "unique" barcode (one that does not match an item in the database)
+ */
 class UniqueBarcodeHandler extends BarcodeHandler {
-  /*
-   * Barcode handler for finding a "unique" barcode (one that does not match an item in the database)
-   */
 
   UniqueBarcodeHandler(this.callback, {this.overlayText = ""});
 
@@ -422,7 +551,7 @@ class UniqueBarcodeHandler extends BarcodeHandler {
   }
 
   @override
-  Future<void> onBarcodeMatched(BuildContext context, Map<String, dynamic> data) async {
+  Future<void> onBarcodeMatched(Map<String, dynamic> data) async {
 
     barcodeFailureTone();
 
@@ -435,7 +564,7 @@ class UniqueBarcodeHandler extends BarcodeHandler {
   }
 
   @override
-  Future<void> onBarcodeUnknown(BuildContext context, Map<String, dynamic> data) async {
+  Future<void> onBarcodeUnknown(Map<String, dynamic> data) async {
     // If the barcode is unknown, we *can* assign it to the stock item!
 
     if (!data.containsKey("hash")) {
@@ -459,7 +588,9 @@ class UniqueBarcodeHandler extends BarcodeHandler {
         barcodeSuccessTone();
 
         // Close the barcode scanner
-        Navigator.of(context).pop();
+        if (OneContext.hasContext) {
+          OneContext().pop();
+        }
 
         callback(hash);
       }
@@ -521,7 +652,7 @@ class _QRViewState extends State<InvenTreeQRView> {
       _controller?.pauseCamera();
 
       if (barcode.code != null) {
-        _handler.processBarcode(context, _controller, barcode.code ?? "");
+        _handler.processBarcode(_controller, barcode.code ?? "");
       }
     });
   }

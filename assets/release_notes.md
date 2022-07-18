@@ -8,6 +8,7 @@
 - Display Bill of Materials in the part detail view
 - Indicate available quantity in stock detail view
 - Adds configurable filtering to various list views
+- Allow stock location to be "scanned" into another location using barcode
 
 ### 0.7.3 - June 2022
 ---

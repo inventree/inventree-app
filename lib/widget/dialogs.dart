@@ -3,11 +3,15 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:inventree/helpers.dart";
 import "package:one_context/one_context.dart";
 
+import "package:inventree/api.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/preferences.dart";
 import "package:inventree/widget/snacks.dart";
 
 
+/*
+ * Display a "confirmation" dialog allowing the user to accept or reject an action
+ */
 Future<void> confirmationDialog(String title, String text, {IconData icon = FontAwesomeIcons.questionCircle, String? acceptText, String? rejectText, Function? onAccept, Function? onReject}) async {
 
   String _accept = acceptText ?? L10().ok;
@@ -51,22 +55,86 @@ Future<void> confirmationDialog(String title, String text, {IconData icon = Font
 }
 
 
-Future<void> showErrorDialog(String title, String description, {IconData icon = FontAwesomeIcons.exclamationCircle, String? error, Function? onDismissed}) async {
+/*
+ * Construct an error dialog showing information to the user
+ *
+ * @title = Title to be displayed at the top of the dialog
+ * @description = Simple string description of error
+ * @data = Error response (e.g from server)
+ */
+Future<void> showErrorDialog(String title, {String description = "", APIResponse? response, IconData icon = FontAwesomeIcons.exclamationCircle, Function? onDismissed}) async {
 
-  String _error = error ?? L10().error;
+  List<Widget> children = [];
+
+  if (description.isNotEmpty) {
+    children.add(
+      ListTile(
+        title: Text(description),
+      )
+    );
+  } else if (response != null) {
+    // Look for extra error information in the provided APIResponse object
+    switch (response.statusCode) {
+      case 400:  // Bad request (typically bad input)
+        if (response.data is Map<String, dynamic>) {
+          for (String field in response.data.keys) {
+
+            dynamic error = response.data[field];
+
+            if (error is List) {
+              for (int ii = 0; ii < error.length; ii++) {
+                children.add(
+                  ListTile(
+                    title: Text(field),
+                    subtitle: Text(error[ii].toString()),
+                  )
+                );
+              }
+            } else {
+              children.add(
+                  ListTile(
+                    title: Text(field),
+                    subtitle: Text(response.data[field].toString()),
+                  )
+              );
+            }
+          }
+        } else {
+          children.add(
+            ListTile(
+              title: Text(L10().responseInvalid),
+              subtitle: Text(response.data.toString())
+            )
+          );
+        }
+        break;
+      default:
+        // Unhandled server response
+        children.add(
+          ListTile(
+            title: Text(L10().statusCode),
+            subtitle: Text(response.statusCode.toString()),
+          )
+        );
+
+        children.add(
+          ListTile(
+            title: Text(L10().responseData),
+            subtitle: Text(response.data.toString()),
+          )
+        );
+
+        break;
+    }
+  }
 
   OneContext().showDialog(
     builder: (context) => SimpleDialog(
       title: ListTile(
-        title: Text(_error),
+        title: Text(title),
         leading: FaIcon(icon),
       ),
-      children: [
-        ListTile(
-          title: Text(title),
-          subtitle: Text(description),
-        )
-      ],
+      children: children
     )
   ).then((value) {
     if (onDismissed != null) {
@@ -106,9 +174,8 @@ Future<void> showServerError(String url, String title, String description) async
     actionText: L10().details,
     onAction: () {
       showErrorDialog(
-          title,
-          description,
-          error: L10().serverError,
+          L10().serverError,
+          description: description,
           icon: FontAwesomeIcons.server
       );
     }

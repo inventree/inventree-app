@@ -535,7 +535,7 @@ class InvenTreeStockItem extends InvenTreeModel {
    * - Remove
    * - Count
    */
-  Future<bool> adjustStock(BuildContext context, String endpoint, double q, {String? notes, int? location}) async {
+  Future<bool> adjustStock(String endpoint, double q, {String? notes, int? location}) async {
 
     // Serialized stock cannot be adjusted (unless it is a "transfer")
     if (isSerialized() && location == null) {
@@ -566,34 +566,33 @@ class InvenTreeStockItem extends InvenTreeModel {
     var response = await api.post(
       endpoint,
       body: data,
-      expectedStatusCode: 200,
     );
 
-    return response.isValid();
+    return response.isValid() && (response.statusCode == 200 || response.statusCode == 201);
   }
 
-  Future<bool> countStock(BuildContext context, double q, {String? notes}) async {
+  Future<bool> countStock(double q, {String? notes}) async {
 
-    final bool result = await adjustStock(context, "/stock/count/", q, notes: notes);
+    final bool result = await adjustStock("/stock/count/", q, notes: notes);
 
     return result;
   }
 
-  Future<bool> addStock(BuildContext context, double q, {String? notes}) async {
+  Future<bool> addStock(double q, {String? notes}) async {
 
-    final bool result = await adjustStock(context,  "/stock/add/", q, notes: notes);
-
-    return result;
-  }
-
-  Future<bool> removeStock(BuildContext context, double q, {String? notes}) async {
-
-    final bool result = await adjustStock(context, "/stock/remove/", q, notes: notes);
+    final bool result = await adjustStock("/stock/add/", q, notes: notes);
 
     return result;
   }
 
-  Future<bool> transferStock(BuildContext context, int location, {double? quantity, String? notes}) async {
+  Future<bool> removeStock(double q, {String? notes}) async {
+
+    final bool result = await adjustStock("/stock/remove/", q, notes: notes);
+
+    return result;
+  }
+
+  Future<bool> transferStock(int location, {double? quantity, String? notes}) async {
 
     double q = this.quantity;
 
@@ -602,7 +601,6 @@ class InvenTreeStockItem extends InvenTreeModel {
     }
 
     final bool result = await adjustStock(
-      context,
       "/stock/transfer/",
       q,
       notes: notes,
@@ -653,12 +651,14 @@ class InvenTreeStockLocation extends InvenTreeModel {
     return {
       "name": {},
       "description": {},
-      "parent": {},
+      "parent": {
+
+      },
     };
   }
 
-  String get parentpathstring {
-    // TODO - Drive the refactor tractor through this
+  String get parentPathString {
+
     List<String> psplit = pathstring.split("/");
 
     if (psplit.isNotEmpty) {

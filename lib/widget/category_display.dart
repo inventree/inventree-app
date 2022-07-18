@@ -131,7 +131,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
         children.add(
             ListTile(
               title: Text(L10().parentCategory),
-              subtitle: Text("${category?.parentpathstring}"),
+              subtitle: Text("${category?.parentPathString}"),
               leading: FaIcon(
                 FontAwesomeIcons.levelUpAlt,
                 color: COLOR_CLICK,

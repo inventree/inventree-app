@@ -857,6 +857,7 @@ Future<void> launchApiForm(
   Map<String, dynamic> serverFields = {};
 
   if (url.isNotEmpty) {
+
     var options = await InvenTreeAPI().options(url);
 
     // Invalid response from server
