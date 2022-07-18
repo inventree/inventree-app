@@ -20,30 +20,30 @@ void print(String s) => _log.add(s);
 void main() {
 
   // Connect to the server
-  setUp(() async {
+  setUpAll(() async {
+    final prf = await UserProfileDBManager().getProfileByName("Test Profile");
 
-      final prf = await UserProfileDBManager().getProfileByName("Test Profile");
+    if (prf != null) {
+      UserProfileDBManager().deleteProfile(prf);
+    }
 
-      if (prf != null) {
-        UserProfileDBManager().deleteProfile(prf);
-      }
-
-      await UserProfileDBManager().addProfile(
-        UserProfile(
-          name: "Test Profile",
-          server: "http://localhost:12345",
-          username: "testuser",
-          password: "testpassword",
-          selected: true,
-        ),
-      );
+    await UserProfileDBManager().addProfile(
+      UserProfile(
+        name: "Test Profile",
+        server: "http://localhost:12345",
+        username: "testuser",
+        password: "testpassword",
+        selected: true,
+      ),
+    );
 
     assert(await UserProfileDBManager().selectProfileByName("Test Profile"));
     assert(await InvenTreeAPI().connectToServer());
+  });
 
+  setUp(() async {
     // Clear the debug log
     clearDebugMessage();
-
   });
 
   group("ScanGenericBarcode:", () {
@@ -74,23 +74,23 @@ void main() {
       // Scan an invalid stock location
       await handler.processBarcode(null, "{'stocklocation': 999999}");
 
-      debugContains("Scanned barcode data: '{\'stocklocation\': 999999}'");
+      debugContains("Scanned barcode data: '{'stocklocation': 999999}'");
       debugContains("showSnackIcon: 'No match for barcode'");
       assert(debugMessageCount() == 2);
     });
 
+    testWidgets("Scan StockLocation", (WidgetTester tester) async {
+      // Scanning a valid StockLocation will open the StockLocation detail widget
+      await handler.processBarcode(null, "{'stocklocation': 1}");
+    });
+    
   });
 
   group("StockItemScanIntoLocation:", () {
     // Tests for scanning a stock item into a location
 
     test("Scan Into Location", () async {
-      final InvenTreeStockItem? item = await InvenTreeStockItem().get(1) as InvenTreeStockItem?;
-
-      assert(item != null);
-      var handler = StockItemScanIntoLocationHandler(item!);
-
-      // Scan "invalid" barcode data
+      // TODO
     });
   });
 }
