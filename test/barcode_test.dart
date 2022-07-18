@@ -106,4 +106,29 @@ void main() {
 
     });
   });
+
+  group("Test StockLocationScanInItemsHandler:", () {
+    // Tests for scanning items into a stock location
+
+    test("Scan In Items", () async {
+      final location = await InvenTreeStockLocation().get(1) as InvenTreeStockLocation?;
+
+      assert(location != null);
+      assert(location!.pk == 1);
+
+      var handler = StockLocationScanInItemsHandler(location!);
+
+      // Scan multiple items into this location
+      for (int id in [1, 2, 11]) {
+        await handler.processBarcode(null, '{"stockitem": ${id}}');
+
+        var item = await InvenTreeStockItem().get(id) as InvenTreeStockItem?;
+
+        assert(item != null);
+        assert(item!.pk == id);
+        assert(item!.locationId == 1);
+      }
+
+    });
+  });
 }
