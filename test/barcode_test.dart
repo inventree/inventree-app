@@ -12,6 +12,8 @@ import "package:inventree/barcode.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/user_profile.dart";
 
+import "package:inventree/inventree/stock.dart";
+
 void main() {
 
   // Connect to the server
@@ -22,7 +24,7 @@ void main() {
       UserProfileDBManager().deleteProfile(prf);
     }
 
-    await UserProfileDBManager().addProfile(
+    bool result = await UserProfileDBManager().addProfile(
       UserProfile(
         name: "Test Profile",
         server: "http://localhost:12345",
@@ -31,6 +33,8 @@ void main() {
         selected: true,
       ),
     );
+
+    assert(result);
 
     assert(await UserProfileDBManager().selectProfileByName("Test Profile"));
     assert(await InvenTreeAPI().connectToServer());
@@ -67,20 +71,39 @@ void main() {
 
     test("Invalid StockLocation", () async {
       // Scan an invalid stock location
-      await handler.processBarcode(null, "{'stocklocation': 999999}");
+      await handler.processBarcode(null, '{"stocklocation": 999999}');
 
-      debugContains("Scanned barcode data: '{'stocklocation': 999999}'");
+      debugContains("Scanned barcode data: '{\"stocklocation\": 999999}'");
       debugContains("showSnackIcon: 'No match for barcode'");
       assert(debugMessageCount() == 2);
     });
 
   });
 
-  group("Test BarcodeScanStockLocationHandler:", () {
+  group("Test StockItemScanIntoLocationHandler:", () {
     // Tests for scanning a stock item into a location
 
     test("Scan Into Location", () async {
-      // TODO
+
+      final item = await InvenTreeStockItem().get(1) as InvenTreeStockItem?;
+
+      assert(item != null);
+      assert(item!.pk == 1);
+
+      var handler = StockItemScanIntoLocationHandler(item!);
+
+      await handler.processBarcode(null, '{"stocklocation": 7}');
+      // Check the location has been updated
+      await item.reload();
+      assert(item.locationId == 7);
+
+      debugContains("Scanned stock location 7");
+
+      // Scan into a new location
+      await handler.processBarcode(null, '{"stocklocation": 1}');
+      await item.reload();
+      assert(item.locationId == 1);
+
     });
   });
 }

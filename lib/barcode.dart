@@ -142,11 +142,11 @@ class BarcodeHandler {
             }
         );
       } else if (data.containsKey("success")) {
-        onBarcodeMatched(data);
+        await onBarcodeMatched(data);
       } else if ((response.statusCode >= 400) || data.containsKey("error")) {
-        onBarcodeUnknown(data);
+        await onBarcodeUnknown(data);
       } else {
-        onBarcodeUnhandled(data);
+        await onBarcodeUnhandled(data);
       }
     }
 }
@@ -309,9 +309,11 @@ class BarcodeScanStockLocationHandler extends BarcodeHandler {
 
         barcodeSuccessTone();
 
+        debug("Scanned stock location ${_loc}");
+
         final bool result = await onLocationScanned(_loc);
 
-        if (result) {
+        if (result && OneContext.hasContext) {
           OneContext().pop();
         }
 
@@ -362,7 +364,7 @@ class BarcodeScanStockItemHandler extends BarcodeHandler {
 
         final bool result = await onItemScanned(_item);
 
-        if (result) {
+        if (result && OneContext.hasContext) {
           OneContext().pop();
         }
 
@@ -570,7 +572,9 @@ class UniqueBarcodeHandler extends BarcodeHandler {
         barcodeSuccessTone();
 
         // Close the barcode scanner
-        OneContext().pop();
+        if (OneContext.hasContext) {
+          OneContext().pop();
+        }
 
         callback(hash);
       }
