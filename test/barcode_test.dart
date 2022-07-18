@@ -11,11 +11,6 @@ import "package:inventree/api.dart";
 import "package:inventree/barcode.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/user_profile.dart";
-import "package:inventree/inventree/stock.dart";
-
-List<String> _log = [];
-void print(String s) => _log.add(s);
-
 
 void main() {
 
@@ -46,7 +41,7 @@ void main() {
     clearDebugMessage();
   });
 
-  group("ScanGenericBarcode:", () {
+  group("Test BarcodeScanHandler:", () {
     // Tests for scanning a "generic" barcode
 
     var handler = BarcodeScanHandler();
@@ -79,14 +74,9 @@ void main() {
       assert(debugMessageCount() == 2);
     });
 
-    testWidgets("Scan StockLocation", (WidgetTester tester) async {
-      // Scanning a valid StockLocation will open the StockLocation detail widget
-      await handler.processBarcode(null, "{'stocklocation': 1}");
-    });
-    
   });
 
-  group("StockItemScanIntoLocation:", () {
+  group("Test BarcodeScanStockLocationHandler:", () {
     // Tests for scanning a stock item into a location
 
     test("Scan Into Location", () async {
