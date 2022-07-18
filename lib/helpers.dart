@@ -13,12 +13,37 @@ import "package:audioplayers/audioplayers.dart";
 import "package:one_context/one_context.dart";
 
 
+List<String> debug_messages = [];
+
+void clearDebugMessage() => debug_messages.clear();
+
+int debugMessageCount() => debug_messages.length;
+
+// Check if the debug log contains a given message
+bool debugContains(String msg, {bool raiseAssert = true}) {
+  bool result = false;
+
+  debug_messages.forEach((element) {
+    if (element.contains(msg)) {
+      result = true;
+      return;
+    }
+  });
+
+  if (raiseAssert) {
+    assert(result);
+  }
+
+  return result;
+}
+
 /*
  * Display a debug message if we are in testing mode, or running in debug mode
  */
 void debug(dynamic msg) {
 
   if (Platform.environment.containsKey("FLUTTER_TEST")) {
+    debug_messages.add(msg.toString());
     print("DEBUG: ${msg.toString()}");
   }
 }
@@ -38,11 +63,13 @@ String simpleNumberString(double number) {
  */
 Future<void> playAudioFile(String path) async {
 
+  // Debug message for unit testing
+  debug("Playing audio file: ${path}");
+
   if (!OneContext.hasContext) {
     return;
   }
 
   final player = AudioCache();
   player.play(path);
-
 }

@@ -152,8 +152,6 @@ class UserProfileDBManager {
 
     for (int idx = 0; idx < profiles.length; idx++) {
 
-      debug("- Checking ${idx} - key = ${profiles[idx].key} - ${profiles[idx].value.toString()}");
-
       if (profiles[idx].key is int && profiles[idx].key == selected) {
         return UserProfile.fromJson(
           profiles[idx].key as int,

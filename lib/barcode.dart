@@ -87,12 +87,11 @@ class BarcodeHandler {
 
     /*
      * Base function to capture and process barcode data.
-     *
      */
-    Future<void> processBarcode(BuildContext context, QRViewController? _controller, String barcode, {String url = "barcode/"}) async {
+    Future<void> processBarcode(QRViewController? _controller, String barcode, {String url = "barcode/"}) async {
       this._controller = _controller;
 
-      print("Scanned barcode data: ${barcode}");
+      debug("Scanned barcode data: '${barcode}'");
 
       barcode = barcode.trim();
 
@@ -103,6 +102,7 @@ class BarcodeHandler {
           icon: FontAwesomeIcons.exclamationCircle,
           success: false
         );
+
         return;
       }
 
@@ -122,6 +122,8 @@ class BarcodeHandler {
       if (!response.isValid() || !response.isMap()) {
         onBarcodeUnknown({});
 
+        showSnackIcon(L10().serverError, success: false);
+
         // We want to know about this one!
         await sentryReportMessage(
             "BarcodeHandler.processBarcode returned unexpected value",
@@ -133,13 +135,13 @@ class BarcodeHandler {
               "valid": response.isValid().toString(),
               "error": response.error,
               "errorDetail": response.errorDetail,
-              "overlayText": getOverlayText(context),
+              "className": runtimeType.toString(),
             }
         );
-      } else if ((response.statusCode >= 400) || data.containsKey("error")) {
-        onBarcodeUnknown(data);
       } else if (data.containsKey("success")) {
         onBarcodeMatched(data);
+      } else if ((response.statusCode >= 400) || data.containsKey("error")) {
+        onBarcodeUnknown(data);
       } else {
         onBarcodeUnhandled(data);
       }
@@ -628,7 +630,7 @@ class _QRViewState extends State<InvenTreeQRView> {
       _controller?.pauseCamera();
 
       if (barcode.code != null) {
-        _handler.processBarcode(context, _controller, barcode.code ?? "");
+        _handler.processBarcode(_controller, barcode.code ?? "");
       }
     });
   }
