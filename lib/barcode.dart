@@ -97,6 +97,9 @@ class BarcodeHandler {
 
       // Empty barcode is invalid
       if (barcode.isEmpty) {
+
+        barcodeFailureTone();
+
         showSnackIcon(
           L10().barcodeError,
           icon: FontAwesomeIcons.exclamationCircle,
@@ -135,7 +138,7 @@ class BarcodeHandler {
               "valid": response.isValid().toString(),
               "error": response.error,
               "errorDetail": response.errorDetail,
-              "className": runtimeType.toString(),
+              "className": "${this}",
             }
         );
       } else if (data.containsKey("success")) {
@@ -159,7 +162,6 @@ class BarcodeHandler {
  * - Part
  */
 class BarcodeScanHandler extends BarcodeHandler {
-
 
   @override
   String getOverlayText(BuildContext context) => L10().barcodeScanGeneral;

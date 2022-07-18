@@ -23,12 +23,12 @@ int debugMessageCount() => debug_messages.length;
 bool debugContains(String msg, {bool raiseAssert = true}) {
   bool result = false;
 
-  debug_messages.forEach((element) {
+  for (String element in debug_messages) {
     if (element.contains(msg)) {
       result = true;
-      return;
+      break;
     }
-  });
+  }
 
   if (raiseAssert) {
     assert(result);
@@ -64,7 +64,7 @@ String simpleNumberString(double number) {
 Future<void> playAudioFile(String path) async {
 
   // Debug message for unit testing
-  debug("Playing audio file: ${path}");
+  debug("Playing audio file: '${path}'");
 
   if (!OneContext.hasContext) {
     return;

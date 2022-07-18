@@ -5,13 +5,11 @@
  * we will mock the scanned data by passing raw "barcode" data to the scanning framework.
  */
 
-import "dart:async";
-// import "package:test/test.dart";
 import "package:flutter_test/flutter_test.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/barcode.dart";
-import 'package:inventree/helpers.dart';
+import "package:inventree/helpers.dart";
 import "package:inventree/user_profile.dart";
 import "package:inventree/inventree/stock.dart";
 
@@ -62,7 +60,6 @@ void main() {
 
       assert(debugMessageCount() == 2);
     });
-
   });
 
   group("StockItemScanIntoLocation:", () {
@@ -75,7 +72,6 @@ void main() {
       var handler = StockItemScanIntoLocationHandler(item!);
 
       // Scan "invalid" barcode data
-
     });
   });
 }

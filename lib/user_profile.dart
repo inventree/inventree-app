@@ -199,12 +199,12 @@ class UserProfileDBManager {
 
     UserProfile? prf;
 
-    profiles.forEach((profile) {
+    for (UserProfile profile in profiles) {
       if (profile.name == name) {
         prf = profile;
-        return;
+        break;
       }
-    });
+    }
 
     return prf;
   }
