@@ -36,28 +36,24 @@ class _PartListState extends RefreshableState<PartList> {
 
   @override
   Widget getBody(BuildContext context) {
-    return PaginatedPartList(filters);
+    return PaginatedPartList(filters, true);
   }
 
 }
 
 
-class PaginatedPartList extends StatefulWidget {
+class PaginatedPartList extends PaginatedSearchWidget {
 
-  const PaginatedPartList(this.filters, {this.searchEnabled = true});
-
-  final Map<String, String> filters;
-
-  final bool searchEnabled;
+  const PaginatedPartList(Map<String, String> filters, bool showSearch) : super(filters: filters, showSearch: showSearch);
 
   @override
-  _PaginatedPartListState createState() => _PaginatedPartListState(filters, searchEnabled);
+  _PaginatedPartListState createState() => _PaginatedPartListState();
 }
 
 
 class _PaginatedPartListState extends PaginatedSearchState<PaginatedPartList> {
 
-  _PaginatedPartListState(Map<String, String> filters, bool searchEnabled) : super(filters, searchEnabled);
+  _PaginatedPartListState() : super();
 
   @override
   String get prefix => "part_";

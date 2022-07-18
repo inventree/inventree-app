@@ -299,7 +299,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
           children: detailTiles(),
         );
       case 1:
-        return PaginatedStockItemList(filters);
+        return PaginatedStockItemList(filters, true);
       case 2:
         return ListView(
           children: ListTile.divideTiles(

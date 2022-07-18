@@ -35,29 +35,22 @@ class _CompanyListWidgetState extends RefreshableState<CompanyListWidget> {
 
   @override
   Widget getBody(BuildContext context) {
-
-    return PaginatedCompanyList(filters);
-
+    return PaginatedCompanyList(filters, true);
   }
 
 }
 
+class PaginatedCompanyList extends PaginatedSearchWidget {
 
-class PaginatedCompanyList extends StatefulWidget {
-
-  const PaginatedCompanyList(this.filters, {this.searchEnabled = true});
-
-  final Map<String, String> filters;
-
-  final bool searchEnabled;
+  const PaginatedCompanyList(Map<String, String> filters, bool showSearch) : super(filters: filters, showSearch: showSearch);
 
   @override
-  _CompanyListState createState() => _CompanyListState(filters, searchEnabled);
+  _CompanyListState createState() => _CompanyListState();
 }
 
 class _CompanyListState extends PaginatedSearchState<PaginatedCompanyList> {
 
-  _CompanyListState(Map<String, String> filters, bool searchEnabled) : super(filters, searchEnabled);
+  _CompanyListState() : super();
 
   @override
   Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {

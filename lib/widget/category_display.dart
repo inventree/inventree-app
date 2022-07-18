@@ -175,8 +175,6 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
   List<Widget> detailTiles() {
 
-    print("detailTiles()");
-
     List<Widget> tiles = <Widget>[
       getCategoryDescriptionCard(),
       ListTile(
@@ -187,9 +185,8 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
         trailing: GestureDetector(
           child: FaIcon(FontAwesomeIcons.filter),
           onTap: () async {
-            showFilterOptions = !showFilterOptions;
             setState(() {
-              print("showFilterOptions: ${showFilterOptions}");
+              showFilterOptions = !showFilterOptions;
             });
           },
         )
@@ -199,7 +196,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
             {
               "parent": category?.pk.toString() ?? "null"
             },
-            searchEnabled: showFilterOptions,
+            showFilterOptions,
         ),
         flex: 10,
       )
@@ -328,6 +325,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
           {
             "category": "${category?.pk ?? 'null'}"
           },
+          true,
         );
       case 2:
         return ListView(

@@ -31,27 +31,23 @@ class _StockLocationListState extends RefreshableState<StockLocationList> {
 
   @override
   Widget getBody(BuildContext context) {
-    return PaginatedStockLocationList(filters);
+    return PaginatedStockLocationList(filters, true);
   }
 }
 
 
-class PaginatedStockLocationList extends StatefulWidget {
+class PaginatedStockLocationList extends PaginatedSearchWidget {
 
-  const PaginatedStockLocationList(this.filters, {this.searchEnabled = true});
-
-  final Map<String, String> filters;
-
-  final bool searchEnabled;
+  const PaginatedStockLocationList(Map<String, String> filters, bool showSearch) : super(filters: filters, showSearch: showSearch);
 
   @override
-  _PaginatedStockLocationListState createState() => _PaginatedStockLocationListState(filters, searchEnabled);
+  _PaginatedStockLocationListState createState() => _PaginatedStockLocationListState();
 }
 
 
 class _PaginatedStockLocationListState extends PaginatedSearchState<PaginatedStockLocationList> {
 
-  _PaginatedStockLocationListState(Map<String, String> filters, bool searchEnabled) : super(filters, searchEnabled);
+  _PaginatedStockLocationListState() : super();
 
   @override
   Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {

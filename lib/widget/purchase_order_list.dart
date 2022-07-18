@@ -34,29 +34,24 @@ class _PurchaseOrderListWidgetState extends RefreshableState<PurchaseOrderListWi
 
   @override
   Widget getBody(BuildContext context) {
-    return PaginatedPurchaseOrderList(filters);
+    return PaginatedPurchaseOrderList(filters, true);
   }
 }
 
 
-class PaginatedPurchaseOrderList extends StatefulWidget {
+class PaginatedPurchaseOrderList extends PaginatedSearchWidget {
 
-  const PaginatedPurchaseOrderList(this.filters, {this.searchEnabled = true});
-
-  final Map<String, String> filters;
-
-  final bool searchEnabled;
+  const PaginatedPurchaseOrderList(Map<String, String> filters, bool showSearch) : super(filters: filters, showSearch: showSearch);
 
   @override
-  _PaginatedPurchaseOrderListState createState() => _PaginatedPurchaseOrderListState(filters, searchEnabled);
+  _PaginatedPurchaseOrderListState createState() => _PaginatedPurchaseOrderListState();
 
 }
 
 
 class _PaginatedPurchaseOrderListState extends PaginatedSearchState<PaginatedPurchaseOrderList> {
 
-  _PaginatedPurchaseOrderListState(Map<String, String> filters, bool searchEnabled) : super(filters, searchEnabled);
-
+  _PaginatedPurchaseOrderListState() : super();
   // Purchase order prefix
   String _poPrefix = "";
 

@@ -37,9 +37,12 @@ class _BillOfMaterialsState extends RefreshableState<BillOfMaterialsWidget> {
 
   @override
   Widget getBody(BuildContext context) {
-    return PaginatedBomList({
-      "part": part.pk.toString(),
-    });
+    return PaginatedBomList(
+      {
+        "part": part.pk.toString(),
+      },
+      true,
+    );
   }
 }
 
@@ -47,22 +50,18 @@ class _BillOfMaterialsState extends RefreshableState<BillOfMaterialsWidget> {
 /*
  * Create a paginated widget displaying a list of BomItem objects
  */
-class PaginatedBomList extends StatefulWidget {
+class PaginatedBomList extends PaginatedSearchWidget {
 
-  const PaginatedBomList(this.filters, {this.searchEnabled = true});
-
-  final Map<String, String> filters;
-
-  final bool searchEnabled;
+  const PaginatedBomList(Map<String, String> filters, bool showSearch) : super(filters: filters, showSearch: showSearch);
 
   @override
-  _PaginatedBomListState createState() => _PaginatedBomListState(filters, searchEnabled);
+  _PaginatedBomListState createState() => _PaginatedBomListState();
 }
 
 
 class _PaginatedBomListState extends PaginatedSearchState<PaginatedBomList> {
 
-  _PaginatedBomListState(Map<String, String> filters, bool searchEnabled) : super(filters, searchEnabled);
+  _PaginatedBomListState() : super();
 
   @override
   String get prefix => "bom_";

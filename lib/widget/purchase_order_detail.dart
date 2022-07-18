@@ -391,7 +391,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
           "purchase_order": "${order.pk}"
         };
 
-        return PaginatedStockItemList(filters);
+        return PaginatedStockItemList(filters, true);
 
       default:
         return ListView();

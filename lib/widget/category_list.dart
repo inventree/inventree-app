@@ -30,26 +30,22 @@ class _PartCategoryListState extends RefreshableState<PartCategoryList> {
 
   @override
   Widget getBody(BuildContext context) {
-    return PaginatedPartCategoryList(filters);
+    return PaginatedPartCategoryList(filters, true);
   }
 }
 
-class PaginatedPartCategoryList extends StatefulWidget {
+class PaginatedPartCategoryList extends PaginatedSearchWidget {
 
-  const PaginatedPartCategoryList(this.filters, {this.searchEnabled = true});
-
-  final bool searchEnabled;
-
-  final Map<String, String> filters;
+  const PaginatedPartCategoryList(Map<String, String> filters, bool showSearch) : super(filters: filters, showSearch: showSearch);
 
   @override
-  _PaginatedPartCategoryListState createState() => _PaginatedPartCategoryListState(filters, searchEnabled);
+  _PaginatedPartCategoryListState createState() => _PaginatedPartCategoryListState();
 }
 
 
 class _PaginatedPartCategoryListState extends PaginatedSearchState<PaginatedPartCategoryList> {
 
-  _PaginatedPartCategoryListState(Map<String, String> filters, bool searchEnabled) : super(filters, searchEnabled);
+  // _PaginatedPartCategoryListState(Map<String, String> filters, bool searchEnabled) : super(filters, searchEnabled);
 
   @override
   String get prefix => "category_";

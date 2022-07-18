@@ -15,15 +15,22 @@ import "package:inventree/widget/refreshable_state.dart";
 
 
 /*
- * Generic stateful widget for displaying paginated data retrieved via the API
+ * Abstract base widget class for rendering a PaginatedSearchState
  */
-class PaginatedSearchState<T extends StatefulWidget> extends State<T> with BaseWidgetProperties {
+abstract class PaginatedSearchWidget extends StatefulWidget {
 
-  PaginatedSearchState(this.filters, this.searchEnabled);
+  const PaginatedSearchWidget({this.filters = const {}, this.showSearch = false});
 
   final Map<String, String> filters;
 
-  bool searchEnabled = false;
+  final bool showSearch;
+}
+
+
+/*
+ * Generic stateful widget for displaying paginated data retrieved via the API
+ */
+abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends State<T> with BaseWidgetProperties {
 
   static const _pageSize = 25;
 
@@ -188,7 +195,7 @@ class PaginatedSearchState<T extends StatefulWidget> extends State<T> with BaseW
    */
   Future<void> _fetchPage(int pageKey) async {
     try {
-      Map<String, String> params = filters;
+      Map<String, String> params = widget.filters;
 
       // Include user search term
       params["search"] = "${searchTerm}";
@@ -270,9 +277,7 @@ class PaginatedSearchState<T extends StatefulWidget> extends State<T> with BaseW
 
     List<Widget> children = [];
 
-    print("building: ${searchEnabled}");
-
-    if (searchEnabled) {
+    if (widget.showSearch) {
       children.add(buildSearchInput(context));
     }
 
