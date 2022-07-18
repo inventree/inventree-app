@@ -194,6 +194,11 @@ class BarcodeScanHandler extends BarcodeHandler {
 
         InvenTreeStockLocation().get(pk).then((var loc) {
           if (loc is InvenTreeStockLocation) {
+            showSnackIcon(
+              L10().stockLocation,
+              success: true,
+              icon: Icons.qr_code,
+            );
             OneContext().pop();
             OneContext().navigator.push(MaterialPageRoute(builder: (context) => LocationDisplayWidget(loc)));
           }
@@ -217,9 +222,12 @@ class BarcodeScanHandler extends BarcodeHandler {
         barcodeSuccessTone();
 
         InvenTreeStockItem().get(pk).then((var item) {
-          // Dispose of the barcode scanner
+          showSnackIcon(
+            L10().stockItem,
+            success: true,
+            icon: Icons.qr_code,
+          );
           OneContext().pop();
-
           if (item is InvenTreeStockItem) {
             OneContext().push(MaterialPageRoute(builder: (context) => StockDetailWidget(item)));
           }
@@ -242,7 +250,11 @@ class BarcodeScanHandler extends BarcodeHandler {
         barcodeSuccessTone();
 
         InvenTreePart().get(pk).then((var part) {
-
+          showSnackIcon(
+            L10().part,
+            success: true,
+            icon: Icons.qr_code,
+          );
           // Dismiss the barcode scanner
           OneContext().pop();
 
@@ -306,8 +318,6 @@ class BarcodeScanStockLocationHandler extends BarcodeHandler {
 
       // A valid stock location!
       if (_loc > 0) {
-
-        barcodeSuccessTone();
 
         debug("Scanned stock location ${_loc}");
 
@@ -408,10 +418,13 @@ class StockItemScanIntoLocationHandler extends BarcodeScanStockLocationHandler {
 
     final result = await item.transferStock(locationId);
 
-    showSnackIcon(
-      result ? L10().barcodeScanIntoLocationSuccess : L10().barcodeScanIntoLocationFailure,
-      success: result
-    );
+    if (result) {
+      barcodeSuccessTone();
+      showSnackIcon(L10().barcodeScanIntoLocationSuccess, success: true);
+    } else {
+      barcodeFailureTone();
+      showSnackIcon(L10().barcodeScanIntoLocationFailure, success: false);
+    }
 
     return result;
   }
@@ -490,12 +503,15 @@ class ScanParentLocationHandler extends BarcodeScanStockLocationHandler {
     switch (response.statusCode) {
       case 200:
       case 201:
+        barcodeSuccessTone();
         showSnackIcon(L10().barcodeScanIntoLocationSuccess, success: true);
         return true;
       case 400:  // Invalid parent location chosen
+        barcodeFailureTone();
         showSnackIcon(L10().invalidStockLocation, success: false);
         return false;
       default:
+        barcodeFailureTone();
         showSnackIcon(
             L10().barcodeScanIntoLocationFailure,
             success: false,
