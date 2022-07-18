@@ -60,6 +60,25 @@ void main() {
 
       assert(debugMessageCount() == 2);
     });
+
+    test("Junk Data", () async {
+      // test scanning 'junk' data
+
+      await handler.processBarcode(null, "abcdefg");
+
+      debugContains("Scanned barcode data: 'abcdefg'");
+      debugContains("showSnackIcon: 'No match for barcode'");
+    });
+
+    test("Invalid StockLocation", () async {
+      // Scan an invalid stock location
+      await handler.processBarcode(null, "{'stocklocation': 999999}");
+
+      debugContains("Scanned barcode data: '{\'stocklocation\': 999999}'");
+      debugContains("showSnackIcon: 'No match for barcode'");
+      assert(debugMessageCount() == 2);
+    });
+
   });
 
   group("StockItemScanIntoLocation:", () {
