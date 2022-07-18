@@ -74,8 +74,6 @@
     "@barcodeScanAssign": {},
     "barcodeScanGeneral": "Einen InvenTree Barcode scannen",
     "@barcodeScanGeneral": {},
-    "barcodeScanInItems": "Artikel per Barcode-Scan zu Lagerort hinzufügen",
-    "@barcodeScanInItems": {},
     "barcodeScanLocation": "Lagerort scannen",
     "@barcodeScanLocation": {},
     "barcodeScanIntoLocationSuccess": "Artikel zu Lagerort hinzugefügt",
