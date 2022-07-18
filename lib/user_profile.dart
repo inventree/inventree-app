@@ -57,6 +57,9 @@ class UserProfile {
   }
 }
 
+/*
+ * Class for storing and managing user (server) profiles
+ */
 class UserProfileDBManager {
 
   final store = StoreRef("profiles");
@@ -188,6 +191,24 @@ class UserProfileDBManager {
     }
 
     return profileList;
+  }
+
+  /*
+   * Retrieve a profile by name (or null if no match exists)
+   */
+  Future<UserProfile?> getProfileByName(String name) async {
+    final profiles = await getAllProfiles();
+
+    UserProfile? prf;
+
+    profiles.forEach((profile) {
+      if (profile.name == name) {
+        prf = profile;
+        return;
+      }
+    });
+
+    return prf;
   }
 
   /*
