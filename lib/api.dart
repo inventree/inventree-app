@@ -413,6 +413,8 @@ class InvenTreeAPI {
           break;
       }
 
+      debug("Token request failed: STATUS ${response.statusCode}");
+
       return false;
     }
 

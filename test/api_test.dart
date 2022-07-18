@@ -5,6 +5,7 @@
 import "package:test/test.dart";
 
 import "package:inventree/api.dart";
+import "package:inventree/helpers.dart";
 import "package:inventree/user_profile.dart";
 
 
@@ -94,6 +95,9 @@ void main() {
 
         assert(!api.checkConnection());
 
+        debugContains("Token request failed: STATUS 401");
+        debugContains("showSnackIcon: 'Not Connected'");
+
       } else {
         assert(false);
       }
@@ -137,6 +141,9 @@ void main() {
       assert(api.checkPermission("stocklocation", "delete"));
       assert(!api.checkPermission("part", "weirdpermission"));
       assert(api.checkPermission("blah", "bloo"));
+
+      debugContains("Received token from server");
+      debugContains("showSnackIcon: 'Connected to Server'");
     });
 
   });

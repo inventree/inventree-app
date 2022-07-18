@@ -99,6 +99,8 @@ class UserProfileDBManager {
     if (exists) {
       debug("addProfile() : UserProfile '${profile.name}' already exists");
       return false;
+    } else {
+      debug("Adding new profile: '${profile.name}'");
     }
 
     int key = await store.add(await _db, profile.toJson()) as int;
