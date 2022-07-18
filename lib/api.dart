@@ -1017,14 +1017,16 @@ class InvenTreeAPI {
         }
 
         if (statusCode != null) {
-
           // Expected status code not returned
           if (statusCode != _response.statusCode) {
             showStatusCodeError(url, _response.statusCode);
           }
         }
       }
-
+    } on HttpException catch (error) {
+      showServerError(url, L10().serverError, error.toString());
+      response.error = "HTTPException";
+      response.errorDetail = error.toString();
     } on SocketException catch (error) {
       showServerError(url, L10().connectionRefused, error.toString());
       response.error = "SocketException";
