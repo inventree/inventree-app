@@ -131,4 +131,30 @@ void main() {
 
     });
   });
+
+  group("Test ScanParentLocationHandler:", () {
+    // Tests for scanning a location into a parent location
+
+    test("Scan Parent", () async {
+      final location = await InvenTreeStockLocation().get(7) as InvenTreeStockLocation?;
+
+      assert(location != null);
+      assert(location!.pk == 7);
+      assert(location!.parentId == 4);
+
+      var handler = ScanParentLocationHandler(location!);
+
+      // Scan into new parent location
+      await handler.processBarcode(null, '{"stocklocation": 1}');
+      await location.reload();
+      assert(location.parentId == 1);
+
+      // Scan back into old parent location
+      await handler.processBarcode(null, '{"stocklocation": 4}');
+      await location.reload();
+      assert(location.parentId == 4);
+
+      debugContains("showSnackIcon: 'Scanned into location'");
+    });
+  });
 }
