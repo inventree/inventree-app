@@ -38,18 +38,20 @@ class _StockLocationListState extends RefreshableState<StockLocationList> {
 
 class PaginatedStockLocationList extends StatefulWidget {
 
-  const PaginatedStockLocationList(this.filters);
+  const PaginatedStockLocationList(this.filters, {this.searchEnabled = true});
 
   final Map<String, String> filters;
 
+  final bool searchEnabled;
+
   @override
-  _PaginatedStockLocationListState createState() => _PaginatedStockLocationListState(filters);
+  _PaginatedStockLocationListState createState() => _PaginatedStockLocationListState(filters, searchEnabled);
 }
 
 
 class _PaginatedStockLocationListState extends PaginatedSearchState<PaginatedStockLocationList> {
 
-  _PaginatedStockLocationListState(Map<String, String> filters) : super(filters);
+  _PaginatedStockLocationListState(Map<String, String> filters, bool searchEnabled) : super(filters, searchEnabled);
 
   @override
   Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {

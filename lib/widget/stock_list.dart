@@ -38,19 +38,21 @@ class _StockListState extends RefreshableState<StockItemList> {
 
 class PaginatedStockItemList extends StatefulWidget {
 
-  const PaginatedStockItemList(this.filters);
+  const PaginatedStockItemList(this.filters, {this.searchEnabled = true});
 
   final Map<String, String> filters;
 
+  final bool searchEnabled;
+
   @override
-  _PaginatedStockItemListState createState() => _PaginatedStockItemListState(filters);
+  _PaginatedStockItemListState createState() => _PaginatedStockItemListState(filters, searchEnabled);
   
 }
 
 
 class _PaginatedStockItemListState extends PaginatedSearchState<PaginatedStockItemList> {
 
-  _PaginatedStockItemListState(Map<String, String> filters) : super(filters);
+  _PaginatedStockItemListState(Map<String, String> filters, bool searchEnabled) : super(filters, searchEnabled);
 
   @override
   String get prefix => "stock_";

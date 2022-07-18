@@ -16,15 +16,14 @@ import "package:inventree/widget/refreshable_state.dart";
 
 /*
  * Generic stateful widget for displaying paginated data retrieved via the API
- *
- * - Can be displayed as "full screen" (with app-bar and drawer)
- * - Can be displayed as a standalone widget
  */
 class PaginatedSearchState<T extends StatefulWidget> extends State<T> with BaseWidgetProperties {
 
-  PaginatedSearchState(this.filters);
+  PaginatedSearchState(this.filters, this.searchEnabled);
 
   final Map<String, String> filters;
+
+  bool searchEnabled = false;
 
   static const _pageSize = 25;
 
@@ -269,32 +268,41 @@ class PaginatedSearchState<T extends StatefulWidget> extends State<T> with BaseW
   @override
   Widget build (BuildContext context) {
 
+    List<Widget> children = [];
+
+    print("building: ${searchEnabled}");
+
+    if (searchEnabled) {
+      children.add(buildSearchInput(context));
+    }
+
+    children.add(
+      Expanded(
+        child: CustomScrollView(
+            shrinkWrap: true,
+            physics: ClampingScrollPhysics(),
+            scrollDirection: Axis.vertical,
+            slivers: <Widget>[
+              PagedSliverList.separated(
+                pagingController: _pagingController,
+                builderDelegate: PagedChildBuilderDelegate<InvenTreeModel>(
+                    itemBuilder: (context, item, index) {
+                      return buildItem(context, item);
+                    },
+                    noItemsFoundIndicatorBuilder: (context) {
+                      return NoResultsWidget(noResultsText);
+                    }
+                ),
+                separatorBuilder: (context, item) => const Divider(height: 1),
+              )
+            ]
+        )
+      )
+    );
+
     return Column(
         mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          buildSearchInput(context),
-          Expanded(
-              child: CustomScrollView(
-                  shrinkWrap: true,
-                  physics: ClampingScrollPhysics(),
-                  scrollDirection: Axis.vertical,
-                  slivers: <Widget>[
-                    PagedSliverList.separated(
-                      pagingController: _pagingController,
-                      builderDelegate: PagedChildBuilderDelegate<InvenTreeModel>(
-                          itemBuilder: (context, item, index) {
-                            return buildItem(context, item);
-                          },
-                          noItemsFoundIndicatorBuilder: (context) {
-                            return NoResultsWidget(noResultsText);
-                          }
-                      ),
-                      separatorBuilder: (context, item) => const Divider(height: 1),
-                    )
-                  ]
-              )
-          )
-        ]
+        children: children,
     );
   }
 

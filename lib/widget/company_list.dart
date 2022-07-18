@@ -45,19 +45,19 @@ class _CompanyListWidgetState extends RefreshableState<CompanyListWidget> {
 
 class PaginatedCompanyList extends StatefulWidget {
 
-  const PaginatedCompanyList(this.filters, {this.onTotalChanged});
+  const PaginatedCompanyList(this.filters, {this.searchEnabled = true});
 
   final Map<String, String> filters;
 
-  final Function(int)? onTotalChanged;
+  final bool searchEnabled;
 
   @override
-  _CompanyListState createState() => _CompanyListState(filters);
+  _CompanyListState createState() => _CompanyListState(filters, searchEnabled);
 }
 
 class _CompanyListState extends PaginatedSearchState<PaginatedCompanyList> {
 
-  _CompanyListState(Map<String, String> filters) : super(filters);
+  _CompanyListState(Map<String, String> filters, bool searchEnabled) : super(filters, searchEnabled);
 
   @override
   Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {

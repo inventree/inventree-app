@@ -44,22 +44,20 @@ class _PartListState extends RefreshableState<PartList> {
 
 class PaginatedPartList extends StatefulWidget {
 
-  const PaginatedPartList(this.filters, {this.onTotalChanged});
+  const PaginatedPartList(this.filters, {this.searchEnabled = true});
 
   final Map<String, String> filters;
 
-  final Function(int)? onTotalChanged;
+  final bool searchEnabled;
 
   @override
-  _PaginatedPartListState createState() => _PaginatedPartListState(filters, onTotalChanged);
+  _PaginatedPartListState createState() => _PaginatedPartListState(filters, searchEnabled);
 }
 
 
 class _PaginatedPartListState extends PaginatedSearchState<PaginatedPartList> {
 
-  _PaginatedPartListState(Map<String, String> filters, this.onTotalChanged) : super(filters);
-
-  Function(int)? onTotalChanged;
+  _PaginatedPartListState(Map<String, String> filters, bool searchEnabled) : super(filters, searchEnabled);
 
   @override
   String get prefix => "part_";

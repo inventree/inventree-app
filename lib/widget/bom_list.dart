@@ -49,24 +49,20 @@ class _BillOfMaterialsState extends RefreshableState<BillOfMaterialsWidget> {
  */
 class PaginatedBomList extends StatefulWidget {
 
-  const PaginatedBomList(this.filters, {this.onTotalChanged});
+  const PaginatedBomList(this.filters, {this.searchEnabled = true});
 
   final Map<String, String> filters;
 
-  final Function(int)? onTotalChanged;
+  final bool searchEnabled;
 
   @override
-  _PaginatedBomListState createState() => _PaginatedBomListState(filters, onTotalChanged);
-
-
+  _PaginatedBomListState createState() => _PaginatedBomListState(filters, searchEnabled);
 }
 
 
 class _PaginatedBomListState extends PaginatedSearchState<PaginatedBomList> {
 
-  _PaginatedBomListState(Map<String, String> filters, this.onTotalChanged) : super(filters);
-
-  Function(int)? onTotalChanged;
+  _PaginatedBomListState(Map<String, String> filters, bool searchEnabled) : super(filters, searchEnabled);
 
   @override
   String get prefix => "bom_";

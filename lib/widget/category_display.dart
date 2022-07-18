@@ -5,6 +5,7 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/inventree/part.dart";
+import 'package:inventree/widget/category_list.dart';
 import "package:inventree/widget/part_list.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/snacks.dart";
@@ -27,6 +28,8 @@ class CategoryDisplayWidget extends StatefulWidget {
 class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
   _CategoryDisplayState(this.category);
+
+  bool showFilterOptions = false;
 
   @override
   String getAppBarTitle(BuildContext context) => L10().partCategory;
@@ -73,8 +76,6 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
   // The local InvenTreePartCategory object
   final InvenTreePartCategory? category;
 
-  List<InvenTreePartCategory> _subcategories = [];
-
   @override
   Future<void> onBuild(BuildContext context) async {
     refresh(context);
@@ -93,27 +94,17 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
         Navigator.of(context).pop();
       }
     }
-
-    // Request a list of sub-categories under this one
-    await InvenTreePartCategory().list(filters: {"parent": "$pk"}).then((var cats) {
-      _subcategories.clear();
-
-      for (var cat in cats) {
-        if (cat is InvenTreePartCategory) {
-          _subcategories.add(cat);
-        }
-      }
-
-      // Update state
-      setState(() {});
-    });
   }
 
   Widget getCategoryDescriptionCard({bool extra = true}) {
     if (category == null) {
       return Card(
         child: ListTile(
-          title: Text(L10().partCategoryTopLevel)
+          leading: FaIcon(FontAwesomeIcons.shapes),
+          title: Text(
+            L10().partCategoryTopLevel,
+            style: TextStyle(fontStyle: FontStyle.italic),
+          )
         )
       );
     } else {
@@ -183,6 +174,9 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
   }
 
   List<Widget> detailTiles() {
+
+    print("detailTiles()");
+
     List<Widget> tiles = <Widget>[
       getCategoryDescriptionCard(),
       ListTile(
@@ -190,23 +184,26 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
           L10().subcategories,
           style: TextStyle(fontWeight: FontWeight.bold)
         ),
-        trailing: _subcategories.isNotEmpty ? Text("${_subcategories.length}") : null,
-      ),
-    ];
-
-    if (loading) {
-      tiles.add(progressIndicator());
-    } else if (_subcategories.isEmpty) {
-      tiles.add(ListTile(
-        title: Text(L10().noSubcategories),
-        subtitle: Text(
-            L10().noSubcategoriesAvailable,
-            style: TextStyle(fontStyle: FontStyle.italic)
+        trailing: GestureDetector(
+          child: FaIcon(FontAwesomeIcons.filter),
+          onTap: () async {
+            showFilterOptions = !showFilterOptions;
+            setState(() {
+              print("showFilterOptions: ${showFilterOptions}");
+            });
+          },
         )
-      ));
-    } else {
-      tiles.add(SubcategoryList(_subcategories));
-    }
+      ),
+      Expanded(
+        child: PaginatedPartCategoryList(
+            {
+              "parent": category?.pk.toString() ?? "null"
+            },
+            searchEnabled: showFilterOptions,
+        ),
+        flex: 10,
+      )
+    ];
 
     return tiles;
   }
@@ -323,8 +320,8 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
     switch (tabIndex) {
       case 0:
-        return ListView(
-          children: detailTiles()
+        return Column(
+            children: detailTiles()
         );
       case 1:
         return PaginatedPartList(
@@ -339,49 +336,5 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
       default:
         return ListView();
     }
-  }
-}
-
-
-/*
- * Builder for displaying a list of PartCategory objects
- */
-class SubcategoryList extends StatelessWidget {
-
-  const SubcategoryList(this._categories);
-
-  final List<InvenTreePartCategory> _categories;
-
-  void _openCategory(BuildContext context, int pk) {
-
-    // Attempt to load the sub-category.
-    InvenTreePartCategory().get(pk).then((var cat) {
-      if (cat is InvenTreePartCategory) {
-
-        Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(cat)));
-      }
-    });
-  }
-
-  Widget _build(BuildContext context, int index) {
-    InvenTreePartCategory cat = _categories[index];
-
-    return ListTile(
-      title: Text("${cat.name}"),
-      subtitle: Text("${cat.description}"),
-      trailing: Text("${cat.partcount}"),
-      onTap: () {
-        _openCategory(context, cat.pk);
-      }
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.separated(
-        shrinkWrap: true,
-        physics: ClampingScrollPhysics(),
-        separatorBuilder: (_, __) => const Divider(height: 3),
-        itemBuilder: _build, itemCount: _categories.length);
   }
 }
