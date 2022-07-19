@@ -38,6 +38,41 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
   // Override in implementing class
   String get prefix => "prefix_";
 
+  // Return a map of boolean filtering options available for this list
+  // Should be overridden by an implementing subclass
+  Map<String, String> get booleanOptions => {};
+
+  // Return the boolean value of a particular boolean filter
+  Future<bool?> getBooleanFilterValue(String key) async {
+    key = "${prefix}bool_${key}";
+    final result = await InvenTreeSettingsManager().getTriState(key, false);
+    return result;
+  }
+
+  // Set the boolean value of a particular boolean filter
+  Future<void> setBooleanFilterValue(String key, bool? value) async {
+    key = "${prefix}bool_${key}";
+    await InvenTreeSettingsManager().setValue(key, value);
+  }
+
+  // Construct the boolean filter options for this list
+  Future<Map<String, String>> constructBooleanFilters() async {
+
+    Map<String, String> f = {};
+
+    for (String k in booleanOptions.keys) {
+      String key = "${prefix}bool_${k}";
+
+      bool? value = await InvenTreeSettingsManager().getTriState(key, null);
+
+      if (value is bool) {
+        f[key] = value ? "true" : "false";
+      }
+    }
+
+    return f;
+  }
+
   // Return a map of sorting options available for this list
   // Should be overridden by an implementing subclass
   Map<String, String> get orderingOptions => {};
@@ -121,6 +156,24 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
       }
     };
 
+    // Add in boolean filter options
+    if (booleanOptions.isNotEmpty) {
+      for (String key in booleanOptions.keys) {
+        String name = booleanOptions[key] ?? "";
+        if (name.isEmpty) continue;
+
+        bool? v = await getBooleanFilterValue(key);
+
+        fields[key] = {
+          "type": "boolean",
+          "display_name": name,
+          "label": name,
+          "value": v,
+          "tristate": true,
+        };
+      }
+    }
+
     // Launch an interactive form for the user to select options
     launchApiForm(
       context,
@@ -137,6 +190,20 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
         // Save values to settings
         await InvenTreeSettingsManager().setValue("${prefix}ordering_field", f);
         await InvenTreeSettingsManager().setValue("${prefix}ordering_order", o);
+
+        // Save boolean fields
+        for (String key in booleanOptions.keys) {
+
+          bool? v;
+
+          dynamic value = data[key];
+
+          if (value is bool) {
+            v = value;
+          }
+
+          await setBooleanFilterValue(key, v);
+        }
 
         // Refresh data from the server
         _pagingController.refresh();
@@ -204,6 +271,12 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
       String o = await orderingString;
       if (o.isNotEmpty) {
         params["ordering"] = o;
+      }
+
+      Map<String, String> f = await constructBooleanFilters();
+
+      if (f.isNotEmpty) {
+        params.addAll(f);
       }
 
       final page = await requestPage(
