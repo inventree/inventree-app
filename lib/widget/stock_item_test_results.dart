@@ -156,6 +156,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
       String _test = "";
       bool _result = false;
       String _value = "";
+      String _notes = "";
 
       FaIcon _icon = FaIcon(FontAwesomeIcons.questionCircle, color: COLOR_BLUE);
       bool _valueRequired = false;
@@ -168,11 +169,13 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
         _value = item.latestResult()?.value ?? "";
         _valueRequired = item.requiresValue;
         _attachmentRequired = item.requiresAttachment;
+        _notes = item.latestResult()?.notes ?? "";
       } else if (item is InvenTreeStockItemTestResult) {
         _result = item.result;
         _test = item.testName;
         _required = false;
         _value = item.value;
+        _notes = item.notes;
       }
 
       if (_result == true) {
@@ -187,8 +190,9 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
 
       tiles.add(ListTile(
         title: Text(_test, style: TextStyle(fontWeight: _required ? FontWeight.bold : FontWeight.normal)),
-        subtitle: Text(_value),
-        trailing: _icon,
+        subtitle: Text(_notes),
+        trailing: Text(_value),
+        leading: _icon,
         onLongPress: () {
           addTestResult(
               context,
