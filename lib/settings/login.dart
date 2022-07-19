@@ -29,6 +29,10 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
 
     profiles = await UserProfileDBManager().getAllProfiles();
 
+    if (!mounted) {
+      return;
+    }
+
     setState(() {
     });
   }
@@ -58,6 +62,10 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
 
     await UserProfileDBManager().selectProfile(key);
 
+    if (!mounted) {
+      return;
+    }
+
     _reload();
 
     // Attempt server login (this will load the newly selected profile
@@ -71,6 +79,10 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
   Future <void> _deleteProfile(UserProfile profile) async {
 
     await UserProfileDBManager().deleteProfile(profile);
+
+    if (!mounted) {
+      return;
+    }
 
     _reload();
 

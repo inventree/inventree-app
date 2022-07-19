@@ -9,6 +9,7 @@
 - Indicate available quantity in stock detail view
 - Adds configurable filtering to various list views
 - Allow stock location to be "scanned" into another location using barcode
+- Improves server connection status indicator on home screen
 
 ### 0.7.3 - June 2022
 ---

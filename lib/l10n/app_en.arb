@@ -908,6 +908,9 @@
   "serverNotConnected": "Server not connected",
   "@serverNotConnected": {},
 
+  "serverNotSelected": "Server not selected",
+  "@serverNotSelected": {},
+
   "sounds": "Sounds",
   "@sounds": {},
 

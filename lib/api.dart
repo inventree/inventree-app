@@ -135,6 +135,9 @@ class InvenTreeFileService extends FileService {
  */
 
 
+/*
+ * API class which manages all communication with the InvenTree server
+ */
 class InvenTreeAPI {
 
   factory InvenTreeAPI() {
@@ -142,6 +145,19 @@ class InvenTreeAPI {
   }
 
   InvenTreeAPI._internal();
+
+  // List of callback functions to trigger when the connection status changes
+  List<Function()> _statusCallbacks = [];
+
+  // Register a callback function to be notified when the connection status changes
+  void registerCallback(Function() func) => _statusCallbacks.add(func);
+
+  void _connectionStatusChanged() {
+    for (Function() func in _statusCallbacks) {
+      // Call the function
+      func();
+    }
+  }
 
   // Minimum required API version for server
   static const _minApiVersion = 20;
@@ -201,6 +217,10 @@ class InvenTreeAPI {
 
   // Authentication token (initially empty, must be requested)
   String _token = "";
+
+  String? get serverAddress {
+    return profile?.server;
+  }
 
   bool get hasToken => _token.isNotEmpty;
 
@@ -457,6 +477,8 @@ class InvenTreeAPI {
     // Clear received settings
     _globalSettings.clear();
     _userSettings.clear();
+
+    _connectionStatusChanged();
   }
 
   /*
@@ -481,6 +503,8 @@ class InvenTreeAPI {
 
     _connecting = true;
 
+    _connectionStatusChanged();
+
     _connected = await _connect();
 
     _connecting = false;
@@ -492,6 +516,8 @@ class InvenTreeAPI {
         success: true,
       );
     }
+
+    _connectionStatusChanged();
 
     return _connected;
   }
