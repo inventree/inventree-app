@@ -118,8 +118,6 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
   @override
   Future<void> request(BuildContext context) async {
 
-    int pk = location?.pk ?? -1;
-
     // Reload location information
     if (location != null) {
       final bool result = await location!.reload();
