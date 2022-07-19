@@ -973,30 +973,18 @@ class APIFormWidget extends StatefulWidget {
   final Function(Map<String, dynamic>)? onSuccess;
 
   @override
-  _APIFormWidgetState createState() => _APIFormWidgetState(title, url, fields, method, onSuccess, fileField, icon);
+  _APIFormWidgetState createState() => _APIFormWidgetState();
 
 }
 
 
 class _APIFormWidgetState extends State<APIFormWidget> {
 
-  _APIFormWidgetState(this.title, this.url, this.fields, this.method, this.onSuccess, this.fileField, this.icon) : super();
+  _APIFormWidgetState() : super();
 
   final _formKey = GlobalKey<FormState>();
 
-  final String title;
-
-  final String url;
-
-  final String method;
-
-  final String fileField;
-
-  final IconData icon;
-
   List<String> nonFieldErrors = [];
-
-  List<APIFormField> fields;
 
   Function(Map<String, dynamic>)? onSuccess;
 
@@ -1029,7 +1017,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
 
     }
 
-    for (var field in fields) {
+    for (var field in widget.fields) {
 
       if (field.hidden) {
         continue;
@@ -1086,13 +1074,13 @@ class _APIFormWidgetState extends State<APIFormWidget> {
   Future<APIResponse> _submit(Map<String, dynamic> data) async {
 
     // If a file upload is required, we have to handle the submission differently
-    if (fileField.isNotEmpty) {
+    if (widget.fileField.isNotEmpty) {
 
       // Pop the "file" field
-      data.remove(fileField);
+      data.remove(widget.fileField);
 
-      for (var field in fields) {
-        if (field.name == fileField) {
+      for (var field in widget.fields) {
+        if (field.name == widget.fileField) {
 
           File? file = field.attachedfile;
 
@@ -1100,9 +1088,9 @@ class _APIFormWidgetState extends State<APIFormWidget> {
 
             // A valid file has been supplied
             final response = await InvenTreeAPI().uploadFile(
-              url,
+              widget.url,
               file,
-              name: fileField,
+              name: widget.fileField,
               fields: data,
             );
 
@@ -1112,9 +1100,9 @@ class _APIFormWidgetState extends State<APIFormWidget> {
       }
     }
 
-    if (method == "POST") {
+    if (widget.method == "POST") {
       final response =  await InvenTreeAPI().post(
-        url,
+        widget.url,
         body: data,
         expectedStatusCode: null
       );
@@ -1123,7 +1111,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
 
     } else {
       final response = await InvenTreeAPI().patch(
-        url,
+        widget.url,
         body: data,
         expectedStatusCode: null
       );
@@ -1181,7 +1169,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
           match = true;
           continue;
         default:
-          for (var field in fields) {
+          for (var field in widget.fields) {
 
             // Hidden fields can't display errors, so we won't match
             if (field.hidden) {
@@ -1238,7 +1226,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
 
     // Iterate through and find "simple" top-level fields
 
-    for (var field in fields) {
+    for (var field in widget.fields) {
 
       if (field.isSimple) {
         // Simple top-level field data
@@ -1274,7 +1262,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
 
     // An "empty" URL means we don't want to submit the form anywhere
     // Perhaps we just want to process the data?
-    if (url.isEmpty) {
+    if (widget.url.isEmpty) {
       // Hide the form
       Navigator.pop(context);
 
@@ -1289,7 +1277,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
     final response = await _submit(data);
 
     if (!response.isValid()) {
-      showServerError(url, L10().serverError, L10().responseInvalid);
+      showServerError(widget.url, L10().serverError, L10().responseInvalid);
       return;
     }
 
@@ -1323,7 +1311,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
         );
 
         // Update field errors
-        for (var field in fields) {
+        for (var field in widget.fields) {
           field.extractErrorMessages(response);
         }
 
@@ -1379,10 +1367,10 @@ class _APIFormWidgetState extends State<APIFormWidget> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(widget.title),
         actions: [
           IconButton(
-            icon: FaIcon(icon),
+            icon: FaIcon(widget.icon),
             onPressed: () {
 
               if (_formKey.currentState!.validate()) {
