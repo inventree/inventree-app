@@ -67,11 +67,6 @@ class _PaginatedStockItemListState extends PaginatedSearchState<PaginatedStockIt
   @override
   Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
 
-    // Do we include stock items from sub-locations?
-    final bool cascade = await InvenTreeSettingsManager().getBool(INV_STOCK_SUBLOCATION, true);
-
-    params["cascade"] = "${cascade}";
-
     final page = await InvenTreeStockItem().listPaginated(
       limit,
       offset,

@@ -32,15 +32,6 @@ class InvenTreePartCategory extends InvenTreeModel {
     };
   }
 
-  @override
-  Map<String, String> defaultListFilters() {
-
-    return {
-      "active": "true",
-      "cascade": "false"
-    };
-  }
-
   String get pathstring => (jsondata["pathstring"] ?? "") as String;
 
   String get parentPathString {

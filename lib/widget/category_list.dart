@@ -51,6 +51,11 @@ class _PaginatedPartCategoryListState extends PaginatedSearchState<PaginatedPart
   String get prefix => "category_";
 
   @override
+  Map<String, String> get booleanOptions => {
+    "cascade": "Include Subcategories"
+  };
+
+  @override
   Map<String, String> get orderingOptions => {
     "name": L10().name,
     "level": L10().level,

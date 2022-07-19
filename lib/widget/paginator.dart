@@ -66,7 +66,7 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
       bool? value = await InvenTreeSettingsManager().getTriState(key, null);
 
       if (value is bool) {
-        f[key] = value ? "true" : "false";
+        f[k] = value ? "true" : "false";
       }
     }
 

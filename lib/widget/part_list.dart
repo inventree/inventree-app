@@ -68,10 +68,6 @@ class _PaginatedPartListState extends PaginatedSearchState<PaginatedPartList> {
   @override
   Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
 
-    final bool cascade = await InvenTreeSettingsManager().getBool(INV_PART_SUBCATEGORY, true);
-
-    params["cascade"] = "${cascade}";
-
     final page = await InvenTreePart().listPaginated(limit, offset, filters: params);
 
     return page;
