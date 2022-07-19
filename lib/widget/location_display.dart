@@ -5,15 +5,20 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/barcode.dart";
+import "package:inventree/l10.dart";
+
 import "package:inventree/inventree/stock.dart";
-import "package:inventree/widget/progress.dart";
+
+import "package:inventree/widget/location_list.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/stock_detail.dart";
-import "package:inventree/l10.dart";
 import "package:inventree/widget/stock_list.dart";
 
 
+/*
+ * Widget for displaying detail view for a single StockLocation instance
+ */
 class LocationDisplayWidget extends StatefulWidget {
 
   LocationDisplayWidget(this.location, {Key? key}) : super(key: key);
@@ -31,6 +36,8 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
   _LocationDisplayState(this.location);
 
   final InvenTreeStockLocation? location;
+
+  bool showFilterOptions = false;
 
   @override
   String getAppBarTitle(BuildContext context) { return L10().stockLocation; }
@@ -103,19 +110,6 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     );
   }
 
-  List<InvenTreeStockLocation> _sublocations = [];
-
-  String _locationFilter = "";
-
-  List<InvenTreeStockLocation> get sublocations {
-    
-    if (_locationFilter.isEmpty || _sublocations.isEmpty) {
-      return _sublocations;
-    } else {
-      return _sublocations.where((loc) => loc.filter(_locationFilter)).toList();
-    }
-  }
-
   @override
   Future<void> onBuild(BuildContext context) async {
     refresh(context);
@@ -134,17 +128,6 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
         Navigator.of(context).pop();
       }
     }
-
-    // Request a list of sub-locations under this one
-    await InvenTreeStockLocation().list(filters: {"parent": "$pk"}).then((var locs) {
-      _sublocations.clear();
-
-      for (var loc in locs) {
-        if (loc is InvenTreeStockLocation) {
-          _sublocations.add(loc);
-        }
-      }
-    });
 
     setState(() {});
   }
@@ -295,7 +278,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
     switch (index) {
       case 0:
-        return ListView(
+        return Column(
           children: detailTiles(),
         );
       case 1:
@@ -326,23 +309,25 @@ List<Widget> detailTiles() {
           L10().sublocations,
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        trailing: sublocations.isNotEmpty ? Text("${sublocations.length}") : null,
-      ),
-    ];
-
-    if (loading) {
-      tiles.add(progressIndicator());
-    } else if (_sublocations.isNotEmpty) {
-      tiles.add(SublocationList(_sublocations));
-    } else {
-      tiles.add(ListTile(
-        title: Text(L10().sublocationNone),
-        subtitle: Text(
-            L10().sublocationNoneDetail,
-            style: TextStyle(fontStyle: FontStyle.italic)
+        trailing: GestureDetector(
+          child: FaIcon(FontAwesomeIcons.filter),
+          onTap: () async {
+            setState(() {
+              showFilterOptions = !showFilterOptions;
+            });
+          },
         )
-      ));
-    }
+      ),
+      Expanded(
+        child: PaginatedStockLocationList(
+          {
+            "parent": location?.pk.toString() ?? "null",
+          },
+          showFilterOptions,
+        ),
+        flex: 10,
+      )
+    ];
 
     return tiles;
   }
@@ -451,49 +436,5 @@ List<Widget> detailTiles() {
     }
 
     return tiles;
-  }
-
-}
-
-
-
-class SublocationList extends StatelessWidget {
-
-  const SublocationList(this._locations);
-
-  final List<InvenTreeStockLocation> _locations;
-
-  void _openLocation(BuildContext context, int pk) {
-
-    InvenTreeStockLocation().get(pk).then((var loc) {
-      if (loc is InvenTreeStockLocation) {
-
-        Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(loc)));
-      }
-    });
-  }
-
-  Widget _build(BuildContext context, int index) {
-    InvenTreeStockLocation loc = _locations[index];
-
-    return ListTile(
-      title: Text("${loc.name}"),
-      subtitle: Text("${loc.description}"),
-      trailing: Text("${loc.itemcount}"),
-      onTap: () {
-        _openLocation(context, loc.pk);
-      },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.separated(
-        shrinkWrap: true,
-        physics: ClampingScrollPhysics(),
-        itemBuilder: _build,
-        separatorBuilder: (_, __) => const Divider(height: 3),
-        itemCount: _locations.length
-    );
   }
 }

@@ -50,6 +50,12 @@ class _PaginatedStockLocationListState extends PaginatedSearchState<PaginatedSto
   _PaginatedStockLocationListState() : super();
 
   @override
+  Map<String, String> get orderingOptions => {
+    "name": L10().name,
+    "level": L10().level,
+  };
+
+  @override
   Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
 
     final page = await InvenTreeStockLocation().listPaginated(limit, offset, filters: params);
