@@ -64,9 +64,12 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> with 
 
   // Update current tab selection
   void onTabSelectionChanged(int index) {
-    setState(() {
-      tabIndex = index;
-    });
+
+    if (mounted) {
+      setState(() {
+        tabIndex = index;
+      });
+    }
   }
 
   @override
@@ -86,6 +89,10 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> with 
   }
 
   Future<void> refresh(BuildContext context) async {
+
+    if (!mounted) {
+      return;
+    }
 
     setState(() {
       loading = true;

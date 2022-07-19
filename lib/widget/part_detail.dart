@@ -253,15 +253,17 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
             title: Text(L10().partCategory),
             subtitle: Text("${part.categoryName}"),
             leading: FaIcon(FontAwesomeIcons.sitemap, color: COLOR_CLICK),
-            onTap: () {
+            onTap: () async {
               if (part.categoryId > 0) {
-                InvenTreePartCategory().get(part.categoryId).then((var cat) {
 
-                  if (cat is InvenTreePartCategory) {
-                    Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => CategoryDisplayWidget(cat)));
-                  }
-                });
+                showLoadingOverlay(context);
+                var cat = await InvenTreePartCategory().get(part.categoryId);
+                hideLoadingOverlay();
+
+                if (cat is InvenTreePartCategory) {
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => CategoryDisplayWidget(cat)));
+                }
               }
             },
           )
