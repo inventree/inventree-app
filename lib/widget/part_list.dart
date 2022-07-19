@@ -66,6 +66,39 @@ class _PaginatedPartListState extends PaginatedSearchState<PaginatedPartList> {
   };
 
   @override
+  Map<String, Map<String, dynamic>> get filterOptions => {
+    "cascade": {
+      "default": true,
+      "label": L10().includeSubcategories,
+      "help_text": L10().includeSubcategoriesDetail,
+    },
+    "active": {
+      "label": L10().filterActive,
+      "help_text": L10().filterActiveDetail,
+    },
+    "assembly": {
+      "label": L10().filterAssembly,
+      "help_text": L10().filterAssemblyDetail
+    },
+    "component": {
+      "label": L10().filterComponent,
+      "help_text": L10().filterComponentDetail,
+    },
+    "is_template": {
+      "label": L10().filterTemplate,
+      "help_text": L10().filterTemplateDetail
+    },
+    "virtual": {
+      "label": L10().filterVirtual,
+      "help_text": L10().filterVirtualDetail,
+    },
+    "has_stock": {
+      "label": L10().filterInStock,
+      "help_text": L10().filterInStockDetail,
+    }
+  };
+
+  @override
   Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
 
     final page = await InvenTreePart().listPaginated(limit, offset, filters: params);

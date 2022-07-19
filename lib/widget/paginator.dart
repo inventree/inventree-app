@@ -179,6 +179,7 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
         "type": "boolean",
         "display_name": label,
         "label": label,
+        "help_text": help_text,
         "value": v,
         "tristate": (opts["tristate"] ?? true) as bool,
       };

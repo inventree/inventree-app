@@ -297,6 +297,42 @@
   "feedbackSuccess": "Feedback submitted",
   "@feedbackSuccess": {},
 
+  "filterActive": "Active",
+  "@filterActive": {},
+
+  "filterActiveDetail": "Show active parts",
+  "@filterActiveDetail": {},
+
+  "filterAssembly": "Assembled",
+  "@filterAssembly": {},
+
+  "filterAssemblyDetail": "Show assembled parts",
+  "@filterAssemblyDetail": {},
+
+  "filterComponent": "Component",
+  "@filterComponent": {},
+
+  "filterComponentDetail": "Show component parts",
+  "@filterComponentDetail": {},
+
+  "filterInStock": "In Stock",
+  "@filterInStock": {},
+
+  "filterInStockDetail": "Show parts which have stock",
+  "@filterInStockDetail": {},
+
+  "filterTemplate": "Template",
+  "@filterTemplate": {},
+
+  "filterTemplateDetail": "Show template parts",
+  "@filterTemplateDetail": {},
+
+  "filterVirtual": "Virtual",
+  "@filterVirtual": {},
+
+  "filterVirtualDetail": "Show virtual parts",
+  "@filterVirtualDetail": {},
+
   "filteringOptions": "Filtering Options",
   "@filteringOptions": {},
 
@@ -368,13 +404,13 @@
   "includeSubcategories": "Include Subcategories",
   "@includeSubcategories": {},
 
-  "includeSubcategoriesDetail": "Display subcategory parts in list view",
+  "includeSubcategoriesDetail": "Show results from subcategories",
   "@includeSubcategoriesDetail": {},
 
   "includeSublocations": "Include Sublocations",
   "@includeSublocations": {},
 
-  "includeSublocationsDetail": "Display sublocation items in list view",
+  "includeSublocationsDetail": "Show results from sublocations",
   "@includeSublocationsDetail": {},
 
   "incompleteDetails": "Incomplete profile details",
