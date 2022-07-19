@@ -62,8 +62,6 @@
     "@barcodeScanAssign": {},
     "barcodeScanGeneral": "Zeskanuj kod kreskowy InvenTree",
     "@barcodeScanGeneral": {},
-    "barcodeScanInItems": "Zeskanuj przedmioty do lokalizacji",
-    "@barcodeScanInItems": {},
     "barcodeScanLocation": "Skanuj lokalizację zapasów",
     "@barcodeScanLocation": {},
     "barcodeScanIntoLocationSuccess": "Zeskanowano do lokacji",

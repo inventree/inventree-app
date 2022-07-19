@@ -74,8 +74,6 @@
     "@barcodeScanAssign": {},
     "barcodeScanGeneral": "Olvass be egy InvenTree vonalkódot",
     "@barcodeScanGeneral": {},
-    "barcodeScanInItems": "Készlet bevételezése az adott helyre",
-    "@barcodeScanInItems": {},
     "barcodeScanLocation": "Hely beolvasása",
     "@barcodeScanLocation": {},
     "barcodeScanIntoLocationSuccess": "Beolvasva az adott helyre",

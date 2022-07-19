@@ -74,8 +74,6 @@
     "@barcodeScanAssign": {},
     "barcodeScanGeneral": "Scanear um Cod Bar InvenTree",
     "@barcodeScanGeneral": {},
-    "barcodeScanInItems": "Scanear itens de stock na localizacao",
-    "@barcodeScanInItems": {},
     "barcodeScanLocation": "Scanear localizacao do stock",
     "@barcodeScanLocation": {},
     "barcodeScanIntoLocationSuccess": "Localizacao scaneada",

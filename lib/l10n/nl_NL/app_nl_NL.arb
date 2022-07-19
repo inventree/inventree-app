@@ -74,8 +74,6 @@
     "@barcodeScanAssign": {},
     "barcodeScanGeneral": "Scan een InvenTree streepjescode",
     "@barcodeScanGeneral": {},
-    "barcodeScanInItems": "Scan voorraadartikelen naar locatie",
-    "@barcodeScanInItems": {},
     "barcodeScanLocation": "Scan voorraadlocatie",
     "@barcodeScanLocation": {},
     "barcodeScanIntoLocationSuccess": "Gescand naar locatie",

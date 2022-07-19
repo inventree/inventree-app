@@ -74,8 +74,6 @@
     "@barcodeScanAssign": {},
     "barcodeScanGeneral": "Einen InvenTree Barcode scannen",
     "@barcodeScanGeneral": {},
-    "barcodeScanInItems": "Artikel per Barcode-Scan zu Lagerort hinzufügen",
-    "@barcodeScanInItems": {},
     "barcodeScanLocation": "Lagerort scannen",
     "@barcodeScanLocation": {},
     "barcodeScanIntoLocationSuccess": "Artikel zu Lagerort hinzugefügt",
@@ -204,6 +202,8 @@
     "@feedbackError": {},
     "feedbackSuccess": "Feedback gesendet",
     "@feedbackSuccess": {},
+    "filteringOptions": "Filteroptionen",
+    "@filteringOptions": {},
     "formatException": "Formatfehler",
     "@formatException": {},
     "formatExceptionJson": "Format-Fehler im JSON",
@@ -447,6 +447,8 @@
     "@quantity": {
         "description": "Quantity"
     },
+    "quantityAvailable": "Verfügbare Menge",
+    "@quantityAvailable": {},
     "quantityEmpty": "Menge ist leer",
     "@quantityEmpty": {},
     "quantityInvalid": "Menge ist ungültig",
@@ -465,6 +467,8 @@
     "@receiveItem": {},
     "receivedItem": "Artikel wurde erhalten",
     "@receivedItem": {},
+    "reference": "Referenz",
+    "@reference": {},
     "refresh": "Neu laden",
     "@refresh": {},
     "refreshing": "Aktualisiere",
@@ -543,6 +547,8 @@
     "@scanBarcode": {},
     "scanIntoLocation": "In Lagerorten buchen",
     "@scanIntoLocation": {},
+    "scanIntoLocationDetail": "Artikel per Scan zu Lagerort hinzufügen",
+    "@scanIntoLocationDetail": {},
     "search": "Suchen",
     "@search": {
         "description": "search"
@@ -735,6 +741,10 @@
     "@transferStock": {
         "description": "transfer stock"
     },
+    "transferStockDetail": "Artikel an einen anderen Ort übertragen",
+    "@transferStockDetail": {},
+    "transferStockLocation": "Lagerort übertragen",
+    "@transferStockLocation": {},
     "translate": "Übersetzen",
     "@translate": {},
     "translateHelp": "Hilf dabei, die InvenTree App zu übersetzen",
@@ -765,6 +775,8 @@
     "@valueCannotBeEmpty": {},
     "valueRequired": "Wert erforderlich",
     "@valueRequired": {},
+    "variants": "Varianten",
+    "@variants": {},
     "version": "Version",
     "@version": {},
     "viewSupplierPart": "Zulieferer-Teil anzeigen",
