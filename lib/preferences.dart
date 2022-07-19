@@ -86,6 +86,11 @@ class InvenTreeSettingsManager {
 
   Future<Database> get _db async => InvenTreePreferencesDB.instance.database;
 
+
+  Future<void> removeValue(String key) async {
+    await store.record(key).delete(await _db);
+  }
+
   Future<dynamic> getValue(String key, dynamic backup) async {
 
     final value = await store.record(key).get(await _db);
@@ -103,12 +108,39 @@ class InvenTreeSettingsManager {
 
     if (value is bool) {
       return value;
+    } else if (value is String) {
+      return value.toLowerCase().contains("t");
     } else {
-      return backup;
+      return false;
     }
   }
 
+  // Load a tristate (true / false / null) setting
+  Future<bool?> getTriState(String key, dynamic backup) async {
+    final dynamic value = await getValue(key, backup);
+
+    if (value == null) {
+      return null;
+    } else if (value is bool) {
+      return value;
+    } else {
+      String s = value.toString().toLowerCase();
+
+      if (s.contains("t")) {
+        return true;
+      } else if (s.contains("f")) {
+        return false;
+      } else {
+        return null;
+      }
+    }
+  }
+
+  // Store a key:value pair in the database
   Future<void> setValue(String key, dynamic value) async {
+
+    // Encode null values as strings
+    value ??= "null";
 
     await store.record(key).put(await _db, value);
   }
