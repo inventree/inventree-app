@@ -606,19 +606,17 @@ class InvenTreeQRView extends StatefulWidget {
   final BarcodeHandler _handler;
 
   @override
-  State<StatefulWidget> createState() => _QRViewState(_handler);
+  State<StatefulWidget> createState() => _QRViewState();
 }
 
 
 class _QRViewState extends State<InvenTreeQRView> {
 
-  _QRViewState(this._handler) : super();
+  _QRViewState() : super();
 
   final GlobalKey qrKey = GlobalKey(debugLabel: "QR");
 
   QRViewController? _controller;
-
-  final BarcodeHandler _handler;
 
   bool flash_status = false;
 
@@ -652,7 +650,7 @@ class _QRViewState extends State<InvenTreeQRView> {
       _controller?.pauseCamera();
 
       if (barcode.code != null) {
-        _handler.processBarcode(_controller, barcode.code ?? "");
+        widget._handler.processBarcode(_controller, barcode.code ?? "");
       }
     });
   }
@@ -711,7 +709,7 @@ class _QRViewState extends State<InvenTreeQRView> {
                     children: [
                       Spacer(),
                       Padding(
-                        child: Text(_handler.getOverlayText(context),
+                        child: Text(widget._handler.getOverlayText(context),
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.white),
