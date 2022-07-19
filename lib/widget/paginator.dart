@@ -276,7 +276,9 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
       Map<String, String> params = widget.filters;
 
       // Include user search term
-      params["search"] = "${searchTerm}";
+      if (searchTerm.isNotEmpty) {
+        params["search"] = "${searchTerm}";
+      }
 
       // Use custom query ordering if available
       String o = await orderingString;

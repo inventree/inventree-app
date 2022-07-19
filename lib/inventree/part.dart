@@ -162,8 +162,7 @@ class InvenTreePart extends InvenTreeModel {
   @override
   Map<String, String> defaultListFilters() {
     return {
-      "cascade": "false",
-      "active": "true",
+      "location_detail": "true",
     };
   }
 
