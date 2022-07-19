@@ -22,12 +22,13 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_markdown: ^0.6.9                # Rendering markdown
+  flutter_overlay_loader: ^2.0.0          # Overlay screen support
   font_awesome_flutter: ^9.1.0            # FontAwesome icon set
   http: ^0.13.4
   image_picker: ^0.8.3                    # Select or take photos
   infinite_scroll_pagination: ^3.1.0      # Let the server do all the work!
   intl: ^0.17.0
-  one_context: ^1.1.0                     # Dialogs without requiring context
+  one_context: ^1.1.1                     # Dialogs without requiring context
   open_file: ^3.2.1                       # Open local files
   package_info_plus: ^1.0.4               # App information introspection
   path: ^1.8.0

@@ -10,6 +10,7 @@ import "package:inventree/l10.dart";
 import "package:inventree/inventree/stock.dart";
 
 import "package:inventree/widget/location_list.dart";
+import 'package:inventree/widget/progress.dart';
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/stock_detail.dart";
@@ -218,19 +219,21 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
               title: Text(L10().parentLocation),
               subtitle: Text("${location!.parentPathString}"),
               leading: FaIcon(FontAwesomeIcons.levelUpAlt, color: COLOR_CLICK),
-              onTap: () {
+              onTap: () async {
 
-                int parent = location?.parentId ?? -1;
+                int parentId = location?.parentId ?? -1;
 
-                if (parent < 0) {
+                if (parentId < 0) {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(null)));
                 } else {
 
-                  InvenTreeStockLocation().get(parent).then((var loc) {
-                    if (loc is InvenTreeStockLocation) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(loc)));
-                    }
-                  });
+                  showLoadingOverlay(context);
+                  var loc = await InvenTreeStockLocation().get(parentId);
+                  hideLoadingOverlay();
+
+                  if (loc is InvenTreeStockLocation) {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(loc)));
+                  }
                 }
               },
             )

@@ -9,6 +9,7 @@ import "package:inventree/inventree/part.dart";
 
 import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/part_detail.dart";
+import 'package:inventree/widget/progress.dart';
 import "package:inventree/widget/refreshable_state.dart";
 
 
@@ -122,15 +123,6 @@ class _PaginatedPartListState extends PaginatedSearchState<PaginatedPartList> {
     return page;
   }
 
-  void _openPart(BuildContext context, int pk) {
-    // Attempt to load the part information
-    InvenTreePart().get(pk).then((var part) {
-      if (part is InvenTreePart) {
-
-        Navigator.push(context, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
-      }
-    });
-  }
 
   @override
   Widget buildItem(BuildContext context, InvenTreeModel model) {
@@ -147,7 +139,7 @@ class _PaginatedPartListState extends PaginatedSearchState<PaginatedPartList> {
         height: 40,
       ),
       onTap: () {
-        _openPart(context, part.pk);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
       },
     );
   }

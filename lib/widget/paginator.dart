@@ -384,8 +384,8 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
               PagedSliverList.separated(
                 pagingController: _pagingController,
                 builderDelegate: PagedChildBuilderDelegate<InvenTreeModel>(
-                    itemBuilder: (context, item, index) {
-                      return buildItem(context, item);
+                    itemBuilder: (ctx, item, index) {
+                      return buildItem(ctx, item);
                     },
                     noItemsFoundIndicatorBuilder: (context) {
                       return NoResultsWidget(noResultsText);
@@ -450,9 +450,11 @@ class NoResultsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return ListTile(
-      title: Text(L10().noResults),
-      subtitle: Text(description),
-      leading: FaIcon(FontAwesomeIcons.exclamationCircle),
+      title: Text(
+        description,
+        style: TextStyle(fontStyle: FontStyle.italic),
+      ),
+      leading: FaIcon(FontAwesomeIcons.exclamationCircle, color: COLOR_WARNING),
     );
   }
 

@@ -12,6 +12,7 @@ import "package:inventree/inventree/part.dart";
 
 import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/part_detail.dart";
+import 'package:inventree/widget/progress.dart';
 import "package:inventree/widget/refreshable_state.dart";
 
 
@@ -125,11 +126,14 @@ class _PaginatedBomListState extends PaginatedSearchState<PaginatedBomList> {
         height: 40,
       ),
       onTap: subPart == null ? null : () async {
-        InvenTreePart().get(bomItem.subPartId).then((var part) {
-          if (part is InvenTreePart) {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
-          }
-        });
+
+        showLoadingOverlay(context);
+        var part = await InvenTreePart().get(bomItem.subPartId);
+        hideLoadingOverlay();
+
+        if (part is InvenTreePart) {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
+        }
       },
     );
   }

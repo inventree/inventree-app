@@ -194,6 +194,11 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
       return;
     }
 
+    // Ignore if the widget is no longer active
+    if (!mounted) {
+      return;
+    }
+
     final notifications = await InvenTreeNotification().list();
 
     setState(() {
