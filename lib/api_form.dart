@@ -704,7 +704,8 @@ class APIFormField {
       labelStyle: _labelStyle(),
       helperText: helpText,
       helperStyle: _helperStyle(),
-      initial: value as bool,
+      initial: value as bool?,
+      tristate: (getParameter("tristate") ?? false) as bool,
       onSaved: (val) {
         data["value"] = val;
       },
