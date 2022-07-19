@@ -135,11 +135,21 @@ class InvenTreeFileService extends FileService {
  */
 
 
+/*
+ * API class which manages all communication with the InvenTree server
+ */
 class InvenTreeAPI {
+
+  factory InvenTreeAPI() {
+    return _api;
+  }
+
+  InvenTreeAPI._internal();
 
   // List of callback functions to trigger when the connection status changes
   List<Function()> _statusCallbacks = [];
 
+  // Register a callback function to be notified when the connection status changes
   void registerCallback(Function() func) => _statusCallbacks.add(func);
 
   void _connectionStatusChanged() {
@@ -148,12 +158,6 @@ class InvenTreeAPI {
       func();
     }
   }
-
-  factory InvenTreeAPI() {
-    return _api;
-  }
-
-  InvenTreeAPI._internal();
 
   // Minimum required API version for server
   static const _minApiVersion = 20;

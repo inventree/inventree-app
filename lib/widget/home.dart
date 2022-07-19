@@ -374,7 +374,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
       title = L10().serverNotSelected;
     } else if (connecting) {
       title = L10().serverConnecting;
-      subtitle = serverAddress ?? "";
+      subtitle = serverAddress;
       leading = Spinner(icon: FontAwesomeIcons.spinner, color: COLOR_PROGRESS);
     }
 
