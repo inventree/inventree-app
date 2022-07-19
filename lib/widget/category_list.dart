@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/part.dart";
@@ -25,33 +26,54 @@ class _PartCategoryListState extends RefreshableState<PartCategoryList> {
 
   final Map<String, String> filters;
 
+  bool showFilterOptions = false;
+
+  @override
+  List<Widget> getAppBarActions(BuildContext context) => [
+    IconButton(
+      icon: FaIcon(FontAwesomeIcons.filter),
+      onPressed: () async {
+        setState(() {
+          showFilterOptions = !showFilterOptions;
+        });
+      },
+    )
+  ];
+
   @override
   String getAppBarTitle(BuildContext context) => L10().partCategories;
 
   @override
   Widget getBody(BuildContext context) {
-    return PaginatedPartCategoryList(filters);
+    return PaginatedPartCategoryList(filters, showFilterOptions);
   }
 }
 
+class PaginatedPartCategoryList extends PaginatedSearchWidget {
 
-class PaginatedPartCategoryList extends StatefulWidget {
-
-  const PaginatedPartCategoryList(this.filters);
-
-  final Map<String, String> filters;
+  const PaginatedPartCategoryList(Map<String, String> filters, bool showSearch) : super(filters: filters, showSearch: showSearch);
 
   @override
-  _PaginatedPartCategoryListState createState() => _PaginatedPartCategoryListState(filters);
+  _PaginatedPartCategoryListState createState() => _PaginatedPartCategoryListState();
 }
 
 
 class _PaginatedPartCategoryListState extends PaginatedSearchState<PaginatedPartCategoryList> {
 
-  _PaginatedPartCategoryListState(Map<String, String> filters) : super(filters);
+  // _PaginatedPartCategoryListState(Map<String, String> filters, bool searchEnabled) : super(filters, searchEnabled);
 
   @override
   String get prefix => "category_";
+
+  @override
+  Map<String, Map<String, dynamic>> get filterOptions => {
+    "cascade": {
+      "default": false,
+      "label": L10().includeSubcategories,
+      "help_text": L10().includeSubcategoriesDetail,
+      "tristate": false,
+    }
+  };
 
   @override
   Map<String, String> get orderingOptions => {

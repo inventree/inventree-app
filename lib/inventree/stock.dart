@@ -224,7 +224,6 @@ class InvenTreeStockItem extends InvenTreeModel {
       "part_detail": "true",
       "location_detail": "true",
       "supplier_detail": "true",
-      "cascade": "false",
       "in_stock": "true",
     };
   }

@@ -1,13 +1,15 @@
 import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+
+import "package:inventree/api.dart";
+import "package:inventree/l10.dart";
 
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/part.dart";
+
 import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/part_detail.dart";
 import "package:inventree/widget/refreshable_state.dart";
-import "package:inventree/api.dart";
-import "package:inventree/preferences.dart";
-import "package:inventree/l10.dart";
 
 
 class PartList extends StatefulWidget {
@@ -31,35 +33,43 @@ class _PartListState extends RefreshableState<PartList> {
 
   final Map<String, String> filters;
 
+  bool showFilterOptions = false;
+
   @override
   String getAppBarTitle(BuildContext context) => title.isNotEmpty ? title : L10().parts;
 
   @override
+  List<Widget> getAppBarActions(BuildContext context) => [
+    IconButton(
+      icon: FaIcon(FontAwesomeIcons.filter),
+      onPressed: () async {
+        setState(() {
+          showFilterOptions = !showFilterOptions;
+        });
+      },
+    )
+  ];
+
+  @override
   Widget getBody(BuildContext context) {
-    return PaginatedPartList(filters);
+    return PaginatedPartList(filters, showFilterOptions);
   }
 
 }
 
 
-class PaginatedPartList extends StatefulWidget {
+class PaginatedPartList extends PaginatedSearchWidget {
 
-  const PaginatedPartList(this.filters, {this.onTotalChanged});
-
-  final Map<String, String> filters;
-
-  final Function(int)? onTotalChanged;
+  const PaginatedPartList(Map<String, String> filters, bool showSearch) : super(filters: filters, showSearch: showSearch);
 
   @override
-  _PaginatedPartListState createState() => _PaginatedPartListState(filters, onTotalChanged);
+  _PaginatedPartListState createState() => _PaginatedPartListState();
 }
 
 
 class _PaginatedPartListState extends PaginatedSearchState<PaginatedPartList> {
 
-  _PaginatedPartListState(Map<String, String> filters, this.onTotalChanged) : super(filters);
-
-  Function(int)? onTotalChanged;
+  _PaginatedPartListState() : super();
 
   @override
   String get prefix => "part_";
@@ -72,11 +82,40 @@ class _PaginatedPartListState extends PaginatedSearchState<PaginatedPartList> {
   };
 
   @override
+  Map<String, Map<String, dynamic>> get filterOptions => {
+    "cascade": {
+      "default": true,
+      "label": L10().includeSubcategories,
+      "help_text": L10().includeSubcategoriesDetail,
+    },
+    "active": {
+      "label": L10().filterActive,
+      "help_text": L10().filterActiveDetail,
+    },
+    "assembly": {
+      "label": L10().filterAssembly,
+      "help_text": L10().filterAssemblyDetail
+    },
+    "component": {
+      "label": L10().filterComponent,
+      "help_text": L10().filterComponentDetail,
+    },
+    "is_template": {
+      "label": L10().filterTemplate,
+      "help_text": L10().filterTemplateDetail
+    },
+    "virtual": {
+      "label": L10().filterVirtual,
+      "help_text": L10().filterVirtualDetail,
+    },
+    "has_stock": {
+      "label": L10().filterInStock,
+      "help_text": L10().filterInStockDetail,
+    }
+  };
+
+  @override
   Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
-
-    final bool cascade = await InvenTreeSettingsManager().getBool(INV_PART_SUBCATEGORY, true);
-
-    params["cascade"] = "${cascade}";
 
     final page = await InvenTreePart().listPaginated(limit, offset, filters: params);
 

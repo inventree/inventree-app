@@ -1,17 +1,19 @@
 import "dart:async";
 
 import "package:flutter/material.dart";
-
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
+import "package:inventree/api.dart";
+import "package:inventree/app_colors.dart";
+import "package:inventree/l10.dart";
+
+import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/purchase_order.dart";
+import "package:inventree/inventree/stock.dart";
+
 import "package:inventree/widget/part_list.dart";
 import "package:inventree/widget/purchase_order_list.dart";
 import "package:inventree/widget/refreshable_state.dart";
-import "package:inventree/api.dart";
-import "package:inventree/l10.dart";
-import "package:inventree/inventree/part.dart";
-import "package:inventree/inventree/stock.dart";
 import "package:inventree/widget/stock_list.dart";
 import "package:inventree/widget/category_list.dart";
 import "package:inventree/widget/company_list.dart";
@@ -222,31 +224,32 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
 
     // Search input
     tiles.add(
-      TextFormField(
-        decoration: InputDecoration(
-          hintText: L10().queryEmpty,
-          prefixIcon: IconButton(
-            icon: FaIcon(FontAwesomeIcons.search),
-            onPressed: null,
+      ListTile(
+        title: TextFormField(
+          decoration: InputDecoration(
+            hintText: L10().queryEmpty,
           ),
-          suffixIcon: IconButton(
-            icon: FaIcon(FontAwesomeIcons.backspace, color: Colors.red),
-            onPressed: () {
-              searchController.clear();
-              onSearchTextChanged("", immediate: true);
-              _focusNode.requestFocus();
-            }
-          ),
+          readOnly: false,
+          autofocus: true,
+          autocorrect: false,
+          focusNode: _focusNode,
+          controller: searchController,
+          onChanged: (String text) {
+            onSearchTextChanged(text);
+          },
         ),
-        readOnly: false,
-        autofocus: true,
-        autocorrect: false,
-        focusNode: _focusNode,
-        controller: searchController,
-        onChanged: (String text) {
-          onSearchTextChanged(text);
-        },
-      ),
+        trailing: GestureDetector(
+          child: FaIcon(
+            searchController.text.isEmpty ? FontAwesomeIcons.search : FontAwesomeIcons.backspace,
+            color: searchController.text.isEmpty ? COLOR_CLICK : COLOR_DANGER,
+          ),
+          onTap: () {
+            searchController.clear();
+            onSearchTextChanged("", immediate: true);
+          },
+        ),
+      )
+
     );
 
     String query = searchController.text;
@@ -406,8 +409,11 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
     if (!isSearching() && results.isEmpty && searchController.text.isNotEmpty) {
       tiles.add(
         ListTile(
-          title: Text(L10().queryNoResults),
-          leading: FaIcon(FontAwesomeIcons.search),
+          title: Text(
+            L10().queryNoResults,
+            style: TextStyle(fontStyle: FontStyle.italic),
+          ),
+          leading: FaIcon(FontAwesomeIcons.searchMinus),
         )
       );
     } else {

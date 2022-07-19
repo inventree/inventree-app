@@ -15,22 +15,71 @@ import "package:inventree/widget/refreshable_state.dart";
 
 
 /*
- * Generic stateful widget for displaying paginated data retrieved via the API
- *
- * - Can be displayed as "full screen" (with app-bar and drawer)
- * - Can be displayed as a standalone widget
+ * Abstract base widget class for rendering a PaginatedSearchState
  */
-class PaginatedSearchState<T extends StatefulWidget> extends State<T> with BaseWidgetProperties {
+abstract class PaginatedSearchWidget extends StatefulWidget {
 
-  PaginatedSearchState(this.filters);
+  const PaginatedSearchWidget({this.filters = const {}, this.showSearch = false});
 
   final Map<String, String> filters;
+
+  final bool showSearch;
+}
+
+
+/*
+ * Generic stateful widget for displaying paginated data retrieved via the API
+ */
+abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends State<T> with BaseWidgetProperties {
 
   static const _pageSize = 25;
 
   // Prefix for storing and loading pagination options
   // Override in implementing class
   String get prefix => "prefix_";
+
+  // Return a map of boolean filtering options available for this list
+  // Should be overridden by an implementing subclass
+  Map<String, Map<String, dynamic>> get filterOptions => {};
+
+  // Return the boolean value of a particular boolean filter
+  Future<bool?> getBooleanFilterValue(String key) async {
+    key = "${prefix}bool_${key}";
+
+    Map<String, dynamic> opts = filterOptions[key] ?? {};
+
+    bool? backup;
+    dynamic v = opts["default"];
+
+    if (v is bool) {
+      backup = v;
+    }
+
+    final result = await InvenTreeSettingsManager().getTriState(key, backup);
+    return result;
+  }
+
+  // Set the boolean value of a particular boolean filter
+  Future<void> setBooleanFilterValue(String key, bool? value) async {
+    key = "${prefix}bool_${key}";
+    await InvenTreeSettingsManager().setValue(key, value);
+  }
+
+  // Construct the boolean filter options for this list
+  Future<Map<String, String>> constructBooleanFilters() async {
+
+    Map<String, String> f = {};
+
+    for (String k in filterOptions.keys) {
+      bool? value = await getBooleanFilterValue(k);
+
+      if (value is bool) {
+        f[k] = value ? "true" : "false";
+      }
+    }
+
+    return f;
+  }
 
   // Return a map of sorting options available for this list
   // Should be overridden by an implementing subclass
@@ -115,6 +164,34 @@ class PaginatedSearchState<T extends StatefulWidget> extends State<T> with BaseW
       }
     };
 
+    // Add in boolean filter options
+    for (String key in filterOptions.keys) {
+      Map<String, dynamic> opts = filterOptions[key] ?? {};
+
+      // Determine field information
+      String label = (opts["label"] ?? key) as String;
+      String? help_text = opts["help_text"] as String?;
+
+      bool tristate = (opts["tristate"] ?? true) as bool;
+
+      bool? v = await getBooleanFilterValue(key);
+
+      // Prevent null value if not tristate
+      if (!tristate && v == null) {
+        v = false;
+      }
+
+      // Add in the particular field
+      fields[key] = {
+        "type": "boolean",
+        "display_name": label,
+        "label": label,
+        "help_text": help_text,
+        "value": v,
+        "tristate": (opts["tristate"] ?? true) as bool,
+      };
+    }
+
     // Launch an interactive form for the user to select options
     launchApiForm(
       context,
@@ -131,6 +208,20 @@ class PaginatedSearchState<T extends StatefulWidget> extends State<T> with BaseW
         // Save values to settings
         await InvenTreeSettingsManager().setValue("${prefix}ordering_field", f);
         await InvenTreeSettingsManager().setValue("${prefix}ordering_order", o);
+
+        // Save boolean fields
+        for (String key in filterOptions.keys) {
+
+          bool? v;
+
+          dynamic value = data[key];
+
+          if (value is bool) {
+            v = value;
+          }
+
+          await setBooleanFilterValue(key, v);
+        }
 
         // Refresh data from the server
         _pagingController.refresh();
@@ -189,10 +280,12 @@ class PaginatedSearchState<T extends StatefulWidget> extends State<T> with BaseW
    */
   Future<void> _fetchPage(int pageKey) async {
     try {
-      Map<String, String> params = filters;
+      Map<String, String> params = widget.filters;
 
       // Include user search term
-      params["search"] = "${searchTerm}";
+      if (searchTerm.isNotEmpty) {
+        params["search"] = "${searchTerm}";
+      }
 
       // Use custom query ordering if available
       String o = await orderingString;
@@ -200,11 +293,23 @@ class PaginatedSearchState<T extends StatefulWidget> extends State<T> with BaseW
         params["ordering"] = o;
       }
 
+      Map<String, String> f = await constructBooleanFilters();
+
+      if (f.isNotEmpty) {
+        params.addAll(f);
+      }
+
       final page = await requestPage(
         _pageSize,
         pageKey,
         params
       );
+
+      // We may have disposed of the widget while the request was in progress
+      // If this is the case, abort
+      if (!mounted) {
+        return;
+      }
 
       int pageLength = page?.length ?? 0;
       int pageCount = page?.count ?? 0;
@@ -263,32 +368,39 @@ class PaginatedSearchState<T extends StatefulWidget> extends State<T> with BaseW
   @override
   Widget build (BuildContext context) {
 
+    List<Widget> children = [];
+
+    if (widget.showSearch) {
+      children.add(buildSearchInput(context));
+    }
+
+    children.add(
+      Expanded(
+        child: CustomScrollView(
+            shrinkWrap: true,
+            physics: ClampingScrollPhysics(),
+            scrollDirection: Axis.vertical,
+            slivers: <Widget>[
+              PagedSliverList.separated(
+                pagingController: _pagingController,
+                builderDelegate: PagedChildBuilderDelegate<InvenTreeModel>(
+                    itemBuilder: (context, item, index) {
+                      return buildItem(context, item);
+                    },
+                    noItemsFoundIndicatorBuilder: (context) {
+                      return NoResultsWidget(noResultsText);
+                    }
+                ),
+                separatorBuilder: (context, item) => const Divider(height: 1),
+              )
+            ]
+        )
+      )
+    );
+
     return Column(
         mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          buildSearchInput(context),
-          Expanded(
-              child: CustomScrollView(
-                  shrinkWrap: true,
-                  physics: ClampingScrollPhysics(),
-                  scrollDirection: Axis.vertical,
-                  slivers: <Widget>[
-                    PagedSliverList.separated(
-                      pagingController: _pagingController,
-                      builderDelegate: PagedChildBuilderDelegate<InvenTreeModel>(
-                          itemBuilder: (context, item, index) {
-                            return buildItem(context, item);
-                          },
-                          noItemsFoundIndicatorBuilder: (context) {
-                            return NoResultsWidget(noResultsText);
-                          }
-                      ),
-                      separatorBuilder: (context, item) => const Divider(height: 1),
-                    )
-                  ]
-              )
-          )
-        ]
+        children: children,
     );
   }
 

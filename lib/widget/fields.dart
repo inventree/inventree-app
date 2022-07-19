@@ -142,7 +142,10 @@ class FilePickerDialog {
 
 class CheckBoxField extends FormField<bool> {
   CheckBoxField({
-      String? label, bool initial = false, Function(bool?)? onSaved,
+      String? label,
+      bool? initial = false,
+      bool tristate = false,
+      Function(bool?)? onSaved,
       TextStyle? labelStyle,
       String? helperText,
       TextStyle? helperStyle,
@@ -155,6 +158,7 @@ class CheckBoxField extends FormField<bool> {
             //dense: state.hasError,
             title: label != null ? Text(label, style: labelStyle) : null,
             value: state.value,
+            tristate: tristate,
             onChanged: state.didChange,
             subtitle: helperText != null ? Text(helperText, style: helperStyle) : null,
             contentPadding: EdgeInsets.zero,

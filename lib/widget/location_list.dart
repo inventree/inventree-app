@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/stock.dart";
@@ -26,30 +27,57 @@ class _StockLocationListState extends RefreshableState<StockLocationList> {
 
   final Map<String, String> filters;
 
+  bool showFilterOptions = false;
+
+  @override
+  List<Widget> getAppBarActions(BuildContext context) => [
+    IconButton(
+      icon: FaIcon(FontAwesomeIcons.filter),
+      onPressed: () async {
+        setState(() {
+          showFilterOptions = !showFilterOptions;
+        });
+      },
+    )
+  ];
+
   @override
   String getAppBarTitle(BuildContext context) => L10().stockLocations;
 
   @override
   Widget getBody(BuildContext context) {
-    return PaginatedStockLocationList(filters);
+    return PaginatedStockLocationList(filters, showFilterOptions);
   }
 }
 
 
-class PaginatedStockLocationList extends StatefulWidget {
+class PaginatedStockLocationList extends PaginatedSearchWidget {
 
-  const PaginatedStockLocationList(this.filters);
-
-  final Map<String, String> filters;
+  const PaginatedStockLocationList(Map<String, String> filters, bool showSearch) : super(filters: filters, showSearch: showSearch);
 
   @override
-  _PaginatedStockLocationListState createState() => _PaginatedStockLocationListState(filters);
+  _PaginatedStockLocationListState createState() => _PaginatedStockLocationListState();
 }
 
 
 class _PaginatedStockLocationListState extends PaginatedSearchState<PaginatedStockLocationList> {
 
-  _PaginatedStockLocationListState(Map<String, String> filters) : super(filters);
+  _PaginatedStockLocationListState() : super();
+
+  @override
+  Map<String, String> get orderingOptions => {
+    "name": L10().name,
+    "level": L10().level,
+  };
+
+  @override
+  Map<String, Map<String, dynamic>> get filterOptions => {
+    "cascade": {
+      "label": L10().includeSublocations,
+      "help_text": L10().includeSublocationsDetail,
+      "tristate": false,
+    }
+  };
 
   @override
   Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {

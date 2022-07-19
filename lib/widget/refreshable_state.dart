@@ -9,9 +9,7 @@ import "package:flutter/material.dart";
 mixin BaseWidgetProperties {
 
   // Return a list of appBar actions (default = None)
-  List<Widget> getAppBarActions(BuildContext context) {
-    return [];
-  }
+  List<Widget> getAppBarActions(BuildContext context) => [];
 
   // Return a title for the appBar
   String getAppBarTitle(BuildContext context) { return "--- app bar ---"; }

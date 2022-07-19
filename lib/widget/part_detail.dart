@@ -606,7 +606,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       );
       case 1:
         return PaginatedStockItemList(
-          {"part": "${part.pk}"}
+          {"part": "${part.pk}"},
+          true,
         );
       case 2:
         return Center(

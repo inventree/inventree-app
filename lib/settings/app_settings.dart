@@ -21,11 +21,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
   bool barcodeSounds = true;
   bool serverSounds = true;
 
-  // Part settings
-  bool partSubcategory = false;
-
   // Stock settings
-  bool stockSublocation = false;
   bool stockShowHistory = false;
 
   bool reportErrors = true;
@@ -45,9 +41,6 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
     barcodeSounds = await InvenTreeSettingsManager().getValue(INV_SOUNDS_BARCODE, true) as bool;
     serverSounds = await InvenTreeSettingsManager().getValue(INV_SOUNDS_SERVER, true) as bool;
 
-    partSubcategory = await InvenTreeSettingsManager().getValue(INV_PART_SUBCATEGORY, true) as bool;
-
-    stockSublocation = await InvenTreeSettingsManager().getValue(INV_STOCK_SUBLOCATION, true) as bool;
     stockShowHistory = await InvenTreeSettingsManager().getValue(INV_STOCK_SHOW_HISTORY, false) as bool;
 
     reportErrors = await InvenTreeSettingsManager().getValue(INV_REPORT_ERRORS, true) as bool;
@@ -68,48 +61,12 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
       body: Container(
         child: ListView(
           children: [
-            ListTile(
-              title: Text(
-                L10().parts,
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              leading: FaIcon(FontAwesomeIcons.shapes),
-            ),
-            ListTile(
-              title: Text(L10().includeSubcategories),
-              subtitle: Text(L10().includeSubcategoriesDetail),
-              leading: FaIcon(FontAwesomeIcons.sitemap),
-              trailing: Switch(
-                value: partSubcategory,
-                onChanged: (bool value) {
-                  InvenTreeSettingsManager().setValue(INV_PART_SUBCATEGORY, value);
-                  setState(() {
-                    partSubcategory = value;
-                  });
-                },
-              ),
-            ),
             /* Stock Settings */
-            Divider(height: 3),
             ListTile(
               title: Text(L10().stock,
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               leading: FaIcon(FontAwesomeIcons.boxes),
-            ),
-            ListTile(
-              title: Text(L10().includeSublocations),
-              subtitle: Text(L10().includeSublocationsDetail),
-              leading: FaIcon(FontAwesomeIcons.sitemap),
-              trailing: Switch(
-                value: stockSublocation,
-                onChanged: (bool value) {
-                  InvenTreeSettingsManager().setValue(INV_STOCK_SUBLOCATION, value);
-                  setState(() {
-                    stockSublocation = value;
-                  });
-                },
-              ),
             ),
             ListTile(
               title: Text(L10().stockItemHistory),
