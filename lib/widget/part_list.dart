@@ -104,6 +104,10 @@ class _PaginatedPartListState extends PaginatedSearchState<PaginatedPartList> {
       "label": L10().filterTemplate,
       "help_text": L10().filterTemplateDetail
     },
+    "trackable": {
+      "label": L10().filterTrackable,
+      "help_text": L10().filterTrackableDetail,
+    },
     "virtual": {
       "label": L10().filterVirtual,
       "help_text": L10().filterVirtualDetail,

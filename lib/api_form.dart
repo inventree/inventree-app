@@ -18,6 +18,7 @@ import "package:inventree/widget/fields.dart";
 import "package:inventree/l10.dart";
 
 import "package:flutter/material.dart";
+import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/snacks.dart";
 
 
@@ -859,7 +860,9 @@ Future<void> launchApiForm(
 
   if (url.isNotEmpty) {
 
+    showLoadingOverlay(context);
     var options = await InvenTreeAPI().options(url);
+    hideLoadingOverlay();
 
     // Invalid response from server
     if (!options.isValid()) {
@@ -1114,20 +1117,25 @@ class _APIFormWidgetState extends State<APIFormWidget> {
     }
 
     if (method == "POST") {
+
+      showLoadingOverlay(context);
       final response =  await InvenTreeAPI().post(
         url,
         body: data,
         expectedStatusCode: null
       );
+      hideLoadingOverlay();
 
       return response;
 
     } else {
+      showLoadingOverlay(context);
       final response = await InvenTreeAPI().patch(
         url,
         body: data,
         expectedStatusCode: null
       );
+      hideLoadingOverlay();
 
       return response;
     }

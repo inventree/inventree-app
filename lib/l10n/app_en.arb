@@ -333,6 +333,12 @@
   "filterTemplateDetail": "Show template parts",
   "@filterTemplateDetail": {},
 
+  "filterTrackable": "Trackable",
+  "@filterTrackable": {},
+
+  "filterTrackableDetail": "Show trackable parts",
+  "@filterTrackableDetail": {},
+
   "filterVirtual": "Virtual",
   "@filterVirtual": {},
 
