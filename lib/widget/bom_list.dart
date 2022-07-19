@@ -12,7 +12,7 @@ import "package:inventree/inventree/part.dart";
 
 import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/part_detail.dart";
-import 'package:inventree/widget/progress.dart';
+import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
 
 

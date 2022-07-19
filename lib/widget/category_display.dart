@@ -9,7 +9,7 @@ import "package:inventree/inventree/part.dart";
 
 import "package:inventree/widget/category_list.dart";
 import "package:inventree/widget/part_list.dart";
-import 'package:inventree/widget/progress.dart';
+import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/part_detail.dart";
 import "package:inventree/widget/refreshable_state.dart";

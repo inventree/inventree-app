@@ -10,7 +10,7 @@ import "package:inventree/l10.dart";
 import "package:inventree/inventree/stock.dart";
 
 import "package:inventree/widget/location_list.dart";
-import 'package:inventree/widget/progress.dart';
+import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/stock_detail.dart";
