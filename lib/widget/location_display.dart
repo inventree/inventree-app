@@ -197,7 +197,10 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     if (location == null) {
       return Card(
         child: ListTile(
-          title: Text(L10().stockTopLevel),
+          title: Text(
+            L10().stockTopLevel,
+            style: TextStyle(fontStyle: FontStyle.italic)
+          ),
         )
       );
     } else {

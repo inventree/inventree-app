@@ -55,6 +55,8 @@ class _PaginatedPartCategoryListState extends PaginatedSearchState<PaginatedPart
     "cascade": {
       "default": false,
       "label": L10().includeSubcategories,
+      "help_text": L10().includeSubcategoriesDetail,
+      "tristate": false,
     }
   };
 

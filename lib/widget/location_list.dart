@@ -56,6 +56,15 @@ class _PaginatedStockLocationListState extends PaginatedSearchState<PaginatedSto
   };
 
   @override
+  Map<String, Map<String, dynamic>> get filterOptions => {
+    "cascade": {
+      "label": L10().includeSublocations,
+      "help_text": L10().includeSublocationsDetail,
+      "tristate": false,
+    }
+  };
+
+  @override
   Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
 
     final page = await InvenTreeStockLocation().listPaginated(limit, offset, filters: params);
