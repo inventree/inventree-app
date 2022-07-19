@@ -209,7 +209,6 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
         ListTile(
           title: Text("${location!.name}"),
           subtitle: Text("${location!.description}"),
-          trailing: Text("${location!.itemcount}"),
         ),
       ];
 
@@ -272,20 +271,15 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
   Widget getSelectedWidget(int index) {
 
-    // Construct filters for paginated stock list
-    Map<String, String> filters = {};
-
-    if (location != null) {
-      filters["location"] = "${location!.pk}";
-    }
-
     switch (index) {
       case 0:
         return Column(
           children: detailTiles(),
         );
       case 1:
-        return PaginatedStockItemList(filters, true);
+        return Column(
+          children: stockTiles(),
+        );
       case 2:
         return ListView(
           children: ListTile.divideTiles(
@@ -303,8 +297,8 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     return getSelectedWidget(tabIndex);
   }
 
-
-List<Widget> detailTiles() {
+  // Construct the "details" pane
+  List<Widget> detailTiles() {
     List<Widget> tiles = [
       locationDescriptionCard(),
       ListTile(
@@ -335,6 +329,40 @@ List<Widget> detailTiles() {
     return tiles;
   }
 
+  // Construct the "stock" panel
+  List<Widget> stockTiles() {
+
+    Map<String, String> filters = {};
+
+    if (location != null) {
+      filters["location"] = location!.pk.toString();
+    }
+
+    return [
+      locationDescriptionCard(includeActions: false),
+      ListTile(
+        title: Text(
+          L10().stock,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        trailing: GestureDetector(
+          child: FaIcon(FontAwesomeIcons.filter),
+          onTap: () async {
+            setState(() {
+              showFilterOptions = !showFilterOptions;
+            });
+          },
+        ),
+      ),
+      Expanded(
+        child: PaginatedStockItemList(
+          filters,
+          showFilterOptions,
+        ),
+        flex: 10,
+      )
+    ];
+  }
 
   List<Widget> actionTiles() {
     List<Widget> tiles = [];

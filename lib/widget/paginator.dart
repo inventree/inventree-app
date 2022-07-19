@@ -172,7 +172,14 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
       String label = (opts["label"] ?? key) as String;
       String? help_text = opts["help_text"] as String?;
 
+      bool tristate = (opts["tristate"] ?? true) as bool;
+
       bool? v = await getBooleanFilterValue(key);
+
+      // Prevent null value if not tristate
+      if (!tristate && v == null) {
+        v = false;
+      }
 
       // Add in the particular field
       fields[key] = {

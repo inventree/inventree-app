@@ -321,6 +321,12 @@
   "filterInStockDetail": "Show parts which have stock",
   "@filterInStockDetail": {},
 
+  "filterSerialized": "Serialized",
+  "@filterSerialized": {},
+
+  "filterSerializedDetail": "Show serialized stock items",
+  "@filterSerializedDetail": {},
+
   "filterTemplate": "Template",
   "@filterTemplate": {},
 
