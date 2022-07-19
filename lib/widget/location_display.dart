@@ -201,6 +201,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
             L10().stockTopLevel,
             style: TextStyle(fontStyle: FontStyle.italic)
           ),
+          leading: FaIcon(FontAwesomeIcons.boxes),
         )
       );
     } else {
@@ -209,6 +210,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
         ListTile(
           title: Text("${location!.name}"),
           subtitle: Text("${location!.description}"),
+          leading: FaIcon(FontAwesomeIcons.boxes),
         ),
       ];
 
@@ -297,7 +299,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     return getSelectedWidget(tabIndex);
   }
 
-  // Construct the "details" pane
+  // Construct the "details" panel
   List<Widget> detailTiles() {
     List<Widget> tiles = [
       locationDescriptionCard(),
@@ -332,11 +334,9 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
   // Construct the "stock" panel
   List<Widget> stockTiles() {
 
-    Map<String, String> filters = {};
-
-    if (location != null) {
-      filters["location"] = location!.pk.toString();
-    }
+    Map<String, String> filters = {
+      "location": location?.pk.toString() ?? "null",
+    };
 
     return [
       locationDescriptionCard(includeActions: false),

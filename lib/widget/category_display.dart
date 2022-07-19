@@ -173,6 +173,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
     );
   }
 
+  // Construct the "details" panel
   List<Widget> detailTiles() {
 
     List<Widget> tiles = <Widget>[
@@ -203,6 +204,39 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
     ];
 
     return tiles;
+  }
+
+  // Construct the "parts" panel
+  List<Widget> partsTiles() {
+
+    Map<String, String> filters = {
+      "category": category?.pk.toString() ?? "null",
+    };
+
+    return [
+      getCategoryDescriptionCard(extra: false),
+      ListTile(
+        title: Text(
+          L10().parts,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        trailing: GestureDetector(
+          child: FaIcon(FontAwesomeIcons.filter),
+          onTap: () async {
+            setState(() {
+              showFilterOptions = !showFilterOptions;
+            });
+          },
+        ),
+      ),
+      Expanded(
+        child: PaginatedPartList(
+          filters,
+          showFilterOptions,
+        ),
+        flex: 10,
+      )
+    ];
   }
 
   Future<void> _newCategory(BuildContext context) async {
@@ -321,11 +355,8 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
             children: detailTiles()
         );
       case 1:
-        return PaginatedPartList(
-          {
-            "category": "${category?.pk ?? 'null'}"
-          },
-          true,
+        return Column(
+          children: partsTiles()
         );
       case 2:
         return ListView(
