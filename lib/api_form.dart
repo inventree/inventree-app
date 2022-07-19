@@ -905,7 +905,7 @@ Future<void> launchApiForm(
     field.definition = extractFieldDefinition(serverFields, field.lookupPath);
 
     // Skip fields with empty definitions
-    if (field.definition.isEmpty) {
+    if (url.isNotEmpty && field.definition.isEmpty) {
       print("Warning: Empty field definition for field '${fieldName}'");
     }
 
@@ -989,8 +989,6 @@ class _APIFormWidgetState extends State<APIFormWidget> {
   final _formKey = GlobalKey<FormState>();
 
   List<String> nonFieldErrors = [];
-
-  Function(Map<String, dynamic>)? onSuccess;
 
   bool spacerRequired = false;
 
@@ -1267,7 +1265,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
     }
 
     // Run custom onSuccess function
-    var successFunc = onSuccess;
+    var successFunc = widget.onSuccess;
 
     // An "empty" URL means we don't want to submit the form anywhere
     // Perhaps we just want to process the data?
