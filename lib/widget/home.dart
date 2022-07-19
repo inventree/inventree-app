@@ -54,11 +54,13 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     });
 
     InvenTreeAPI().registerCallback(() {
-      setState(() {
-        // Reload the widget
-      });
-    });
 
+      if (mounted) {
+        setState(() {
+          // Reload the widget
+        });
+      }
+    });
   }
 
   // Index of bottom navigation bar
