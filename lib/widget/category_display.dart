@@ -9,6 +9,7 @@ import "package:inventree/inventree/part.dart";
 
 import "package:inventree/widget/category_list.dart";
 import "package:inventree/widget/part_list.dart";
+import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/part_detail.dart";
 import "package:inventree/widget/refreshable_state.dart";
@@ -125,16 +126,21 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
                 FontAwesomeIcons.levelUpAlt,
                 color: COLOR_CLICK,
               ),
-              onTap: () {
-                if (category == null || ((category?.parentId ?? 0) < 0)) {
+              onTap: () async {
+
+                int parentId = category?.parentId ?? -1;
+
+                if (parentId < 0) {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));
                 } else {
-                  // TODO - Refactor this code into the InvenTreePart class
-                  InvenTreePartCategory().get(category?.parentId ?? -1).then((var cat) {
-                    if (cat is InvenTreePartCategory) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(cat)));
-                    }
-                  });
+
+                  showLoadingOverlay(context);
+                  var cat = await InvenTreePartCategory().get(parentId);
+                  hideLoadingOverlay();
+
+                  if (cat is InvenTreePartCategory) {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(cat)));
+                  }
                 }
               },
             )

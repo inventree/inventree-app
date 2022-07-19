@@ -104,6 +104,10 @@ class _PaginatedPartListState extends PaginatedSearchState<PaginatedPartList> {
       "label": L10().filterTemplate,
       "help_text": L10().filterTemplateDetail
     },
+    "trackable": {
+      "label": L10().filterTrackable,
+      "help_text": L10().filterTrackableDetail,
+    },
     "virtual": {
       "label": L10().filterVirtual,
       "help_text": L10().filterVirtualDetail,
@@ -122,15 +126,6 @@ class _PaginatedPartListState extends PaginatedSearchState<PaginatedPartList> {
     return page;
   }
 
-  void _openPart(BuildContext context, int pk) {
-    // Attempt to load the part information
-    InvenTreePart().get(pk).then((var part) {
-      if (part is InvenTreePart) {
-
-        Navigator.push(context, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
-      }
-    });
-  }
 
   @override
   Widget buildItem(BuildContext context, InvenTreeModel model) {
@@ -147,7 +142,7 @@ class _PaginatedPartListState extends PaginatedSearchState<PaginatedPartList> {
         height: 40,
       ),
       onTap: () {
-        _openPart(context, part.pk);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
       },
     );
   }

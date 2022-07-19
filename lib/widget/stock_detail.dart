@@ -475,13 +475,16 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
             color: item.statusColor
           )
         ),
-        onTap: () {
+        onTap: () async {
           if (item.partId > 0) {
-            InvenTreePart().get(item.partId).then((var part) {
-              if (part is InvenTreePart) {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
-              }
-            });
+
+            showLoadingOverlay(context);
+            var part = await InvenTreePart().get(item.partId);
+            hideLoadingOverlay();
+
+            if (part is InvenTreePart) {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
+            }
           }
         },
         //trailing: Text(item.serialOrQuantityDisplay()),
@@ -533,15 +536,17 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
               FontAwesomeIcons.mapMarkerAlt,
               color: COLOR_CLICK,
             ),
-            onTap: () {
+            onTap: () async {
               if (item.locationId > 0) {
-                InvenTreeStockLocation().get(item.locationId).then((var loc) {
 
-                  if (loc is InvenTreeStockLocation) {
-                    Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => LocationDisplayWidget(loc)));
-                  }
-                });
+                showLoadingOverlay(context);
+                var loc = await InvenTreeStockLocation().get(item.locationId);
+                hideLoadingOverlay();
+
+                if (loc is InvenTreeStockLocation) {
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => LocationDisplayWidget(loc)));
+                }
               }
             },
           ),

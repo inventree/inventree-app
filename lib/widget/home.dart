@@ -54,11 +54,13 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     });
 
     InvenTreeAPI().registerCallback(() {
-      setState(() {
-        // Reload the widget
-      });
-    });
 
+      if (mounted) {
+        setState(() {
+          // Reload the widget
+        });
+      }
+    });
   }
 
   // Index of bottom navigation bar
@@ -189,6 +191,11 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
   Future<void> _refreshNotifications() async {
 
     if (!InvenTreeAPI().isConnected()) {
+      return;
+    }
+
+    // Ignore if the widget is no longer active
+    if (!mounted) {
       return;
     }
 

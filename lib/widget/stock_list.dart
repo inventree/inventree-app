@@ -104,14 +104,6 @@ class _PaginatedStockItemListState extends PaginatedSearchState<PaginatedStockIt
     return page;
   }
 
-  void _openItem(BuildContext context, int pk) {
-    InvenTreeStockItem().get(pk).then((var item) {
-      if (item is InvenTreeStockItem) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => StockDetailWidget(item)));
-      }
-    });
-  }
-
   @override
   Widget buildItem(BuildContext context, InvenTreeModel model) {
 
@@ -132,7 +124,7 @@ class _PaginatedStockItemListState extends PaginatedSearchState<PaginatedStockIt
         ),
       ),
       onTap: () {
-        _openItem(context, item.pk);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => StockDetailWidget(item)));
       },
     );
   }

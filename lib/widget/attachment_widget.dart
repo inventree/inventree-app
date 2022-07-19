@@ -6,6 +6,7 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/widget/fields.dart";
+import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/l10.dart";
@@ -51,8 +52,8 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
             icon: FaIcon(FontAwesomeIcons.plusCircle),
             onPressed: () async {
               FilePickerDialog.pickFile(
-                  onPicked: (File file) {
-                    upload(file);
+                  onPicked: (File file) async {
+                    await upload(context, file);
                   }
               );
             },
@@ -63,9 +64,11 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
     return actions;
   }
 
-  Future<void> upload(File file) async {
+  Future<void> upload(BuildContext context, File file) async {
 
+    showLoadingOverlay(context);
     final bool result = await widget.attachment.uploadAttachment(file, widget.referenceId);
+    hideLoadingOverlay();
 
     if (result) {
       showSnackIcon(L10().uploadSuccess, success: true);
@@ -121,7 +124,9 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
           subtitle: Text(attachment.comment),
           leading: FaIcon(attachment.icon, color: COLOR_CLICK),
           onTap: () async {
+            showLoadingOverlay(context);
             await attachment.downloadAttachment();
+            hideLoadingOverlay();
           },
         ));
       }

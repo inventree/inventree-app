@@ -18,6 +18,7 @@ import "package:inventree/widget/fields.dart";
 import "package:inventree/l10.dart";
 
 import "package:flutter/material.dart";
+import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/snacks.dart";
 
 
@@ -859,7 +860,9 @@ Future<void> launchApiForm(
 
   if (url.isNotEmpty) {
 
+    showLoadingOverlay(context);
     var options = await InvenTreeAPI().options(url);
+    hideLoadingOverlay();
 
     // Invalid response from server
     if (!options.isValid()) {
@@ -902,7 +905,7 @@ Future<void> launchApiForm(
     field.definition = extractFieldDefinition(serverFields, field.lookupPath);
 
     // Skip fields with empty definitions
-    if (field.definition.isEmpty) {
+    if (url.isNotEmpty && field.definition.isEmpty) {
       print("Warning: Empty field definition for field '${fieldName}'");
     }
 
@@ -986,8 +989,6 @@ class _APIFormWidgetState extends State<APIFormWidget> {
   final _formKey = GlobalKey<FormState>();
 
   List<String> nonFieldErrors = [];
-
-  Function(Map<String, dynamic>)? onSuccess;
 
   bool spacerRequired = false;
 
@@ -1102,20 +1103,25 @@ class _APIFormWidgetState extends State<APIFormWidget> {
     }
 
     if (widget.method == "POST") {
+
+      showLoadingOverlay(context);
       final response =  await InvenTreeAPI().post(
         widget.url,
         body: data,
         expectedStatusCode: null
       );
+      hideLoadingOverlay();
 
       return response;
 
     } else {
+      showLoadingOverlay(context);
       final response = await InvenTreeAPI().patch(
         widget.url,
         body: data,
         expectedStatusCode: null
       );
+      hideLoadingOverlay();
 
       return response;
     }
@@ -1259,7 +1265,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
     }
 
     // Run custom onSuccess function
-    var successFunc = onSuccess;
+    var successFunc = widget.onSuccess;
 
     // An "empty" URL means we don't want to submit the form anywhere
     // Perhaps we just want to process the data?
