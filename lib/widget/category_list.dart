@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/part.dart";
@@ -25,12 +26,26 @@ class _PartCategoryListState extends RefreshableState<PartCategoryList> {
 
   final Map<String, String> filters;
 
+  bool showFilterOptions = false;
+
+  @override
+  List<Widget> getAppBarActions(BuildContext context) => [
+    IconButton(
+      icon: FaIcon(FontAwesomeIcons.filter),
+      onPressed: () async {
+        setState(() {
+          showFilterOptions = !showFilterOptions;
+        });
+      },
+    )
+  ];
+
   @override
   String getAppBarTitle(BuildContext context) => L10().partCategories;
 
   @override
   Widget getBody(BuildContext context) {
-    return PaginatedPartCategoryList(filters, true);
+    return PaginatedPartCategoryList(filters, showFilterOptions);
   }
 }
 

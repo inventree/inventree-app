@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/model.dart";
@@ -29,12 +30,26 @@ class _PurchaseOrderListWidgetState extends RefreshableState<PurchaseOrderListWi
 
   final Map<String, String> filters;
 
+  bool showFilterOptions = false;
+
   @override
   String getAppBarTitle(BuildContext context) => L10().purchaseOrders;
 
   @override
+  List<Widget> getAppBarActions(BuildContext context) => [
+    IconButton(
+      icon: FaIcon(FontAwesomeIcons.filter),
+      onPressed: () async {
+        setState(() {
+          showFilterOptions = !showFilterOptions;
+        });
+      },
+    )
+  ];
+
+  @override
   Widget getBody(BuildContext context) {
-    return PaginatedPurchaseOrderList(filters, true);
+    return PaginatedPurchaseOrderList(filters, showFilterOptions);
   }
 }
 

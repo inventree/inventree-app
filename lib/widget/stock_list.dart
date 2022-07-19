@@ -1,11 +1,11 @@
 import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/l10.dart";
-import "package:inventree/preferences.dart";
 import "package:inventree/widget/stock_detail.dart";
 import "package:inventree/api.dart";
 
@@ -27,12 +27,26 @@ class _StockListState extends RefreshableState<StockItemList> {
 
   final Map<String, String> filters;
 
+  bool showFilterOptions = false;
+
   @override
   String getAppBarTitle(BuildContext context) => L10().stockItems;
 
   @override
+  List<Widget> getAppBarActions(BuildContext context) => [
+    IconButton(
+      icon: FaIcon(FontAwesomeIcons.filter),
+      onPressed: () async {
+        setState(() {
+          showFilterOptions = !showFilterOptions;
+        });
+      },
+    )
+  ];
+
+  @override
   Widget getBody(BuildContext context) {
-    return PaginatedStockItemList(filters, true);
+    return PaginatedStockItemList(filters, showFilterOptions);
   }
 }
 

@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/part.dart";
@@ -6,7 +7,6 @@ import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/part_detail.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/api.dart";
-import "package:inventree/preferences.dart";
 import "package:inventree/l10.dart";
 
 
@@ -31,12 +31,26 @@ class _PartListState extends RefreshableState<PartList> {
 
   final Map<String, String> filters;
 
+  bool showFilterOptions = false;
+
   @override
   String getAppBarTitle(BuildContext context) => title.isNotEmpty ? title : L10().parts;
 
   @override
+  List<Widget> getAppBarActions(BuildContext context) => [
+    IconButton(
+      icon: FaIcon(FontAwesomeIcons.filter),
+      onPressed: () async {
+        setState(() {
+          showFilterOptions = !showFilterOptions;
+        });
+      },
+    )
+  ];
+
+  @override
   Widget getBody(BuildContext context) {
-    return PaginatedPartList(filters, true);
+    return PaginatedPartList(filters, showFilterOptions);
   }
 
 }
