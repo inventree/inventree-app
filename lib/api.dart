@@ -137,6 +137,18 @@ class InvenTreeFileService extends FileService {
 
 class InvenTreeAPI {
 
+  // List of callback functions to trigger when the connection status changes
+  List<Function()> _statusCallbacks = [];
+
+  void registerCallback(Function() func) => _statusCallbacks.add(func);
+
+  void _connectionStatusChanged() {
+    for (Function() func in _statusCallbacks) {
+      // Call the function
+      func();
+    }
+  }
+
   factory InvenTreeAPI() {
     return _api;
   }
@@ -201,6 +213,10 @@ class InvenTreeAPI {
 
   // Authentication token (initially empty, must be requested)
   String _token = "";
+
+  String? get serverAddress {
+    return profile?.server;
+  }
 
   bool get hasToken => _token.isNotEmpty;
 
@@ -457,6 +473,8 @@ class InvenTreeAPI {
     // Clear received settings
     _globalSettings.clear();
     _userSettings.clear();
+
+    _connectionStatusChanged();
   }
 
   /*
@@ -481,6 +499,8 @@ class InvenTreeAPI {
 
     _connecting = true;
 
+    _connectionStatusChanged();
+
     _connected = await _connect();
 
     _connecting = false;
@@ -492,6 +512,8 @@ class InvenTreeAPI {
         success: true,
       );
     }
+
+    _connectionStatusChanged();
 
     return _connected;
   }

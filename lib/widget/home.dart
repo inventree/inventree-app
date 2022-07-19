@@ -23,6 +23,7 @@ import "package:inventree/widget/part_list.dart";
 import "package:inventree/widget/purchase_order_list.dart";
 import "package:inventree/widget/search.dart";
 import "package:inventree/widget/snacks.dart";
+import "package:inventree/widget/spinner.dart";
 
 
 class InvenTreeHomePage extends StatefulWidget {
@@ -51,6 +52,13 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
         ), (timer) {
       _refreshNotifications();
     });
+
+    InvenTreeAPI().registerCallback(() {
+      setState(() {
+        // Reload the widget
+      });
+    });
+
   }
 
   // Index of bottom navigation bar
@@ -352,6 +360,24 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
    * display a connection status widget
    */
   Widget _connectionStatusWidget(BuildContext context) {
+
+    String? serverAddress = InvenTreeAPI().serverAddress;
+    bool validAddress = serverAddress != null;
+    bool connecting = !InvenTreeAPI().isConnected() && InvenTreeAPI().isConnecting();
+
+    Widget leading = FaIcon(FontAwesomeIcons.exclamationCircle, color: COLOR_DANGER);
+    Widget trailing = FaIcon(FontAwesomeIcons.server, color: COLOR_CLICK);
+    String title = L10().serverNotConnected;
+    String subtitle = L10().profileSelectOrCreate;
+
+    if (!validAddress) {
+      title = L10().serverNotSelected;
+    } else if (connecting) {
+      title = L10().serverConnecting;
+      subtitle = serverAddress ?? "";
+      leading = Spinner(icon: FontAwesomeIcons.spinner, color: COLOR_PROGRESS);
+    }
+
     return Center(
       child: Column(
         children: [
@@ -363,10 +389,10 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
           ),
           Spacer(),
           ListTile(
-            title: Text(L10().serverNotConnected),
-            subtitle: Text(L10().profileSelectOrCreate),
-            trailing: FaIcon(FontAwesomeIcons.server, color: COLOR_CLICK),
-            leading: FaIcon(FontAwesomeIcons.exclamationCircle, color: COLOR_DANGER),
+            title: Text(title),
+            subtitle: Text(subtitle),
+            trailing: trailing,
+            leading: leading,
             onTap: _selectProfile,
           )
         ]
@@ -456,6 +482,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
   Widget build(BuildContext context) {
 
     var connected = InvenTreeAPI().isConnected();
+    var connecting = !connected && InvenTreeAPI().isConnecting();
 
     return Scaffold(
       key: _homeKey,
@@ -465,7 +492,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
           IconButton(
             icon: FaIcon(
               FontAwesomeIcons.server,
-              color: connected ? COLOR_SUCCESS : COLOR_DANGER,
+              color: connected ? COLOR_SUCCESS : (connecting ? COLOR_PROGRESS: COLOR_DANGER),
             ),
             onPressed: _selectProfile,
           )
