@@ -1,5 +1,6 @@
 
 import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/helpers.dart";
@@ -32,8 +33,22 @@ class _BillOfMaterialsState extends RefreshableState<BillOfMaterialsWidget> {
 
   final InvenTreePart part;
 
+  bool showFilterOptions = false;
+
   @override
   String getAppBarTitle(BuildContext context) => L10().billOfMaterials;
+
+  @override
+  List<Widget> getAppBarActions(BuildContext context) => [
+    IconButton(
+      icon: FaIcon(FontAwesomeIcons.filter),
+      onPressed: () async {
+        setState(() {
+          showFilterOptions = !showFilterOptions;
+        });
+      },
+    )
+  ];
 
   @override
   Widget getBody(BuildContext context) {
@@ -41,7 +56,7 @@ class _BillOfMaterialsState extends RefreshableState<BillOfMaterialsWidget> {
       {
         "part": part.pk.toString(),
       },
-      true,
+      showFilterOptions,
     );
   }
 }
@@ -70,6 +85,14 @@ class _PaginatedBomListState extends PaginatedSearchState<PaginatedBomList> {
   Map<String, String> get orderingOptions => {
     "quantity": L10().quantity,
     "sub_part": L10().part,
+  };
+
+  @override
+  Map<String, Map<String, dynamic>> get filterOptions => {
+    "sub_part_assembly": {
+      "label": L10().filterAssembly,
+      "help_text": L10().filterAssemblyDetail,
+    }
   };
 
   @override
