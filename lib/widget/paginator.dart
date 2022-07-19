@@ -40,12 +40,22 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
 
   // Return a map of boolean filtering options available for this list
   // Should be overridden by an implementing subclass
-  Map<String, String> get booleanOptions => {};
+  Map<String, Map<String, dynamic>> get filterOptions => {};
 
   // Return the boolean value of a particular boolean filter
   Future<bool?> getBooleanFilterValue(String key) async {
     key = "${prefix}bool_${key}";
-    final result = await InvenTreeSettingsManager().getTriState(key, false);
+
+    Map<String, dynamic> opts = filterOptions[key] ?? {};
+
+    bool? backup;
+    dynamic v = opts["default"];
+
+    if (v is bool) {
+      backup = v;
+    }
+
+    final result = await InvenTreeSettingsManager().getTriState(key, backup);
     return result;
   }
 
@@ -60,10 +70,8 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
 
     Map<String, String> f = {};
 
-    for (String k in booleanOptions.keys) {
-      String key = "${prefix}bool_${k}";
-
-      bool? value = await InvenTreeSettingsManager().getTriState(key, null);
+    for (String k in filterOptions.keys) {
+      bool? value = await getBooleanFilterValue(k);
 
       if (value is bool) {
         f[k] = value ? "true" : "false";
@@ -157,21 +165,23 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
     };
 
     // Add in boolean filter options
-    if (booleanOptions.isNotEmpty) {
-      for (String key in booleanOptions.keys) {
-        String name = booleanOptions[key] ?? "";
-        if (name.isEmpty) continue;
+    for (String key in filterOptions.keys) {
+      Map<String, dynamic> opts = filterOptions[key] ?? {};
 
-        bool? v = await getBooleanFilterValue(key);
+      // Determine field information
+      String label = (opts["label"] ?? key) as String;
+      String? help_text = opts["help_text"] as String?;
 
-        fields[key] = {
-          "type": "boolean",
-          "display_name": name,
-          "label": name,
-          "value": v,
-          "tristate": true,
-        };
-      }
+      bool? v = await getBooleanFilterValue(key);
+
+      // Add in the particular field
+      fields[key] = {
+        "type": "boolean",
+        "display_name": label,
+        "label": label,
+        "value": v,
+        "tristate": (opts["tristate"] ?? true) as bool,
+      };
     }
 
     // Launch an interactive form for the user to select options
@@ -192,7 +202,7 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
         await InvenTreeSettingsManager().setValue("${prefix}ordering_order", o);
 
         // Save boolean fields
-        for (String key in booleanOptions.keys) {
+        for (String key in filterOptions.keys) {
 
           bool? v;
 

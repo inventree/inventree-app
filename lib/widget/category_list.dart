@@ -51,8 +51,11 @@ class _PaginatedPartCategoryListState extends PaginatedSearchState<PaginatedPart
   String get prefix => "category_";
 
   @override
-  Map<String, String> get booleanOptions => {
-    "cascade": "Include Subcategories"
+  Map<String, Map<String, dynamic>> get filterOptions => {
+    "cascade": {
+      "default": false,
+      "label": L10().includeSubcategories,
+    }
   };
 
   @override
