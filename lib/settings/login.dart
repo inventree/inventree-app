@@ -236,14 +236,12 @@ class ProfileEditWidget extends StatefulWidget {
   final UserProfile? profile;
 
   @override
-  _ProfileEditState createState() => _ProfileEditState(profile);
+  _ProfileEditState createState() => _ProfileEditState();
 }
 
 class _ProfileEditState extends State<ProfileEditWidget> {
 
-  _ProfileEditState(this.profile) : super();
-
-  UserProfile? profile;
+  _ProfileEditState() : super();
 
   final formKey = GlobalKey<FormState>();
 
@@ -258,7 +256,7 @@ class _ProfileEditState extends State<ProfileEditWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(profile == null ? L10().profileAdd : L10().profileEdit),
+        title: Text(widget.profile == null ? L10().profileAdd : L10().profileEdit),
         actions: [
           IconButton(
             icon: FaIcon(FontAwesomeIcons.save),
@@ -266,7 +264,7 @@ class _ProfileEditState extends State<ProfileEditWidget> {
               if (formKey.currentState!.validate()) {
                 formKey.currentState!.save();
 
-                UserProfile? prf = profile;
+                UserProfile? prf = widget.profile;
 
                 if (prf == null) {
                   UserProfile profile = UserProfile(
@@ -307,7 +305,7 @@ class _ProfileEditState extends State<ProfileEditWidget> {
                   labelText: L10().profileName,
                   labelStyle: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                initialValue: profile?.name ?? "",
+                initialValue: widget.profile?.name ?? "",
                 maxLines: 1,
                 keyboardType: TextInputType.text,
                 onSaved: (value) {
@@ -327,7 +325,7 @@ class _ProfileEditState extends State<ProfileEditWidget> {
                   labelStyle: TextStyle(fontWeight: FontWeight.bold),
                   hintText: "http[s]://<server>:<port>",
                 ),
-                initialValue: profile?.server ?? "",
+                initialValue: widget.profile?.server ?? "",
                 keyboardType: TextInputType.url,
                 onSaved: (value) {
                   server = value?.trim() ?? "";
@@ -374,7 +372,7 @@ class _ProfileEditState extends State<ProfileEditWidget> {
                   labelStyle: TextStyle(fontWeight: FontWeight.bold),
                   hintText: L10().enterUsername
                 ),
-                initialValue: profile?.username ?? "",
+                initialValue: widget.profile?.username ?? "",
                 keyboardType: TextInputType.text,
                 onSaved: (value) {
                   username = value?.trim() ?? "";
@@ -401,7 +399,7 @@ class _ProfileEditState extends State<ProfileEditWidget> {
                     },
                   ),
                 ),
-                initialValue: profile?.password ?? "",
+                initialValue: widget.profile?.password ?? "",
                 keyboardType: TextInputType.visiblePassword,
                 obscureText: _obscured,
                 onSaved: (value) {

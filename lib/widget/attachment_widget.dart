@@ -26,17 +26,13 @@ class AttachmentWidget extends StatefulWidget {
   final bool hasUploadPermission;
 
   @override
-  _AttachmentWidgetState createState() => _AttachmentWidgetState(attachment, referenceId, hasUploadPermission);
+  _AttachmentWidgetState createState() => _AttachmentWidgetState();
 }
 
 
 class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
 
-  _AttachmentWidgetState(this.attachment, this.referenceId, this.hasUploadPermission);
-
-  final InvenTreeAttachment attachment;
-  final int referenceId;
-  final bool hasUploadPermission;
+  _AttachmentWidgetState();
 
   List<InvenTreeAttachment> attachments = [];
 
@@ -48,7 +44,7 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
 
     List<Widget> actions = [];
 
-    if (hasUploadPermission) {
+    if (widget.hasUploadPermission) {
       // File upload
       actions.add(
           IconButton(
@@ -69,7 +65,7 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
 
   Future<void> upload(File file) async {
 
-    final bool result = await attachment.uploadAttachment(file, referenceId);
+    final bool result = await widget.attachment.uploadAttachment(file, widget.referenceId);
 
     if (result) {
       showSnackIcon(L10().uploadSuccess, success: true);
@@ -83,9 +79,9 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
   @override
   Future<void> request(BuildContext context) async {
 
-    await attachment.list(
+    await widget.attachment.list(
       filters: {
-        attachment.REFERENCE_FIELD: referenceId.toString()
+        widget.attachment.REFERENCE_FIELD: widget.referenceId.toString()
       }
     ).then((var results) {
 
