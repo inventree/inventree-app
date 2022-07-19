@@ -10,6 +10,7 @@
 - Adds configurable filtering to various list views
 - Allow stock location to be "scanned" into another location using barcode
 - Improves server connection status indicator on home screen
+- Display loading indicator during long-running operations
 
 ### 0.7.3 - June 2022
 ---
