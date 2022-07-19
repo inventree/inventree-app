@@ -651,12 +651,6 @@ class InvenTreeAPI {
    */
   Future<void> downloadFile(String url, {bool openOnDownload = true}) async {
 
-    showSnackIcon(
-      L10().downloading,
-      icon: FontAwesomeIcons.download,
-      success: true
-    );
-
     // Find the local downlods directory
     final Directory dir = await getTemporaryDirectory();
 

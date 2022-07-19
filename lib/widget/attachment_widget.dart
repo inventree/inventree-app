@@ -128,7 +128,9 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
           subtitle: Text(attachment.comment),
           leading: FaIcon(attachment.icon, color: COLOR_CLICK),
           onTap: () async {
+            showLoadingOverlay(context);
             await attachment.downloadAttachment();
+            hideLoadingOverlay();
           },
         ));
       }

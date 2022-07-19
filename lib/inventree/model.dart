@@ -708,9 +708,7 @@ class InvenTreeAttachment extends InvenTreeModel {
    * Download this attachment file
    */
   Future<void> downloadAttachment() async {
-
     await InvenTreeAPI().downloadFile(attachment);
-
   }
 
 }
