@@ -88,8 +88,10 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> with 
     return;
   }
 
+  // Refresh the widget - handler for custom request() method
   Future<void> refresh(BuildContext context) async {
 
+    // Escape if the widget is no longer loaded
     if (!mounted) {
       return;
     }
@@ -99,6 +101,11 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> with 
     });
 
     await request(context);
+
+    // Escape if the widget is no longer loaded
+    if (!mounted) {
+      return;
+    }
 
     setState(() {
       loading = false;
