@@ -514,12 +514,6 @@ class InvenTreeModel {
     return results;
   }
 
-
-  // Provide a listing of objects at the endpoint
-  // TODO - Static function which returns a list of objects (of this class)
-
-  // TODO - Define a "save" / "update" function
-
   // Override this function for each sub-class
   bool matchAgainstString(String filter) {
     // Default implementation matches name and description

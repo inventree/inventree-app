@@ -705,8 +705,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
             context,
             MaterialPageRoute(builder: (context) => StockNotesWidget(item))
           );
-          // TODO: Load notes in markdown viewer widget
-          // TODO: Make this widget editable?
         }
       )
     );

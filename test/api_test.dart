@@ -79,8 +79,7 @@ void main() {
         bool result = await api.connectToServer();
         assert(!result);
 
-        // TODO: Test the the right 'error message' is returned
-        // TODO: The request above should throw a 'SockeException'
+        debugContains("SocketException at");
 
         // Test incorrect login details
         profile.server = "http://localhost:12345";
@@ -91,7 +90,7 @@ void main() {
         await api.connectToServer();
         assert(!result);
 
-        // TODO: Test that the connection attempt above throws an authentication error
+        debugContains("Token request failed");
 
         assert(!api.checkConnection());
 

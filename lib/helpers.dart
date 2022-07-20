@@ -44,8 +44,9 @@ void debug(dynamic msg) {
 
   if (Platform.environment.containsKey("FLUTTER_TEST")) {
     debug_messages.add(msg.toString());
-    print("DEBUG: ${msg.toString()}");
   }
+
+  print("DEBUG: ${msg.toString()}");
 }
 
 
