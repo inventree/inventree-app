@@ -2,8 +2,6 @@
     "@@locale": "en",
     "@homeShowSubscsribedDescription": {},
     "@homeShowSupplierDescription": {},
-    "includeSublocationsDetail": "Mostrar elementos de sub-ubicación en vista de lista",
-    "@includeSublocationsDetail": {},
     "lineItems": "Ítems de línea",
     "@lineItems": {},
     "onOrderDetails": "Artículos actualmente en pedido",
