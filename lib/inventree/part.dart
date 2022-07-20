@@ -57,8 +57,6 @@ class InvenTreePartCategory extends InvenTreeModel {
   InvenTreeModel createFromJson(Map<String, dynamic> json) {
     var cat = InvenTreePartCategory.fromJson(json);
 
-    // TODO ?
-
     return cat;
   }
 }

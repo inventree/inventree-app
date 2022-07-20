@@ -691,16 +691,16 @@ class InvenTreeAPI {
       showServerError(url, L10().connectionRefused, error.toString());
       return;
     } on TimeoutException {
-      print("TimeoutException at ${url}");
+      debug("TimeoutException at ${url}");
       showTimeoutError(url);
       return;
     } on HandshakeException catch (error) {
-      print("HandshakeException at ${url}:");
+      debug("HandshakeException at ${url}:");
       debug(error.toString());
       showServerError(url, L10().serverCertificateError, error.toString());
       return;
     } catch (error, stackTrace) {
-      print("Server error at ${url}: ${error.toString()}");
+      debug("Server error at ${url}: ${error.toString()}");
       showServerError(url, L10().serverError, error.toString());
       sentryReportError(
         "api.downloadFile : client.openUrl",
@@ -730,8 +730,8 @@ class InvenTreeAPI {
     } on TimeoutException {
       showTimeoutError(url);
     } catch (error, stackTrace) {
-      print("Error downloading image:");
-      print(error.toString());
+      debug("Error downloading image:");
+      debug(error.toString());
       showServerError(url, L10().downloadError, error.toString());
       sentryReportError(
         "api.downloadFile : client.closeRequest",
@@ -956,25 +956,25 @@ class InvenTreeAPI {
 
       return _request;
     } on SocketException catch (error) {
-      print("SocketException at ${url}: ${error.toString()}");
+      debug("SocketException at ${url}: ${error.toString()}");
       showServerError(url, L10().connectionRefused, error.toString());
       return null;
     } on TimeoutException {
-      print("TimeoutException at ${url}");
+      debug("TimeoutException at ${url}");
       showTimeoutError(url);
       return null;
     } on CertificateException catch (error) {
-      print("CertificateException at ${url}:");
-      print(error.toString());
+      debug("CertificateException at ${url}:");
+      debug(error.toString());
       showServerError(url, L10().serverCertificateError, error.toString());
       return null;
     } on HandshakeException catch (error) {
-      print("HandshakeException at ${url}:");
-      print(error.toString());
+      debug("HandshakeException at ${url}:");
+      debug(error.toString());
       showServerError(url, L10().serverCertificateError, error.toString());
       return null;
     } catch (error, stackTrace) {
-      print("Server error at ${url}: ${error.toString()}");
+      debug("Server error at ${url}: ${error.toString()}");
       showServerError(url, L10().serverError, error.toString());
       sentryReportError(
         "api.apiRequest : openUrl",
@@ -1054,8 +1054,8 @@ class InvenTreeAPI {
       response.error = "SocketException";
       response.errorDetail = error.toString();
     } on CertificateException catch (error) {
-      print("CertificateException at ${request.uri.toString()}:");
-      print(error.toString());
+      debug("CertificateException at ${request.uri.toString()}:");
+      debug(error.toString());
       showServerError(url, L10().serverCertificateError, error.toString());
     } on TimeoutException {
       showTimeoutError(url);
