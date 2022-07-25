@@ -190,6 +190,28 @@ class UserProfileDBManager {
       }
     }
 
+    // If there are no available profiles, create a demo profile
+    if (profileList.isEmpty) {
+      bool added = await InvenTreeSettingsManager().getBool("demo_profile_added", false);
+
+      // Don't add a new profile if we have added it previously
+      if (!added) {
+
+        await InvenTreeSettingsManager().setValue("demo_profile_added", true);
+
+        UserProfile demoProfile = UserProfile(
+          name: "InvenTree Demo",
+          server: "https://demo.inventree.org",
+          username: "allaccess",
+          password: "nolimits",
+        );
+
+        await addProfile(demoProfile);
+
+        profileList.add(demoProfile);
+      }
+    }
+
     return profileList;
   }
 
