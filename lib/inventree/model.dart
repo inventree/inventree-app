@@ -234,9 +234,22 @@ class InvenTreeModel {
     return {};
   }
 
+  /*
+   * Report error information to sentry, when a model operation fails.
+   */
   Future<void> reportModelError(String title, APIResponse response, {Map<String, String> context = const {}}) async {
 
     String dataString = response.data?.toString() ?? "null";
+
+    // If the response has "errorDetail" set, then the error has already been handled, and there is no need to continue
+    if (response.errorDetail.isNotEmpty) {
+      return;
+    }
+
+    // If the response status code indicates a server error, then this has already been reported
+    if (response.statusCode >= 500) {
+      return;
+    }
 
     if (dataString.length > 500) {
       dataString = dataString.substring(0, 500);

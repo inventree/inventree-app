@@ -1018,18 +1018,25 @@ class InvenTreeAPI {
       if (_response.statusCode >= 500) {
         showStatusCodeError(url, _response.statusCode);
 
-        sentryReportMessage(
-            "Server error",
-            context: {
-              "url": request.uri.toString(),
-              "method": request.method,
-              "statusCode": _response.statusCode.toString(),
-              "requestHeaders": request.headers.toString(),
-              "responseHeaders": _response.headers.toString(),
-              "responseData": response.data.toString(),
-            }
-        );
-
+        // Some server errors are not ones for us to worry about!
+        switch (_response.statusCode) {
+          case 502:   // Bad gateway
+          case 504:   // Gateway timeout
+            break;
+          default:    // Any other error code
+            sentryReportMessage(
+                "Server error",
+                context: {
+                  "url": request.uri.toString(),
+                  "method": request.method,
+                  "statusCode": _response.statusCode.toString(),
+                  "requestHeaders": request.headers.toString(),
+                  "responseHeaders": _response.headers.toString(),
+                  "responseData": response.data.toString(),
+                }
+            );
+            break;
+        }
       } else {
 
         if (ignoreResponse) {

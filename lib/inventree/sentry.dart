@@ -145,6 +145,9 @@ Future<bool> sentryReportMessage(String message, {Map<String, String>? context})
 }
 
 
+/*
+ * Report an error message to sentry.io
+ */
 Future<void> sentryReportError(String source, dynamic error, dynamic stackTrace, {Map<String, String> context = const {}}) async {
 
   print("----- Sentry Intercepted error: $error -----");
@@ -164,6 +167,22 @@ Future<void> sentryReportError(String source, dynamic error, dynamic stackTrace,
   if (!upload) {
     print("----- Error reporting disabled -----");
     return;
+  }
+
+  // Some errors are outside our control, and we do not want to "pollute" the uploaded data
+  if (source == "FlutterError.onError") {
+
+    String errorString = error.toString();
+
+    // Missing media file
+    if (errorString.contains("HttpException") && errorString.contains("404") && errorString.contains("/media/")) {
+      return;
+    }
+
+    // Local file system exception
+    if (errorString.contains("FileSystemException")) {
+      return;
+    }
   }
 
   final server_info = getServerInfo();
