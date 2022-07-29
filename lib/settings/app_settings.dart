@@ -46,8 +46,9 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
     reportErrors = await InvenTreeSettingsManager().getValue(INV_REPORT_ERRORS, true) as bool;
     strictHttps = await InvenTreeSettingsManager().getValue(INV_STRICT_HTTPS, false) as bool;
 
-    setState(() {
-    });
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override

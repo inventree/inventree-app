@@ -128,7 +128,9 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       }
     }
 
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   Future<void> _newLocation(BuildContext context) async {

@@ -626,9 +626,9 @@ class _QRViewState extends State<InvenTreeQRView> {
     flash_status = status != null && status;
 
     // Reload
-    setState(() {
-
-    });
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   // In order to get hot reload to work we need to pause the camera if the platform

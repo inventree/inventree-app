@@ -124,9 +124,12 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     // Request test results (async)
     item.getTestResults().then((value) {
-      setState(() {
-        // Update
-      });
+
+      if (mounted) {
+        setState(() {
+          // Update
+        });
+      }
     });
 
     // Request the number of attachments
@@ -135,9 +138,12 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         "stock_item": item.pk.toString()
       }
     ).then((int value) {
-      setState(() {
-        attachmentCount = value;
-      });
+
+      if (mounted) {
+        setState(() {
+          attachmentCount = value;
+        });
+      }
     });
 
     // Request information on labels available for this stock item
@@ -169,8 +175,9 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           }
         }
 
-        setState(() {
-        });
+        if (mounted) {
+          setState(() {});
+        }
       }
     });
   }
