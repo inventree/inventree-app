@@ -91,9 +91,9 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   Future<void> onBuild(BuildContext context) async {
     refresh(context);
 
-    setState(() {
-
-    });
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -123,8 +123,9 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
     // Request part test templates
     part.getTestTemplates().then((value) {
-      setState(() {
-      });
+      if (mounted) {
+        setState(() {});
+      }
     });
 
     // Request the number of attachments
@@ -133,9 +134,11 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         "part": part.pk.toString(),
       }
     ).then((int value) {
-      setState(() {
-        attachmentCount = value;
-      });
+      if (mounted) {
+        setState(() {
+          attachmentCount = value;
+        });
+      }
     });
 
     // Request the number of BOM items
@@ -144,9 +147,11 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         "in_bom_for": part.pk.toString(),
       }
     ).then((int value) {
-      setState(() {
-        bomCount = value;
-      });
+      if (mounted) {
+        setState(() {
+          bomCount = value;
+        });
+      }
     });
 
     // Request the number of variant items
@@ -155,9 +160,11 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         "variant_of": part.pk.toString(),
       }
     ).then((int value) {
-      setState(() {
-        variantCount = value;
-      });
+      if (mounted) {
+        setState(() {
+          variantCount = value;
+        });
+      }
     });
   }
 

@@ -177,7 +177,9 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
 
         // Attempt server connection
         InvenTreeAPI().connectToServer().then((result) {
-          setState(() {});
+          if (mounted) {
+            setState(() {});
+          }
         });
       }
     }
