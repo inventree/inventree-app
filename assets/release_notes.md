@@ -11,6 +11,7 @@
 - Allow stock location to be "scanned" into another location using barcode
 - Improves server connection status indicator on home screen
 - Display loading indicator during long-running operations
+- Improved error handling and reporting
 
 ### 0.7.3 - June 2022
 ---
