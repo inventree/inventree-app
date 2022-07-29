@@ -22,6 +22,9 @@ import "package:inventree/widget/stock_detail.dart";
 import "package:inventree/widget/stock_list.dart";
 
 
+/*
+ * Widget for displaying a detail view of a single Part instance
+ */
 class PartDetailWidget extends StatefulWidget {
 
   const PartDetailWidget(this.part, {Key? key}) : super(key: key);
@@ -118,31 +121,56 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       }
     }
 
-    await part.getTestTemplates();
+    // Request part test templates
+    part.getTestTemplates().then((value) {
+      setState(() {
+      });
+    });
 
-    attachmentCount = await InvenTreePartAttachment().count(
+    // Request the number of attachments
+    InvenTreePartAttachment().count(
       filters: {
-        "part": part.pk.toString()
+        "part": part.pk.toString(),
       }
-    );
+    ).then((int value) {
+      setState(() {
+        attachmentCount = value;
+      });
+    });
 
-    bomCount = await InvenTreePart().count(
+    // Request the number of BOM items
+    InvenTreePart().count(
       filters: {
         "in_bom_for": part.pk.toString(),
       }
-    );
+    ).then((int value) {
+      setState(() {
+        bomCount = value;
+      });
+    });
 
-    variantCount = await InvenTreePart().count(
+    // Request the number of variant items
+    InvenTreePart().count(
       filters: {
         "variant_of": part.pk.toString(),
       }
-    );
+    ).then((int value) {
+      setState(() {
+        variantCount = value;
+      });
+    });
   }
 
-  Future <void> _toggleStar() async {
+
+  /*
+   * Toggle the "star" status of this paricular part
+   */
+  Future <void> _toggleStar(BuildContext context) async {
 
     if (InvenTreeAPI().checkPermission("part", "view")) {
+      showLoadingOverlay(context);
       await part.update(values: {"starred": "${!part.starred}"});
+      hideLoadingOverlay();
       refresh(context);
     }
   }
@@ -168,7 +196,9 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
             icon: FaIcon(part.starred ? FontAwesomeIcons.solidStar : FontAwesomeIcons.star,
               color: part.starred ? COLOR_STAR : null,
             ),
-            onPressed: _toggleStar,
+            onPressed: () {
+              _toggleStar(context);
+            },
           ),
           leading: GestureDetector(
             child: InvenTreeAPI().getImage(part.thumbnail),
