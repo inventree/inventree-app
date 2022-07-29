@@ -139,10 +139,16 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     );
   }
 
-  Future <void> _toggleStar() async {
+
+  /*
+   * Toggle the "star" status of this paricular part
+   */
+  Future <void> _toggleStar(BuildContext context) async {
 
     if (InvenTreeAPI().checkPermission("part", "view")) {
+      showLoadingOverlay(context);
       await part.update(values: {"starred": "${!part.starred}"});
+      hideLoadingOverlay();
       refresh(context);
     }
   }
@@ -168,7 +174,9 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
             icon: FaIcon(part.starred ? FontAwesomeIcons.solidStar : FontAwesomeIcons.star,
               color: part.starred ? COLOR_STAR : null,
             ),
-            onPressed: _toggleStar,
+            onPressed: () {
+              _toggleStar(context);
+            },
           ),
           leading: GestureDetector(
             child: InvenTreeAPI().getImage(part.thumbnail),
