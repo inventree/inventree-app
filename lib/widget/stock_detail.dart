@@ -129,11 +129,16 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       });
     });
 
-    attachmentCount = await InvenTreeStockItemAttachment().count(
+    // Request the number of attachments
+    InvenTreeStockItemAttachment().count(
       filters: {
         "stock_item": item.pk.toString()
       }
-    );
+    ).then((int value) {
+      setState(() {
+        attachmentCount = value;
+      });
+    });
 
     // Request information on labels available for this stock item
     if (InvenTreeAPI().pluginsEnabled()) {
