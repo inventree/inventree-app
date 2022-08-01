@@ -6,6 +6,8 @@ import "package:inventree/inventree/part.dart";
 import "package:inventree/widget/category_display.dart";
 import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/refreshable_state.dart";
+
+import "package:inventree/api.dart";
 import "package:inventree/l10.dart";
 
 class PartCategoryList extends StatefulWidget {
@@ -76,10 +78,22 @@ class _PaginatedPartCategoryListState extends PaginatedSearchState<PaginatedPart
   };
 
   @override
-  Map<String, String> get orderingOptions => {
-    "name": L10().name,
-    "level": L10().level,
-  };
+  Map<String, String> get orderingOptions {
+
+    Map<String, String> options = {
+      "name": L10().name,
+      "level": L10().level,
+    };
+
+    // Note: API v69 changed 'parts' to 'part_count'
+    if (InvenTreeAPI().apiVersion >= 69) {
+      options["part_count"] = L10().parts;
+    } else {
+      options["parts"] = L10().parts;
+    }
+
+    return options;
+  }
 
   @override
   Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
