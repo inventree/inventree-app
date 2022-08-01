@@ -1,6 +1,14 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.8.1 - August 2022
+---
+
+- Added extra filtering options for PartCategory list
+- Added extra filtering options for StockLocation list
+- Fixed bug related to null widget context
+- Improved error handling and reporting
+
 ### 0.8.0 - July 2022
 ---
 
