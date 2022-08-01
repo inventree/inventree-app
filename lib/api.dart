@@ -810,6 +810,7 @@ class InvenTreeAPI {
       sentryReportMessage(
           "Error decoding JSON response from server",
           context: {
+            "method": "uploadFile",
             "url": url,
             "statusCode": response.statusCode.toString(),
             "data": jsondata,
@@ -1039,17 +1040,13 @@ class InvenTreeAPI {
         }
       } else {
 
-        if (ignoreResponse) {
+        // First check that the returned status code is what we expected
+        if (statusCode != null && statusCode != _response.statusCode) {
+          showStatusCodeError(url, _response.statusCode);
+        } else if (ignoreResponse) {
           response.data = {};
         } else {
           response.data = await responseToJson(url, _response) ?? {};
-        }
-
-        if (statusCode != null) {
-          // Expected status code not returned
-          if (statusCode != _response.statusCode) {
-            showStatusCodeError(url, _response.statusCode);
-          }
         }
       }
     } on HttpException catch (error) {
@@ -1091,14 +1088,25 @@ class InvenTreeAPI {
       return data ?? {};
     } on FormatException {
 
-      sentryReportMessage(
-        "Error decoding JSON response from server",
-        context: {
-          "headers": response.headers.toString(),
-          "statusCode": response.statusCode.toString(),
-          "data": body.toString(),
-        }
-      );
+      switch (response.statusCode) {
+        case 400:
+        case 401:
+        case 403:
+        case 404:
+          // Ignore for unauthorized pages
+          break;
+        default:
+          sentryReportMessage(
+              "Error decoding JSON response from server",
+              context: {
+                "headers": response.headers.toString(),
+                "statusCode": response.statusCode.toString(),
+                "data": body.toString(),
+                "endpoint": url,
+              }
+          );
+          break;
+      }
 
       showServerError(
         url,
