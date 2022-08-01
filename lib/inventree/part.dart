@@ -51,7 +51,9 @@ class InvenTreePartCategory extends InvenTreeModel {
     return p;
   }
 
-  int get partcount => (jsondata["parts"] ?? 0) as int;
+  // Return the number of parts in this category
+  // Note that the API changed from 'parts' to 'part_count' (v69)
+  int get partcount => (jsondata["part_count"] ?? jsondata["parts"] ?? 0) as int;
 
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) {
