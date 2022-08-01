@@ -67,6 +67,7 @@ class _PaginatedStockLocationListState extends PaginatedSearchState<PaginatedSto
   @override
   Map<String, String> get orderingOptions => {
     "name": L10().name,
+    "items": L10().stockItems,
     "level": L10().level,
   };
 
