@@ -6,7 +6,7 @@ import "package:flutter_localized_locales/flutter_localized_locales.dart";
 import "package:inventree/api_form.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/l10n/supported_locales.dart";
-import 'package:inventree/main.dart';
+import "package:inventree/main.dart";
 import "package:inventree/preferences.dart";
 
 
