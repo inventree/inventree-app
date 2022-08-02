@@ -297,7 +297,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     if (part == null || !part!.isTrackable) {
       fields.remove("serial");
     }
-    
+
     item.editForm(
       context,
       L10().editItem,
