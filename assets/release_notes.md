@@ -6,6 +6,7 @@
 
 - Allow serial numbers to be specified when creating new stock items
 - Allow serial numbers to be edited for existing stock items
+- Allow app locale to be changed manually
 
 ### 0.8.1 - August 2022
 ---
