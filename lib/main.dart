@@ -68,6 +68,8 @@ class InvenTreeApp extends StatefulWidget {
   @override
   InvenTreeAppState createState() => InvenTreeAppState();
 
+  static InvenTreeAppState? of(BuildContext context) => context.findAncestorStateOfType<InvenTreeAppState>();
+
 }
 
 

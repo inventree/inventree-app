@@ -6,6 +6,7 @@ import "package:flutter_localized_locales/flutter_localized_locales.dart";
 import "package:inventree/api_form.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/l10n/supported_locales.dart";
+import 'package:inventree/main.dart';
 import "package:inventree/preferences.dart";
 
 
@@ -106,6 +107,9 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
         setState(() {
           locale = selected_locale;
         });
+
+        // Refresh the entire app locale
+        InvenTreeApp.of(context)?.setLocale(locale);
       }
     );
 

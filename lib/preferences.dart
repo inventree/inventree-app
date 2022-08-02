@@ -103,11 +103,7 @@ class InvenTreeSettingsManager {
   }
 
   Future<void> setSelectedLocale(Locale? locale) async {
-    if (locale != null) {
-      await setValue("customLocale", locale!.toString());
-    } else {
-      await setValue("customLocale", "");
-    }
+    await setValue("customLocale", locale?.toString() ?? "");
   }
 
   Future<void> removeValue(String key) async {
