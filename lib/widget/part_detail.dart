@@ -544,25 +544,53 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     return tiles;
   }
 
+  /*
+   * Launch a form to create a new StockItem for this part
+   */
   Future<void> _newStockItem(BuildContext context) async {
 
     var fields = InvenTreeStockItem().formFields();
 
+    // Serial number cannot be directly edited here
+    fields.remove("serial");
+
+    // Hide the "part" field
     fields["part"]["hidden"] = true;
 
     int? default_location = part.defaultLocation;
 
+    Map<String, dynamic> data = {
+      "part": part.pk.toString()
+    };
+
     if (default_location != null) {
-      fields["location"]["value"] = default_location;
+      data["location"] = default_location;
     }
+
+    if (part.isTrackable) {
+      // read the next available serial number
+      showLoadingOverlay(context);
+      var response = await InvenTreeAPI().get("/api/part/${part.pk}/serial-numbers/", expectedStatusCode: null);
+      hideLoadingOverlay();
+
+      if (response.isValid() && response.statusCode == 200) {
+        data["serial_numbers"] = response.data["next"] ?? response.data["latest"];
+      }
+
+      print("response: " + response.statusCode.toString() + response.data.toString());
+
+    } else {
+      // Cannot set serial numbers for non-trackable parts
+      fields.remove("serial_numbers");
+    }
+
+    print("data: ${data.toString()}");
 
     InvenTreeStockItem().createForm(
         context,
         L10().stockItemCreate,
         fields: fields,
-        data: {
-          "part": "${part.pk}",
-        },
+        data: data,
         onSuccess: (result) async {
 
           Map<String, dynamic> data = result as Map<String, dynamic>;

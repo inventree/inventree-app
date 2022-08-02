@@ -199,6 +199,11 @@ class InvenTreeStockItem extends InvenTreeModel {
       "part": {},
       "location": {},
       "quantity": {},
+      "serial": {},
+      "serial_numbers": {
+        "label": L10().serialNumber,
+        "type": "string",
+      },
       "status": {},
       "batch": {},
       "packaging": {},
