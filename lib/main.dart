@@ -4,12 +4,14 @@ import "package:flutter_localizations/flutter_localizations.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 
 import "package:flutter/material.dart";
+import "package:flutter_localized_locales/flutter_localized_locales.dart";
 import "package:one_context/one_context.dart";
 import "package:package_info_plus/package_info_plus.dart";
 import "package:sentry_flutter/sentry_flutter.dart";
 
 import "package:inventree/inventree/sentry.dart";
 import "package:inventree/dsn.dart";
+import "package:inventree/preferences.dart";
 import "package:inventree/widget/home.dart";
 
 // Supported translations are automatically updated
@@ -60,8 +62,42 @@ Future<void> main() async {
 
 }
 
-class InvenTreeApp extends StatelessWidget {
+class InvenTreeApp extends StatefulWidget {
   // This widget is the root of your application.
+
+  @override
+  InvenTreeAppState createState() => InvenTreeAppState();
+
+  static InvenTreeAppState? of(BuildContext context) => context.findAncestorStateOfType<InvenTreeAppState>();
+
+}
+
+
+class InvenTreeAppState extends State<StatefulWidget> {
+
+  // Custom _locale (default = null; use system default)
+  Locale? _locale;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Load selected locale
+    loadDefaultLocale();
+  }
+
+  // Load the default app locale
+  Future<void> loadDefaultLocale() async {
+    Locale? locale = await InvenTreeSettingsManager().getSelectedLocale();
+    setLocale(locale);
+  }
+
+  // Update the app locale
+  void setLocale(Locale? locale) {
+    setState(() {
+      _locale = locale;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,11 +114,13 @@ class InvenTreeApp extends StatelessWidget {
       home: InvenTreeHomePage(),
       localizationsDelegates: [
         I18N.delegate,
+        LocaleNamesLocalizationsDelegate(),
         GlobalMaterialLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
       ],
       supportedLocales: supported_locales,
+      locale: _locale,
     );
   }
 }

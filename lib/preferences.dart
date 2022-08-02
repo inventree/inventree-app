@@ -1,5 +1,7 @@
 import "dart:async";
+import "dart:ui";
 
+import "package:inventree/l10n/supported_locales.dart";
 import "package:path_provider/path_provider.dart";
 import "package:sembast/sembast.dart";
 import "package:sembast/sembast_io.dart";
@@ -83,6 +85,26 @@ class InvenTreeSettingsManager {
 
   Future<Database> get _db async => InvenTreePreferencesDB.instance.database;
 
+  Future<Locale?> getSelectedLocale() async {
+    final String locale_name = await getValue("customLocale", "") as String;
+
+    if (locale_name.isEmpty) {
+      return null;
+    }
+
+    for (var locale in supported_locales) {
+      if (locale.toString() == locale_name) {
+        return locale;
+      }
+    }
+
+    // No matching locale found
+    return null;
+  }
+
+  Future<void> setSelectedLocale(Locale? locale) async {
+    await setValue("customLocale", locale?.toString() ?? "");
+  }
 
   Future<void> removeValue(String key) async {
     await store.record(key).delete(await _db);
