@@ -292,6 +292,11 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     fields.remove("part");
     fields.remove("quantity");
     fields.remove("location");
+    fields.remove("serial_numbers");
+
+    if (part == null || !part!.isTrackable) {
+      fields.remove("serial");
+    }
 
     item.editForm(
       context,

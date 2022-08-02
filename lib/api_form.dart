@@ -855,17 +855,18 @@ Future<void> launchApiForm(
       IconData icon = FontAwesomeIcons.save,
     }) async {
 
+  showLoadingOverlay(context);
+
   // List of fields defined by the server
   Map<String, dynamic> serverFields = {};
 
   if (url.isNotEmpty) {
 
-    showLoadingOverlay(context);
     var options = await InvenTreeAPI().options(url);
-    hideLoadingOverlay();
 
     // Invalid response from server
     if (!options.isValid()) {
+      hideLoadingOverlay();
       return;
     }
 
@@ -878,6 +879,7 @@ Future<void> launchApiForm(
         icon: FontAwesomeIcons.userTimes,
       );
 
+      hideLoadingOverlay();
       return;
     }
   }
@@ -926,6 +928,8 @@ Future<void> launchApiForm(
   for (var field in formFields) {
     await field.loadInitialData();
   }
+
+  hideLoadingOverlay();
 
   // Now, launch a new widget!
   Navigator.push(
@@ -1067,7 +1071,6 @@ class _APIFormWidgetState extends State<APIFormWidget> {
           spacerRequired = true;
           break;
       }
-
     }
 
     return widgets;

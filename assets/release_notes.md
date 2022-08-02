@@ -1,6 +1,12 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.8.2 - August 2022
+---
+
+- Allow serial numbers to be specified when creating new stock items
+- Allow serial numbers to be edited for existing stock items
+
 ### 0.8.1 - August 2022
 ---
 
