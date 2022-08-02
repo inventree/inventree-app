@@ -21,6 +21,7 @@ dependencies:
   flutter_cache_manager: ^3.3.0
   flutter_localizations:
     sdk: flutter
+  flutter_localized_locales: 2.0.3
   flutter_markdown: ^0.6.9                # Rendering markdown
   flutter_overlay_loader: ^2.0.0          # Overlay screen support
   font_awesome_flutter: ^9.1.0            # FontAwesome icon set

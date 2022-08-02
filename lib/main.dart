@@ -4,13 +4,14 @@ import "package:flutter_localizations/flutter_localizations.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 
 import "package:flutter/material.dart";
-import 'package:inventree/preferences.dart';
+import "package:flutter_localized_locales/flutter_localized_locales.dart";
 import "package:one_context/one_context.dart";
 import "package:package_info_plus/package_info_plus.dart";
 import "package:sentry_flutter/sentry_flutter.dart";
 
 import "package:inventree/inventree/sentry.dart";
 import "package:inventree/dsn.dart";
+import "package:inventree/preferences.dart";
 import "package:inventree/widget/home.dart";
 
 // Supported translations are automatically updated
@@ -83,22 +84,14 @@ class InvenTreeAppState extends State<StatefulWidget> {
     loadDefaultLocale();
   }
 
+  // Load the default app locale
   Future<void> loadDefaultLocale() async {
-
-    final String locale_name = await InvenTreeSettingsManager().getValue("customLocale", "") as String;
-
-    if (locale_name.isNotEmpty) {
-      for (var locale in supported_locales) {
-        if (locale.toString() == locale_name) {
-          print("Setting locale to ${locale_name}");
-          setLocale(locale);
-        }
-      }
-    }
+    Locale? locale = await InvenTreeSettingsManager().getSelectedLocale();
+    setLocale(locale);
   }
 
   // Update the app locale
-  void setLocale(Locale locale) {
+  void setLocale(Locale? locale) {
     setState(() {
       _locale = locale;
     });
@@ -119,6 +112,7 @@ class InvenTreeAppState extends State<StatefulWidget> {
       home: InvenTreeHomePage(),
       localizationsDelegates: [
         I18N.delegate,
+        LocaleNamesLocalizationsDelegate(),
         GlobalMaterialLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,

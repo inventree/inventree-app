@@ -473,6 +473,16 @@
   "labelTemplate": "Label Template",
   "@labelTemplate": {},
 
+  "language": "Language",
+  "@language": {},
+
+  "languageDefault": "Default system language",
+  "@languageDefault": {},
+
+  "languageSelect": "Select Language",
+  "@languageSelect": {},
+
+
   "lastStocktake": "Last Stocktake",
   "@lastStocktake": {},
 
