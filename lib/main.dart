@@ -4,6 +4,7 @@ import "package:flutter_localizations/flutter_localizations.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 
 import "package:flutter/material.dart";
+import 'package:inventree/preferences.dart';
 import "package:one_context/one_context.dart";
 import "package:package_info_plus/package_info_plus.dart";
 import "package:sentry_flutter/sentry_flutter.dart";
@@ -60,8 +61,48 @@ Future<void> main() async {
 
 }
 
-class InvenTreeApp extends StatelessWidget {
+class InvenTreeApp extends StatefulWidget {
   // This widget is the root of your application.
+
+  @override
+  InvenTreeAppState createState() => InvenTreeAppState();
+
+}
+
+
+class InvenTreeAppState extends State<StatefulWidget> {
+
+  // Custom _locale (default = null; use system default)
+  Locale? _locale;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Load selected locale
+    loadDefaultLocale();
+  }
+
+  Future<void> loadDefaultLocale() async {
+
+    final String locale_name = await InvenTreeSettingsManager().getValue("customLocale", "") as String;
+
+    if (locale_name.isNotEmpty) {
+      for (var locale in supported_locales) {
+        if (locale.toString() == locale_name) {
+          print("Setting locale to ${locale_name}");
+          setLocale(locale);
+        }
+      }
+    }
+  }
+
+  // Update the app locale
+  void setLocale(Locale locale) {
+    setState(() {
+      _locale = locale;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,6 +124,7 @@ class InvenTreeApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
       ],
       supportedLocales: supported_locales,
+      locale: _locale,
     );
   }
 }
