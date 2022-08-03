@@ -1,21 +1,21 @@
 import "dart:async";
 
-import "package:flutter_localizations/flutter_localizations.dart";
-import "package:flutter_gen/gen_l10n/app_localizations.dart";
-
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
+
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
+import "package:flutter_localizations/flutter_localizations.dart";
 import "package:flutter_localized_locales/flutter_localized_locales.dart";
 import "package:one_context/one_context.dart";
 import "package:package_info_plus/package_info_plus.dart";
 import "package:sentry_flutter/sentry_flutter.dart";
 
-import "package:inventree/inventree/sentry.dart";
 import "package:inventree/dsn.dart";
 import "package:inventree/preferences.dart";
-import "package:inventree/widget/home.dart";
-
-// Supported translations are automatically updated
+import "package:inventree/inventree/sentry.dart";
 import "package:inventree/l10n/supported_locales.dart";
+import "package:inventree/settings/release.dart";
+import "package:inventree/widget/home.dart";
 
 
 Future<void> main() async {
@@ -82,14 +82,34 @@ class InvenTreeAppState extends State<StatefulWidget> {
   void initState() {
     super.initState();
 
-    // Load selected locale
-    loadDefaultLocale();
+    // Run some async init tasks
+    runInitTasks();
   }
 
-  // Load the default app locale
-  Future<void> loadDefaultLocale() async {
+  // Run app init routines in the background
+  Future<void> runInitTasks() async {
+
+    // Set the app locale (language)
     Locale? locale = await InvenTreeSettingsManager().getSelectedLocale();
     setLocale(locale);
+
+    // Display release notes if this is a new version
+    final String version = await InvenTreeSettingsManager().getValue("recentVersion", "") as String;
+
+    final PackageInfo info = await PackageInfo.fromPlatform();
+    
+    if (version != info.version) {
+      // Save latest version to the settings database
+      await InvenTreeSettingsManager().setValue("recentVersion", info.version);
+
+      // Load release notes from external file
+      String notes = await rootBundle.loadString("assets/release_notes.md");
+
+      // Show the release notes
+      OneContext().push(
+          MaterialPageRoute(builder: (context) => ReleaseNotesWidget(notes))
+      );
+    }
   }
 
   // Update the app locale
