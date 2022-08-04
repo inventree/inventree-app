@@ -109,13 +109,13 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   @override
   Future<void> request(BuildContext context) async {
 
-    final bool result = await item.reload();
-
     stockShowHistory = await InvenTreeSettingsManager().getValue(INV_STOCK_SHOW_HISTORY, false) as bool;
+
+    final bool result = item.pk > 0 && await item.reload();
 
     // Could not load this stock item for some reason
     // Perhaps it has been depleted?
-    if (!result || item.pk == -1) {
+    if (!result) {
       Navigator.of(context).pop();
     }
 

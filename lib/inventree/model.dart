@@ -276,6 +276,12 @@ class InvenTreeModel {
   /// Delete the instance on the remote server
   /// Returns true if the operation was successful, else false
   Future<bool> delete() async {
+
+    // Return if we do not have a valid pk
+    if (pk < 0) {
+      return false;
+    }
+
     var response = await api.delete(url);
 
     if (!response.isValid() || response.data == null || (response.data is! Map)) {
@@ -303,18 +309,35 @@ class InvenTreeModel {
    */
   Future<bool> reload() async {
 
+    // If we do not have a valid pk (for some reason), exit immediately
+    if (pk < 0) {
+      return false;
+    }
+
     var response = await api.get(url, params: defaultGetFilters(), expectedStatusCode: 200);
 
-    if (!response.isValid() || response.data == null || (response.data is! Map)) {
+    // A valid response has been returned
+    if (response.isValid() && response.statusCode == 200) {
 
-      reportModelError(
-        "InvenTreeModel.reload() returned invalid response",
-        response,
-        context: {
-          "pk": pk.toString(),
-        }
-      );
+      // Returned data was not a valid JSON object
+      if (response.data == null || response.data is! Map) {
+        reportModelError(
+            "InvenTreeModel.reload() returned invalid response",
+            response,
+            context: {
+              "pk": pk.toString(),
+            }
+        );
 
+        showServerError(
+          url,
+          L10().serverError,
+          L10().responseInvalid,
+        );
+
+        return false;
+      }
+    } else {
       showServerError(
         url,
         L10().serverError,
@@ -322,7 +345,6 @@ class InvenTreeModel {
       );
 
       return false;
-
     }
 
     lastReload = DateTime.now();
@@ -336,6 +358,13 @@ class InvenTreeModel {
   Future<APIResponse> update({Map<String, String> values = const {}, int? expectedStatusCode = 200}) async {
 
     var url = path.join(URL, pk.toString());
+
+    // Return if we do not have a valid pk
+    if (pk < 0) {
+      return APIResponse(
+        url: url,
+      );
+    }
 
     if (!url.endsWith("/")) {
       url += "/";
@@ -396,6 +425,11 @@ class InvenTreeModel {
   }
 
   Future<InvenTreeModel?> get(int pk, {Map<String, String> filters = const {}}) async {
+
+    if (pk < 0) {
+      return null;
+    }
+
     return getModel(pk.toString(), filters: filters);
   }
 
