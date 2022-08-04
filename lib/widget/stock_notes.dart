@@ -31,7 +31,9 @@ class _StockNotesState extends RefreshableState<StockNotesWidget> {
 
   @override
   Future<void> request(BuildContext context) async {
-    await item.reload();
+    if (item.pk > 0) {
+      await item.reload();
+    }
   }
 
   @override
