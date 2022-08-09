@@ -1,5 +1,9 @@
 {
     "@@locale": "en",
+    "appTitle": "InvenTree",
+    "@appTitle": {
+        "description": "InvenTree application title string"
+    },
     "ok": "好",
     "@ok": {
         "description": "OK"
@@ -12,6 +16,8 @@
     "@actions": {
         "description": ""
     },
+    "actionsNone": "无可用操作",
+    "@actionsNone": {},
     "add": "添加",
     "@add": {
         "description": "add"
@@ -26,12 +32,30 @@
     "@appAbout": {},
     "appDetails": "应用详情",
     "@appDetails": {},
+    "appReleaseNotes": "显示应用发布说明",
+    "@appReleaseNotes": {},
     "appSettings": "应用设置",
     "@appSettings": {},
+    "attachments": "附件",
+    "@attachments": {},
+    "attachImage": "附加图片",
+    "@attachImage": {
+        "description": "Attach an image"
+    },
+    "attachmentNone": "找不到附件。",
+    "@attachmentNone": {},
+    "attachmentNoneDetail": "找不到附件。",
+    "@attachmentNoneDetail": {},
+    "attachmentSelect": "选择附件",
+    "@attachmentSelect": {},
     "attention": "注意",
     "@attention": {},
+    "availableStock": "可用库存",
+    "@availableStock": {},
     "barcodeAssign": "分配条码",
     "@barcodeAssign": {},
+    "barcodeAssignDetail": "扫描自定义条形码进行分配",
+    "@barcodeAssignDetail": {},
     "barcodeAssigned": "条码已分配",
     "@barcodeAssigned": {},
     "barcodeError": "条形码扫描出错",
