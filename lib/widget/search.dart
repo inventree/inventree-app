@@ -36,6 +36,8 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
 
   _SearchDisplayState(this.hasAppBar) : super();
 
+  final _formKey = GlobalKey<FormState>();
+
   final bool hasAppBar;
 
   @override
@@ -126,7 +128,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
     if (!mounted) {
       return;
     }
-    
+
     setState(() {
       // Do not search on an empty string
       nPartResults = 0;
@@ -245,6 +247,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
           decoration: InputDecoration(
             hintText: L10().queryEmpty,
           ),
+          key: _formKey,
           readOnly: false,
           autofocus: false,
           autocorrect: false,
@@ -252,6 +255,10 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
           controller: searchController,
           onChanged: (String text) {
             onSearchTextChanged(text);
+            _focusNode.requestFocus();
+          },
+          onFieldSubmitted: (String text) {
+            _focusNode.requestFocus();
           },
         ),
         trailing: GestureDetector(
@@ -261,6 +268,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
           ),
           onTap: () {
             searchController.clear();
+            _focusNode.requestFocus();
             onSearchTextChanged("", immediate: true);
           },
         ),
