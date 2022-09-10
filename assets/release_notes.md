@@ -1,6 +1,11 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.8.3 - September 2022
+---
+
+- Display list of assemblies which components are used in
+
 ### 0.8.2 - August 2022
 ---
 
