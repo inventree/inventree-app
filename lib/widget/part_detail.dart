@@ -4,10 +4,12 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
-import "package:inventree/inventree/stock.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/helpers.dart";
+
+import "package:inventree/inventree/bom.dart";
 import "package:inventree/inventree/part.dart";
+import "package:inventree/inventree/stock.dart";
 
 import "package:inventree/widget/attachment_widget.dart";
 import "package:inventree/widget/bom_list.dart";
@@ -48,6 +50,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   int attachmentCount = 0;
 
   int bomCount = 0;
+
+  int usedInCount = 0;
 
   int variantCount = 0;
 
@@ -150,6 +154,19 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       if (mounted) {
         setState(() {
           bomCount = value;
+        });
+      }
+    });
+
+    // Request number of "used in" parts
+    InvenTreeBomItem().count(
+      filters: {
+        "uses": part.pk.toString(),
+      }
+    ).then((int value) {
+      if (mounted) {
+        setState(() {
+          usedInCount = value;
         });
       }
     });
@@ -411,6 +428,27 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
                 // TODO
               },
             )
+        );
+      }
+    }
+
+    if (part.isComponent) {
+      if (usedInCount > 0) {
+        tiles.add(
+          ListTile(
+            title: Text(L10().usedIn),
+            subtitle: Text(L10().usedInDetails),
+            leading: FaIcon(FontAwesomeIcons.layerGroup, color: COLOR_CLICK),
+            trailing: Text(usedInCount.toString()),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => BillOfMaterialsWidget(part, isParentComponent: false)
+                    )
+                );
+              }
+          )
         );
       }
     }

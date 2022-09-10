@@ -24,6 +24,8 @@ class InvenTreeBomItem extends InvenTreeModel {
   Map<String, String> defaultListFilters() {
     return {
       "sub_part_detail": "true",
+      "part_detail": "true",
+      "show_pricing": "false",
     };
   }
 
