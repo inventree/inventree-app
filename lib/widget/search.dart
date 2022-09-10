@@ -105,6 +105,9 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
     } else {
       debounceTimer = Timer(Duration(milliseconds: 250), () {
         search(text);
+        if (!_focusNode.hasFocus) {
+          _focusNode.requestFocus();
+        }
       });
     }
   }
@@ -120,6 +123,10 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
 
     var api = InvenTreeAPI();
 
+    if (!mounted) {
+      return;
+    }
+    
     setState(() {
       // Do not search on an empty string
       nPartResults = 0;
@@ -140,10 +147,12 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
     if (api.checkPermission("part", "view")) {
       InvenTreePart().count(searchQuery: term).then((int n) {
         if (term == searchController.text) {
-          setState(() {
-            nPartResults = n;
-            nSearchResults++;
-          });
+          if (mounted) {
+            setState(() {
+              nPartResults = n;
+              nSearchResults++;
+            });
+          }
         }
       });
     }
@@ -152,10 +161,12 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
     if (api.checkPermission("part_category", "view")) {
       InvenTreePartCategory().count(searchQuery: term,).then((int n) {
         if (term == searchController.text) {
-          setState(() {
-            nCategoryResults = n;
-            nSearchResults++;
-          });
+          if (mounted) {
+            setState(() {
+              nCategoryResults = n;
+              nSearchResults++;
+            });
+          }
         }
       });
     }
@@ -164,10 +175,12 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
     if (api.checkPermission("stock", "view")) {
       InvenTreeStockItem().count(searchQuery: term).then((int n) {
         if (term == searchController.text) {
-          setState(() {
-            nStockResults = n;
-            nSearchResults++;
-          });
+          if (mounted) {
+            setState(() {
+              nStockResults = n;
+              nSearchResults++;
+            });
+          }
         }
       });
     }
@@ -176,11 +189,12 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
     if (api.checkPermission("stock_location", "view")) {
       InvenTreeStockLocation().count(searchQuery: term).then((int n) {
         if (term == searchController.text) {
-          setState(() {
-            nLocationResults = n;
-
-            nSearchResults++;
-          });
+          if (mounted) {
+            setState(() {
+              nLocationResults = n;
+              nSearchResults++;
+            });
+          }
         }
       });
     }
@@ -209,10 +223,12 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
           }
       ).then((int n) {
         if (term == searchController.text) {
-          setState(() {
-            nPurchaseOrderResults = n;
-            nSearchResults++;
-          });
+          if (mounted) {
+            setState(() {
+              nPurchaseOrderResults = n;
+              nSearchResults++;
+            });
+          }
         }
       });
     }
@@ -230,7 +246,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
             hintText: L10().queryEmpty,
           ),
           readOnly: false,
-          autofocus: true,
+          autofocus: false,
           autocorrect: false,
           focusNode: _focusNode,
           controller: searchController,
