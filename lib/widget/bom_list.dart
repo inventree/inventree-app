@@ -21,23 +21,29 @@ import "package:inventree/widget/refreshable_state.dart";
  */
 class BillOfMaterialsWidget extends StatefulWidget {
 
-  const BillOfMaterialsWidget(this.part, {Key? key}) : super(key: key);
+  const BillOfMaterialsWidget(this.part, {this.isParentComponent = true, Key? key}) : super(key: key);
 
   final InvenTreePart part;
 
+  final bool isParentComponent;
+
   @override
-  _BillOfMaterialsState createState() => _BillOfMaterialsState(part);
+  _BillOfMaterialsState createState() => _BillOfMaterialsState();
 }
 
 class _BillOfMaterialsState extends RefreshableState<BillOfMaterialsWidget> {
-  _BillOfMaterialsState(this.part);
-
-  final InvenTreePart part;
+  _BillOfMaterialsState();
 
   bool showFilterOptions = false;
 
   @override
-  String getAppBarTitle(BuildContext context) => L10().billOfMaterials;
+  String getAppBarTitle(BuildContext context) {
+    if (widget.isParentComponent) {
+      return L10().billOfMaterials;
+    } else {
+      return L10().usedIn;
+    }
+  }
 
   @override
   List<Widget> getAppBarActions(BuildContext context) => [
@@ -53,11 +59,36 @@ class _BillOfMaterialsState extends RefreshableState<BillOfMaterialsWidget> {
 
   @override
   Widget getBody(BuildContext context) {
-    return PaginatedBomList(
-      {
-        "part": part.pk.toString(),
-      },
-      showFilterOptions,
+
+    Map<String, String> filters = {};
+
+    if (widget.isParentComponent) {
+      filters["part"] = widget.part.pk.toString();
+    } else {
+      filters["uses"] = widget.part.pk.toString();
+    }
+
+    return Column(
+      children: [
+        ListTile(
+          leading: InvenTreeAPI().getImage(
+            widget.part.thumbnail,
+            width: 32,
+            height: 32,
+          ),
+          title: Text(widget.part.fullname),
+          subtitle: Text(widget.isParentComponent ? L10().billOfMaterials : L10().usedInDetails),
+          trailing: Text(L10().quantity),
+        ),
+        Divider(thickness: 1.25),
+        Expanded(
+          child: PaginatedBomList(
+            filters,
+            showSearch: showFilterOptions,
+            isParentPart: widget.isParentComponent,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -68,7 +99,9 @@ class _BillOfMaterialsState extends RefreshableState<BillOfMaterialsWidget> {
  */
 class PaginatedBomList extends PaginatedSearchWidget {
 
-  const PaginatedBomList(Map<String, String> filters, bool showSearch) : super(filters: filters, showSearch: showSearch);
+  const PaginatedBomList(Map<String, String> filters, {bool showSearch = false, this.isParentPart = true}) : super(filters: filters, showSearch: showSearch);
+
+  final bool isParentPart;
 
   @override
   _PaginatedBomListState createState() => _PaginatedBomListState();
@@ -109,7 +142,7 @@ class _PaginatedBomListState extends PaginatedSearchState<PaginatedBomList> {
 
     InvenTreeBomItem bomItem = model as InvenTreeBomItem;
 
-    InvenTreePart? subPart = bomItem.subPart;
+    InvenTreePart? subPart = widget.isParentPart ? bomItem.subPart : bomItem.part;
 
     String title = subPart?.fullname ?? "error - no name";
 
@@ -128,7 +161,7 @@ class _PaginatedBomListState extends PaginatedSearchState<PaginatedBomList> {
       onTap: subPart == null ? null : () async {
 
         showLoadingOverlay(context);
-        var part = await InvenTreePart().get(bomItem.subPartId);
+        var part = await InvenTreePart().get(subPart.pk);
         hideLoadingOverlay();
 
         if (part is InvenTreePart) {

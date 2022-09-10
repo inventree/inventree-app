@@ -438,8 +438,16 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           ListTile(
             title: Text(L10().usedIn),
             subtitle: Text(L10().usedInDetails),
-            leading: FaIcon(FontAwesomeIcons.layerGroup),
+            leading: FaIcon(FontAwesomeIcons.layerGroup, color: COLOR_CLICK),
             trailing: Text(usedInCount.toString()),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => BillOfMaterialsWidget(part, isParentComponent: false)
+                    )
+                );
+              }
           )
         );
       }
