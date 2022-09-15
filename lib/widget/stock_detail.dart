@@ -417,25 +417,38 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   }
 
 
+  /*
+   * Unassign (remove) a barcode from a StockItem.
+   *
+   * Note that for API version < 76 this action is performed on the StockItem endpoint.
+   * For API version 76 or above, this uses the barcode "unlink" endpoint
+   */
   Future<void> _unassignBarcode(BuildContext context) async {
 
-    final response = await item.update(values: {"uid": ""});
+    if (InvenTreeAPI().apiVersion < 76) {
+      final response = await item.update(values: {"uid": ""});
 
-    switch (response.statusCode) {
-      case 200:
-      case 201:
-        showSnackIcon(
-            L10().stockItemUpdateSuccess,
-            success: true
-        );
-        break;
-      default:
-        showSnackIcon(
-          L10().stockItemUpdateFailure,
-          success: false,
-        );
-        break;
+      switch (response.statusCode) {
+        case 200:
+        case 201:
+          showSnackIcon(
+              L10().stockItemUpdateSuccess,
+              success: true
+          );
+          break;
+        default:
+          showSnackIcon(
+            L10().stockItemUpdateFailure,
+            success: false,
+          );
+          break;
+      }
+    } else {
+      InvenTreeAPI().unlinkBarcode({
+        "stockitem": item.pk,
+      });
     }
+
     refresh(context);
   }
 
