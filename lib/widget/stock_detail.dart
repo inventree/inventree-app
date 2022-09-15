@@ -444,9 +444,14 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           break;
       }
     } else {
-      InvenTreeAPI().unlinkBarcode({
+      final bool result = await InvenTreeAPI().unlinkBarcode({
         "stockitem": item.pk,
       });
+
+      showSnackIcon(
+        result ? L10().stockItemUpdateSuccess : L10().stockItemUpdateFailure,
+        success: result,
+      );
     }
 
     refresh(context);
