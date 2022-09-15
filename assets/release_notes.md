@@ -5,6 +5,7 @@
 ---
 
 - Display list of assemblies which components are used in
+- Fixes search input bug
 
 ### 0.8.2 - August 2022
 ---

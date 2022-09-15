@@ -877,6 +877,27 @@ class InvenTreeAPI {
     );
   }
 
+  /*
+   * Perform a request to unlink a custom barcode from a particular item
+   */
+  Future<bool> unlinkBarcode(Map<String, dynamic> body) async {
+
+    HttpClientRequest? request = await apiRequest("/barcode/unlink/", "POST");
+
+    if (request == null) {
+      return false;
+    }
+
+    final response = await completeRequest(
+        request,
+        data: json.encode(body),
+        statusCode: 200,
+    );
+
+    return response.isValid() && response.statusCode == 200;
+  }
+
+
   HttpClient createClient(String url, {bool strictHttps = false}) {
 
     var client = HttpClient();
