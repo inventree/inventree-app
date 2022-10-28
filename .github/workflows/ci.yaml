@@ -14,6 +14,7 @@ env:
   INVENTREE_DB_NAME: ../inventree_unit_test_db.sqlite3
   INVENTREE_MEDIA_ROOT: ../test_inventree_media
   INVENTREE_STATIC_ROOT: ../test_inventree_static
+  INVENTREE_BACKUP_DIR: ../test_inventree_backup
   INVENTREE_ADMIN_USER: testuser
   INVENTREE_ADMIN_PASSWORD: testpassword
   INVENTREE_ADMIN_EMAIL: test@test.com
