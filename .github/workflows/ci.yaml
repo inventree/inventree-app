@@ -14,6 +14,7 @@ env:
   INVENTREE_DB_NAME: ../inventree_unit_test_db.sqlite3
   INVENTREE_MEDIA_ROOT: ../test_inventree_media
   INVENTREE_STATIC_ROOT: ../test_inventree_static
+  INVENTREE_BACKUP_DIR: ../test_inventree_backup
   INVENTREE_ADMIN_USER: testuser
   INVENTREE_ADMIN_PASSWORD: testpassword
   INVENTREE_ADMIN_EMAIL: test@test.com
@@ -49,6 +50,10 @@ jobs:
           flutter pub get
           flutter analyze
 
+      - name: Install Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
       - name: Start InvenTree Server
         run: |
           sudo apt-get install python3-dev python3-pip python3-venv python3-wheel g++
