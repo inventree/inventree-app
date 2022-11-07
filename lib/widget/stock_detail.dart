@@ -416,48 +416,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     );
   }
 
-
-  /*
-   * Unassign (remove) a barcode from a StockItem.
-   *
-   * Note that for API version < 76 this action is performed on the StockItem endpoint.
-   * For API version 76 or above, this uses the barcode "unlink" endpoint
-   */
-  Future<void> _unassignBarcode(BuildContext context) async {
-
-    if (InvenTreeAPI().apiVersion < 76) {
-      final response = await item.update(values: {"uid": ""});
-
-      switch (response.statusCode) {
-        case 200:
-        case 201:
-          showSnackIcon(
-              L10().stockItemUpdateSuccess,
-              success: true
-          );
-          break;
-        default:
-          showSnackIcon(
-            L10().stockItemUpdateFailure,
-            success: false,
-          );
-          break;
-      }
-    } else {
-      final bool result = await InvenTreeAPI().unlinkBarcode({
-        "stockitem": item.pk,
-      });
-
-      showSnackIcon(
-        result ? L10().stockItemUpdateSuccess : L10().stockItemUpdateFailure,
-        success: result,
-      );
-    }
-
-    refresh(context);
-  }
-
-
   /*
    * Launches an API Form to transfer this stock item to a new location
    */
@@ -846,59 +804,55 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     String barcode = item.customBarcode;
 
-    // Add or remove custom barcode
-    if (barcode.isEmpty) {
-      tiles.add(
-        ListTile(
-          title: Text(L10().barcodeAssign),
-          subtitle: Text(L10().barcodeAssignDetail),
-          leading: Icon(Icons.qr_code),
-          trailing: Icon(Icons.qr_code_scanner),
-          onTap: () {
+    if (InvenTreeAPI().supportModernBarcodes) {
+      // Add or remove custom barcode
+      if (barcode.isEmpty) {
+        tiles.add(
+            ListTile(
+                title: Text(L10().barcodeAssign),
+                subtitle: Text(L10().barcodeAssignDetail),
+                leading: Icon(Icons.qr_code),
+                trailing: Icon(Icons.qr_code_scanner),
+                onTap: () {
+                  var handler = UniqueBarcodeHandler((String hash) {
 
-            var handler = UniqueBarcodeHandler((String hash) {
-              item.update(
-                values: {
-                  "uid": hash,
+                    InvenTreeAPI().linkBarcode({
+                      "stockitem": item.pk.toString(),
+                      "barcode": hash,
+                    }).then((bool result) {
+                      showSnackIcon(
+                          result ? L10().stockItemUpdateSuccess : L10().stockItemUpdateFailure,
+                          success: result
+                      );
+                    });
+                  });
+
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => InvenTreeQRView(handler))
+                  );
                 }
-              ).then((response) {
-
-                switch (response.statusCode) {
-                  case 200:
-                  case 201:
-                    barcodeSuccessTone();
-
+            )
+        );
+      } else {
+        tiles.add(
+            ListTile(
+                title: Text(L10().barcodeUnassign),
+                leading: Icon(Icons.qr_code, color: COLOR_CLICK),
+                onTap: () async {
+                  InvenTreeAPI().unlinkBarcode({
+                    "stockitem": item.pk,
+                  }).then((bool result) {
                     showSnackIcon(
-                      L10().barcodeAssigned,
-                      success: true,
-                      icon: Icons.qr_code,
+                      result ? L10().stockItemUpdateSuccess : L10().stockItemUpdateFailure,
+                      success: result
                     );
-
-                    refresh(context);
-                    break;
-                  default:
-                    break;
+                  });
                 }
-              });
-            });
-
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => InvenTreeQRView(handler))
-            );
-          }
-        )
-      );
-    } else {
-      tiles.add(
-        ListTile(
-          title: Text(L10().barcodeUnassign),
-          leading: Icon(Icons.qr_code, color: COLOR_CLICK),
-          onTap: () {
-            _unassignBarcode(context);
-          }
-        )
-      );
+            )
+        );
+      }
     }
 
     // Print label (if label printing plugins exist)
