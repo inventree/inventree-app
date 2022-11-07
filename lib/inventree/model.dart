@@ -148,6 +148,23 @@ class InvenTreeModel {
   // Legacy API provided external link as "URL", while newer API uses "link"
   String get link => (jsondata["link"] ?? jsondata["URL"] ?? "") as String;
 
+  /* Extract any custom barcode data available for the model.
+   * Note that old API used 'uid' (only for StockItem),
+   * but this was updated to use 'barcode_hash'
+   */
+  String get customBarcode {
+    if (jsondata.containsKey("uid")) {
+      return jsondata["uid"] as String;
+    } else if (jsondata.containsKey("barcode_hash")) {
+      return jsondata["barcode_hash"] as String;
+    } else if (jsondata.containsKey("barcode")) {
+      return jsondata["barcode"] as String;
+    }
+
+    // Empty string if no match
+    return "";
+  }
+
   Future <void> goToInvenTreePage() async {
 
     if (await canLaunch(webUrl)) {

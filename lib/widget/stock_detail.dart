@@ -844,8 +844,10 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       )
     );
 
+    String barcode = item.customBarcode;
+
     // Add or remove custom barcode
-    if (item.uid.isEmpty) {
+    if (barcode.isEmpty) {
       tiles.add(
         ListTile(
           title: Text(L10().barcodeAssign),
