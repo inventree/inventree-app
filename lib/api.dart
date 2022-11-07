@@ -878,6 +878,27 @@ class InvenTreeAPI {
   }
 
   /*
+   * Perform a request to link a custom barcode to a particular item
+   */
+  Future<bool> linkBarcode(Map<String, String> body) async {
+
+  HttpClientRequest? request = await apiRequest("/barcode/link/", "POST");
+
+  if (request == null) {
+    return false;
+  }
+
+  final response = await completeRequest(
+    request,
+    data: json.encode(body),
+    statusCode: 200
+  );
+
+  return response.isValid() && response.statusCode == 200;
+
+  }
+
+  /*
    * Perform a request to unlink a custom barcode from a particular item
    */
   Future<bool> unlinkBarcode(Map<String, dynamic> body) async {
