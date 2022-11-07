@@ -259,6 +259,9 @@ class InvenTreeAPI {
   // Notification support requires API v25 or newer
   bool get supportsNotifications => isConnected() && apiVersion >= 25;
 
+  // Supports 'modern' barcode API (v80 or newer)
+  bool get supportModernBarcodes => isConnected() && apiVersion >= 80;
+
   // Are plugins enabled on the server?
   bool _pluginsEnabled = false;
 
@@ -1270,6 +1273,7 @@ class InvenTreeAPI {
     );
   }
 
+  // Return True if the API supports 'settings' (requires API v46)
   bool get supportsSettings => isConnected() && apiVersion >= 46;
 
   // Keep a record of which settings we have received from the server
