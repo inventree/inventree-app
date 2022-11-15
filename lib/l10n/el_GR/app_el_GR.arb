@@ -1,5 +1,35 @@
 {
   "@@locale": "en",
+  "appTitle": "InvenTree",
+  "@appTitle": {
+    "description": "InvenTree application title string"
+  },
+  "accountDetails": "Λεπτομέρειες Λογαριασμού",
+  "@accountDetails": {},
+  "actions": "Ενέργειες",
+  "@actions": {
+    "description": ""
+  },
+  "address": "Διεύθυνση",
+  "@address": {},
+  "appSettings": "Ρυθμίσεις Εφαρμογής",
+  "@appSettings": {},
+  "attachments": "Συνημμένα",
+  "@attachments": {},
+  "attachImage": "Επισύναψη Εικόνας",
+  "@attachImage": {
+    "description": "Attach an image"
+  },
+  "attachmentNoneDetail": "Δεν βρέθηκαν συνημμένα",
+  "@attachmentNoneDetail": {},
+  "attention": "Προσοχή",
+  "@attention": {},
+  "availableStock": "Διαθέσιμο Απόθεμα",
+  "@availableStock": {},
+  "barcodeAssign": "Αντιστοίχιση Barcode",
+  "@barcodeAssign": {},
+  "categoryCreate": "Νέα Κατηγορία",
+  "@categoryCreate": {},
   "@homeShowSubscsribedDescription": {},
   "@homeShowSupplierDescription": {}
 }
