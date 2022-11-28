@@ -259,6 +259,9 @@ class InvenTreeAPI {
   // Notification support requires API v25 or newer
   bool get supportsNotifications => isConnected() && apiVersion >= 25;
 
+  // Structural categories requires API v83 or newer
+  bool get supportsStructuralCategories => isConnected() && apiVersion >= 83;
+
   // Are plugins enabled on the server?
   bool _pluginsEnabled = false;
 
