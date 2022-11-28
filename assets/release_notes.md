@@ -1,6 +1,14 @@
 ## InvenTree App Release Notes
 ---
 
+### - December 2022
+---
+
+- Add support for structural part categories
+- Add support for structural stock locations
+- Updated translations
+
+
 ### 0.8.3 - September 2022
 ---
 
