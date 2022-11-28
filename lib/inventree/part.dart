@@ -25,11 +25,18 @@ class InvenTreePartCategory extends InvenTreeModel {
   @override
   Map<String, dynamic> formFields() {
 
-    return {
+    Map<String, dynamic> fields = {
       "name": {},
       "description": {},
-      "parent": {}
+      "parent": {},
+      "structural": {},
     };
+
+    if (!api.supportsStructuralCategories) {
+      fields.remove("structural");
+    }
+
+    return fields;
   }
 
   String get pathstring => (jsondata["pathstring"] ?? "") as String;

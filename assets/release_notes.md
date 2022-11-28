@@ -6,6 +6,8 @@
 
 - Added support for custom barcodes for Parts
 - Added support for custom barcode for Stock Locations
+- Add support for structural part categories
+- Add support for structural stock locations
 - Translation updates
 
 

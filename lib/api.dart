@@ -262,6 +262,9 @@ class InvenTreeAPI {
   // Supports 'modern' barcode API (v80 or newer)
   bool get supportModernBarcodes => isConnected() && apiVersion >= 80;
 
+  // Structural categories requires API v83 or newer
+  bool get supportsStructuralCategories => isConnected() && apiVersion >= 83;
+
   // Are plugins enabled on the server?
   bool _pluginsEnabled = false;
 
