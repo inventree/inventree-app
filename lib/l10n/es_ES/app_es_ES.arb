@@ -563,6 +563,8 @@
   "@response502": {},
   "response503": "Servicio no disponible",
   "@response503": {},
+  "responseUnknown": "Respuesta desconocida",
+  "@responseUnknown": {},
   "searchParts": "Buscar piezas",
   "@searchParts": {},
   "stock": "Stock",
