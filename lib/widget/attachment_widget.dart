@@ -79,6 +79,49 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
     refresh(context);
   }
 
+  /*
+   * Delete the specified attachment
+   */
+  Future<void> deleteAttachment(BuildContext context, InvenTreeAttachment attachment) async {
+
+    final bool result = await attachment.delete();
+
+    showSnackIcon(
+      result ? L10().deleteSuccess : L10().deleteFailed,
+      success: result
+    );
+
+    refresh(context);
+
+  }
+
+  /*
+   * Display an option context menu for the selected attachment
+   */
+  Future<void> showOptionsMenu(BuildContext context, InvenTreeAttachment attachment) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) {
+        return SimpleDialog(
+          title: Text(L10().attachments),
+          children: [
+            Divider(),
+            SimpleDialogOption(
+              onPressed: () async {
+                Navigator.of(ctx).pop();
+                deleteAttachment(context, attachment);
+              },
+              child: ListTile(
+                title: Text(L10().delete),
+                leading: FaIcon(FontAwesomeIcons.trashAlt),
+              )
+            )
+          ]
+        );
+      }
+    );
+  }
+
   @override
   Future<void> request(BuildContext context) async {
 
@@ -128,6 +171,9 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
             await attachment.downloadAttachment();
             hideLoadingOverlay();
           },
+          onLongPress: ()  {
+            showOptionsMenu(context, attachment);
+          },
         ));
       }
 
@@ -140,7 +186,10 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
             if (await canLaunch(attachment.link)) {
               await launch(attachment.link);
             }
-          }
+          },
+          onLongPress: ()  {
+            showOptionsMenu(context, attachment);
+          },
         ));
       }
     }

@@ -208,11 +208,17 @@
   "delete": "Delete",
   "@delete": {},
 
+  "deleteFailed": "Delete operation failed",
+  "@deleteFailed": {},
+
   "deletePart": "Delete Part",
   "@deletePart": {},
 
   "deletePartDetail": "Remove this part from the database",
   "@deletePartDetail": {},
+
+  "deleteSuccess": "Delete operation successful",
+  "@deleteSuccess": {},
 
   "description": "Description",
   "@description": {},
