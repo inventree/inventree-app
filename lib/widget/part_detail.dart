@@ -47,6 +47,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   InvenTreePart? parentPart;
 
+  int parameterCount = 0;
+
   int attachmentCount = 0;
 
   int bomCount = 0;
@@ -131,6 +133,21 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         setState(() {});
       }
     });
+
+    // Request the number of parameters for this part
+    if (InvenTreeAPI().supportsPartParameters) {
+      InvenTreePartParameter().count(
+          filters: {
+            "part": part.pk.toString(),
+          }
+      ).then((int value) {
+        if (mounted) {
+          setState(() {
+            parameterCount = value;
+          });
+        }
+      });
+    }
 
     // Request the number of attachments
     InvenTreePartAttachment().count(
@@ -538,6 +555,21 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         },
       )
     );
+
+    if (InvenTreeAPI().supportsPartParameters) {
+      tiles.add(
+          ListTile(
+              title: Text(L10().parameters),
+              leading: FaIcon(FontAwesomeIcons.thList, color: COLOR_CLICK),
+              trailing: parameterCount > 0
+                  ? Text(parameterCount.toString())
+                  : null,
+              onTap: () {
+                // TDOO
+              }
+          )
+      );
+    }
 
     tiles.add(
       ListTile(
