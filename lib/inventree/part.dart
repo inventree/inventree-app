@@ -135,7 +135,12 @@ class InvenTreePartParameter extends InvenTreeModel {
   InvenTreePartParameter.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
   @override
-  String get URL => "part/parameter";
+  String get URL => "part/parameter/";
+
+  @override
+  InvenTreeModel createFromJson(Map<String, dynamic> json) {
+    return InvenTreePartParameter.fromJson(json);
+  }
 
   @override
   Map<String, dynamic> formFields() {
