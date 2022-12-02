@@ -582,6 +582,9 @@
   "parameters": "Parameters",
   "@parameters": {},
 
+  "parametersSettingDetail": "Display part parameters",
+  "@parametersSettingDetail": {},
+
   "parent": "Parent",
   "@parent": {},
 

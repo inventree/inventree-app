@@ -18,6 +18,10 @@ const String INV_HOME_SHOW_SUPPLIERS = "homeShowSuppliers";
 const String INV_SOUNDS_BARCODE = "barcodeSounds";
 const String INV_SOUNDS_SERVER = "serverSounds";
 
+// Part settings
+const String INV_PART_SHOW_PARAMETERS = "partShowParameters";
+
+// Stock settings
 const String INV_STOCK_SHOW_HISTORY = "stockShowHistory";
 
 const String INV_REPORT_ERRORS = "reportErrors";
