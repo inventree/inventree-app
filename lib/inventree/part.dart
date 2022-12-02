@@ -125,6 +125,23 @@ class InvenTreePartTestTemplate extends InvenTreeModel {
 
 }
 
+/*
+ Class representing the PartParameter database model
+ */
+class InvenTreePartParameter extends InvenTreeModel {
+
+  InvenTreePartParameter() : super();
+
+  InvenTreePartParameter.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+
+  @override
+  String get URL => "part/parameter";
+
+  @override
+  Map<String, dynamic> formFields() {
+    return {};
+  }
+}
 
 /*
  * Class representing the Part database model
