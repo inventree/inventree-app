@@ -16,6 +16,7 @@ import "package:inventree/widget/attachment_widget.dart";
 import "package:inventree/widget/bom_list.dart";
 import "package:inventree/widget/part_list.dart";
 import "package:inventree/widget/part_notes.dart";
+import 'package:inventree/widget/part_parameter_widget.dart';
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/category_display.dart";
 import "package:inventree/widget/refreshable_state.dart";
@@ -553,11 +554,14 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           ListTile(
               title: Text(L10().parameters),
               leading: FaIcon(FontAwesomeIcons.thList, color: COLOR_CLICK),
-              trailing: parameterCount > 0
-                  ? Text(parameterCount.toString())
-                  : null,
+              trailing: parameterCount > 0 ? Text(parameterCount.toString()) : null,
               onTap: () {
-                // TDOO
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PartParameterWidget(part)
+                  )
+                );
               }
           )
       );
