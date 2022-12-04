@@ -43,6 +43,9 @@ class _NotificationState extends RefreshableState<NotificationWidget> {
     }
   }
 
+  /*
+   * Dismiss an individual notification entry (mark it as "read")
+   */
   Future<void> dismissNotification(BuildContext context, InvenTreeNotification notification) async {
 
     await notification.dismiss();
@@ -51,6 +54,9 @@ class _NotificationState extends RefreshableState<NotificationWidget> {
 
   }
 
+  /*
+   * Display an individual notification message
+   */
   List<Widget> renderNotifications(BuildContext context) {
 
     List<Widget> tiles = [];
