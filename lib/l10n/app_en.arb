@@ -142,6 +142,9 @@
   "bom": "BOM",
   "@bom": {},
 
+  "bomEnable": "Display Bill of Materials",
+  "@bomEnable": {},
+
   "build": "Build",
   "@build": {},
 
@@ -618,6 +621,9 @@
 
   "partNoResults": "No parts matching query",
   "@partNoResults": {},
+
+  "partSettings": "Part Settings",
+  "@partSettings": {},
 
   "partsStarred": "Subscribed Parts",
   "@partsStarred": {},
