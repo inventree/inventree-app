@@ -1,12 +1,12 @@
+import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+
 import "package:inventree/app_colors.dart";
+import "package:inventree/l10.dart";
 import "package:inventree/settings/app_settings.dart";
 import "package:inventree/settings/home_settings.dart";
 import "package:inventree/settings/login.dart";
-
-import "package:flutter/material.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
-import "package:inventree/l10.dart";
-import 'package:inventree/settings/part_settings.dart';
+import "package:inventree/settings/part_settings.dart";
 
 
 class InvenTreeSettingsWidget extends StatefulWidget {
