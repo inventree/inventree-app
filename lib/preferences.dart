@@ -20,6 +20,7 @@ const String INV_SOUNDS_SERVER = "serverSounds";
 
 // Part settings
 const String INV_PART_SHOW_PARAMETERS = "partShowParameters";
+const String INV_PART_SHOW_BOM = "partShowBom";
 
 // Stock settings
 const String INV_STOCK_SHOW_HISTORY = "stockShowHistory";
