@@ -16,7 +16,7 @@ import "package:inventree/widget/attachment_widget.dart";
 import "package:inventree/widget/bom_list.dart";
 import "package:inventree/widget/part_list.dart";
 import "package:inventree/widget/part_notes.dart";
-import 'package:inventree/widget/part_parameter_widget.dart';
+import "package:inventree/widget/part_parameter_widget.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/category_display.dart";
 import "package:inventree/widget/refreshable_state.dart";

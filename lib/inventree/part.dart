@@ -146,6 +146,27 @@ class InvenTreePartParameter extends InvenTreeModel {
   Map<String, dynamic> formFields() {
     return {};
   }
+
+  @override
+  String get name => (jsondata["template_detail"]?["name"] ?? "") as String;
+
+  @override
+  String get description => (jsondata["template_detail"]?["description"] ?? "") as String;
+
+  String get value => jsondata["data"] as String;
+
+  String get valueString {
+    String v = value;
+
+    if (units.isNotEmpty) {
+      v += " ";
+      v += units;
+    }
+
+    return v;
+  }
+
+  String get units => (jsondata["template_detail"]?["units"] ?? "") as String;
 }
 
 /*

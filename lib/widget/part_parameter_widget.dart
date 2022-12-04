@@ -1,10 +1,9 @@
-import "package:flutter/cupertino.dart";
-import 'package:flutter/material.dart';
-import 'package:inventree/inventree/model.dart';
+import "package:flutter/material.dart";
+import "package:inventree/inventree/model.dart";
 
 import "package:inventree/l10.dart";
 import "package:inventree/inventree/part.dart";
-import 'package:inventree/widget/paginator.dart';
+import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/refreshable_state.dart";
 
 /*
