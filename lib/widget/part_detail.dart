@@ -10,11 +10,13 @@ import "package:inventree/helpers.dart";
 import "package:inventree/inventree/bom.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/stock.dart";
+import "package:inventree/preferences.dart";
 
 import "package:inventree/widget/attachment_widget.dart";
 import "package:inventree/widget/bom_list.dart";
 import "package:inventree/widget/part_list.dart";
 import "package:inventree/widget/part_notes.dart";
+import "package:inventree/widget/part_parameter_widget.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/category_display.dart";
 import "package:inventree/widget/refreshable_state.dart";
@@ -46,6 +48,10 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   InvenTreePart part;
 
   InvenTreePart? parentPart;
+
+  int parameterCount = 0;
+
+  bool showParameters = false;
 
   int attachmentCount = 0;
 
@@ -131,6 +137,24 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         setState(() {});
       }
     });
+
+    // Request the number of parameters for this part
+    if (InvenTreeAPI().supportsPartParameters) {
+
+      showParameters = await InvenTreeSettingsManager().getValue(INV_PART_SHOW_PARAMETERS, true) as bool;
+
+      InvenTreePartParameter().count(
+          filters: {
+            "part": part.pk.toString(),
+          }
+      ).then((int value) {
+        if (mounted) {
+          setState(() {
+            parameterCount = value;
+          });
+        }
+      });
+    }
 
     // Request the number of attachments
     InvenTreePartAttachment().count(
@@ -510,20 +534,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       );
     }
 
-
-    // TODO - Add request tests?
-    /*
-    if (part.isTrackable) {
-      tiles.add(ListTile(
-          title: Text(L10().testsRequired),
-          leading: FaIcon(FontAwesomeIcons.tasks),
-          trailing: Text("${part.testTemplateCount}"),
-          onTap: null,
-        )
-      );
-    }
-     */
-
     // Notes field
     tiles.add(
       ListTile(
@@ -538,6 +548,24 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         },
       )
     );
+
+    if (showParameters) {
+      tiles.add(
+          ListTile(
+              title: Text(L10().parameters),
+              leading: FaIcon(FontAwesomeIcons.thList, color: COLOR_CLICK),
+              trailing: parameterCount > 0 ? Text(parameterCount.toString()) : null,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PartParameterWidget(part)
+                  )
+                );
+              }
+          )
+      );
+    }
 
     tiles.add(
       ListTile(

@@ -4,6 +4,7 @@
 ### - December 2022
 ---
 
+- Support Part parameters
 - Add support for structural part categories
 - Add support for structural stock locations
 - Allow deletion of attachments via app

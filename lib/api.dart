@@ -262,6 +262,9 @@ class InvenTreeAPI {
   // Structural categories requires API v83 or newer
   bool get supportsStructuralCategories => isConnected() && apiVersion >= 83;
 
+  // Part parameter support requires API v56 or newer
+  bool get supportsPartParameters => isConnected() && apiVersion >= 56;
+
   // Are plugins enabled on the server?
   bool _pluginsEnabled = false;
 

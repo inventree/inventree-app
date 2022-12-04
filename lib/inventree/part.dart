@@ -125,6 +125,49 @@ class InvenTreePartTestTemplate extends InvenTreeModel {
 
 }
 
+/*
+ Class representing the PartParameter database model
+ */
+class InvenTreePartParameter extends InvenTreeModel {
+
+  InvenTreePartParameter() : super();
+
+  InvenTreePartParameter.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+
+  @override
+  String get URL => "part/parameter/";
+
+  @override
+  InvenTreeModel createFromJson(Map<String, dynamic> json) {
+    return InvenTreePartParameter.fromJson(json);
+  }
+
+  @override
+  Map<String, dynamic> formFields() {
+    return {};
+  }
+
+  @override
+  String get name => (jsondata["template_detail"]?["name"] ?? "") as String;
+
+  @override
+  String get description => (jsondata["template_detail"]?["description"] ?? "") as String;
+
+  String get value => jsondata["data"] as String;
+
+  String get valueString {
+    String v = value;
+
+    if (units.isNotEmpty) {
+      v += " ";
+      v += units;
+    }
+
+    return v;
+  }
+
+  String get units => (jsondata["template_detail"]?["units"] ?? "") as String;
+}
 
 /*
  * Class representing the Part database model

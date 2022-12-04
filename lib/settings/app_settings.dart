@@ -25,6 +25,9 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
   bool barcodeSounds = true;
   bool serverSounds = true;
 
+  // Part settings
+  bool partShowParameters = true;
+
   // Stock settings
   bool stockShowHistory = false;
 
@@ -46,6 +49,8 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
 
     barcodeSounds = await InvenTreeSettingsManager().getValue(INV_SOUNDS_BARCODE, true) as bool;
     serverSounds = await InvenTreeSettingsManager().getValue(INV_SOUNDS_SERVER, true) as bool;
+
+    partShowParameters = await InvenTreeSettingsManager().getValue(INV_PART_SHOW_PARAMETERS, true) as bool;
 
     stockShowHistory = await InvenTreeSettingsManager().getValue(INV_STOCK_SHOW_HISTORY, false) as bool;
 
@@ -132,6 +137,26 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
       body: Container(
         child: ListView(
           children: [
+            /* Part Settings */
+            ListTile(
+              title: Text(L10().part, style: TextStyle(fontWeight: FontWeight.bold)),
+              leading: FaIcon(FontAwesomeIcons.shapes),
+            ),
+            ListTile(
+              title: Text(L10().parameters),
+              subtitle: Text(L10().parametersSettingDetail),
+              leading: FaIcon(FontAwesomeIcons.thList),
+              trailing: Switch(
+                value: partShowParameters,
+                onChanged: (bool value) {
+                  InvenTreeSettingsManager().setValue(INV_PART_SHOW_PARAMETERS, value);
+                  setState(() {
+                    partShowParameters = value;
+                  });
+                },
+              ),
+            ),
+            Divider(),
             /* Stock Settings */
             ListTile(
               title: Text(L10().stock,
