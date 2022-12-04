@@ -26,9 +26,7 @@ const String INV_PART_SHOW_BOM = "partShowBom";
 const String INV_STOCK_SHOW_HISTORY = "stockShowHistory";
 
 const String INV_REPORT_ERRORS = "reportErrors";
-
 const String INV_STRICT_HTTPS = "strictHttps";
-
 
 /*
  * Class for storing InvenTree preferences in a NoSql DB

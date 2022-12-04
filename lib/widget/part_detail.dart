@@ -53,6 +53,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   bool showParameters = false;
 
+  bool showBom = false;
+
   int attachmentCount = 0;
 
   int bomCount = 0;
@@ -168,6 +170,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         });
       }
     });
+
+    showBom = await InvenTreeSettingsManager().getValue(INV_PART_SHOW_BOM, true) as bool;
 
     // Request the number of BOM items
     InvenTreePart().count(
@@ -424,7 +428,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     // Tiles for an "assembly" part
     if (part.isAssembly) {
 
-      if (bomCount > 0) {
+      if (showBom && bomCount > 0) {
         tiles.add(
             ListTile(
                 title: Text(L10().billOfMaterials),
@@ -457,7 +461,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     }
 
     if (part.isComponent) {
-      if (usedInCount > 0) {
+      if (showBom && usedInCount > 0) {
         tiles.add(
           ListTile(
             title: Text(L10().usedIn),
@@ -534,21 +538,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       );
     }
 
-    // Notes field
-    tiles.add(
-      ListTile(
-        title: Text(L10().notes),
-        leading: FaIcon(FontAwesomeIcons.stickyNote, color: COLOR_CLICK),
-        trailing: Text(""),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => PartNotesWidget(part))
-          );
-        },
-      )
-    );
-
     if (showParameters) {
       tiles.add(
           ListTile(
@@ -566,6 +555,21 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           )
       );
     }
+
+    // Notes field
+    tiles.add(
+        ListTile(
+          title: Text(L10().notes),
+          leading: FaIcon(FontAwesomeIcons.stickyNote, color: COLOR_CLICK),
+          trailing: Text(""),
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PartNotesWidget(part))
+            );
+          },
+        )
+    );
 
     tiles.add(
       ListTile(
