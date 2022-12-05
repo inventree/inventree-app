@@ -117,6 +117,8 @@ class BarcodeHandler {
           expectedStatusCode: null,  // Do not show an error on "unexpected code"
       );
 
+      debug("Barcode scan response" + response.data.toString());
+
       _controller?.resumeCamera();
 
       Map<String, dynamic> data = response.asMap();
