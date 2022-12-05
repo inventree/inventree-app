@@ -184,7 +184,7 @@ void main() {
       });
 
       await part!.reload();
-      assert(part!.customBarcode.isNotEmpty);
+      assert(part.customBarcode.isNotEmpty);
 
       // Scan barcode
       var handler = BarcodeScanHandler();
@@ -200,8 +200,8 @@ void main() {
         "part": "2"
       });
 
-      await part!.reload();
-      assert(part!.customBarcode.isEmpty);
+      await part.reload();
+      assert(part.customBarcode.isEmpty);
     });
   });
 }
