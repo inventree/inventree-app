@@ -58,7 +58,7 @@ void main() {
       debugContains("Scanned barcode data: ''");
       debugContains("showSnackIcon: 'Barcode scan error'");
 
-      assert(debugMessageCount() == 2);
+      assert(debugMessageCount() == 3);
     });
 
     test("Junk Data", () async {
@@ -76,7 +76,7 @@ void main() {
 
       debugContains("Scanned barcode data: '{\"stocklocation\": 999999}'");
       debugContains("showSnackIcon: 'No match for barcode'");
-      assert(debugMessageCount() == 2);
+      assert(debugMessageCount() == 3);
     });
 
   });

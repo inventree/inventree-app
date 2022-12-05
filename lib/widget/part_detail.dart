@@ -4,6 +4,7 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
+import "package:inventree/barcode.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/helpers.dart";
 
@@ -695,35 +696,11 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       )
     );
 
-    // TODO - Add this action back in once implemented
-    /*
-    tiles.add(
-      ListTile(
-        title: Text(L10().barcodeScanItem),
-        leading: FaIcon(FontAwesomeIcons.box),
-        trailing: Icon(Icons.qr_code),
-        onTap: () {
-          // TODO
-        },
-      ),
-    );
-    */
-
-    /*
-    // TODO: Implement part deletion
-    if (!part.isActive && InvenTreeAPI().checkPermission("part", "delete")) {
+    if (InvenTreeAPI().supportModernBarcodes) {
       tiles.add(
-        ListTile(
-          title: Text(L10().deletePart),
-          subtitle: Text(L10().deletePartDetail),
-          leading: FaIcon(FontAwesomeIcons.trashAlt, color: COLOR_DANGER),
-          onTap: () {
-            // TODO
-          },
-        )
+        customBarcodeActionTile(context, part.customBarcode, "part", part.pk)
       );
     }
-     */
 
     return tiles;
   }

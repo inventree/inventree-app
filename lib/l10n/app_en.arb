@@ -807,6 +807,9 @@
   "request": "Request",
   "@request": {},
 
+  "requestFailed": "Request Failed",
+  "@requestFailed": {},
+
   "requestSuccessful": "Request successful",
   "@requestSuccessful": {},
 

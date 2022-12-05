@@ -802,57 +802,8 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       )
     );
 
-    String barcode = item.customBarcode;
-
     if (InvenTreeAPI().supportModernBarcodes) {
-      // Add or remove custom barcode
-      if (barcode.isEmpty) {
-        tiles.add(
-            ListTile(
-                title: Text(L10().barcodeAssign),
-                subtitle: Text(L10().barcodeAssignDetail),
-                leading: Icon(Icons.qr_code),
-                trailing: Icon(Icons.qr_code_scanner),
-                onTap: () {
-                  var handler = UniqueBarcodeHandler((String hash) {
-
-                    InvenTreeAPI().linkBarcode({
-                      "stockitem": item.pk.toString(),
-                      "barcode": hash,
-                    }).then((bool result) {
-                      showSnackIcon(
-                          result ? L10().stockItemUpdateSuccess : L10().stockItemUpdateFailure,
-                          success: result
-                      );
-                    });
-                  });
-
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => InvenTreeQRView(handler))
-                  );
-                }
-            )
-        );
-      } else {
-        tiles.add(
-            ListTile(
-                title: Text(L10().barcodeUnassign),
-                leading: Icon(Icons.qr_code, color: COLOR_CLICK),
-                onTap: () async {
-                  InvenTreeAPI().unlinkBarcode({
-                    "stockitem": item.pk,
-                  }).then((bool result) {
-                    showSnackIcon(
-                      result ? L10().stockItemUpdateSuccess : L10().stockItemUpdateFailure,
-                      success: result
-                    );
-                  });
-                }
-            )
-        );
-      }
+      tiles.add(customBarcodeActionTile(context, item.customBarcode, "stockitem", item.pk));
     }
 
     // Print label (if label printing plugins exist)
