@@ -6,9 +6,12 @@
 
 - Added support for custom barcodes for Parts
 - Added support for custom barcode for Stock Locations
+- Support Part parameters
 - Add support for structural part categories
 - Add support for structural stock locations
-- Translation updates
+- Allow deletion of attachments via app
+- Adds option for controlling BOM display
+- Updated translations
 
 
 ### 0.8.3 - September 2022

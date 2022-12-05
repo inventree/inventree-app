@@ -10,11 +10,13 @@ import "package:inventree/helpers.dart";
 import "package:inventree/inventree/bom.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/stock.dart";
+import "package:inventree/preferences.dart";
 
 import "package:inventree/widget/attachment_widget.dart";
 import "package:inventree/widget/bom_list.dart";
 import "package:inventree/widget/part_list.dart";
 import "package:inventree/widget/part_notes.dart";
+import "package:inventree/widget/part_parameter_widget.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/category_display.dart";
 import "package:inventree/widget/refreshable_state.dart";
@@ -46,6 +48,12 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   InvenTreePart part;
 
   InvenTreePart? parentPart;
+
+  int parameterCount = 0;
+
+  bool showParameters = false;
+
+  bool showBom = false;
 
   int attachmentCount = 0;
 
@@ -132,6 +140,24 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       }
     });
 
+    // Request the number of parameters for this part
+    if (InvenTreeAPI().supportsPartParameters) {
+
+      showParameters = await InvenTreeSettingsManager().getValue(INV_PART_SHOW_PARAMETERS, true) as bool;
+
+      InvenTreePartParameter().count(
+          filters: {
+            "part": part.pk.toString(),
+          }
+      ).then((int value) {
+        if (mounted) {
+          setState(() {
+            parameterCount = value;
+          });
+        }
+      });
+    }
+
     // Request the number of attachments
     InvenTreePartAttachment().count(
       filters: {
@@ -144,6 +170,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         });
       }
     });
+
+    showBom = await InvenTreeSettingsManager().getValue(INV_PART_SHOW_BOM, true) as bool;
 
     // Request the number of BOM items
     InvenTreePart().count(
@@ -400,7 +428,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     // Tiles for an "assembly" part
     if (part.isAssembly) {
 
-      if (bomCount > 0) {
+      if (showBom && bomCount > 0) {
         tiles.add(
             ListTile(
                 title: Text(L10().billOfMaterials),
@@ -433,7 +461,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     }
 
     if (part.isComponent) {
-      if (usedInCount > 0) {
+      if (showBom && usedInCount > 0) {
         tiles.add(
           ListTile(
             title: Text(L10().usedIn),
@@ -510,33 +538,37 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       );
     }
 
-
-    // TODO - Add request tests?
-    /*
-    if (part.isTrackable) {
-      tiles.add(ListTile(
-          title: Text(L10().testsRequired),
-          leading: FaIcon(FontAwesomeIcons.tasks),
-          trailing: Text("${part.testTemplateCount}"),
-          onTap: null,
-        )
+    if (showParameters) {
+      tiles.add(
+          ListTile(
+              title: Text(L10().parameters),
+              leading: FaIcon(FontAwesomeIcons.thList, color: COLOR_CLICK),
+              trailing: parameterCount > 0 ? Text(parameterCount.toString()) : null,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PartParameterWidget(part)
+                  )
+                );
+              }
+          )
       );
     }
-     */
 
     // Notes field
     tiles.add(
-      ListTile(
-        title: Text(L10().notes),
-        leading: FaIcon(FontAwesomeIcons.stickyNote, color: COLOR_CLICK),
-        trailing: Text(""),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => PartNotesWidget(part))
-          );
-        },
-      )
+        ListTile(
+          title: Text(L10().notes),
+          leading: FaIcon(FontAwesomeIcons.stickyNote, color: COLOR_CLICK),
+          trailing: Text(""),
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PartNotesWidget(part))
+            );
+          },
+        )
     );
 
     tiles.add(

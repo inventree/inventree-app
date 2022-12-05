@@ -142,6 +142,9 @@
   "bom": "BOM",
   "@bom": {},
 
+  "bomEnable": "Display Bill of Materials",
+  "@bomEnable": {},
+
   "build": "Build",
   "@build": {},
 
@@ -208,11 +211,17 @@
   "delete": "Delete",
   "@delete": {},
 
+  "deleteFailed": "Delete operation failed",
+  "@deleteFailed": {},
+
   "deletePart": "Delete Part",
   "@deletePart": {},
 
   "deletePartDetail": "Remove this part from the database",
   "@deletePartDetail": {},
+
+  "deleteSuccess": "Delete operation successful",
+  "@deleteSuccess": {},
 
   "description": "Description",
   "@description": {},
@@ -573,6 +582,12 @@
   "packageName": "Package Name",
   "@packageName": {},
 
+  "parameters": "Parameters",
+  "@parameters": {},
+
+  "parametersSettingDetail": "Display part parameters",
+  "@parametersSettingDetail": {},
+
   "parent": "Parent",
   "@parent": {},
 
@@ -606,6 +621,9 @@
 
   "partNoResults": "No parts matching query",
   "@partNoResults": {},
+
+  "partSettings": "Part Settings",
+  "@partSettings": {},
 
   "partsStarred": "Subscribed Parts",
   "@partsStarred": {},
