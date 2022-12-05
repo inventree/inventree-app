@@ -161,6 +161,8 @@ void main() {
 
   group("Test PartBarcodes:", () {
 
+    var handler = BarcodeScanHandler();
+
     // Assign a custom barcode to a Part instance
     test("Assign Barcode", () async {
 
@@ -185,9 +187,6 @@ void main() {
 
       await part!.reload();
       assert(part.customBarcode.isNotEmpty);
-
-      // Scan barcode
-      var handler = BarcodeScanHandler();
 
       await handler.processBarcode(null, "xyz-123");
 
