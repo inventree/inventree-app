@@ -58,7 +58,7 @@ void main() {
       debugContains("Scanned barcode data: ''");
       debugContains("showSnackIcon: 'Barcode scan error'");
 
-      assert(debugMessageCount() == 3);
+      assert(debugMessageCount() == 2);
     });
 
     test("Junk Data", () async {
