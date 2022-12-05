@@ -17,7 +17,10 @@ List<String> debug_messages = [];
 
 void clearDebugMessage() => debug_messages.clear();
 
-int debugMessageCount() => debug_messages.length;
+int debugMessageCount() {
+  print("Debug Messages: ${debug_messages.length}");
+  return debug_messages.length;
+}
 
 // Check if the debug log contains a given message
 bool debugContains(String msg, {bool raiseAssert = true}) {
