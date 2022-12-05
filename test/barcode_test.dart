@@ -161,8 +161,6 @@ void main() {
 
   group("Test PartBarcodes:", () {
 
-    var handler = BarcodeScanHandler();
-
     // Assign a custom barcode to a Part instance
     test("Assign Barcode", () async {
 
@@ -187,11 +185,6 @@ void main() {
 
       await part!.reload();
       assert(part.customBarcode.isNotEmpty);
-
-      await handler.processBarcode(null, "xyz-123");
-
-      debugContains("pk: 2");
-      debugContains("api_url: /api/part/2/");
 
       // Check we can de-register a barcode also
       // Unlink barcode first
