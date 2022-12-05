@@ -1,21 +1,21 @@
 import "dart:io";
-
-import "package:inventree/inventree/sentry.dart";
-import "package:inventree/widget/dialogs.dart";
-import "package:inventree/widget/snacks.dart";
 import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:one_context/one_context.dart";
-
 import "package:qr_code_scanner/qr_code_scanner.dart";
 
-import "package:inventree/inventree/stock.dart";
-import "package:inventree/inventree/part.dart";
+import "package:inventree/app_colors.dart";
 import "package:inventree/api.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/preferences.dart";
 
+import "package:inventree/inventree/sentry.dart";
+import "package:inventree/inventree/stock.dart";
+import "package:inventree/inventree/part.dart";
+
+import "package:inventree/widget/dialogs.dart";
+import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/location_display.dart";
 import "package:inventree/widget/part_detail.dart";
 import "package:inventree/widget/stock_detail.dart";
@@ -116,6 +116,8 @@ class BarcodeHandler {
           },
           expectedStatusCode: null,  // Do not show an error on "unexpected code"
       );
+
+      debug("Barcode scan response" + response.data.toString());
 
       _controller?.resumeCamera();
 
@@ -726,8 +728,57 @@ class _QRViewState extends State<InvenTreeQRView> {
 }
 
 Future<void> scanQrCode(BuildContext context) async {
-
   Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeQRView(BarcodeScanHandler())));
 
   return;
+}
+
+
+/*
+ * Construct a generic ListTile widget to link or un-link a custom barcode from a model.
+ */
+Widget customBarcodeActionTile(BuildContext context, String barcode, String model, int pk) {
+
+  if (barcode.isEmpty) {
+    return ListTile(
+      title: Text(L10().barcodeAssign),
+      subtitle: Text(L10().barcodeAssignDetail),
+      leading: Icon(Icons.qr_code, color: COLOR_CLICK),
+      trailing: Icon(Icons.qr_code_scanner),
+      onTap: () {
+        var handler = UniqueBarcodeHandler((String barcode) {
+          InvenTreeAPI().linkBarcode({
+            model: pk.toString(),
+            "barcode": barcode,
+          }).then((bool result) {
+            showSnackIcon(
+              result ? L10().barcodeAssigned : L10().barcodeNotAssigned,
+              success: result
+            );
+          });
+        });
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => InvenTreeQRView(handler)
+          )
+        );
+      }
+    );
+  } else {
+    return ListTile(
+      title: Text(L10().barcodeUnassign),
+      leading: Icon(Icons.qr_code, color: COLOR_CLICK),
+      onTap: () async {
+        InvenTreeAPI().unlinkBarcode({
+          model: pk.toString()
+        }).then((bool result) {
+          showSnackIcon(
+            result ? L10().requestSuccessful : L10().requestFailed,
+          );
+        });
+      },
+    );
+  }
 }

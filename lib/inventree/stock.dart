@@ -276,8 +276,6 @@ class InvenTreeStockItem extends InvenTreeModel {
     });
   }
 
-  String get uid => (jsondata["uid"] ?? "") as String;
-
   int get status => (jsondata["status"] ?? -1) as int;
 
   String get packaging => (jsondata["packaging"] ?? "") as String;

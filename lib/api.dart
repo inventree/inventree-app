@@ -259,6 +259,9 @@ class InvenTreeAPI {
   // Notification support requires API v25 or newer
   bool get supportsNotifications => isConnected() && apiVersion >= 25;
 
+  // Supports 'modern' barcode API (v80 or newer)
+  bool get supportModernBarcodes => isConnected() && apiVersion >= 80;
+
   // Structural categories requires API v83 or newer
   bool get supportsStructuralCategories => isConnected() && apiVersion >= 83;
 
@@ -884,6 +887,27 @@ class InvenTreeAPI {
   }
 
   /*
+   * Perform a request to link a custom barcode to a particular item
+   */
+  Future<bool> linkBarcode(Map<String, String> body) async {
+
+  HttpClientRequest? request = await apiRequest("/barcode/link/", "POST");
+
+  if (request == null) {
+    return false;
+  }
+
+  final response = await completeRequest(
+    request,
+    data: json.encode(body),
+    statusCode: 200
+  );
+
+  return response.isValid() && response.statusCode == 200;
+
+  }
+
+  /*
    * Perform a request to unlink a custom barcode from a particular item
    */
   Future<bool> unlinkBarcode(Map<String, dynamic> body) async {
@@ -1255,6 +1279,7 @@ class InvenTreeAPI {
     );
   }
 
+  // Return True if the API supports 'settings' (requires API v46)
   bool get supportsSettings => isConnected() && apiVersion >= 46;
 
   // Keep a record of which settings we have received from the server

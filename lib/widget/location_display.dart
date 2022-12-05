@@ -453,6 +453,12 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
             )
           );
         }
+
+        if (InvenTreeAPI().supportModernBarcodes) {
+          tiles.add(
+            customBarcodeActionTile(context, location!.customBarcode, "stocklocation", location!.pk)
+          );
+        }
       }
     }
 

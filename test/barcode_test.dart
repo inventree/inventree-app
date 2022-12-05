@@ -12,6 +12,7 @@ import "package:inventree/barcode.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/user_profile.dart";
 
+import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/stock.dart";
 
 void main() {
@@ -75,7 +76,7 @@ void main() {
 
       debugContains("Scanned barcode data: '{\"stocklocation\": 999999}'");
       debugContains("showSnackIcon: 'No match for barcode'");
-      assert(debugMessageCount() == 2);
+      assert(debugMessageCount() == 3);
     });
 
   });
@@ -155,6 +156,44 @@ void main() {
       assert(location.parentId == 4);
 
       debugContains("showSnackIcon: 'Scanned into location'");
+    });
+  });
+
+  group("Test PartBarcodes:", () {
+
+    // Assign a custom barcode to a Part instance
+    test("Assign Barcode", () async {
+
+      // Unlink barcode first
+      await InvenTreeAPI().unlinkBarcode({
+        "part": "2"
+      });
+
+      final part = await InvenTreePart().get(2) as InvenTreePart?;
+
+      assert(part != null);
+      assert(part!.pk == 2);
+
+      // Should have a "null" barcode
+      assert(part!.customBarcode.isEmpty);
+
+      // Assign custom barcode data to the part
+      await InvenTreeAPI().linkBarcode({
+        "part": "2",
+        "barcode": "xyz-123"
+      });
+
+      await part!.reload();
+      assert(part.customBarcode.isNotEmpty);
+
+      // Check we can de-register a barcode also
+      // Unlink barcode first
+      await InvenTreeAPI().unlinkBarcode({
+        "part": "2"
+      });
+
+      await part.reload();
+      assert(part.customBarcode.isEmpty);
     });
   });
 }

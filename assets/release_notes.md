@@ -1,9 +1,11 @@
 ## InvenTree App Release Notes
 ---
 
-### - December 2022
+### 0.9.0 - November 2022
 ---
 
+- Added support for custom barcodes for Parts
+- Added support for custom barcode for Stock Locations
 - Support Part parameters
 - Add support for structural part categories
 - Add support for structural stock locations
