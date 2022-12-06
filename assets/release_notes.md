@@ -1,7 +1,7 @@
 ## InvenTree App Release Notes
 ---
 
-### 0.9.0 - November 2022
+### 0.9.0 - December 2022
 ---
 
 - Added support for custom barcodes for Parts
