@@ -395,6 +395,8 @@
   "@packageName": {},
   "parameters": "Parámetros",
   "@parameters": {},
+  "parametersSettingDetail": "Mostrar parámetros de parte",
+  "@parametersSettingDetail": {},
   "parent": "Principal",
   "@parent": {},
   "parentCategory": "Categoría superior",
