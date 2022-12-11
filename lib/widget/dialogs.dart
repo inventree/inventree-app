@@ -188,7 +188,7 @@ Future<void> showServerError(String url, String title, String description) async
 Future<void> showStatusCodeError(String url, int status, {String details=""}) async {
 
   String msg = L10().responseInvalid;
-  String extra = "${L10().statusCode}: ${status}";
+  String extra = url + "\n" + "${L10().statusCode}: ${status}";
 
   switch (status) {
     case 400:

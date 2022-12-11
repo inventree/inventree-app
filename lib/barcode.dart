@@ -776,6 +776,7 @@ Widget customBarcodeActionTile(BuildContext context, String barcode, String mode
         }).then((bool result) {
           showSnackIcon(
             result ? L10().requestSuccessful : L10().requestFailed,
+            success: result,
           );
         });
       },
