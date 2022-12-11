@@ -803,7 +803,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     );
 
     if (InvenTreeAPI().supportModernBarcodes || item.customBarcode.isEmpty) {
-      tiles.add(customBarcodeActionTile(context, item.customBarcode, "stockitem", item.pk));
+      tiles.add(customBarcodeActionTile(context, this, item.customBarcode, "stockitem", item.pk));
     } else {
       // Note: Custom legacy barcodes (only for StockItem model) are handled differently
       tiles.add(

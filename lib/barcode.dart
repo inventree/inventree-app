@@ -1,6 +1,7 @@
 import "dart:io";
 import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:inventree/widget/refreshable_state.dart";
 import "package:one_context/one_context.dart";
 import "package:qr_code_scanner/qr_code_scanner.dart";
 
@@ -737,7 +738,7 @@ Future<void> scanQrCode(BuildContext context) async {
 /*
  * Construct a generic ListTile widget to link or un-link a custom barcode from a model.
  */
-Widget customBarcodeActionTile(BuildContext context, String barcode, String model, int pk) {
+Widget customBarcodeActionTile(BuildContext context, RefreshableState state, String barcode, String model, int pk) {
 
   if (barcode.isEmpty) {
     return ListTile(
@@ -755,6 +756,8 @@ Widget customBarcodeActionTile(BuildContext context, String barcode, String mode
               result ? L10().barcodeAssigned : L10().barcodeNotAssigned,
               success: result
             );
+
+            state.refresh(context);
           });
         });
 
@@ -778,6 +781,8 @@ Widget customBarcodeActionTile(BuildContext context, String barcode, String mode
             result ? L10().requestSuccessful : L10().requestFailed,
             success: result,
           );
+
+          state.refresh(context);
         });
       },
     );
