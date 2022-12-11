@@ -569,15 +569,15 @@ class UniqueBarcodeHandler extends BarcodeHandler {
   @override
   Future<void> onBarcodeUnknown(Map<String, dynamic> data) async {
     // If the barcode is unknown, we *can* assign it to the stock item!
-
-    if (!data.containsKey("hash")) {
+    
+    if (!data.containsKey("hash") && !data.containsKey("barcode_hash")) {
       showServerError(
         "barcode/",
         L10().missingData,
         L10().barcodeMissingHash,
       );
     } else {
-      String hash = (data["hash"] ?? "") as String;
+      String hash = (data["hash"] ?? data["barcode_hash"] ?? "") as String;
 
       if (hash.isEmpty) {
         barcodeFailureTone();
