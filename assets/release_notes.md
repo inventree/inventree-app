@@ -1,6 +1,12 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.9.1 - December 2022
+---
+
+- Bug fixes for custom barcode actions
+- Updated translations
+
 ### 0.9.0 - December 2022
 ---
 

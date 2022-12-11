@@ -802,9 +802,22 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       )
     );
 
-    if (InvenTreeAPI().supportModernBarcodes) {
-      tiles.add(customBarcodeActionTile(context, item.customBarcode, "stockitem", item.pk));
+    if (InvenTreeAPI().supportModernBarcodes || item.customBarcode.isEmpty) {
+      tiles.add(customBarcodeActionTile(context, this, item.customBarcode, "stockitem", item.pk));
+    } else {
+      // Note: Custom legacy barcodes (only for StockItem model) are handled differently
+      tiles.add(
+          ListTile(
+              title: Text(L10().barcodeUnassign),
+              leading: Icon(Icons.qr_code, color: COLOR_CLICK),
+              onTap: () async {
+                await item.update(values: {"uid": ""});
+                refresh(context);
+              }
+          )
+      );
     }
+
 
     // Print label (if label printing plugins exist)
     if (labels.isNotEmpty) {

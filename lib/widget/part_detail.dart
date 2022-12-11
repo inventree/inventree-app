@@ -698,7 +698,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
     if (InvenTreeAPI().supportModernBarcodes) {
       tiles.add(
-        customBarcodeActionTile(context, part.customBarcode, "part", part.pk)
+        customBarcodeActionTile(context, this, part.customBarcode, "part", part.pk)
       );
     }
 

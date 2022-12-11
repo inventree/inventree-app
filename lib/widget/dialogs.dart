@@ -185,10 +185,10 @@ Future<void> showServerError(String url, String title, String description) async
 /*
  * Displays an error indicating that the server returned an unexpected status code
  */
-Future<void> showStatusCodeError(String url, int status) async {
+Future<void> showStatusCodeError(String url, int status, {String details=""}) async {
 
   String msg = L10().responseInvalid;
-  String extra = "${L10().statusCode}: ${status}";
+  String extra = url + "\n" + "${L10().statusCode}: ${status}";
 
   switch (status) {
     case 400:
@@ -229,6 +229,11 @@ Future<void> showStatusCodeError(String url, int status) async {
       break;
     default:
       break;
+  }
+
+  if (details.isNotEmpty) {
+    extra += "\n";
+    extra += details;
   }
 
   showServerError(
