@@ -569,7 +569,7 @@ class UniqueBarcodeHandler extends BarcodeHandler {
   @override
   Future<void> onBarcodeUnknown(Map<String, dynamic> data) async {
     // If the barcode is unknown, we *can* assign it to the stock item!
-    
+
     if (!data.containsKey("hash") && !data.containsKey("barcode_hash")) {
       showServerError(
         "barcode/",
@@ -577,9 +577,16 @@ class UniqueBarcodeHandler extends BarcodeHandler {
         L10().barcodeMissingHash,
       );
     } else {
-      String hash = (data["hash"] ?? data["barcode_hash"] ?? "") as String;
+      String barcode;
 
-      if (hash.isEmpty) {
+      if (InvenTreeAPI().supportModernBarcodes) {
+        barcode = (data["barcode_data"] ?? "") as String;
+      } else {
+        // Legacy barcode API
+        barcode = (data["hash"] ?? data["barcode_hash"] ?? "") as String;
+      }
+
+      if (barcode.isEmpty) {
         barcodeFailureTone();
 
         showSnackIcon(
@@ -595,7 +602,7 @@ class UniqueBarcodeHandler extends BarcodeHandler {
           OneContext().pop();
         }
 
-        callback(hash);
+        callback(barcode);
       }
     }
   }
