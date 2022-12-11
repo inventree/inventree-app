@@ -370,7 +370,7 @@ class InvenTreeAPI {
     response = await get("", expectedStatusCode: 200);
 
     if (!response.successful()) {
-      showStatusCodeError(apiUrl, response.statusCode);
+      showStatusCodeError(apiUrl, response.statusCode, details: response.data.toString());
       return false;
     }
 
@@ -1036,6 +1036,7 @@ class InvenTreeAPI {
           "method": method,
         }
       );
+
       return null;
     }
   }
@@ -1091,13 +1092,11 @@ class InvenTreeAPI {
         }
       } else {
 
+        response.data = ignoreResponse ? {} : await responseToJson(url, _response) ?? {};
+
         // First check that the returned status code is what we expected
         if (statusCode != null && statusCode != _response.statusCode) {
-          showStatusCodeError(url, _response.statusCode);
-        } else if (ignoreResponse) {
-          response.data = {};
-        } else {
-          response.data = await responseToJson(url, _response) ?? {};
+          showStatusCodeError(url, _response.statusCode, details: response.data.toString());
         }
       }
     } on HttpException catch (error) {
