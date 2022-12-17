@@ -1,4 +1,3 @@
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 // Map text names for icons into flutter icon data
 // This file has been auto-generated (do not edit manually)
