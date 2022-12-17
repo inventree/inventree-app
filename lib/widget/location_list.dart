@@ -97,6 +97,7 @@ class _PaginatedStockLocationListState extends PaginatedSearchState<PaginatedSto
       title: Text(location.name),
       subtitle: Text(location.pathstring),
       trailing: Text("${location.itemcount}"),
+      leading: location.customIcon,
       onTap: () {
         Navigator.push(
           context,
