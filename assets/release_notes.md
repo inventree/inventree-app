@@ -1,6 +1,14 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.9.2 - December 2022
+---
+
+- Support custom icons for part category
+- Support custom icons for stock location
+- Updated translations
+
+
 ### 0.9.1 - December 2022
 ---
 
