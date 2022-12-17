@@ -10,8 +10,9 @@ import "package:url_launcher/url_launcher.dart";
 
 import "package:path/path.dart" as path;
 
-import "package:inventree/l10.dart";
 import "package:inventree/api_form.dart";
+import "package:inventree/fa_icon_mapping.dart";
+import "package:inventree/l10.dart";
 
 
 // Paginated response object
@@ -147,6 +148,61 @@ class InvenTreeModel {
 
   // Legacy API provided external link as "URL", while newer API uses "link"
   String get link => (jsondata["link"] ?? jsondata["URL"] ?? "") as String;
+
+  /*
+   * Attempt to extract a custom icon for this model.
+   * If icon data is provided, attempt to convert to a FontAwesome icon
+   *
+   * Icon data *should* be presented something like "fas fa-boxes" / "fab fa-github" (etc):
+   *
+   * - First part specifies the *style*
+   * - Second part specifies the icon
+   *
+   */
+  FaIcon? get customIcon {
+    String icon = (jsondata["icon"] ?? "").toString();
+
+    // Empty icon (default)
+    if (icon.isEmpty) {
+      return null;
+    }
+
+    final split = icon.trim().split(" ");
+
+    // Must have two distinct units
+    if (split.length != 2) {
+      return null;
+    }
+
+    String style = split[0];
+    String name = split[1];
+
+    // Remove "fa-" leading text (if provided)
+    if (name.startsWith("fa-")) {
+      name = name.substring(3);
+    }
+
+    int? iconHex = fontAwesomeIconMap[name];
+
+    // No match for the icon name
+    if (iconHex == null) {
+      return null;
+    }
+
+    switch (style) {
+      case "fas":
+        return FaIcon(IconDataSolid(iconHex));
+      case "fab":
+        return FaIcon(IconDataBrands(iconHex));
+      case "fa":
+        return FaIcon(IconDataRegular(iconHex));
+      case "fal":
+        return FaIcon(IconDataLight(iconHex));
+      default:
+        // No match
+        return null;
+    }
+  }
 
   /* Extract any custom barcode data available for the model.
    * Note that old API used 'uid' (only for StockItem),

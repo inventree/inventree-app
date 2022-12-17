@@ -211,7 +211,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
         ListTile(
           title: Text("${location!.name}"),
           subtitle: Text("${location!.description}"),
-          leading: FaIcon(FontAwesomeIcons.boxes),
+          leading: location!.customIcon ?? FaIcon(FontAwesomeIcons.boxes),
         ),
       ];
 

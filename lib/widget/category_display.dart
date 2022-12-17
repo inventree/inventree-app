@@ -114,6 +114,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
               style: TextStyle(fontWeight: FontWeight.bold)
           ),
           subtitle: Text("${category?.description}"),
+          leading: category!.customIcon ?? FaIcon(FontAwesomeIcons.sitemap),
         ),
       ];
 
