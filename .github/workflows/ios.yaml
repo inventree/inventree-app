@@ -37,4 +37,4 @@ jobs:
         pod install
         cd ..
         cp lib/dummy_dsn.dart lib/dsn.dart
-        flutter build ios --release --no-codesign
+        flutter build ios --release --no-codesign --no-tree-shake-icons

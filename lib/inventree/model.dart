@@ -182,10 +182,10 @@ class InvenTreeModel {
       name = name.substring(3);
     }
 
-    int? iconHex = fontAwesomeIconMap[name];
+    int iconHex = fontAwesomeIconMap[name] ?? 0;
 
     // No match for the icon name
-    if (iconHex == null) {
+    if (iconHex == 0) {
       return null;
     }
 
