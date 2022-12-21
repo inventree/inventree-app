@@ -37,7 +37,7 @@ Ref: https://flutter.dev/docs/deployment/ios
 
 ```
 flutter clean
-flutter build ipa
+flutter build ipa --release --no-tree-shake-icons
 ```
 
 ### Validate and Distribute
