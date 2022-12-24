@@ -45,15 +45,6 @@ void showSnackIcon(String text, {IconData? icon, Function()? onAction, bool? suc
 
   String _action = actionText ?? L10().details;
 
-  SnackBarAction? action;
-
-  if (onAction != null) {
-    action = SnackBarAction(
-      label: _action,
-      onPressed: onAction,
-    );
-  }
-
   List<Widget> childs = [
     Text(text),
     Spacer(),
@@ -64,11 +55,24 @@ void showSnackIcon(String text, {IconData? icon, Function()? onAction, bool? suc
   }
 
   OneContext().showSnackBar(builder: (context) => SnackBar(
-    content: Row(
+    content: GestureDetector(
+      child: Row(
         children: childs
+      ),
+      onTap: () {
+        ScaffoldMessenger.of(context!).hideCurrentSnackBar();
+      },
     ),
     backgroundColor: backgroundColor,
-    action: action
+    action: onAction == null ? null : SnackBarAction(
+      label: _action,
+      onPressed: () {
+        // Immediately dismiss the notification
+        ScaffoldMessenger.of(context!).hideCurrentSnackBar();
+        onAction();
+      }
+    ),
+    duration: Duration(seconds: onAction == null ? 1 : 2),
     )
   );
 
