@@ -68,7 +68,8 @@ void showSnackIcon(String text, {IconData? icon, Function()? onAction, bool? suc
         children: childs
     ),
     backgroundColor: backgroundColor,
-    action: action
+    action: action,
+    duration: Duration(seconds: onAction == null ? 1 : 2),
     )
   );
 
