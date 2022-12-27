@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:one_context/one_context.dart";
 
 import "package:inventree/app_colors.dart";
 import "package:inventree/widget/dialogs.dart";
@@ -143,8 +144,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
             _selectProfile(context, profile);
           },
           onLongPress: () {
-            showDialog(
-                context: context,
+            OneContext().showDialog(
                 builder: (BuildContext context) {
                   return SimpleDialog(
                     title: Text(profile.name),
