@@ -258,6 +258,9 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
     );
   }
 
+  /*
+   * Display a context menu for a particular PurhaseOrderLineItem
+   */
   void lineItemMenu(BuildContext context, InvenTreePOLineItem lineItem) {
 
     List<Widget> children = [];
@@ -303,8 +306,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
     children.insert(0, Divider());
 
-    showDialog(
-      context: context,
+    OneContext().showDialog(
       builder: (BuildContext context) {
         return SimpleDialog(
           title: Text(L10().lineItem),
