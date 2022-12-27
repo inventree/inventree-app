@@ -7,6 +7,7 @@
 - Support custom icons for part category
 - Support custom icons for stock location
 - Adjustments to notification messages
+- Assorted bug fixes
 - Updated translations
 
 ### 0.9.1 - December 2022
