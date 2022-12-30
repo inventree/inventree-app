@@ -1,5 +1,47 @@
 {
   "@@locale": "en",
+  "ok": "OK",
+  "@ok": {
+    "description": "OK"
+  },
+  "about": "O aplikaci",
+  "@about": {},
+  "accountDetails": "Podrobnosti účtu",
+  "@accountDetails": {},
+  "actions": "Akce",
+  "@actions": {
+    "description": ""
+  },
+  "actionsNone": "Nejsou dostupné žádné akce",
+  "@actionsNone": {},
+  "add": "Přidat",
+  "@add": {
+    "description": "add"
+  },
+  "address": "Adresa",
+  "@address": {},
+  "appAbout": "O InvenTree",
+  "@appAbout": {},
+  "attachments": "Přílohy",
+  "@attachments": {},
+  "attachImage": "Připojit obrázek",
+  "@attachImage": {
+    "description": "Attach an image"
+  },
+  "barcodeUnknown": "Čárkový kód nebyl rozpoznán",
+  "@barcodeUnknown": {},
+  "billOfMaterials": "Kusovník",
+  "@billOfMaterials": {},
+  "bomEnable": "Zobrazit kusovník",
+  "@bomEnable": {},
+  "cancel": "Zrušit",
+  "@cancel": {
+    "description": "Cancel"
+  },
+  "category": "Kategorie",
+  "@category": {},
+  "categoryCreate": "Nová kategorie",
+  "@categoryCreate": {},
   "@homeShowSubscsribedDescription": {},
   "@homeShowSupplierDescription": {}
 }
