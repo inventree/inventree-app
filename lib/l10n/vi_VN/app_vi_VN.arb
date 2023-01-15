@@ -1,5 +1,9 @@
 {
   "@@locale": "en",
   "@homeShowSubscsribedDescription": {},
-  "@homeShowSupplierDescription": {}
+  "@homeShowSupplierDescription": {},
+  "parameters": "Thông số",
+  "@parameters": {},
+  "parametersSettingDetail": "Hiển thị các thông số",
+  "@parametersSettingDetail": {}
 }
