@@ -5,5 +5,13 @@
   "parameters": "Thông số",
   "@parameters": {},
   "parametersSettingDetail": "Hiển thị các thông số",
-  "@parametersSettingDetail": {}
+  "@parametersSettingDetail": {},
+  "parts": "Phụ tùng",
+  "@parts": {
+    "description": "Part (multiple)"
+  },
+  "partsNone": "Không có phụ tùng",
+  "@partsNone": {},
+  "searchParts": "Tìm kiếm phụ tùng",
+  "@searchParts": {}
 }
