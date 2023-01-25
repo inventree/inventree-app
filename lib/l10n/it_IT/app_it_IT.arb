@@ -120,7 +120,7 @@
   "@count": {
     "description": "Count"
   },
-  "countStock": "Conteggio Scorte",
+  "countStock": "Conteggio Giacenze",
   "@countStock": {
     "description": "Count Stock"
   },
@@ -182,7 +182,7 @@
   "@errorDetails": {},
   "errorFetch": "Si è verificato un errore durante il recupero dei dati dal server",
   "@errorFetch": {},
-  "errorReporting": "Segnalazione errori",
+  "errorReporting": "Segnalazione Errori",
   "@errorReporting": {},
   "feedback": "Commenti e suggerimenti",
   "@feedback": {},
@@ -202,9 +202,9 @@
   "@filterComponent": {},
   "filterComponentDetail": "Mostra componenti articoli",
   "@filterComponentDetail": {},
-  "filterInStock": "In magazzino",
+  "filterInStock": "In Giacenza",
   "@filterInStock": {},
-  "filterInStockDetail": "Mostra articoli che sono in magazzino",
+  "filterInStockDetail": "Mostra articoli che sono in giacenza",
   "@filterInStockDetail": {},
   "filterSerialized": "Serializzato",
   "@filterSerialized": {},
@@ -351,7 +351,7 @@
   },
   "partsNone": "Nessun Articolo",
   "@partsNone": {},
-  "partNoResults": "Nessun articolo corrispondente alla query",
+  "partNoResults": "Nessun articolo corrispondente alla ricerca",
   "@partNoResults": {},
   "partSettings": "Impostazioni articolo",
   "@partSettings": {},
