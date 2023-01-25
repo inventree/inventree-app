@@ -233,6 +233,8 @@
   "home": "Home",
   "@homeScreen": {},
   "homeScreen": "Schermata Home",
+  "homeShowPo": "Mostra Ordini di Acquisto",
+  "@homeShowPo": {},
   "homeShowSubscribed": "Articoli Sottoscritti",
   "@homeShowSubscribed": {},
   "homeShowSubscribedDescription": "Mostra gli articoli sottoscritti sulla schermata home",
