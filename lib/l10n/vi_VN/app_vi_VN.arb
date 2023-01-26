@@ -1,5 +1,17 @@
 {
   "@@locale": "en",
   "@homeShowSubscsribedDescription": {},
-  "@homeShowSupplierDescription": {}
+  "@homeShowSupplierDescription": {},
+  "parameters": "Thông số",
+  "@parameters": {},
+  "parametersSettingDetail": "Hiển thị các thông số",
+  "@parametersSettingDetail": {},
+  "parts": "Phụ tùng",
+  "@parts": {
+    "description": "Part (multiple)"
+  },
+  "partsNone": "Không có phụ tùng",
+  "@partsNone": {},
+  "searchParts": "Tìm kiếm phụ tùng",
+  "@searchParts": {}
 }
