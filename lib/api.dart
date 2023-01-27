@@ -117,12 +117,14 @@ class InvenTreeFileService extends FileService {
     }
 
     final HttpClientResponse httpResponse = await req.close();
+
     final http.StreamedResponse _response = http.StreamedResponse(
       httpResponse.timeout(Duration(seconds: 60)), httpResponse.statusCode,
-      contentLength: httpResponse.contentLength,
+      contentLength: httpResponse.contentLength < 0 ? 0 : httpResponse.contentLength,
       reasonPhrase: httpResponse.reasonPhrase,
       isRedirect: httpResponse.isRedirect,
     );
+
     return HttpGetResponse(_response);
   }
 }
