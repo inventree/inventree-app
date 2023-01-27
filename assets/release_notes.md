@@ -1,7 +1,7 @@
 ## InvenTree App Release Notes
 ---
 
-### 0.10.0 - February 2023
+### 0.9.3 - February 2023
 ---
 
 - Updates to match latest server API
