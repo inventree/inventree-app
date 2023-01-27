@@ -1,6 +1,11 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.10.0 - February 2023
+---
+
+- Bug fix for empty HttpResponse from server
+
 ### 0.9.2 - December 2022
 ---
 
