@@ -679,7 +679,19 @@ class InvenTreePlugin extends InvenTreeModel {
   }
 
   @override
-  String get URL => "plugin/";
+  String get URL {
+
+    /* Note: The plugin API endpoint changed at API version 90,
+     * <  90 = 'plugin'
+     * >= 90 = 'plugins'
+     * Ref: https://github.com/inventree/InvenTree/pull/4186
+     */
+    if (api.isConnected() && api.apiVersion < 90) {
+      return "plugin/";
+    } else {
+      return "plugins/";
+    }
+  }
 
   String get key => (jsondata["key"] ?? "") as String;
 
