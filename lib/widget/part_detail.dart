@@ -117,6 +117,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     if (!result || part.pk == -1) {
       // Part could not be loaded, for some reason
       Navigator.of(context).pop();
+      return;
     }
 
     // If the part points to a parent "template" part, request that too

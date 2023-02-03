@@ -29,13 +29,13 @@ class StockDetailWidget extends StatefulWidget {
   final InvenTreeStockItem item;
 
   @override
-  _StockItemDisplayState createState() => _StockItemDisplayState(item);
+  _StockItemDisplayState createState() => _StockItemDisplayState();
 }
 
 
 class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
-  _StockItemDisplayState(this.item);
+  _StockItemDisplayState();
 
   @override
   String getAppBarTitle(BuildContext context) => L10().stockItem;
@@ -62,7 +62,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           icon: FaIcon(FontAwesomeIcons.searchLocation),
           tooltip: L10().locateItem,
           onPressed: () async {
-            InvenTreeAPI().locateItemOrLocation(context, item: item.pk);
+            InvenTreeAPI().locateItemOrLocation(context, item: widget.item.pk);
           },
         )
       );
@@ -82,11 +82,8 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   }
 
   Future<void> _openInvenTreePage() async {
-    item.goToInvenTreePage();
+    widget.item.goToInvenTreePage();
   }
-
-  // StockItem object
-  final InvenTreeStockItem item;
 
   // Is label printing enabled for this StockItem?
   // This will be determined when the widget is loaded
@@ -111,7 +108,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     stockShowHistory = await InvenTreeSettingsManager().getValue(INV_STOCK_SHOW_HISTORY, false) as bool;
 
-    final bool result = item.pk > 0 && await item.reload();
+    final bool result = widget.item.pk > 0 && await widget.item.reload();
 
     // Could not load this stock item for some reason
     // Perhaps it has been depleted?
@@ -120,10 +117,10 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     }
 
     // Request part information
-    part = await InvenTreePart().get(item.partId) as InvenTreePart?;
+    part = await InvenTreePart().get(widget.item.partId) as InvenTreePart?;
 
     // Request test results (async)
-    item.getTestResults().then((value) {
+    widget.item.getTestResults().then((value) {
 
       if (mounted) {
         setState(() {
@@ -135,7 +132,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     // Request the number of attachments
     InvenTreeStockItemAttachment().count(
       filters: {
-        "stock_item": item.pk.toString()
+        "stock_item": widget.item.pk.toString()
       }
     ).then((int value) {
 
@@ -165,7 +162,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         "/label/stock/",
         params: {
           "enabled": "true",
-          "item": "${item.pk}",
+          "item": "${widget.item.pk}",
         },
     ).then((APIResponse response) {
       if (response.isValid() && response.statusCode == 200) {
@@ -190,7 +187,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       L10().stockItemDeleteConfirm,
       icon: FontAwesomeIcons.trashAlt,
       onAccept: () async {
-        final bool result = await item.delete();
+        final bool result = await widget.item.delete();
         
         if (result) {
           Navigator.of(context).pop();
@@ -264,7 +261,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         String pluginKey = (data["plugin"] ?? "") as String;
 
         if (labelId != -1 && pluginKey.isNotEmpty) {
-          String url = "/label/stock/${labelId}/print/?item=${item.pk}&plugin=${pluginKey}";
+          String url = "/label/stock/${labelId}/print/?item=${widget.item.pk}&plugin=${pluginKey}";
 
           InvenTreeAPI().get(url).then((APIResponse response) {
             if (response.isValid() && response.statusCode == 200) {
@@ -298,7 +295,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       fields.remove("serial");
     }
 
-    item.editForm(
+    widget.item.editForm(
       context,
       L10().editItem,
       fields: fields,
@@ -320,7 +317,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         "parent": "items",
         "nested": true,
         "hidden": true,
-        "value": item.pk,
+        "value": widget.item.pk,
       },
       "quantity": {
         "parent": "items",
@@ -361,7 +358,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         "parent": "items",
         "nested": true,
         "hidden": true,
-        "value": item.pk,
+        "value": widget.item.pk,
       },
       "quantity": {
         "parent": "items",
@@ -392,12 +389,12 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         "parent": "items",
         "nested": true,
         "hidden": true,
-        "value": item.pk,
+        "value": widget.item.pk,
       },
       "quantity": {
         "parent": "items",
         "nested": true,
-        "value": item.quantity,
+        "value": widget.item.quantity,
       },
       "notes": {},
     };
@@ -426,18 +423,18 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         "parent": "items",
         "nested": true,
         "hidden": true,
-        "value": item.pk,
+        "value": widget.item.pk,
       },
       "quantity": {
         "parent": "items",
         "nested": true,
-        "value": item.quantity,
+        "value": widget.item.quantity,
       },
       "location": {},
       "notes": {},
     };
 
-    if (item.isSerialized()) {
+    if (widget.item.isSerialized()) {
       // Prevent editing of 'quantity' field if the item is serialized
       fields["quantity"]["hidden"] = true;
     }
@@ -459,20 +456,20 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   Widget headerTile() {
     return Card(
       child: ListTile(
-        title: Text("${item.partName}"),
-        subtitle: Text("${item.partDescription}"),
-        leading: InvenTreeAPI().getImage(item.partImage),
+        title: Text("${widget.item.partName}"),
+        subtitle: Text("${widget.item.partDescription}"),
+        leading: InvenTreeAPI().getImage(widget.item.partImage),
         trailing: Text(
-          item.statusLabel(),
+            widget.item.statusLabel(),
           style: TextStyle(
-            color: item.statusColor
+            color: widget.item.statusColor
           )
         ),
         onTap: () async {
-          if (item.partId > 0) {
+          if (widget.item.partId > 0) {
 
             showLoadingOverlay(context);
-            var part = await InvenTreePart().get(item.partId);
+            var part = await InvenTreePart().get(widget.item.partId);
             hideLoadingOverlay();
 
             if (part is InvenTreePart) {
@@ -501,39 +498,39 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     }
 
     // Quantity information
-    if (item.isSerialized()) {
+    if (widget.item.isSerialized()) {
       tiles.add(
           ListTile(
             title: Text(L10().serialNumber),
             leading: FaIcon(FontAwesomeIcons.hashtag),
-            trailing: Text("${item.serialNumber}"),
+            trailing: Text("${widget.item.serialNumber}"),
           )
       );
     } else {
       tiles.add(
           ListTile(
-            title: item.allocated > 0 ? Text(L10().quantityAvailable) : Text(L10().quantity),
+            title: widget.item.allocated > 0 ? Text(L10().quantityAvailable) : Text(L10().quantity),
             leading: FaIcon(FontAwesomeIcons.cubes),
-            trailing: Text("${item.quantityString()}"),
+            trailing: Text("${widget.item.quantityString()}"),
           )
       );
     }
 
     // Location information
-    if ((item.locationId > 0) && (item.locationName.isNotEmpty)) {
+    if ((widget.item.locationId > 0) && (widget.item.locationName.isNotEmpty)) {
       tiles.add(
           ListTile(
             title: Text(L10().stockLocation),
-            subtitle: Text("${item.locationPathString}"),
+            subtitle: Text("${widget.item.locationPathString}"),
             leading: FaIcon(
               FontAwesomeIcons.mapMarkerAlt,
               color: COLOR_CLICK,
             ),
             onTap: () async {
-              if (item.locationId > 0) {
+              if (widget.item.locationId > 0) {
 
                 showLoadingOverlay(context);
-                var loc = await InvenTreeStockLocation().get(item.locationId);
+                var loc = await InvenTreeStockLocation().get(widget.item.locationId);
                 hideLoadingOverlay();
 
                 if (loc is InvenTreeStockLocation) {
@@ -554,7 +551,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     }
 
-    if (item.isBuilding) {
+    if (widget.item.isBuilding) {
       tiles.add(
         ListTile(
           title: Text(L10().inProduction),
@@ -567,44 +564,44 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     }
 
-    if (item.batch.isNotEmpty) {
+    if (widget.item.batch.isNotEmpty) {
       tiles.add(
         ListTile(
           title: Text(L10().batchCode),
-          subtitle: Text(item.batch),
+          subtitle: Text(widget.item.batch),
           leading: FaIcon(FontAwesomeIcons.layerGroup),
         )
       );
     }
 
-    if (item.packaging.isNotEmpty) {
+    if (widget.item.packaging.isNotEmpty) {
       tiles.add(
         ListTile(
           title: Text(L10().packaging),
-          subtitle: Text(item.packaging),
+          subtitle: Text(widget.item.packaging),
           leading: FaIcon(FontAwesomeIcons.box),
         )
       );
     }
 
     // Last update?
-    if (item.updatedDateString.isNotEmpty) {
+    if (widget.item.updatedDateString.isNotEmpty) {
 
       tiles.add(
         ListTile(
           title: Text(L10().lastUpdated),
-          subtitle: Text(item.updatedDateString),
+          subtitle: Text(widget.item.updatedDateString),
           leading: FaIcon(FontAwesomeIcons.calendarAlt)
         )
       );
     }
 
     // Stocktake?
-    if (item.stocktakeDateString.isNotEmpty) {
+    if (widget.item.stocktakeDateString.isNotEmpty) {
       tiles.add(
         ListTile(
           title: Text(L10().lastStocktake),
-          subtitle: Text(item.stocktakeDateString),
+          subtitle: Text(widget.item.stocktakeDateString),
           leading: FaIcon(FontAwesomeIcons.calendarAlt)
         )
       );
@@ -626,29 +623,29 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     }
      */
 
-    if (item.link.isNotEmpty) {
+    if (widget.item.link.isNotEmpty) {
       tiles.add(
         ListTile(
-          title: Text("${item.link}"),
+          title: Text("${widget.item.link}"),
           leading: FaIcon(FontAwesomeIcons.link, color: COLOR_CLICK),
           onTap: () {
-            item.openLink();
+            widget.item.openLink();
           },
         )
       );
     }
 
-    if ((item.testResultCount > 0) || (part?.isTrackable ?? false)) {
+    if ((widget.item.testResultCount > 0) || (part?.isTrackable ?? false)) {
       tiles.add(
           ListTile(
               title: Text(L10().testResults),
               leading: FaIcon(FontAwesomeIcons.tasks, color: COLOR_CLICK),
-              trailing: Text("${item.testResultCount}"),
+              trailing: Text("${widget.item.testResultCount}"),
               onTap: () {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => StockItemTestResultsWidget(item))
+                        builder: (context) => StockItemTestResultsWidget(widget.item))
                 ).then((ctx) {
                   refresh(context);
                 });
@@ -657,29 +654,29 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     }
 
-    if (item.hasPurchasePrice) {
+    if (widget.item.hasPurchasePrice) {
       tiles.add(
         ListTile(
           title: Text(L10().purchasePrice),
           leading: FaIcon(FontAwesomeIcons.dollarSign),
-          trailing: Text(item.purchasePrice),
+          trailing: Text(widget.item.purchasePrice),
         )
       );
     }
 
     // TODO - Is this stock item linked to a PurchaseOrder?
 
-    if (stockShowHistory && item.trackingItemCount > 0) {
+    if (stockShowHistory && widget.item.trackingItemCount > 0) {
       tiles.add(
         ListTile(
           title: Text(L10().history),
           leading: FaIcon(FontAwesomeIcons.history, color: COLOR_CLICK),
-          trailing: Text("${item.trackingItemCount}"),
+          trailing: Text("${widget.item.trackingItemCount}"),
           onTap: () {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => StockItemHistoryWidget(item))
+                builder: (context) => StockItemHistoryWidget(widget.item))
               ).then((ctx) {
                 refresh(context);
             });
@@ -696,7 +693,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => StockNotesWidget(item))
+            MaterialPageRoute(builder: (context) => StockNotesWidget(widget.item))
           );
         }
       )
@@ -713,7 +710,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
                 MaterialPageRoute(
                     builder: (context) => AttachmentWidget(
                         InvenTreeStockItemAttachment(),
-                        item.pk,
+                        widget.item.pk,
                         InvenTreeAPI().checkPermission("stock", "change"))
                 )
             );
@@ -748,13 +745,13 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     }
 
     // "Count" is not available for serialized stock
-    if (!item.isSerialized()) {
+    if (!widget.item.isSerialized()) {
       tiles.add(
           ListTile(
               title: Text(L10().countStock),
               leading: FaIcon(FontAwesomeIcons.checkCircle, color: COLOR_CLICK),
               onTap: _countStockDialog,
-              trailing: Text(item.quantityString(includeUnits: true)),
+              trailing: Text(widget.item.quantityString(includeUnits: true)),
           )
       );
 
@@ -794,7 +791,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => InvenTreeQRView(StockItemScanIntoLocationHandler(item)))
+            MaterialPageRoute(builder: (context) => InvenTreeQRView(StockItemScanIntoLocationHandler(widget.item)))
           ).then((ctx) {
             refresh(context);
           });
@@ -802,8 +799,8 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       )
     );
 
-    if (InvenTreeAPI().supportModernBarcodes || item.customBarcode.isEmpty) {
-      tiles.add(customBarcodeActionTile(context, this, item.customBarcode, "stockitem", item.pk));
+    if (InvenTreeAPI().supportModernBarcodes || widget.item.customBarcode.isEmpty) {
+      tiles.add(customBarcodeActionTile(context, this, widget.item.customBarcode, "stockitem", widget.item.pk));
     } else {
       // Note: Custom legacy barcodes (only for StockItem model) are handled differently
       tiles.add(
@@ -811,7 +808,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
               title: Text(L10().barcodeUnassign),
               leading: Icon(Icons.qr_code, color: COLOR_CLICK),
               onTap: () async {
-                await item.update(values: {"uid": ""});
+                await widget.item.update(values: {"uid": ""});
                 refresh(context);
               }
           )
