@@ -11,6 +11,7 @@ import "package:inventree/widget/company_detail.dart";
 import "package:inventree/widget/part_detail.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
+import 'package:url_launcher/url_launcher.dart';
 
 
 /*
@@ -114,6 +115,29 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
             width: 40,
             height: 40,
           )
+        )
+      );
+    }
+
+    if (widget.supplierPart.link.isNotEmpty) {
+      tiles.add(
+        ListTile(
+          title: Text(widget.supplierPart.link),
+          leading: FaIcon(FontAwesomeIcons.link),
+          onTap: () async {
+            if (await canLaunch(widget.supplierPart.link)) {
+              await launch(widget.supplierPart.link);
+            }
+          },
+        )
+      );
+    }
+
+    if (widget.supplierPart.note.isNotEmpty) {
+      tiles.add(
+        ListTile(
+          title: Text(widget.supplierPart.note),
+          leading: FaIcon(FontAwesomeIcons.pencilAlt),
         )
       );
     }
