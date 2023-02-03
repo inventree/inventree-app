@@ -5,6 +5,7 @@
 ---
 
 - Add support for Supplier Parts
+- Updated translations
 
 ### 0.9.3 - February 2023
 ---
