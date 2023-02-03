@@ -7,6 +7,7 @@ import "package:inventree/l10.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/company.dart";
 
+import "package:inventree/widget/company_detail.dart";
 import "package:inventree/widget/part_detail.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
@@ -87,6 +88,17 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
           width: 40,
           height: 40,
         ),
+        onTap: () async {
+          showLoadingOverlay(context);
+          var supplier = await InvenTreeCompany().get(widget.supplierPart.supplierId);
+          hideLoadingOverlay();
+
+          if (supplier is InvenTreeCompany) {
+            Navigator.push(context, MaterialPageRoute(
+              builder: (context) => CompanyDetailWidget(supplier)
+            ));
+          }
+        }
       )
     );
 
