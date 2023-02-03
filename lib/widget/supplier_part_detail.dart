@@ -111,7 +111,7 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
         )
     );
 
-    // Supplier part details
+    // Supplier details
     tiles.add(
       ListTile(
         title: Text(widget.supplierPart.SKU),
