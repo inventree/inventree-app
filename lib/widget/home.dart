@@ -24,6 +24,7 @@ import "package:inventree/widget/purchase_order_list.dart";
 import "package:inventree/widget/search.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/spinner.dart";
+import "package:inventree/widget/company_list.dart";
 
 
 class InvenTreeHomePage extends StatefulWidget {
@@ -126,13 +127,13 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     );
   }
 
-  /*
   void _showSuppliers(BuildContext context) {
     if (!InvenTreeAPI().checkConnection()) return;
 
     Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyListWidget(L10().suppliers, {"is_supplier": "true"})));
   }
 
+  /*
   void _showManufacturers(BuildContext context) {
     if (!InvenTreeAPI().checkConnection()) return;
 
@@ -312,8 +313,6 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
       ));
     }
 
-    // TODO: Add these tiles back in once the features are fleshed out
-    /*
     // Suppliers
     if (homeShowSuppliers) {
       tiles.add(_listTile(
@@ -325,6 +324,10 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
           }
       ));
     }
+
+    // TODO: Add these tiles back in once the features are fleshed out
+    /*
+
 
     // Manufacturers
     if (homeShowManufacturers) {

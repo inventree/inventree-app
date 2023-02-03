@@ -190,7 +190,7 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
 
     return tiles;
   }
-  
+
   Widget getSelectedWidget(int index) {
     switch (index) {
       case 0:
