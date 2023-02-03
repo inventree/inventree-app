@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 
+import "package:inventree/api.dart";
 import "package:inventree/l10.dart";
 
 import "package:inventree/inventree/company.dart";
@@ -27,7 +28,7 @@ class SupplierPartList extends StatefulWidget {
 class _SupplierPartListState extends RefreshableState<SupplierPartList> {
 
   @override
-  String getAppBarTitle(BuildContext context) => L10().supplierPart;
+  String getAppBarTitle(BuildContext context) => L10().supplierParts;
 
   @override
   Widget getBody(BuildContext  context) {
@@ -73,6 +74,16 @@ class _PaginatedSupplierPartListState extends PaginatedSearchState<PaginatedSupp
     return ListTile(
       title: Text(supplierPart.SKU),
       subtitle: Text(supplierPart.partName),
+      leading: InvenTreeAPI().getImage(
+        supplierPart.supplierImage,
+        width: 40,
+        height: 40
+      ),
+      trailing: InvenTreeAPI().getImage(
+        supplierPart.partImage,
+        width: 40,
+        height: 40,
+      ),
       onTap: () {
         Navigator.push(
           context,

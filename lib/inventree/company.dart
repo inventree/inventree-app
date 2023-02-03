@@ -102,7 +102,7 @@ class InvenTreeSupplierPart extends InvenTreeModel {
     return {
       "manufacturer_detail": "true",
       "supplier_detail": "true",
-      "manufacturer_part_detail": "true",
+      "part_detail": "true",
     };
   }
 
