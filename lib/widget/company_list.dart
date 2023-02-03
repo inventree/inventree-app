@@ -2,13 +2,18 @@
 import "package:flutter/material.dart";
 
 import "package:inventree/api.dart";
+
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/model.dart";
+
 import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/company_detail.dart";
 
 
+/*
+ * Widget for displaying a filterable list of Company instances
+ */
 class CompanyListWidget extends StatefulWidget {
 
   const CompanyListWidget(this.title, this.filters, {Key? key}) : super(key: key);
@@ -18,24 +23,20 @@ class CompanyListWidget extends StatefulWidget {
   final Map<String, String> filters;
 
   @override
-  _CompanyListWidgetState createState() => _CompanyListWidgetState(title, filters);
+  _CompanyListWidgetState createState() => _CompanyListWidgetState();
 }
 
 
 class _CompanyListWidgetState extends RefreshableState<CompanyListWidget> {
 
-  _CompanyListWidgetState(this.title, this.filters);
-
-  final String title;
-
-  final Map<String, String> filters;
+  _CompanyListWidgetState();
 
   @override
-  String getAppBarTitle(BuildContext context) => title;
+  String getAppBarTitle(BuildContext context) => widget.title;
 
   @override
   Widget getBody(BuildContext context) {
-    return PaginatedCompanyList(filters, true);
+    return PaginatedCompanyList(widget.filters, true);
   }
 
 }

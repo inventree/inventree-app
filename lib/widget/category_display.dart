@@ -22,13 +22,13 @@ class CategoryDisplayWidget extends StatefulWidget {
   final InvenTreePartCategory? category;
 
   @override
-  _CategoryDisplayState createState() => _CategoryDisplayState(category);
+  _CategoryDisplayState createState() => _CategoryDisplayState();
 }
 
 
 class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
-  _CategoryDisplayState(this.category);
+  _CategoryDisplayState();
 
   bool showFilterOptions = false;
 
@@ -40,7 +40,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
     List<Widget> actions = [];
 
-    if ((category != null) && InvenTreeAPI().checkPermission("part_category", "change")) {
+    if ((widget.category != null) && InvenTreeAPI().checkPermission("part_category", "change")) {
       actions.add(
         IconButton(
           icon: FaIcon(FontAwesomeIcons.edit),
@@ -57,7 +57,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
   }
 
   void _editCategoryDialog(BuildContext context) {
-    final _cat = category;
+    final _cat = widget.category;
 
     // Cannot edit top-level category
     if (_cat == null) {
@@ -74,9 +74,6 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
     );
   }
 
-  // The local InvenTreePartCategory object
-  final InvenTreePartCategory? category;
-
   @override
   Future<void> onBuild(BuildContext context) async {
     refresh(context);
@@ -86,8 +83,8 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
   Future<void> request(BuildContext context) async {
 
     // Update the category
-    if (category != null) {
-      final bool result = await category?.reload() ?? false;
+    if (widget.category != null) {
+      final bool result = await widget.category?.reload() ?? false;
 
       if (!result) {
         Navigator.of(context).pop();
@@ -96,7 +93,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
   }
 
   Widget getCategoryDescriptionCard({bool extra = true}) {
-    if (category == null) {
+    if (widget.category == null) {
       return Card(
         child: ListTile(
           leading: FaIcon(FontAwesomeIcons.shapes),
@@ -110,11 +107,11 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
       List<Widget> children = [
         ListTile(
-          title: Text("${category?.name}",
+          title: Text("${widget.category?.name}",
               style: TextStyle(fontWeight: FontWeight.bold)
           ),
-          subtitle: Text("${category?.description}"),
-          leading: category!.customIcon ?? FaIcon(FontAwesomeIcons.sitemap),
+          subtitle: Text("${widget.category?.description}"),
+          leading: widget.category!.customIcon ?? FaIcon(FontAwesomeIcons.sitemap),
         ),
       ];
 
@@ -122,14 +119,14 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
         children.add(
             ListTile(
               title: Text(L10().parentCategory),
-              subtitle: Text("${category?.parentPathString}"),
+              subtitle: Text("${widget.category?.parentPathString}"),
               leading: FaIcon(
                 FontAwesomeIcons.levelUpAlt,
                 color: COLOR_CLICK,
               ),
               onTap: () async {
 
-                int parentId = category?.parentId ?? -1;
+                int parentId = widget.category?.parentId ?? -1;
 
                 if (parentId < 0) {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));
@@ -200,7 +197,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
       Expanded(
         child: PaginatedPartCategoryList(
             {
-              "parent": category?.pk.toString() ?? "null"
+              "parent": widget.category?.pk.toString() ?? "null"
             },
             showFilterOptions,
         ),
@@ -215,7 +212,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
   List<Widget> partsTiles() {
 
     Map<String, String> filters = {
-      "category": category?.pk.toString() ?? "null",
+      "category": widget.category?.pk.toString() ?? "null",
     };
 
     return [
@@ -246,7 +243,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
   Future<void> _newCategory(BuildContext context) async {
 
-    int pk = category?.pk ?? -1;
+    int pk = widget.category?.pk ?? -1;
 
     InvenTreePartCategory().createForm(
       context,
@@ -276,7 +273,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
   Future<void> _newPart() async {
 
-    int pk = category?.pk ?? -1;
+    int pk = widget.category?.pk ?? -1;
 
     InvenTreePart().createForm(
       context,
@@ -320,7 +317,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
           )
       );
 
-      if (category != null) {
+      if (widget.category != null) {
         tiles.add(
             ListTile(
               title: Text(L10().partCreate),

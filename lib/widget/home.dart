@@ -301,7 +301,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
         }
     ));
 
-    // Purchase orderes
+    // Purchase orders
     if (homeShowPo) {
       tiles.add(_listTile(
           context,

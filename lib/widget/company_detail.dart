@@ -14,6 +14,9 @@ import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/supplier_part_list.dart";
 
 
+/*
+ * Widget for displaying detail view of a single Company instance
+ */
 class CompanyDetailWidget extends StatefulWidget {
 
   const CompanyDetailWidget(this.company, {Key? key}) : super(key: key);
