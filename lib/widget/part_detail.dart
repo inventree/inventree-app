@@ -25,6 +25,7 @@ import "package:inventree/widget/part_image_widget.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/stock_detail.dart";
 import "package:inventree/widget/stock_list.dart";
+import "package:inventree/widget/supplier_part_list.dart";
 
 
 /*
@@ -523,21 +524,24 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     }
 
     if (part.isPurchaseable) {
-      tiles.add(
-          ListTile(
-            title: Text(L10().suppliers),
-            leading: FaIcon(FontAwesomeIcons.industry),
-            trailing: Text("${part.supplierCount}"),
-            /* TODO:
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => PartSupplierWidget(part))
-                );
-              },
-               */
-          )
-      );
+
+      if (part.supplierCount > 0) {
+        tiles.add(
+            ListTile(
+              title: Text(L10().suppliers),
+              leading: FaIcon(FontAwesomeIcons.industry, color: COLOR_CLICK),
+              trailing: Text("${part.supplierCount}"),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SupplierPartList({
+                      "part": part.pk.toString()
+                    }))
+                  );
+                },
+            )
+        );
+      }
     }
 
     if (showParameters) {
