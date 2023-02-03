@@ -116,9 +116,9 @@ class InvenTreeSupplierPart extends InvenTreeModel {
     return _filters();
   }
 
-  int get manufacturerId => (jsondata["manufacturer"] ?? -1) as int;
-
   String get manufacturerName => (jsondata["manufacturer_detail"]?["name"] ?? "") as String;
+
+  String get MPN => (jsondata["manufacturer_part_detail"]?["MPN"] ?? "") as String;
 
   String get manufacturerImage => (jsondata["manufacturer_detail"]?["image"] ?? jsondata["manufacturer_detail"]["thumbnail"] ?? InvenTreeAPI.staticThumb) as String;
 
@@ -132,13 +132,13 @@ class InvenTreeSupplierPart extends InvenTreeModel {
 
   String get SKU => (jsondata["SKU"] ?? "") as String;
 
-  String get MPN => (jsondata["MPN"] ?? "") as String;
-
   int get partId => (jsondata["part"] ?? -1) as int;
 
   String get partImage => (jsondata["part_detail"]?["thumbnail"] ?? InvenTreeAPI.staticThumb) as String;
 
   String get partName => (jsondata["part_detail"]?["full_name"] ?? "") as String;
+
+  String get partDescription => (jsondata["part_detail"]?["description"] ?? "") as String;
 
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) {

@@ -1,10 +1,14 @@
 import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
+import "package:inventree/api.dart";
 import "package:inventree/l10.dart";
 
+import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/company.dart";
-import 'package:inventree/widget/progress.dart';
 
+import "package:inventree/widget/part_detail.dart";
+import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
 
 
@@ -47,6 +51,59 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
     if (loading) {
       tiles.add(progressIndicator());
       return tiles;
+    }
+
+    // Internal Part
+    tiles.add(
+        ListTile(
+          title: Text(widget.supplierPart.partName),
+          subtitle: Text(widget.supplierPart.partDescription),
+          leading: InvenTreeAPI().getImage(
+            widget.supplierPart.partImage,
+            width: 40,
+            height: 40,
+          ),
+          onTap: () async {
+            showLoadingOverlay(context);
+            final part = await InvenTreePart().get(widget.supplierPart.partId);
+            hideLoadingOverlay();
+
+            if (part is InvenTreePart) {
+              Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => PartDetailWidget(part)));
+            }
+          },
+        )
+    );
+
+    // Supplier part details
+    tiles.add(
+      ListTile(
+        title: Text(widget.supplierPart.SKU),
+        subtitle: Text(widget.supplierPart.supplierName),
+        leading: FaIcon(FontAwesomeIcons.building),
+        trailing: InvenTreeAPI().getImage(
+          widget.supplierPart.supplierImage,
+          width: 40,
+          height: 40,
+        ),
+      )
+    );
+
+    // Manufacturer information
+    if (widget.supplierPart.manufacturerPartId > 0) {
+      tiles.add(
+        ListTile(
+          subtitle: Text(widget.supplierPart.manufacturerName),
+          title: Text(widget.supplierPart.MPN),
+          leading: FaIcon(FontAwesomeIcons.industry),
+          trailing: InvenTreeAPI().getImage(
+            widget.supplierPart.manufacturerImage,
+            width: 40,
+            height: 40,
+          )
+        )
+      );
     }
 
     return tiles;
