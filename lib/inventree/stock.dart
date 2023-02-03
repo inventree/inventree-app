@@ -416,8 +416,10 @@ class InvenTreeStockItem extends InvenTreeModel {
   String get supplierImage {
     String thumb = "";
 
-    if (jsondata.containsKey("supplier_detail")) {
-      thumb = (jsondata["supplier_detail"]["supplier_logo"] ?? "") as String;
+    if (jsondata.containsKey("supplier_part_detail")) {
+      thumb = (jsondata["supplier_part_detail"]?["supplier_detail"]?["image"] ?? "") as String;
+    } else if (jsondata.containsKey("supplier_detail")) {
+      thumb = (jsondata["supplier_detail"]["image"] ?? "") as String;
     }
 
     return thumb;
@@ -440,8 +442,8 @@ class InvenTreeStockItem extends InvenTreeModel {
   String get supplierSKU {
     String sku = "";
 
-    if (jsondata.containsKey("supplier_detail")) {
-      sku = (jsondata["supplier_detail"]["SKU"] ?? "") as String;
+    if (jsondata.containsKey("supplier_part_detail")) {
+      sku = (jsondata["supplier_part_detail"]["SKU"] ?? "") as String;
     }
 
     return sku;

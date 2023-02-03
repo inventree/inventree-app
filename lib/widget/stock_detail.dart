@@ -551,6 +551,22 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     }
 
+    // Supplier part information (if available)
+    if (widget.item.supplierPartId > 0) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().supplierPart),
+          subtitle: Text(widget.item.supplierSKU),
+          leading: FaIcon(FontAwesomeIcons.building, color: COLOR_CLICK),
+          trailing: InvenTreeAPI().getImage(
+            widget.item.supplierImage,
+            width: 40,
+            height: 40,
+          ),
+        )
+      );
+    }
+
     if (widget.item.isBuilding) {
       tiles.add(
         ListTile(
@@ -606,22 +622,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         )
       );
     }
-
-    // Supplier part?
-    // TODO: Display supplier part info page?
-    /*
-    if (item.supplierPartId > 0) {
-      tiles.add(
-        ListTile(
-          title: Text("${item.supplierName}"),
-          subtitle: Text("${item.supplierSKU}"),
-          leading: FaIcon(FontAwesomeIcons.industry),
-          trailing: InvenTreeAPI().getImage(item.supplierImage),
-          onTap: null,
-        )
-      );
-    }
-     */
 
     if (widget.item.link.isNotEmpty) {
       tiles.add(
