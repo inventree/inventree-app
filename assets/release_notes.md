@@ -1,6 +1,11 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.10.0 - February 2023
+---
+
+- Add support for Supplier Parts
+
 ### 0.9.3 - February 2023
 ---
 
