@@ -1107,6 +1107,12 @@
   "supplier": "Supplier",
   "@supplier": {},
 
+  "supplierPart": "Supplier Part",
+  "@supplierPart": {},
+
+  "supplierParts": "Supplier Parts",
+  "@supplierParts": {},
+
   "suppliers": "Suppliers",
   "@suppliers": {},
 
