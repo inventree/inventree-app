@@ -467,6 +467,9 @@
   "invalidStockItem": "Invalid Stock Item",
   "@invalidStockItem": {},
 
+  "invalidSupplierPart": "Invalid Supplier Part",
+  "@invalidSupplierPart": {},
+
   "invalidUsernamePassword": "Invalid username / password combination",
   "@invalidUsernamePassword": {},
 

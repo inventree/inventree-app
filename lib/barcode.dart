@@ -1,7 +1,6 @@
 import "dart:io";
 import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
-import "package:inventree/widget/refreshable_state.dart";
 import "package:one_context/one_context.dart";
 import "package:qr_code_scanner/qr_code_scanner.dart";
 
@@ -11,10 +10,13 @@ import "package:inventree/helpers.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/preferences.dart";
 
+import "package:inventree/inventree/company.dart";
+import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/sentry.dart";
 import "package:inventree/inventree/stock.dart";
-import "package:inventree/inventree/part.dart";
 
+import "package:inventree/widget/refreshable_state.dart";
+import "package:inventree/widget/supplier_part_detail.dart";
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/location_display.dart";
@@ -183,16 +185,13 @@ class BarcodeScanHandler extends BarcodeHandler {
 
   @override
   Future<void> onBarcodeMatched(Map<String, dynamic> data) async {
-
     int pk = -1;
 
     // A stocklocation has been passed?
     if (data.containsKey("stocklocation")) {
-
       pk = (data["stocklocation"]?["pk"] ?? -1) as int;
 
       if (pk > 0) {
-
         barcodeSuccessTone();
 
         InvenTreeStockLocation().get(pk).then((var loc) {
@@ -203,25 +202,22 @@ class BarcodeScanHandler extends BarcodeHandler {
               icon: Icons.qr_code,
             );
             OneContext().pop();
-            OneContext().navigator.push(MaterialPageRoute(builder: (context) => LocationDisplayWidget(loc)));
+            OneContext().navigator.push(MaterialPageRoute(
+                builder: (context) => LocationDisplayWidget(loc)));
           }
         });
       } else {
-
         barcodeFailureTone();
 
         showSnackIcon(
-          L10().invalidStockLocation,
-          success: false
+            L10().invalidStockLocation,
+            success: false
         );
       }
-
     } else if (data.containsKey("stockitem")) {
-
       pk = (data["stockitem"]?["pk"] ?? -1) as int;
 
       if (pk > 0) {
-
         barcodeSuccessTone();
 
         InvenTreeStockItem().get(pk).then((var item) {
@@ -232,11 +228,11 @@ class BarcodeScanHandler extends BarcodeHandler {
           );
           OneContext().pop();
           if (item is InvenTreeStockItem) {
-            OneContext().push(MaterialPageRoute(builder: (context) => StockDetailWidget(item)));
+            OneContext().push(MaterialPageRoute(
+                builder: (context) => StockDetailWidget(item)));
           }
         });
       } else {
-
         barcodeFailureTone();
 
         showSnackIcon(
@@ -244,12 +240,37 @@ class BarcodeScanHandler extends BarcodeHandler {
             success: false
         );
       }
+    } else if (data.containsKey("supplierpart")) {
+      pk = (data["supplierpart"]?["pk"] ?? -1) as int;
+
+      if (pk > 0) {
+        barcodeSuccessTone();
+
+        InvenTreeSupplierPart().get(pk).then((var supplierpart) {
+          showSnackIcon(
+            L10().supplierPart,
+            success: true,
+            icon: Icons.qr_code,
+          );
+
+          OneContext().pop();
+
+          if (supplierpart is InvenTreeSupplierPart) {
+            OneContext().push(MaterialPageRoute(builder: (context) => SupplierPartDetailWidget(supplierPart)));
+          }
+        });
+      } else {
+        barcodeFailureTone();
+        showSnackIcon(
+          L10().invalidSupplierPart,
+          success: false,
+        );
+      }
     } else if (data.containsKey("part")) {
 
       pk = (data["part"]?["pk"] ?? -1) as int;
 
       if (pk > 0) {
-
         barcodeSuccessTone();
 
         InvenTreePart().get(pk).then((var part) {
