@@ -1110,6 +1110,12 @@
   "supplierPart": "Supplier Part",
   "@supplierPart": {},
 
+  "supplierPartEdit": "Edit Supplier Part",
+  "@supplierPartEdit": {},
+
+  "supplierPartUpdated": "Supplier Part Updated",
+  "@supplierPartUpdated": {},
+
   "supplierParts": "Supplier Parts",
   "@supplierParts": {},
 

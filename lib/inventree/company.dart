@@ -98,6 +98,18 @@ class InvenTreeSupplierPart extends InvenTreeModel {
   @override
   String get URL => "company/part/";
 
+  @override
+  Map<String, dynamic> formFields() {
+    return {
+      "supplier": {},
+      "SKU": {},
+      "link": {},
+      "note": {},
+      "packaging": {},
+      "pack_size": {},
+    };
+  }
+
   Map<String, String> _filters() {
     return {
       "manufacturer_detail": "true",

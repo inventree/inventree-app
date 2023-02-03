@@ -11,6 +11,7 @@ import "package:inventree/widget/company_detail.dart";
 import "package:inventree/widget/part_detail.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
+import 'package:inventree/widget/snacks.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 
@@ -34,6 +35,37 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
 
   @override
   String getAppBarTitle(BuildContext context) => L10().supplierPart;
+
+  @override
+  List<Widget> getAppBarActions(BuildContext context) {
+    List<Widget> actions = [];
+
+    actions.add(
+      IconButton(
+        icon: FaIcon(FontAwesomeIcons.edit),
+        tooltip: L10().edit,
+        onPressed: () {
+          editSupplierPart(context);
+        },
+      )
+    );
+
+    return actions;
+  }
+
+  /*
+   * Launch a form to edit the current SupplierPart instance
+   */
+  Future<void> editSupplierPart(BuildContext context) async {
+    widget.supplierPart.editForm(
+      context,
+      L10().supplierPartEdit,
+      onSuccess: (data) async {
+        refresh(context);
+        showSnackIcon(L10().supplierPartUpdated, success: true);
+      }
+    );
+  }
 
   @override
   Future<void> request(BuildContext context) async {
