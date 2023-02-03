@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/api.dart";
+import 'package:inventree/barcode.dart';
 import "package:inventree/l10.dart";
 
 import "package:inventree/inventree/part.dart";
@@ -178,16 +179,60 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
   }
 
   /*
-   * Build the widget
+   * Return a list of actions which can be performed for this SupplierPart
    */
-  @override
-  Widget getBody(BuildContext context) {
-    return ListView(
-      children: ListTile.divideTiles(
-        context: context,
-        tiles: detailTiles(context),
-      ).toList()
+  List<Widget> actionTiles(BuildContext context) {
+    List<Widget> tiles = [];
+
+    tiles.add(
+      customBarcodeActionTile(context, this, widget.supplierPart.customBarcode, "supplierpart", widget.supplierPart.pk)
     );
+
+    return tiles;
   }
 
+  @override
+  Widget getSelectedWidget(int index) {
+    switch (index) {
+      case 0:
+        return ListView(
+            children: ListTile.divideTiles(
+              context: context,
+              tiles: detailTiles(context),
+            ).toList()
+        );
+      case 1:
+        return ListView(
+          children: ListTile.divideTiles(
+            context: context,
+            tiles: actionTiles(context)
+          ).toList()
+        );
+      default:
+        return ListView();
+    }
+  }
+
+  @override
+  Widget getBody(BuildContext context) {
+    return getSelectedWidget(tabIndex);
+  }
+
+  @override
+  Widget getBottomNavBar(BuildContext context) {
+    return BottomNavigationBar(
+      currentIndex: tabIndex,
+      onTap: onTabSelectionChanged,
+      items: [
+        BottomNavigationBarItem(
+          icon: FaIcon(FontAwesomeIcons.infoCircle),
+          label: L10().details,
+        ),
+        BottomNavigationBarItem(
+          icon: FaIcon(FontAwesomeIcons.wrench),
+          label: L10().actions
+        )
+      ]
+    );
+  }
 }
