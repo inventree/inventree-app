@@ -118,17 +118,17 @@ class InvenTreeSupplierPart extends InvenTreeModel {
 
   int get manufacturerId => (jsondata["manufacturer"] ?? -1) as int;
 
-  String get manufacturerName => (jsondata["manufacturer_detail"]["name"] ?? "") as String;
+  String get manufacturerName => (jsondata["manufacturer_detail"]?["name"] ?? "") as String;
 
-  String get manufacturerImage => (jsondata["manufacturer_detail"]["image"] ?? jsondata["manufacturer_detail"]["thumbnail"] ?? InvenTreeAPI.staticThumb) as String;
+  String get manufacturerImage => (jsondata["manufacturer_detail"]?["image"] ?? jsondata["manufacturer_detail"]["thumbnail"] ?? InvenTreeAPI.staticThumb) as String;
 
   int get manufacturerPartId => (jsondata["manufacturer_part"] ?? -1) as int;
 
   int get supplierId => (jsondata["supplier"] ?? -1) as int;
 
-  String get supplierName => (jsondata["supplier_detail"]["name"] ?? "") as String;
+  String get supplierName => (jsondata["supplier_detail"]?["name"] ?? "") as String;
 
-  String get supplierImage => (jsondata["supplier_detail"]["image"] ?? jsondata["supplier_detail"]["thumbnail"] ?? InvenTreeAPI.staticThumb) as String;
+  String get supplierImage => (jsondata["supplier_detail"]?["image"] ?? jsondata["supplier_detail"]["thumbnail"] ?? InvenTreeAPI.staticThumb) as String;
 
   String get SKU => (jsondata["SKU"] ?? "") as String;
 
@@ -136,9 +136,9 @@ class InvenTreeSupplierPart extends InvenTreeModel {
 
   int get partId => (jsondata["part"] ?? -1) as int;
 
-  String get partImage => (jsondata["part_detail"]["thumbnail"] ?? InvenTreeAPI.staticThumb) as String;
+  String get partImage => (jsondata["part_detail"]?["thumbnail"] ?? InvenTreeAPI.staticThumb) as String;
 
-  String get partName => (jsondata["part_detail"]["full_name"] ?? "") as String;
+  String get partName => (jsondata["part_detail"]?["full_name"] ?? "") as String;
 
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) {
