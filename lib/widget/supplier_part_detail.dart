@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/api.dart";
-import 'package:inventree/barcode.dart';
+import "package:inventree/barcode.dart";
 import "package:inventree/l10.dart";
 
 import "package:inventree/inventree/part.dart";
@@ -12,8 +12,8 @@ import "package:inventree/widget/company_detail.dart";
 import "package:inventree/widget/part_detail.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
-import 'package:inventree/widget/snacks.dart';
-import 'package:url_launcher/url_launcher.dart';
+import "package:inventree/widget/snacks.dart";
+import "package:url_launcher/url_launcher.dart";
 
 
 /*
