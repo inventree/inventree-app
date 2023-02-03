@@ -4,8 +4,16 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/app_colors.dart";
 import "package:inventree/barcode.dart";
+import "package:inventree/l10.dart";
+import "package:inventree/api.dart";
+import "package:inventree/api_form.dart";
+import "package:inventree/preferences.dart";
+
+import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/inventree/part.dart";
+
+import "package:inventree/widget/supplier_part_detail.dart";
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/attachment_widget.dart";
 import "package:inventree/widget/location_display.dart";
@@ -16,10 +24,6 @@ import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/stock_item_history.dart";
 import "package:inventree/widget/stock_item_test_results.dart";
 import "package:inventree/widget/stock_notes.dart";
-import "package:inventree/l10.dart";
-import "package:inventree/api.dart";
-import "package:inventree/api_form.dart";
-import "package:inventree/preferences.dart";
 
 
 class StockDetailWidget extends StatefulWidget {
@@ -563,6 +567,18 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
             width: 40,
             height: 40,
           ),
+          onTap: () async {
+            showLoadingOverlay(context);
+            var sp = await InvenTreeSupplierPart().get(
+                widget.item.supplierPartId);
+            hideLoadingOverlay();
+            if (sp is InvenTreeSupplierPart) {
+              Navigator.push(
+                  context, MaterialPageRoute(
+                  builder: (context) => SupplierPartDetailWidget(sp))
+              );
+            }
+          }
         )
       );
     }
