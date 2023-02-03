@@ -120,12 +120,9 @@ class _PaginatedPartListState extends PaginatedSearchState<PaginatedPartList> {
 
   @override
   Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
-
     final page = await InvenTreePart().listPaginated(limit, offset, filters: params);
-
     return page;
   }
-
 
   @override
   Widget buildItem(BuildContext context, InvenTreeModel model) {

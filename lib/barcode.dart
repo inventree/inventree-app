@@ -1,7 +1,6 @@
 import "dart:io";
 import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
-import "package:inventree/widget/refreshable_state.dart";
 import "package:one_context/one_context.dart";
 import "package:qr_code_scanner/qr_code_scanner.dart";
 
@@ -11,10 +10,13 @@ import "package:inventree/helpers.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/preferences.dart";
 
+import "package:inventree/inventree/company.dart";
+import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/sentry.dart";
 import "package:inventree/inventree/stock.dart";
-import "package:inventree/inventree/part.dart";
 
+import "package:inventree/widget/refreshable_state.dart";
+import "package:inventree/widget/supplier_part_detail.dart";
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/location_display.dart";
@@ -163,6 +165,7 @@ class BarcodeHandler {
  * - StockLocation
  * - StockItem
  * - Part
+ * - SupplierPart
  */
 class BarcodeScanHandler extends BarcodeHandler {
 
@@ -181,104 +184,134 @@ class BarcodeScanHandler extends BarcodeHandler {
     );
   }
 
+  /*
+   * Response when a "Part" instance is scanned
+   */
+  Future<void> handlePart(int pk) async {
+    InvenTreePart().get(pk).then((var part) {
+      showSnackIcon(
+        L10().part,
+        success: true,
+        icon: Icons.qr_code,
+      );
+      // Dismiss the barcode scanner
+      OneContext().pop();
+
+      if (part is InvenTreePart) {
+        OneContext().push(MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
+      }
+    });
+  }
+
+  /*
+   * Response when a "StockItem" instance is scanned
+   */
+  Future<void> handleStockItem(int pk) async {
+    InvenTreeStockItem().get(pk).then((var item) {
+      showSnackIcon(
+        L10().stockItem,
+        success: true,
+        icon: Icons.qr_code,
+      );
+      OneContext().pop();
+      if (item is InvenTreeStockItem) {
+        OneContext().push(MaterialPageRoute(
+            builder: (context) => StockDetailWidget(item)));
+      }
+    });
+  }
+
+  /*
+   * Response when a "StockLocation" instance is scanned
+   */
+  Future<void> handleStockLocation(int pk) async {
+    InvenTreeStockLocation().get(pk).then((var loc) {
+      if (loc is InvenTreeStockLocation) {
+        showSnackIcon(
+          L10().stockLocation,
+          success: true,
+          icon: Icons.qr_code,
+        );
+        OneContext().pop();
+        OneContext().navigator.push(MaterialPageRoute(
+            builder: (context) => LocationDisplayWidget(loc)));
+      }
+    });
+  }
+
+  /*
+   * Response when a "SupplierPart" instance is scanned
+   */
+  Future<void> handleSupplierPart(int pk) async {
+    InvenTreeSupplierPart().get(pk).then((var supplierpart) {
+      showSnackIcon(
+        L10().supplierPart,
+        success: true,
+        icon: Icons.qr_code,
+      );
+
+      OneContext().pop();
+
+      if (supplierpart is InvenTreeSupplierPart) {
+        OneContext().push(MaterialPageRoute(builder: (context) => SupplierPartDetailWidget(supplierpart)));
+      }
+    });
+  }
+
   @override
   Future<void> onBarcodeMatched(Map<String, dynamic> data) async {
-
     int pk = -1;
 
-    // A stocklocation has been passed?
-    if (data.containsKey("stocklocation")) {
+    String model = "";
 
-      pk = (data["stocklocation"]?["pk"] ?? -1) as int;
+    // The following model types can be matched with barcodes
+    final List<String> validModels = [
+      "part",
+      "stockitem",
+      "stocklocation",
+      "supplierpart"
+    ];
 
-      if (pk > 0) {
+    for (var key in validModels) {
+      if (data.containsKey(key)) {
+        pk = (data[key]?["pk"] ?? -1) as int;
 
-        barcodeSuccessTone();
-
-        InvenTreeStockLocation().get(pk).then((var loc) {
-          if (loc is InvenTreeStockLocation) {
-            showSnackIcon(
-              L10().stockLocation,
-              success: true,
-              icon: Icons.qr_code,
-            );
-            OneContext().pop();
-            OneContext().navigator.push(MaterialPageRoute(builder: (context) => LocationDisplayWidget(loc)));
-          }
-        });
-      } else {
-
-        barcodeFailureTone();
-
-        showSnackIcon(
-          L10().invalidStockLocation,
-          success: false
-        );
+        // Break on the first valid match found
+        if (pk > 0) {
+          model = key;
+          break;
+        }
       }
+    }
 
-    } else if (data.containsKey("stockitem")) {
+    // A valid result has been found
+    if (pk > 0 && model.isNotEmpty) {
 
-      pk = (data["stockitem"]?["pk"] ?? -1) as int;
+      barcodeSuccessTone();
 
-      if (pk > 0) {
-
-        barcodeSuccessTone();
-
-        InvenTreeStockItem().get(pk).then((var item) {
-          showSnackIcon(
-            L10().stockItem,
-            success: true,
-            icon: Icons.qr_code,
-          );
-          OneContext().pop();
-          if (item is InvenTreeStockItem) {
-            OneContext().push(MaterialPageRoute(builder: (context) => StockDetailWidget(item)));
-          }
-        });
-      } else {
-
-        barcodeFailureTone();
-
-        showSnackIcon(
-            L10().invalidStockItem,
-            success: false
-        );
+      switch (model) {
+        case "part":
+          handlePart(pk);
+          return;
+        case "stockitem":
+          handleStockItem(pk);
+          return;
+        case "stocklocation":
+          handleStockLocation(pk);
+          return;
+        case "supplierpart":
+          handleSupplierPart(pk);
+          return;
+        default:
+        // Fall through to failure state
+          break;
       }
-    } else if (data.containsKey("part")) {
+    }
 
-      pk = (data["part"]?["pk"] ?? -1) as int;
+    // If we get here, we have not found a valid barcode result!
+    barcodeFailureTone();
 
-      if (pk > 0) {
-
-        barcodeSuccessTone();
-
-        InvenTreePart().get(pk).then((var part) {
-          showSnackIcon(
-            L10().part,
-            success: true,
-            icon: Icons.qr_code,
-          );
-          // Dismiss the barcode scanner
-          OneContext().pop();
-
-          if (part is InvenTreePart) {
-            OneContext().push(MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
-          }
-        });
-      } else {
-
-        barcodeFailureTone();
-
-        showSnackIcon(
-            L10().invalidPart,
-            success: false
-        );
-      }
-    } else {
-
-      barcodeFailureTone();
-
-      showSnackIcon(
+    showSnackIcon(
         L10().barcodeUnknown,
         success: false,
         onAction: () {
@@ -295,8 +328,7 @@ class BarcodeScanHandler extends BarcodeHandler {
               )
           );
         }
-      );
-    }
+    );
   }
 }
 

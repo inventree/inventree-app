@@ -5,19 +5,21 @@ import "package:intl/intl.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:dropdown_search/dropdown_search.dart";
 import "package:datetime_picker_formfield/datetime_picker_formfield.dart";
+import "package:flutter/material.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/barcode.dart";
 import "package:inventree/helpers.dart";
+import "package:inventree/l10.dart";
+
+import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/sentry.dart";
 import "package:inventree/inventree/stock.dart";
+
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/fields.dart";
-import "package:inventree/l10.dart";
-
-import "package:flutter/material.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/snacks.dart";
 
@@ -641,6 +643,17 @@ class APIFormField {
         return ListTile(
           title: Text(name),
           leading: FaIcon(isGroup ? FontAwesomeIcons.users : FontAwesomeIcons.user),
+        );
+      case "company":
+        var company = InvenTreeCompany.fromJson(data);
+        return ListTile(
+          title: Text(company.name),
+          subtitle: extended ? Text(company.description) : null,
+          leading: InvenTreeAPI().getImage(
+            company.thumbnail,
+            width: 40,
+            height: 40
+          )
         );
       default:
         return ListTile(

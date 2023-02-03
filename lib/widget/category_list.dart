@@ -17,16 +17,14 @@ class PartCategoryList extends StatefulWidget {
   final Map<String, String> filters;
 
   @override
-  _PartCategoryListState createState() => _PartCategoryListState(filters);
+  _PartCategoryListState createState() => _PartCategoryListState();
 
 }
 
 
 class _PartCategoryListState extends RefreshableState<PartCategoryList> {
 
-  _PartCategoryListState(this.filters);
-
-  final Map<String, String> filters;
+  _PartCategoryListState();
 
   bool showFilterOptions = false;
 
@@ -47,7 +45,7 @@ class _PartCategoryListState extends RefreshableState<PartCategoryList> {
 
   @override
   Widget getBody(BuildContext context) {
-    return PaginatedPartCategoryList(filters, showFilterOptions);
+    return PaginatedPartCategoryList(widget.filters, showFilterOptions);
   }
 }
 

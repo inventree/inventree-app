@@ -85,9 +85,6 @@ class _HomeScreenSettingsState extends State<HomeScreenSettingsWidget> {
                       },
                     ),
                   ),
-                  // TODO: When these features are improved, add them back in!
-                  // Currently, the company display does not provide any value
-                  /*
                   ListTile(
                     title: Text(L10().homeShowSuppliers),
                     subtitle: Text(L10().homeShowSuppliersDescription),
@@ -102,6 +99,9 @@ class _HomeScreenSettingsState extends State<HomeScreenSettingsWidget> {
                       },
                     ),
                   ),
+                  // TODO: When these features are improved, add them back in!
+                  // Currently, the company display does not provide any value
+                  /*
                   ListTile(
                     title: Text(L10().homeShowManufacturers),
                     subtitle: Text(L10().homeShowManufacturersDescription),

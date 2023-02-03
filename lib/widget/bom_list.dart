@@ -4,9 +4,9 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/helpers.dart";
-import "package:inventree/inventree/bom.dart";
 import "package:inventree/l10.dart";
 
+import "package:inventree/inventree/bom.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/part.dart";
 

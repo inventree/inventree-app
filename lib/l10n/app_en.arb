@@ -467,6 +467,9 @@
   "invalidStockItem": "Invalid Stock Item",
   "@invalidStockItem": {},
 
+  "invalidSupplierPart": "Invalid Supplier Part",
+  "@invalidSupplierPart": {},
+
   "invalidUsernamePassword": "Invalid username / password combination",
   "@invalidUsernamePassword": {},
 
@@ -1106,6 +1109,18 @@
 
   "supplier": "Supplier",
   "@supplier": {},
+
+  "supplierPart": "Supplier Part",
+  "@supplierPart": {},
+
+  "supplierPartEdit": "Edit Supplier Part",
+  "@supplierPartEdit": {},
+
+  "supplierPartUpdated": "Supplier Part Updated",
+  "@supplierPartUpdated": {},
+
+  "supplierParts": "Supplier Parts",
+  "@supplierParts": {},
 
   "suppliers": "Suppliers",
   "@suppliers": {},
