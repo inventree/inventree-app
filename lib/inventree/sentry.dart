@@ -37,7 +37,7 @@ Future<Map<String, dynamic>> getDeviceInfo() async {
       "model": androidDeviceInfo.model,
       "device": androidDeviceInfo.device,
       "id": androidDeviceInfo.id,
-      "androidId": androidDeviceInfo.androidId,
+      "androidId": androidDeviceInfo.id,
       "brand": androidDeviceInfo.brand,
       "display": androidDeviceInfo.display,
       "hardware": androidDeviceInfo.hardware,

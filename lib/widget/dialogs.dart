@@ -13,7 +13,7 @@ import "package:inventree/widget/snacks.dart";
 /*
  * Display a "confirmation" dialog allowing the user to accept or reject an action
  */
-Future<void> confirmationDialog(String title, String text, {IconData icon = FontAwesomeIcons.questionCircle, String? acceptText, String? rejectText, Function? onAccept, Function? onReject}) async {
+Future<void> confirmationDialog(String title, String text, {IconData icon = FontAwesomeIcons.circleQuestion, String? acceptText, String? rejectText, Function? onAccept, Function? onReject}) async {
 
   String _accept = acceptText ?? L10().ok;
   String _reject = rejectText ?? L10().cancel;
@@ -63,7 +63,7 @@ Future<void> confirmationDialog(String title, String text, {IconData icon = Font
  * @description = Simple string description of error
  * @data = Error response (e.g from server)
  */
-Future<void> showErrorDialog(String title, {String description = "", APIResponse? response, IconData icon = FontAwesomeIcons.exclamationCircle, Function? onDismissed}) async {
+Future<void> showErrorDialog(String title, {String description = "", APIResponse? response, IconData icon = FontAwesomeIcons.circleExclamation, Function? onDismissed}) async {
 
   List<Widget> children = [];
 

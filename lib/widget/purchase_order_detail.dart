@@ -52,7 +52,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
     if (InvenTreeAPI().checkPermission("purchase_order", "change")) {
       actions.add(
         IconButton(
-          icon: FaIcon(FontAwesomeIcons.edit),
+          icon: FaIcon(FontAwesomeIcons.penToSquare),
           tooltip: L10().edit,
           onPressed: () {
             editOrder(context);
@@ -174,7 +174,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       tiles.add(ListTile(
         title: Text(L10().issueDate),
         subtitle: Text(order.issueDate),
-        leading: FaIcon(FontAwesomeIcons.calendarAlt),
+        leading: FaIcon(FontAwesomeIcons.calendarDays),
       ));
     }
 
@@ -182,7 +182,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       tiles.add(ListTile(
         title: Text(L10().targetDate),
         subtitle: Text(order.targetDate),
-        leading: FaIcon(FontAwesomeIcons.calendarAlt),
+        leading: FaIcon(FontAwesomeIcons.calendarDays),
       ));
     }
 
@@ -190,7 +190,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
     tiles.add(
         ListTile(
           title: Text(L10().attachments),
-          leading: FaIcon(FontAwesomeIcons.fileAlt, color: COLOR_CLICK),
+          leading: FaIcon(FontAwesomeIcons.fileLines, color: COLOR_CLICK),
           trailing: attachmentCount > 0 ? Text(attachmentCount.toString()) : null,
           onTap: () {
             Navigator.push(
@@ -250,7 +250,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
         order.receive_url,
         fields,
         method: "POST",
-        icon: FontAwesomeIcons.signInAlt,
+        icon: FontAwesomeIcons.rightToBracket,
         onSuccess: (data) async {
           showSnackIcon(L10().receivedItem, success: true);
           refresh(context);
@@ -293,7 +293,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
           },
           child: ListTile(
             title: Text(L10().receiveItem),
-            leading: FaIcon(FontAwesomeIcons.signInAlt),
+            leading: FaIcon(FontAwesomeIcons.rightToBracket),
           )
         )
       );
@@ -411,11 +411,11 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
           label: L10().details
         ),
         BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.thList),
+          icon: FaIcon(FontAwesomeIcons.tableList),
           label: L10().lineItems,
         ),
         BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.boxes),
+          icon: FaIcon(FontAwesomeIcons.boxesStacked),
           label: L10().stockItems
         )
       ],

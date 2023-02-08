@@ -263,7 +263,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
         ),
         trailing: GestureDetector(
           child: FaIcon(
-            searchController.text.isEmpty ? FontAwesomeIcons.search : FontAwesomeIcons.backspace,
+            searchController.text.isEmpty ? FontAwesomeIcons.magnifyingGlass : FontAwesomeIcons.deleteLeft,
             color: searchController.text.isEmpty ? COLOR_CLICK : COLOR_DANGER,
           ),
           onTap: () {
@@ -331,7 +331,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
       results.add(
         ListTile(
           title: Text(L10().stockItems),
-          leading: FaIcon(FontAwesomeIcons.boxes),
+          leading: FaIcon(FontAwesomeIcons.boxesStacked),
           trailing: Text("${nStockResults}"),
           onTap: () {
             Navigator.push(
@@ -354,7 +354,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
       results.add(
         ListTile(
           title: Text(L10().stockLocations),
-          leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
+          leading: FaIcon(FontAwesomeIcons.locationDot),
           trailing: Text("${nLocationResults}"),
           onTap: () {
             Navigator.push(
@@ -402,7 +402,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
       results.add(
         ListTile(
           title: Text(L10().purchaseOrders),
-          leading: FaIcon(FontAwesomeIcons.shoppingCart),
+          leading: FaIcon(FontAwesomeIcons.cartShopping),
           trailing: Text("${nPurchaseOrderResults}"),
           onTap: () {
             Navigator.push(
@@ -424,7 +424,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
       tiles.add(
         ListTile(
           title: Text(L10().searching),
-          leading: FaIcon(FontAwesomeIcons.search),
+          leading: FaIcon(FontAwesomeIcons.magnifyingGlass),
           trailing: CircularProgressIndicator(),
         )
       );
@@ -437,7 +437,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
             L10().queryNoResults,
             style: TextStyle(fontStyle: FontStyle.italic),
           ),
-          leading: FaIcon(FontAwesomeIcons.searchMinus),
+          leading: FaIcon(FontAwesomeIcons.magnifyingGlassMinus),
         )
       );
     } else {

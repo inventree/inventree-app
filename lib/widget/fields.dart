@@ -80,7 +80,7 @@ class FilePickerDialog {
     actions.add(
       SimpleDialogOption(
         child: ListTile(
-          leading: FaIcon(FontAwesomeIcons.fileUpload),
+          leading: FaIcon(FontAwesomeIcons.fileArrowUp),
           title: Text(allowFiles ? L10().selectFile : L10().selectImage),
         ),
         onPressed: () async {

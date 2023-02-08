@@ -43,7 +43,7 @@ class _StockNotesState extends RefreshableState<StockNotesWidget> {
     if (InvenTreeAPI().checkPermission("stock", "change")) {
       actions.add(
           IconButton(
-              icon: FaIcon(FontAwesomeIcons.edit),
+              icon: FaIcon(FontAwesomeIcons.penToSquare),
               tooltip: L10().edit,
               onPressed: () {
                 item.editForm(

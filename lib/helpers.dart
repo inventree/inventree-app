@@ -74,6 +74,6 @@ Future<void> playAudioFile(String path) async {
     return;
   }
 
-  final player = AudioCache();
-  player.play(path);
+  final player = AudioPlayer();
+  player.play(AssetSource(path));
 }

@@ -74,7 +74,7 @@ class _HomeScreenSettingsState extends State<HomeScreenSettingsWidget> {
                   ListTile(
                     title: Text(L10().homeShowPo),
                     subtitle: Text(L10().homeShowPoDescription),
-                    leading: FaIcon(FontAwesomeIcons.shoppingCart),
+                    leading: FaIcon(FontAwesomeIcons.cartShopping),
                     trailing: Switch(
                       value: homeShowPo,
                       onChanged: (bool value) {

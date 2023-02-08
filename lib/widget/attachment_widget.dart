@@ -54,7 +54,7 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
       // File upload
       actions.add(
           IconButton(
-            icon: FaIcon(FontAwesomeIcons.plusCircle),
+            icon: FaIcon(FontAwesomeIcons.circlePlus),
             onPressed: () async {
               FilePickerDialog.pickFile(
                   onPicked: (File file) async {
@@ -117,7 +117,7 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
               },
               child: ListTile(
                 title: Text(L10().delete),
-                leading: FaIcon(FontAwesomeIcons.trashAlt),
+                leading: FaIcon(FontAwesomeIcons.trashCan),
               )
             )
           ]
@@ -187,8 +187,9 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
           subtitle: Text(attachment.comment),
           leading: FaIcon(FontAwesomeIcons.link, color: COLOR_CLICK),
           onTap: () async {
-            if (await canLaunch(attachment.link)) {
-              await launch(attachment.link);
+            var uri = Uri.tryParse(attachment.link.trimLeft());
+            if (uri != null && await canLaunchUrl(uri)) {
+              await launchUrl(uri);
             }
           },
           onLongPress: ()  {

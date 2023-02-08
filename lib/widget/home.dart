@@ -237,7 +237,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
         if (!allowed) {
           showSnackIcon(
             L10().permissionRequired,
-            icon: FontAwesomeIcons.exclamationCircle,
+            icon: FontAwesomeIcons.circleExclamation,
             success: false,
           );
 
@@ -295,7 +295,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     tiles.add(_listTile(
         context,
         L10().stock,
-        FontAwesomeIcons.boxes,
+        FontAwesomeIcons.boxesStacked,
         callback: () {
           _showStock(context);
         }
@@ -306,7 +306,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
       tiles.add(_listTile(
           context,
           L10().purchaseOrders,
-          FontAwesomeIcons.shoppingCart,
+          FontAwesomeIcons.cartShopping,
           callback: () {
             _showPurchaseOrders(context);
           }
@@ -358,7 +358,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     tiles.add(_listTile(
         context,
         L10().settings,
-        FontAwesomeIcons.cogs,
+        FontAwesomeIcons.gears,
         callback: () {
           _showSettings(context);
         }
@@ -377,7 +377,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
     bool validAddress = serverAddress != null;
     bool connecting = !InvenTreeAPI().isConnected() && InvenTreeAPI().isConnecting();
 
-    Widget leading = FaIcon(FontAwesomeIcons.exclamationCircle, color: COLOR_DANGER);
+    Widget leading = FaIcon(FontAwesomeIcons.circleExclamation, color: COLOR_DANGER);
     Widget trailing = FaIcon(FontAwesomeIcons.server, color: COLOR_CLICK);
     String title = L10().serverNotConnected;
     String subtitle = L10().profileSelectOrCreate;
@@ -443,11 +443,11 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> {
 
     List<BottomNavigationBarItem> items = <BottomNavigationBarItem>[
       BottomNavigationBarItem(
-        icon: FaIcon(FontAwesomeIcons.home),
+        icon: FaIcon(FontAwesomeIcons.house),
         label: L10().home,
       ),
       BottomNavigationBarItem(
-        icon: FaIcon(FontAwesomeIcons.search),
+        icon: FaIcon(FontAwesomeIcons.magnifyingGlass),
         label: L10().search,
       ),
     ];

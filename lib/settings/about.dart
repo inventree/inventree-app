@@ -39,27 +39,36 @@ class InvenTreeAboutWidget extends StatelessWidget {
 
   Future <void> _openDocs() async {
 
-    const String docsUrl = "https://inventree.readthedocs.io/en/latest/app/app/";
+    var docsUrl = Uri(
+        scheme: "https",
+        host: "inventree.readthedocs.io",
+        path: "en/latest/app/app/");
 
-    if (await canLaunch(docsUrl)) {
-      await launch(docsUrl);
+    if (await canLaunchUrl(docsUrl)) {
+      await launchUrl(docsUrl);
     }
   }
 
   Future <void> _reportBug(BuildContext context) async {
 
-    const String url = "https://github.com/inventree/inventree-app/issues/new?title=Enter+bug+description";
+    var url = Uri(
+        scheme: "https",
+        host: "github.com",
+        path: "inventree/inventree-app/issues/new?title=Enter+bug+description");
 
-    if (await canLaunch(url)) {
-      await launch(url);
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
     }
   }
 
   Future <void> _translate() async {
-    const String url = "https://crowdin.com/project/inventree";
+    var url = Uri(
+        scheme: "https",
+        host: "crowdin.com",
+        path: "/project/inventree");
 
-    if (await canLaunch(url)) {
-      await launch(url);
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
     }
   }
 
@@ -83,7 +92,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
             title: Text(L10().address),
             subtitle: Text(InvenTreeAPI().baseUrl.isNotEmpty ? InvenTreeAPI().baseUrl : L10().notConnected),
             leading: FaIcon(FontAwesomeIcons.globe),
-            trailing: InvenTreeAPI().isConnected() ? FaIcon(FontAwesomeIcons.checkCircle, color: COLOR_SUCCESS) : FaIcon(FontAwesomeIcons.timesCircle, color: COLOR_DANGER),
+            trailing: InvenTreeAPI().isConnected() ? FaIcon(FontAwesomeIcons.circleCheck, color: COLOR_SUCCESS) : FaIcon(FontAwesomeIcons.circleXmark, color: COLOR_DANGER),
           )
       );
 
@@ -91,7 +100,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
         ListTile(
           title: Text(L10().version),
           subtitle: Text(InvenTreeAPI().version.isNotEmpty ? InvenTreeAPI().version : L10().notConnected),
-          leading: FaIcon(FontAwesomeIcons.infoCircle),
+          leading: FaIcon(FontAwesomeIcons.circleInfo),
         )
       );
 
@@ -122,7 +131,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
             L10().serverNotConnected,
             style: TextStyle(fontStyle: FontStyle.italic),
           ),
-          leading: FaIcon(FontAwesomeIcons.exclamationCircle)
+          leading: FaIcon(FontAwesomeIcons.circleExclamation)
         )
       );
     }
@@ -148,7 +157,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
       ListTile(
         title: Text(L10().version),
         subtitle: Text("${info.version} - Build ${info.buildNumber}"),
-        leading: FaIcon(FontAwesomeIcons.infoCircle)
+        leading: FaIcon(FontAwesomeIcons.circleInfo)
       )
     );
 
@@ -156,7 +165,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
       ListTile(
         title: Text(L10().releaseNotes),
         subtitle: Text(L10().appReleaseNotes),
-        leading: FaIcon(FontAwesomeIcons.fileAlt, color: COLOR_CLICK),
+        leading: FaIcon(FontAwesomeIcons.fileLines, color: COLOR_CLICK),
         onTap: () {
           _releaseNotes(context);
         },

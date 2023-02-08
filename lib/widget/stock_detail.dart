@@ -63,7 +63,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     if (InvenTreeAPI().supportsMixin("locate")) {
       actions.add(
         IconButton(
-          icon: FaIcon(FontAwesomeIcons.searchLocation),
+          icon: FaIcon(FontAwesomeIcons.magnifyingGlassLocation),
           tooltip: L10().locateItem,
           onPressed: () async {
             InvenTreeAPI().locateItemOrLocation(context, item: widget.item.pk);
@@ -75,7 +75,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     if (InvenTreeAPI().checkPermission("stock", "change")) {
       actions.add(
           IconButton(
-            icon: FaIcon(FontAwesomeIcons.edit),
+            icon: FaIcon(FontAwesomeIcons.penToSquare),
             tooltip: L10().edit,
             onPressed: () { _editStockItem(context); },
           )
@@ -189,7 +189,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     confirmationDialog(
       L10().stockItemDelete,
       L10().stockItemDeleteConfirm,
-      icon: FontAwesomeIcons.trashAlt,
+      icon: FontAwesomeIcons.trashCan,
       onAccept: () async {
         final bool result = await widget.item.delete();
         
@@ -337,7 +337,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       InvenTreeStockItem.addStockUrl(),
       fields,
       method: "POST",
-      icon: FontAwesomeIcons.plusCircle,
+      icon: FontAwesomeIcons.circlePlus,
       onSuccess: (data) async {
         _stockUpdateMessage(true);
         refresh(context);
@@ -378,7 +378,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         InvenTreeStockItem.removeStockUrl(),
         fields,
         method: "POST",
-        icon: FontAwesomeIcons.minusCircle,
+        icon: FontAwesomeIcons.circleMinus,
         onSuccess: (data) async {
           _stockUpdateMessage(true);
           refresh(context);
@@ -527,7 +527,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
             title: Text(L10().stockLocation),
             subtitle: Text("${widget.item.locationPathString}"),
             leading: FaIcon(
-              FontAwesomeIcons.mapMarkerAlt,
+              FontAwesomeIcons.locationDot,
               color: COLOR_CLICK,
             ),
             onTap: () async {
@@ -549,7 +549,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       tiles.add(
           ListTile(
             title: Text(L10().stockLocation),
-            leading: FaIcon(FontAwesomeIcons.mapMarkerAlt),
+            leading: FaIcon(FontAwesomeIcons.locationDot),
             subtitle: Text(L10().locationNotSet),
           )
       );
@@ -587,7 +587,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       tiles.add(
         ListTile(
           title: Text(L10().inProduction),
-          leading: FaIcon(FontAwesomeIcons.tools),
+          leading: FaIcon(FontAwesomeIcons.screwdriverWrench),
           subtitle: Text(L10().inProductionDetail),
           onTap: () {
             // TODO: Click through to the "build order"
@@ -623,7 +623,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         ListTile(
           title: Text(L10().lastUpdated),
           subtitle: Text(widget.item.updatedDateString),
-          leading: FaIcon(FontAwesomeIcons.calendarAlt)
+          leading: FaIcon(FontAwesomeIcons.calendarDays)
         )
       );
     }
@@ -634,7 +634,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         ListTile(
           title: Text(L10().lastStocktake),
           subtitle: Text(widget.item.stocktakeDateString),
-          leading: FaIcon(FontAwesomeIcons.calendarAlt)
+          leading: FaIcon(FontAwesomeIcons.calendarDays)
         )
       );
     }
@@ -655,7 +655,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       tiles.add(
           ListTile(
               title: Text(L10().testResults),
-              leading: FaIcon(FontAwesomeIcons.tasks, color: COLOR_CLICK),
+              leading: FaIcon(FontAwesomeIcons.listCheck, color: COLOR_CLICK),
               trailing: Text("${widget.item.testResultCount}"),
               onTap: () {
                 Navigator.push(
@@ -686,7 +686,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       tiles.add(
         ListTile(
           title: Text(L10().history),
-          leading: FaIcon(FontAwesomeIcons.history, color: COLOR_CLICK),
+          leading: FaIcon(FontAwesomeIcons.clockRotateLeft, color: COLOR_CLICK),
           trailing: Text("${widget.item.trackingItemCount}"),
           onTap: () {
             Navigator.push(
@@ -705,7 +705,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     tiles.add(
       ListTile(
         title: Text(L10().notes),
-        leading: FaIcon(FontAwesomeIcons.stickyNote, color: COLOR_CLICK),
+        leading: FaIcon(FontAwesomeIcons.noteSticky, color: COLOR_CLICK),
         onTap: () {
           Navigator.push(
             context,
@@ -718,7 +718,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     tiles.add(
         ListTile(
           title: Text(L10().attachments),
-          leading: FaIcon(FontAwesomeIcons.fileAlt, color: COLOR_CLICK),
+          leading: FaIcon(FontAwesomeIcons.fileLines, color: COLOR_CLICK),
           trailing: attachmentCount > 0 ? Text(attachmentCount.toString()) : null,
           onTap: () {
             Navigator.push(
@@ -747,7 +747,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       tiles.add(
         ListTile(
           title: Text(L10().permissionRequired),
-          leading: FaIcon(FontAwesomeIcons.userTimes)
+          leading: FaIcon(FontAwesomeIcons.userXmark)
         )
       );
 
@@ -765,7 +765,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       tiles.add(
           ListTile(
               title: Text(L10().countStock),
-              leading: FaIcon(FontAwesomeIcons.checkCircle, color: COLOR_CLICK),
+              leading: FaIcon(FontAwesomeIcons.circleCheck, color: COLOR_CLICK),
               onTap: _countStockDialog,
               trailing: Text(widget.item.quantityString(includeUnits: true)),
           )
@@ -774,7 +774,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       tiles.add(
           ListTile(
               title: Text(L10().removeStock),
-              leading: FaIcon(FontAwesomeIcons.minusCircle, color: COLOR_CLICK),
+              leading: FaIcon(FontAwesomeIcons.circleMinus, color: COLOR_CLICK),
               onTap: _removeStockDialog,
           )
       );
@@ -782,7 +782,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       tiles.add(
           ListTile(
               title: Text(L10().addStock),
-              leading: FaIcon(FontAwesomeIcons.plusCircle, color: COLOR_CLICK),
+              leading: FaIcon(FontAwesomeIcons.circlePlus, color: COLOR_CLICK),
               onTap: _addStockDialog,
           )
       );
@@ -792,7 +792,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       ListTile(
         title: Text(L10().transferStock),
         subtitle: Text(L10().transferStockDetail),
-        leading: FaIcon(FontAwesomeIcons.exchangeAlt, color: COLOR_CLICK),
+        leading: FaIcon(FontAwesomeIcons.rightLeft, color: COLOR_CLICK),
         onTap: () { _transferStockDialog(context); },
       )
     );
@@ -802,7 +802,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       ListTile(
         title: Text(L10().scanIntoLocation),
         subtitle: Text(L10().scanIntoLocationDetail),
-        leading: FaIcon(FontAwesomeIcons.exchangeAlt, color: COLOR_CLICK),
+        leading: FaIcon(FontAwesomeIcons.rightLeft, color: COLOR_CLICK),
         trailing: Icon(Icons.qr_code_scanner),
         onTap: () {
           Navigator.push(
@@ -850,7 +850,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       tiles.add(
         ListTile(
           title: Text("Delete Stock Item"),
-          leading: FaIcon(FontAwesomeIcons.trashAlt, color: COLOR_DANGER),
+          leading: FaIcon(FontAwesomeIcons.trashCan, color: COLOR_DANGER),
           onTap: () {
             _deleteItem(context);
           },
@@ -868,7 +868,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       onTap: onTabSelectionChanged,
       items: <BottomNavigationBarItem> [
         BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.infoCircle),
+          icon: FaIcon(FontAwesomeIcons.circleInfo),
           label: L10().details,
         ),
         BottomNavigationBarItem(

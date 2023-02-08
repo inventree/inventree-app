@@ -85,7 +85,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     if (InvenTreeAPI().checkPermission("part", "change")) {
       actions.add(
         IconButton(
-          icon: FaIcon(FontAwesomeIcons.edit),
+          icon: FaIcon(FontAwesomeIcons.penToSquare),
           tooltip: L10().edit,
           onPressed: () {
             _editPartDialog(context);
@@ -304,7 +304,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
             )
           ),
           leading: FaIcon(
-              FontAwesomeIcons.exclamationCircle,
+              FontAwesomeIcons.circleExclamation,
               color: COLOR_DANGER
           ),
         )
@@ -395,7 +395,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       ListTile(
         title: Text(L10().availableStock),
         subtitle: Text(L10().stockDetails),
-        leading: FaIcon(FontAwesomeIcons.boxes, color: COLOR_CLICK),
+        leading: FaIcon(FontAwesomeIcons.boxesStacked, color: COLOR_CLICK),
         trailing: Text(
           part.stockString(),
           style: TextStyle(
@@ -418,7 +418,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         ListTile(
           title: Text(L10().onOrder),
           subtitle: Text(L10().onOrderDetails),
-          leading: FaIcon(FontAwesomeIcons.shoppingCart),
+          leading: FaIcon(FontAwesomeIcons.cartShopping),
           trailing: Text("${part.onOrderString}"),
           onTap: () {
             // TODO - Order views
@@ -435,7 +435,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         tiles.add(
             ListTile(
                 title: Text(L10().billOfMaterials),
-                leading: FaIcon(FontAwesomeIcons.thList, color: COLOR_CLICK),
+                leading: FaIcon(FontAwesomeIcons.tableList, color: COLOR_CLICK),
                 trailing: Text(bomCount.toString()),
                 onTap: () {
                   Navigator.push(
@@ -453,7 +453,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         tiles.add(
             ListTile(
               title: Text(L10().building),
-              leading: FaIcon(FontAwesomeIcons.tools),
+              leading: FaIcon(FontAwesomeIcons.screwdriverWrench),
               trailing: Text("${simpleNumberString(part.building)}"),
               onTap: () {
                 // TODO
@@ -548,7 +548,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       tiles.add(
           ListTile(
               title: Text(L10().parameters),
-              leading: FaIcon(FontAwesomeIcons.thList, color: COLOR_CLICK),
+              leading: FaIcon(FontAwesomeIcons.tableList, color: COLOR_CLICK),
               trailing: parameterCount > 0 ? Text(parameterCount.toString()) : null,
               onTap: () {
                 Navigator.push(
@@ -566,7 +566,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     tiles.add(
         ListTile(
           title: Text(L10().notes),
-          leading: FaIcon(FontAwesomeIcons.stickyNote, color: COLOR_CLICK),
+          leading: FaIcon(FontAwesomeIcons.noteSticky, color: COLOR_CLICK),
           trailing: Text(""),
           onTap: () {
             Navigator.push(
@@ -580,7 +580,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     tiles.add(
       ListTile(
         title: Text(L10().attachments),
-        leading: FaIcon(FontAwesomeIcons.fileAlt, color: COLOR_CLICK),
+        leading: FaIcon(FontAwesomeIcons.fileLines, color: COLOR_CLICK),
         trailing: attachmentCount > 0 ? Text(attachmentCount.toString()) : null,
         onTap: () {
           Navigator.push(
@@ -749,11 +749,11 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       onTap: onTabSelectionChanged,
       items: <BottomNavigationBarItem> [
         BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.infoCircle),
+          icon: FaIcon(FontAwesomeIcons.circleInfo),
           label: L10().details,
         ),
         BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.boxes),
+          icon: FaIcon(FontAwesomeIcons.boxesStacked),
           label: L10().stock
         ),
         BottomNavigationBarItem(
