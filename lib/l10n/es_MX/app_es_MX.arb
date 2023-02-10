@@ -319,6 +319,8 @@
   "@invalidStockLocation": {},
   "invalidStockItem": "Artículo de inventario inválido",
   "@invalidStockItem": {},
+  "invalidSupplierPart": "Parte de proveedor inválida",
+  "@invalidSupplierPart": {},
   "invalidUsernamePassword": "Combinación inválida de usuario/contraseña",
   "@invalidUsernamePassword": {},
   "issueDate": "Fecha de emisión",
