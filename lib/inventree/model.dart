@@ -223,8 +223,9 @@ class InvenTreeModel {
 
   Future <void> goToInvenTreePage() async {
 
-    if (await canLaunch(webUrl)) {
-      await launch(webUrl);
+    var uri = Uri.tryParse(webUrl);
+    if (uri != null && await canLaunchUrl(uri)) {
+      await launchUrl(uri);
     } else {
       // TODO
     }
@@ -233,9 +234,9 @@ class InvenTreeModel {
   Future <void> openLink() async {
 
     if (link.isNotEmpty) {
-
-      if (await canLaunch(link)) {
-        await launch(link);
+      var uri = Uri.tryParse(link);
+      if (uri != null && await canLaunchUrl(uri)) {
+        await launchUrl(uri);
       }
     }
   }
@@ -799,7 +800,7 @@ class InvenTreeAttachment extends InvenTreeModel {
       }
     }
 
-    return FontAwesomeIcons.fileAlt;
+    return FontAwesomeIcons.fileLines;
   }
 
   String get comment => (jsondata["comment"] ?? "") as String;

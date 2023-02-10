@@ -47,7 +47,7 @@ class _PartImageState extends RefreshableState<PartImageWidget> {
       // File upload
       actions.add(
         IconButton(
-          icon: FaIcon(FontAwesomeIcons.fileUpload),
+          icon: FaIcon(FontAwesomeIcons.fileArrowUp),
           onPressed: () async {
 
             FilePickerDialog.pickFile(

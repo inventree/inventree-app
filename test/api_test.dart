@@ -2,15 +2,18 @@
  * Unit tests for the InvenTree API code
  */
 
-import "package:test/test.dart";
+import "package:flutter_test/flutter_test.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/user_profile.dart";
 
+import "setup.dart";
+
 
 
 void main() {
+  setupTestEnv();
 
   setUp(() async {
 

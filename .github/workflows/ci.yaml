@@ -28,17 +28,18 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           submodules: recursive
       - name: Setup Java
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
-          java-version: '12.x'
+          distribution: 'temurin'
+          java-version: '11'
       - name: Setup Flutter 
-        uses: subosito/flutter-action@v1
+        uses: subosito/flutter-action@v2
         with:
-          flutter-version: '2.10.3'
+          flutter-version: '3.7.3'
       - name: Collect Translation Files
         run: |
           cd lib/l10n
@@ -51,7 +52,7 @@ jobs:
           flutter analyze
 
       - name: Install Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: 3.9
       - name: Start InvenTree Server

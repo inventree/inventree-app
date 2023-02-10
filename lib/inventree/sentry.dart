@@ -37,7 +37,7 @@ Future<Map<String, dynamic>> getDeviceInfo() async {
       "model": androidDeviceInfo.model,
       "device": androidDeviceInfo.device,
       "id": androidDeviceInfo.id,
-      "androidId": androidDeviceInfo.androidId,
+      "androidId": androidDeviceInfo.id,
       "brand": androidDeviceInfo.brand,
       "display": androidDeviceInfo.display,
       "hardware": androidDeviceInfo.hardware,
@@ -202,6 +202,7 @@ Future<void> sentryReportError(String source, dynamic error, dynamic stackTrace,
   Sentry.captureException(error, stackTrace: stackTrace).catchError((error) {
     print("Error uploading information to Sentry.io:");
     print(error);
+    return SentryId.empty();
   }).then((response) {
     print("Uploaded information to Sentry.io : ${response.toString()}");
   });

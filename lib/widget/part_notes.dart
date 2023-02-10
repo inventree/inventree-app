@@ -40,7 +40,7 @@ class _PartNotesState extends RefreshableState<PartNotesWidget> {
     if (InvenTreeAPI().checkPermission("part", "change")) {
       actions.add(
         IconButton(
-          icon: FaIcon(FontAwesomeIcons.edit),
+          icon: FaIcon(FontAwesomeIcons.penToSquare),
           tooltip: L10().edit,
           onPressed: () {
             part.editForm(

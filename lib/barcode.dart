@@ -105,7 +105,7 @@ class BarcodeHandler {
 
         showSnackIcon(
           L10().barcodeError,
-          icon: FontAwesomeIcons.exclamationCircle,
+          icon: FontAwesomeIcons.circleExclamation,
           success: false
         );
 
@@ -179,7 +179,7 @@ class BarcodeScanHandler extends BarcodeHandler {
 
     showSnackIcon(
         L10().barcodeNoMatch,
-        icon: FontAwesomeIcons.exclamationCircle,
+        icon: FontAwesomeIcons.circleExclamation,
         success: false,
     );
   }

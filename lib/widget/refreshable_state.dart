@@ -75,7 +75,7 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> with 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((_) => onBuild(_context!));
+    WidgetsBinding.instance.addPostFrameCallback((_) => onBuild(_context!));
   }
 
   // Function called after the widget is first build

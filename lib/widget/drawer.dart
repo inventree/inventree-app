@@ -96,7 +96,7 @@ class InvenTreeDrawer extends StatelessWidget {
               context: context,
               tiles: <Widget>[
                 ListTile(
-                  leading: FaIcon(FontAwesomeIcons.home),
+                  leading: FaIcon(FontAwesomeIcons.house),
                   title: Text(
                     L10().appTitle,
                     style: TextStyle(fontWeight: FontWeight.bold),
@@ -110,7 +110,7 @@ class InvenTreeDrawer extends StatelessWidget {
                 ),
                 ListTile(
                   title: Text(L10().search),
-                  leading: FaIcon(FontAwesomeIcons.search),
+                  leading: FaIcon(FontAwesomeIcons.magnifyingGlass),
                   onTap: _search,
                 ),
                 ListTile(
@@ -120,7 +120,7 @@ class InvenTreeDrawer extends StatelessWidget {
                 ),
                 ListTile(
                   title: Text(L10().about),
-                  leading: FaIcon(FontAwesomeIcons.infoCircle),
+                  leading: FaIcon(FontAwesomeIcons.circleInfo),
                   onTap: _about,
                 )
               ]

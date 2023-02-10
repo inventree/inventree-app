@@ -47,7 +47,7 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
             ListTile(
               title: Text(L10().parameters),
               subtitle: Text(L10().parametersSettingDetail),
-              leading: FaIcon(FontAwesomeIcons.thList),
+              leading: FaIcon(FontAwesomeIcons.tableList),
               trailing: Switch(
                 value: partShowParameters,
                 onChanged: (bool value) {
@@ -75,7 +75,7 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
             ListTile(
               title: Text(L10().stockItemHistory),
               subtitle: Text(L10().stockItemHistoryDetail),
-              leading: FaIcon(FontAwesomeIcons.history),
+              leading: FaIcon(FontAwesomeIcons.clockRotateLeft),
               trailing: Switch(
                 value: stockShowHistory,
                 onChanged: (bool value) {

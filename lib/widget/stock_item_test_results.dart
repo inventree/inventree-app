@@ -34,7 +34,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
   List<Widget> getAppBarActions(BuildContext context) {
     return [
       IconButton(
-          icon: FaIcon(FontAwesomeIcons.plusCircle),
+          icon: FaIcon(FontAwesomeIcons.circlePlus),
           onPressed: () {
               addTestResult(context);
           }
@@ -158,7 +158,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
       String _value = "";
       String _notes = "";
 
-      FaIcon _icon = FaIcon(FontAwesomeIcons.questionCircle, color: COLOR_BLUE);
+      FaIcon _icon = FaIcon(FontAwesomeIcons.circleQuestion, color: COLOR_BLUE);
       bool _valueRequired = false;
       bool _attachmentRequired = false;
 
@@ -179,11 +179,11 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
       }
 
       if (_result == true) {
-        _icon = FaIcon(FontAwesomeIcons.checkCircle,
+        _icon = FaIcon(FontAwesomeIcons.circleCheck,
           color: COLOR_SUCCESS,
         );
       } else if (_result == false) {
-        _icon = FaIcon(FontAwesomeIcons.timesCircle,
+        _icon = FaIcon(FontAwesomeIcons.circleXmark,
           color: COLOR_DANGER,
         );
       }

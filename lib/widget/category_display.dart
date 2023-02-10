@@ -43,7 +43,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
     if ((widget.category != null) && InvenTreeAPI().checkPermission("part_category", "change")) {
       actions.add(
         IconButton(
-          icon: FaIcon(FontAwesomeIcons.edit),
+          icon: FaIcon(FontAwesomeIcons.penToSquare),
           tooltip: L10().edit,
           onPressed: () {
             _editCategoryDialog(context);
@@ -121,7 +121,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
               title: Text(L10().parentCategory),
               subtitle: Text("${widget.category?.parentPathString}"),
               leading: FaIcon(
-                FontAwesomeIcons.levelUpAlt,
+                FontAwesomeIcons.turnUp,
                 color: COLOR_CLICK,
               ),
               onTap: () async {
@@ -338,7 +338,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
           subtitle: Text(
             L10().permissionAccountDenied,
           ),
-          leading: FaIcon(FontAwesomeIcons.userTimes),
+          leading: FaIcon(FontAwesomeIcons.userXmark),
         )
       );
     }

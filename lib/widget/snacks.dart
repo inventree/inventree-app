@@ -32,14 +32,14 @@ void showSnackIcon(String text, {IconData? icon, Function()? onAction, bool? suc
 
     // Select an icon if we do not have an action
     if (icon == null && onAction == null) {
-      icon = FontAwesomeIcons.checkCircle;
+      icon = FontAwesomeIcons.circleCheck;
     }
 
   } else if (success != null && success == false) {
     backgroundColor = Colors.deepOrange;
 
     if (icon == null && onAction == null) {
-      icon = FontAwesomeIcons.exclamationCircle;
+      icon = FontAwesomeIcons.circleExclamation;
     }
   }
 

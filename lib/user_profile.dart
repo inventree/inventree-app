@@ -103,7 +103,7 @@ class UserProfileDBManager {
       debug("Adding new profile: '${profile.name}'");
     }
 
-    int key = await store.add(await _db, profile.toJson()) as int;
+    int? key = await store.add(await _db, profile.toJson()) as int?;
 
     // Record the key
     profile.key = key;
@@ -156,8 +156,8 @@ class UserProfileDBManager {
 
       if (profiles[idx].key is int && profiles[idx].key == selected) {
         return UserProfile.fromJson(
-          profiles[idx].key as int,
-          profiles[idx].value as Map<String, dynamic>,
+          profiles[idx].key! as int,
+          profiles[idx].value! as Map<String, dynamic>,
           profiles[idx].key == selected,
         );
       }
@@ -182,8 +182,8 @@ class UserProfileDBManager {
       if (profiles[idx].key is int) {
         profileList.add(
           UserProfile.fromJson(
-            profiles[idx].key as int,
-            profiles[idx].value as Map<String, dynamic>,
+            profiles[idx].key! as int,
+            profiles[idx].value! as Map<String, dynamic>,
             profiles[idx].key == selected,
           )
         );

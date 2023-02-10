@@ -415,7 +415,7 @@ class APIFormField {
           controller: controller,
         ),
         trailing: IconButton(
-          icon: FaIcon(FontAwesomeIcons.plusCircle),
+          icon: FaIcon(FontAwesomeIcons.circlePlus),
           onPressed: () async {
             FilePickerDialog.pickFile(
               message: L10().attachmentSelect,
@@ -436,26 +436,32 @@ class APIFormField {
   // Field for selecting from multiple choice options
   Widget _constructChoiceField() {
 
-    dynamic _initial;
+    dynamic initial;
 
     // Check if the current value is within the allowed values
     for (var opt in choices) {
       if (opt["value"] == value) {
-        _initial = opt;
+        initial = opt;
         break;
       }
     }
 
     return DropdownSearch<dynamic>(
-      mode: Mode.BOTTOM_SHEET,
-      showSelectedItem: false,
-      selectedItem: _initial,
+      popupProps: PopupProps.bottomSheet(
+        showSelectedItems: false,
+        searchFieldProps: TextFieldProps(
+          autofocus: true
+        )
+      ),
+      selectedItem: initial,
       items: choices,
-      label: label,
-      hint: helpText,
+      dropdownDecoratorProps: DropDownDecoratorProps(
+          dropdownSearchDecoration: InputDecoration(
+        labelText: label,
+        hintText: helpText,
+      )),
       onChanged: null,
-      autoFocusSearchBox: true,
-      showClearButton: !required,
+      clearButtonProps: ClearButtonProps(isVisible: !required),
       itemAsString: (dynamic item) {
         return (item["display_name"] ?? "") as String;
       },
@@ -465,8 +471,7 @@ class APIFormField {
         } else {
           data["value"] = item["value"];
         }
-      }
-    );
+      });
   }
 
   // Construct a floating point numerical input field
@@ -501,30 +506,37 @@ class APIFormField {
 
   // Construct an input for a related field
   Widget _constructRelatedField() {
-
     return DropdownSearch<dynamic>(
-      mode: Mode.BOTTOM_SHEET,
-      showSelectedItem: true,
+      popupProps: PopupProps.bottomSheet(
+        showSelectedItems: true,
+        isFilterOnline: true,
+        showSearchBox: true,
+        itemBuilder: (context, item, isSelected) {
+          return _renderRelatedField(item, isSelected, true);
+        },
+        emptyBuilder: (context, item) {
+          return _renderEmptyResult();
+        },
+        searchFieldProps: TextFieldProps(
+          autofocus: true
+        )
+      ),
       selectedItem: initial_data,
-      onFind: (String filter) async {
-
-        Map<String, String> _filters = {};
+      asyncItems: (String filter) async {
+        Map<String, String> filters = {};
 
         filters.forEach((key, value) {
-          _filters[key] = value;
+          filters[key] = value;
         });
 
-        _filters["search"] = filter;
-        _filters["offset"] = "0";
-        _filters["limit"] = "25";
+        filters["search"] = filter;
+        filters["offset"] = "0";
+        filters["limit"] = "25";
 
-        final APIResponse response = await InvenTreeAPI().get(
-          api_url,
-          params: _filters
-        );
+        final APIResponse response =
+            await InvenTreeAPI().get(api_url, params: filters);
 
         if (response.isValid()) {
-
           List<dynamic> results = [];
 
           for (var result in response.data["results"] ?? []) {
@@ -536,12 +548,16 @@ class APIFormField {
           return [];
         }
       },
-      label: label,
-      hint: helpText,
+      clearButtonProps: ClearButtonProps(
+        isVisible: !required
+      ),
+      dropdownDecoratorProps: DropDownDecoratorProps(
+          dropdownSearchDecoration: InputDecoration(
+        labelText: label,
+        hintText: helpText,
+      )),
       onChanged: null,
-      showClearButton: !required,
       itemAsString: (dynamic item) {
-
         Map<String, dynamic> data = item as Map<String, dynamic>;
 
         switch (model) {
@@ -555,14 +571,8 @@ class APIFormField {
             return "itemAsString not implemented for '${model}'";
         }
       },
-      dropdownBuilder: (context, item, itemAsString) {
+      dropdownBuilder: (context, item) {
         return _renderRelatedField(item, true, false);
-      },
-      popupItemBuilder: (context, item, isSelected) {
-        return _renderRelatedField(item, isSelected, true);
-      },
-      emptyBuilder: (context, item) {
-        return _renderEmptyResult();
       },
       onSaved: (item) {
         if (item != null) {
@@ -571,9 +581,6 @@ class APIFormField {
           data["value"] = null;
         }
       },
-      isFilteredOnline: true,
-      showSearchBox: true,
-      autoFocusSearchBox: true,
       compareFn: (dynamic item, dynamic selectedItem) {
         // Comparison is based on the PK value
 
@@ -582,8 +589,7 @@ class APIFormField {
         }
 
         return item["pk"] == selectedItem["pk"];
-      }
-    );
+      });
   }
 
   Widget _renderRelatedField(dynamic item, bool selected, bool extended) {
@@ -672,7 +678,7 @@ class APIFormField {
   // Construct a widget to instruct the user that no results were found
   Widget _renderEmptyResult() {
     return ListTile(
-      leading: FaIcon(FontAwesomeIcons.search),
+      leading: FaIcon(FontAwesomeIcons.magnifyingGlass),
       title: Text(L10().noResults),
       subtitle: Text(
         L10().queryNoResults,
@@ -865,7 +871,7 @@ Future<void> launchApiForm(
       String method = "PATCH",
       Function(Map<String, dynamic>)? onSuccess,
       Function? onCancel,
-      IconData icon = FontAwesomeIcons.save,
+      IconData icon = FontAwesomeIcons.floppyDisk,
     }) async {
 
   showLoadingOverlay(context);
@@ -889,7 +895,7 @@ Future<void> launchApiForm(
       // User does not have permission to perform this action
       showSnackIcon(
         L10().response403,
-        icon: FontAwesomeIcons.userTimes,
+        icon: FontAwesomeIcons.userXmark,
       );
 
       hideLoadingOverlay();
@@ -971,7 +977,7 @@ class APIFormWidget extends StatefulWidget {
         Key? key,
         this.onSuccess,
         this.fileField = "",
-        this.icon = FontAwesomeIcons.save,
+        this.icon = FontAwesomeIcons.floppyDisk,
       }
       ) : super(key: key);
 
@@ -1025,7 +1031,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
               ),
             ),
             leading: FaIcon(
-              FontAwesomeIcons.exclamationCircle,
+              FontAwesomeIcons.circleExclamation,
               color: COLOR_DANGER
             ),
           )

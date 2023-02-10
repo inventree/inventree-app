@@ -56,7 +56,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
 
     actions.add(
       IconButton(
-        icon: FaIcon(FontAwesomeIcons.edit),
+        icon: FaIcon(FontAwesomeIcons.penToSquare),
         tooltip: L10().edit,
         onPressed: () {
           editCompany(context);
@@ -203,7 +203,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
       tiles.add(
         ListTile(
           title: Text(L10().purchaseOrders),
-          leading: FaIcon(FontAwesomeIcons.shoppingCart, color: COLOR_CLICK),
+          leading: FaIcon(FontAwesomeIcons.cartShopping, color: COLOR_CLICK),
           trailing: Text("${outstandingOrders.length}"),
           onTap: () {
             Navigator.push(
@@ -246,7 +246,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
     if (widget.company.notes.isNotEmpty) {
       tiles.add(ListTile(
         title: Text(L10().notes),
-        leading: FaIcon(FontAwesomeIcons.stickyNote),
+        leading: FaIcon(FontAwesomeIcons.noteSticky),
         onTap: null,
       ));
     }

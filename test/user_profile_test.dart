@@ -5,7 +5,10 @@
 import "package:test/test.dart";
 import "package:inventree/user_profile.dart";
 
+import "setup.dart";
+
 void main() {
+  setupTestEnv();
 
   setUp(() async {
     // Ensure we have a user profile available

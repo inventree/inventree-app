@@ -43,7 +43,7 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
 
     actions.add(
       IconButton(
-        icon: FaIcon(FontAwesomeIcons.edit),
+        icon: FaIcon(FontAwesomeIcons.penToSquare),
         tooltip: L10().edit,
         onPressed: () {
           editSupplierPart(context);
@@ -158,8 +158,9 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
           title: Text(widget.supplierPart.link),
           leading: FaIcon(FontAwesomeIcons.link),
           onTap: () async {
-            if (await canLaunch(widget.supplierPart.link)) {
-              await launch(widget.supplierPart.link);
+            var uri = Uri.tryParse(widget.supplierPart.link);
+            if (uri != null && await canLaunchUrl(uri)) {
+              await launchUrl(uri);
             }
           },
         )
@@ -170,7 +171,7 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
       tiles.add(
         ListTile(
           title: Text(widget.supplierPart.note),
-          leading: FaIcon(FontAwesomeIcons.pencilAlt),
+          leading: FaIcon(FontAwesomeIcons.pencil),
         )
       );
     }
@@ -224,7 +225,7 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
       onTap: onTabSelectionChanged,
       items: [
         BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.infoCircle),
+          icon: FaIcon(FontAwesomeIcons.circle),
           label: L10().details,
         ),
         BottomNavigationBarItem(

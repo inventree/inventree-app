@@ -198,7 +198,7 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
       L10().filteringOptions,
       "",
       fields,
-      icon: FontAwesomeIcons.checkCircle,
+      icon: FontAwesomeIcons.circleCheck,
       onSuccess: (Map<String, dynamic> data) async {
 
         // Extract data from the processed form
@@ -417,7 +417,7 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
       ),
       trailing: GestureDetector(
         child: FaIcon(
-          searchController.text.isEmpty ? FontAwesomeIcons.search : FontAwesomeIcons.backspace,
+          searchController.text.isEmpty ? FontAwesomeIcons.magnifyingGlass : FontAwesomeIcons.deleteLeft,
           color: searchController.text.isNotEmpty ? COLOR_DANGER : COLOR_CLICK,
         ),
         onTap: () {
@@ -454,7 +454,7 @@ class NoResultsWidget extends StatelessWidget {
         description,
         style: TextStyle(fontStyle: FontStyle.italic),
       ),
-      leading: FaIcon(FontAwesomeIcons.exclamationCircle, color: COLOR_WARNING),
+      leading: FaIcon(FontAwesomeIcons.circleExclamation, color: COLOR_WARNING),
     );
   }
 

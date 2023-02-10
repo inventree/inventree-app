@@ -81,7 +81,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
       L10().languageSelect,
       "",
       fields,
-      icon: FontAwesomeIcons.checkCircle,
+      icon: FontAwesomeIcons.circleCheck,
       onSuccess: (Map<String, dynamic> data) async {
 
         String locale_name = (data["locale"] ?? "") as String;
@@ -130,7 +130,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
                 L10().sounds,
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              leading: FaIcon(FontAwesomeIcons.volumeUp),
+              leading: FaIcon(FontAwesomeIcons.volumeHigh),
             ),
             ListTile(
               title: Text(L10().serverError),
