@@ -202,6 +202,7 @@ Future<void> sentryReportError(String source, dynamic error, dynamic stackTrace,
   Sentry.captureException(error, stackTrace: stackTrace).catchError((error) {
     print("Error uploading information to Sentry.io:");
     print(error);
+    return SentryId.empty();
   }).then((response) {
     print("Uploaded information to Sentry.io : ${response.toString()}");
   });

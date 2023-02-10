@@ -75,3 +75,5 @@ linter:
     avoid_dynamic_calls: false
 
     avoid_classes_with_only_static_members: false
+
+    no_leading_underscores_for_local_identifiers: false
