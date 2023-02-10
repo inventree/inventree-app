@@ -9,8 +9,11 @@ import "package:inventree/user_profile.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/part.dart";
 
+import "setup.dart";
+
 
 void main() {
+  setupTestEnv();
 
   setUp(() async {
     await UserProfileDBManager().addProfile(UserProfile(

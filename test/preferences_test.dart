@@ -2,10 +2,13 @@
  * Unit tests for the preferences manager
  */
 
-import "package:test/test.dart";
+import "package:flutter_test/flutter_test.dart";
 import "package:inventree/preferences.dart";
 
+import "setup.dart";
+
 void main() {
+  setupTestEnv();
 
   setUp(() async {
   });

@@ -15,7 +15,11 @@ import "package:inventree/user_profile.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/stock.dart";
 
+import "setup.dart";
+
+
 void main() {
+  setupTestEnv();
 
   // Connect to the server
   setUpAll(() async {
