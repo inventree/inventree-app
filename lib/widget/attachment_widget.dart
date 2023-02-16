@@ -134,7 +134,6 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
         widget.attachment.REFERENCE_FIELD: widget.referenceId.toString()
       }
     ).then((var results) {
-
       attachments.clear();
 
       for (var result in results) {

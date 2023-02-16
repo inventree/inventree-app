@@ -2,7 +2,6 @@ import "package:flutter/material.dart";
 
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
-import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/barcode.dart";
 import "package:inventree/l10.dart";
@@ -73,7 +72,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
     List<Widget> actions = [];
 
-    if (InvenTreeAPI().checkPermission("part", "view")) {
+    if (api.checkPermission("part", "view")) {
       actions.add(
         IconButton(
           icon: FaIcon(FontAwesomeIcons.globe),
@@ -82,7 +81,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       );
     }
 
-    if (InvenTreeAPI().checkPermission("part", "change")) {
+    if (api.checkPermission("part", "change")) {
       actions.add(
         IconButton(
           icon: FaIcon(FontAwesomeIcons.penToSquare),
@@ -144,7 +143,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     });
 
     // Request the number of parameters for this part
-    if (InvenTreeAPI().supportsPartParameters) {
+    if (api.supportsPartParameters) {
 
       showParameters = await InvenTreeSettingsManager().getValue(INV_PART_SHOW_PARAMETERS, true) as bool;
 
@@ -222,7 +221,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
    */
   Future <void> _toggleStar(BuildContext context) async {
 
-    if (InvenTreeAPI().checkPermission("part", "view")) {
+    if (api.checkPermission("part", "view")) {
       showLoadingOverlay(context);
       await part.update(values: {"starred": "${!part.starred}"});
       hideLoadingOverlay();
@@ -256,7 +255,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
             },
           ),
           leading: GestureDetector(
-            child: InvenTreeAPI().getImage(part.thumbnail),
+            child: api.getImage(part.thumbnail),
             onTap: () {
               Navigator.push(
                 context,
@@ -316,7 +315,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         ListTile(
           title: Text(L10().templatePart),
           subtitle: Text(parentPart!.fullname),
-          leading: InvenTreeAPI().getImage(
+          leading: api.getImage(
             parentPart!.thumbnail,
             width: 32,
             height: 32,
@@ -589,7 +588,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
               builder: (context) => AttachmentWidget(
                   InvenTreePartAttachment(),
                   part.pk,
-                  InvenTreeAPI().checkPermission("part", "change"))
+                  api.checkPermission("part", "change"))
             )
           );
         },
@@ -646,7 +645,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     if (part.isTrackable) {
       // read the next available serial number
       showLoadingOverlay(context);
-      var response = await InvenTreeAPI().get("/api/part/${part.pk}/serial-numbers/", expectedStatusCode: null);
+      var response = await api.get("/api/part/${part.pk}/serial-numbers/", expectedStatusCode: null);
       hideLoadingOverlay();
 
       if (response.isValid() && response.statusCode == 200) {
@@ -701,7 +700,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       )
     );
 
-    if (InvenTreeAPI().supportModernBarcodes) {
+    if (api.supportModernBarcodes) {
       tiles.add(
         customBarcodeActionTile(context, this, part.customBarcode, "part", part.pk)
       );
