@@ -258,8 +258,17 @@ class InvenTreeAPI {
 
   int get apiVersion => _apiVersion;
 
+  // API endpoint for receiving purchase order line items was introduced in v12
+  bool get supportsPoReceive => apiVersion >= 12;
+
   // Notification support requires API v25 or newer
   bool get supportsNotifications => isConnected() && apiVersion >= 25;
+
+  // Return True if the API supports 'settings' (requires API v46)
+  bool get supportsSettings => isConnected() && apiVersion >= 46;
+
+  // Part parameter support requires API v56 or newer
+  bool get supportsPartParameters => isConnected() && apiVersion >= 56;
 
   // Supports 'modern' barcode API (v80 or newer)
   bool get supportModernBarcodes => isConnected() && apiVersion >= 80;
@@ -267,8 +276,8 @@ class InvenTreeAPI {
   // Structural categories requires API v83 or newer
   bool get supportsStructuralCategories => isConnected() && apiVersion >= 83;
 
-  // Part parameter support requires API v56 or newer
-  bool get supportsPartParameters => isConnected() && apiVersion >= 56;
+  // Company attachments require API v95 or newer
+  bool get supportCompanyAttachments => isConnected() && apiVersion >= 95;
 
   // Are plugins enabled on the server?
   bool _pluginsEnabled = false;
@@ -321,9 +330,6 @@ class InvenTreeAPI {
 
   // Ensure we only ever create a single instance of the API class
   static final InvenTreeAPI _api = InvenTreeAPI._internal();
-
-  // API endpoint for receiving purchase order line items was introduced in v12
-  bool get supportsPoReceive => apiVersion >= 12;
 
   /*
    * Connect to the remote InvenTree server:
@@ -1279,9 +1285,6 @@ class InvenTreeAPI {
       cacheManager: manager,
     );
   }
-
-  // Return True if the API supports 'settings' (requires API v46)
-  bool get supportsSettings => isConnected() && apiVersion >= 46;
 
   // Keep a record of which settings we have received from the server
   Map<String, InvenTreeGlobalSetting> _globalSettings = {};

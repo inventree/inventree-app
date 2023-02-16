@@ -51,7 +51,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     if (location != null) {
 
       // Add "locate" button
-      if (InvenTreeAPI().supportsMixin("locate")) {
+      if (api.supportsMixin("locate")) {
         actions.add(
           IconButton(
             icon: FaIcon(FontAwesomeIcons.magnifyingGlassLocation),
@@ -64,7 +64,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       }
 
       // Add "edit" button
-      if (InvenTreeAPI().checkPermission("stock_location", "change")) {
+      if (api.checkPermission("stock_location", "change")) {
         actions.add(
             IconButton(
               icon: FaIcon(FontAwesomeIcons.penToSquare),
@@ -86,7 +86,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     final _loc = location;
 
     if (_loc != null) {
-      InvenTreeAPI().locateItemOrLocation(context, location: _loc.pk);
+      api.locateItemOrLocation(context, location: _loc.pk);
     }
   }
 
@@ -372,7 +372,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
     tiles.add(locationDescriptionCard(includeActions: false));
 
-    if (InvenTreeAPI().checkPermission("stock", "add")) {
+    if (api.checkPermission("stock", "add")) {
 
       tiles.add(
         ListTile(
@@ -403,7 +403,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     if (location != null) {
 
       // Scan stock item into location
-      if (InvenTreeAPI().checkPermission("stock", "change")) {
+      if (api.checkPermission("stock", "change")) {
         tiles.add(
             ListTile(
               title: Text(L10().barcodeScanItem),
@@ -429,7 +429,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
         );
 
         // Scan this location into another one
-        if (InvenTreeAPI().checkPermission("stock_location", "change")) {
+        if (api.checkPermission("stock_location", "change")) {
           tiles.add(
             ListTile(
               title: Text(L10().transferStockLocation),
@@ -454,7 +454,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
           );
         }
 
-        if (InvenTreeAPI().supportModernBarcodes) {
+        if (api.supportModernBarcodes) {
           tiles.add(
             customBarcodeActionTile(context, this, location!.customBarcode, "stocklocation", location!.pk)
           );

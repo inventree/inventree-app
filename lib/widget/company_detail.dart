@@ -8,11 +8,11 @@ import "package:inventree/app_colors.dart";
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/purchase_order.dart";
 
+import "package:inventree/widget/attachment_widget.dart";
 import "package:inventree/widget/purchase_order_list.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/supplier_part_list.dart";
-
 
 /*
  * Widget for displaying detail view of a single Company instance
@@ -36,6 +36,8 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
   List<InvenTreePurchaseOrder> outstandingOrders = [];
   
   int supplierPartCount = 0;
+
+  int attachmentCount = 0;
 
   @override
   String getAppBarTitle(BuildContext context) => L10().company;
@@ -70,7 +72,6 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
 
   @override
   Future<void> request(BuildContext context) async {
-    
     final bool result = await widget.company.reload();
 
     if (!result || widget.company.pk <= 0) {
@@ -78,15 +79,16 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
       Navigator.of(context).pop();
       return;
     }
-    
+
     if (widget.company.isSupplier) {
-      outstandingOrders = await widget.company.getPurchaseOrders(outstanding: true);
+      outstandingOrders =
+      await widget.company.getPurchaseOrders(outstanding: true);
     }
 
     InvenTreeSupplierPart().count(
-      filters: {
-        "supplier": widget.company.pk.toString()
-      }
+        filters: {
+          "supplier": widget.company.pk.toString()
+        }
     ).then((value) {
       if (mounted) {
         setState(() {
@@ -94,6 +96,20 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
         });
       }
     });
+
+    if (api.supportCompanyAttachments) {
+      InvenTreeCompanyAttachment().count(
+        filters: {
+          "company": widget.company.pk.toString()
+        }
+      ).then((value) {
+        if (mounted) {
+          setState(() {
+            attachmentCount = value;
+          });
+        }
+      });
+    }
   }
 
   Future <void> editCompany(BuildContext context) async {
@@ -248,6 +264,26 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
         title: Text(L10().notes),
         leading: FaIcon(FontAwesomeIcons.noteSticky),
         onTap: null,
+      ));
+    }
+
+    if (api.supportCompanyAttachments) {
+      tiles.add(ListTile(
+        title: Text(L10().attachments),
+        leading: FaIcon(FontAwesomeIcons.fileLines, color: COLOR_CLICK),
+        trailing: attachmentCount > 0 ? Text(attachmentCount.toString()) : null,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AttachmentWidget(
+                InvenTreeCompanyAttachment(),
+                widget.company.pk,
+                api.checkPermission("purchase_order", "change") || api.checkPermission("sales_order", "change")
+              )
+            )
+          );
+        }
       ));
     }
 

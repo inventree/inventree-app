@@ -1,6 +1,11 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.11.0 - 
+---
+
+- Add support for attachments on Companies
+
 ### 0.10.0 - February 2023
 ---
 
