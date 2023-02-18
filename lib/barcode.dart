@@ -189,11 +189,6 @@ class BarcodeScanHandler extends BarcodeHandler {
    */
   Future<void> handlePart(int pk) async {
     InvenTreePart().get(pk).then((var part) {
-      showSnackIcon(
-        L10().part,
-        success: true,
-        icon: Icons.qr_code,
-      );
       // Dismiss the barcode scanner
       OneContext().pop();
 
@@ -208,11 +203,6 @@ class BarcodeScanHandler extends BarcodeHandler {
    */
   Future<void> handleStockItem(int pk) async {
     InvenTreeStockItem().get(pk).then((var item) {
-      showSnackIcon(
-        L10().stockItem,
-        success: true,
-        icon: Icons.qr_code,
-      );
       OneContext().pop();
       if (item is InvenTreeStockItem) {
         OneContext().push(MaterialPageRoute(
@@ -227,11 +217,6 @@ class BarcodeScanHandler extends BarcodeHandler {
   Future<void> handleStockLocation(int pk) async {
     InvenTreeStockLocation().get(pk).then((var loc) {
       if (loc is InvenTreeStockLocation) {
-        showSnackIcon(
-          L10().stockLocation,
-          success: true,
-          icon: Icons.qr_code,
-        );
         OneContext().pop();
         OneContext().navigator.push(MaterialPageRoute(
             builder: (context) => LocationDisplayWidget(loc)));
@@ -244,12 +229,6 @@ class BarcodeScanHandler extends BarcodeHandler {
    */
   Future<void> handleSupplierPart(int pk) async {
     InvenTreeSupplierPart().get(pk).then((var supplierpart) {
-      showSnackIcon(
-        L10().supplierPart,
-        success: true,
-        icon: Icons.qr_code,
-      );
-
       OneContext().pop();
 
       if (supplierpart is InvenTreeSupplierPart) {
