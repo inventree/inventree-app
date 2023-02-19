@@ -5,6 +5,7 @@ Thanks to the following contributors, for their work building this app!
 - [SchrodingersGat](https://github.com/SchrodingersGat) (*Lead Developer*)
 - [Guusggg](https://github.com/Guusggg)
 - [GoryMoon](https://github.com/GoryMoon)
+- [simonkuehling](https://github.com/simonkuehling)
 
 --------
 
