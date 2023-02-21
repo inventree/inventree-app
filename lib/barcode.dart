@@ -58,8 +58,6 @@ class BarcodeHandler {
 
   String getOverlayText(BuildContext context) => "Barcode Overlay";
 
-  QRViewController? _controller;
-
     Future<void> onBarcodeMatched(Map<String, dynamic> data) async {
       // Called when the server "matches" a barcode
       // Override this function
@@ -78,21 +76,18 @@ class BarcodeHandler {
       );
     }
 
-    Future<void> onBarcodeUnhandled(Map<String, dynamic> data) async {
-
+  // Called when the server returns an unhandled response
+  Future<void> onBarcodeUnhandled(Map<String, dynamic> data) async {
       barcodeFailureTone();
-
-      // Called when the server returns an unhandled response
       showServerError("barcode/", L10().responseUnknown, data.toString());
-
-      _controller?.resumeCamera();
     }
 
     /*
      * Base function to capture and process barcode data.
+     *
+     * Returns true only if the barcode scanner should remain open
      */
     Future<void> processBarcode(QRViewController? _controller, String barcode, {String url = "barcode/"}) async {
-      this._controller = _controller;
 
       debug("Scanned barcode data: '${barcode}'");
 
@@ -121,8 +116,6 @@ class BarcodeHandler {
       );
 
       debug("Barcode scan response" + response.data.toString());
-
-      _controller?.resumeCamera();
 
       Map<String, dynamic> data = response.asMap();
 
@@ -188,53 +181,55 @@ class BarcodeScanHandler extends BarcodeHandler {
    * Response when a "Part" instance is scanned
    */
   Future<void> handlePart(int pk) async {
-    InvenTreePart().get(pk).then((var part) {
-      // Dismiss the barcode scanner
-      OneContext().pop();
 
-      if (part is InvenTreePart) {
-        OneContext().push(MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
-      }
-    });
+    var part = await InvenTreePart().get(pk);
+
+    if (part is InvenTreePart) {
+      OneContext().pop();
+      OneContext().push(MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
+    }
   }
 
   /*
    * Response when a "StockItem" instance is scanned
    */
   Future<void> handleStockItem(int pk) async {
-    InvenTreeStockItem().get(pk).then((var item) {
+
+    var item = await InvenTreeStockItem().get(pk);
+
+    if (item is InvenTreeStockItem) {
       OneContext().pop();
-      if (item is InvenTreeStockItem) {
-        OneContext().push(MaterialPageRoute(
+      OneContext().push(MaterialPageRoute(
             builder: (context) => StockDetailWidget(item)));
-      }
-    });
+    }
   }
 
   /*
    * Response when a "StockLocation" instance is scanned
    */
   Future<void> handleStockLocation(int pk) async {
-    InvenTreeStockLocation().get(pk).then((var loc) {
-      if (loc is InvenTreeStockLocation) {
-        OneContext().pop();
-        OneContext().navigator.push(MaterialPageRoute(
-            builder: (context) => LocationDisplayWidget(loc)));
-      }
-    });
+
+    var loc = await InvenTreeStockLocation().get(pk);
+
+    if (loc is InvenTreeStockLocation) {
+      OneContext().pop();
+      OneContext().navigator.push(MaterialPageRoute(
+          builder: (context) => LocationDisplayWidget(loc)));
+    }
   }
 
   /*
    * Response when a "SupplierPart" instance is scanned
    */
   Future<void> handleSupplierPart(int pk) async {
-    InvenTreeSupplierPart().get(pk).then((var supplierpart) {
-      OneContext().pop();
 
-      if (supplierpart is InvenTreeSupplierPart) {
-        OneContext().push(MaterialPageRoute(builder: (context) => SupplierPartDetailWidget(supplierpart)));
-      }
-    });
+    var supplierpart = await InvenTreeSupplierPart().get(pk);
+
+    if (supplierpart is InvenTreeSupplierPart) {
+      OneContext().pop();
+      OneContext().push(MaterialPageRoute(
+          builder: (context) => SupplierPartDetailWidget(supplierpart)));
+    }
   }
 
   @override
@@ -270,19 +265,19 @@ class BarcodeScanHandler extends BarcodeHandler {
 
       switch (model) {
         case "part":
-          handlePart(pk);
+          await handlePart(pk);
           return;
         case "stockitem":
-          handleStockItem(pk);
+          await handleStockItem(pk);
           return;
         case "stocklocation":
-          handleStockLocation(pk);
+          await handleStockLocation(pk);
           return;
         case "supplierpart":
-          handleSupplierPart(pk);
+          await handleSupplierPart(pk);
           return;
         default:
-        // Fall through to failure state
+          // Fall through to failure state
           break;
       }
     }
@@ -339,9 +334,8 @@ class BarcodeScanStockLocationHandler extends BarcodeHandler {
 
         if (result && OneContext.hasContext) {
           OneContext().pop();
+          return;
         }
-
-        return;
       }
     }
 
@@ -386,13 +380,12 @@ class BarcodeScanStockItemHandler extends BarcodeHandler {
 
         barcodeSuccessTone();
 
-        final bool result = await onItemScanned(_item);
+        bool result = await onItemScanned(_item);
 
         if (result && OneContext.hasContext) {
           OneContext().pop();
+          return;
         }
-
-        return;
       }
     }
 
@@ -410,7 +403,6 @@ class BarcodeScanStockItemHandler extends BarcodeHandler {
     // Re-implement this for particular subclass
     return false;
   }
-
 }
 
 
@@ -480,10 +472,10 @@ class StockLocationScanInItemsHandler extends BarcodeScanStockItemHandler {
       }
     }
 
-    showSnackIcon(
-      result ? L10().barcodeScanIntoLocationSuccess : L10().barcodeScanIntoLocationFailure,
-      success: result
-    );
+        showSnackIcon(
+            result ? L10().barcodeScanIntoLocationSuccess : L10().barcodeScanIntoLocationFailure,
+            success: result
+        );
 
     // We always return false here, to ensure the barcode scan dialog remains open
     return false;
@@ -641,6 +633,8 @@ class _QRViewState extends State<InvenTreeQRView> {
 
   bool flash_status = false;
 
+  bool currently_processing = false;
+
   Future<void> updateFlashStatus() async {
     final bool? status = await _controller?.getFlashStatus();
 
@@ -658,21 +652,53 @@ class _QRViewState extends State<InvenTreeQRView> {
   void reassemble() {
     super.reassemble();
 
-    if (Platform.isAndroid) {
-      _controller!.pauseCamera();
-    }
+    if (mounted) {
+      if (Platform.isAndroid) {
+        _controller!.pauseCamera();
+      }
 
-    _controller!.resumeCamera();
+      _controller!.resumeCamera();
+    }
   }
 
+  /* Callback function when the Barcode scanner view is initially created */
   void _onViewCreated(BuildContext context, QRViewController controller) {
     _controller = controller;
-    controller.scannedDataStream.listen((barcode) {
-      _controller?.pauseCamera();
 
-      if (barcode.code != null) {
-        widget._handler.processBarcode(_controller, barcode.code ?? "");
-      }
+    controller.scannedDataStream.listen((barcode) {
+      handleBarcode(barcode.code);
+    });
+  }
+
+  /* Handle scanned data */
+  Future<void> handleBarcode(String? data) async {
+
+    // Empty or missing data, or we have navigated away
+    if (!mounted || data == null || data.isEmpty) {
+      return;
+    }
+
+    // Currently processing a barcode - return!
+    if (currently_processing) {
+      return;
+    }
+
+    setState(() {
+      currently_processing = true;
+    });
+
+    // Pause camera functionality until we are done processing
+    _controller?.pauseCamera();
+
+    // processBarcode returns true if the scanner window is to remain open
+    widget._handler.processBarcode(_controller, data).then((value) {
+      // Re-start the process after some delay
+      Future.delayed(Duration(milliseconds: 500)).then((value) {
+        if (mounted) {
+          _controller?.resumeCamera();
+          currently_processing = false;
+        }
+      });
     });
   }
 

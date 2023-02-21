@@ -1,10 +1,11 @@
 ## InvenTree App Release Notes
 ---
 
-### 0.11.0 - 
+### 0.10.1 - February 2023 
 ---
 
 - Add support for attachments on Companies
+- Fix duplicate scanning of barcodes
 
 ### 0.10.0 - February 2023
 ---
