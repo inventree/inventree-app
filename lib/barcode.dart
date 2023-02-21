@@ -58,8 +58,6 @@ class BarcodeHandler {
 
   String getOverlayText(BuildContext context) => "Barcode Overlay";
 
-  QRViewController? _controller;
-
     Future<void> onBarcodeMatched(Map<String, dynamic> data) async {
       // Called when the server "matches" a barcode
       // Override this function
@@ -90,7 +88,6 @@ class BarcodeHandler {
      * Returns true only if the barcode scanner should remain open
      */
     Future<void> processBarcode(QRViewController? _controller, String barcode, {String url = "barcode/"}) async {
-      this._controller = _controller;
 
       debug("Scanned barcode data: '${barcode}'");
 
@@ -226,7 +223,7 @@ class BarcodeScanHandler extends BarcodeHandler {
    */
   Future<void> handleSupplierPart(int pk) async {
 
-    var supplierpart = await InvenTreeSupplierPart();
+    var supplierpart = await InvenTreeSupplierPart().get(pk);
 
     if (supplierpart is InvenTreeSupplierPart) {
       OneContext().pop();
