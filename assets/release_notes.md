@@ -6,6 +6,7 @@
 
 - Add support for attachments on Companies
 - Fix duplicate scanning of barcodes
+- Updated translations
 
 ### 0.10.0 - February 2023
 ---
