@@ -225,7 +225,7 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
       onTap: onTabSelectionChanged,
       items: [
         BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.circle),
+          icon: FaIcon(FontAwesomeIcons.circleInfo),
           label: L10().details,
         ),
         BottomNavigationBarItem(
