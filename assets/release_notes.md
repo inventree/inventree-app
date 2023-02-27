@@ -6,7 +6,6 @@
 
 - Fix icon for supplier part detail widget
 
-
 ### 0.10.1 - February 2023 
 ---
 
