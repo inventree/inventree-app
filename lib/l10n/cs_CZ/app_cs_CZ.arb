@@ -565,6 +565,8 @@
   "@response503": {},
   "response505": "HTTP verze není podporována",
   "@response505": {},
+  "responseUnknown": "Neznámá odpověď",
+  "@responseUnknown": {},
   "result": "Výsledek",
   "@result": {
     "description": ""
