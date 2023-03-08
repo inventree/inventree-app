@@ -8,7 +8,7 @@
  */
 
 import "dart:io";
-import "package:money_formatter/money_formatter.dart";
+import "package:currency_formatter/currency_formatter.dart";
 
 import "package:audioplayers/audioplayers.dart";
 import "package:one_context/one_context.dart";
@@ -88,13 +88,13 @@ String renderCurrency(double? amount, String currency, {int decimals = 2}) {
   if (amount == null) return "-";
   if (amount.isInfinite || amount.isNaN) return "-";
 
-  final fmt = MoneyFormatter(
-    amount: amount,
-    settings: MoneyFormatterSettings(
-      fractionDigits: 2,
-      symbol: currency,
-    )
+  CurrencyFormatterSettings backupSettings = CurrencyFormatterSettings(
+    symbol: "\$",
+    symbolSide: SymbolSide.left,
   );
 
-  return fmt.output.toString();
+  return CurrencyFormatter.format(
+    amount,
+    CurrencyFormatter.majors[currency.toLowerCase()] ?? backupSettings
+  );
 }
