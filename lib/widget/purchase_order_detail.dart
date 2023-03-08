@@ -415,7 +415,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       onTap: onTabSelectionChanged,
       items: [
         BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.info),
+          icon: FaIcon(FontAwesomeIcons.circleInfo),
           label: L10().details
         ),
         BottomNavigationBarItem(
