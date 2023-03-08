@@ -28,6 +28,7 @@ dependencies:
   image_picker: ^0.8.6+1                  # Select or take photos
   infinite_scroll_pagination: ^3.1.0      # Let the server do all the work!
   intl: ^0.17.0
+  money_formatter: ^0.0.3                 # Money / currency rendering
   one_context: ^2.1.0                     # Dialogs without requiring context
   open_filex: ^4.3.2                      # Open local files
   package_info_plus: ^3.0.2               # App information introspection

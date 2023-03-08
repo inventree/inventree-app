@@ -589,6 +589,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.4"
+  money_formatter:
+    dependency: "direct main"
+    description:
+      name: money_formatter
+      sha256: "7cea53417f91b1a965c814d364f5021d8633f5f013659db5cdabbc95c4971eb4"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.3"
   node_preamble:
     dependency: transitive
     description:

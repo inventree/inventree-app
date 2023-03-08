@@ -4,6 +4,7 @@
 ### 0.10.2 - March 2023
 ---
 
+- Adds support for proper currency rendering
 - Fix icon for supplier part detail widget
 
 ### 0.10.1 - February 2023 
