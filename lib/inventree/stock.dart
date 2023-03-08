@@ -284,13 +284,13 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   int get partId => (jsondata["part"] ?? -1) as int;
   
-  String get purchasePrice => (jsondata["purchase_price"] ?? "") as String;
+  double? get purchasePrice => jsondata["purchase_price"] as double;
+
+  String get purchasePriceCurrency => (jsondata["purchase_price_currency"] ?? "") as String;
 
   bool get hasPurchasePrice {
-
-    String pp = purchasePrice;
-
-    return pp.isNotEmpty && pp.trim() != "-";
+    double? pp = purchasePrice;
+    return pp != null && pp > 0;
   }
 
   int get purchaseOrderId => (jsondata["purchase_order"] ?? -1) as int;
