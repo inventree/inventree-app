@@ -159,6 +159,14 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
     ));
 
     tiles.add(ListTile(
+      title: Text(L10().totalPrice),
+      leading: FaIcon(FontAwesomeIcons.dollarSign),
+      trailing: Text(
+        renderCurrency(widget.order.totalPrice, widget.order.totalPriceCurrency)
+      ),
+    ));
+
+    tiles.add(ListTile(
       title: Text(L10().received),
       leading: FaIcon(FontAwesomeIcons.clipboardCheck, color: COLOR_CLICK),
       trailing: Text("${completedLines}"),
@@ -407,7 +415,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       onTap: onTabSelectionChanged,
       items: [
         BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.info),
+          icon: FaIcon(FontAwesomeIcons.circleInfo),
           label: L10().details
         ),
         BottomNavigationBarItem(

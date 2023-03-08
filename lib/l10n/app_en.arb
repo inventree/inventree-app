@@ -1180,6 +1180,9 @@
   "tokenMissingFromResponse": "Access token missing from response",
   "@tokenMissingFromResponse": {},
 
+  "totalPrice": "Total Price",
+  "@totalPrice": {},
+
   "transfer": "Transfer",
   "@transfer": {
     "description": "transfer"

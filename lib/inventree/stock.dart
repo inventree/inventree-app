@@ -206,6 +206,8 @@ class InvenTreeStockItem extends InvenTreeModel {
       },
       "status": {},
       "batch": {},
+      "purchase_price": {},
+      "purchase_price_currency": {},
       "packaging": {},
       "link": {},
     };
@@ -284,13 +286,21 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   int get partId => (jsondata["part"] ?? -1) as int;
   
-  String get purchasePrice => (jsondata["purchase_price"] ?? "") as String;
+  double? get purchasePrice {
+    String pp = (jsondata["purchase_price"] ?? "") as String;
+
+    if (pp.isEmpty) {
+      return null;
+    } else {
+      return double.tryParse(pp);
+    }
+  }
+
+  String get purchasePriceCurrency => (jsondata["purchase_price_currency"] ?? "") as String;
 
   bool get hasPurchasePrice {
-
-    String pp = purchasePrice;
-
-    return pp.isNotEmpty && pp.trim() != "-";
+    double? pp = purchasePrice;
+    return pp != null && pp > 0;
   }
 
   int get purchaseOrderId => (jsondata["purchase_order"] ?? -1) as int;
@@ -299,321 +309,321 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   bool get isBuilding => (jsondata["is_building"] ?? false) as bool;
 
-  // Date of last update
-  DateTime? get updatedDate {
-    if (jsondata.containsKey("updated")) {
-      return DateTime.tryParse((jsondata["updated"] ?? "") as String);
-    } else {
-      return null;
-    }
-  }
-
-  String get updatedDateString {
-    var _updated = updatedDate;
-
-    if (_updated == null) {
-      return "";
+    // Date of last update
+    DateTime? get updatedDate {
+      if (jsondata.containsKey("updated")) {
+        return DateTime.tryParse((jsondata["updated"] ?? "") as String);
+      } else {
+        return null;
+      }
     }
 
-    final DateFormat _format = DateFormat("yyyy-MM-dd");
+    String get updatedDateString {
+      var _updated = updatedDate;
 
-    return _format.format(_updated);
-  }
+      if (_updated == null) {
+        return "";
+      }
 
-  DateTime? get stocktakeDate {
-    if (jsondata.containsKey("stocktake_date")) {
-      return DateTime.tryParse((jsondata["stocktake_date"] ?? "") as String);
-    } else {
-      return null;
-    }
-  }
+      final DateFormat _format = DateFormat("yyyy-MM-dd");
 
-  String get stocktakeDateString {
-    var _stocktake = stocktakeDate;
-
-    if (_stocktake == null) {
-      return "";
+      return _format.format(_updated);
     }
 
-    final DateFormat _format = DateFormat("yyyy-MM-dd");
-
-    return _format.format(_stocktake);
-  }
-
-  String get partName {
-
-    String nm = "";
-
-    // Use the detailed part information as priority
-    if (jsondata.containsKey("part_detail")) {
-      nm = (jsondata["part_detail"]["full_name"] ?? "") as String;
+    DateTime? get stocktakeDate {
+      if (jsondata.containsKey("stocktake_date")) {
+        return DateTime.tryParse((jsondata["stocktake_date"] ?? "") as String);
+      } else {
+        return null;
+      }
     }
 
-    // Backup if first value fails
-    if (nm.isEmpty) {
-      nm = (jsondata["part__name"] ?? "") as String;
+    String get stocktakeDateString {
+      var _stocktake = stocktakeDate;
+
+      if (_stocktake == null) {
+        return "";
+      }
+
+      final DateFormat _format = DateFormat("yyyy-MM-dd");
+
+      return _format.format(_stocktake);
     }
 
-    return nm;
-  }
+    String get partName {
 
-  String get partDescription {
-    String desc = "";
+      String nm = "";
 
-    // Use the detailed part description as priority
-    if (jsondata.containsKey("part_detail")) {
-      desc = (jsondata["part_detail"]["description"] ?? "") as String;
+      // Use the detailed part information as priority
+      if (jsondata.containsKey("part_detail")) {
+        nm = (jsondata["part_detail"]["full_name"] ?? "") as String;
+      }
+
+      // Backup if first value fails
+      if (nm.isEmpty) {
+        nm = (jsondata["part__name"] ?? "") as String;
+      }
+
+      return nm;
     }
 
-    if (desc.isEmpty) {
-      desc = (jsondata["part__description"] ?? "") as String;
+    String get partDescription {
+      String desc = "";
+
+      // Use the detailed part description as priority
+      if (jsondata.containsKey("part_detail")) {
+        desc = (jsondata["part_detail"]["description"] ?? "") as String;
+      }
+
+      if (desc.isEmpty) {
+        desc = (jsondata["part__description"] ?? "") as String;
+      }
+
+      return desc;
     }
 
-    return desc;
-  }
+    String get partImage {
+      String img = "";
 
-  String get partImage {
-    String img = "";
+      if (jsondata.containsKey("part_detail")) {
+        img = (jsondata["part_detail"]["thumbnail"] ?? "") as String;
+      }
 
-    if (jsondata.containsKey("part_detail")) {
-      img = (jsondata["part_detail"]["thumbnail"] ?? "") as String;
+      if (img.isEmpty) {
+        img = (jsondata["part__thumbnail"] ?? "") as String;
+      }
+
+      return img;
     }
 
-    if (img.isEmpty) {
-      img = (jsondata["part__thumbnail"] ?? "") as String;
-    }
-
-    return img;
-  }
-
-  /*
+    /*
    * Return the Part thumbnail for this stock item.
    */
-  String get partThumbnail {
+    String get partThumbnail {
 
-    String thumb = "";
+      String thumb = "";
 
-    thumb = (jsondata["part_detail"]?["thumbnail"] ?? "") as String;
+      thumb = (jsondata["part_detail"]?["thumbnail"] ?? "") as String;
 
-    // Use "image" as a backup
-    if (thumb.isEmpty) {
-      thumb = (jsondata["part_detail"]?["image"] ?? "") as String;
+      // Use "image" as a backup
+      if (thumb.isEmpty) {
+        thumb = (jsondata["part_detail"]?["image"] ?? "") as String;
+      }
+
+      // Try a different approach
+      if (thumb.isEmpty) {
+        thumb = (jsondata["part__thumbnail"] ?? "") as String;
+      }
+
+      // Still no thumbnail? Use the "no image" image
+      if (thumb.isEmpty) thumb = InvenTreeAPI.staticThumb;
+
+      return thumb;
     }
 
-    // Try a different approach
-    if (thumb.isEmpty) {
-      thumb = (jsondata["part__thumbnail"] ?? "") as String;
+    int get supplierPartId => (jsondata["supplier_part"] ?? -1) as int;
+
+    String get supplierImage {
+      String thumb = "";
+
+      if (jsondata.containsKey("supplier_part_detail")) {
+        thumb = (jsondata["supplier_part_detail"]?["supplier_detail"]?["image"] ?? "") as String;
+      } else if (jsondata.containsKey("supplier_detail")) {
+        thumb = (jsondata["supplier_detail"]["image"] ?? "") as String;
+      }
+
+      return thumb;
     }
 
-    // Still no thumbnail? Use the "no image" image
-    if (thumb.isEmpty) thumb = InvenTreeAPI.staticThumb;
+    String get supplierName {
+      String sname = "";
 
-    return thumb;
-  }
+      if (jsondata.containsKey("supplier_detail")) {
+        sname = (jsondata["supplier_detail"]["supplier_name"] ?? "") as String;
+      }
 
-  int get supplierPartId => (jsondata["supplier_part"] ?? -1) as int;
-
-  String get supplierImage {
-    String thumb = "";
-
-    if (jsondata.containsKey("supplier_part_detail")) {
-      thumb = (jsondata["supplier_part_detail"]?["supplier_detail"]?["image"] ?? "") as String;
-    } else if (jsondata.containsKey("supplier_detail")) {
-      thumb = (jsondata["supplier_detail"]["image"] ?? "") as String;
+      return sname;
     }
 
-    return thumb;
-  }
-
-  String get supplierName {
-    String sname = "";
-
-    if (jsondata.containsKey("supplier_detail")) {
-      sname = (jsondata["supplier_detail"]["supplier_name"] ?? "") as String;
+    String get units {
+      return (jsondata["part_detail"]?["units"] ?? "") as String;
     }
 
-    return sname;
-  }
+    String get supplierSKU {
+      String sku = "";
 
-  String get units {
-    return (jsondata["part_detail"]?["units"] ?? "") as String;
-  }
+      if (jsondata.containsKey("supplier_part_detail")) {
+        sku = (jsondata["supplier_part_detail"]["SKU"] ?? "") as String;
+      }
 
-  String get supplierSKU {
-    String sku = "";
-
-    if (jsondata.containsKey("supplier_part_detail")) {
-      sku = (jsondata["supplier_part_detail"]["SKU"] ?? "") as String;
+      return sku;
     }
 
-    return sku;
-  }
+    String get serialNumber => (jsondata["serial"] ?? "") as String;
 
-  String get serialNumber => (jsondata["serial"] ?? "") as String;
+    double get quantity => double.tryParse(jsondata["quantity"].toString()) ?? 0;
 
-  double get quantity => double.tryParse(jsondata["quantity"].toString()) ?? 0;
+    String quantityString({bool includeUnits = false}){
 
-  String quantityString({bool includeUnits = false}){
+      String q = "";
 
-    String q = "";
+      if (allocated > 0) {
+        q += simpleNumberString(available);
+        q += " / ";
+      }
 
-    if (allocated > 0) {
-      q += simpleNumberString(available);
-      q += " / ";
+      q += simpleNumberString(quantity);
+
+      if (includeUnits && units.isNotEmpty) {
+        q += " ${units}";
+      }
+
+      return q;
     }
 
-    q += simpleNumberString(quantity);
+    double get allocated => double.tryParse(jsondata["allocated"].toString()) ?? 0;
 
-    if (includeUnits && units.isNotEmpty) {
-      q += " ${units}";
+    double get available => quantity - allocated;
+
+    int get locationId => (jsondata["location"] ?? -1) as int;
+
+    bool isSerialized() => serialNumber.isNotEmpty && quantity.toInt() == 1;
+
+    String serialOrQuantityDisplay() {
+      if (isSerialized()) {
+        return "SN ${serialNumber}";
+      } else if (allocated > 0) {
+        return "${available} / ${quantity}";
+      } else {
+        return simpleNumberString(quantity);
+      }
     }
 
-    return q;
-  }
+    String get locationName {
+      String loc = "";
 
-  double get allocated => double.tryParse(jsondata["allocated"].toString()) ?? 0;
+      if (locationId == -1 || !jsondata.containsKey("location_detail")) return "Unknown Location";
 
-  double get available => quantity - allocated;
+      loc = (jsondata["location_detail"]["name"] ?? "") as String;
 
-  int get locationId => (jsondata["location"] ?? -1) as int;
+      // Old-style name
+      if (loc.isEmpty) {
+        loc = (jsondata["location__name"] ?? "") as String;
+      }
 
-  bool isSerialized() => serialNumber.isNotEmpty && quantity.toInt() == 1;
-
-  String serialOrQuantityDisplay() {
-    if (isSerialized()) {
-      return "SN ${serialNumber}";
-    } else if (allocated > 0) {
-      return "${available} / ${quantity}";
-    } else {
-      return simpleNumberString(quantity);
-    }
-  }
-
-  String get locationName {
-    String loc = "";
-
-    if (locationId == -1 || !jsondata.containsKey("location_detail")) return "Unknown Location";
-
-    loc = (jsondata["location_detail"]["name"] ?? "") as String;
-
-    // Old-style name
-    if (loc.isEmpty) {
-      loc = (jsondata["location__name"] ?? "") as String;
+      return loc;
     }
 
-    return loc;
-  }
+    String get locationPathString {
 
-  String get locationPathString {
+      if (locationId == -1 || !jsondata.containsKey("location_detail")) return L10().locationNotSet;
 
-    if (locationId == -1 || !jsondata.containsKey("location_detail")) return L10().locationNotSet;
+      String _loc = (jsondata["location_detail"]["pathstring"] ?? "") as String;
 
-    String _loc = (jsondata["location_detail"]["pathstring"] ?? "") as String;
-
-    if (_loc.isNotEmpty) {
-      return _loc;
-    } else {
-      return locationName;
+      if (_loc.isNotEmpty) {
+        return _loc;
+      } else {
+        return locationName;
+      }
     }
-  }
 
-  String get displayQuantity {
-    // Display either quantity or serial number!
+    String get displayQuantity {
+      // Display either quantity or serial number!
 
-    if (serialNumber.isNotEmpty) {
-      return "SN: $serialNumber";
-    } else {
-      return simpleNumberString(quantity);
+      if (serialNumber.isNotEmpty) {
+        return "SN: $serialNumber";
+      } else {
+        return simpleNumberString(quantity);
+      }
     }
-  }
 
-  @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) {
-    return InvenTreeStockItem.fromJson(json);
-  }
+    @override
+    InvenTreeModel createFromJson(Map<String, dynamic> json) {
+      return InvenTreeStockItem.fromJson(json);
+    }
 
-  /*
+    /*
    * Perform stocktake action:
    *
    * - Add
    * - Remove
    * - Count
    */
-  Future<bool> adjustStock(String endpoint, double q, {String? notes, int? location}) async {
+    Future<bool> adjustStock(String endpoint, double q, {String? notes, int? location}) async {
 
-    // Serialized stock cannot be adjusted (unless it is a "transfer")
-    if (isSerialized() && location == null) {
-      return false;
+      // Serialized stock cannot be adjusted (unless it is a "transfer")
+      if (isSerialized() && location == null) {
+        return false;
+      }
+
+      // Cannot handle negative stock
+      if (q < 0) {
+        return false;
+      }
+
+      Map<String, dynamic> data = {};
+
+      data = {
+        "items": [
+          {
+            "pk": "${pk}",
+            "quantity": "${quantity}",
+          }
+        ],
+        "notes": notes ?? "",
+      };
+
+      if (location != null) {
+        data["location"] = location;
+      }
+
+      var response = await api.post(
+        endpoint,
+        body: data,
+      );
+
+      return response.isValid() && (response.statusCode == 200 || response.statusCode == 201);
     }
 
-    // Cannot handle negative stock
-    if (q < 0) {
-      return false;
+    Future<bool> countStock(double q, {String? notes}) async {
+
+      final bool result = await adjustStock("/stock/count/", q, notes: notes);
+
+      return result;
     }
 
-    Map<String, dynamic> data = {};
+    Future<bool> addStock(double q, {String? notes}) async {
 
-    data = {
-      "items": [
-        {
-          "pk": "${pk}",
-          "quantity": "${quantity}",
-        }
-      ],
-      "notes": notes ?? "",
-    };
+      final bool result = await adjustStock("/stock/add/", q, notes: notes);
 
-    if (location != null) {
-      data["location"] = location;
+      return result;
     }
 
-    var response = await api.post(
-      endpoint,
-      body: data,
-    );
+    Future<bool> removeStock(double q, {String? notes}) async {
 
-    return response.isValid() && (response.statusCode == 200 || response.statusCode == 201);
-  }
+      final bool result = await adjustStock("/stock/remove/", q, notes: notes);
 
-  Future<bool> countStock(double q, {String? notes}) async {
-
-    final bool result = await adjustStock("/stock/count/", q, notes: notes);
-
-    return result;
-  }
-
-  Future<bool> addStock(double q, {String? notes}) async {
-
-    final bool result = await adjustStock("/stock/add/", q, notes: notes);
-
-    return result;
-  }
-
-  Future<bool> removeStock(double q, {String? notes}) async {
-
-    final bool result = await adjustStock("/stock/remove/", q, notes: notes);
-
-    return result;
-  }
-
-  Future<bool> transferStock(int location, {double? quantity, String? notes}) async {
-
-    double q = this.quantity;
-
-    if (quantity != null) {
-      q = quantity;
+      return result;
     }
 
-    final bool result = await adjustStock(
-      "/stock/transfer/",
-      q,
-      notes: notes,
-      location: location,
-    );
+    Future<bool> transferStock(int location, {double? quantity, String? notes}) async {
 
-    return result;
+      double q = this.quantity;
+
+      if (quantity != null) {
+        q = quantity;
+      }
+
+      final bool result = await adjustStock(
+        "/stock/transfer/",
+        q,
+        notes: notes,
+        location: location,
+      );
+
+      return result;
+    }
   }
-}
 
 
 /*

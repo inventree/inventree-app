@@ -8,6 +8,7 @@
  */
 
 import "dart:io";
+import "package:currency_formatter/currency_formatter.dart";
 
 import "package:audioplayers/audioplayers.dart";
 import "package:one_context/one_context.dart";
@@ -76,4 +77,24 @@ Future<void> playAudioFile(String path) async {
 
   final player = AudioPlayer();
   player.play(AssetSource(path));
+}
+
+
+/*
+ * Helper function for rendering a money / currency object as a String
+ */
+String renderCurrency(double? amount, String currency, {int decimals = 2}) {
+
+  if (amount == null) return "-";
+  if (amount.isInfinite || amount.isNaN) return "-";
+
+  CurrencyFormatterSettings backupSettings = CurrencyFormatterSettings(
+    symbol: "\$",
+    symbolSide: SymbolSide.left,
+  );
+
+  return CurrencyFormatter.format(
+    amount,
+    CurrencyFormatter.majors[currency.toLowerCase()] ?? backupSettings
+  );
 }
