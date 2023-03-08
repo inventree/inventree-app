@@ -291,9 +291,9 @@ class InvenTreeStockItem extends InvenTreeModel {
 
     if (pp.isEmpty) {
       return null;
+    } else {
+      return double.tryParse(pp);
     }
-
-    return double.tryParse(pp);
   }
 
   String get purchasePriceCurrency => (jsondata["purchase_price_currency"] ?? "") as String;

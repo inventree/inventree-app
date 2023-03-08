@@ -89,6 +89,18 @@ class InvenTreePurchaseOrder extends InvenTreeModel {
 
   bool get isFailed => status == PO_STATUS_CANCELLED || status == PO_STATUS_LOST || status == PO_STATUS_RETURNED;
 
+  double? get totalPrice {
+    String price = (jsondata["total_price"] ?? "") as String;
+
+    if (price.isEmpty) {
+      return null;
+    } else {
+      return double.tryParse(price);
+    }
+  }
+
+  String get totalPriceCurrency => (jsondata["total_price_currency"] ?? "") as String;
+
   Future<List<InvenTreePOLineItem>> getLineItems() async {
 
     final results = await InvenTreePOLineItem().list(
