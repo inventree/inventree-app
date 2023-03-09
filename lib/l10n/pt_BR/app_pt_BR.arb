@@ -803,6 +803,8 @@
   "@tokenMissing": {},
   "tokenMissingFromResponse": "Token indisponivel na resposta",
   "@tokenMissingFromResponse": {},
+  "totalPrice": "Preço Total",
+  "@totalPrice": {},
   "transfer": "Transferir",
   "@transfer": {
     "description": "transfer"
