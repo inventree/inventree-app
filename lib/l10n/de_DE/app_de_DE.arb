@@ -803,7 +803,7 @@
   "@tokenMissing": {},
   "tokenMissingFromResponse": "Zugangstoken fehlt in Antwort",
   "@tokenMissingFromResponse": {},
-  "totalPrice": "Gesamt Preis",
+  "totalPrice": "Gesamtbetrag",
   "@totalPrice": {},
   "transfer": "Verschieben",
   "@transfer": {
