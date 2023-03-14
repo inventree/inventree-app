@@ -41,7 +41,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
 
     var docsUrl = Uri(
         scheme: "https",
-        host: "inventree.readthedocs.io",
+        host: "docs.inventree.org",
         path: "en/latest/app/app/");
 
     if (await canLaunchUrl(docsUrl)) {
@@ -186,7 +186,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
     tiles.add(
       ListTile(
         title: Text(L10().documentation),
-        subtitle: Text("https://inventree.readthedocs.io"),
+        subtitle: Text("https://docs.inventree.org"),
         leading: FaIcon(FontAwesomeIcons.book, color: COLOR_CLICK),
         onTap: () {
           _openDocs();
