@@ -88,13 +88,24 @@ String renderCurrency(double? amount, String currency, {int decimals = 2}) {
   if (amount == null) return "-";
   if (amount.isInfinite || amount.isNaN) return "-";
 
+  currency = currency.trim();
+
+  if (currency.isEmpty) return "-";
+
   CurrencyFormatterSettings backupSettings = CurrencyFormatterSettings(
     symbol: "\$",
     symbolSide: SymbolSide.left,
   );
 
-  return CurrencyFormatter.format(
+  String value = CurrencyFormatter.format(
     amount,
     CurrencyFormatter.majors[currency.toLowerCase()] ?? backupSettings
   );
+
+  // If we were not able to determine the currency
+  if (!CurrencyFormatter.majors.containsKey(currency.toLowerCase())) {
+    value += " ${currency}";
+  }
+
+  return value;
 }
