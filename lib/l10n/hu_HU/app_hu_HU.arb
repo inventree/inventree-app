@@ -803,6 +803,8 @@
   "@tokenMissing": {},
   "tokenMissingFromResponse": "Hozzáférési token hiányzik a válaszból",
   "@tokenMissingFromResponse": {},
+  "totalPrice": "Teljes ár",
+  "@totalPrice": {},
   "transfer": "Áthelyezés",
   "@transfer": {
     "description": "transfer"
