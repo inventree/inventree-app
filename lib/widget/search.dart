@@ -194,15 +194,33 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
         "purchase_order": "purchaseorder",
       };
 
-      for (String role in searchTypes.keys) {
-        if (api.checkPermission(role, "view")) {
-          String mdl = searchTypes[role] ?? "";
+      // Part search
+      if (api.checkPermission("part", "view")) {
+        body["part"] = {};
+      }
 
-          // Add the search type
-          if (mdl.isNotEmpty) {
-            body[mdl] = {};
-          }
-        }
+      // PartCategory search
+      if (api.checkPermission("part_category", "view")) {
+        body["partcategory"] = {};
+      }
+
+      // StockItem search
+      if (api.checkPermission("stock", "view")) {
+        body["stockitem"] = {
+          "in_stock": true,
+        };
+      }
+
+      // StockLocation search
+      if (api.checkPermission("stock_location", "view")) {
+        body["stocklocation"] = {};
+      }
+
+      // PurchaseOrder search
+      if (api.checkPermission("purchase_order", "view")) {
+        body["purchaseorder"] = {
+          "outstanding": true
+        };
       }
 
       if (body.isNotEmpty) {
@@ -238,11 +256,9 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
   }
 
   /*
-   * Perform "legacy" search (without conslidated search API endpoint
+   * Perform "legacy" search (without consolidated search API endpoint
    */
   Future<void> legacySearch(String term) async {
-
-    print("performing legacy search: ${term}");
 
     // Search parts
     if (api.checkPermission("part", "view")) {
