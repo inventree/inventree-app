@@ -184,16 +184,6 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
         "search": term,
       };
 
-      // The following search results can be queried
-      // Note that the permission type strings don't align with the model names!
-      final Map<String, String> searchTypes = {
-        "part": "part",
-        "part_category": "partcategory",
-        "stock": "stockitem",
-        "stock_location": "stocklocation",
-        "purchase_order": "purchaseorder",
-      };
-
       // Part search
       if (api.checkPermission("part", "view")) {
         body["part"] = {};
