@@ -279,6 +279,9 @@ class InvenTreeAPI {
   // Company attachments require API v95 or newer
   bool get supportCompanyAttachments => isConnected() && apiVersion >= 95;
 
+  // Consolidated search request API v102 or newer
+  bool get supportsConsolidatedSearch => isConnected() && apiVersion >= 102;
+
   // Are plugins enabled on the server?
   bool _pluginsEnabled = false;
 
