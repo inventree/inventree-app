@@ -7,6 +7,7 @@
 - Adds support for proper currency rendering
 - Fix icon for supplier part detail widget
 - Support global search API endpoint
+- Updated translations
 
 ### 0.10.1 - February 2023 
 ---
