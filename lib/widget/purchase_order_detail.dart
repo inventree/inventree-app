@@ -40,8 +40,6 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
   int attachmentCount = 0;
 
-  String _poPrefix = "";
-
   @override
   String getAppBarTitle(BuildContext context) => L10().purchaseOrder;
 
@@ -66,9 +64,6 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
   @override
   Future<void> request(BuildContext context) async {
-
-    _poPrefix = await InvenTreeAPI().getGlobalSetting("PURCHASEORDER_REFERENCE_PREFIX");
-
     await order.reload();
 
     lines = await order.getLineItems();
@@ -106,7 +101,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
     return Card(
         child: ListTile(
-          title: Text("${_poPrefix}${order.reference}"),
+          title: Text(order.reference),
           subtitle: Text(order.description),
           leading: supplier == null ? null : InvenTreeAPI().getImage(supplier.thumbnail, width: 40, height: 40),
         )

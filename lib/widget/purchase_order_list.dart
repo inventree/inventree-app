@@ -67,8 +67,6 @@ class PaginatedPurchaseOrderList extends PaginatedSearchWidget {
 class _PaginatedPurchaseOrderListState extends PaginatedSearchState<PaginatedPurchaseOrderList> {
 
   _PaginatedPurchaseOrderListState() : super();
-  // Purchase order prefix
-  String _poPrefix = "";
 
   @override
   String get prefix => "po_";
@@ -83,8 +81,6 @@ class _PaginatedPurchaseOrderListState extends PaginatedSearchState<PaginatedPur
 
   @override
   Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
-
-    _poPrefix = await InvenTreeAPI().getGlobalSetting("PURCHASEORDER_REFERENCE_PREFIX");
 
     params["outstanding"] = "true";
 
@@ -102,7 +98,7 @@ class _PaginatedPurchaseOrderListState extends PaginatedSearchState<PaginatedPur
     InvenTreeCompany? supplier = order.supplier;
     
     return ListTile(
-      title: Text("${_poPrefix}${order.reference}"),
+      title: Text(order.reference),
       subtitle: Text(order.description),
       leading: supplier == null ? null : InvenTreeAPI().getImage(
         supplier.thumbnail,
