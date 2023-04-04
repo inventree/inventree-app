@@ -1,5 +1,5 @@
 {
-  "@@locale": "en",
+  "@@locale": "es-ES",
   "appTitle": "InvenTree",
   "@appTitle": {
     "description": "InvenTree application title string"
