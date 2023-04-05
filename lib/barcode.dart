@@ -1,6 +1,8 @@
 import "dart:io";
 import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:inventree/inventree/purchase_order.dart";
+import "package:inventree/widget/purchase_order_detail.dart";
 import "package:one_context/one_context.dart";
 import "package:qr_code_scanner/qr_code_scanner.dart";
 
@@ -159,6 +161,7 @@ class BarcodeHandler {
  * - StockItem
  * - Part
  * - SupplierPart
+ * - PurchaseOrder
  */
 class BarcodeScanHandler extends BarcodeHandler {
 
@@ -232,6 +235,21 @@ class BarcodeScanHandler extends BarcodeHandler {
     }
   }
 
+
+  /*
+   * Response when a "PurchaseOrder" instance is scanned
+   */
+  Future<void> handlePurchaseOrder(int pk) async {
+    var order = await InvenTreePurchaseOrder().get(pk);
+
+    if (order is InvenTreePurchaseOrder) {
+      OneContext().pop();
+      OneContext().push(MaterialPageRoute(
+        builder: (context) => PurchaseOrderDetailWidget(order)));
+    }
+  }
+
+
   @override
   Future<void> onBarcodeMatched(Map<String, dynamic> data) async {
     int pk = -1;
@@ -239,12 +257,17 @@ class BarcodeScanHandler extends BarcodeHandler {
     String model = "";
 
     // The following model types can be matched with barcodes
-    final List<String> validModels = [
+    List<String> validModels = [
       "part",
       "stockitem",
       "stocklocation",
-      "supplierpart"
+      "supplierpart",
     ];
+
+
+    if (InvenTreeAPI().supportsOrderBarcodes) {
+      validModels.add("purchaseorder");
+    }
 
     for (var key in validModels) {
       if (data.containsKey(key)) {
@@ -275,6 +298,9 @@ class BarcodeScanHandler extends BarcodeHandler {
           return;
         case "supplierpart":
           await handleSupplierPart(pk);
+          return;
+        case "purchaseorder":
+          await handlePurchaseOrder(pk);
           return;
         default:
           // Fall through to failure state
