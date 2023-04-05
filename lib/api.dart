@@ -282,6 +282,18 @@ class InvenTreeAPI {
   // Consolidated search request API v102 or newer
   bool get supportsConsolidatedSearch => isConnected() && apiVersion >= 102;
 
+  // ReturnOrder supports API v104 or newer
+  bool get supportsReturnOrders => isConnected() && apiVersion >= 104;
+
+  // Status label endpoints API v105 or newer
+  bool get supportsStatusLabelEndpoints => isConnected() && apiVersion >= 105;
+
+  // Regex search API v106 or newer
+  bool get supportsRegexSearch => isConnected() && apiVersion >= 106;
+
+  // Order barcodes API v107 or newer
+  bool get supportsOrderBarcodes => isConnected() && apiVersion >= 107;
+
   // Are plugins enabled on the server?
   bool _pluginsEnabled = false;
 
