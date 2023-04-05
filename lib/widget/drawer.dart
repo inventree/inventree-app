@@ -17,7 +17,7 @@ import "package:inventree/widget/search.dart";
  *
  * - Provides a "home" button which completely unwinds the widget stack
  * - Global search
- * - Barcoed scan
+ * - Barcode scan
  */
 class InvenTreeDrawer extends StatelessWidget {
 
@@ -90,7 +90,7 @@ class InvenTreeDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return  Drawer(
+    return Drawer(
         child: ListView(
             children: ListTile.divideTiles(
               context: context,
