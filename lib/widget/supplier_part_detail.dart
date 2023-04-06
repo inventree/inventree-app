@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/api.dart";
@@ -37,35 +38,60 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
   @override
   String getAppBarTitle(BuildContext context) => L10().supplierPart;
 
-  @override
-  List<Widget> getAppBarActions(BuildContext context) {
-    List<Widget> actions = [];
-
-    actions.add(
-      IconButton(
-        icon: FaIcon(FontAwesomeIcons.penToSquare),
-        tooltip: L10().edit,
-        onPressed: () {
-          editSupplierPart(context);
-        },
-      )
-    );
-
-    return actions;
-  }
-
   /*
    * Launch a form to edit the current SupplierPart instance
    */
   Future<void> editSupplierPart(BuildContext context) async {
     widget.supplierPart.editForm(
-      context,
-      L10().supplierPartEdit,
-      onSuccess: (data) async {
-        refresh(context);
-        showSnackIcon(L10().supplierPartUpdated, success: true);
-      }
+        context,
+        L10().supplierPartEdit,
+        onSuccess: (data) async {
+          refresh(context);
+          showSnackIcon(L10().supplierPartUpdated, success: true);
+        }
     );
+  }
+
+  @override
+  List<SpeedDialChild> buildBarcodeButtons(BuildContext context) {
+    List<SpeedDialChild> actions = [];
+
+    if (api.checkPermission("purchase_order", "change") ||
+        api.checkPermission("sales_order", "change") ||
+        api.checkPermission("return_order", "change")) {
+
+      actions.add(
+        customBarcodeAction(
+          context, this,
+          widget.supplierPart.customBarcode,
+          "supplierpart",
+          widget.supplierPart.pk
+        )
+      );
+    }
+
+    return actions;
+  }
+
+  @override
+  List<SpeedDialChild> buildActionButtons(BuildContext context) {
+    List<SpeedDialChild> actions = [];
+
+    if (api.checkPermission("purchase_order", "change") ||
+        api.checkPermission("sales_order", "change") ||
+        api.checkPermission("return_order", "change")) {
+      actions.add(
+          SpeedDialChild(
+              child: Icon(Icons.edit_square),
+              label: L10().edit,
+              onTap: () {
+                editSupplierPart(context);
+              }
+          )
+      );
+    }
+
+    return actions;
   }
 
   @override
@@ -179,60 +205,14 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
     return tiles;
   }
 
-  /*
-   * Return a list of actions which can be performed for this SupplierPart
-   */
-  List<Widget> actionTiles(BuildContext context) {
-    List<Widget> tiles = [];
-
-    tiles.add(
-      customBarcodeActionTile(context, this, widget.supplierPart.customBarcode, "supplierpart", widget.supplierPart.pk)
-    );
-
-    return tiles;
-  }
-
-  Widget getSelectedWidget(int index) {
-    switch (index) {
-      case 0:
-        return ListView(
-            children: ListTile.divideTiles(
-              context: context,
-              tiles: detailTiles(context),
-            ).toList()
-        );
-      case 1:
-        return ListView(
-          children: ListTile.divideTiles(
-            context: context,
-            tiles: actionTiles(context)
-          ).toList()
-        );
-      default:
-        return ListView();
-    }
-  }
-
   @override
   Widget getBody(BuildContext context) {
-    return getSelectedWidget(tabIndex);
-  }
-
-  @override
-  Widget getBottomNavBar(BuildContext context) {
-    return BottomNavigationBar(
-      currentIndex: tabIndex,
-      onTap: onTabSelectionChanged,
-      items: [
-        BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.circleInfo),
-          label: L10().details,
-        ),
-        BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.wrench),
-          label: L10().actions
-        )
-      ]
+    return ListView(
+        children: ListTile.divideTiles(
+          context: context,
+          tiles: detailTiles(context),
+        ).toList()
     );
   }
+
 }
