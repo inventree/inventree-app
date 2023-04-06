@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/l10.dart";
@@ -43,31 +44,24 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
   String getAppBarTitle(BuildContext context) => L10().company;
 
   @override
-  List<Widget> getAppBarActions(BuildContext context) {
+  List<SpeedDialChild> buildActionButtons(BuildContext context) {
+    List<SpeedDialChild> actions = [];
 
-    List<Widget> actions = [];
-
-    actions.add(
-      IconButton(
-        icon: FaIcon(FontAwesomeIcons.globe),
-        onPressed: () async {
-          widget.company.goToInvenTreePage();
-        },
-      )
-    );
-
-    actions.add(
-      IconButton(
-        icon: FaIcon(FontAwesomeIcons.penToSquare),
-        tooltip: L10().edit,
-        onPressed: () {
-          editCompany(context);
-        }
-      )
-    );
+    if (api.checkPermission("purchase_order", "change") ||
+        api.checkPermission("sales_order", "change") ||
+        api.checkPermission("return_order", "change")) {
+      actions.add(
+        SpeedDialChild(
+          child: Icon(Icons.edit_square),
+          label: L10().companyEdit,
+          onTap: () {
+            editCompany(context);
+          }
+        )
+      );
+    }
 
     return actions;
-
   }
 
   @override

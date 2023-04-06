@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:flutter_speed_dial/flutter_speed_dial.dart";
 
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:one_context/one_context.dart";
@@ -44,15 +45,15 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
   String getAppBarTitle(BuildContext context) => L10().purchaseOrder;
 
   @override
-  List<Widget> getAppBarActions(BuildContext context) {
-    List<Widget> actions = [];
+  List<SpeedDialChild> buildActionButtons(BuildContext context) {
+    List<SpeedDialChild> actions = [];
 
     if (InvenTreeAPI().checkPermission("purchase_order", "change")) {
       actions.add(
-        IconButton(
-          icon: FaIcon(FontAwesomeIcons.penToSquare),
-          tooltip: L10().edit,
-          onPressed: () {
+        SpeedDialChild(
+          child: Icon(Icons.edit_square),
+          label: L10().purchaseOrderEdit,
+          onTap: () {
             editOrder(context);
           }
         )
