@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:flutter_speed_dial/flutter_speed_dial.dart";
 
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
@@ -68,36 +69,53 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   String getAppBarTitle(BuildContext context) => L10().partDetails;
 
   @override
-  List<Widget> getAppBarActions(BuildContext context) {
-
-    List<Widget> actions = [];
-
-    if (api.checkPermission("part", "view")) {
-      actions.add(
-        IconButton(
-          icon: FaIcon(FontAwesomeIcons.globe),
-          onPressed: _openInvenTreePage,
-        ),
-      );
-    }
+  List<SpeedDialChild> buildBarcodeButtons(BuildContext context) {
+    List<SpeedDialChild> actions = [];
 
     if (api.checkPermission("part", "change")) {
-      actions.add(
-        IconButton(
-          icon: FaIcon(FontAwesomeIcons.penToSquare),
-          tooltip: L10().edit,
-          onPressed: () {
-            _editPartDialog(context);
-          },
-        )
-      );
+      if (api.supportModernBarcodes) {
+        actions.add(
+            customBarcodeAction(
+                context, this,
+                widget.part.customBarcode, "part",
+                widget.part.pk
+            )
+        );
+      }
     }
 
     return actions;
   }
 
-  Future<void> _openInvenTreePage() async {
-    part.goToInvenTreePage();
+  @override
+  List<SpeedDialChild> buildActionButtons(BuildContext context) {
+    List<SpeedDialChild> actions = [];
+
+    if (api.checkPermission("part", "change")) {
+      actions.add(
+        SpeedDialChild(
+          child: Icon(Icons.edit_square),
+          label: L10().editPart,
+          onTap: () {
+            _editPartDialog(context);
+          }
+        )
+      );
+    }
+
+    if (api.checkPermission("stock", "add")) {
+      actions.add(
+        SpeedDialChild(
+          child: FaIcon(FontAwesomeIcons.box),
+          label: L10().stockItemCreate,
+          onTap: () {
+            _newStockItem(context);
+          }
+        )
+      );
+    }
+
+    return actions;
   }
 
   @override
@@ -685,30 +703,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   }
 
-  List<Widget> actionTiles(BuildContext context) {
-    List<Widget> tiles = [];
-
-    tiles.add(headerTile());
-
-    tiles.add(
-      ListTile(
-        title: Text(L10().stockItemCreate),
-        leading: FaIcon(FontAwesomeIcons.box),
-        onTap: () {
-          _newStockItem(context);
-        },
-      )
-    );
-
-    if (api.supportModernBarcodes) {
-      tiles.add(
-        customBarcodeActionTile(context, this, part.customBarcode, "part", part.pk)
-      );
-    }
-
-    return tiles;
-  }
-
   int stockItemCount = 0;
 
   Widget getSelectedWidget(int index) {
@@ -726,15 +720,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         return PaginatedStockItemList(
           {"part": "${part.pk}"},
           true,
-        );
-      case 2:
-        return Center(
-          child: ListView(
-            children: ListTile.divideTiles(
-              context: context,
-              tiles: actionTiles(context)
-            ).toList()
-          )
         );
       default:
         return Center();
@@ -754,10 +739,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         BottomNavigationBarItem(
           icon: FaIcon(FontAwesomeIcons.boxesStacked),
           label: L10().stock
-        ),
-        BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.wrench),
-          label: L10().actions,
         ),
       ]
     );
