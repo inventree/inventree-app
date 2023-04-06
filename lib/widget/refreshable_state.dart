@@ -2,9 +2,11 @@ import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/api.dart";
+import "package:inventree/barcode.dart";
 
 import "package:inventree/widget/back.dart";
 import "package:inventree/widget/drawer.dart";
+import "package:inventree/widget/search.dart";
 
 
 /*
@@ -12,21 +14,30 @@ import "package:inventree/widget/drawer.dart";
  */
 mixin BaseWidgetProperties {
 
-  // Return a list of appBar actions (default = None)
-  List<Widget> getAppBarActions(BuildContext context) => [];
-
-  List<Widget> globalAppBarActions(BuildContext context) {
+  // Return a list of appBar actions
+  List<Widget> getAppBarActions(BuildContext context) {
     List<Widget> actions = [
       IconButton(
         icon: FaIcon(FontAwesomeIcons.magnifyingGlass),
         onPressed: () async {
-          // TODO
+          // Open global search widget
+          if (!InvenTreeAPI().checkConnection()) return;
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SearchWidget(true)
+            )
+          );
         }
       ),
       IconButton(
         icon: FaIcon(FontAwesomeIcons.qrcode),
         onPressed: () async {
-          // TODO
+          // Open barcode scan widget
+          if (!InvenTreeAPI().checkConnection()) return;
+
+          scanQrCode(context);
         },
       )
     ];
@@ -56,7 +67,7 @@ mixin BaseWidgetProperties {
   AppBar? buildAppBar(BuildContext context, GlobalKey<ScaffoldState> key) {
     return AppBar(
       title: Text(getAppBarTitle(context)),
-      actions: globalAppBarActions(context),
+      actions: getAppBarActions(context),
       leading: backButton(context, key),
     );
   }
