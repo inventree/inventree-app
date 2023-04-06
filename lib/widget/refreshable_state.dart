@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/api.dart";
@@ -70,6 +71,34 @@ mixin BaseWidgetProperties {
       actions: getAppBarActions(context),
       leading: backButton(context, key),
     );
+  }
+
+  /*
+   * Build out a set of SpeedDialChild widgets, to serve as "actions" for this view
+   * Should be re-implemented by particular view with the required actions
+   * By default, returns an empty list, and thus nothing will be rendered
+   */
+  List<SpeedDialChild> buildActionButtons(BuildContext context) => [];
+
+  /*
+   * Build out action buttons for a given widget
+   */
+  Widget? buildSpeedDial(BuildContext context) {
+
+    final widgets = buildActionButtons(context);
+
+    if (widgets.isEmpty) {
+      return null;
+    } else {
+      return SpeedDial(
+        icon: Icons.add,
+        children: widgets,
+        spacing: 14,
+        activeIcon: Icons.close,
+        childPadding: const EdgeInsets.all(5),
+        spaceBetweenChildren: 15,
+      );
+    }
   }
 
 }
@@ -159,6 +188,7 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> with 
       key: refreshableKey,
       appBar: buildAppBar(context, refreshableKey),
       drawer: getDrawer(context),
+      floatingActionButton: buildSpeedDial(context),
       body: Builder(
         builder: (BuildContext context) {
           return RefreshIndicator(

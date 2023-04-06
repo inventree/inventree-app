@@ -1,5 +1,6 @@
 import "dart:io";
 import "package:flutter/material.dart";
+import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/widget/purchase_order_detail.dart";
@@ -802,6 +803,57 @@ Future<void> scanQrCode(BuildContext context) async {
   Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeQRView(BarcodeScanHandler())));
 
   return;
+}
+
+
+SpeedDialChild customBarcodeAction(BuildContext context, RefreshableState state, String barcode, String model, int pk) {
+
+  if (barcode.isEmpty) {
+    return SpeedDialChild(
+      label: L10().barcodeAssignDetail,
+      child: Icon(Icons.barcode_reader),
+      onTap: () {
+        var handler = UniqueBarcodeHandler((String barcode) {
+          InvenTreeAPI().linkBarcode({
+            model: pk.toString(),
+            "barcode": barcode,
+          }).then((bool result) {
+            showSnackIcon(
+                result ? L10().barcodeAssigned : L10().barcodeNotAssigned,
+                success: result
+            );
+
+            state.refresh(context);
+          });
+        });
+
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => InvenTreeQRView(handler)
+            )
+        );
+      }
+    );
+  } else {
+    return SpeedDialChild(
+      child: Icon(Icons.barcode_reader),
+      label: L10().barcodeUnassign,
+      onTap: () {
+        InvenTreeAPI().unlinkBarcode({
+          model: pk.toString()
+        }).then((bool result) {
+          showSnackIcon(
+            result ? L10().requestSuccessful : L10().requestFailed,
+            success: result,
+          );
+
+          state.refresh(context);
+        });
+      }
+    );
+  }
+
 }
 
 

@@ -24,6 +24,7 @@ dependencies:
   flutter_localized_locales: ^2.0.4
   flutter_markdown: ^0.6.13+1             # Rendering markdown
   flutter_overlay_loader: ^2.0.0          # Overlay screen support
+  flutter_speed_dial: ^6.2.0              # Speed dial / FAB implementation
   font_awesome_flutter: ^10.3.0           # FontAwesome icon set
   http: ^0.13.4
   image_picker: ^0.8.6+1                  # Select or take photos

@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:flutter_speed_dial/flutter_speed_dial.dart";
 
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
@@ -40,35 +41,115 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
   bool showFilterOptions = false;
 
   @override
-  String getAppBarTitle(BuildContext context) { return L10().stockLocation; }
+  String getAppBarTitle(BuildContext context) {
+    return L10().stockLocation;
+  }
 
   @override
-  List<Widget> getAppBarActions(BuildContext context) {
+  List<SpeedDialChild> buildActionButtons(BuildContext context) {
+    List<SpeedDialChild> actions = [];
 
-    List<Widget> actions = [];
-
-    if (location != null) {
-
-      // Add "locate" button
-      if (api.supportsMixin("locate")) {
-        actions.add(
-          IconButton(
-            icon: FaIcon(FontAwesomeIcons.magnifyingGlassLocation),
-            tooltip: L10().locateLocation,
-            onPressed: () async {
-              _locateStockLocation(context);
-            },
+    // Add "locate" button
+    if (location != null && api.supportsMixin("locate")) {
+      actions.add(
+          SpeedDialChild(
+              labelWidget: FaIcon(FontAwesomeIcons.magnifyingGlass),
+              label: L10().locateLocation,
+              onTap: () async {
+                _locateStockLocation(context);
+              }
           )
+      );
+    }
+
+    // Add "edit" button
+    if (location != null && api.checkPermission("stock_location", "change")) {
+      actions.add(
+          SpeedDialChild(
+              child: FaIcon(FontAwesomeIcons.penToSquare),
+              label: L10().editLocation,
+              onTap: () {
+                _editLocationDialog(context);
+              }
+          )
+      );
+    }
+
+    // Create new location
+    if (api.checkPermission("stock_location", "add")) {
+      actions.add(
+          SpeedDialChild(
+              child: FaIcon(FontAwesomeIcons.sitemap),
+              label: L10().locationCreateDetail,
+              onTap: () async {
+                _newLocation(context);
+              }
+          )
+      );
+    }
+
+    // Create new item
+    if (location != null && api.checkPermission("stock", "add")) {
+      actions.add(
+          SpeedDialChild(
+              child: FaIcon(FontAwesomeIcons.boxesStacked),
+              label: L10().stockItemCreateDetail,
+              onTap: () async {
+                _newStockItem(context);
+              }
+          )
+      );
+    }
+
+    // Barcode actions
+    if (location != null) {
+      // Scan items into this location
+      if (api.checkPermission("stock", "change")) {
+        actions.add(
+            SpeedDialChild(
+                child: FaIcon(FontAwesomeIcons.qrcode),
+                label: L10().barcodeScanInItems,
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) =>
+                          InvenTreeQRView(
+                              StockLocationScanInItemsHandler(location!)))
+                  ).then((value) {
+                    refresh(context);
+                  });
+                }
+            )
         );
       }
 
-      // Add "edit" button
+      // Scan this location into another one
       if (api.checkPermission("stock_location", "change")) {
         actions.add(
-            IconButton(
-              icon: FaIcon(FontAwesomeIcons.penToSquare),
-              tooltip: L10().edit,
-              onPressed: () { _editLocationDialog(context); },
+            SpeedDialChild(
+                child: FaIcon(FontAwesomeIcons.qrcode),
+                label: L10().transferStockLocationDetail,
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) =>
+                          InvenTreeQRView(
+                              ScanParentLocationHandler(location!)))
+                  ).then((value) {
+                    refresh(context);
+                  });
+                }
+            )
+        );
+      }
+
+      // Assign or un-assign barcodes
+      if (api.supportModernBarcodes) {
+        actions.add(
+            customBarcodeAction(
+                context, this,
+                location!.customBarcode, "stocklocation",
+                location!.pk
             )
         );
       }
@@ -81,7 +162,6 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
    * Request identification of this location
    */
   Future<void> _locateStockLocation(BuildContext context) async {
-
     final _loc = location;
 
     if (_loc != null) {
@@ -93,7 +173,6 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
    * Launch a dialog form to edit this stock location
    */
   void _editLocationDialog(BuildContext context) {
-
     final _loc = location;
 
     if (_loc == null) {
@@ -101,12 +180,12 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     }
 
     _loc.editForm(
-      context,
-      L10().editLocation,
-      onSuccess: (data) async {
-        refresh(context);
-        showSnackIcon(L10().locationUpdated, success: true);
-      }
+        context,
+        L10().editLocation,
+        onSuccess: (data) async {
+          refresh(context);
+          showSnackIcon(L10().locationUpdated, success: true);
+        }
     );
   }
 
@@ -117,7 +196,6 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
   @override
   Future<void> request(BuildContext context) async {
-
     // Reload location information
     if (location != null) {
       final bool result = await location!.reload();
@@ -133,35 +211,32 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
   }
 
   Future<void> _newLocation(BuildContext context) async {
-
     int pk = location?.pk ?? -1;
 
     InvenTreeStockLocation().createForm(
-      context,
-      L10().locationCreate,
-      data: {
-        "parent": (pk > 0) ? pk : null,
-      },
-      onSuccess: (result) async {
+        context,
+        L10().locationCreate,
+        data: {
+          "parent": (pk > 0) ? pk : null,
+        },
+        onSuccess: (result) async {
+          Map<String, dynamic> data = result as Map<String, dynamic>;
 
-        Map<String, dynamic> data = result as Map<String, dynamic>;
+          if (data.containsKey("pk")) {
+            var loc = InvenTreeStockLocation.fromJson(data);
 
-        if (data.containsKey("pk")) {
-          var loc = InvenTreeStockLocation.fromJson(data);
-
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => LocationDisplayWidget(loc)
-            )
-          );
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => LocationDisplayWidget(loc)
+                )
+            );
+          }
         }
-      }
     );
   }
 
   Future<void> _newStockItem(BuildContext context) async {
-
     int pk = location?.pk ?? -1;
 
     if (location != null && pk <= 0) {
@@ -169,48 +244,46 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     }
 
     InvenTreeStockItem().createForm(
-      context,
-      L10().stockItemCreate,
-      data: {
-        "location": location != null ? pk : null,
-      },
-      onSuccess: (result) async {
+        context,
+        L10().stockItemCreate,
+        data: {
+          "location": location != null ? pk : null,
+        },
+        onSuccess: (result) async {
+          Map<String, dynamic> data = result as Map<String, dynamic>;
 
-        Map<String, dynamic> data = result as Map<String, dynamic>;
+          if (data.containsKey("pk")) {
+            var item = InvenTreeStockItem.fromJson(data);
 
-        if (data.containsKey("pk")) {
-          var item = InvenTreeStockItem.fromJson(data);
-
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => StockDetailWidget(item)
-            )
-          );
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => StockDetailWidget(item)
+                )
+            );
+          }
         }
-      }
     );
-
   }
 
   Widget locationDescriptionCard({bool includeActions = true}) {
     if (location == null) {
       return Card(
-        child: ListTile(
-          title: Text(
-            L10().stockTopLevel,
-            style: TextStyle(fontStyle: FontStyle.italic)
-          ),
-          leading: FaIcon(FontAwesomeIcons.boxesStacked),
-        )
+          child: ListTile(
+            title: Text(
+                L10().stockTopLevel,
+                style: TextStyle(fontStyle: FontStyle.italic)
+            ),
+            leading: FaIcon(FontAwesomeIcons.boxesStacked),
+          )
       );
     } else {
-
       List<Widget> children = [
         ListTile(
           title: Text("${location!.name}"),
           subtitle: Text("${location!.description}"),
-          leading: location!.customIcon ?? FaIcon(FontAwesomeIcons.boxesStacked),
+          leading: location!.customIcon ??
+              FaIcon(FontAwesomeIcons.boxesStacked),
         ),
       ];
 
@@ -221,19 +294,19 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
               subtitle: Text("${location!.parentPathString}"),
               leading: FaIcon(FontAwesomeIcons.turnUp, color: COLOR_CLICK),
               onTap: () async {
-
                 int parentId = location?.parentId ?? -1;
 
                 if (parentId < 0) {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(null)));
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => LocationDisplayWidget(null)));
                 } else {
-
                   showLoadingOverlay(context);
                   var loc = await InvenTreeStockLocation().get(parentId);
                   hideLoadingOverlay();
 
                   if (loc is InvenTreeStockLocation) {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(loc)));
+                    Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => LocationDisplayWidget(loc)));
                   }
                 }
               },
@@ -242,9 +315,9 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       }
 
       return Card(
-        child: Column(
-          children: children,
-        )
+          child: Column(
+            children: children,
+          )
       );
     }
   }
@@ -254,7 +327,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     return BottomNavigationBar(
         currentIndex: tabIndex,
         onTap: onTabSelectionChanged,
-        items: <BottomNavigationBarItem> [
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: FaIcon(FontAwesomeIcons.sitemap),
             label: L10().details,
@@ -263,10 +336,6 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
             icon: FaIcon(FontAwesomeIcons.boxesStacked),
             label: L10().stock,
           ),
-          BottomNavigationBarItem(
-            icon: FaIcon(FontAwesomeIcons.wrench),
-            label: L10().actions,
-          )
         ]
     );
   }
@@ -274,7 +343,6 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
   int stockItemCount = 0;
 
   Widget getSelectedWidget(int index) {
-
     switch (index) {
       case 0:
         return Column(
@@ -283,13 +351,6 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       case 1:
         return Column(
           children: stockTiles(),
-        );
-      case 2:
-        return ListView(
-          children: ListTile.divideTiles(
-            context: context,
-            tiles: actionTiles()
-          ).toList()
         );
       default:
         return ListView();
@@ -306,18 +367,18 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     List<Widget> tiles = [
       locationDescriptionCard(),
       ListTile(
-        title: Text(
-          L10().sublocations,
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        trailing: GestureDetector(
-          child: FaIcon(FontAwesomeIcons.filter),
-          onTap: () async {
-            setState(() {
-              showFilterOptions = !showFilterOptions;
-            });
-          },
-        )
+          title: Text(
+            L10().sublocations,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          trailing: GestureDetector(
+            child: FaIcon(FontAwesomeIcons.filter),
+            onTap: () async {
+              setState(() {
+                showFilterOptions = !showFilterOptions;
+              });
+            },
+          )
       ),
       Expanded(
         child: PaginatedStockLocationList(
@@ -335,7 +396,6 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
   // Construct the "stock" panel
   List<Widget> stockTiles() {
-
     Map<String, String> filters = {
       "location": location?.pk.toString() ?? "null",
     };
@@ -364,116 +424,5 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
         flex: 10,
       )
     ];
-  }
-
-  List<Widget> actionTiles() {
-    List<Widget> tiles = [];
-
-    tiles.add(locationDescriptionCard(includeActions: false));
-
-    if (api.checkPermission("stock", "add")) {
-
-      tiles.add(
-        ListTile(
-          title: Text(L10().locationCreate),
-          subtitle: Text(L10().locationCreateDetail),
-          leading: FaIcon(FontAwesomeIcons.sitemap, color: COLOR_CLICK),
-          trailing: FaIcon(FontAwesomeIcons.circlePlus, color: COLOR_CLICK),
-          onTap: () async {
-            _newLocation(context);
-          },
-        )
-      );
-
-      tiles.add(
-        ListTile(
-          title: Text(L10().stockItemCreate),
-          subtitle: Text(L10().stockItemCreateDetail),
-          leading: FaIcon(FontAwesomeIcons.boxesStacked, color: COLOR_CLICK),
-          trailing: FaIcon(FontAwesomeIcons.circlePlus, color: COLOR_CLICK),
-          onTap: () async {
-            _newStockItem(context);
-          },
-        )
-      );
-
-    }
-
-    if (location != null) {
-
-      // Scan stock item into location
-      if (api.checkPermission("stock", "change")) {
-        tiles.add(
-            ListTile(
-              title: Text(L10().barcodeScanItem),
-              subtitle: Text(L10().barcodeScanInItems),
-              leading: FaIcon(FontAwesomeIcons.rightLeft, color: COLOR_CLICK),
-              trailing: Icon(Icons.qr_code, color: COLOR_CLICK),
-              onTap: () {
-
-                var _loc = location;
-
-                if (_loc != null) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) =>
-                          InvenTreeQRView(
-                              StockLocationScanInItemsHandler(_loc)))
-                  ).then((value) {
-                    refresh(context);
-                  });
-                }
-              },
-            )
-        );
-
-        // Scan this location into another one
-        if (api.checkPermission("stock_location", "change")) {
-          tiles.add(
-            ListTile(
-              title: Text(L10().transferStockLocation),
-              subtitle: Text(L10().transferStockLocationDetail),
-              leading: FaIcon(FontAwesomeIcons.rightToBracket, color: COLOR_CLICK),
-              trailing: Icon(Icons.qr_code, color: COLOR_CLICK),
-              onTap: () {
-                var _loc = location;
-
-                if (_loc != null) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) =>
-                          InvenTreeQRView(
-                              ScanParentLocationHandler(_loc)))
-                  ).then((value) {
-                    refresh(context);
-                  });
-                }
-              }
-            )
-          );
-        }
-
-        if (api.supportModernBarcodes) {
-          tiles.add(
-            customBarcodeActionTile(context, this, location!.customBarcode, "stocklocation", location!.pk)
-          );
-        }
-      }
-    }
-
-    if (tiles.length <= 1) {
-      tiles.add(
-        ListTile(
-          title: Text(
-              L10().actionsNone,
-            style: TextStyle(
-              fontStyle: FontStyle.italic
-            ),
-          )
-        )
-      );
-    }
-
-    return tiles;
   }
 }
