@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/api.dart";
 
@@ -13,6 +14,25 @@ mixin BaseWidgetProperties {
 
   // Return a list of appBar actions (default = None)
   List<Widget> getAppBarActions(BuildContext context) => [];
+
+  List<Widget> globalAppBarActions(BuildContext context) {
+    List<Widget> actions = [
+      IconButton(
+        icon: FaIcon(FontAwesomeIcons.magnifyingGlass),
+        onPressed: () async {
+          // TODO
+        }
+      ),
+      IconButton(
+        icon: FaIcon(FontAwesomeIcons.qrcode),
+        onPressed: () async {
+          // TODO
+        },
+      )
+    ];
+
+    return actions;
+  }
 
   // Return a title for the appBar
   String getAppBarTitle(BuildContext context) { return "--- app bar ---"; }
@@ -36,7 +56,7 @@ mixin BaseWidgetProperties {
   AppBar? buildAppBar(BuildContext context, GlobalKey<ScaffoldState> key) {
     return AppBar(
       title: Text(getAppBarTitle(context)),
-      actions: getAppBarActions(context),
+      actions: globalAppBarActions(context),
       leading: backButton(context, key),
     );
   }
