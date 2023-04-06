@@ -81,24 +81,55 @@ mixin BaseWidgetProperties {
   List<SpeedDialChild> buildActionButtons(BuildContext context) => [];
 
   /*
+   * Build out a set of barcode actions available for this view
+   */
+  List<SpeedDialChild> buildBarcodeButtons(BuildContext context) => [];
+
+  /*
    * Build out action buttons for a given widget
    */
   Widget? buildSpeedDial(BuildContext context) {
 
-    final widgets = buildActionButtons(context);
+    final actions = buildActionButtons(context);
+    final barcodeActions = buildBarcodeButtons(context);
 
-    if (widgets.isEmpty) {
+    if (actions.isEmpty && barcodeActions.isEmpty) {
       return null;
-    } else {
-      return SpeedDial(
-        icon: Icons.add,
-        children: widgets,
-        spacing: 14,
-        activeIcon: Icons.close,
-        childPadding: const EdgeInsets.all(5),
-        spaceBetweenChildren: 15,
+    }
+
+    List<Widget> children = [];
+
+    if (barcodeActions.isNotEmpty) {
+      children.add(
+        SpeedDial(
+          icon: Icons.qr_code_scanner,
+          activeIcon: Icons.close,
+          children: barcodeActions,
+          spacing: 14,
+          childPadding: const EdgeInsets.all(5),
+          spaceBetweenChildren: 15,
+        )
       );
     }
+
+    if (actions.isNotEmpty) {
+      children.add(
+          SpeedDial(
+            icon: Icons.add,
+            activeIcon: Icons.close,
+            children: actions,
+            spacing: 14,
+            childPadding: const EdgeInsets.all(5),
+            spaceBetweenChildren: 15,
+          )
+      );
+    }
+
+    return Wrap(
+      direction: Axis.vertical,
+      children: children,
+      spacing: 15,
+    );
   }
 
 }

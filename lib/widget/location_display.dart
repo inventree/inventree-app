@@ -46,62 +46,9 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
   }
 
   @override
-  List<SpeedDialChild> buildActionButtons(BuildContext context) {
+  List<SpeedDialChild> buildBarcodeButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
-    // Add "locate" button
-    if (location != null && api.supportsMixin("locate")) {
-      actions.add(
-          SpeedDialChild(
-              labelWidget: FaIcon(FontAwesomeIcons.magnifyingGlass),
-              label: L10().locateLocation,
-              onTap: () async {
-                _locateStockLocation(context);
-              }
-          )
-      );
-    }
-
-    // Add "edit" button
-    if (location != null && api.checkPermission("stock_location", "change")) {
-      actions.add(
-          SpeedDialChild(
-              child: FaIcon(FontAwesomeIcons.penToSquare),
-              label: L10().editLocation,
-              onTap: () {
-                _editLocationDialog(context);
-              }
-          )
-      );
-    }
-
-    // Create new location
-    if (api.checkPermission("stock_location", "add")) {
-      actions.add(
-          SpeedDialChild(
-              child: FaIcon(FontAwesomeIcons.sitemap),
-              label: L10().locationCreateDetail,
-              onTap: () async {
-                _newLocation(context);
-              }
-          )
-      );
-    }
-
-    // Create new item
-    if (location != null && api.checkPermission("stock", "add")) {
-      actions.add(
-          SpeedDialChild(
-              child: FaIcon(FontAwesomeIcons.boxesStacked),
-              label: L10().stockItemCreateDetail,
-              onTap: () async {
-                _newStockItem(context);
-              }
-          )
-      );
-    }
-
-    // Barcode actions
     if (location != null) {
       // Scan items into this location
       if (api.checkPermission("stock", "change")) {
@@ -158,15 +105,63 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     return actions;
   }
 
-  /*
-   * Request identification of this location
-   */
-  Future<void> _locateStockLocation(BuildContext context) async {
-    final _loc = location;
+  @override
+  List<SpeedDialChild> buildActionButtons(BuildContext context) {
+    List<SpeedDialChild> actions = [];
 
-    if (_loc != null) {
-      api.locateItemOrLocation(context, location: _loc.pk);
+    // Add "locate" button
+    if (location != null && api.supportsMixin("locate")) {
+      actions.add(
+          SpeedDialChild(
+              child: Icon(Icons.travel_explore),
+              label: L10().locateLocation,
+              onTap: () async {
+                api.locateItemOrLocation(context, location: location!.pk);
+              }
+          )
+      );
     }
+
+    // Add "edit" button
+    if (location != null && api.checkPermission("stock_location", "change")) {
+      actions.add(
+          SpeedDialChild(
+              child: Icon(Icons.edit_square),
+              label: L10().editLocation,
+              onTap: () {
+                _editLocationDialog(context);
+              }
+          )
+      );
+    }
+
+    // Create new location
+    if (api.checkPermission("stock_location", "add")) {
+      actions.add(
+          SpeedDialChild(
+              child: FaIcon(FontAwesomeIcons.sitemap),
+              label: L10().locationCreateDetail,
+              onTap: () async {
+                _newLocation(context);
+              }
+          )
+      );
+    }
+
+    // Create new item
+    if (location != null && api.checkPermission("stock", "add")) {
+      actions.add(
+          SpeedDialChild(
+              child: FaIcon(FontAwesomeIcons.boxesStacked),
+              label: L10().stockItemCreateDetail,
+              onTap: () async {
+                _newStockItem(context);
+              }
+          )
+      );
+    }
+
+    return actions;
   }
 
   /*

@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:flutter_speed_dial/flutter_speed_dial.dart";
 
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
@@ -48,46 +49,135 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   bool stockShowHistory = false;
 
   @override
-  List<Widget> getAppBarActions(BuildContext context) {
+  List<SpeedDialChild> buildActionButtons(BuildContext context) {
 
-    List<Widget> actions = [];
+    List<SpeedDialChild> actions = [];
 
-    if (InvenTreeAPI().checkPermission("stock", "view")) {
+    if (api.supportsMixin("locate")) {
       actions.add(
-        IconButton(
-          icon: FaIcon(FontAwesomeIcons.globe),
-          onPressed: _openInvenTreePage,
+        SpeedDialChild(
+          child: Icon(Icons.travel_explore),
+          label: L10().locateItem,
+          onTap: () async {
+            api.locateItemOrLocation(context, item: widget.item.pk);
+          }
         )
       );
     }
 
-    if (InvenTreeAPI().supportsMixin("locate")) {
+    if (api.checkPermission("stock", "change")) {
       actions.add(
-        IconButton(
-          icon: FaIcon(FontAwesomeIcons.magnifyingGlassLocation),
-          tooltip: L10().locateItem,
-          onPressed: () async {
-            InvenTreeAPI().locateItemOrLocation(context, item: widget.item.pk);
-          },
+        SpeedDialChild(
+          child: Icon(Icons.edit_square),
+          label: L10().editItem,
+          onTap: () {
+            _editStockItem(context);
+          }
         )
       );
-    }
 
-    if (InvenTreeAPI().checkPermission("stock", "change")) {
-      actions.add(
-          IconButton(
-            icon: FaIcon(FontAwesomeIcons.penToSquare),
-            tooltip: L10().edit,
-            onPressed: () { _editStockItem(context); },
+      // Stock adjustment actions available if item is *not* serialized
+      if (!widget.item.isSerialized()) {
+
+        actions.add(
+          SpeedDialChild(
+            child: FaIcon(FontAwesomeIcons.circleCheck, color: Colors.blue),
+            label: L10().countStock,
+            onTap: _countStockDialog,
           )
+        );
+
+        actions.add(
+          SpeedDialChild(
+            child: FaIcon(FontAwesomeIcons.circleMinus, color: Colors.red),
+            label: L10().removeStock,
+            onTap: _removeStockDialog,
+          )
+        );
+
+        actions.add(
+          SpeedDialChild(
+            child: FaIcon(FontAwesomeIcons.circlePlus, color: Colors.green),
+            label: L10().addStock,
+            onTap: _addStockDialog,
+          )
+        );
+      }
+
+      // Transfer item
+      actions.add(
+        SpeedDialChild(
+          child: Icon(Icons.trolley),
+          label: L10().transferStockDetail,
+          onTap: () {
+            _transferStockDialog(context);
+          }
+        )
+      );
+    }
+
+    if (labels.isNotEmpty) {
+      actions.add(
+        SpeedDialChild(
+          child: FaIcon(FontAwesomeIcons.print),
+          label: L10().printLabel,
+          onTap: () {
+            _printLabel(context);
+          }
+        )
+      );
+    }
+
+    if (api.checkPermission("stock", "delete")) {
+      actions.add(
+        SpeedDialChild(
+          child: FaIcon(FontAwesomeIcons.trashCan, color: Colors.red),
+          label: L10().stockItemDelete,
+          onTap: () {
+            _deleteItem(context);
+          }
+        )
       );
     }
 
     return actions;
   }
 
-  Future<void> _openInvenTreePage() async {
-    widget.item.goToInvenTreePage();
+  @override
+  List<SpeedDialChild> buildBarcodeButtons(BuildContext context) {
+    List<SpeedDialChild> actions = [];
+
+    if (api.checkPermission("stock", "change")) {
+      // Scan item into location
+      actions.add(
+          SpeedDialChild(
+              child: Icon(Icons.qr_code_scanner),
+              label: L10().scanIntoLocationDetail,
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) =>
+                        InvenTreeQRView(
+                            StockItemScanIntoLocationHandler(widget.item)))
+                ).then((ctx) {
+                  refresh(context);
+                });
+              }
+          )
+      );
+
+      if (api.supportModernBarcodes) {
+        actions.add(
+            customBarcodeAction(
+                context, this,
+                widget.item.customBarcode,
+                "stockitem", widget.item.pk
+            )
+        );
+      }
+    }
+
+    return actions;
   }
 
   // Is label printing enabled for this StockItem?
@@ -740,170 +830,13 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     return tiles;
   }
 
-  List<Widget> actionTiles(BuildContext context) {
-    List<Widget> tiles = [];
-
-    tiles.add(headerTile());
-
-    // First check that the user has the required permissions to adjust stock
-    if (!InvenTreeAPI().checkPermission("stock", "change")) {
-      tiles.add(
-        ListTile(
-          title: Text(L10().permissionRequired),
-          leading: FaIcon(FontAwesomeIcons.userXmark)
-        )
-      );
-
-      tiles.add(
-        ListTile(
-          subtitle: Text(L10().permissionAccountDenied),
-        )
-      );
-
-      return tiles;
-    }
-
-    // "Count" is not available for serialized stock
-    if (!widget.item.isSerialized()) {
-      tiles.add(
-          ListTile(
-              title: Text(L10().countStock),
-              leading: FaIcon(FontAwesomeIcons.circleCheck, color: COLOR_CLICK),
-              onTap: _countStockDialog,
-              trailing: Text(widget.item.quantityString(includeUnits: true)),
-          )
-      );
-
-      tiles.add(
-          ListTile(
-              title: Text(L10().removeStock),
-              leading: FaIcon(FontAwesomeIcons.circleMinus, color: COLOR_CLICK),
-              onTap: _removeStockDialog,
-          )
-      );
-
-      tiles.add(
-          ListTile(
-              title: Text(L10().addStock),
-              leading: FaIcon(FontAwesomeIcons.circlePlus, color: COLOR_CLICK),
-              onTap: _addStockDialog,
-          )
-      );
-    }
-
-    tiles.add(
-      ListTile(
-        title: Text(L10().transferStock),
-        subtitle: Text(L10().transferStockDetail),
-        leading: FaIcon(FontAwesomeIcons.rightLeft, color: COLOR_CLICK),
-        onTap: () { _transferStockDialog(context); },
-      )
-    );
-
-    // Scan item into a location
-    tiles.add(
-      ListTile(
-        title: Text(L10().scanIntoLocation),
-        subtitle: Text(L10().scanIntoLocationDetail),
-        leading: FaIcon(FontAwesomeIcons.rightLeft, color: COLOR_CLICK),
-        trailing: Icon(Icons.qr_code_scanner),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => InvenTreeQRView(StockItemScanIntoLocationHandler(widget.item)))
-          ).then((ctx) {
-            refresh(context);
-          });
-        },
-      )
-    );
-
-    if (InvenTreeAPI().supportModernBarcodes || widget.item.customBarcode.isEmpty) {
-      tiles.add(customBarcodeActionTile(context, this, widget.item.customBarcode, "stockitem", widget.item.pk));
-    } else {
-      // Note: Custom legacy barcodes (only for StockItem model) are handled differently
-      tiles.add(
-          ListTile(
-              title: Text(L10().barcodeUnassign),
-              leading: Icon(Icons.qr_code, color: COLOR_CLICK),
-              onTap: () async {
-                await widget.item.update(values: {"uid": ""});
-                refresh(context);
-              }
-          )
-      );
-    }
-
-
-    // Print label (if label printing plugins exist)
-    if (labels.isNotEmpty) {
-      tiles.add(
-        ListTile(
-          title: Text(L10().printLabel),
-          leading: FaIcon(FontAwesomeIcons.print, color: COLOR_CLICK),
-          onTap: () {
-            _printLabel(context);
-          },
-        ),
-      );
-    }
-
-    // If the user has permission to delete this stock item
-    if (InvenTreeAPI().checkPermission("stock", "delete")) {
-      tiles.add(
-        ListTile(
-          title: Text("Delete Stock Item"),
-          leading: FaIcon(FontAwesomeIcons.trashCan, color: COLOR_DANGER),
-          onTap: () {
-            _deleteItem(context);
-          },
-        )
-      );
-    }
-
-    return tiles;
-  }
-
-  @override
-  Widget getBottomNavBar(BuildContext context) {
-    return BottomNavigationBar(
-      currentIndex: tabIndex,
-      onTap: onTabSelectionChanged,
-      items: <BottomNavigationBarItem> [
-        BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.circleInfo),
-          label: L10().details,
-        ),
-        BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.wrench),
-          label: L10().actions,        ),
-      ]
-    );
-  }
-
-  Widget getSelectedWidget(int index) {
-    switch (index) {
-      case 0:
-        return ListView(
-          children: ListTile.divideTiles(
-            context: context,
-            tiles: detailTiles()
-          ).toList(),
-        );
-      case 1:
-        return ListView(
-          children: ListTile.divideTiles(
-            context: context,
-            tiles: actionTiles(context)
-          ).toList()
-        );
-      default:
-        return ListView();
-    }
-  }
-
   @override
   Widget getBody(BuildContext context) {
-    return getSelectedWidget(tabIndex);
+    return ListView(
+      children: ListTile.divideTiles(
+          context: context,
+          tiles: detailTiles()
+      ).toList()
+    );
   }
 }
