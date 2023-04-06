@@ -19,7 +19,7 @@ mixin BaseWidgetProperties {
   List<Widget> getAppBarActions(BuildContext context) {
     List<Widget> actions = [
       IconButton(
-        icon: FaIcon(FontAwesomeIcons.magnifyingGlass),
+        icon: Icon(Icons.search),
         onPressed: () async {
           // Open global search widget
           if (!InvenTreeAPI().checkConnection()) return;
@@ -33,7 +33,7 @@ mixin BaseWidgetProperties {
         }
       ),
       IconButton(
-        icon: FaIcon(FontAwesomeIcons.qrcode),
+        icon: Icon(Icons.qr_code_scanner),
         onPressed: () async {
           // Open barcode scan widget
           if (!InvenTreeAPI().checkConnection()) return;
