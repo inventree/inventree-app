@@ -37,8 +37,6 @@ class InvenTreeHomePage extends StatefulWidget {
 
 class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetProperties {
 
-  final homeKey = GlobalKey<ScaffoldState>();
-
   _InvenTreeHomePageState() : super() {
     // Load display settings
     _loadSettings();
@@ -65,6 +63,8 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
       }
     });
   }
+
+  final homeKey = GlobalKey<ScaffoldState>();
 
   bool homeShowPo = false;
   bool homeShowSubscribed = false;
@@ -196,7 +196,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
       return;
     }
 
-    final notifications = await InvenTreeNotification().list();
+    // final notifications = await InvenTreeNotification().list();
 
     setState(() {
       // _notificationCounter = notifications.length;
@@ -410,6 +410,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
    * Return the main body widget for display.
    * This depends on the current value of _tabIndex
    */
+  @override
   Widget getBody(BuildContext context) {
 
     if (!InvenTreeAPI().isConnected()) {

@@ -1,6 +1,4 @@
 import "package:flutter/material.dart";
-import "package:flutter_speed_dial/flutter_speed_dial.dart";
-
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:one_context/one_context.dart";
 
@@ -8,12 +6,13 @@ import "package:inventree/api.dart";
 import "package:inventree/api_form.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/helpers.dart";
+import "package:inventree/l10.dart";
+
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/widget/attachment_widget.dart";
 import "package:inventree/widget/company_detail.dart";
 import "package:inventree/widget/refreshable_state.dart";
-import "package:inventree/l10.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/stock_list.dart";
 
