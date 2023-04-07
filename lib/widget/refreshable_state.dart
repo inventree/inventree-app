@@ -48,9 +48,7 @@ mixin BaseWidgetProperties {
 
     return AppBar(
       centerTitle: false,
-      bottom: tabs.isEmpty ? null : TabBar(
-        tabs: tabs,
-      ),
+      bottom: tabs.isEmpty ? null : TabBar(tabs: tabs),
       title: Text(getAppBarTitle()),
       actions: appBarActions(context),
       leading: backButton(context, key),
@@ -189,9 +187,6 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> with 
   // Storage for context once "Build" is called
   late BuildContext? _context;
 
-  // Current tab index (used for widgets which display bottom tabs)
-  int tabIndex = 0;
-
   // Bool indicator
   bool loading = false;
 
@@ -199,16 +194,6 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> with 
 
   // Helper function to return API instance
   InvenTreeAPI get api => InvenTreeAPI();
-
-  // Update current tab selection
-  void onTabSelectionChanged(int index) {
-
-    if (mounted) {
-      setState(() {
-        tabIndex = index;
-      });
-    }
-  }
 
   @override
   void initState() {

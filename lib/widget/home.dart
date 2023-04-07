@@ -66,12 +66,6 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
     });
   }
 
-  // Index of bottom navigation bar
-  int _tabIndex = 0;
-
-  // Number of outstanding notifications
-  int _notificationCounter = 0;
-
   bool homeShowPo = false;
   bool homeShowSubscribed = false;
   bool homeShowManufacturers = false;
@@ -205,7 +199,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
     final notifications = await InvenTreeNotification().list();
 
     setState(() {
-      _notificationCounter = notifications.length;
+      // _notificationCounter = notifications.length;
     });
   }
 

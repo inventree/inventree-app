@@ -241,7 +241,6 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
     };
 
     return [
-      getCategoryDescriptionCard(extra: false),
       ListTile(
         title: Text(
           L10().parts,

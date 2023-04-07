@@ -146,12 +146,6 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       title: Text(L10().lineItems),
       leading: FaIcon(FontAwesomeIcons.clipboardList, color: COLOR_CLICK),
       trailing: Text("${order.lineItemCount}"),
-      onTap: () {
-        setState(() {
-          // Switch to the "line items" tab
-          tabIndex = 1;
-        });
-      },
     ));
 
     tiles.add(ListTile(
@@ -166,12 +160,6 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       title: Text(L10().received),
       leading: FaIcon(FontAwesomeIcons.clipboardCheck, color: COLOR_CLICK),
       trailing: Text("${completedLines}"),
-      onTap: () {
-        setState(() {
-          // Switch to the "received items" tab
-          tabIndex = 2;
-        });
-      },
     ));
 
     if (order.issueDate.isNotEmpty) {

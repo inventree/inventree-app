@@ -326,43 +326,19 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
   }
 
   @override
-  Widget getBottomNavBar(BuildContext context) {
-    return BottomNavigationBar(
-        currentIndex: tabIndex,
-        onTap: onTabSelectionChanged,
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: FaIcon(FontAwesomeIcons.sitemap),
-            label: L10().details,
-          ),
-          BottomNavigationBarItem(
-            icon: FaIcon(FontAwesomeIcons.boxesStacked),
-            label: L10().stock,
-          ),
-        ]
-    );
-  }
-
-  int stockItemCount = 0;
-
-  Widget getSelectedWidget(int index) {
-    switch (index) {
-      case 0:
-        return Column(
-          children: detailTiles(),
-        );
-      case 1:
-        return Column(
-          children: stockTiles(),
-        );
-      default:
-        return ListView();
-    }
+  List<Widget> getTabIcons(BuildContext context) {
+    return [
+      Tab(text: L10().details),
+      Tab(text: L10().stockItems),
+    ];
   }
 
   @override
-  Widget getBody(BuildContext context) {
-    return getSelectedWidget(tabIndex);
+  List<Widget> getTabs(BuildContext context) {
+    return [
+      Column(children: detailTiles()),
+      Column(children: stockTiles()),
+    ];
   }
 
   // Construct the "details" panel
@@ -404,7 +380,6 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     };
 
     return [
-      locationDescriptionCard(includeActions: false),
       ListTile(
         title: Text(
           L10().stock,
