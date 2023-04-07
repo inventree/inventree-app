@@ -89,7 +89,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
         actions.add(
             SpeedDialChild(
                 child: FaIcon(FontAwesomeIcons.qrcode),
-                label: L10().barcodeScanInItems,
+                label: L10().barcodeScanItem,
                 onTap: () {
                   Navigator.push(
                       context,
@@ -109,7 +109,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
         actions.add(
             SpeedDialChild(
                 child: FaIcon(FontAwesomeIcons.qrcode),
-                label: L10().transferStockLocationDetail,
+                label: L10().transferStockLocation,
                 onTap: () {
                   Navigator.push(
                       context,
@@ -148,7 +148,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       actions.add(
           SpeedDialChild(
               child: FaIcon(FontAwesomeIcons.sitemap),
-              label: L10().locationCreateDetail,
+              label: L10().locationCreate,
               onTap: () async {
                 _newLocation(context);
               }
@@ -161,7 +161,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       actions.add(
           SpeedDialChild(
               child: FaIcon(FontAwesomeIcons.boxesStacked),
-              label: L10().stockItemCreateDetail,
+              label: L10().stockItemCreate,
               onTap: () async {
                 _newStockItem(context);
               }
