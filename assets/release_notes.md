@@ -1,6 +1,11 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.10.3 - April 2023
+---
+
+- Support barcode scanning for purchase orders
+
 ### 0.10.2 - March 2023
 ---
 
