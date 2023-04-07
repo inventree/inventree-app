@@ -118,7 +118,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       actions.add(
         SpeedDialChild(
           child: Icon(Icons.trolley),
-          label: L10().transferStockDetail,
+          label: L10().transferStock,
           onTap: () {
             _transferStockDialog(context);
           }
@@ -162,7 +162,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       actions.add(
           SpeedDialChild(
               child: Icon(Icons.qr_code_scanner),
-              label: L10().scanIntoLocationDetail,
+              label: L10().scanIntoLocation,
               onTap: () {
                 Navigator.push(
                     context,

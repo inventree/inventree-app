@@ -810,7 +810,7 @@ SpeedDialChild customBarcodeAction(BuildContext context, RefreshableState state,
 
   if (barcode.isEmpty) {
     return SpeedDialChild(
-      label: L10().barcodeAssignDetail,
+      label: L10().barcodeAssign,
       child: Icon(Icons.barcode_reader),
       onTap: () {
         var handler = UniqueBarcodeHandler((String barcode) {
@@ -851,62 +851,6 @@ SpeedDialChild customBarcodeAction(BuildContext context, RefreshableState state,
           state.refresh(context);
         });
       }
-    );
-  }
-
-}
-
-
-/*
- * Construct a generic ListTile widget to link or un-link a custom barcode from a model.
- */
-Widget customBarcodeActionTile(BuildContext context, RefreshableState state, String barcode, String model, int pk) {
-
-  if (barcode.isEmpty) {
-    return ListTile(
-      title: Text(L10().barcodeAssign),
-      subtitle: Text(L10().barcodeAssignDetail),
-      leading: Icon(Icons.qr_code, color: COLOR_CLICK),
-      trailing: Icon(Icons.qr_code_scanner),
-      onTap: () {
-        var handler = UniqueBarcodeHandler((String barcode) {
-          InvenTreeAPI().linkBarcode({
-            model: pk.toString(),
-            "barcode": barcode,
-          }).then((bool result) {
-            showSnackIcon(
-              result ? L10().barcodeAssigned : L10().barcodeNotAssigned,
-              success: result
-            );
-
-            state.refresh(context);
-          });
-        });
-
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => InvenTreeQRView(handler)
-          )
-        );
-      }
-    );
-  } else {
-    return ListTile(
-      title: Text(L10().barcodeUnassign),
-      leading: Icon(Icons.qr_code, color: COLOR_CLICK),
-      onTap: () async {
-        InvenTreeAPI().unlinkBarcode({
-          model: pk.toString()
-        }).then((bool result) {
-          showSnackIcon(
-            result ? L10().requestSuccessful : L10().requestFailed,
-            success: result,
-          );
-
-          state.refresh(context);
-        });
-      },
     );
   }
 }
