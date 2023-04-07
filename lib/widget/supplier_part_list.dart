@@ -34,7 +34,7 @@ class _SupplierPartListState extends RefreshableState<SupplierPartList> {
   bool showFilterOptions = false;
 
   @override
-  List<Widget> getAppBarActions(BuildContext context) => [
+  List<Widget> appBarActions(BuildContext context) => [
     IconButton(
       icon: FaIcon(FontAwesomeIcons.filter),
       onPressed: () async {

@@ -31,7 +31,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
   String getAppBarTitle() => L10().testResults;
 
   @override
-  List<Widget> getAppBarActions(BuildContext context) {
+  List<Widget> appBarActions(BuildContext context) {
     return [
       IconButton(
           icon: FaIcon(FontAwesomeIcons.circlePlus),

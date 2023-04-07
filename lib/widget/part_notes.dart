@@ -33,7 +33,7 @@ class _PartNotesState extends RefreshableState<PartNotesWidget> {
   String getAppBarTitle() => L10().partNotes;
 
   @override
-  List<Widget> getAppBarActions(BuildContext context) {
+  List<Widget> appBarActions(BuildContext context) {
 
     List<Widget> actions = [];
 

@@ -46,7 +46,7 @@ class _BillOfMaterialsState extends RefreshableState<BillOfMaterialsWidget> {
   }
 
   @override
-  List<Widget> getAppBarActions(BuildContext context) => [
+  List<Widget> appBarActions(BuildContext context) => [
     IconButton(
       icon: FaIcon(FontAwesomeIcons.filter),
       onPressed: () async {

@@ -29,7 +29,7 @@ class _ParameterWidgetState extends RefreshableState<PartParameterWidget> {
   }
 
   @override
-  List<Widget> getAppBarActions(BuildContext context) {
+  List<Widget> appBarActions(BuildContext context) {
     return [];
   }
 

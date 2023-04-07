@@ -37,7 +37,7 @@ class _StockNotesState extends RefreshableState<StockNotesWidget> {
   }
 
   @override
-  List<Widget> getAppBarActions(BuildContext context) {
+  List<Widget> appBarActions(BuildContext context) {
     List<Widget> actions = [];
 
     if (InvenTreeAPI().checkPermission("stock", "change")) {

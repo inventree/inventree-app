@@ -36,7 +36,7 @@ class _PurchaseOrderListWidgetState extends RefreshableState<PurchaseOrderListWi
   String getAppBarTitle() => L10().purchaseOrders;
 
   @override
-  List<Widget> getAppBarActions(BuildContext context) => [
+  List<Widget> appBarActions(BuildContext context) => [
     IconButton(
       icon: FaIcon(FontAwesomeIcons.filter),
       onPressed: () async {
