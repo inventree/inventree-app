@@ -1,9 +1,12 @@
 ## InvenTree App Release Notes
 ---
 
-### 0.10.3 - April 2023
+### 0.11.0 - April 2023
 ---
 
+- Adds globally accessible action button for "search"
+- Adds globally accessible action button for "barcode scan"
+- Implement context actions using floating actions buttons
 - Support barcode scanning for purchase orders
 
 ### 0.10.2 - March 2023
