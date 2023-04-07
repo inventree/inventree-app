@@ -372,58 +372,23 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
     return tiles;
   }
-
+  
   @override
-  Widget getBody(BuildContext context) {
-
-    return Center(
-      child: getSelectedWidget(context, tabIndex),
-    );
+  List<Widget> getTabIcons(BuildContext context) {
+    return [
+      Tab(text: L10().details),
+      Tab(text: L10().lineItems),
+      Tab(text: L10().received)
+    ];
   }
-
-  Widget getSelectedWidget(BuildContext context, int index) {
-    switch (index) {
-      case 0:
-        return ListView(
-          children: orderTiles(context)
-        );
-      case 1:
-        return ListView(
-          children: lineTiles(context)
-        );
-      case 2:
-        // Stock items received against this order
-        Map<String, String> filters = {
-          "purchase_order": "${order.pk}"
-        };
-
-        return PaginatedStockItemList(filters, true);
-
-      default:
-        return ListView();
-    }
-  }
-
+  
   @override
-  Widget getBottomNavBar(BuildContext context) {
-    return BottomNavigationBar(
-      currentIndex: tabIndex,
-      onTap: onTabSelectionChanged,
-      items: [
-        BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.circleInfo),
-          label: L10().details
-        ),
-        BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.tableList),
-          label: L10().lineItems,
-        ),
-        BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.boxesStacked),
-          label: L10().stockItems
-        )
-      ],
-    );
+  List<Widget> getTabs(BuildContext context) {
+    return [
+      ListView(children: orderTiles(context)),
+      ListView(children: lineTiles(context)),
+      PaginatedStockItemList({"purchase_order": order.pk.toString()}, true),
+    ];
   }
 
 }
