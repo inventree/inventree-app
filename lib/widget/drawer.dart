@@ -1,23 +1,15 @@
 import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
-import "package:package_info_plus/package_info_plus.dart";
 
-import "package:inventree/api.dart";
-import "package:inventree/barcode.dart";
 import "package:inventree/l10.dart";
-
-import "package:inventree/settings/about.dart";
 import "package:inventree/settings/settings.dart";
-
-import "package:inventree/widget/search.dart";
+import "package:inventree/widget/category_display.dart";
+import "package:inventree/widget/purchase_order_list.dart";
+import "package:inventree/widget/location_display.dart";
 
 
 /*
  * Custom "drawer" widget for the InvenTree app.
- *
- * - Provides a "home" button which completely unwinds the widget stack
- * - Global search
- * - Barcoed scan
  */
 class InvenTreeDrawer extends StatelessWidget {
 
@@ -42,29 +34,34 @@ class InvenTreeDrawer extends StatelessWidget {
     }
   }
 
-  void _search() {
+  // Load "parts" page
+  void _parts() {
+    _closeDrawer();
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null))
+    );
+  }
 
-    if (!InvenTreeAPI().checkConnection()) return;
-
+  // Load "stock" page
+  void _stock() {
+    _closeDrawer();
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => LocationDisplayWidget(null))
+    );
+  }
+  
+  // Load "purchase orders" page
+  void _purchaseOrders() {
     _closeDrawer();
 
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => SearchWidget(true)
+            builder: (context) => PurchaseOrderListWidget(filters: {})
         )
     );
-  }
-
-  /*
-   * Launch the camera to scan a QR code.
-   * Upon successful scan, data are passed off to be decoded.
-   */
-  Future <void> _scan() async {
-    if (!InvenTreeAPI().checkConnection()) return;
-
-    _closeDrawer();
-    scanQrCode(context);
   }
 
   /*
@@ -75,56 +72,43 @@ class InvenTreeDrawer extends StatelessWidget {
     Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeSettingsWidget()));
   }
 
-  /*
-   * Load "About" widget
-   */
-  Future<void> _about() async {
-    _closeDrawer();
-
-    PackageInfo.fromPlatform().then((PackageInfo info) {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => InvenTreeAboutWidget(info)));
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
 
     return  Drawer(
         child: ListView(
-            children: ListTile.divideTiles(
-              context: context,
-              tiles: <Widget>[
-                ListTile(
-                  leading: FaIcon(FontAwesomeIcons.house),
-                  title: Text(
-                    L10().appTitle,
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  onTap: _home,
-                ),
-                ListTile(
-                  title: Text(L10().scanBarcode),
-                  onTap: _scan,
-                  leading: Icon(Icons.qr_code_scanner),
-                ),
-                ListTile(
-                  title: Text(L10().search),
-                  leading: FaIcon(FontAwesomeIcons.magnifyingGlass),
-                  onTap: _search,
-                ),
-                ListTile(
-                  title: Text(L10().settings),
-                  leading: Icon(Icons.settings),
-                  onTap: _settings,
-                ),
-                ListTile(
-                  title: Text(L10().about),
-                  leading: FaIcon(FontAwesomeIcons.circleInfo),
-                  onTap: _about,
-                )
-              ]
-            ).toList(),
+          children: [
+            ListTile(
+              leading: FaIcon(FontAwesomeIcons.house),
+              title: Text(
+                L10().appTitle,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              onTap: _home,
+            ),
+            Divider(),
+            ListTile(
+              title: Text(L10().parts),
+              leading: FaIcon(FontAwesomeIcons.shapes),
+              onTap: _parts,
+            ),
+            ListTile(
+              title: Text(L10().stock),
+              leading: FaIcon(FontAwesomeIcons.boxesStacked),
+              onTap: _stock,
+            ),
+            ListTile(
+              title: Text(L10().purchaseOrders),
+              leading: FaIcon(FontAwesomeIcons.cartShopping),
+              onTap: _purchaseOrders,
+            ),
+            Divider(),
+            ListTile(
+              title: Text(L10().settings),
+              leading: Icon(Icons.settings),
+              onTap: _settings,
+            ),
+          ]
         )
     );
   }

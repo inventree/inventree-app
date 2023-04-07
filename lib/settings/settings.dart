@@ -1,8 +1,10 @@
 import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:package_info_plus/package_info_plus.dart";
 
 import "package:inventree/app_colors.dart";
 import "package:inventree/l10.dart";
+import "package:inventree/settings/about.dart";
 import "package:inventree/settings/app_settings.dart";
 import "package:inventree/settings/home_settings.dart";
 import "package:inventree/settings/login.dart";
@@ -21,6 +23,16 @@ class InvenTreeSettingsWidget extends StatefulWidget {
 class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  /*
+   * Load "About" widget
+   */
+  Future<void> _about() async {
+    PackageInfo.fromPlatform().then((PackageInfo info) {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => InvenTreeAboutWidget(info)));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +77,12 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreePartSettingsWidget()));
                 }
+              ),
+              Divider(),
+              ListTile(
+                title: Text(L10().about),
+                leading: FaIcon(FontAwesomeIcons.circleInfo),
+                onTap: _about,
               )
             ]
           ).toList()
