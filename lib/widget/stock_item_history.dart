@@ -24,7 +24,7 @@ class _StockItemHistoryDisplayState extends RefreshableState<StockItemHistoryWid
   final InvenTreeStockItem item;
 
   @override
-  String getAppBarTitle(BuildContext context) => L10().stockItemHistory;
+  String getAppBarTitle() => L10().stockItemHistory;
 
   List<InvenTreeStockItemHistory> history = [];
 

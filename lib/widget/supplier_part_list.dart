@@ -29,7 +29,7 @@ class SupplierPartList extends StatefulWidget {
 class _SupplierPartListState extends RefreshableState<SupplierPartList> {
 
   @override
-  String getAppBarTitle(BuildContext context) => L10().supplierParts;
+  String getAppBarTitle() => L10().supplierParts;
 
   bool showFilterOptions = false;
 

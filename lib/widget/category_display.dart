@@ -34,7 +34,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
   bool showFilterOptions = false;
 
   @override
-  String getAppBarTitle(BuildContext context) => L10().partCategory;
+  String getAppBarTitle() => L10().partCategory;
 
   @override
   List<Widget> appBarActions(BuildContext context) {

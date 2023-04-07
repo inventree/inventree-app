@@ -41,7 +41,7 @@ class _PartCategoryListState extends RefreshableState<PartCategoryList> {
   ];
 
   @override
-  String getAppBarTitle(BuildContext context) => L10().partCategories;
+  String getAppBarTitle() => L10().partCategories;
 
   @override
   Widget getBody(BuildContext context) {

@@ -38,7 +38,7 @@ class _PartSupplierState extends RefreshableState<PartSupplierWidget> {
   }
 
   @override
-  String getAppBarTitle(BuildContext context) => L10().partSuppliers;
+  String getAppBarTitle() => L10().partSuppliers;
 
   @override
   List<Widget> getAppBarActions(BuildContext contexts) {

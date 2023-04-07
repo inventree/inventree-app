@@ -42,7 +42,7 @@ class _StockLocationListState extends RefreshableState<StockLocationList> {
   ];
 
   @override
-  String getAppBarTitle(BuildContext context) => L10().stockLocations;
+  String getAppBarTitle() => L10().stockLocations;
 
   @override
   Widget getBody(BuildContext context) {

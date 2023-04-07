@@ -27,7 +27,7 @@ class _StockNotesState extends RefreshableState<StockNotesWidget> {
   final InvenTreeStockItem item;
 
   @override
-  String getAppBarTitle(BuildContext context) => L10().stockItemNotes;
+  String getAppBarTitle() => L10().stockItemNotes;
 
   @override
   Future<void> request(BuildContext context) async {

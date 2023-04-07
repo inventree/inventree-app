@@ -43,7 +43,7 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
   List<InvenTreeAttachment> attachments = [];
 
   @override
-  String getAppBarTitle(BuildContext context) => L10().attachments;
+  String getAppBarTitle() => L10().attachments;
 
   @override
   List<Widget> getAppBarActions(BuildContext context) {

@@ -22,7 +22,7 @@ mixin BaseWidgetProperties {
   List<Widget> appBarActions(BuildContext context) => [];
 
   // Return a title for the appBar
-  String getAppBarTitle(BuildContext context) { return "--- app bar ---"; }
+  String getAppBarTitle() { return "--- app bar ---"; }
 
   // Function to construct a drawer (override if needed)
   Widget getDrawer(BuildContext context) {

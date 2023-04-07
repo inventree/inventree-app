@@ -36,7 +36,7 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
   _SupplierPartDisplayState();
 
   @override
-  String getAppBarTitle(BuildContext context) => L10().supplierPart;
+  String getAppBarTitle() => L10().supplierPart;
 
   /*
    * Launch a form to edit the current SupplierPart instance

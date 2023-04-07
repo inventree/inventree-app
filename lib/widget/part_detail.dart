@@ -66,7 +66,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   int variantCount = 0;
 
   @override
-  String getAppBarTitle(BuildContext context) => L10().partDetails;
+  String getAppBarTitle() => L10().partDetails;
 
   @override
   List<Widget> appBarActions(BuildContext context) {

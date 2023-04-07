@@ -41,7 +41,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
   bool showFilterOptions = false;
 
   @override
-  String getAppBarTitle(BuildContext context) {
+  String getAppBarTitle() {
     return L10().stockLocation;
   }
 

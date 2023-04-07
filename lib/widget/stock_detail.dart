@@ -44,7 +44,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   _StockItemDisplayState();
 
   @override
-  String getAppBarTitle(BuildContext context) => L10().stockItem;
+  String getAppBarTitle() => L10().stockItem;
 
   bool stockShowHistory = false;
 

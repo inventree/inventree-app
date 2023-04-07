@@ -35,7 +35,7 @@ class _PartImageState extends RefreshableState<PartImageWidget> {
   }
 
   @override
-  String getAppBarTitle(BuildContext context) => part.fullname;
+  String getAppBarTitle() => part.fullname;
 
   @override
   List<Widget> getAppBarActions(BuildContext context) {

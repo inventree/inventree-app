@@ -30,7 +30,7 @@ class _StockListState extends RefreshableState<StockItemList> {
   bool showFilterOptions = false;
 
   @override
-  String getAppBarTitle(BuildContext context) => L10().stockItems;
+  String getAppBarTitle() => L10().stockItems;
 
   @override
   List<Widget> getAppBarActions(BuildContext context) => [

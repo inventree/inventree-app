@@ -33,7 +33,7 @@ class _PurchaseOrderListWidgetState extends RefreshableState<PurchaseOrderListWi
   bool showFilterOptions = false;
 
   @override
-  String getAppBarTitle(BuildContext context) => L10().purchaseOrders;
+  String getAppBarTitle() => L10().purchaseOrders;
 
   @override
   List<Widget> getAppBarActions(BuildContext context) => [

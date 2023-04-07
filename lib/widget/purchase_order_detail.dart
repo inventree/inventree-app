@@ -42,7 +42,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
   int attachmentCount = 0;
 
   @override
-  String getAppBarTitle(BuildContext context) => L10().purchaseOrder;
+  String getAppBarTitle() => L10().purchaseOrder;
 
   @override
   List<Widget> appBarActions(BuildContext context) {

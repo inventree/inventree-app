@@ -32,7 +32,7 @@ class _CompanyListWidgetState extends RefreshableState<CompanyListWidget> {
   _CompanyListWidgetState();
 
   @override
-  String getAppBarTitle(BuildContext context) => widget.title;
+  String getAppBarTitle() => widget.title;
 
   @override
   Widget getBody(BuildContext context) {

@@ -37,7 +37,7 @@ class _BillOfMaterialsState extends RefreshableState<BillOfMaterialsWidget> {
   bool showFilterOptions = false;
 
   @override
-  String getAppBarTitle(BuildContext context) {
+  String getAppBarTitle() {
     if (widget.isParentComponent) {
       return L10().billOfMaterials;
     } else {
