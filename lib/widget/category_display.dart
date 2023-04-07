@@ -184,21 +184,21 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
   }
 
   @override
-  Widget getBottomNavBar(BuildContext context) {
-    return BottomNavigationBar(
-      currentIndex: tabIndex,
-      onTap: onTabSelectionChanged,
-      items: <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.sitemap),
-          label: L10().details,
-        ),
-        BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.shapes),
-          label: L10().parts,
-        ),
-      ]
-    );
+  List<Widget> getTabIcons(BuildContext context) {
+    List<Widget> tabs = [];
+
+    tabs.add(Tab(text: L10().details));
+    tabs.add(Tab(text: L10().parts));
+
+    return tabs;
+  }
+
+  @override
+  List<Widget> getTabs(BuildContext context) {
+    return [
+      Column(children: detailTiles()),
+      Column(children: partsTiles()),
+    ];
   }
 
   // Construct the "details" panel
@@ -323,24 +323,5 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
         }
       }
     );
-  }
-
-  int partCount = 0;
-
-  @override
-  Widget getBody(BuildContext context) {
-
-    switch (tabIndex) {
-      case 0:
-        return Column(
-            children: detailTiles()
-        );
-      case 1:
-        return Column(
-          children: partsTiles()
-        );
-      default:
-        return ListView();
-    }
   }
 }

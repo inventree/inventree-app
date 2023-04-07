@@ -29,6 +29,8 @@ mixin BaseWidgetProperties {
     return InvenTreeDrawer(context);
   }
 
+  List<Widget> getTabs(BuildContext context) => [];
+
   // Function to construct a body (MUST BE PROVIDED)
   Widget getBody(BuildContext context) {
 
@@ -44,9 +46,15 @@ mixin BaseWidgetProperties {
    * Construct the top AppBar for this view
    */
   AppBar? buildAppBar(BuildContext context, GlobalKey<ScaffoldState> key) {
+
+    List<Widget> tabs = getTabIcons(context);
+
     return AppBar(
       centerTitle: false,
-      title: Text(getAppBarTitle(context)),
+      bottom: tabs.isEmpty ? null : TabBar(
+        tabs: tabs,
+      ),
+      title: Text(getAppBarTitle()),
       actions: appBarActions(context),
       leading: backButton(context, key),
     );
@@ -165,6 +173,9 @@ mixin BaseWidgetProperties {
     );
   }
 
+  // Return list of "tabs" for this widget
+  List<Widget> getTabIcons(BuildContext context) => [];
+
 }
 
 
@@ -248,24 +259,39 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> with 
     // Save the context for future use
     _context = context;
 
-    return Scaffold(
+    List<Widget> tabs = getTabIcons(context);
+
+    Widget body = tabs.isEmpty ? getBody(context) : TabBarView(children: getTabs(context));
+
+    Scaffold view = Scaffold(
       key: refreshableKey,
       appBar: buildAppBar(context, refreshableKey),
       drawer: getDrawer(context),
       floatingActionButton: buildSpeedDial(context),
-      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation
+          .miniEndDocked,
       body: Builder(
-        builder: (BuildContext context) {
-          return RefreshIndicator(
-              onRefresh: () async {
-                refresh(context);
-              },
-              child: getBody(context)
-          );
-        }
+          builder: (BuildContext context) {
+            return RefreshIndicator(
+                onRefresh: () async {
+                  refresh(context);
+                },
+                child: body
+            );
+          }
       ),
       bottomNavigationBar: buildBottomAppBar(context, refreshableKey),
       //getBottomNavBar(context),
     );
+
+    // Default implementation is *not* tabbed
+    if (tabs.isNotEmpty) {
+      return DefaultTabController(
+          length: tabs.length,
+          child: view,
+      );
+    } else {
+      return view;
+    }
   }
 }
