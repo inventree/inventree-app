@@ -185,12 +185,11 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
   @override
   List<Widget> getTabIcons(BuildContext context) {
-    List<Widget> tabs = [];
 
-    tabs.add(Tab(text: L10().details));
-    tabs.add(Tab(text: L10().parts));
-
-    return tabs;
+    return [
+      Tab(text: L10().details),
+      Tab(text: L10().parts),
+    ];
   }
 
   @override

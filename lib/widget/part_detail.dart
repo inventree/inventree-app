@@ -168,20 +168,9 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
     // Request the number of parameters for this part
     if (api.supportsPartParameters) {
-
       showParameters = await InvenTreeSettingsManager().getValue(INV_PART_SHOW_PARAMETERS, true) as bool;
-
-      InvenTreePartParameter().count(
-          filters: {
-            "part": part.pk.toString(),
-          }
-      ).then((int value) {
-        if (mounted) {
-          setState(() {
-            parameterCount = value;
-          });
-        }
-      });
+    } else {
+      showParameters = false;
     }
 
     // Request the number of attachments
@@ -418,18 +407,13 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       ListTile(
         title: Text(L10().availableStock),
         subtitle: Text(L10().stockDetails),
-        leading: FaIcon(FontAwesomeIcons.boxesStacked, color: COLOR_CLICK),
+        leading: FaIcon(FontAwesomeIcons.boxesStacked),
         trailing: Text(
           part.stockString(),
           style: TextStyle(
             fontWeight: FontWeight.bold,
           ),
         ),
-        onTap: () {
-          setState(() {
-            tabIndex = 1;
-          });
-        },
       ),
     );
 
@@ -567,24 +551,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       }
     }
 
-    if (showParameters) {
-      tiles.add(
-          ListTile(
-              title: Text(L10().parameters),
-              leading: FaIcon(FontAwesomeIcons.tableList, color: COLOR_CLICK),
-              trailing: parameterCount > 0 ? Text(parameterCount.toString()) : null,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PartParameterWidget(part)
-                  )
-                );
-              }
-          )
-      );
-    }
-
     // Notes field
     tiles.add(
         ListTile(
@@ -706,52 +672,41 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           }
         }
     );
-
   }
 
-  int stockItemCount = 0;
+  @override
+  List<Widget> getTabIcons(BuildContext context) {
+    List<Widget> icons = [
+      Tab(text: L10().details),
+      Tab(text: L10().stock)
+    ];
 
-  Widget getSelectedWidget(int index) {
-    switch (index) {
-      case 0:
-        return Center(
-          child: ListView(
-            children: ListTile.divideTiles(
-              context: context,
-              tiles: partTiles()
-            ).toList()
-        ),
-      );
-      case 1:
-        return PaginatedStockItemList(
-          {"part": "${part.pk}"},
-          true,
-        );
-      default:
-        return Center();
+    if (showParameters) {
+      icons.add(Tab(text: L10().parameters));
     }
+
+    return icons;
   }
 
   @override
-  Widget getBottomNavBar(BuildContext context) {
-    return BottomNavigationBar(
-      currentIndex: tabIndex,
-      onTap: onTabSelectionChanged,
-      items: <BottomNavigationBarItem> [
-        BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.circleInfo),
-          label: L10().details,
-        ),
-        BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.boxesStacked),
-          label: L10().stock
-        ),
-      ]
-    );
+  List<Widget> getTabs(BuildContext context) {
+    List<Widget> tabs = [
+      Center(
+        child: ListView(
+          children: ListTile.divideTiles(
+          context: context,
+          tiles: partTiles()
+          ).toList()
+        )
+      ),
+      PaginatedStockItemList({"part": part.pk.toString()}, true)
+    ];
+
+    if (showParameters) {
+      tabs.add(PaginatedParameterList({"part": part.pk.toString()}, true));
+    }
+
+    return tabs;
   }
 
-  @override
-  Widget getBody(BuildContext context) {
-    return getSelectedWidget(tabIndex);
-  }
 }

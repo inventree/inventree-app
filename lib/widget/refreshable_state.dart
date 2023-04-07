@@ -38,9 +38,6 @@ mixin BaseWidgetProperties {
     return ListView();
   }
 
-  Widget? getBottomNavBar(BuildContext context) {
-    return null;
-  }
 
   /*
    * Construct the top AppBar for this view
@@ -281,7 +278,6 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> with 
           }
       ),
       bottomNavigationBar: buildBottomAppBar(context, refreshableKey),
-      //getBottomNavBar(context),
     );
 
     // Default implementation is *not* tabbed
