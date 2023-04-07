@@ -45,9 +45,64 @@ mixin BaseWidgetProperties {
    */
   AppBar? buildAppBar(BuildContext context, GlobalKey<ScaffoldState> key) {
     return AppBar(
+      centerTitle: false,
       title: Text(getAppBarTitle(context)),
       actions: appBarActions(context),
       leading: backButton(context, key),
+    );
+  }
+
+  /*
+   * Construct a global navigation bar at the bottom of the screen
+   * - Button to access navigation menu
+   * - Button to access global search
+   * - Button to access barcode scan
+   */
+  BottomAppBar? buildBottomAppBar(BuildContext context, GlobalKey<ScaffoldState> key) {
+
+    List<Widget> icons = [
+      IconButton(
+        icon: Icon(Icons.menu),
+        onPressed: () {
+          if (key.currentState != null) {
+            key.currentState!.openDrawer();
+          }
+        },
+      ),
+      IconButton(
+        icon: Icon(Icons.search),
+        onPressed: () {
+          if (InvenTreeAPI().checkConnection()) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SearchWidget(true)
+                )
+            );
+          }
+        },
+      ),
+      IconButton(
+        icon: Icon(Icons.qr_code_scanner),
+        onPressed: () {
+          if (InvenTreeAPI().checkConnection()) {
+            scanQrCode(context);
+          }
+        },
+      )
+    ];
+
+    return BottomAppBar(
+        shape: CircularNotchedRectangle(),
+        notchMargin: 20,
+        child: IconTheme(
+            data: IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: icons,
+            )
+        )
     );
   }
 
@@ -185,60 +240,6 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> with 
     setState(() {
       loading = false;
     });
-  }
-
-  /*
-   * Construct a global navigation bar at the bottom of the screen
-   * - Button to access navigation menu
-   * - Button to access global search
-   * - Button to access barcode scan
-   */
-  BottomAppBar? buildBottomAppBar(BuildContext context, GlobalKey<ScaffoldState> key) {
-
-    List<Widget> icons = [
-      IconButton(
-        icon: Icon(Icons.menu),
-        onPressed: () {
-          if (key.currentState != null) {
-            key.currentState!.openDrawer();
-          }
-        },
-      ),
-      IconButton(
-        icon: Icon(Icons.search),
-        onPressed: () {
-          if (api.checkConnection()) {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => SearchWidget(true)
-                )
-            );
-          }
-        },
-      ),
-      IconButton(
-        icon: Icon(Icons.qr_code_scanner),
-        onPressed: () {
-          if (api.checkConnection()) {
-            scanQrCode(context);
-          }
-        },
-      )
-    ];
-
-    return BottomAppBar(
-      shape: CircularNotchedRectangle(),
-      notchMargin: 20,
-      child: IconTheme(
-        data: IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          children: icons,
-        )
-      )
-    );
   }
 
   @override

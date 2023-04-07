@@ -1,9 +1,11 @@
 import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
+import "package:inventree/api.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/settings/settings.dart";
 import "package:inventree/widget/category_display.dart";
+import "package:inventree/widget/notifications.dart";
 import "package:inventree/widget/purchase_order_list.dart";
 import "package:inventree/widget/location_display.dart";
 
@@ -64,12 +66,87 @@ class InvenTreeDrawer extends StatelessWidget {
     );
   }
 
-  /*
-   * Load settings widget
-   */
+  // Load notifications screen
+  void _notifications() {
+    _closeDrawer();
+    Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationWidget()));
+  }
+
+  // Load settings widget
   void _settings() {
     _closeDrawer();
     Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeSettingsWidget()));
+  }
+
+  // Construct list of tiles to display in the "drawer" menu
+  List<Widget> drawerTiles(BuildContext context) {
+    List<Widget> tiles = [];
+
+    // "Home" access
+    tiles.add(ListTile(
+      leading: FaIcon(FontAwesomeIcons.house),
+      title: Text(
+        L10().appTitle,
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+      onTap: _home,
+    ));
+
+    tiles.add(Divider());
+
+    if (InvenTreeAPI().checkPermission("part_category", "view")) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().parts),
+          leading: FaIcon(FontAwesomeIcons.shapes),
+          onTap: _parts,
+        )
+      );
+    }
+
+    if (InvenTreeAPI().checkPermission("stock_location", "view")) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().stock),
+          leading: FaIcon(FontAwesomeIcons.boxesStacked),
+          onTap: _stock,
+        )
+      );
+    }
+
+    if (InvenTreeAPI().checkPermission("purchase_order", "view")) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().purchaseOrders),
+          leading: FaIcon(FontAwesomeIcons.cartShopping),
+          onTap: _purchaseOrders,
+        )
+      );
+    }
+
+    if (tiles.length > 2) {
+      tiles.add(Divider());
+    }
+
+    if (InvenTreeAPI().supportsNotifications) {
+      tiles.add(
+        ListTile(
+          leading: FaIcon(FontAwesomeIcons.bell),
+          title: Text(L10().notifications),
+          onTap: _notifications,
+        )
+      );
+    }
+
+    tiles.add(
+      ListTile(
+        title: Text(L10().settings),
+        leading: Icon(Icons.settings),
+        onTap: _settings,
+      )
+    );
+
+    return tiles;
   }
 
   @override
@@ -77,38 +154,7 @@ class InvenTreeDrawer extends StatelessWidget {
 
     return  Drawer(
         child: ListView(
-          children: [
-            ListTile(
-              leading: FaIcon(FontAwesomeIcons.house),
-              title: Text(
-                L10().appTitle,
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              onTap: _home,
-            ),
-            Divider(),
-            ListTile(
-              title: Text(L10().parts),
-              leading: FaIcon(FontAwesomeIcons.shapes),
-              onTap: _parts,
-            ),
-            ListTile(
-              title: Text(L10().stock),
-              leading: FaIcon(FontAwesomeIcons.boxesStacked),
-              onTap: _stock,
-            ),
-            ListTile(
-              title: Text(L10().purchaseOrders),
-              leading: FaIcon(FontAwesomeIcons.cartShopping),
-              onTap: _purchaseOrders,
-            ),
-            Divider(),
-            ListTile(
-              title: Text(L10().settings),
-              leading: Icon(Icons.settings),
-              onTap: _settings,
-            ),
-          ]
+          children: drawerTiles(context),
         )
     );
   }

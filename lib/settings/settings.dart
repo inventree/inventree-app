@@ -43,9 +43,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
       ),
       body: Center(
         child: ListView(
-          children: ListTile.divideTiles(
-            context: context,
-            tiles: <Widget>[
+          children: [
               ListTile(
                   title: Text(L10().server),
                   subtitle: Text(L10().configureServer),
@@ -85,7 +83,6 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
                 onTap: _about,
               )
             ]
-          ).toList()
         )
       )
     );
