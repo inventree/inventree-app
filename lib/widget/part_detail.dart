@@ -69,6 +69,24 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   String getAppBarTitle(BuildContext context) => L10().partDetails;
 
   @override
+  List<Widget> appBarActions(BuildContext context) {
+    List<Widget> actions = [];
+
+    if (api.checkPermission("part", "change")) {
+      actions.add(
+          IconButton(
+              icon: Icon(Icons.edit_square),
+              tooltip: L10().editPart,
+              onPressed: () {
+                _editPartDialog(context);
+              }
+          )
+      );
+    }
+    return actions;
+  }
+
+  @override
   List<SpeedDialChild> barcodeButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
@@ -90,18 +108,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   @override
   List<SpeedDialChild> actionButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
-
-    if (api.checkPermission("part", "change")) {
-      actions.add(
-        SpeedDialChild(
-          child: Icon(Icons.edit_square),
-          label: L10().editPart,
-          onTap: () {
-            _editPartDialog(context);
-          }
-        )
-      );
-    }
 
     if (api.checkPermission("stock", "add")) {
       actions.add(

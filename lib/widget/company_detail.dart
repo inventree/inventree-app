@@ -44,22 +44,31 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
   String getAppBarTitle(BuildContext context) => L10().company;
 
   @override
-  List<SpeedDialChild> actionButtons(BuildContext context) {
-    List<SpeedDialChild> actions = [];
+  List<Widget> appBarActions(BuildContext context) {
+    List<Widget> actions = [];
 
     if (api.checkPermission("purchase_order", "change") ||
         api.checkPermission("sales_order", "change") ||
         api.checkPermission("return_order", "change")) {
       actions.add(
-        SpeedDialChild(
-          child: Icon(Icons.edit_square),
-          label: L10().companyEdit,
-          onTap: () {
-            editCompany(context);
-          }
-        )
+          IconButton(
+              icon: Icon(Icons.edit_square),
+              tooltip: L10().companyEdit,
+              onPressed: () {
+                editCompany(context);
+              }
+          )
       );
     }
+    
+    return actions;
+  }
+
+  @override
+  List<SpeedDialChild> actionButtons(BuildContext context) {
+    List<SpeedDialChild> actions = [];
+
+    // TODO
 
     return actions;
   }

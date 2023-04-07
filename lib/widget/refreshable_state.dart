@@ -15,36 +15,11 @@ import "package:inventree/widget/search.dart";
  */
 mixin BaseWidgetProperties {
 
-  // Return a list of appBar actions
-  List<Widget> getAppBarActions(BuildContext context) {
-    List<Widget> actions = [
-      IconButton(
-        icon: Icon(Icons.search),
-        onPressed: () async {
-          // Open global search widget
-          if (!InvenTreeAPI().checkConnection()) return;
-
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => SearchWidget(true)
-            )
-          );
-        }
-      ),
-      IconButton(
-        icon: Icon(Icons.qr_code_scanner),
-        onPressed: () async {
-          // Open barcode scan widget
-          if (!InvenTreeAPI().checkConnection()) return;
-
-          scanQrCode(context);
-        },
-      )
-    ];
-
-    return actions;
-  }
+  /*
+   * Return a list of appBar actions
+   * By default, no appBar actions are available
+   */
+  List<Widget> appBarActions(BuildContext context) => [];
 
   // Return a title for the appBar
   String getAppBarTitle(BuildContext context) { return "--- app bar ---"; }
@@ -71,7 +46,7 @@ mixin BaseWidgetProperties {
   AppBar? buildAppBar(BuildContext context, GlobalKey<ScaffoldState> key) {
     return AppBar(
       title: Text(getAppBarTitle(context)),
-      actions: getAppBarActions(context),
+      actions: appBarActions(context),
       leading: backButton(context, key),
     );
   }
@@ -129,7 +104,7 @@ mixin BaseWidgetProperties {
     }
 
     return Wrap(
-      direction: Axis.vertical,
+      direction: Axis.horizontal,
       children: children,
       spacing: 15,
     );
@@ -254,7 +229,7 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> with 
 
     return BottomAppBar(
       shape: CircularNotchedRectangle(),
-      notchMargin: 5,
+      notchMargin: 20,
       child: IconTheme(
         data: IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
         child: Row(
@@ -277,7 +252,7 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> with 
       appBar: buildAppBar(context, refreshableKey),
       drawer: getDrawer(context),
       floatingActionButton: buildSpeedDial(context),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
       body: Builder(
         builder: (BuildContext context) {
           return RefreshIndicator(

@@ -37,22 +37,29 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
   String getAppBarTitle(BuildContext context) => L10().partCategory;
 
   @override
-  List<SpeedDialChild> actionButtons(BuildContext context) {
-    List<SpeedDialChild> actions = [];
+  List<Widget> appBarActions(BuildContext context) {
+    List<Widget> actions = [];
 
     if (widget.category != null) {
       if (api.checkPermission("part_category", "change")) {
         actions.add(
-            SpeedDialChild(
-                child: Icon(Icons.edit_square),
-                label: L10().editCategory,
-                onTap: () {
-                  _editCategoryDialog(context);
-                }
-            )
+          IconButton(
+            icon:  Icon(Icons.edit_square),
+            tooltip: L10().editCategory,
+            onPressed: () {
+              _editCategoryDialog(context);
+            },
+          )
         );
       }
     }
+
+    return actions;
+  }
+
+  @override
+  List<SpeedDialChild> actionButtons(BuildContext context) {
+    List<SpeedDialChild> actions = [];
 
     if (api.checkPermission("part", "add")) {
      actions.add(

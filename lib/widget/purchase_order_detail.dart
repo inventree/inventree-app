@@ -45,15 +45,15 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
   String getAppBarTitle(BuildContext context) => L10().purchaseOrder;
 
   @override
-  List<SpeedDialChild> actionButtons(BuildContext context) {
-    List<SpeedDialChild> actions = [];
+  List<Widget> appBarActions(BuildContext context) {
+    List<Widget> actions = [];
 
     if (InvenTreeAPI().checkPermission("purchase_order", "change")) {
       actions.add(
-        SpeedDialChild(
-          child: Icon(Icons.edit_square),
-          label: L10().purchaseOrderEdit,
-          onTap: () {
+        IconButton(
+          icon: Icon(Icons.edit_square),
+          tooltip: L10().purchaseOrderEdit,
+          onPressed: () {
             editOrder(context);
           }
         )

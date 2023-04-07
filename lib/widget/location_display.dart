@@ -46,6 +46,40 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
   }
 
   @override
+  List<Widget> appBarActions(BuildContext context) {
+    List<Widget> actions = [];
+
+    // Add "locate" button
+    if (location != null && api.supportsMixin("locate")) {
+      actions.add(
+          IconButton(
+              icon: Icon(Icons.travel_explore),
+              tooltip: L10().locateLocation,
+              onPressed: () async {
+                api.locateItemOrLocation(context, location: location!.pk);
+              }
+          )
+      );
+    }
+
+    // Add "edit" button
+    if (location != null && api.checkPermission("stock_location", "change")) {
+      actions.add(
+          IconButton(
+              icon: Icon(Icons.edit_square),
+              tooltip: L10().editLocation,
+              onPressed: () {
+                _editLocationDialog(context);
+              }
+          )
+      );
+    }
+
+
+    return actions;
+  }
+
+  @override
   List<SpeedDialChild> barcodeButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
@@ -108,32 +142,6 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
   @override
   List<SpeedDialChild> actionButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
-
-    // Add "locate" button
-    if (location != null && api.supportsMixin("locate")) {
-      actions.add(
-          SpeedDialChild(
-              child: Icon(Icons.travel_explore),
-              label: L10().locateLocation,
-              onTap: () async {
-                api.locateItemOrLocation(context, location: location!.pk);
-              }
-          )
-      );
-    }
-
-    // Add "edit" button
-    if (location != null && api.checkPermission("stock_location", "change")) {
-      actions.add(
-          SpeedDialChild(
-              child: Icon(Icons.edit_square),
-              label: L10().editLocation,
-              onTap: () {
-                _editLocationDialog(context);
-              }
-          )
-      );
-    }
 
     // Create new location
     if (api.checkPermission("stock_location", "add")) {

@@ -49,32 +49,42 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   bool stockShowHistory = false;
 
   @override
-  List<SpeedDialChild> actionButtons(BuildContext context) {
-
-    List<SpeedDialChild> actions = [];
+  List<Widget> appBarActions(BuildContext context) {
+    List<Widget> actions = [];
 
     if (api.supportsMixin("locate")) {
       actions.add(
-        SpeedDialChild(
-          child: Icon(Icons.travel_explore),
-          label: L10().locateItem,
-          onTap: () async {
-            api.locateItemOrLocation(context, item: widget.item.pk);
-          }
-        )
+          IconButton(
+            icon: Icon(Icons.travel_explore),
+            tooltip: L10().locateItem,
+            onPressed: () async {
+              api.locateItemOrLocation(context, item: widget.item.pk);
+            }
+          )
       );
     }
 
     if (api.checkPermission("stock", "change")) {
       actions.add(
-        SpeedDialChild(
-          child: Icon(Icons.edit_square),
-          label: L10().editItem,
-          onTap: () {
-            _editStockItem(context);
-          }
-        )
+          IconButton(
+              icon: Icon(Icons.edit_square),
+              tooltip: L10().editItem,
+              onPressed: () {
+                _editStockItem(context);
+              }
+          )
       );
+    }
+
+    return actions;
+  }
+
+  @override
+  List<SpeedDialChild> actionButtons(BuildContext context) {
+
+    List<SpeedDialChild> actions = [];
+
+    if (api.checkPermission("stock", "change")) {
 
       // Stock adjustment actions available if item is *not* serialized
       if (!widget.item.isSerialized()) {
@@ -130,13 +140,13 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     if (api.checkPermission("stock", "delete")) {
       actions.add(
-        SpeedDialChild(
-          child: FaIcon(FontAwesomeIcons.trashCan, color: Colors.red),
-          label: L10().stockItemDelete,
-          onTap: () {
-            _deleteItem(context);
-          }
-        )
+          SpeedDialChild(
+              child: FaIcon(FontAwesomeIcons.trashCan, color: Colors.red),
+              label: L10().stockItemDelete,
+              onTap: () {
+                _deleteItem(context);
+              }
+          )
       );
     }
 
