@@ -62,9 +62,13 @@ mixin BaseWidgetProperties {
    */
   BottomAppBar? buildBottomAppBar(BuildContext context, GlobalKey<ScaffoldState> key) {
 
+    const double iconSize = 32;
+    const Color iconColor = Colors.blueGrey;
+
     List<Widget> icons = [
       IconButton(
-        icon: Icon(Icons.menu),
+        icon: Icon(Icons.menu, color: iconColor),
+        iconSize: iconSize,
         onPressed: () {
           if (key.currentState != null) {
             key.currentState!.openDrawer();
@@ -72,7 +76,8 @@ mixin BaseWidgetProperties {
         },
       ),
       IconButton(
-        icon: Icon(Icons.search),
+        icon: Icon(Icons.search, color: iconColor),
+        iconSize: iconSize,
         onPressed: () {
           if (InvenTreeAPI().checkConnection()) {
             Navigator.push(
@@ -85,7 +90,8 @@ mixin BaseWidgetProperties {
         },
       ),
       IconButton(
-        icon: Icon(Icons.qr_code_scanner),
+        icon: Icon(Icons.qr_code_scanner, color: iconColor),
+        iconSize: iconSize,
         onPressed: () {
           if (InvenTreeAPI().checkConnection()) {
             scanQrCode(context);
@@ -150,7 +156,7 @@ mixin BaseWidgetProperties {
     if (actions.isNotEmpty) {
       children.add(
           SpeedDial(
-            icon: Icons.add,
+            icon: Icons.more_horiz,
             activeIcon: Icons.close,
             children: actions,
             spacing: 14,
