@@ -209,18 +209,40 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> with 
     });
   }
 
+  BottomAppBar? buildBottomAppBar(BuildContext context) {
+
+    List<Widget> icons = [];
+
+    if (icons.isEmpty) {
+      return null;
+    }
+
+    return BottomAppBar(
+      color: Colors.redAccent,
+      shape: CircularNotchedRectangle(),
+      notchMargin: 5,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.max,
+        children: icons,
+      )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
 
     // Save the context for future use
     _context = context;
 
+    BottomAppBar? appBar = buildBottomAppBar(context);
+
     return Scaffold(
       key: refreshableKey,
       appBar: buildAppBar(context, refreshableKey),
       drawer: getDrawer(context),
       floatingActionButton: buildSpeedDial(context),
-      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
+      floatingActionButtonLocation: appBar == null ? FloatingActionButtonLocation.endFloat : FloatingActionButtonLocation.endDocked,
       body: Builder(
         builder: (BuildContext context) {
           return RefreshIndicator(
@@ -231,7 +253,8 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> with 
           );
         }
       ),
-      bottomNavigationBar: getBottomNavBar(context),
+      bottomNavigationBar: buildBottomAppBar(context),
+      //getBottomNavBar(context),
     );
   }
 }
