@@ -13,8 +13,6 @@ import "package:inventree/settings/login.dart";
 import "package:inventree/settings/settings.dart";
 import "package:inventree/user_profile.dart";
 
-import "package:inventree/inventree/notification.dart";
-
 import "package:inventree/widget/category_display.dart";
 import "package:inventree/widget/drawer.dart";
 import "package:inventree/widget/location_display.dart";
