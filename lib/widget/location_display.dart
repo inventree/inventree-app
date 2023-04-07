@@ -46,7 +46,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
   }
 
   @override
-  List<SpeedDialChild> buildBarcodeButtons(BuildContext context) {
+  List<SpeedDialChild> barcodeButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
     if (location != null) {
@@ -106,7 +106,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
   }
 
   @override
-  List<SpeedDialChild> buildActionButtons(BuildContext context) {
+  List<SpeedDialChild> actionButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
     // Add "locate" button

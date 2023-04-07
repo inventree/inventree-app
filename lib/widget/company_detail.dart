@@ -44,7 +44,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
   String getAppBarTitle(BuildContext context) => L10().company;
 
   @override
-  List<SpeedDialChild> buildActionButtons(BuildContext context) {
+  List<SpeedDialChild> actionButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
     if (api.checkPermission("purchase_order", "change") ||

@@ -53,7 +53,7 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
   }
 
   @override
-  List<SpeedDialChild> buildBarcodeButtons(BuildContext context) {
+  List<SpeedDialChild> barcodeButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
     if (api.checkPermission("purchase_order", "change") ||
@@ -74,7 +74,7 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
   }
 
   @override
-  List<SpeedDialChild> buildActionButtons(BuildContext context) {
+  List<SpeedDialChild> actionButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
     if (api.checkPermission("purchase_order", "change") ||

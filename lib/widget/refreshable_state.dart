@@ -65,6 +65,9 @@ mixin BaseWidgetProperties {
     return null;
   }
 
+  /*
+   * Construct the top AppBar for this view
+   */
   AppBar? buildAppBar(BuildContext context, GlobalKey<ScaffoldState> key) {
     return AppBar(
       title: Text(getAppBarTitle(context)),
@@ -78,20 +81,20 @@ mixin BaseWidgetProperties {
    * Should be re-implemented by particular view with the required actions
    * By default, returns an empty list, and thus nothing will be rendered
    */
-  List<SpeedDialChild> buildActionButtons(BuildContext context) => [];
+  List<SpeedDialChild> actionButtons(BuildContext context) => [];
 
   /*
    * Build out a set of barcode actions available for this view
    */
-  List<SpeedDialChild> buildBarcodeButtons(BuildContext context) => [];
+  List<SpeedDialChild> barcodeButtons(BuildContext context) => [];
 
   /*
    * Build out action buttons for a given widget
    */
   Widget? buildSpeedDial(BuildContext context) {
 
-    final actions = buildActionButtons(context);
-    final barcodeActions = buildBarcodeButtons(context);
+    final actions = actionButtons(context);
+    final barcodeActions = barcodeButtons(context);
 
     if (actions.isEmpty && barcodeActions.isEmpty) {
       return null;
@@ -209,22 +212,56 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> with 
     });
   }
 
-  BottomAppBar? buildBottomAppBar(BuildContext context) {
+  /*
+   * Construct a global navigation bar at the bottom of the screen
+   * - Button to access navigation menu
+   * - Button to access global search
+   * - Button to access barcode scan
+   */
+  BottomAppBar? buildBottomAppBar(BuildContext context, GlobalKey<ScaffoldState> key) {
 
-    List<Widget> icons = [];
-
-    if (icons.isEmpty) {
-      return null;
-    }
+    List<Widget> icons = [
+      IconButton(
+        icon: Icon(Icons.menu),
+        onPressed: () {
+          if (key.currentState != null) {
+            key.currentState!.openDrawer();
+          }
+        },
+      ),
+      IconButton(
+        icon: Icon(Icons.search),
+        onPressed: () {
+          if (api.checkConnection()) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SearchWidget(true)
+                )
+            );
+          }
+        },
+      ),
+      IconButton(
+        icon: Icon(Icons.qr_code_scanner),
+        onPressed: () {
+          if (api.checkConnection()) {
+            scanQrCode(context);
+          }
+        },
+      )
+    ];
 
     return BottomAppBar(
-      color: Colors.redAccent,
       shape: CircularNotchedRectangle(),
       notchMargin: 5,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.max,
-        children: icons,
+      child: IconTheme(
+        data: IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          children: icons,
+        )
       )
     );
   }
@@ -235,14 +272,12 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> with 
     // Save the context for future use
     _context = context;
 
-    BottomAppBar? appBar = buildBottomAppBar(context);
-
     return Scaffold(
       key: refreshableKey,
       appBar: buildAppBar(context, refreshableKey),
       drawer: getDrawer(context),
       floatingActionButton: buildSpeedDial(context),
-      floatingActionButtonLocation: appBar == null ? FloatingActionButtonLocation.endFloat : FloatingActionButtonLocation.endDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       body: Builder(
         builder: (BuildContext context) {
           return RefreshIndicator(
@@ -253,7 +288,7 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> with 
           );
         }
       ),
-      bottomNavigationBar: buildBottomAppBar(context),
+      bottomNavigationBar: buildBottomAppBar(context, refreshableKey),
       //getBottomNavBar(context),
     );
   }

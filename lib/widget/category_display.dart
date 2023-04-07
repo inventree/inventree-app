@@ -37,44 +37,43 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
   String getAppBarTitle(BuildContext context) => L10().partCategory;
 
   @override
-  List<SpeedDialChild> buildActionButtons(BuildContext context) {
+  List<SpeedDialChild> actionButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
     if (widget.category != null) {
       if (api.checkPermission("part_category", "change")) {
         actions.add(
-          SpeedDialChild(
-            child: Icon(Icons.edit_square),
-            label: L10().editCategory,
-            onTap: () {
-              _editCategoryDialog(context);
-            }
-          )
+            SpeedDialChild(
+                child: Icon(Icons.edit_square),
+                label: L10().editCategory,
+                onTap: () {
+                  _editCategoryDialog(context);
+                }
+            )
         );
       }
+    }
 
-      if (api.checkPermission("part", "add")) {
-       actions.add(
-         SpeedDialChild(
-           child: FaIcon(FontAwesomeIcons.shapes),
-           label: L10().partCreateDetail,
-           onTap: _newPart,
-         )
-       );
-      }
+    if (api.checkPermission("part", "add")) {
+     actions.add(
+       SpeedDialChild(
+         child: FaIcon(FontAwesomeIcons.shapes),
+         label: L10().partCreateDetail,
+         onTap: _newPart,
+       )
+     );
+    }
 
-      if (api.checkPermission("part_category", "add")) {
-        actions.add(
-          SpeedDialChild(
-            child: FaIcon(FontAwesomeIcons.sitemap),
-            label: L10().categoryCreateDetail,
-            onTap: () {
-              _newCategory(context);
-            }
-          )
-        );
-      }
-
+    if (api.checkPermission("part_category", "add")) {
+      actions.add(
+        SpeedDialChild(
+          child: FaIcon(FontAwesomeIcons.sitemap),
+          label: L10().categoryCreateDetail,
+          onTap: () {
+            _newCategory(context);
+          }
+        )
+      );
     }
 
     return actions;

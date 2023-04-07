@@ -69,7 +69,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   String getAppBarTitle(BuildContext context) => L10().partDetails;
 
   @override
-  List<SpeedDialChild> buildBarcodeButtons(BuildContext context) {
+  List<SpeedDialChild> barcodeButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
     if (api.checkPermission("part", "change")) {
@@ -88,7 +88,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   }
 
   @override
-  List<SpeedDialChild> buildActionButtons(BuildContext context) {
+  List<SpeedDialChild> actionButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
     if (api.checkPermission("part", "change")) {

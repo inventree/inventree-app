@@ -49,7 +49,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   bool stockShowHistory = false;
 
   @override
-  List<SpeedDialChild> buildActionButtons(BuildContext context) {
+  List<SpeedDialChild> actionButtons(BuildContext context) {
 
     List<SpeedDialChild> actions = [];
 
@@ -144,7 +144,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   }
 
   @override
-  List<SpeedDialChild> buildBarcodeButtons(BuildContext context) {
+  List<SpeedDialChild> barcodeButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
     if (api.checkPermission("stock", "change")) {
