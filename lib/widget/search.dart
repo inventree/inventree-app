@@ -54,7 +54,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
   }
 
   @override
-  String getAppBarTitle(BuildContext context) => L10().search;
+  String getAppBarTitle() => L10().search;
 
   @override
   AppBar? buildAppBar(BuildContext context, GlobalKey<ScaffoldState> key) {

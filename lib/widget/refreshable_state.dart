@@ -1,9 +1,12 @@
 import "package:flutter/material.dart";
+import "package:flutter_speed_dial/flutter_speed_dial.dart";
 
 import "package:inventree/api.dart";
+import "package:inventree/barcode.dart";
 
 import "package:inventree/widget/back.dart";
 import "package:inventree/widget/drawer.dart";
+import "package:inventree/widget/search.dart";
 
 
 /*
@@ -11,16 +14,21 @@ import "package:inventree/widget/drawer.dart";
  */
 mixin BaseWidgetProperties {
 
-  // Return a list of appBar actions (default = None)
-  List<Widget> getAppBarActions(BuildContext context) => [];
+  /*
+   * Return a list of appBar actions
+   * By default, no appBar actions are available
+   */
+  List<Widget> appBarActions(BuildContext context) => [];
 
   // Return a title for the appBar
-  String getAppBarTitle(BuildContext context) { return "--- app bar ---"; }
+  String getAppBarTitle() { return "--- app bar ---"; }
 
   // Function to construct a drawer (override if needed)
   Widget getDrawer(BuildContext context) {
     return InvenTreeDrawer(context);
   }
+
+  List<Widget> getTabs(BuildContext context) => [];
 
   // Function to construct a body (MUST BE PROVIDED)
   Widget getBody(BuildContext context) {
@@ -29,17 +37,144 @@ mixin BaseWidgetProperties {
     return ListView();
   }
 
-  Widget? getBottomNavBar(BuildContext context) {
-    return null;
-  }
 
+  /*
+   * Construct the top AppBar for this view
+   */
   AppBar? buildAppBar(BuildContext context, GlobalKey<ScaffoldState> key) {
+
+    List<Widget> tabs = getTabIcons(context);
+
     return AppBar(
-      title: Text(getAppBarTitle(context)),
-      actions: getAppBarActions(context),
+      centerTitle: false,
+      bottom: tabs.isEmpty ? null : TabBar(tabs: tabs),
+      title: Text(getAppBarTitle()),
+      actions: appBarActions(context),
       leading: backButton(context, key),
     );
   }
+
+  /*
+   * Construct a global navigation bar at the bottom of the screen
+   * - Button to access navigation menu
+   * - Button to access global search
+   * - Button to access barcode scan
+   */
+  BottomAppBar? buildBottomAppBar(BuildContext context, GlobalKey<ScaffoldState> key) {
+
+    const double iconSize = 32;
+    const Color iconColor = Colors.blueGrey;
+
+    List<Widget> icons = [
+      IconButton(
+        icon: Icon(Icons.menu, color: iconColor),
+        iconSize: iconSize,
+        onPressed: () {
+          if (key.currentState != null) {
+            key.currentState!.openDrawer();
+          }
+        },
+      ),
+      IconButton(
+        icon: Icon(Icons.search, color: iconColor),
+        iconSize: iconSize,
+        onPressed: () {
+          if (InvenTreeAPI().checkConnection()) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SearchWidget(true)
+                )
+            );
+          }
+        },
+      ),
+      IconButton(
+        icon: Icon(Icons.qr_code_scanner, color: iconColor),
+        iconSize: iconSize,
+        onPressed: () {
+          if (InvenTreeAPI().checkConnection()) {
+            scanQrCode(context);
+          }
+        },
+      )
+    ];
+
+    return BottomAppBar(
+        shape: CircularNotchedRectangle(),
+        notchMargin: 20,
+        child: IconTheme(
+            data: IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: icons,
+            )
+        )
+    );
+  }
+
+  /*
+   * Build out a set of SpeedDialChild widgets, to serve as "actions" for this view
+   * Should be re-implemented by particular view with the required actions
+   * By default, returns an empty list, and thus nothing will be rendered
+   */
+  List<SpeedDialChild> actionButtons(BuildContext context) => [];
+
+  /*
+   * Build out a set of barcode actions available for this view
+   */
+  List<SpeedDialChild> barcodeButtons(BuildContext context) => [];
+
+  /*
+   * Build out action buttons for a given widget
+   */
+  Widget? buildSpeedDial(BuildContext context) {
+
+    final actions = actionButtons(context);
+    final barcodeActions = barcodeButtons(context);
+
+    if (actions.isEmpty && barcodeActions.isEmpty) {
+      return null;
+    }
+
+    List<Widget> children = [];
+
+    if (barcodeActions.isNotEmpty) {
+      children.add(
+        SpeedDial(
+          icon: Icons.qr_code_scanner,
+          activeIcon: Icons.close,
+          children: barcodeActions,
+          spacing: 14,
+          childPadding: const EdgeInsets.all(5),
+          spaceBetweenChildren: 15,
+        )
+      );
+    }
+
+    if (actions.isNotEmpty) {
+      children.add(
+          SpeedDial(
+            icon: Icons.more_horiz,
+            activeIcon: Icons.close,
+            children: actions,
+            spacing: 14,
+            childPadding: const EdgeInsets.all(5),
+            spaceBetweenChildren: 15,
+          )
+      );
+    }
+
+    return Wrap(
+      direction: Axis.horizontal,
+      children: children,
+      spacing: 15,
+    );
+  }
+
+  // Return list of "tabs" for this widget
+  List<Widget> getTabIcons(BuildContext context) => [];
 
 }
 
@@ -57,9 +192,6 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> with 
   // Storage for context once "Build" is called
   late BuildContext? _context;
 
-  // Current tab index (used for widgets which display bottom tabs)
-  int tabIndex = 0;
-
   // Bool indicator
   bool loading = false;
 
@@ -67,16 +199,6 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> with 
 
   // Helper function to return API instance
   InvenTreeAPI get api => InvenTreeAPI();
-
-  // Update current tab selection
-  void onTabSelectionChanged(int index) {
-
-    if (mounted) {
-      setState(() {
-        tabIndex = index;
-      });
-    }
-  }
 
   @override
   void initState() {
@@ -124,21 +246,38 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> with 
     // Save the context for future use
     _context = context;
 
-    return Scaffold(
+    List<Widget> tabs = getTabIcons(context);
+
+    Widget body = tabs.isEmpty ? getBody(context) : TabBarView(children: getTabs(context));
+
+    Scaffold view = Scaffold(
       key: refreshableKey,
       appBar: buildAppBar(context, refreshableKey),
       drawer: getDrawer(context),
+      floatingActionButton: buildSpeedDial(context),
+      floatingActionButtonLocation: FloatingActionButtonLocation
+          .miniEndDocked,
       body: Builder(
-        builder: (BuildContext context) {
-          return RefreshIndicator(
-              onRefresh: () async {
-                refresh(context);
-              },
-              child: getBody(context)
-          );
-        }
+          builder: (BuildContext context) {
+            return RefreshIndicator(
+                onRefresh: () async {
+                  refresh(context);
+                },
+                child: body
+            );
+          }
       ),
-      bottomNavigationBar: getBottomNavBar(context),
+      bottomNavigationBar: buildBottomAppBar(context, refreshableKey),
     );
+
+    // Default implementation is *not* tabbed
+    if (tabs.isNotEmpty) {
+      return DefaultTabController(
+          length: tabs.length,
+          child: view,
+      );
+    } else {
+      return view;
+    }
   }
 }

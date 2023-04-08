@@ -409,19 +409,21 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
    */
   Widget buildSearchInput(BuildContext context) {
     return ListTile(
-      leading: orderingOptions.isEmpty ? null : GestureDetector(
+      trailing: orderingOptions.isEmpty ? null : GestureDetector(
         child: FaIcon(FontAwesomeIcons.sort, color: COLOR_CLICK),
         onTap: () async {
           _saveOrderingOptions(context);
         },
       ),
-      trailing: GestureDetector(
+      leading: GestureDetector(
         child: FaIcon(
           searchController.text.isEmpty ? FontAwesomeIcons.magnifyingGlass : FontAwesomeIcons.deleteLeft,
-          color: searchController.text.isNotEmpty ? COLOR_DANGER : COLOR_CLICK,
+          color: searchController.text.isNotEmpty ? COLOR_DANGER : null,
         ),
         onTap: () {
-          searchController.clear();
+          if (searchController.text.isEmpty) {
+            searchController.clear();
+          }
           updateSearchTerm();
         },
       ),

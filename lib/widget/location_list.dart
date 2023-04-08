@@ -30,7 +30,7 @@ class _StockLocationListState extends RefreshableState<StockLocationList> {
   bool showFilterOptions = false;
 
   @override
-  List<Widget> getAppBarActions(BuildContext context) => [
+  List<Widget> appBarActions(BuildContext context) => [
     IconButton(
       icon: FaIcon(FontAwesomeIcons.filter),
       onPressed: () async {
@@ -42,7 +42,7 @@ class _StockLocationListState extends RefreshableState<StockLocationList> {
   ];
 
   @override
-  String getAppBarTitle(BuildContext context) => L10().stockLocations;
+  String getAppBarTitle() => L10().stockLocations;
 
   @override
   Widget getBody(BuildContext context) {

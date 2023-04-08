@@ -37,7 +37,7 @@ class _BillOfMaterialsState extends RefreshableState<BillOfMaterialsWidget> {
   bool showFilterOptions = false;
 
   @override
-  String getAppBarTitle(BuildContext context) {
+  String getAppBarTitle() {
     if (widget.isParentComponent) {
       return L10().billOfMaterials;
     } else {
@@ -46,7 +46,7 @@ class _BillOfMaterialsState extends RefreshableState<BillOfMaterialsWidget> {
   }
 
   @override
-  List<Widget> getAppBarActions(BuildContext context) => [
+  List<Widget> appBarActions(BuildContext context) => [
     IconButton(
       icon: FaIcon(FontAwesomeIcons.filter),
       onPressed: () async {

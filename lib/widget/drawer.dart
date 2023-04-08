@@ -1,23 +1,17 @@
 import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
-import "package:package_info_plus/package_info_plus.dart";
 
 import "package:inventree/api.dart";
-import "package:inventree/barcode.dart";
 import "package:inventree/l10.dart";
-
-import "package:inventree/settings/about.dart";
 import "package:inventree/settings/settings.dart";
-
-import "package:inventree/widget/search.dart";
+import "package:inventree/widget/category_display.dart";
+import "package:inventree/widget/notifications.dart";
+import "package:inventree/widget/purchase_order_list.dart";
+import "package:inventree/widget/location_display.dart";
 
 
 /*
  * Custom "drawer" widget for the InvenTree app.
- *
- * - Provides a "home" button which completely unwinds the widget stack
- * - Global search
- * - Barcode scan
  */
 class InvenTreeDrawer extends StatelessWidget {
 
@@ -42,89 +36,125 @@ class InvenTreeDrawer extends StatelessWidget {
     }
   }
 
-  void _search() {
+  // Load "parts" page
+  void _parts() {
+    _closeDrawer();
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null))
+    );
+  }
 
-    if (!InvenTreeAPI().checkConnection()) return;
-
+  // Load "stock" page
+  void _stock() {
+    _closeDrawer();
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => LocationDisplayWidget(null))
+    );
+  }
+  
+  // Load "purchase orders" page
+  void _purchaseOrders() {
     _closeDrawer();
 
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => SearchWidget(true)
+            builder: (context) => PurchaseOrderListWidget(filters: {})
         )
     );
   }
 
-  /*
-   * Launch the camera to scan a QR code.
-   * Upon successful scan, data are passed off to be decoded.
-   */
-  Future <void> _scan() async {
-    if (!InvenTreeAPI().checkConnection()) return;
-
+  // Load notifications screen
+  void _notifications() {
     _closeDrawer();
-    scanQrCode(context);
+    Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationWidget()));
   }
 
-  /*
-   * Load settings widget
-   */
+  // Load settings widget
   void _settings() {
     _closeDrawer();
     Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeSettingsWidget()));
   }
 
-  /*
-   * Load "About" widget
-   */
-  Future<void> _about() async {
-    _closeDrawer();
+  // Construct list of tiles to display in the "drawer" menu
+  List<Widget> drawerTiles(BuildContext context) {
+    List<Widget> tiles = [];
 
-    PackageInfo.fromPlatform().then((PackageInfo info) {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => InvenTreeAboutWidget(info)));
-    });
+    // "Home" access
+    tiles.add(ListTile(
+      leading: FaIcon(FontAwesomeIcons.house),
+      title: Text(
+        L10().appTitle,
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+      onTap: _home,
+    ));
+
+    tiles.add(Divider());
+
+    if (InvenTreeAPI().checkPermission("part_category", "view")) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().parts),
+          leading: FaIcon(FontAwesomeIcons.shapes),
+          onTap: _parts,
+        )
+      );
+    }
+
+    if (InvenTreeAPI().checkPermission("stock_location", "view")) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().stock),
+          leading: FaIcon(FontAwesomeIcons.boxesStacked),
+          onTap: _stock,
+        )
+      );
+    }
+
+    if (InvenTreeAPI().checkPermission("purchase_order", "view")) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().purchaseOrders),
+          leading: FaIcon(FontAwesomeIcons.cartShopping),
+          onTap: _purchaseOrders,
+        )
+      );
+    }
+
+    if (tiles.length > 2) {
+      tiles.add(Divider());
+    }
+
+    if (InvenTreeAPI().supportsNotifications) {
+      tiles.add(
+        ListTile(
+          leading: FaIcon(FontAwesomeIcons.bell),
+          title: Text(L10().notifications),
+          onTap: _notifications,
+        )
+      );
+    }
+
+    tiles.add(
+      ListTile(
+        title: Text(L10().settings),
+        leading: Icon(Icons.settings),
+        onTap: _settings,
+      )
+    );
+
+    return tiles;
   }
 
   @override
   Widget build(BuildContext context) {
 
-    return Drawer(
+    return  Drawer(
         child: ListView(
-            children: ListTile.divideTiles(
-              context: context,
-              tiles: <Widget>[
-                ListTile(
-                  leading: FaIcon(FontAwesomeIcons.house),
-                  title: Text(
-                    L10().appTitle,
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  onTap: _home,
-                ),
-                ListTile(
-                  title: Text(L10().scanBarcode),
-                  onTap: _scan,
-                  leading: Icon(Icons.qr_code_scanner),
-                ),
-                ListTile(
-                  title: Text(L10().search),
-                  leading: FaIcon(FontAwesomeIcons.magnifyingGlass),
-                  onTap: _search,
-                ),
-                ListTile(
-                  title: Text(L10().settings),
-                  leading: Icon(Icons.settings),
-                  onTap: _settings,
-                ),
-                ListTile(
-                  title: Text(L10().about),
-                  leading: FaIcon(FontAwesomeIcons.circleInfo),
-                  onTap: _about,
-                )
-              ]
-            ).toList(),
+          children: drawerTiles(context),
         )
     );
   }

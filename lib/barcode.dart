@@ -1,12 +1,12 @@
 import "dart:io";
 import "package:flutter/material.dart";
+import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/widget/purchase_order_detail.dart";
 import "package:one_context/one_context.dart";
 import "package:qr_code_scanner/qr_code_scanner.dart";
 
-import "package:inventree/app_colors.dart";
 import "package:inventree/api.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/l10.dart";
@@ -805,17 +805,12 @@ Future<void> scanQrCode(BuildContext context) async {
 }
 
 
-/*
- * Construct a generic ListTile widget to link or un-link a custom barcode from a model.
- */
-Widget customBarcodeActionTile(BuildContext context, RefreshableState state, String barcode, String model, int pk) {
+SpeedDialChild customBarcodeAction(BuildContext context, RefreshableState state, String barcode, String model, int pk) {
 
   if (barcode.isEmpty) {
-    return ListTile(
-      title: Text(L10().barcodeAssign),
-      subtitle: Text(L10().barcodeAssignDetail),
-      leading: Icon(Icons.qr_code, color: COLOR_CLICK),
-      trailing: Icon(Icons.qr_code_scanner),
+    return SpeedDialChild(
+      label: L10().barcodeAssign,
+      child: Icon(Icons.barcode_reader),
       onTap: () {
         var handler = UniqueBarcodeHandler((String barcode) {
           InvenTreeAPI().linkBarcode({
@@ -823,8 +818,8 @@ Widget customBarcodeActionTile(BuildContext context, RefreshableState state, Str
             "barcode": barcode,
           }).then((bool result) {
             showSnackIcon(
-              result ? L10().barcodeAssigned : L10().barcodeNotAssigned,
-              success: result
+                result ? L10().barcodeAssigned : L10().barcodeNotAssigned,
+                success: result
             );
 
             state.refresh(context);
@@ -832,18 +827,18 @@ Widget customBarcodeActionTile(BuildContext context, RefreshableState state, Str
         });
 
         Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => InvenTreeQRView(handler)
-          )
+            context,
+            MaterialPageRoute(
+                builder: (context) => InvenTreeQRView(handler)
+            )
         );
       }
     );
   } else {
-    return ListTile(
-      title: Text(L10().barcodeUnassign),
-      leading: Icon(Icons.qr_code, color: COLOR_CLICK),
-      onTap: () async {
+    return SpeedDialChild(
+      child: Icon(Icons.barcode_reader),
+      label: L10().barcodeUnassign,
+      onTap: () {
         InvenTreeAPI().unlinkBarcode({
           model: pk.toString()
         }).then((bool result) {
@@ -854,7 +849,7 @@ Widget customBarcodeActionTile(BuildContext context, RefreshableState state, Str
 
           state.refresh(context);
         });
-      },
+      }
     );
   }
 }

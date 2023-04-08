@@ -1,5 +1,4 @@
 import "package:flutter/material.dart";
-
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:one_context/one_context.dart";
 
@@ -7,12 +6,13 @@ import "package:inventree/api.dart";
 import "package:inventree/api_form.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/helpers.dart";
+import "package:inventree/l10.dart";
+
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/widget/attachment_widget.dart";
 import "package:inventree/widget/company_detail.dart";
 import "package:inventree/widget/refreshable_state.dart";
-import "package:inventree/l10.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/stock_list.dart";
 
@@ -41,17 +41,17 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
   int attachmentCount = 0;
 
   @override
-  String getAppBarTitle(BuildContext context) => L10().purchaseOrder;
+  String getAppBarTitle() => L10().purchaseOrder;
 
   @override
-  List<Widget> getAppBarActions(BuildContext context) {
+  List<Widget> appBarActions(BuildContext context) {
     List<Widget> actions = [];
 
     if (InvenTreeAPI().checkPermission("purchase_order", "change")) {
       actions.add(
         IconButton(
-          icon: FaIcon(FontAwesomeIcons.penToSquare),
-          tooltip: L10().edit,
+          icon: Icon(Icons.edit_square),
+          tooltip: L10().purchaseOrderEdit,
           onPressed: () {
             editOrder(context);
           }
@@ -145,12 +145,6 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       title: Text(L10().lineItems),
       leading: FaIcon(FontAwesomeIcons.clipboardList, color: COLOR_CLICK),
       trailing: Text("${order.lineItemCount}"),
-      onTap: () {
-        setState(() {
-          // Switch to the "line items" tab
-          tabIndex = 1;
-        });
-      },
     ));
 
     tiles.add(ListTile(
@@ -165,12 +159,6 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       title: Text(L10().received),
       leading: FaIcon(FontAwesomeIcons.clipboardCheck, color: COLOR_CLICK),
       trailing: Text("${completedLines}"),
-      onTap: () {
-        setState(() {
-          // Switch to the "received items" tab
-          tabIndex = 2;
-        });
-      },
     ));
 
     if (order.issueDate.isNotEmpty) {
@@ -371,58 +359,23 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
     return tiles;
   }
-
+  
   @override
-  Widget getBody(BuildContext context) {
-
-    return Center(
-      child: getSelectedWidget(context, tabIndex),
-    );
+  List<Widget> getTabIcons(BuildContext context) {
+    return [
+      Tab(text: L10().details),
+      Tab(text: L10().lineItems),
+      Tab(text: L10().received)
+    ];
   }
-
-  Widget getSelectedWidget(BuildContext context, int index) {
-    switch (index) {
-      case 0:
-        return ListView(
-          children: orderTiles(context)
-        );
-      case 1:
-        return ListView(
-          children: lineTiles(context)
-        );
-      case 2:
-        // Stock items received against this order
-        Map<String, String> filters = {
-          "purchase_order": "${order.pk}"
-        };
-
-        return PaginatedStockItemList(filters, true);
-
-      default:
-        return ListView();
-    }
-  }
-
+  
   @override
-  Widget getBottomNavBar(BuildContext context) {
-    return BottomNavigationBar(
-      currentIndex: tabIndex,
-      onTap: onTabSelectionChanged,
-      items: [
-        BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.circleInfo),
-          label: L10().details
-        ),
-        BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.tableList),
-          label: L10().lineItems,
-        ),
-        BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.boxesStacked),
-          label: L10().stockItems
-        )
-      ],
-    );
+  List<Widget> getTabs(BuildContext context) {
+    return [
+      ListView(children: orderTiles(context)),
+      ListView(children: lineTiles(context)),
+      PaginatedStockItemList({"purchase_order": order.pk.toString()}, true),
+    ];
   }
 
 }

@@ -36,10 +36,10 @@ class _PartListState extends RefreshableState<PartList> {
   bool showFilterOptions = false;
 
   @override
-  String getAppBarTitle(BuildContext context) => title.isNotEmpty ? title : L10().parts;
+  String getAppBarTitle() => title.isNotEmpty ? title : L10().parts;
 
   @override
-  List<Widget> getAppBarActions(BuildContext context) => [
+  List<Widget> appBarActions(BuildContext context) => [
     IconButton(
       icon: FaIcon(FontAwesomeIcons.filter),
       onPressed: () async {

@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:flutter_speed_dial/flutter_speed_dial.dart";
 
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
@@ -65,39 +66,62 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   int variantCount = 0;
 
   @override
-  String getAppBarTitle(BuildContext context) => L10().partDetails;
+  String getAppBarTitle() => L10().partDetails;
 
   @override
-  List<Widget> getAppBarActions(BuildContext context) {
-
+  List<Widget> appBarActions(BuildContext context) {
     List<Widget> actions = [];
-
-    if (api.checkPermission("part", "view")) {
-      actions.add(
-        IconButton(
-          icon: FaIcon(FontAwesomeIcons.globe),
-          onPressed: _openInvenTreePage,
-        ),
-      );
-    }
 
     if (api.checkPermission("part", "change")) {
       actions.add(
-        IconButton(
-          icon: FaIcon(FontAwesomeIcons.penToSquare),
-          tooltip: L10().edit,
-          onPressed: () {
-            _editPartDialog(context);
-          },
-        )
+          IconButton(
+              icon: Icon(Icons.edit_square),
+              tooltip: L10().editPart,
+              onPressed: () {
+                _editPartDialog(context);
+              }
+          )
       );
+    }
+    return actions;
+  }
+
+  @override
+  List<SpeedDialChild> barcodeButtons(BuildContext context) {
+    List<SpeedDialChild> actions = [];
+
+    if (api.checkPermission("part", "change")) {
+      if (api.supportModernBarcodes) {
+        actions.add(
+            customBarcodeAction(
+                context, this,
+                widget.part.customBarcode, "part",
+                widget.part.pk
+            )
+        );
+      }
     }
 
     return actions;
   }
 
-  Future<void> _openInvenTreePage() async {
-    part.goToInvenTreePage();
+  @override
+  List<SpeedDialChild> actionButtons(BuildContext context) {
+    List<SpeedDialChild> actions = [];
+
+    if (api.checkPermission("stock", "add")) {
+      actions.add(
+        SpeedDialChild(
+          child: FaIcon(FontAwesomeIcons.box),
+          label: L10().stockItemCreate,
+          onTap: () {
+            _newStockItem(context);
+          }
+        )
+      );
+    }
+
+    return actions;
   }
 
   @override
@@ -144,20 +168,9 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
     // Request the number of parameters for this part
     if (api.supportsPartParameters) {
-
       showParameters = await InvenTreeSettingsManager().getValue(INV_PART_SHOW_PARAMETERS, true) as bool;
-
-      InvenTreePartParameter().count(
-          filters: {
-            "part": part.pk.toString(),
-          }
-      ).then((int value) {
-        if (mounted) {
-          setState(() {
-            parameterCount = value;
-          });
-        }
-      });
+    } else {
+      showParameters = false;
     }
 
     // Request the number of attachments
@@ -394,18 +407,13 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       ListTile(
         title: Text(L10().availableStock),
         subtitle: Text(L10().stockDetails),
-        leading: FaIcon(FontAwesomeIcons.boxesStacked, color: COLOR_CLICK),
+        leading: FaIcon(FontAwesomeIcons.boxesStacked),
         trailing: Text(
           part.stockString(),
           style: TextStyle(
             fontWeight: FontWeight.bold,
           ),
         ),
-        onTap: () {
-          setState(() {
-            tabIndex = 1;
-          });
-        },
       ),
     );
 
@@ -436,14 +444,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
                 title: Text(L10().billOfMaterials),
                 leading: FaIcon(FontAwesomeIcons.tableList, color: COLOR_CLICK),
                 trailing: Text(bomCount.toString()),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => BillOfMaterialsWidget(part)
-                    )
-                  );
-                }
             )
         );
       }
@@ -541,24 +541,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
             )
         );
       }
-    }
-
-    if (showParameters) {
-      tiles.add(
-          ListTile(
-              title: Text(L10().parameters),
-              leading: FaIcon(FontAwesomeIcons.tableList, color: COLOR_CLICK),
-              trailing: parameterCount > 0 ? Text(parameterCount.toString()) : null,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PartParameterWidget(part)
-                  )
-                );
-              }
-          )
-      );
     }
 
     // Notes field
@@ -682,89 +664,49 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           }
         }
     );
-
-  }
-
-  List<Widget> actionTiles(BuildContext context) {
-    List<Widget> tiles = [];
-
-    tiles.add(headerTile());
-
-    tiles.add(
-      ListTile(
-        title: Text(L10().stockItemCreate),
-        leading: FaIcon(FontAwesomeIcons.box),
-        onTap: () {
-          _newStockItem(context);
-        },
-      )
-    );
-
-    if (api.supportModernBarcodes) {
-      tiles.add(
-        customBarcodeActionTile(context, this, part.customBarcode, "part", part.pk)
-      );
-    }
-
-    return tiles;
-  }
-
-  int stockItemCount = 0;
-
-  Widget getSelectedWidget(int index) {
-    switch (index) {
-      case 0:
-        return Center(
-          child: ListView(
-            children: ListTile.divideTiles(
-              context: context,
-              tiles: partTiles()
-            ).toList()
-        ),
-      );
-      case 1:
-        return PaginatedStockItemList(
-          {"part": "${part.pk}"},
-          true,
-        );
-      case 2:
-        return Center(
-          child: ListView(
-            children: ListTile.divideTiles(
-              context: context,
-              tiles: actionTiles(context)
-            ).toList()
-          )
-        );
-      default:
-        return Center();
-    }
   }
 
   @override
-  Widget getBottomNavBar(BuildContext context) {
-    return BottomNavigationBar(
-      currentIndex: tabIndex,
-      onTap: onTabSelectionChanged,
-      items: <BottomNavigationBarItem> [
-        BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.circleInfo),
-          label: L10().details,
-        ),
-        BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.boxesStacked),
-          label: L10().stock
-        ),
-        BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.wrench),
-          label: L10().actions,
-        ),
-      ]
-    );
+  List<Widget> getTabIcons(BuildContext context) {
+    List<Widget> icons = [
+      Tab(text: L10().details),
+      Tab(text: L10().stock)
+    ];
+
+    if (showBom && part.isAssembly) {
+      icons.add(Tab(text: L10().bom));
+    }
+
+    if (showParameters) {
+      icons.add(Tab(text: L10().parameters));
+    }
+
+    return icons;
   }
 
   @override
-  Widget getBody(BuildContext context) {
-    return getSelectedWidget(tabIndex);
+  List<Widget> getTabs(BuildContext context) {
+    List<Widget> tabs = [
+      Center(
+        child: ListView(
+          children: ListTile.divideTiles(
+          context: context,
+          tiles: partTiles()
+          ).toList()
+        )
+      ),
+      PaginatedStockItemList({"part": part.pk.toString()}, true)
+    ];
+
+    if (showBom && part.isAssembly) {
+      tabs.add(PaginatedBomList({"part": part.pk.toString()}, showSearch: true, isParentPart: true));
+    }
+
+    if (showParameters) {
+      tabs.add(PaginatedParameterList({"part": part.pk.toString()}, true));
+    }
+
+    return tabs;
   }
+
 }

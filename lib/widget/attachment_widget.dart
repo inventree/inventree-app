@@ -43,33 +43,35 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
   List<InvenTreeAttachment> attachments = [];
 
   @override
-  String getAppBarTitle(BuildContext context) => L10().attachments;
+  String getAppBarTitle() => L10().attachments;
 
   @override
-  List<Widget> getAppBarActions(BuildContext context) {
+  List<Widget> appBarActions(BuildContext context) {
+    if (!widget.hasUploadPermission) return [];
 
-    List<Widget> actions = [];
-
-    if (widget.hasUploadPermission) {
-      // File upload
-      actions.add(
-          IconButton(
-            icon: FaIcon(FontAwesomeIcons.circlePlus),
-            onPressed: () async {
-              FilePickerDialog.pickFile(
-                  onPicked: (File file) async {
-                    await upload(context, file);
-                  }
-              );
-            },
-          )
-      );
-    }
-
-    return actions;
+    return [
+      IconButton(
+        icon: FaIcon(FontAwesomeIcons.camera),
+        onPressed: () async {
+          FilePickerDialog.pickImageFromCamera().then((File? file) {
+            upload(context, file);
+          });
+        }
+      ),
+      IconButton(
+        icon: FaIcon(FontAwesomeIcons.fileArrowUp),
+        onPressed: () async {
+          FilePickerDialog.pickFileFromDevice().then((File? file) {
+            upload(context, file);
+          });
+        }
+      )
+    ];
   }
 
-  Future<void> upload(BuildContext context, File file) async {
+  Future<void> upload(BuildContext context, File? file) async {
+
+    if (file == null) return;
 
     showLoadingOverlay(context);
     final bool result = await widget.attachment.uploadAttachment(file, widget.referenceId);

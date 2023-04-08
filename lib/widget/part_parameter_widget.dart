@@ -24,12 +24,12 @@ class _ParameterWidgetState extends RefreshableState<PartParameterWidget> {
   _ParameterWidgetState();
 
   @override
-  String getAppBarTitle(BuildContext context) {
+  String getAppBarTitle() {
     return L10().parameters;
   }
 
   @override
-  List<Widget> getAppBarActions(BuildContext context) {
+  List<Widget> appBarActions(BuildContext context) {
     return [];
   }
 

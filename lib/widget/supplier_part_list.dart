@@ -29,12 +29,12 @@ class SupplierPartList extends StatefulWidget {
 class _SupplierPartListState extends RefreshableState<SupplierPartList> {
 
   @override
-  String getAppBarTitle(BuildContext context) => L10().supplierParts;
+  String getAppBarTitle() => L10().supplierParts;
 
   bool showFilterOptions = false;
 
   @override
-  List<Widget> getAppBarActions(BuildContext context) => [
+  List<Widget> appBarActions(BuildContext context) => [
     IconButton(
       icon: FaIcon(FontAwesomeIcons.filter),
       onPressed: () async {

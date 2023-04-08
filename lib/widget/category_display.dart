@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
+import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
-import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/l10.dart";
 
@@ -33,27 +33,56 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
   bool showFilterOptions = false;
 
   @override
-  String getAppBarTitle(BuildContext context) => L10().partCategory;
+  String getAppBarTitle() => L10().partCategory;
 
   @override
-  List<Widget> getAppBarActions(BuildContext context) {
-
+  List<Widget> appBarActions(BuildContext context) {
     List<Widget> actions = [];
 
-    if ((widget.category != null) && InvenTreeAPI().checkPermission("part_category", "change")) {
+    if (widget.category != null) {
+      if (api.checkPermission("part_category", "change")) {
+        actions.add(
+          IconButton(
+            icon:  Icon(Icons.edit_square),
+            tooltip: L10().editCategory,
+            onPressed: () {
+              _editCategoryDialog(context);
+            },
+          )
+        );
+      }
+    }
+
+    return actions;
+  }
+
+  @override
+  List<SpeedDialChild> actionButtons(BuildContext context) {
+    List<SpeedDialChild> actions = [];
+
+    if (api.checkPermission("part", "add")) {
+     actions.add(
+       SpeedDialChild(
+         child: FaIcon(FontAwesomeIcons.shapes),
+         label: L10().partCreateDetail,
+         onTap: _newPart,
+       )
+     );
+    }
+
+    if (api.checkPermission("part_category", "add")) {
       actions.add(
-        IconButton(
-          icon: FaIcon(FontAwesomeIcons.penToSquare),
-          tooltip: L10().edit,
-          onPressed: () {
-            _editCategoryDialog(context);
-          },
+        SpeedDialChild(
+          child: FaIcon(FontAwesomeIcons.sitemap),
+          label: L10().categoryCreateDetail,
+          onTap: () {
+            _newCategory(context);
+          }
         )
       );
     }
 
     return actions;
-
   }
 
   void _editCategoryDialog(BuildContext context) {
@@ -154,25 +183,20 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
   }
 
   @override
-  Widget getBottomNavBar(BuildContext context) {
-    return BottomNavigationBar(
-      currentIndex: tabIndex,
-      onTap: onTabSelectionChanged,
-      items: <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.sitemap),
-          label: L10().details,
-        ),
-        BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.shapes),
-          label: L10().parts,
-        ),
-        BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.wrench),
-          label: L10().actions
-        ),
-      ]
-    );
+  List<Widget> getTabIcons(BuildContext context) {
+
+    return [
+      Tab(text: L10().details),
+      Tab(text: L10().parts),
+    ];
+  }
+
+  @override
+  List<Widget> getTabs(BuildContext context) {
+    return [
+      Column(children: detailTiles()),
+      Column(children: partsTiles()),
+    ];
   }
 
   // Construct the "details" panel
@@ -216,7 +240,6 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
     };
 
     return [
-      getCategoryDescriptionCard(extra: false),
       ListTile(
         title: Text(
           L10().parts,
@@ -297,75 +320,5 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
         }
       }
     );
-  }
-
-  List<Widget> actionTiles(BuildContext context) {
-
-    List<Widget> tiles = [
-      getCategoryDescriptionCard(extra: false),
-    ];
-
-    if (InvenTreeAPI().checkPermission("part", "add")) {
-      tiles.add(
-          ListTile(
-            title: Text(L10().categoryCreate),
-            subtitle: Text(L10().categoryCreateDetail),
-            leading: FaIcon(FontAwesomeIcons.sitemap, color: COLOR_CLICK),
-            onTap: () async {
-              _newCategory(context);
-            },
-          )
-      );
-
-      if (widget.category != null) {
-        tiles.add(
-            ListTile(
-              title: Text(L10().partCreate),
-              subtitle: Text(L10().partCreateDetail),
-              leading: FaIcon(FontAwesomeIcons.shapes, color: COLOR_CLICK),
-              onTap: _newPart,
-            )
-        );
-      }
-    }
-
-    if (tiles.isEmpty) {
-      tiles.add(
-        ListTile(
-          title: Text(
-            L10().actionsNone
-          ),
-          subtitle: Text(
-            L10().permissionAccountDenied,
-          ),
-          leading: FaIcon(FontAwesomeIcons.userXmark),
-        )
-      );
-    }
-
-    return tiles;
-  }
-
-  int partCount = 0;
-
-  @override
-  Widget getBody(BuildContext context) {
-
-    switch (tabIndex) {
-      case 0:
-        return Column(
-            children: detailTiles()
-        );
-      case 1:
-        return Column(
-          children: partsTiles()
-        );
-      case 2:
-        return ListView(
-          children: actionTiles(context)
-        );
-      default:
-        return ListView();
-    }
   }
 }
