@@ -10,6 +10,16 @@ class ReleaseNotesWidget extends StatelessWidget {
 
   final String releaseNotes;
 
+  // Callback function when a link is clicked in the markdown
+  Future<void> openLink(String url) async {
+
+    final link = Uri.parse(url);
+
+    if (await canLaunchUrl(link)) {
+      await launchUrl(link);
+    }
+  }
+
   @override
   Widget build (BuildContext context) {
     return Scaffold(
@@ -19,6 +29,12 @@ class ReleaseNotesWidget extends StatelessWidget {
       body: Markdown(
         selectable: false,
         data: releaseNotes,
+        onTapLink: (url, href, title) {
+          var link = href ?? "";
+          if (link.isNotEmpty) {
+            openLink(link);
+          }
+        },
       )
     );
   }
@@ -31,9 +47,7 @@ class CreditsWidget extends StatelessWidget {
 
   final String credits;
 
-  /*
-   * Callback function when a link is clicked in the markdown
-   */
+  // Callback function when a link is clicked in the markdown
   Future<void> openLink(String url) async {
 
     final link = Uri.parse(url);
