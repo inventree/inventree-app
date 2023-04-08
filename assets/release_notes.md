@@ -4,6 +4,7 @@
 ### 0.11.0 - April 2023
 ---
 
+- Major UI updates - [see the documentation](https://docs.inventree.org/en/latest/app/app/)
 - Adds globally accessible action button for "search"
 - Adds globally accessible action button for "barcode scan"
 - Implement context actions using floating actions buttons
