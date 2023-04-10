@@ -33,7 +33,7 @@ class _StockItemHistoryDisplayState extends RefreshableState<StockItemHistoryWid
 
     history.clear();
 
-    InvenTreeStockItemHistory().list(filters: {"item": "${item.pk}"}).then((List<InvenTreeModel> results) {
+    await InvenTreeStockItemHistory().list(filters: {"item": "${item.pk}"}).then((List<InvenTreeModel> results) {
       for (var result in results) {
         if (result is InvenTreeStockItemHistory) {
           history.add(result);

@@ -1,6 +1,5 @@
 import "dart:async";
 
-import "package:flutter/material.dart";
 import "package:intl/intl.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/inventree/part.dart";

@@ -5,7 +5,6 @@
  * Ref: https://github.com/inventree/InvenTree/blob/master/InvenTree/InvenTree/status_codes.py
  */
 
-import "dart:ui";
 import "package:flutter/material.dart";
 
 import "package:inventree/api.dart";
