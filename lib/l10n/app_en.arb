@@ -288,6 +288,12 @@
   "errorFetch":  "Error fetching data from server",
   "@errorFetch": {},
 
+  "errorUserRoles": "Error requesting user roles from server",
+  "@errorUserRoles": {},
+
+  "errorPluginInfo": "Error requesting plugin data from server",
+  "@errorPluginInfo": {},
+
   "errorReporting": "Error Reporting",
   "@errorReporting": {},
 

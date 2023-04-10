@@ -490,11 +490,33 @@ class InvenTreeAPI {
 
     debug("Received token from server");
 
+    bool result = false;
+
     // Request user role information (async)
-    getUserRoles();
+    result = await getUserRoles();
+
+    if (!result) {
+      showServerError(
+        apiUrl,
+        L10().serverError,
+        L10().errorUserRoles,
+      );
+
+      return false;
+    }
 
     // Request plugin information (async)
-    getPluginInformation();
+    result = await getPluginInformation();
+
+    if (!result) {
+      showServerError(
+        apiUrl,
+        L10().serverError,
+        L10().errorPluginInfo
+      );
+
+      return false;
+    }
 
     // Ok, probably pretty good...
     return true;
@@ -590,12 +612,12 @@ class InvenTreeAPI {
   }
 
   // Request plugin information from the server
-  Future<void> getPluginInformation() async {
+  Future<bool> getPluginInformation() async {
 
     // The server does not support plugins, or they are not enabled
     if (!pluginsEnabled()) {
       _plugins.clear();
-      return;
+      return true;
     }
 
     debug("API: getPluginInformation()");
@@ -611,6 +633,8 @@ class InvenTreeAPI {
         }
       }
     }
+
+    return true;
   }
 
   bool checkPermission(String role, String permission) {
