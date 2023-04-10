@@ -1,6 +1,13 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.11.1 - April 2023
+---
+
+- Fixes keyboard bug in search widget
+- Adds ability to create new purchase orders directly from the app
+- Adds support for the "contact" field to purchase orders
+
 ### 0.11.0 - April 2023
 ---
 
