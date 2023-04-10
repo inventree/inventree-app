@@ -85,8 +85,8 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
   // Edit the currently displayed PurchaseOrder
   Future <void> editOrder(BuildContext context) async {
-
     var fields = order.formFields();
+    fields.remove("supplier");
 
     if (!api.supportsContactModel) {
       fields.remove("contact");

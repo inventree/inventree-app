@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/inventree/company.dart";
@@ -46,6 +47,51 @@ class _PurchaseOrderListWidgetState extends RefreshableState<PurchaseOrderListWi
       },
     )
   ];
+
+  @override
+  List<SpeedDialChild> actionButtons(BuildContext context) {
+    List<SpeedDialChild> actions = [];
+
+    if (api.checkPermission("purchase_order", "add")) {
+      actions.add(
+        SpeedDialChild(
+          child: FaIcon(FontAwesomeIcons.circlePlus),
+          label: L10().purchaseOrderCreate,
+          onTap: () {
+            createPurchaseOrder(context);
+          }
+        )
+      );
+    }
+
+    return actions;
+  }
+
+  Future<void> createPurchaseOrder(BuildContext context) async {
+    var fields = InvenTreePurchaseOrder().formFields();
+
+    fields.remove("contact");
+
+    InvenTreePurchaseOrder().createForm(
+      context,
+      L10().purchaseOrderCreate,
+      fields: fields,
+      onSuccess: (result) async {
+        Map<String, dynamic> data = result as Map<String, dynamic>;
+
+        if (data.containsKey("pk")) {
+          var order = InvenTreePurchaseOrder.fromJson(data);
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PurchaseOrderDetailWidget(order)
+            )
+          );
+        }
+      }
+    );
+  }
 
   @override
   Widget getBody(BuildContext context) {
