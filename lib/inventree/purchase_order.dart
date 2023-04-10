@@ -31,6 +31,11 @@ class InvenTreePurchaseOrder extends InvenTreeModel {
       "target_date": {},
       "link": {},
       "responsible": {},
+      "contact": {
+        "filters": {
+          "company": supplierId,
+        }
+      },
     };
   }
 

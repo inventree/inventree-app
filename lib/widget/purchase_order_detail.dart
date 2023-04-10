@@ -83,11 +83,19 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
     );
   }
 
+  // Edit the currently displayed PurchaseOrder
   Future <void> editOrder(BuildContext context) async {
+
+    var fields = order.formFields();
+
+    if (!api.supportsContactModel) {
+      fields.remove("contact");
+    }
 
     order.editForm(
       context,
       L10().purchaseOrderEdit,
+      fields: fields,
       onSuccess: (data) async {
         refresh(context);
         showSnackIcon(L10().purchaseOrderUpdated, success: true);
