@@ -585,6 +585,12 @@
   "onOrderDetails": "Items currently on order",
   "@onOrderDetails": {},
 
+  "outstanding": "Outstanding",
+  "@outstanding": {},
+
+  "outstandingOrderDetail": "Show outstanding orders",
+  "@outstandingOrderDetail": {},
+
   "packaging": "Packaging",
   "@packaging": {},
 

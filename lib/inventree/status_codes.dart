@@ -33,6 +33,11 @@ class InvenTreeStatusCode {
       return;
     }
 
+    // The server must support this feature!
+    if (!InvenTreeAPI().supportsStatusLabelEndpoints) {
+      return;
+    }
+
     debug("Loading status codes from ${URL}");
 
     APIResponse response = await InvenTreeAPI().get(URL);

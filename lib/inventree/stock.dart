@@ -122,66 +122,10 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   InvenTreeStockItem.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
-  // Stock status codes
-  static const int OK = 10;
-  static const int ATTENTION = 50;
-  static const int DAMAGED = 55;
-  static const int DESTROYED = 60;
-  static const int REJECTED = 65;
-  static const int LOST = 70;
-  static const int QUARANTINED = 75;
-  static const int RETURNED = 85;
-
-  String statusLabel() {
-
-    // TODO: Delete me - The translated status values should be provided by the API!
-
-    switch (status) {
-      case OK:
-        return L10().ok;
-      case ATTENTION:
-        return L10().attention;
-      case DAMAGED:
-        return L10().damaged;
-      case DESTROYED:
-        return L10().destroyed;
-      case REJECTED:
-        return L10().rejected;
-      case LOST:
-        return L10().lost;
-      case QUARANTINED:
-        return L10().quarantined;
-      case RETURNED:
-        return L10().returned;
-      default:
-        return status.toString();
-    }
-  }
-
-  // Return color associated with stock status
-  Color get statusColor {
-    switch (status) {
-      case OK:
-        return Colors.black;
-      case ATTENTION:
-        return Color(0xFFfdc82a);
-      case DAMAGED:
-      case DESTROYED:
-      case REJECTED:
-        return Color(0xFFe35a57);
-      case QUARANTINED:
-        return Color(0xFF0DCAF0);
-      case LOST:
-      default:
-        return Color(0xFFAAAAAA);
-    }
-  }
-
   @override
   String get URL => "stock/";
 
   // URLs for performing stock actions
-
   static String transferStockUrl() => "stock/transfer/";
 
   static String countStockUrl() => "stock/count/";

@@ -95,6 +95,9 @@ class _PaginatedStockItemListState extends PaginatedSearchState<PaginatedStockIt
   @override
   Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
 
+    // Ensure StockStatus codes are loaded
+    await InvenTreeAPI().StockStatus.load();
+
     final page = await InvenTreeStockItem().listPaginated(
       limit,
       offset,
@@ -120,7 +123,7 @@ class _PaginatedStockItemListState extends PaginatedSearchState<PaginatedStockIt
       trailing: Text("${item.displayQuantity}",
         style: TextStyle(
           fontWeight: FontWeight.bold,
-          color: item.statusColor,
+          color: InvenTreeAPI().StockStatus.color(item.status),
         ),
       ),
       onTap: () {

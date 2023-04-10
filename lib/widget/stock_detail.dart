@@ -211,6 +211,8 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   @override
   Future<void> request(BuildContext context) async {
 
+    await api.StockStatus.load();
+
     stockShowHistory = await InvenTreeSettingsManager().getValue(INV_STOCK_SHOW_HISTORY, false) as bool;
 
     final bool result = widget.item.pk > 0 && await widget.item.reload();
@@ -565,9 +567,9 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         subtitle: Text("${widget.item.partDescription}"),
         leading: InvenTreeAPI().getImage(widget.item.partImage),
         trailing: Text(
-            widget.item.statusLabel(),
+          api.StockStatus.label(widget.item.status),
           style: TextStyle(
-            color: widget.item.statusColor
+            color: api.StockStatus.color(widget.item.status),
           )
         ),
         onTap: () async {
