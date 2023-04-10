@@ -6,11 +6,10 @@
  */
 
 import "dart:ui";
-
 import "package:flutter/material.dart";
-import "package:inventree/api.dart";
 
-import "../helpers.dart";
+import "package:inventree/api.dart";
+import "package:inventree/helpers.dart";
 
 
 /*
