@@ -7,6 +7,8 @@
 - Fixes keyboard bug in search widget
 - Adds ability to create new purchase orders directly from the app
 - Adds support for the "contact" field to purchase orders
+- Improved rendering of status codes for stock items
+- Added rendering of status codes for purchase orders
 
 ### 0.11.0 - April 2023
 ---
