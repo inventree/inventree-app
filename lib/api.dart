@@ -285,6 +285,9 @@ class InvenTreeAPI {
   // ReturnOrder supports API v104 or newer
   bool get supportsReturnOrders => isConnected() && apiVersion >= 104;
 
+  // "Contact" model exposed to API
+  bool get supportsContactModel => isConnected() && apiVersion >= 104;
+
   // Status label endpoints API v105 or newer
   bool get supportsStatusLabelEndpoints => isConnected() && apiVersion >= 105;
 

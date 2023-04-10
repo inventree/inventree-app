@@ -26,11 +26,21 @@ class InvenTreePurchaseOrder extends InvenTreeModel {
   Map<String, dynamic> formFields() {
     return {
       "reference": {},
+      "supplier": {
+        "filters": {
+          "is_supplier": true,
+        },
+      },
       "supplier_reference": {},
       "description": {},
       "target_date": {},
       "link": {},
       "responsible": {},
+      "contact": {
+        "filters": {
+          "company": supplierId,
+        }
+      },
     };
   }
 

@@ -726,6 +726,9 @@
   "purchaseOrder": "Purchase Order",
   "@purchaseOrder": {},
 
+  "purchaseOrderCreate": "New Purchase Order",
+  "@purchaseOrderCreate": {},
+
   "purchaseOrderEdit": "Edit Purchase Order",
   "@purchaseOrderEdit": {},
 
