@@ -175,16 +175,18 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
                           Navigator.of(context).pop();
                           // Navigator.of(context, rootNavigator: true).pop();
                           confirmationDialog(
-                              L10().delete,
-                              L10().profileDelete + "?",
-                              onAccept: () {
-                                _deleteProfile(profile);
-                              }
+                            L10().delete,
+                            L10().profileDelete + "?",
+                            color: Colors.red,
+                            icon: FontAwesomeIcons.trashCan,
+                            onAccept: () {
+                              _deleteProfile(profile);
+                            }
                           );
                         },
                         child: ListTile(
-                          title: Text(L10().profileDelete),
-                          leading: FaIcon(FontAwesomeIcons.trashCan),
+                          title: Text(L10().profileDelete, style: TextStyle(color: Colors.red)),
+                          leading: FaIcon(FontAwesomeIcons.trashCan, color: Colors.red),
                         )
                       )
                     ],

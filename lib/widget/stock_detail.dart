@@ -293,6 +293,8 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       L10().stockItemDelete,
       L10().stockItemDeleteConfirm,
       icon: FontAwesomeIcons.trashCan,
+      color: Colors.red,
+      acceptText: L10().delete,
       onAccept: () async {
         final bool result = await widget.item.delete();
         
