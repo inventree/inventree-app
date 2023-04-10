@@ -523,18 +523,17 @@ class APIFormField {
       ),
       selectedItem: initial_data,
       asyncItems: (String filter) async {
-        Map<String, String> filters = {};
+        Map<String, String> _filters = {};
 
         filters.forEach((key, value) {
-          filters[key] = value;
+          _filters[key] = value;
         });
 
-        filters["search"] = filter;
-        filters["offset"] = "0";
-        filters["limit"] = "25";
+        _filters["search"] = filter;
+        _filters["offset"] = "0";
+        _filters["limit"] = "25";
 
-        final APIResponse response =
-            await InvenTreeAPI().get(api_url, params: filters);
+        final APIResponse response = await InvenTreeAPI().get(api_url, params: _filters);
 
         if (response.isValid()) {
           List<dynamic> results = [];
@@ -649,6 +648,13 @@ class APIFormField {
         return ListTile(
           title: Text(name),
           leading: FaIcon(isGroup ? FontAwesomeIcons.users : FontAwesomeIcons.user),
+        );
+      case "contact":
+        String name = (data["name"] ?? "") as String;
+        String role = (data["role"] ?? "") as String;
+        return ListTile(
+          title: Text(name),
+          subtitle: Text(role),
         );
       case "company":
         var company = InvenTreeCompany.fromJson(data);
