@@ -151,8 +151,8 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
     tiles.add(ListTile(
       title: Text(L10().lineItems),
-      leading: FaIcon(FontAwesomeIcons.clipboardList, color: COLOR_CLICK),
-      trailing: Text("${order.lineItemCount}"),
+      leading: FaIcon(FontAwesomeIcons.clipboardCheck),
+      trailing: Text("${completedLines} /  ${order.lineItemCount}"),
     ));
 
     tiles.add(ListTile(
@@ -161,12 +161,6 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       trailing: Text(
         renderCurrency(widget.order.totalPrice, widget.order.totalPriceCurrency)
       ),
-    ));
-
-    tiles.add(ListTile(
-      title: Text(L10().received),
-      leading: FaIcon(FontAwesomeIcons.clipboardCheck, color: COLOR_CLICK),
-      trailing: Text("${completedLines}"),
     ));
 
     if (order.issueDate.isNotEmpty) {
@@ -320,8 +314,6 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
     List<Widget> tiles = [];
 
-    tiles.add(headerTile(context));
-
     for (var line in lines) {
 
       InvenTreeSupplierPart? supplierPart = line.supplierPart;
@@ -355,9 +347,6 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
               ),
             ),
             onTap: () {
-              // TODO: ?
-            },
-            onLongPress: () {
               lineItemMenu(context, line);
             },
           )
