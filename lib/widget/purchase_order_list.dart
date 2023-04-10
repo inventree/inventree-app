@@ -126,10 +126,18 @@ class _PaginatedPurchaseOrderListState extends PaginatedSearchState<PaginatedPur
   };
 
   @override
+  Map<String, Map<String, dynamic>> get filterOptions => {
+    "outstanding": {
+      "label": L10().outstanding,
+      "help_text": L10().outstandingOrderDetail,
+      "tristate": true,
+    }
+  };
+
+  @override
   Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
 
-    params["outstanding"] = "true";
-
+    await InvenTreeAPI().PurchaseOrderStatus.load();
     final page = await InvenTreePurchaseOrder().listPaginated(limit, offset, filters: params);
 
     return page;
@@ -151,7 +159,12 @@ class _PaginatedPurchaseOrderListState extends PaginatedSearchState<PaginatedPur
         width: 40,
         height: 40,
       ),
-      trailing: Text("${order.lineItemCount}"),
+      trailing: Text(
+        InvenTreeAPI().PurchaseOrderStatus.label(order.status),
+        style: TextStyle(
+          color: InvenTreeAPI().PurchaseOrderStatus.color(order.status),
+        ),
+      ),
       onTap: () async {
         Navigator.push(
           context,

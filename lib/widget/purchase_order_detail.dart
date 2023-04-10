@@ -66,6 +66,8 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
   Future<void> request(BuildContext context) async {
     await order.reload();
 
+    await api.PurchaseOrderStatus.load();
+
     lines = await order.getLineItems();
 
     completedLines = 0;
@@ -112,6 +114,12 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
           title: Text(order.reference),
           subtitle: Text(order.description),
           leading: supplier == null ? null : InvenTreeAPI().getImage(supplier.thumbnail, width: 40, height: 40),
+          trailing: Text(
+            api.PurchaseOrderStatus.label(order.status),
+            style: TextStyle(
+              color: api.PurchaseOrderStatus.color(order.status)
+            ),
+          )
         )
     );
 

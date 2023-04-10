@@ -6,6 +6,7 @@ import "package:flutter/foundation.dart";
 import "package:http/http.dart" as http;
 import "package:intl/intl.dart";
 import "package:inventree/app_colors.dart";
+import "package:inventree/inventree/status_codes.dart";
 import "package:inventree/preferences.dart";
 
 import "package:open_filex/open_filex.dart";
@@ -147,6 +148,9 @@ class InvenTreeAPI {
   }
 
   InvenTreeAPI._internal();
+
+  // Ensure we only ever create a single instance of the API class
+  static final InvenTreeAPI _api = InvenTreeAPI._internal();
 
   // List of callback functions to trigger when the connection status changes
   List<Function()> _statusCallbacks = [];
@@ -346,9 +350,6 @@ class InvenTreeAPI {
     return !isConnected() && _connecting;
   }
 
-  // Ensure we only ever create a single instance of the API class
-  static final InvenTreeAPI _api = InvenTreeAPI._internal();
-
   /*
    * Connect to the remote InvenTree server:
    *
@@ -490,11 +491,33 @@ class InvenTreeAPI {
 
     debug("Received token from server");
 
+    bool result = false;
+
     // Request user role information (async)
-    getUserRoles();
+    result = await getUserRoles();
+
+    if (!result) {
+      showServerError(
+        apiUrl,
+        L10().serverError,
+        L10().errorUserRoles,
+      );
+
+      return false;
+    }
 
     // Request plugin information (async)
-    getPluginInformation();
+    result = await getPluginInformation();
+
+    if (!result) {
+      showServerError(
+        apiUrl,
+        L10().serverError,
+        L10().errorPluginInfo
+      );
+
+      return false;
+    }
 
     // Ok, probably pretty good...
     return true;
@@ -516,9 +539,7 @@ class InvenTreeAPI {
     _connectionStatusChanged();
   }
 
-  /*
-   * Public facing connection function
-   */
+  // Public facing connection function
   Future<bool> connectToServer() async {
 
     // Ensure server is first disconnected
@@ -590,12 +611,12 @@ class InvenTreeAPI {
   }
 
   // Request plugin information from the server
-  Future<void> getPluginInformation() async {
+  Future<bool> getPluginInformation() async {
 
     // The server does not support plugins, or they are not enabled
     if (!pluginsEnabled()) {
       _plugins.clear();
-      return;
+      return true;
     }
 
     debug("API: getPluginInformation()");
@@ -611,15 +632,15 @@ class InvenTreeAPI {
         }
       }
     }
+
+    return true;
   }
 
+  /*
+   * Check if the user has the given role.permission assigned
+   * e.g. "part", "change"
+   */
   bool checkPermission(String role, String permission) {
-    /*
-     * Check if the user has the given role.permission assigned
-     *e
-     * e.g. "part", "change"
-     */
-
     // If we do not have enough information, assume permission is allowed
     if (roles.isEmpty) {
       return true;
@@ -1422,4 +1443,22 @@ class InvenTreeAPI {
       }
     });
   }
+
+  // Keep an internal map of status codes
+  Map<String, InvenTreeStatusCode> _status_codes = {};
+
+  // Return a status class based on provided URL
+  InvenTreeStatusCode _get_status_class(String url) {
+    if (!_status_codes.containsKey(url)) {
+      _status_codes[url] = InvenTreeStatusCode(url);
+    }
+
+    return _status_codes[url]!;
+  }
+
+  // Accessors methods for various status code classes
+  InvenTreeStatusCode get StockHistoryStatus => _get_status_class("stock/track/status/");
+  InvenTreeStatusCode get StockStatus => _get_status_class("stock/status/");
+  InvenTreeStatusCode get PurchaseOrderStatus => _get_status_class("order/po/status/");
+
 }

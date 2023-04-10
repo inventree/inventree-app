@@ -288,6 +288,12 @@
   "errorFetch":  "Error fetching data from server",
   "@errorFetch": {},
 
+  "errorUserRoles": "Error requesting user roles from server",
+  "@errorUserRoles": {},
+
+  "errorPluginInfo": "Error requesting plugin data from server",
+  "@errorPluginInfo": {},
+
   "errorReporting": "Error Reporting",
   "@errorReporting": {},
 
@@ -578,6 +584,12 @@
 
   "onOrderDetails": "Items currently on order",
   "@onOrderDetails": {},
+
+  "outstanding": "Outstanding",
+  "@outstanding": {},
+
+  "outstandingOrderDetail": "Show outstanding orders",
+  "@outstandingOrderDetail": {},
 
   "packaging": "Packaging",
   "@packaging": {},
