@@ -41,15 +41,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
   final bool hasAppBar;
 
   @override
-  void initState() {
-    super.initState();
-
-    _focusNode = FocusNode();
-  }
-
-  @override
   void dispose() {
-    _focusNode.dispose();
     super.dispose();
   }
 
@@ -99,8 +91,6 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
   int nSupplierResults = 0;
   int nPurchaseOrderResults = 0;
 
-  late FocusNode _focusNode;
-
   // Callback when the text is being edited
   // Incorporates a debounce timer to restrict search frequency
   void onSearchTextChanged(String text, {bool immediate = false}) {
@@ -114,9 +104,6 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
     } else {
       debounceTimer = Timer(Duration(milliseconds: 250), () {
         search(text);
-        if (!_focusNode.hasFocus) {
-          _focusNode.requestFocus();
-        }
       });
     }
   }
@@ -344,16 +331,13 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
           ),
           key: _formKey,
           readOnly: false,
-          autofocus: false,
+          autofocus: true,
           autocorrect: false,
-          focusNode: _focusNode,
           controller: searchController,
           onChanged: (String text) {
             onSearchTextChanged(text);
-            _focusNode.requestFocus();
           },
           onFieldSubmitted: (String text) {
-            _focusNode.requestFocus();
           },
         ),
         trailing: GestureDetector(
@@ -363,7 +347,6 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
           ),
           onTap: () {
             searchController.clear();
-            _focusNode.requestFocus();
             onSearchTextChanged("", immediate: true);
           },
         ),
@@ -539,10 +522,6 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
       for (Widget result in results) {
         tiles.add(result);
       }
-    }
-
-    if (!_focusNode.hasFocus) {
-      _focusNode.requestFocus();
     }
 
     return tiles;
