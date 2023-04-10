@@ -1,5 +1,5 @@
 import "dart:async";
-
+import "package:async/async.dart";
 import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
@@ -39,6 +39,8 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
   final _formKey = GlobalKey<FormState>();
 
   final bool hasAppBar;
+
+  CancelableOperation? _search_query;
 
   @override
   void dispose() {
@@ -134,12 +136,36 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
     return count;
   }
 
+  // Actually perform the search query
+  Future<void> _perform_search(Map<String, dynamic> body) async {
+    InvenTreeAPI().post(
+      "search/",
+      body: body,
+      expectedStatusCode: 200).then((APIResponse response) {
+        decrementPendingSearches();
+
+
+        Map<String, dynamic> results = {};
+
+        if (response.data is Map<String, dynamic>) {
+          results = response.data as Map<String, dynamic>;
+        }
+
+        if (mounted) {
+          setState(() {
+            nPartResults = getSearchResultCount(results, "part");
+            nCategoryResults = getSearchResultCount(results, "partcategory");
+            nStockResults = getSearchResultCount(results, "stockitem");
+            nLocationResults = getSearchResultCount(results, "stocklocation");
+            nSupplierResults = 0; //getSearchResultCount(results, "")
+            nPurchaseOrderResults = getSearchResultCount(results, "purchaseorder");
+          });
+        }
+    });
+  }
+
   /*
-   * Initiate multiple search requests to the server.
-   * Each request returns at *some point* in the future,
-   * by which time the search input may have changed, giving unexpected results.
-   *
-   * So, each request only causes an update *if* the search term is still the same when it completes
+   * Callback when the search input is changed
    */
   Future<void> search(String term) async {
     var api = InvenTreeAPI();
@@ -159,6 +185,15 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
 
       nPendingSearches = 0;
     });
+
+    // Cancel the previous search query (if in progress)
+    if (_search_query != null) {
+      if (!_search_query!.isCanceled) {
+        _search_query!.cancel();
+      }
+    }
+
+    _search_query = null;
 
     if (term.isEmpty) {
       return;
@@ -203,29 +238,9 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
       if (body.isNotEmpty) {
         nPendingSearches++;
 
-        api.post(
-            "search/",
-            body: body,
-            expectedStatusCode: 200).then((APIResponse response) {
-          decrementPendingSearches();
-
-          Map<String, dynamic> results = {};
-
-          if (response.data is Map<String, dynamic>) {
-            results = response.data as Map<String, dynamic>;
-          }
-
-          if (mounted) {
-            setState(() {
-              nPartResults = getSearchResultCount(results, "part");
-              nCategoryResults = getSearchResultCount(results, "partcategory");
-              nStockResults = getSearchResultCount(results, "stockitem");
-              nLocationResults = getSearchResultCount(results, "stocklocation");
-              nSupplierResults = 0; //getSearchResultCount(results, "")
-              nPurchaseOrderResults = getSearchResultCount(results, "purchaseorder");
-            });
-          }
-        });
+        _search_query = CancelableOperation.fromFuture(
+          _perform_search(body),
+        );
       }
     } else {
       legacySearch(term);
