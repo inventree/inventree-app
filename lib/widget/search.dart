@@ -40,7 +40,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
 
   final bool hasAppBar;
 
-  CancelableOperation? _search_query;
+  CancelableOperation<void>? _search_query;
 
   @override
   void dispose() {
