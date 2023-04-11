@@ -95,6 +95,8 @@ class InvenTreePurchaseOrder extends InvenTreeModel {
 
   bool get isOpen => status == PO_STATUS_PENDING || status == PO_STATUS_PLACED;
 
+  bool get isPending => status == PO_STATUS_PENDING;
+
   bool get isPlaced => status == PO_STATUS_PLACED;
 
   bool get isFailed => status == PO_STATUS_CANCELLED || status == PO_STATUS_LOST || status == PO_STATUS_RETURNED;
@@ -133,6 +135,25 @@ class InvenTreePurchaseOrder extends InvenTreeModel {
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) {
     return InvenTreePurchaseOrder.fromJson(json);
+  }
+
+  /// Mark this order as "placed" / "issued"
+  Future<void> issueOrder() async {
+    // Order can only be placed when the order is 'pending'
+    if (!isPending) {
+      return;
+    }
+
+    await api.post("${url}issue/", expectedStatusCode: 201);
+  }
+
+  /// Mark this order as "cancelled"
+  Future<void> cancelOrder() async {
+    if (!isOpen) {
+      return;
+    }
+
+    await api.post("${url}cancel/", expectedStatusCode: 201);
   }
 }
 

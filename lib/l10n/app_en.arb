@@ -156,6 +156,9 @@
     "description": "Cancel"
   },
 
+  "cancelOrder": "Cancel Order",
+  "@cancelOrder": {},
+
   "category": "Category",
   "@category": {},
 
@@ -479,8 +482,14 @@
   "invalidUsernamePassword": "Invalid username / password combination",
   "@invalidUsernamePassword": {},
 
+  "issue": "Issue",
+  "@issue": {},
+
   "issueDate": "Issue Date",
   "@issueDate": {},
+
+  "issueOrder": "Issue Order",
+  "@issueOrder": {},
 
   "itemInLocation": "Item already in location",
   "@itemInLocation": {},
