@@ -129,9 +129,12 @@ class InvenTreeDrawer extends StatelessWidget {
     }
 
     if (InvenTreeAPI().supportsNotifications) {
+      int notification_count = InvenTreeAPI().notification_counter;
+
       tiles.add(
         ListTile(
           leading: FaIcon(FontAwesomeIcons.bell),
+          trailing: notification_count > 0 ? Text(notification_count.toString()) : null,
           title: Text(L10().notifications),
           onTap: _notifications,
         )

@@ -42,16 +42,6 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
     // Initially load the profile and attempt server connection
     _loadProfile();
 
-    _refreshNotifications();
-
-    // Refresh notifications every ~30 seconds
-    Timer.periodic(
-        Duration(
-          milliseconds: 30000,
-        ), (timer) {
-      _refreshNotifications();
-    });
-
     InvenTreeAPI().registerCallback(() {
 
       if (mounted) {
@@ -179,28 +169,6 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
 
     setState(() {});
   }
-
-  /*
-   * Refresh the number of active notifications for this user
-   */
-  Future<void> _refreshNotifications() async {
-
-    if (!InvenTreeAPI().isConnected()) {
-      return;
-    }
-
-    // Ignore if the widget is no longer active
-    if (!mounted) {
-      return;
-    }
-
-    // final notifications = await InvenTreeNotification().list();
-
-    setState(() {
-      // _notificationCounter = notifications.length;
-    });
-  }
-
 
   Widget _listTile(BuildContext context, String label, IconData icon, {Function()? callback, String role = "", String permission = "", Widget? trailing}) {
 
