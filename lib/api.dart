@@ -5,26 +5,25 @@ import "dart:io";
 import "package:flutter/foundation.dart";
 import "package:http/http.dart" as http;
 import "package:intl/intl.dart";
-import "package:inventree/app_colors.dart";
-import "package:inventree/inventree/status_codes.dart";
-import "package:inventree/preferences.dart";
-
 import "package:open_filex/open_filex.dart";
 import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:flutter_cache_manager/flutter_cache_manager.dart";
-
-import "package:inventree/widget/dialogs.dart";
-import "package:inventree/l10.dart";
-import "package:inventree/helpers.dart";
-import "package:inventree/inventree/sentry.dart";
-import "package:inventree/inventree/model.dart";
-import "package:inventree/user_profile.dart";
-import "package:inventree/widget/snacks.dart";
 import "package:path_provider/path_provider.dart";
 
 import "package:inventree/api_form.dart";
+import "package:inventree/app_colors.dart";
+import "package:inventree/preferences.dart";
+import "package:inventree/l10.dart";
+import "package:inventree/helpers.dart";
+import "package:inventree/inventree/model.dart";
+import "package:inventree/inventree/notification.dart";
+import "package:inventree/inventree/status_codes.dart";
+import "package:inventree/inventree/sentry.dart";
+import "package:inventree/user_profile.dart";
+import "package:inventree/widget/dialogs.dart";
+import "package:inventree/widget/snacks.dart";
 
 
 /*
@@ -520,6 +519,16 @@ class InvenTreeAPI {
     }
 
     // Ok, probably pretty good...
+
+    if (_notification_timer == null) {
+      debug("starting notification timer");
+      _notification_timer = Timer.periodic(
+        Duration(seconds: 5),
+        (timer) {
+            _refreshNotifications();
+        });
+    }
+
     return true;
 
   }
@@ -1461,4 +1470,24 @@ class InvenTreeAPI {
   InvenTreeStatusCode get StockStatus => _get_status_class("stock/status/");
   InvenTreeStatusCode get PurchaseOrderStatus => _get_status_class("order/po/status/");
 
+  int notification_counter = 0;
+
+  Timer? _notification_timer;
+
+  /*
+   * Update notification counter (called periodically)
+   */
+  Future<void> _refreshNotifications() async {
+    if (!isConnected()) {
+      return;
+    }
+
+    if (!supportsNotifications) {
+      return;
+    }
+
+    InvenTreeNotification().count(filters: {"read": "false"}).then((int n) {
+      notification_counter = n;
+    });
+  }
 }
