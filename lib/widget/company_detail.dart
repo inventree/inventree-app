@@ -70,7 +70,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
   List<SpeedDialChild> actionButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
-    // TODO
+    // TODO - Actions for this company
 
     return actions;
   }
@@ -258,10 +258,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
     }
 
     if (widget.company.isCustomer) {
-
       // TODO - Add list of sales orders
-
-      tiles.add(Divider());
     }
 
     if (widget.company.notes.isNotEmpty) {

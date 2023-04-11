@@ -1,5 +1,4 @@
 
-
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/part.dart";
 
