@@ -1,5 +1,7 @@
 import "package:flutter/material.dart";
+import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:inventree/widget/dialogs.dart";
 import "package:one_context/one_context.dart";
 
 import "package:inventree/api.dart";
@@ -60,6 +62,72 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
     }
 
     return actions;
+  }
+
+  @override
+  List<SpeedDialChild> actionButtons(BuildContext context) {
+    List<SpeedDialChild> actions = [];
+
+    if (api.checkPermission("purchase_order", "add")) {
+      if (order.isPending) {
+        actions.add(
+          SpeedDialChild(
+            child: FaIcon(FontAwesomeIcons.paperPlane, color: Colors.blue),
+            label: L10().issueOrder,
+            onTap: () async {
+              _issueOrder(context);
+            }
+          )
+        );
+      }
+
+      if (order.isOpen) {
+        actions.add(
+          SpeedDialChild(
+            child: FaIcon(FontAwesomeIcons.circleXmark, color: Colors.red),
+            label: L10().cancelOrder,
+            onTap: () async {
+              _cancelOrder(context);
+            }
+          )
+        );
+      }
+    }
+
+    return actions;
+  }
+
+  /// Issue this order
+  Future<void> _issueOrder(BuildContext context) async {
+
+    confirmationDialog(
+      L10().issueOrder, "",
+      icon: FontAwesomeIcons.paperPlane,
+      color: Colors.blue,
+      acceptText: L10().issue,
+      onAccept: () async {
+        await order.issueOrder().then((dynamic) {
+          refresh(context);
+        });
+      }
+    );
+  }
+
+  /// Cancel this order
+  Future<void> _cancelOrder(BuildContext context) async {
+
+    confirmationDialog(
+      L10().cancelOrder, "",
+      icon: FontAwesomeIcons.circleXmark,
+      color: Colors.red,
+      acceptText: L10().cancel,
+      onAccept: () async {
+        await order.cancelOrder().then((dynamic) {
+          print("callback");
+          refresh(context);
+        });
+      }
+    );
   }
 
   @override

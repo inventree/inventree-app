@@ -26,7 +26,7 @@ Future<void> confirmationDialog(String title, String text, {Color? color, IconDa
           title: Text(title, style: TextStyle(color: color)),
           leading: FaIcon(icon, color: color),
         ),
-        content: Text(text),
+        content: text.isEmpty ? Text(text) : null,
         actions: [
           TextButton(
             child: Text(_reject),
