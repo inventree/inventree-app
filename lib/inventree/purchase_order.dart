@@ -1,9 +1,7 @@
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/part.dart";
-
 import "package:inventree/inventree/model.dart";
 
-// TODO: In the future, status codes should be retrieved from the server
 const int PO_STATUS_PENDING = 10;
 const int PO_STATUS_PLACED = 20;
 const int PO_STATUS_COMPLETE = 30;

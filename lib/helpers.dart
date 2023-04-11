@@ -9,9 +9,13 @@
 
 import "dart:io";
 import "package:currency_formatter/currency_formatter.dart";
-
-import "package:audioplayers/audioplayers.dart";
 import "package:one_context/one_context.dart";
+import "package:url_launcher/url_launcher.dart";
+import "package:audioplayers/audioplayers.dart";
+
+import "package:inventree/l10.dart";
+import "package:inventree/widget/snacks.dart";
+
 
 
 List<String> debug_messages = [];
@@ -77,6 +81,19 @@ Future<void> playAudioFile(String path) async {
 
   final player = AudioPlayer();
   player.play(AssetSource(path));
+}
+
+
+// Open an external URL
+Future<void> openLink(String url) async {
+
+  final link = Uri.parse(url);
+
+  try {
+    await launchUrl(link);
+  } catch (e) {
+    showSnackIcon(L10().error, success: false);
+  }
 }
 
 

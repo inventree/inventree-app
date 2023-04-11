@@ -1,11 +1,11 @@
 import "dart:io";
 
 import "package:device_info_plus/device_info_plus.dart";
-import "package:inventree/preferences.dart";
 import "package:package_info_plus/package_info_plus.dart";
 import "package:sentry_flutter/sentry_flutter.dart";
 
 import "package:inventree/api.dart";
+import "package:inventree/preferences.dart";
 
 Future<Map<String, dynamic>> getDeviceInfo() async {
 

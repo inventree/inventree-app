@@ -5,6 +5,7 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
+import "package:inventree/helpers.dart";
 
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/purchase_order.dart";
@@ -14,6 +15,7 @@ import "package:inventree/widget/purchase_order_list.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/supplier_part_list.dart";
+
 
 /*
  * Widget for displaying detail view of a single Company instance
@@ -68,7 +70,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
   List<SpeedDialChild> actionButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
-    // TODO
+    // TODO - Actions for this company
 
     return actions;
   }
@@ -147,9 +149,9 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
   if (widget.company.website.isNotEmpty) {
     tiles.add(ListTile(
       title: Text("${widget.company.website}"),
-      leading: FaIcon(FontAwesomeIcons.globe),
-      onTap: () {
-        // TODO - Open website
+      leading: FaIcon(FontAwesomeIcons.globe, color: COLOR_CLICK),
+      onTap: () async {
+        openLink(widget.company.website);
       },
     ));
 
@@ -159,9 +161,9 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
   if (widget.company.email.isNotEmpty) {
     tiles.add(ListTile(
       title: Text("${widget.company.email}"),
-      leading: FaIcon(FontAwesomeIcons.at),
-      onTap: () {
-        // TODO - Open email
+      leading: FaIcon(FontAwesomeIcons.at, color: COLOR_CLICK),
+      onTap: () async {
+        openLink("mailto:${widget.company.email}");
       },
     ));
 
@@ -171,9 +173,9 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
   if (widget.company.phone.isNotEmpty) {
     tiles.add(ListTile(
       title: Text("${widget.company.phone}"),
-      leading: FaIcon(FontAwesomeIcons.phone),
+      leading: FaIcon(FontAwesomeIcons.phone, color: COLOR_CLICK),
       onTap: () {
-        // TODO - Call phone number
+        openLink("tel:${widget.company.phone}");
       },
     ));
 
@@ -256,10 +258,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
     }
 
     if (widget.company.isCustomer) {
-
       // TODO - Add list of sales orders
-
-      tiles.add(Divider());
     }
 
     if (widget.company.notes.isNotEmpty) {
