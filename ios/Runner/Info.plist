@@ -12,22 +12,31 @@
 	<string>6.0</string>
 	<key>CFBundleLocalizations</key>
 	<array>
-		<string>de</string>
-		<string>el</string>
+	    <string>cs-CZ</string>
+	    <string>da-DK</string>
+		<string>de-DE</string>
+		<string>el-GR</string>
 		<string>en</string>
-		<string>es</string>
-		<string>fr</string>
-		<string>he</string>
-		<string>it</string>
-		<string>ja</string>
-		<string>ko</string>
-		<string>nl</string>
-		<string>no</string>
-		<string>pl</string>
-		<string>ru</string>
-		<string>sv</string>
-		<string>tr</string>
-		<string>vi</string>
+		<string>es-ES</string>
+		<string>es-MX</string>
+		<string>fa-IR</string>
+		<string>fr-FR</string>
+		<string>he-IL</string>
+		<string>hu-HU</string>
+		<string>id-ID</string>
+		<string>it-IT</string>
+		<string>ja-JP</string>
+		<string>ko-KR</string>
+		<string>nl-NL</string>
+		<string>no-NO</string>
+		<string>pl-PL</string>
+		<string>pt-BR</string>
+		<string>pt-PT</string>
+		<string>ru-RU</string>
+		<string>sv-SE</string>
+		<string>th-TH</string>
+		<string>tr-TR</string>
+		<string>vi-VN</string>
 		<string>zh-CN</string>
 	</array>
 	<key>CFBundleName</key>
@@ -69,7 +78,10 @@
 	<false/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
+	    <string>http</string>
 	    <string>https</string>
+	    <string>mailto</string>
+	    <string>tel</string>
 	</array>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>

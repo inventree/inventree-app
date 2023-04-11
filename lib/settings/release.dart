@@ -1,7 +1,9 @@
 import "package:flutter/material.dart";
 import "package:flutter_markdown/flutter_markdown.dart";
-import "package:inventree/l10.dart";
 import "package:url_launcher/url_launcher.dart";
+
+import "package:inventree/l10.dart";
+import "package:inventree/helpers.dart";
 
 
 class ReleaseNotesWidget extends StatelessWidget {
@@ -9,16 +11,6 @@ class ReleaseNotesWidget extends StatelessWidget {
   const ReleaseNotesWidget(this.releaseNotes);
 
   final String releaseNotes;
-
-  // Callback function when a link is clicked in the markdown
-  Future<void> openLink(String url) async {
-
-    final link = Uri.parse(url);
-
-    if (await canLaunchUrl(link)) {
-      await launchUrl(link);
-    }
-  }
 
   @override
   Widget build (BuildContext context) {
