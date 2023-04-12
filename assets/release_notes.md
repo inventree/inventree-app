@@ -1,6 +1,13 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.11.2 - April 2023
+---
+
+- Add action to issue a purchase order
+- Add action to cancel a purchase order
+- Reimplement periodic checks for notifications
+
 ### 0.11.1 - April 2023
 ---
 
