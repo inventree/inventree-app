@@ -53,19 +53,19 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
                   },
               ),
               ListTile(
+                  title: Text(L10().appSettings),
+                  subtitle: Text(L10().appSettingsDetails),
+                  leading: FaIcon(FontAwesomeIcons.gears, color: COLOR_CLICK),
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeAppSettingsWidget()));
+                  }
+              ),
+              ListTile(
                 title: Text(L10().homeScreen),
                 subtitle: Text(L10().homeScreenSettings),
                 leading: FaIcon(FontAwesomeIcons.house, color: COLOR_CLICK),
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreenSettingsWidget()));
-                }
-              ),
-              ListTile(
-                title: Text(L10().appSettings),
-                subtitle: Text(L10().appSettingsDetails),
-                leading: FaIcon(FontAwesomeIcons.gears, color: COLOR_CLICK),
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeAppSettingsWidget()));
                 }
               ),
               ListTile(

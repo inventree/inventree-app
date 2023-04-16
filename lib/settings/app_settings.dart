@@ -1,13 +1,17 @@
-
 import "package:flutter/material.dart";
+
+import "package:adaptive_theme/adaptive_theme.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:flutter_localized_locales/flutter_localized_locales.dart";
+import "package:one_context/one_context.dart";
 
 import "package:inventree/api_form.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/l10n/supported_locales.dart";
 import "package:inventree/main.dart";
 import "package:inventree/preferences.dart";
+
+import "package:inventree/widget/progress.dart";
 
 
 class InvenTreeAppSettingsWidget extends StatefulWidget {
@@ -28,22 +32,31 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
   bool reportErrors = true;
   bool strictHttps = false;
 
+  bool darkMode = false;
+
   Locale? locale;
 
   @override
   void initState() {
     super.initState();
 
-    loadSettings();
+    loadSettings(OneContext().context!);
   }
 
-  Future <void> loadSettings() async {
+  Future <void> loadSettings(BuildContext context) async {
+
+    showLoadingOverlay(context);
+
     barcodeSounds = await InvenTreeSettingsManager().getValue(INV_SOUNDS_BARCODE, true) as bool;
     serverSounds = await InvenTreeSettingsManager().getValue(INV_SOUNDS_SERVER, true) as bool;
     reportErrors = await InvenTreeSettingsManager().getValue(INV_REPORT_ERRORS, true) as bool;
     strictHttps = await InvenTreeSettingsManager().getValue(INV_STRICT_HTTPS, false) as bool;
 
+    darkMode = AdaptiveTheme.of(context).mode.isDark;
+
     locale = await InvenTreeSettingsManager().getSelectedLocale();
+
+    hideLoadingOverlay();
 
     if (mounted) {
       setState(() {});
@@ -167,6 +180,24 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               leading: FaIcon(FontAwesomeIcons.mobile),
+            ),
+            ListTile(
+              title: Text(L10().darkMode),
+              subtitle: Text(L10().darkModeEnable),
+              leading: FaIcon(FontAwesomeIcons.moon),
+              trailing: Switch(
+                value: darkMode,
+                onChanged: (bool value) {
+                  if (value) {
+                    AdaptiveTheme.of(context).setDark();
+                  } else {
+                    AdaptiveTheme.of(context).setLight();
+                  }
+                  setState(() {
+                    darkMode = value;
+                  });
+                }
+              )
             ),
             ListTile(
               title: Text(L10().strictHttps),

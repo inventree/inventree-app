@@ -7,6 +7,7 @@ environment:
   sdk: ">=2.16.0 <3.0.0"
 
 dependencies:
+  adaptive_theme: ^3.2.0                  # Theme management (e.g. dark mode)
   audioplayers: ^3.0.1                    # Play audio files
   cached_network_image: ^3.2.0            # Download and cache remote images
   camera: ^0.10.3                         # Camera
