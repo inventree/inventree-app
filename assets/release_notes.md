@@ -1,6 +1,11 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.11.3 - April 2023
+---
+
+- Fixes text color in dark mode
+
 ### 0.11.2 - April 2023
 ---
 
