@@ -70,7 +70,7 @@ class InvenTreeApp extends StatefulWidget {
 
   InvenTreeApp({this.savedThemeMode});
 
-  AdaptiveThemeMode? savedThemeMode;
+  final AdaptiveThemeMode? savedThemeMode;
 
   @override
   InvenTreeAppState createState() => InvenTreeAppState(savedThemeMode);
@@ -82,12 +82,12 @@ class InvenTreeApp extends StatefulWidget {
 
 class InvenTreeAppState extends State<StatefulWidget> {
 
+  InvenTreeAppState(this.savedThemeMode) : super();
+
   // Custom _locale (default = null; use system default)
   Locale? _locale;
 
-  InvenTreeAppState(this.savedThemeMode) : super();
-
-  AdaptiveThemeMode? savedThemeMode;
+  final AdaptiveThemeMode? savedThemeMode;
 
   @override
   void initState() {
