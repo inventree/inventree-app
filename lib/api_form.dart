@@ -743,7 +743,7 @@ class APIFormField {
       fontWeight: FontWeight.bold,
       fontSize: 18,
       fontFamily: "arial",
-      color: hasErrors() ? COLOR_DANGER : COLOR_GRAY,
+      color: hasErrors() ? COLOR_DANGER : null,
       fontStyle: FontStyle.normal,
     );
   }
@@ -751,7 +751,7 @@ class APIFormField {
   TextStyle _helperStyle() {
     return TextStyle(
       fontStyle: FontStyle.italic,
-      color: hasErrors() ? COLOR_DANGER : COLOR_GRAY,
+      color: hasErrors() ? COLOR_DANGER : null,
     );
   }
 
