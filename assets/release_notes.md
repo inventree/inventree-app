@@ -4,9 +4,11 @@
 ### 0.11.2 - April 2023
 ---
 
+- Adds "dark mode" display option
 - Add action to issue a purchase order
 - Add action to cancel a purchase order
 - Reimplement periodic checks for notifications
+
 
 ### 0.11.1 - April 2023
 ---
