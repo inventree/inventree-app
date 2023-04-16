@@ -56,7 +56,7 @@ Future<void> main() async {
     };
 
     runApp(
-      InvenTreeApp(savedThemeMode: savedThemeMode)
+      InvenTreeApp(savedThemeMode)
     );
 
   }, (Object error, StackTrace stackTrace) async {
@@ -68,7 +68,7 @@ Future<void> main() async {
 class InvenTreeApp extends StatefulWidget {
   // This widget is the root of your application.
 
-  InvenTreeApp({this.savedThemeMode});
+  const InvenTreeApp(this.savedThemeMode);
 
   final AdaptiveThemeMode? savedThemeMode;
 
