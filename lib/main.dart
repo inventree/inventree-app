@@ -3,6 +3,7 @@ import "dart:async";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 
+import "package:adaptive_theme/adaptive_theme.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:flutter_localizations/flutter_localizations.dart";
 import "package:flutter_localized_locales/flutter_localized_locales.dart";
@@ -21,6 +22,8 @@ import "package:inventree/widget/home.dart";
 Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
+
+  final savedThemeMode = await AdaptiveTheme.getThemeMode();
 
   await runZonedGuarded<Future<void>>(() async {
 
@@ -53,7 +56,7 @@ Future<void> main() async {
     };
 
     runApp(
-      InvenTreeApp()
+      InvenTreeApp(savedThemeMode: savedThemeMode)
     );
 
   }, (Object error, StackTrace stackTrace) async {
@@ -65,8 +68,12 @@ Future<void> main() async {
 class InvenTreeApp extends StatefulWidget {
   // This widget is the root of your application.
 
+  InvenTreeApp({this.savedThemeMode});
+
+  AdaptiveThemeMode? savedThemeMode;
+
   @override
-  InvenTreeAppState createState() => InvenTreeAppState();
+  InvenTreeAppState createState() => InvenTreeAppState(savedThemeMode);
 
   static InvenTreeAppState? of(BuildContext context) => context.findAncestorStateOfType<InvenTreeAppState>();
 
@@ -77,6 +84,10 @@ class InvenTreeAppState extends State<StatefulWidget> {
 
   // Custom _locale (default = null; use system default)
   Locale? _locale;
+
+  InvenTreeAppState(this.savedThemeMode) : super();
+
+  AdaptiveThemeMode? savedThemeMode;
 
   @override
   void initState() {
@@ -122,25 +133,36 @@ class InvenTreeAppState extends State<StatefulWidget> {
   @override
   Widget build(BuildContext context) {
 
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      builder: OneContext().builder,
-      navigatorKey: OneContext().key,
-      onGenerateTitle: (BuildContext context) => "InvenTree",
-      theme: ThemeData(
+    return AdaptiveTheme(
+      light: ThemeData(
+        brightness: Brightness.light,
+        primarySwatch: Colors.lightBlue,
+        secondaryHeaderColor: Colors.blueGrey
+      ),
+      dark: ThemeData(
+        brightness: Brightness.dark,
         primarySwatch: Colors.lightBlue,
         secondaryHeaderColor: Colors.blueGrey,
       ),
-      home: InvenTreeHomePage(),
-      localizationsDelegates: [
-        I18N.delegate,
-        LocaleNamesLocalizationsDelegate(),
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
-      supportedLocales: supported_locales,
-      locale: _locale,
+      initial: savedThemeMode ?? AdaptiveThemeMode.light,
+      builder: (light, dark) =>  MaterialApp(
+        theme: light,
+        darkTheme: dark,
+        debugShowCheckedModeBanner: false,
+        builder: OneContext().builder,
+        navigatorKey: OneContext().key,
+        onGenerateTitle: (BuildContext context) => "InvenTree",
+        home: InvenTreeHomePage(),
+        localizationsDelegates: [
+          I18N.delegate,
+          LocaleNamesLocalizationsDelegate(),
+          GlobalMaterialLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: supported_locales,
+        locale: _locale,
+      )
     );
   }
 }

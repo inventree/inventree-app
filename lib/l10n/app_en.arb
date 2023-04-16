@@ -211,6 +211,12 @@
   "damaged": "Damaged",
   "@damaged": {},
 
+  "darkMode": "Dark Mode",
+  "@darkMode": {},
+
+  "darkModeEnable": "Enable dark mode",
+  "@darkModeEnable": {},
+
   "delete": "Delete",
   "@delete": {},
 
