@@ -29,16 +29,7 @@ class _StockItemHistoryDisplayState extends RefreshableState<StockItemHistoryWid
   String getAppBarTitle() => L10().stockItemHistory;
 
   @override
-  List<Widget> appBarActions(BuildContext context) => [
-        IconButton(
-          icon: FaIcon(FontAwesomeIcons.filter),
-          onPressed: () async {
-            setState(() {
-              showFilterOptions = !showFilterOptions;
-            });
-          },
-        )
-      ];
+  List<Widget> appBarActions(BuildContext context) => [];
 
   @override
   Widget getBody(BuildContext context) {
