@@ -45,7 +45,7 @@ class _StockItemHistoryDisplayState extends RefreshableState<StockItemHistoryWid
     Map<String, String> filters = {
       "item": widget.item.pk.toString(),
     };
-    
+
     return PaginatedStockHistoryList(filters, showFilterOptions);
   }
 
@@ -85,8 +85,7 @@ class _PaginatedStockHistoryState
       int limit, int offset, Map<String, String> params) async {
     await InvenTreeAPI().StockHistoryStatus.load();
 
-    final page = await InvenTreeStockItemHistory()
-        .listPaginated(limit, offset, filters: params);
+    final page = await InvenTreeStockItemHistory().listPaginated(limit, offset, filters: params);
 
     return page;
   }
