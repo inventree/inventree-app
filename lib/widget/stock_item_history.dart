@@ -52,22 +52,20 @@ class _StockItemHistoryDisplayState extends RefreshableState<StockItemHistoryWid
       children: ListTile.divideTiles(
         context: context,
         tiles: historyList(),
-      ).toList()
-    );
+    ).toList());
   }
 
   List<Widget> historyList() {
     List<Widget> tiles = [];
 
     for (var entry in history) {
-      tiles.add(
-        ListTile(
+      tiles.add(ListTile(
           leading: Text(entry.dateString),
-          trailing: entry.quantityString.isNotEmpty ? Text(entry.quantityString) : null,
+        trailing:
+            entry.quantityString.isNotEmpty ? Text(entry.quantityString) : null,
           title: Text(entry.label),
           subtitle: entry.notes.isNotEmpty ? Text(entry.notes) : null,
-        )
-      );
+      ));
     }
 
     return tiles;
