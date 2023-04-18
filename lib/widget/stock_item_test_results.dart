@@ -158,7 +158,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
       String _value = "";
       String _notes = "";
 
-      FaIcon _icon = FaIcon(FontAwesomeIcons.circleQuestion, color: COLOR_BLUE);
+      FaIcon _icon = FaIcon(FontAwesomeIcons.circleQuestion, color: Colors.lightBlue);
       bool _valueRequired = false;
       bool _attachmentRequired = false;
 

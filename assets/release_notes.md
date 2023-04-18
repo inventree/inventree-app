@@ -6,6 +6,7 @@
 
 - Bug fix for stock history widget
 - Improved display of stock history widget
+- Theme improvements for dark mode
 
 ### 0.11.3 - April 2023
 ---
