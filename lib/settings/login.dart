@@ -137,7 +137,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
           title: Text(
             profile.name,
           ),
-          tileColor: profile.selected ? COLOR_SELECTED : null,
+          tileColor: profile.selected ? Theme.of(context).secondaryHeaderColor : null,
           subtitle: Text("${profile.server}"),
           trailing: _getProfileIcon(profile),
           onTap: () {

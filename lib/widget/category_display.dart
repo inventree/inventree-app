@@ -151,7 +151,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
               subtitle: Text("${widget.category?.parentPathString}"),
               leading: FaIcon(
                 FontAwesomeIcons.turnUp,
-                color: COLOR_CLICK,
+                color: COLOR_ACTION,
               ),
               onTap: () async {
 

@@ -410,7 +410,7 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
   Widget buildSearchInput(BuildContext context) {
     return ListTile(
       trailing: orderingOptions.isEmpty ? null : GestureDetector(
-        child: FaIcon(FontAwesomeIcons.sort, color: COLOR_CLICK),
+        child: FaIcon(FontAwesomeIcons.sort, color: COLOR_ACTION),
         onTap: () async {
           _saveOrderingOptions(context);
         },

@@ -165,7 +165,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
       ListTile(
         title: Text(L10().releaseNotes),
         subtitle: Text(L10().appReleaseNotes),
-        leading: FaIcon(FontAwesomeIcons.fileLines, color: COLOR_CLICK),
+        leading: FaIcon(FontAwesomeIcons.fileLines, color: COLOR_ACTION),
         onTap: () {
           _releaseNotes(context);
         },
@@ -176,7 +176,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
       ListTile(
         title: Text(L10().credits),
         subtitle: Text(L10().appCredits),
-        leading: FaIcon(FontAwesomeIcons.bullhorn, color: COLOR_CLICK),
+        leading: FaIcon(FontAwesomeIcons.bullhorn, color: COLOR_ACTION),
         onTap: () {
           _credits(context);
         }
@@ -187,7 +187,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
       ListTile(
         title: Text(L10().documentation),
         subtitle: Text("https://docs.inventree.org"),
-        leading: FaIcon(FontAwesomeIcons.book, color: COLOR_CLICK),
+        leading: FaIcon(FontAwesomeIcons.book, color: COLOR_ACTION),
         onTap: () {
           _openDocs();
         },
@@ -198,7 +198,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
       ListTile(
         title: Text(L10().translate),
         subtitle: Text(L10().translateHelp),
-        leading: FaIcon(FontAwesomeIcons.language, color: COLOR_CLICK),
+        leading: FaIcon(FontAwesomeIcons.language, color: COLOR_ACTION),
         onTap: () {
           _translate();
         }
@@ -209,7 +209,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
       ListTile(
         title: Text(L10().reportBug),
         subtitle: Text(L10().reportBugDescription),
-        leading: FaIcon(FontAwesomeIcons.bug, color: COLOR_CLICK),
+        leading: FaIcon(FontAwesomeIcons.bug, color: COLOR_ACTION),
         onTap: () {
         _reportBug(context);
         },

@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/api.dart";
+import "package:inventree/app_colors.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/settings/settings.dart";
 import "package:inventree/widget/category_display.dart";
@@ -84,7 +85,7 @@ class InvenTreeDrawer extends StatelessWidget {
 
     // "Home" access
     tiles.add(ListTile(
-      leading: FaIcon(FontAwesomeIcons.house),
+      leading: FaIcon(FontAwesomeIcons.house, color: COLOR_ACTION),
       title: Text(
         L10().appTitle,
         style: TextStyle(fontWeight: FontWeight.bold),
@@ -98,7 +99,7 @@ class InvenTreeDrawer extends StatelessWidget {
       tiles.add(
         ListTile(
           title: Text(L10().parts),
-          leading: FaIcon(FontAwesomeIcons.shapes),
+          leading: FaIcon(FontAwesomeIcons.shapes, color: COLOR_ACTION),
           onTap: _parts,
         )
       );
@@ -108,7 +109,7 @@ class InvenTreeDrawer extends StatelessWidget {
       tiles.add(
         ListTile(
           title: Text(L10().stock),
-          leading: FaIcon(FontAwesomeIcons.boxesStacked),
+          leading: FaIcon(FontAwesomeIcons.boxesStacked, color: COLOR_ACTION),
           onTap: _stock,
         )
       );
@@ -118,7 +119,7 @@ class InvenTreeDrawer extends StatelessWidget {
       tiles.add(
         ListTile(
           title: Text(L10().purchaseOrders),
-          leading: FaIcon(FontAwesomeIcons.cartShopping),
+          leading: FaIcon(FontAwesomeIcons.cartShopping, color: COLOR_ACTION),
           onTap: _purchaseOrders,
         )
       );
@@ -133,7 +134,7 @@ class InvenTreeDrawer extends StatelessWidget {
 
       tiles.add(
         ListTile(
-          leading: FaIcon(FontAwesomeIcons.bell),
+          leading: FaIcon(FontAwesomeIcons.bell, color: COLOR_ACTION),
           trailing: notification_count > 0 ? Text(notification_count.toString()) : null,
           title: Text(L10().notifications),
           onTap: _notifications,
@@ -144,7 +145,7 @@ class InvenTreeDrawer extends StatelessWidget {
     tiles.add(
       ListTile(
         title: Text(L10().settings),
-        leading: Icon(Icons.settings),
+        leading: Icon(Icons.settings, color: COLOR_ACTION),
         onTap: _settings,
       )
     );

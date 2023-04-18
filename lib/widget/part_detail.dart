@@ -261,7 +261,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           subtitle: Text("${part.description}"),
           trailing: IconButton(
             icon: FaIcon(part.starred ? FontAwesomeIcons.solidStar : FontAwesomeIcons.star,
-              color: part.starred ? COLOR_STAR : null,
+              color: part.starred ? Colors.yellowAccent : null,
             ),
             onPressed: () {
               _toggleStar(context);
@@ -349,7 +349,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         ListTile(
             title: Text(L10().partCategory),
             subtitle: Text("${part.categoryName}"),
-            leading: FaIcon(FontAwesomeIcons.sitemap, color: COLOR_CLICK),
+            leading: FaIcon(FontAwesomeIcons.sitemap, color: COLOR_ACTION),
             onTap: () async {
               if (part.categoryId > 0) {
 
@@ -370,7 +370,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           ListTile(
             title: Text(L10().partCategory),
             subtitle: Text(L10().partCategoryTopLevel),
-            leading: FaIcon(FontAwesomeIcons.sitemap, color: COLOR_CLICK),
+            leading: FaIcon(FontAwesomeIcons.sitemap, color: COLOR_ACTION),
             onTap: () {
               Navigator.push(context, MaterialPageRoute(
                   builder: (context) => CategoryDisplayWidget(null)));
@@ -384,7 +384,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       tiles.add(
           ListTile(
             title: Text(L10().variants),
-            leading: FaIcon(FontAwesomeIcons.shapes, color: COLOR_CLICK),
+            leading: FaIcon(FontAwesomeIcons.shapes, color: COLOR_ACTION),
             trailing: Text(variantCount.toString()),
             onTap: () {
               Navigator.push(
@@ -442,7 +442,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         tiles.add(
             ListTile(
                 title: Text(L10().billOfMaterials),
-                leading: FaIcon(FontAwesomeIcons.tableList, color: COLOR_CLICK),
+                leading: FaIcon(FontAwesomeIcons.tableList, color: COLOR_ACTION),
                 trailing: Text(bomCount.toString()),
             )
         );
@@ -468,7 +468,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           ListTile(
             title: Text(L10().usedIn),
             subtitle: Text(L10().usedInDetails),
-            leading: FaIcon(FontAwesomeIcons.layerGroup, color: COLOR_CLICK),
+            leading: FaIcon(FontAwesomeIcons.layerGroup, color: COLOR_ACTION),
             trailing: Text(usedInCount.toString()),
               onTap: () {
                 Navigator.push(
@@ -498,7 +498,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       tiles.add(
           ListTile(
             title: Text("${part.link}"),
-            leading: FaIcon(FontAwesomeIcons.link, color: COLOR_CLICK),
+            leading: FaIcon(FontAwesomeIcons.link, color: COLOR_ACTION),
             onTap: () {
               part.openLink();
             },
@@ -528,7 +528,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         tiles.add(
             ListTile(
               title: Text(L10().suppliers),
-              leading: FaIcon(FontAwesomeIcons.industry, color: COLOR_CLICK),
+              leading: FaIcon(FontAwesomeIcons.industry, color: COLOR_ACTION),
               trailing: Text("${part.supplierCount}"),
                 onTap: () {
                   Navigator.push(
@@ -547,7 +547,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     tiles.add(
         ListTile(
           title: Text(L10().notes),
-          leading: FaIcon(FontAwesomeIcons.noteSticky, color: COLOR_CLICK),
+          leading: FaIcon(FontAwesomeIcons.noteSticky, color: COLOR_ACTION),
           trailing: Text(""),
           onTap: () {
             Navigator.push(
@@ -561,7 +561,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     tiles.add(
       ListTile(
         title: Text(L10().attachments),
-        leading: FaIcon(FontAwesomeIcons.fileLines, color: COLOR_CLICK),
+        leading: FaIcon(FontAwesomeIcons.fileLines, color: COLOR_ACTION),
         trailing: attachmentCount > 0 ? Text(attachmentCount.toString()) : null,
         onTap: () {
           Navigator.push(

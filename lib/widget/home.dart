@@ -7,10 +7,8 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/preferences.dart";
-import "package:inventree/barcode.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/settings/login.dart";
-import "package:inventree/settings/settings.dart";
 import "package:inventree/user_profile.dart";
 
 import "package:inventree/widget/category_display.dart";
@@ -63,20 +61,10 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
   // Selected user profile
   UserProfile? _profile;
 
-  void _scan(BuildContext context) {
-    if (!InvenTreeAPI().checkConnection()) return;
-
-    scanQrCode(context);
-  }
-
   void _showParts(BuildContext context) {
     if (!InvenTreeAPI().checkConnection()) return;
 
     Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));
-  }
-
-  void _showSettings(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeSettingsWidget()));
   }
 
   void _showStarredParts(BuildContext context) {
@@ -187,7 +175,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
           horizontal: 12
         ),
         child: ListTile(
-          leading: FaIcon(icon, color: connected && allowed ? COLOR_CLICK : Colors.grey),
+          leading: FaIcon(icon, color: connected && allowed ? COLOR_ACTION : Colors.grey),
           title: Text(label),
           trailing: trailing,
         ),
@@ -217,17 +205,9 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
    */
   List<Widget> getListTiles(BuildContext context) {
 
-    List<Widget> tiles = [];
-
-    // Barcode scanner
-    tiles.add(_listTile(
-      context,
-      L10().scanBarcode,
-      Icons.qr_code_scanner,
-      callback: () {
-        _scan(context);
-      }
-    ));
+    List<Widget> tiles = [
+      Divider(height: 5)
+    ];
 
     // Parts
     tiles.add(_listTile(
@@ -314,16 +294,6 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
     }
      */
 
-    // Settings
-    tiles.add(_listTile(
-        context,
-        L10().settings,
-        FontAwesomeIcons.gears,
-        callback: () {
-          _showSettings(context);
-        }
-    ));
-
     return tiles;
   }
 
@@ -338,7 +308,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
     bool connecting = !InvenTreeAPI().isConnected() && InvenTreeAPI().isConnecting();
 
     Widget leading = FaIcon(FontAwesomeIcons.circleExclamation, color: COLOR_DANGER);
-    Widget trailing = FaIcon(FontAwesomeIcons.server, color: COLOR_CLICK);
+    Widget trailing = FaIcon(FontAwesomeIcons.server, color: COLOR_ACTION);
     String title = L10().serverNotConnected;
     String subtitle = L10().profileSelectOrCreate;
 
