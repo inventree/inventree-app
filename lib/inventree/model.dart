@@ -575,10 +575,12 @@ class InvenTreeModel {
     // Construct the response
     InvenTreePageResponse page = InvenTreePageResponse();
 
-    var data = response.asMap();
+    var dataMap = response.asMap();
 
-    if (data.containsKey("count") && data.containsKey("results")) {
-       page.count = (data["count"] ?? 0) as int;
+    // First attempt is to look for paginated data, returned as a map
+
+    if (dataMap.isNotEmpty && dataMap.containsKey("count") && dataMap.containsKey("results")) {
+      page.count = (dataMap["count"] ?? 0) as int;
 
        page.results = [];
 
@@ -587,15 +589,28 @@ class InvenTreeModel {
        }
 
        return page;
-
-    } else {
-      return null;
     }
+
+    // Second attempt is to look for a list of data (not paginated)
+    var dataList = response.asList();
+
+    if (dataList.isNotEmpty) {
+      page.count = dataList.length;
+      page.results = [];
+
+      for (var result in dataList) {
+        page.addResult(createFromJson(result as Map<String, dynamic>));
+    }
+
+      return page;
+    }
+
+    // Finally, no results available
+    return null;
   }
 
   // Return list of objects from the database, with optional filters
   Future<List<InvenTreeModel>> list({Map<String, String> filters = const {}}) async {
-
     var params = defaultListFilters();
 
     for (String key in filters.keys) {

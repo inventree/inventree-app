@@ -23,9 +23,7 @@ class InvenTreeStockItemTestResult extends InvenTreeModel {
   @override
   Map<String, dynamic> formFields() {
     return {
-      "stock_item": {
-        "hidden": true
-      },
+      "stock_item": {"hidden": true},
       "test": {},
       "result": {},
       "value": {},
@@ -75,6 +73,7 @@ class InvenTreeStockItemHistory extends InvenTreeModel {
     // By default, order by decreasing date
     return {
       "ordering": "-date",
+      "user_detail": "true",
     };
   }
 
@@ -98,20 +97,30 @@ class InvenTreeStockItemHistory extends InvenTreeModel {
 
   String get label => (jsondata["label"] ?? "") as String;
 
-  String get quantityString {
-    Map<String, dynamic> deltas = (jsondata["deltas"] ?? {}) as Map<String, dynamic>;
+  // Return the "deltas" associated with this historical object
+  Map<String, dynamic> get deltas {
+    if (jsondata.containsKey("deltas")) {
+      return jsondata["deltas"] as Map<String, dynamic>;
+    } else {
+      return {};
+    }
+  }
 
-    // Serial number takes priority here
-    if (deltas.containsKey("serial")) {
-      var serial = (deltas["serial"] ?? "").toString();
-      return "# ${serial}";
-    } else if (deltas.containsKey("quantity")) {
-      double q = (deltas["quantity"] ?? 0) as double;
+  // Return the quantity string for this historical object
+  String get quantityString {
+    var _deltas = deltas;
+
+    if (_deltas.containsKey("quantity")) {
+      double q = double.tryParse(_deltas["quantity"].toString()) ?? 0;
 
       return simpleNumberString(q);
     } else {
       return "";
     }
+  }
+
+  String get userString {
+    return (jsondata["user_detail"]?["username"] ?? "") as String;
   }
 }
 

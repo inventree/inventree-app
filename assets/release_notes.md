@@ -1,6 +1,12 @@
 ## InvenTree App Release Notes
 ---
 
+### 0.11.4 - April 2023
+---
+
+- Bug fix for stock history widget
+- Improved display of stock history widget
+
 ### 0.11.3 - April 2023
 ---
 
