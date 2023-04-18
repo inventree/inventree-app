@@ -261,7 +261,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           subtitle: Text("${part.description}"),
           trailing: IconButton(
             icon: FaIcon(part.starred ? FontAwesomeIcons.solidStar : FontAwesomeIcons.star,
-              color: part.starred ? COLOR_STAR : null,
+              color: part.starred ? Colors.yellowAccent : null,
             ),
             onPressed: () {
               _toggleStar(context);
