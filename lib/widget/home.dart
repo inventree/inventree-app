@@ -7,7 +7,6 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/preferences.dart";
-import "package:inventree/barcode.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/settings/login.dart";
 import "package:inventree/settings/settings.dart";
@@ -63,20 +62,10 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
   // Selected user profile
   UserProfile? _profile;
 
-  void _scan(BuildContext context) {
-    if (!InvenTreeAPI().checkConnection()) return;
-
-    scanQrCode(context);
-  }
-
   void _showParts(BuildContext context) {
     if (!InvenTreeAPI().checkConnection()) return;
 
     Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));
-  }
-
-  void _showSettings(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeSettingsWidget()));
   }
 
   void _showStarredParts(BuildContext context) {
@@ -217,17 +206,9 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
    */
   List<Widget> getListTiles(BuildContext context) {
 
-    List<Widget> tiles = [];
-
-    // Barcode scanner
-    tiles.add(_listTile(
-      context,
-      L10().scanBarcode,
-      Icons.qr_code_scanner,
-      callback: () {
-        _scan(context);
-      }
-    ));
+    List<Widget> tiles = [
+      Divider(height: 5)
+    ];
 
     // Parts
     tiles.add(_listTile(
@@ -313,16 +294,6 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
       ));
     }
      */
-
-    // Settings
-    tiles.add(_listTile(
-        context,
-        L10().settings,
-        FontAwesomeIcons.gears,
-        callback: () {
-          _showSettings(context);
-        }
-    ));
 
     return tiles;
   }
