@@ -187,7 +187,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
           horizontal: 12
         ),
         child: ListTile(
-          leading: FaIcon(icon, color: connected && allowed ? COLOR_CLICK : Colors.grey),
+          leading: FaIcon(icon, color: connected && allowed ? COLOR_ACTION : Colors.grey),
           title: Text(label),
           trailing: trailing,
         ),
@@ -338,7 +338,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
     bool connecting = !InvenTreeAPI().isConnected() && InvenTreeAPI().isConnecting();
 
     Widget leading = FaIcon(FontAwesomeIcons.circleExclamation, color: COLOR_DANGER);
-    Widget trailing = FaIcon(FontAwesomeIcons.server, color: COLOR_CLICK);
+    Widget trailing = FaIcon(FontAwesomeIcons.server, color: COLOR_ACTION);
     String title = L10().serverNotConnected;
     String subtitle = L10().profileSelectOrCreate;
 

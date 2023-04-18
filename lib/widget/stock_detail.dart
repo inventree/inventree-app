@@ -633,7 +633,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
             subtitle: Text("${widget.item.locationPathString}"),
             leading: FaIcon(
               FontAwesomeIcons.locationDot,
-              color: COLOR_CLICK,
+              color: COLOR_ACTION,
             ),
             onTap: () async {
               if (widget.item.locationId > 0) {
@@ -666,7 +666,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         ListTile(
           title: Text(L10().supplierPart),
           subtitle: Text(widget.item.supplierSKU),
-          leading: FaIcon(FontAwesomeIcons.building, color: COLOR_CLICK),
+          leading: FaIcon(FontAwesomeIcons.building, color: COLOR_ACTION),
           trailing: InvenTreeAPI().getImage(
             widget.item.supplierImage,
             width: 40,
@@ -748,7 +748,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       tiles.add(
         ListTile(
           title: Text("${widget.item.link}"),
-          leading: FaIcon(FontAwesomeIcons.link, color: COLOR_CLICK),
+          leading: FaIcon(FontAwesomeIcons.link, color: COLOR_ACTION),
           onTap: () {
             widget.item.openLink();
           },
@@ -760,7 +760,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       tiles.add(
           ListTile(
               title: Text(L10().testResults),
-              leading: FaIcon(FontAwesomeIcons.listCheck, color: COLOR_CLICK),
+              leading: FaIcon(FontAwesomeIcons.listCheck, color: COLOR_ACTION),
               trailing: Text("${widget.item.testResultCount}"),
               onTap: () {
                 Navigator.push(
@@ -793,7 +793,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       tiles.add(
         ListTile(
           title: Text(L10().history),
-          leading: FaIcon(FontAwesomeIcons.clockRotateLeft, color: COLOR_CLICK),
+          leading: FaIcon(FontAwesomeIcons.clockRotateLeft, color: COLOR_ACTION),
           trailing: Text("${widget.item.trackingItemCount}"),
           onTap: () {
             Navigator.push(
@@ -812,7 +812,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     tiles.add(
       ListTile(
         title: Text(L10().notes),
-        leading: FaIcon(FontAwesomeIcons.noteSticky, color: COLOR_CLICK),
+        leading: FaIcon(FontAwesomeIcons.noteSticky, color: COLOR_ACTION),
         onTap: () {
           Navigator.push(
             context,
@@ -825,7 +825,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     tiles.add(
         ListTile(
           title: Text(L10().attachments),
-          leading: FaIcon(FontAwesomeIcons.fileLines, color: COLOR_CLICK),
+          leading: FaIcon(FontAwesomeIcons.fileLines, color: COLOR_ACTION),
           trailing: attachmentCount > 0 ? Text(attachmentCount.toString()) : null,
           onTap: () {
             Navigator.push(

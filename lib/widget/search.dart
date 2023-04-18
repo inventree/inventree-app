@@ -358,7 +358,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
         trailing: GestureDetector(
           child: FaIcon(
             searchController.text.isEmpty ? FontAwesomeIcons.magnifyingGlass : FontAwesomeIcons.deleteLeft,
-            color: searchController.text.isEmpty ? COLOR_CLICK : COLOR_DANGER,
+            color: searchController.text.isEmpty ? COLOR_ACTION : COLOR_DANGER,
           ),
           onTap: () {
             searchController.clear();

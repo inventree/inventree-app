@@ -47,7 +47,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
               ListTile(
                   title: Text(L10().server),
                   subtitle: Text(L10().configureServer),
-                  leading: FaIcon(FontAwesomeIcons.server, color: COLOR_CLICK),
+                  leading: FaIcon(FontAwesomeIcons.server, color: COLOR_ACTION),
                   onTap: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeLoginSettingsWidget()));
                   },
@@ -55,7 +55,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
               ListTile(
                   title: Text(L10().appSettings),
                   subtitle: Text(L10().appSettingsDetails),
-                  leading: FaIcon(FontAwesomeIcons.gears, color: COLOR_CLICK),
+                  leading: FaIcon(FontAwesomeIcons.gears, color: COLOR_ACTION),
                   onTap: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeAppSettingsWidget()));
                   }
@@ -63,7 +63,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
               ListTile(
                 title: Text(L10().homeScreen),
                 subtitle: Text(L10().homeScreenSettings),
-                leading: FaIcon(FontAwesomeIcons.house, color: COLOR_CLICK),
+                leading: FaIcon(FontAwesomeIcons.house, color: COLOR_ACTION),
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreenSettingsWidget()));
                 }
@@ -71,7 +71,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
               ListTile(
                 title: Text(L10().part),
                 subtitle: Text(L10().partSettings),
-                leading: FaIcon(FontAwesomeIcons.shapes, color: COLOR_CLICK),
+                leading: FaIcon(FontAwesomeIcons.shapes, color: COLOR_ACTION),
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreePartSettingsWidget()));
                 }

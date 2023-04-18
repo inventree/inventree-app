@@ -170,7 +170,7 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
         tiles.add(ListTile(
           title: Text(attachment.filename),
           subtitle: Text(attachment.comment),
-          leading: FaIcon(attachment.icon, color: COLOR_CLICK),
+          leading: FaIcon(attachment.icon, color: COLOR_ACTION),
           onTap: () async {
             showLoadingOverlay(context);
             await attachment.downloadAttachment();
@@ -186,7 +186,7 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
         tiles.add(ListTile(
           title: Text(attachment.link),
           subtitle: Text(attachment.comment),
-          leading: FaIcon(FontAwesomeIcons.link, color: COLOR_CLICK),
+          leading: FaIcon(FontAwesomeIcons.link, color: COLOR_ACTION),
           onTap: () async {
             var uri = Uri.tryParse(attachment.link.trimLeft());
             if (uri != null && await canLaunchUrl(uri)) {

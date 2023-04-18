@@ -205,7 +205,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       tiles.add(ListTile(
         title: Text(L10().supplier),
         subtitle: Text(supplier.name),
-        leading: FaIcon(FontAwesomeIcons.building, color: COLOR_CLICK),
+        leading: FaIcon(FontAwesomeIcons.building, color: COLOR_ACTION),
         onTap: () {
           Navigator.push(
             context,
@@ -259,7 +259,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
     tiles.add(
         ListTile(
           title: Text(L10().attachments),
-          leading: FaIcon(FontAwesomeIcons.fileLines, color: COLOR_CLICK),
+          leading: FaIcon(FontAwesomeIcons.fileLines, color: COLOR_ACTION),
           trailing: attachmentCount > 0 ? Text(attachmentCount.toString()) : null,
           onTap: () {
             Navigator.push(

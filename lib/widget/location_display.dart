@@ -295,7 +295,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
             ListTile(
               title: Text(L10().parentLocation),
               subtitle: Text("${location!.parentPathString}"),
-              leading: FaIcon(FontAwesomeIcons.turnUp, color: COLOR_CLICK),
+              leading: FaIcon(FontAwesomeIcons.turnUp, color: COLOR_ACTION),
               onTap: () async {
                 int parentId = location?.parentId ?? -1;
 
