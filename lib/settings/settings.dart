@@ -79,7 +79,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
               Divider(),
               ListTile(
                 title: Text(L10().about),
-                leading: FaIcon(FontAwesomeIcons.circleInfo),
+                leading: FaIcon(FontAwesomeIcons.circleInfo, color: COLOR_ACTION),
                 onTap: _about,
               )
             ]

@@ -9,7 +9,7 @@ Color get COLOR_ACTION {
   BuildContext? context = OneContext().context;
 
   if (context != null) {
-    return Theme.of(context).primaryColor;
+    return Theme.of(context).indicatorColor;
   } else {
     return Colors.lightBlue;
   }
