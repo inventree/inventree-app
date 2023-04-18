@@ -9,7 +9,6 @@ import "package:inventree/app_colors.dart";
 import "package:inventree/preferences.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/settings/login.dart";
-import "package:inventree/settings/settings.dart";
 import "package:inventree/user_profile.dart";
 
 import "package:inventree/widget/category_display.dart";
