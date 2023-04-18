@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
-import "package:inventree/api.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
+import "package:inventree/api.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/inventree/model.dart";
@@ -8,9 +9,7 @@ import "package:inventree/inventree/model.dart";
 import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/refreshable_state.dart";
 
-
 class StockItemHistoryWidget extends StatefulWidget {
-
   const StockItemHistoryWidget(this.item, {Key? key}) : super(key: key);
 
   final InvenTreeStockItem item;
@@ -19,61 +18,39 @@ class StockItemHistoryWidget extends StatefulWidget {
   _StockItemHistoryDisplayState createState() => _StockItemHistoryDisplayState(item);
 }
 
-
 class _StockItemHistoryDisplayState extends RefreshableState<StockItemHistoryWidget> {
-
   _StockItemHistoryDisplayState(this.item);
 
   final InvenTreeStockItem item;
 
+  bool showFilterOptions = false;
+
   @override
   String getAppBarTitle() => L10().stockItemHistory;
 
-  List<InvenTreeStockItemHistory> history = [];
-
   @override
-  Future<void> request(BuildContext refresh) async {
-
-    history.clear();
-
-    await InvenTreeStockItemHistory().list(filters: {"item": "${item.pk}"}).then((List<InvenTreeModel> results) {
-      for (var result in results) {
-        if (result is InvenTreeStockItemHistory) {
-          history.add(result);
-        }
-      }
-
-      // Refresh
-      setState(() {
-      });
-    });
-  }
+  List<Widget> appBarActions(BuildContext context) => [
+        IconButton(
+          icon: FaIcon(FontAwesomeIcons.filter),
+          onPressed: () async {
+            setState(() {
+              showFilterOptions = !showFilterOptions;
+            });
+          },
+        )
+      ];
 
   @override
   Widget getBody(BuildContext context) {
-    return ListView(
-      children: ListTile.divideTiles(
-        context: context,
-        tiles: historyList(),
-    ).toList());
+    Map<String, String> filters = {
+      "item": widget.item.pk.toString(),
+    };
+    
+    return PaginatedStockHistoryList(filters, showFilterOptions);
   }
 
-  List<Widget> historyList() {
-    List<Widget> tiles = [];
-
-    for (var entry in history) {
-      tiles.add(ListTile(
-          leading: Text(entry.dateString),
-        trailing:
-            entry.quantityString.isNotEmpty ? Text(entry.quantityString) : null,
-          title: Text(entry.label),
-          subtitle: entry.notes.isNotEmpty ? Text(entry.notes) : null,
-      ));
-    }
-
-    return tiles;
-  }
 }
+
 /*
  * Widget which displays a paginated stock history list
  */
@@ -88,8 +65,8 @@ class PaginatedStockHistoryList extends PaginatedSearchWidget {
 /*
  * State class for the paginated stock history list
  */
-class _PaginatedStockHistoryState extends PaginatedSearchState<PaginatedStockHistoryList> {
-  
+class _PaginatedStockHistoryState
+    extends PaginatedSearchState<PaginatedStockHistoryList> {
   _PaginatedStockHistoryState() : super();
 
   @override
