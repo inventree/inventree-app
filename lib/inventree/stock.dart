@@ -73,6 +73,7 @@ class InvenTreeStockItemHistory extends InvenTreeModel {
     // By default, order by decreasing date
     return {
       "ordering": "-date",
+      "user_detail": "true",
     };
   }
 
@@ -116,6 +117,10 @@ class InvenTreeStockItemHistory extends InvenTreeModel {
     } else {
       return "";
     }
+  }
+
+  String get userString {
+    return (jsondata["user_detail"]?["username"] ?? "") as String;
   }
 }
 

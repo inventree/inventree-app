@@ -96,8 +96,7 @@ class _PaginatedStockHistoryState
 
     return ListTile(
       leading: Text(entry.dateString),
-      trailing:
-          entry.quantityString.isNotEmpty ? Text(entry.quantityString) : null,
+      trailing: entry.userString.isNotEmpty ? Text(entry.userString) : null,
       title: Text(entry.label),
       subtitle: entry.notes.isNotEmpty ? Text(entry.notes) : null,
     );
