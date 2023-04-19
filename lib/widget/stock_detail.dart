@@ -25,7 +25,7 @@ import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/stock_item_history.dart";
 import "package:inventree/widget/stock_item_test_results.dart";
-import "package:inventree/widget/stock_notes.dart";
+import "package:inventree/widget/notes_widget.dart";
 
 
 class StockDetailWidget extends StatefulWidget {
@@ -64,7 +64,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     }
 
-    if (api.checkPermission("stock", "change")) {
+    if (widget.item.canEdit) {
       actions.add(
           IconButton(
               icon: Icon(Icons.edit_square),
@@ -84,7 +84,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     List<SpeedDialChild> actions = [];
 
-    if (api.checkPermission("stock", "change")) {
+    if (widget.item.canEdit) {
 
       // Stock adjustment actions available if item is *not* serialized
       if (!widget.item.isSerialized()) {
@@ -138,7 +138,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     }
 
-    if (api.checkPermission("stock", "delete")) {
+    if (widget.item.canDelete) {
       actions.add(
           SpeedDialChild(
               child: FaIcon(FontAwesomeIcons.trashCan, color: Colors.red),
@@ -157,7 +157,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   List<SpeedDialChild> barcodeButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
-    if (api.checkPermission("stock", "change")) {
+    if (widget.item.canEdit) {
       // Scan item into location
       actions.add(
           SpeedDialChild(
@@ -816,7 +816,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => StockNotesWidget(widget.item))
+            MaterialPageRoute(builder: (context) => NotesWidget(widget.item))
           );
         }
       )
@@ -829,13 +829,14 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           trailing: attachmentCount > 0 ? Text(attachmentCount.toString()) : null,
           onTap: () {
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => AttachmentWidget(
-                        InvenTreeStockItemAttachment(),
-                        widget.item.pk,
-                        InvenTreeAPI().checkPermission("stock", "change"))
+              context,
+              MaterialPageRoute(
+                builder: (context) => AttachmentWidget(
+                  InvenTreeStockItemAttachment(),
+                  widget.item.pk,
+                  widget.item.canEdit,
                 )
+              )
             );
           },
         )

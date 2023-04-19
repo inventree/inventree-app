@@ -49,7 +49,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
   List<Widget> appBarActions(BuildContext context) {
     List<Widget> actions = [];
 
-    if (InvenTreeAPI().checkPermission("purchase_order", "change")) {
+    if (order.canEdit) {
       actions.add(
         IconButton(
           icon: Icon(Icons.edit_square),
@@ -68,7 +68,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
   List<SpeedDialChild> actionButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
-    if (api.checkPermission("purchase_order", "add")) {
+    if (order.canCreate) {
       if (order.isPending) {
         actions.add(
           SpeedDialChild(
@@ -263,13 +263,14 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
           trailing: attachmentCount > 0 ? Text(attachmentCount.toString()) : null,
           onTap: () {
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => AttachmentWidget(
-                        InvenTreePurchaseOrderAttachment(),
-                        order.pk,
-                        InvenTreeAPI().checkPermission("purchase_order", "change"))
+              context,
+              MaterialPageRoute(
+                builder: (context) => AttachmentWidget(
+                    InvenTreePurchaseOrderAttachment(),
+                    order.pk,
+                    order.canEdit
                 )
+              )
             );
           },
         )

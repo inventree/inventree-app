@@ -63,7 +63,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     }
 
     // Add "edit" button
-    if (location != null && api.checkPermission("stock_location", "change")) {
+    if (location != null && InvenTreeStockLocation().canEdit) {
       actions.add(
           IconButton(
               icon: Icon(Icons.edit_square),
@@ -85,7 +85,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
     if (location != null) {
       // Scan items into this location
-      if (api.checkPermission("stock", "change")) {
+      if (InvenTreeStockItem().canEdit) {
         actions.add(
             SpeedDialChild(
                 child: FaIcon(FontAwesomeIcons.qrcode),
@@ -105,7 +105,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       }
 
       // Scan this location into another one
-      if (api.checkPermission("stock_location", "change")) {
+      if (InvenTreeStockLocation().canEdit) {
         actions.add(
             SpeedDialChild(
                 child: FaIcon(FontAwesomeIcons.qrcode),
@@ -144,7 +144,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     List<SpeedDialChild> actions = [];
 
     // Create new location
-    if (api.checkPermission("stock_location", "add")) {
+    if (InvenTreeStockLocation().canCreate) {
       actions.add(
           SpeedDialChild(
               child: FaIcon(FontAwesomeIcons.sitemap),
@@ -157,7 +157,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     }
 
     // Create new item
-    if (location != null && api.checkPermission("stock", "add")) {
+    if (location != null && InvenTreeStockItem().canCreate) {
       actions.add(
           SpeedDialChild(
               child: FaIcon(FontAwesomeIcons.boxesStacked),

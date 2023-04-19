@@ -10,6 +10,7 @@ import "package:inventree/api.dart";
 import "package:inventree/api_form.dart";
 import "package:inventree/fa_icon_mapping.dart";
 import "package:inventree/l10.dart";
+import "package:inventree/helpers.dart";
 import "package:inventree/inventree/sentry.dart";
 import "package:inventree/widget/dialogs.dart";
 
@@ -83,7 +84,11 @@ class InvenTreeModel {
   /* Return a list of roles which may be required for this model
    * If multiple roles are required, *any* role which passes the check is sufficient
    */
-  List<String> get rolesRequired => [];
+  List<String> get rolesRequired {
+    // Default implementation should not be called
+    debug("rolesRequired() not implemented for ${runtimeType.toString()}");
+    return [];
+  }
 
   // Test if the user can "edit" this model
   bool get canEdit {

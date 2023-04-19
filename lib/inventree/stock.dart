@@ -21,6 +21,9 @@ class InvenTreeStockItemTestResult extends InvenTreeModel {
   String get URL => "stock/test/";
 
   @override
+  List<String> get rolesRequired => ["stock"];
+
+  @override
   Map<String, dynamic> formFields() {
     return {
       "stock_item": {"hidden": true},
@@ -133,6 +136,9 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   @override
   String get URL => "stock/";
+
+  @override
+  List<String> get rolesRequired => ["stock"];
 
   // URLs for performing stock actions
   static String transferStockUrl() => "stock/transfer/";
@@ -610,6 +616,9 @@ class InvenTreeStockLocation extends InvenTreeModel {
 
   @override
   String get URL => "stock/location/";
+
+  @override
+  List<String> get rolesRequired => ["stock_location"];
 
   String get pathstring => (jsondata["pathstring"] ?? "") as String;
 

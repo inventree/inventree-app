@@ -45,7 +45,7 @@ class _NotesState extends RefreshableState<NotesWidget> {
 
     List<Widget> actions = [];
 
-    if (InvenTreeAPI().checkPermission("part", "change")) {
+    if (widget.model.canEdit) {
       actions.add(
         IconButton(
           icon: FaIcon(FontAwesomeIcons.penToSquare),

@@ -3,6 +3,9 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
+import "package:inventree/inventree/company.dart";
+import "package:inventree/inventree/purchase_order.dart";
+import "package:inventree/inventree/stock.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/settings/settings.dart";
 import "package:inventree/widget/category_display.dart";
@@ -95,7 +98,7 @@ class InvenTreeDrawer extends StatelessWidget {
 
     tiles.add(Divider());
 
-    if (InvenTreeAPI().checkPermission("part_category", "view")) {
+    if (InvenTreeCompany().canView) {
       tiles.add(
         ListTile(
           title: Text(L10().parts),
@@ -105,7 +108,7 @@ class InvenTreeDrawer extends StatelessWidget {
       );
     }
 
-    if (InvenTreeAPI().checkPermission("stock_location", "view")) {
+    if (InvenTreeStockLocation().canView) {
       tiles.add(
         ListTile(
           title: Text(L10().stock),
@@ -115,7 +118,7 @@ class InvenTreeDrawer extends StatelessWidget {
       );
     }
 
-    if (InvenTreeAPI().checkPermission("purchase_order", "view")) {
+    if (InvenTreePurchaseOrder().canView) {
       tiles.add(
         ListTile(
           title: Text(L10().purchaseOrders),
