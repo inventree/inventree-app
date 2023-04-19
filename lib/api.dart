@@ -650,19 +650,20 @@ class InvenTreeAPI {
    * e.g. "part", "change"
    */
   bool checkPermission(String role, String permission) {
+
     // If we do not have enough information, assume permission is allowed
     if (roles.isEmpty) {
-      debug("chekPermission - no roles defined!");
+      debug("checkPermission - no roles defined!");
       return true;
     }
 
     if (!roles.containsKey(role)) {
-      debug("chekPermission - role '$role' not found!");
+      debug("checkPermission - role '$role' not found!");
       return true;
     }
 
     if (roles[role] == null) {
-      debug("chekPermission - role '$role' is null!");
+      debug("checkPermission - role '$role' is null!");
       return true;
     }
 
