@@ -444,6 +444,11 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
                 title: Text(L10().billOfMaterials),
                 leading: FaIcon(FontAwesomeIcons.tableList, color: COLOR_ACTION),
                 trailing: Text(bomCount.toString()),
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => BillOfMaterialsWidget(part, isParentComponent: true)
+                  ));
+                },
             )
         );
       }
