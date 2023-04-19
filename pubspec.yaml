@@ -64,6 +64,7 @@ flutter:
 
   assets:
     - assets/image/icon.png
+    - assets/image/logo_transparent.png
     - assets/release_notes.md
     - assets/credits.md
     - assets/sounds/barcode_scan.mp3

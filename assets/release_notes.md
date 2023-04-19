@@ -1,5 +1,8 @@
-## InvenTree App Release Notes
+### 0.11.5 - April 2023
 ---
+
+- Fix background image transparency for dark mode
+
 
 ### 0.11.4 - April 2023
 ---

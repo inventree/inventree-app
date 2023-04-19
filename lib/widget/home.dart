@@ -324,7 +324,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
       child: Column(
         children: [
           Image.asset(
-            "assets/image/icon.png",
+            "assets/image/logo_transparent.png",
             color: Colors.white.withOpacity(0.2),
             colorBlendMode: BlendMode.modulate,
             scale: 0.5,
