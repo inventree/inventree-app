@@ -78,7 +78,59 @@ class InvenTreeModel {
     } else {
       return "";
     }
+  }
 
+  /* Return a list of roles which may be required for this model
+   * If multiple roles are required, *any* role which passes the check is sufficient
+   */
+  List<String> get rolesRequired => [];
+
+  // Test if the user can "edit" this model
+  bool get canEdit {
+    for (String role in rolesRequired) {
+      if (InvenTreeAPI().checkPermission(role, "change")) {
+        return true;
+      }
+    }
+
+    // Fallback
+    return false;
+  }
+
+  // Test if the user can "create" this model
+  bool get canCreate {
+    for (String role in rolesRequired) {
+      if (InvenTreeAPI().checkPermission(role, "add")) {
+        return true;
+      }
+    }
+
+    // Fallback
+    return false;
+  }
+
+  // Test if the user can "delete" this model
+  bool get canDelete {
+    for (String role in rolesRequired) {
+      if (InvenTreeAPI().checkPermission(role, "delete")) {
+        return true;
+      }
+    }
+
+    // Fallback
+    return false;
+  }
+
+  // Test if the user can "view" this model
+  bool get canView {
+    for (String role in rolesRequired) {
+      if (InvenTreeAPI().checkPermission(role, "view")) {
+        return true;
+      }
+    }
+
+    // Fallback
+    return false;
   }
 
   // Fields for editing / creating this model
