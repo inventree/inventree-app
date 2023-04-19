@@ -1,5 +1,6 @@
 """Invoke tasks for building the app"""
 
+import sys
 from invoke import task
 
 
@@ -12,7 +13,8 @@ def clean(c):
 @task
 def translate(c):
     """Update translation files"""
-    c.run("cd lib/l10n && python collect_translations.py")
+    python = 'python3' if sys.platform.lower() == 'darwin' else 'python'
+    c.run(f"cd lib/l10n && {python} collect_translations.py")
 
 
 @task(pre=[clean, translate])
