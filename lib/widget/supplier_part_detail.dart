@@ -3,6 +3,7 @@ import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/api.dart";
+import "package:inventree/app_colors.dart";
 import "package:inventree/barcode.dart";
 import "package:inventree/l10.dart";
 
@@ -117,9 +118,10 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
     // Internal Part
     tiles.add(
         ListTile(
-          title: Text(widget.supplierPart.partName),
-          subtitle: Text(widget.supplierPart.partDescription),
-          leading: InvenTreeAPI().getImage(
+          title: Text(L10().internalPart),
+          subtitle: Text(widget.supplierPart.partName),
+          leading: FaIcon(FontAwesomeIcons.shapes, color: COLOR_ACTION),
+          trailing: InvenTreeAPI().getImage(
             widget.supplierPart.partImage,
             width: 40,
             height: 40,
@@ -140,9 +142,9 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
     // Supplier details
     tiles.add(
       ListTile(
-        title: Text(widget.supplierPart.SKU),
+        title: Text(L10().supplier),
         subtitle: Text(widget.supplierPart.supplierName),
-        leading: FaIcon(FontAwesomeIcons.building),
+        leading: FaIcon(FontAwesomeIcons.building, color: COLOR_ACTION),
         trailing: InvenTreeAPI().getImage(
           widget.supplierPart.supplierImage,
           width: 40,
@@ -162,18 +164,46 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
       )
     );
 
+    // SKU (part number)
+    tiles.add(
+        ListTile(
+          title: Text(L10().supplierPartNumber),
+          subtitle: Text(widget.supplierPart.SKU),
+          leading: FaIcon(FontAwesomeIcons.barcode),
+        )
+    );
+
     // Manufacturer information
     if (widget.supplierPart.manufacturerPartId > 0) {
       tiles.add(
         ListTile(
+          title: Text(L10().manufacturer),
           subtitle: Text(widget.supplierPart.manufacturerName),
-          title: Text(widget.supplierPart.MPN),
-          leading: FaIcon(FontAwesomeIcons.industry),
+          leading: FaIcon(FontAwesomeIcons.industry, color: COLOR_ACTION),
           trailing: InvenTreeAPI().getImage(
             widget.supplierPart.manufacturerImage,
             width: 40,
             height: 40,
-          )
+          ),
+          onTap: () async {
+            showLoadingOverlay(context);
+            var supplier = await InvenTreeCompany().get(widget.supplierPart.manufacturerId);
+            hideLoadingOverlay();
+
+            if (supplier is InvenTreeCompany) {
+              Navigator.push(context, MaterialPageRoute(
+                builder: (context) => CompanyDetailWidget(supplier)
+              ));
+            }
+          }
+        )
+      );
+
+      tiles.add(
+        ListTile(
+          title: Text(L10().manufacturerPartNumber),
+          subtitle: Text(widget.supplierPart.MPN),
+          leading: FaIcon(FontAwesomeIcons.barcode),
         )
       );
     }
@@ -182,7 +212,7 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
       tiles.add(
         ListTile(
           title: Text(widget.supplierPart.link),
-          leading: FaIcon(FontAwesomeIcons.link),
+          leading: FaIcon(FontAwesomeIcons.link, color: COLOR_ACTION),
           onTap: () async {
             var uri = Uri.tryParse(widget.supplierPart.link);
             if (uri != null && await canLaunchUrl(uri)) {

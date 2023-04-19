@@ -148,6 +148,8 @@ class InvenTreeSupplierPart extends InvenTreeModel {
     return _filters();
   }
 
+  int get manufacturerId => (jsondata["manufacturer_detail"]["pk"] ?? -1) as int;
+
   String get manufacturerName => (jsondata["manufacturer_detail"]?["name"] ?? "") as String;
 
   String get MPN => (jsondata["manufacturer_part_detail"]?["MPN"] ?? "") as String;
