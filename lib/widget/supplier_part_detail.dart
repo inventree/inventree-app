@@ -57,10 +57,7 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
   List<SpeedDialChild> barcodeButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
-    if (api.checkPermission("purchase_order", "change") ||
-        api.checkPermission("sales_order", "change") ||
-        api.checkPermission("return_order", "change")) {
-
+    if (widget.supplierPart.canEdit) {
       actions.add(
         customBarcodeAction(
           context, this,
@@ -78,9 +75,7 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
   List<Widget> appBarActions(BuildContext context) {
     List<Widget> actions = [];
 
-    if (api.checkPermission("purchase_order", "change") ||
-        api.checkPermission("sales_order", "change") ||
-        api.checkPermission("return_order", "change")) {
+    if (widget.supplierPart.canEdit) {
       actions.add(
           IconButton(
               icon: Icon(Icons.edit_square),

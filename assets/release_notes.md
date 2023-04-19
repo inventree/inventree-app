@@ -4,6 +4,7 @@
 - Fix background image transparency for dark mode
 - Fix link to Bill of Materials from Part screen
 - Improvements to supplier part detail screen
+- Add "notes" field to more models
 
 
 ### 0.11.4 - April 2023

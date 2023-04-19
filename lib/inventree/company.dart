@@ -19,6 +19,9 @@ class InvenTreeCompany extends InvenTreeModel {
   String get URL => "company/";
 
   @override
+  List<String> get rolesRequired => ["purchase_order", "sales_order", "return_order"];
+
+  @override
   Map<String, dynamic> formFields() {
     return {
       "name": {},
@@ -117,6 +120,9 @@ class InvenTreeSupplierPart extends InvenTreeModel {
 
   @override
   String get URL => "company/part/";
+
+  @override
+  List<String> get rolesRequired => ["part", "purchase_order"];
 
   @override
   Map<String, dynamic> formFields() {

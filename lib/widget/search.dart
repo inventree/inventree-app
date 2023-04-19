@@ -207,29 +207,29 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
       };
 
       // Part search
-      if (api.checkPermission("part", "view")) {
+      if (InvenTreePart().canView) {
         body["part"] = {};
       }
 
       // PartCategory search
-      if (api.checkPermission("part_category", "view")) {
+      if (InvenTreePartCategory().canView) {
         body["partcategory"] = {};
       }
 
       // StockItem search
-      if (api.checkPermission("stock", "view")) {
+      if (InvenTreeStockItem().canView) {
         body["stockitem"] = {
           "in_stock": true,
         };
       }
 
       // StockLocation search
-      if (api.checkPermission("stock_location", "view")) {
+      if (InvenTreeStockLocation().canView) {
         body["stocklocation"] = {};
       }
 
       // PurchaseOrder search
-      if (api.checkPermission("purchase_order", "view")) {
+      if (InvenTreePurchaseOrder().canView) {
         body["purchaseorder"] = {
           "outstanding": true
         };
@@ -253,7 +253,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
   Future<void> legacySearch(String term) async {
 
     // Search parts
-    if (api.checkPermission("part", "view")) {
+    if (InvenTreePart().canView) {
       nPendingSearches++;
       InvenTreePart().count(searchQuery: term).then((int n) {
         if (term == searchController.text) {
@@ -268,7 +268,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
     }
 
     // Search part categories
-    if (api.checkPermission("part_category", "view")) {
+    if (InvenTreePartCategory().canView) {
       nPendingSearches++;
       InvenTreePartCategory().count(searchQuery: term,).then((int n) {
         if (term == searchController.text) {
@@ -283,7 +283,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
     }
 
     // Search stock items
-    if (api.checkPermission("stock", "view")) {
+    if (InvenTreeStockItem().canView) {
       nPendingSearches++;
       InvenTreeStockItem().count(searchQuery: term).then((int n) {
         if (term == searchController.text) {
@@ -298,7 +298,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
     }
 
     // Search stock locations
-    if (api.checkPermission("stock_location", "view")) {
+    if (InvenTreeStockLocation().canView) {
       nPendingSearches++;
       InvenTreeStockLocation().count(searchQuery: term).then((int n) {
         if (term == searchController.text) {
@@ -313,7 +313,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
     }
 
     // Search purchase orders
-    if (api.checkPermission("purchase_order", "view")) {
+    if (InvenTreePurchaseOrder().canView) {
      nPendingSearches++;
       InvenTreePurchaseOrder().count(
           searchQuery: term,

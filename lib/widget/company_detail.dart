@@ -49,17 +49,15 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
   List<Widget> appBarActions(BuildContext context) {
     List<Widget> actions = [];
 
-    if (api.checkPermission("purchase_order", "change") ||
-        api.checkPermission("sales_order", "change") ||
-        api.checkPermission("return_order", "change")) {
+    if (InvenTreeCompany().canEdit) {
       actions.add(
-          IconButton(
-              icon: Icon(Icons.edit_square),
-              tooltip: L10().companyEdit,
-              onPressed: () {
-                editCompany(context);
-              }
-          )
+        IconButton(
+            icon: Icon(Icons.edit_square),
+            tooltip: L10().companyEdit,
+            onPressed: () {
+              editCompany(context);
+            }
+        )
       );
     }
     
@@ -281,7 +279,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
               builder: (context) => AttachmentWidget(
                 InvenTreeCompanyAttachment(),
                 widget.company.pk,
-                api.checkPermission("purchase_order", "change") || api.checkPermission("sales_order", "change")
+                InvenTreeCompany().canEdit
               )
             )
           );

@@ -24,6 +24,9 @@ class InvenTreePartCategory extends InvenTreeModel {
   String get URL => "part/category/";
 
   @override
+  List<String> get rolesRequired => ["part_category"];
+
+  @override
   Map<String, dynamic> formFields() {
 
     Map<String, dynamic> fields = {
@@ -181,6 +184,9 @@ class InvenTreePart extends InvenTreeModel {
 
   @override
   String get URL => "part/";
+
+  @override
+  List<String> get rolesRequired => ["part"];
 
   @override
   Map<String, dynamic> formFields() {

@@ -42,7 +42,7 @@ class _PartImageState extends RefreshableState<PartImageWidget> {
 
     List<Widget> actions = [];
 
-    if (InvenTreeAPI().checkPermission("part", "change")) {
+    if (part.canEdit) {
 
       // File upload
       actions.add(

@@ -16,7 +16,7 @@ import "package:inventree/preferences.dart";
 import "package:inventree/widget/attachment_widget.dart";
 import "package:inventree/widget/bom_list.dart";
 import "package:inventree/widget/part_list.dart";
-import "package:inventree/widget/part_notes.dart";
+import "package:inventree/widget/notes_widget.dart";
 import "package:inventree/widget/part_parameter_widget.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/category_display.dart";
@@ -72,7 +72,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   List<Widget> appBarActions(BuildContext context) {
     List<Widget> actions = [];
 
-    if (api.checkPermission("part", "change")) {
+    if (InvenTreePart().canEdit) {
       actions.add(
           IconButton(
               icon: Icon(Icons.edit_square),
@@ -90,7 +90,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   List<SpeedDialChild> barcodeButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
-    if (api.checkPermission("part", "change")) {
+    if (InvenTreePart().canEdit) {
       if (api.supportModernBarcodes) {
         actions.add(
             customBarcodeAction(
@@ -109,7 +109,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   List<SpeedDialChild> actionButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
-    if (api.checkPermission("stock", "add")) {
+    if (InvenTreeStockItem().canCreate) {
       actions.add(
         SpeedDialChild(
           child: FaIcon(FontAwesomeIcons.box),
@@ -234,7 +234,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
    */
   Future <void> _toggleStar(BuildContext context) async {
 
-    if (api.checkPermission("part", "view")) {
+    if (InvenTreePart().canView) {
       showLoadingOverlay(context);
       await part.update(values: {"starred": "${!part.starred}"});
       hideLoadingOverlay();
@@ -557,7 +557,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           onTap: () {
             Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => PartNotesWidget(part))
+                MaterialPageRoute(builder: (context) => NotesWidget(part))
             );
           },
         )
@@ -575,7 +575,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
               builder: (context) => AttachmentWidget(
                   InvenTreePartAttachment(),
                   part.pk,
-                  api.checkPermission("part", "change"))
+                  part.canEdit
+                )
             )
           );
         },
@@ -678,10 +679,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       Tab(text: L10().stock)
     ];
 
-    if (showBom && part.isAssembly) {
-      icons.add(Tab(text: L10().bom));
-    }
-
     if (showParameters) {
       icons.add(Tab(text: L10().parameters));
     }
@@ -702,10 +699,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       ),
       PaginatedStockItemList({"part": part.pk.toString()}, true)
     ];
-
-    if (showBom && part.isAssembly) {
-      tabs.add(PaginatedBomList({"part": part.pk.toString()}, showSearch: true, isParentPart: true));
-    }
 
     if (showParameters) {
       tabs.add(PaginatedParameterList({"part": part.pk.toString()}, true));

@@ -52,7 +52,7 @@ class _PurchaseOrderListWidgetState extends RefreshableState<PurchaseOrderListWi
   List<SpeedDialChild> actionButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
-    if (api.checkPermission("purchase_order", "add")) {
+    if (InvenTreePurchaseOrder().canCreate) {
       actions.add(
         SpeedDialChild(
           child: FaIcon(FontAwesomeIcons.circlePlus),

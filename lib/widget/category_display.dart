@@ -40,7 +40,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
     List<Widget> actions = [];
 
     if (widget.category != null) {
-      if (api.checkPermission("part_category", "change")) {
+      if (InvenTreePartCategory().canEdit) {
         actions.add(
           IconButton(
             icon:  Icon(Icons.edit_square),
@@ -60,7 +60,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
   List<SpeedDialChild> actionButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
-    if (api.checkPermission("part", "add")) {
+    if (InvenTreePart().canCreate) {
      actions.add(
        SpeedDialChild(
          child: FaIcon(FontAwesomeIcons.shapes),
@@ -70,7 +70,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
      );
     }
 
-    if (api.checkPermission("part_category", "add")) {
+    if (InvenTreePartCategory().canCreate) {
       actions.add(
         SpeedDialChild(
           child: FaIcon(FontAwesomeIcons.sitemap),
