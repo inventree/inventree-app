@@ -16,7 +16,7 @@ import "package:inventree/preferences.dart";
 import "package:inventree/widget/attachment_widget.dart";
 import "package:inventree/widget/bom_list.dart";
 import "package:inventree/widget/part_list.dart";
-import "package:inventree/widget/part_notes.dart";
+import 'package:inventree/widget/notes_widget.dart';
 import "package:inventree/widget/part_parameter_widget.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/category_display.dart";
@@ -557,7 +557,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           onTap: () {
             Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => PartNotesWidget(part))
+                MaterialPageRoute(builder: (context) => NotesWidget(part))
             );
           },
         )
