@@ -86,7 +86,7 @@ class InvenTreeModel {
    */
   List<String> get rolesRequired {
     // Default implementation should not be called
-    debug("rolesRequired() not implemented for ${runtimeType.toString()}");
+    debug("rolesRequired() not implemented for model ${URL} - returning empty list");
     return [];
   }
 

@@ -679,10 +679,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       Tab(text: L10().stock)
     ];
 
-    if (showBom && part.isAssembly) {
-      icons.add(Tab(text: L10().bom));
-    }
-
     if (showParameters) {
       icons.add(Tab(text: L10().parameters));
     }
@@ -703,10 +699,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       ),
       PaginatedStockItemList({"part": part.pk.toString()}, true)
     ];
-
-    if (showBom && part.isAssembly) {
-      tabs.add(PaginatedBomList({"part": part.pk.toString()}, showSearch: true, isParentPart: true));
-    }
 
     if (showParameters) {
       tabs.add(PaginatedParameterList({"part": part.pk.toString()}, true));
