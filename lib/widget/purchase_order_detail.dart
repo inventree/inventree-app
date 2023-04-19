@@ -14,6 +14,7 @@ import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/widget/attachment_widget.dart";
 import "package:inventree/widget/company_detail.dart";
+import "package:inventree/widget/notes_widget.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/stock_list.dart";
@@ -254,6 +255,22 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
         leading: FaIcon(FontAwesomeIcons.calendarDays),
       ));
     }
+
+    // Notes tile
+    tiles.add(
+        ListTile(
+          title: Text(L10().notes),
+          leading: FaIcon(FontAwesomeIcons.noteSticky, color: COLOR_ACTION),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => NotesWidget(order)
+              )
+            );
+          },
+        )
+    );
 
     // Attachments
     tiles.add(
