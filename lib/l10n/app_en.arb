@@ -464,6 +464,9 @@
   "inProductionDetail": "This stock item is in production",
   "@inProductionDetail": {},
 
+  "internalPart": "Internal Part",
+  "@internalPart": {},
+
   "invalidHost": "Invalid hostname",
   "@invalidHost": {},
 
@@ -554,6 +557,12 @@
 
   "lost": "Lost",
   "@lost": {},
+
+  "manufacturerPartNumber": "Manufacturer Part Number",
+  "@manufacturerPartNumber": {},
+
+  "manufacturer": "Manufacturer",
+  "@manufacturer": {},
 
   "manufacturers": "Manufacturers",
   "@manufacturers": {},
@@ -1145,6 +1154,9 @@
 
   "supplierPartEdit": "Edit Supplier Part",
   "@supplierPartEdit": {},
+
+  "supplierPartNumber": "Supplier Part Number",
+  "@supplierPartNumber": {},
 
   "supplierPartUpdated": "Supplier Part Updated",
   "@supplierPartUpdated": {},

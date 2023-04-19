@@ -3,6 +3,7 @@
 
 - Fix background image transparency for dark mode
 - Fix link to Bill of Materials from Part screen
+- Improvements to supplier part detail screen
 
 
 ### 0.11.4 - April 2023
