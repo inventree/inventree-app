@@ -1,6 +1,7 @@
 ### 0.11.6 - April 2023
 ---
 
+- Fix action button colors
 - Added Norwegian translations
 
 ### 0.11.5 - April 2023
