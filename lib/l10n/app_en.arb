@@ -969,6 +969,9 @@
   "serialNumber": "Serial Number",
   "@serialNumber": {},
 
+  "serialNumbers": "Serial Numbers",
+  "@serialNumbers": {},
+
   "server": "Server",
   "@server": {},
 

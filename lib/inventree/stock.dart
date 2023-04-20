@@ -160,7 +160,7 @@ class InvenTreeStockItem extends InvenTreeModel {
       "quantity": {},
       "serial": {},
       "serial_numbers": {
-        "label": L10().serialNumber,
+        "label": L10().serialNumbers,
         "type": "string",
       },
       "status": {},

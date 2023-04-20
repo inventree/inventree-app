@@ -239,6 +239,9 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     );
   }
 
+  /*
+   * Launch a dialog form to create a new stock item
+   */
   Future<void> _newStockItem(BuildContext context) async {
     int pk = location?.pk ?? -1;
 
@@ -246,12 +249,18 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       return;
     }
 
+    var fields = InvenTreeStockItem().formFields();
+
+    // Serial number field is not required here
+    fields.remove("serial");
+
     InvenTreeStockItem().createForm(
         context,
         L10().stockItemCreate,
         data: {
           "location": location != null ? pk : null,
         },
+        fields: fields,
         onSuccess: (result) async {
           Map<String, dynamic> data = result as Map<String, dynamic>;
 
