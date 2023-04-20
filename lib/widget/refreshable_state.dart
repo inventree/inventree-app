@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 
 import "package:inventree/api.dart";
+import "package:inventree/app_colors.dart";
 import "package:inventree/barcode.dart";
 
 import "package:inventree/widget/back.dart";
@@ -63,11 +64,10 @@ mixin BaseWidgetProperties {
   BottomAppBar? buildBottomAppBar(BuildContext context, GlobalKey<ScaffoldState> key) {
 
     const double iconSize = 32;
-    const Color iconColor = Colors.blueGrey;
 
     List<Widget> icons = [
       IconButton(
-        icon: Icon(Icons.menu, color: iconColor),
+        icon: Icon(Icons.menu, color: COLOR_ACTION),
         iconSize: iconSize,
         onPressed: () {
           if (key.currentState != null) {
@@ -76,7 +76,7 @@ mixin BaseWidgetProperties {
         },
       ),
       IconButton(
-        icon: Icon(Icons.search, color: iconColor),
+        icon: Icon(Icons.search, color: COLOR_ACTION),
         iconSize: iconSize,
         onPressed: () {
           if (InvenTreeAPI().checkConnection()) {
@@ -90,7 +90,7 @@ mixin BaseWidgetProperties {
         },
       ),
       IconButton(
-        icon: Icon(Icons.qr_code_scanner, color: iconColor),
+        icon: Icon(Icons.qr_code_scanner, color: COLOR_ACTION),
         iconSize: iconSize,
         onPressed: () {
           if (InvenTreeAPI().checkConnection()) {
