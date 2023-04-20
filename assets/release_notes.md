@@ -2,6 +2,7 @@
 ---
 
 - Added Norwegian translations
+- Fix serial number field when creating stock item
 
 ### 0.11.5 - April 2023
 ---
