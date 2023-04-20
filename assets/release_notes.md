@@ -1,3 +1,8 @@
+### 0.11.6 - April 2023
+---
+
+- Added Norwegian translations
+
 ### 0.11.5 - April 2023
 ---
 
