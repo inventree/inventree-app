@@ -157,7 +157,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     }
 
     // Create new item
-    if (location != null && InvenTreeStockItem().canCreate) {
+    if (InvenTreeStockItem().canCreate) {
       actions.add(
           SpeedDialChild(
               child: FaIcon(FontAwesomeIcons.boxesStacked),
@@ -243,11 +243,6 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
    * Launch a dialog form to create a new stock item
    */
   Future<void> _newStockItem(BuildContext context) async {
-    int pk = location?.pk ?? -1;
-
-    if (location != null && pk <= 0) {
-      return;
-    }
 
     var fields = InvenTreeStockItem().formFields();
 
@@ -258,7 +253,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
         context,
         L10().stockItemCreate,
         data: {
-          "location": location != null ? pk : null,
+          "location": location != null ? location!.pk : null,
         },
         fields: fields,
         onSuccess: (result) async {
