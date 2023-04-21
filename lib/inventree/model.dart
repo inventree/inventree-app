@@ -69,51 +69,48 @@ class InvenTreeModel {
     jsondata[key] = value;
   }
 
-  // Helper function to get string value from JSON data
-  String getString(String key, {String backup = ""}) {
-    String value = backup;
+  // return a dynamic value from the JSON data
+  // optionally we can specifiy a "subKey" to get a value from a sub-dictionary
+  dynamic getValue(String key, {dynamic backup, String subKey = ""}) {
+    Map<String, dynamic> data = jsondata;
 
-    if (jsondata.containsKey(key)) {
-      value = jsondata[key].toString();
+    // If a subKey is specified, we need to dig deeper into the JSON data
+    if (subKey.isNotEmpty) {
+      data = (data[subKey] ?? {}) as Map<String, dynamic>;
     }
 
-    return value;
+    if (data.containsKey(key)) {
+      return data[key];
+    } else {
+      return backup;
+    }
+  }
+
+  // Helper function to get string value from JSON data
+  String getString(String key, {String backup = "", String subKey = ""}) {
+    dynamic value = getValue(key, backup: backup, subKey: subKey);
+    return value.toString();
   }
 
   // Helper function to get integer value from JSON data
-  int getInt(String key, {int backup = -1}) {
-    int value = backup;
-
-    if (jsondata.containsKey(key)) {
-      value = int.tryParse(jsondata[key].toString()) ?? backup;
-    }
-
-    return value;
+  int getInt(String key, {int backup = -1, String subKey = ""}) {
+    dynamic value = getValue(key, backup: backup, subKey: subKey);
+    return int.tryParse(value.toString()) ?? backup;
   }
 
   // Helper function to get double value from JSON data
-  double getDouble(String key, {double backup = 0.0}) {
-    double value = backup;
-
-    if (jsondata.containsKey(key)) {
-      value = double.tryParse(jsondata[key].toString()) ?? backup;
-    }
-
-    return value;
+  double getDouble(String key, {double backup = 0.0, String subKey = ""}) {
+    dynamic value = getValue(key, backup: backup, subKey: subKey);
+    return double.tryParse(value.toString()) ?? backup;
   }
 
   // Helper function to get boolean value from json data
-  bool getBool(String key, {bool backup = false}) {
-    bool value = backup;
-
-    if (jsondata.containsKey(key)) {
-      String str_value = (jsondata[key] ?? backup.toString()) as String;
-      value = str_value.toLowerCase() == "true";
-    }
-
-    return value;
+  bool getBool(String key, {bool backup = false, String subKey = ""}) {
+    dynamic value = getValue(key, backup: backup, subKey: subKey);
+    return value.toString().toLowerCase() == "true";
   }
 
+  // Return the InvenTree web server URL for this object
   String get webUrl {
 
     if (api.isConnected()) {
