@@ -1075,6 +1075,10 @@ class InvenTreeAPI {
       debug("TimeoutException at ${url}");
       showTimeoutError(url);
       return null;
+    } on OSError catch (error) {
+      debug("OSError at ${url}: ${error.toString()}");
+      showServerError(url, L10().connectionRefused, error.toString());
+      return null;
     } on CertificateException catch (error) {
       debug("CertificateException at ${url}:");
       debug(error.toString());
