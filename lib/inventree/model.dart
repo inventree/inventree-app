@@ -96,30 +96,55 @@ class InvenTreeModel {
   // Helper function to get sub-map from JSON data
   Map<String, dynamic> getMap(String key, {Map<String, dynamic> backup = const {}, String subKey = ""}) {
     dynamic value = getValue(key, backup: backup, subKey: subKey);
+
+    if (value == null) {
+      return backup;
+    }
+
     return value as Map<String, dynamic>;
   }
 
   // Helper function to get string value from JSON data
   String getString(String key, {String backup = "", String subKey = ""}) {
     dynamic value = getValue(key, backup: backup, subKey: subKey);
+
+    if (value == null) {
+      return backup;
+    }
+
     return value.toString();
   }
 
   // Helper function to get integer value from JSON data
   int getInt(String key, {int backup = -1, String subKey = ""}) {
     dynamic value = getValue(key, backup: backup, subKey: subKey);
+
+    if (value == null) {
+      return backup;
+    }
+
     return int.tryParse(value.toString()) ?? backup;
   }
 
   // Helper function to get double value from JSON data
   double getDouble(String key, {double backup = 0.0, String subKey = ""}) {
     dynamic value = getValue(key, backup: backup, subKey: subKey);
+
+    if (value == null) {
+      return backup;
+    }
+
     return double.tryParse(value.toString()) ?? backup;
   }
 
   // Helper function to get boolean value from json data
   bool getBool(String key, {bool backup = false, String subKey = ""}) {
     dynamic value = getValue(key, backup: backup, subKey: subKey);
+
+    if (value == null) {
+      return backup;
+    }
+
     return value.toString().toLowerCase() == "true";
   }
 
