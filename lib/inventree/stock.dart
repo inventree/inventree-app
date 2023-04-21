@@ -232,7 +232,7 @@ class InvenTreeStockItem extends InvenTreeModel {
     });
   }
 
-  int get status => getInt("staus");
+  int get status => getInt("status");
   
   String get packaging => getString("packaging");
 
