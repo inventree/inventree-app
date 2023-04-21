@@ -300,6 +300,9 @@ class InvenTreeAPI {
   // Order barcodes API v107 or newer
   bool get supportsOrderBarcodes => isConnected() && apiVersion >= 107;
 
+  // Project codes require v109 or newer
+  bool get supportsProjectCodes => isConnected() && apiVersion >= 109;
+
   // Are plugins enabled on the server?
   bool _pluginsEnabled = false;
 
@@ -1362,6 +1365,12 @@ class InvenTreeAPI {
     }
   }
 
+  // Return a boolean global setting value
+  Future<bool> getGlobalBooleanSetting(String key) async {
+    String value = await getGlobalSetting(key);
+    return value.toLowerCase() == "true";
+  }
+
   Future<String> getUserSetting(String key) async {
     if (!supportsSettings) return "";
 
@@ -1380,6 +1389,12 @@ class InvenTreeAPI {
     } else {
       return "";
     }
+  }
+
+  // Return a boolean user setting value
+  Future<bool> getUserBooleanSetting(String key) async {
+    String value = await getUserSetting(key);
+    return value.toLowerCase() == "true";
   }
 
   /*

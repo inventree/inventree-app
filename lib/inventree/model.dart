@@ -63,6 +63,96 @@ class InvenTreeModel {
   // Note: If the WEB_URL is the same (except for /api/) as URL then just leave blank
   String get WEB_URL => "";
 
+  // Helper function to set a value in the JSON data
+  void setValue(String key, dynamic value) {
+    jsondata[key] = value;
+  }
+
+  // return a dynamic value from the JSON data
+  // optionally we can specifiy a "subKey" to get a value from a sub-dictionary
+  dynamic getValue(String key, {dynamic backup, String subKey = ""}) {
+    Map<String, dynamic> data = jsondata;
+
+    // If a subKey is specified, we need to dig deeper into the JSON data
+    if (subKey.isNotEmpty) {
+
+      if (!data.containsKey(subKey)) {
+        debug("JSON data does not contain subKey '$subKey' for key '$key'");
+        return backup;
+      }
+
+      dynamic sub_data = data[subKey];
+
+      if (sub_data is Map<String, dynamic>) {
+        data = (data[subKey] ?? {}) as Map<String, dynamic>;
+      }
+
+    }
+
+    if (data.containsKey(key)) {
+      return data[key];
+    } else {
+      debug("JSON data does not contain key '$key' (subKey '${subKey}')");
+      return backup;
+    }
+  }
+
+  // Helper function to get sub-map from JSON data
+  Map<String, dynamic> getMap(String key, {Map<String, dynamic> backup = const {}, String subKey = ""}) {
+    dynamic value = getValue(key, backup: backup, subKey: subKey);
+
+    if (value == null) {
+      return backup;
+    }
+
+    return value as Map<String, dynamic>;
+  }
+
+  // Helper function to get string value from JSON data
+  String getString(String key, {String backup = "", String subKey = ""}) {
+    dynamic value = getValue(key, backup: backup, subKey: subKey);
+
+    if (value == null) {
+      return backup;
+    }
+
+    return value.toString();
+  }
+
+  // Helper function to get integer value from JSON data
+  int getInt(String key, {int backup = -1, String subKey = ""}) {
+    dynamic value = getValue(key, backup: backup, subKey: subKey);
+
+    if (value == null) {
+      return backup;
+    }
+
+    return int.tryParse(value.toString()) ?? backup;
+  }
+
+  // Helper function to get double value from JSON data
+  double getDouble(String key, {double backup = 0.0, String subKey = ""}) {
+    dynamic value = getValue(key, backup: backup, subKey: subKey);
+
+    if (value == null) {
+      return backup;
+    }
+
+    return double.tryParse(value.toString()) ?? backup;
+  }
+
+  // Helper function to get boolean value from json data
+  bool getBool(String key, {bool backup = false, String subKey = ""}) {
+    dynamic value = getValue(key, backup: backup, subKey: subKey);
+
+    if (value == null) {
+      return backup;
+    }
+
+    return value.toString().toLowerCase() == "true";
+  }
+
+  // Return the InvenTree web server URL for this object
   String get webUrl {
 
     if (api.isConnected()) {
@@ -191,16 +281,16 @@ class InvenTreeModel {
   // Accessor for the API
   InvenTreeAPI get api => InvenTreeAPI();
 
-  int get pk => (jsondata["pk"] ?? -1) as int;
-
+  int get pk => getInt("pk");
+  
   // Some common accessors
-  String get name => (jsondata["name"] ?? "") as String;
+  String get name => getString("name");
 
-  String get description => (jsondata["description"] ?? "") as String;
+  String get description => getString("description");
+  
+  String get notes => getString("notes");
 
-  String get notes => (jsondata["notes"] ?? "") as String;
-
-  int get parentId => (jsondata["parent"] ?? -1) as int;
+  int get parentId => getInt("parent");
 
   // Legacy API provided external link as "URL", while newer API uses "link"
   String get link => (jsondata["link"] ?? jsondata["URL"] ?? "") as String;
@@ -297,15 +387,10 @@ class InvenTreeModel {
     }
   }
 
-  String get keywords => (jsondata["keywords"] ?? "") as String;
-
+  String get keywords => getString("keywords");
+  
   // Create a new object from JSON data (not a constructor!)
-  InvenTreeModel createFromJson(Map<String, dynamic> json) {
-
-      var obj = InvenTreeModel.fromJson(json);
-
-      return obj;
-  }
+  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreeModel.fromJson(json);
 
   // Return the API detail endpoint for this Model object
   String get url => "${URL}/${pk}/".replaceAll("//", "/");
@@ -746,9 +831,7 @@ class InvenTreePlugin extends InvenTreeModel {
   InvenTreePlugin.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) {
-    return InvenTreePlugin.fromJson(json);
-  }
+  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreePlugin.fromJson(json);
 
   @override
   String get URL {
@@ -765,10 +848,10 @@ class InvenTreePlugin extends InvenTreeModel {
     }
   }
 
-  String get key => (jsondata["key"] ?? "") as String;
-
-  bool get active => (jsondata["active"] ?? false) as bool;
-
+  String get key => getString("key");
+  
+  bool get active => getBool("active");
+  
   // Return the metadata struct for this plugin
   Map<String, dynamic> get _meta => (jsondata["meta"] ?? {}) as Map<String, dynamic>;
 
@@ -803,11 +886,11 @@ class InvenTreeGlobalSetting extends InvenTreeModel {
   @override
   String get URL => "settings/global/";
 
-  String get key => (jsondata["key"] ?? "") as String;
-
-  String get value => (jsondata["value"] ?? "") as String;
-
-  String get type => (jsondata["type"] ?? "") as String;
+  String get key => getString("key");
+  
+  String get value => getString("value");
+  
+  String get type => getString("type");
 
 }
 
@@ -836,8 +919,8 @@ class InvenTreeAttachment extends InvenTreeModel {
   // Override this reference field for any subclasses
   String get REFERENCE_FIELD => "";
 
-  String get attachment => (jsondata["attachment"] ?? "") as String;
-
+  String get attachment => getString("attachment");
+  
   // Return the filename of the attachment
   String get filename {
     return attachment.split("/").last;
@@ -874,8 +957,8 @@ class InvenTreeAttachment extends InvenTreeModel {
     return FontAwesomeIcons.fileLines;
   }
 
-  String get comment => (jsondata["comment"] ?? "") as String;
-
+  String get comment => getString("comment");
+  
   DateTime? get uploadDate {
     if (jsondata.containsKey("upload_date")) {
       return DateTime.tryParse((jsondata["upload_date"] ?? "") as String);

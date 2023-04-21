@@ -34,6 +34,7 @@ class InvenTreePurchaseOrder extends InvenTreeModel {
       },
       "supplier_reference": {},
       "description": {},
+      "project_code": {},
       "target_date": {},
       "link": {},
       "responsible": {},
@@ -59,23 +60,32 @@ class InvenTreePurchaseOrder extends InvenTreeModel {
     };
   }
 
-  String get issueDate => (jsondata["issue_date"] ?? "") as String;
+  String get issueDate => getString("issue_date");
 
-  String get completeDate => (jsondata["complete_date"] ?? "") as String;
+  String get completeDate => getString("complete_date");
 
-  String get creationDate => (jsondata["creation_date"] ?? "") as String;
+  String get creationDate => getString("creation_date");
 
-  String get targetDate => (jsondata["target_date"] ?? "") as String;
+  String get targetDate => getString("target_date");
 
-  int get lineItemCount => (jsondata["line_items"] ?? 0) as int;
+  int get lineItemCount => getInt("line_items", backup: 0);
+  
+  bool get overdue => getBool("overdue");
 
-  bool get overdue => (jsondata["overdue"] ?? false) as bool;
+  String get reference => getString("reference");
 
-  String get reference => (jsondata["reference"] ?? "") as String;
+  int get responsibleId => getInt("responsible");
 
-  int get responsibleId => (jsondata["responsible"] ?? -1) as int;
+  int get supplierId => getInt("supplier");
 
-  int get supplierId => (jsondata["supplier"] ?? -1) as int;
+  // Project code information
+  int get projectCodeId => getInt("project_code");
+
+  String get projectCode => getString("code", subKey: "project_code_detail");
+
+  String get projectCodeDescription => getString("description", subKey: "project_code_detail");
+
+  bool get hasProjectCode => projectCode.isNotEmpty;
 
   InvenTreeCompany? get supplier {
 
@@ -88,11 +98,11 @@ class InvenTreePurchaseOrder extends InvenTreeModel {
     }
   }
 
-  String get supplierReference => (jsondata["supplier_reference"] ?? "") as String;
+  String get supplierReference => getString("supplier_reference");
 
-  int get status => (jsondata["status"] ?? -1) as int;
+  int get status => getInt("status");
 
-  String get statusText => (jsondata["status_text"] ?? "") as String;
+  String get statusText => getString("status_text");
 
   bool get isOpen => status == PO_STATUS_PENDING || status == PO_STATUS_PLACED;
 
@@ -103,7 +113,7 @@ class InvenTreePurchaseOrder extends InvenTreeModel {
   bool get isFailed => status == PO_STATUS_CANCELLED || status == PO_STATUS_LOST || status == PO_STATUS_RETURNED;
 
   double? get totalPrice {
-    String price = (jsondata["total_price"] ?? "") as String;
+    String price = getString("total_price");
 
     if (price.isEmpty) {
       return null;
@@ -112,7 +122,7 @@ class InvenTreePurchaseOrder extends InvenTreeModel {
     }
   }
 
-  String get totalPriceCurrency => (jsondata["total_price_currency"] ?? "") as String;
+  String get totalPriceCurrency => getString("total_price_currency");
 
   Future<List<InvenTreePOLineItem>> getLineItems() async {
 
@@ -134,9 +144,7 @@ class InvenTreePurchaseOrder extends InvenTreeModel {
   }
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) {
-    return InvenTreePurchaseOrder.fromJson(json);
-  }
+  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreePurchaseOrder.fromJson(json);
 
   /// Mark this order as "placed" / "issued"
   Future<void> issueOrder() async {
@@ -199,17 +207,17 @@ class InvenTreePOLineItem extends InvenTreeModel {
 
   bool get isComplete => received >= quantity;
 
-  double get quantity => (jsondata["quantity"] ?? 0) as double;
+  double get quantity => getDouble("quantity");
 
-  double get received => (jsondata["received"] ?? 0) as double;
+  double get received => getDouble("received");
 
   double get outstanding => quantity - received;
 
-  String get reference => (jsondata["reference"] ?? "") as String;
+  String get reference => getString("reference");
 
-  int get orderId => (jsondata["order"] ?? -1) as int;
+  int get orderId => getInt("order");
 
-  int get supplierPartId => (jsondata["part"] ?? -1) as int;
+  int get supplierPartId => getInt("part");
 
   InvenTreePart? get part {
     dynamic part_detail = jsondata["part_detail"];
@@ -232,20 +240,19 @@ class InvenTreePOLineItem extends InvenTreeModel {
     }
   }
 
-  double get purchasePrice => double.parse((jsondata["purchase_price"] ?? "") as String);
+  double get purchasePrice => getDouble("purchase_price");
+  
+  String get purchasePriceCurrency => getString("purchase_price_currency");
 
-  String get purchasePriceCurrency => (jsondata["purchase_price_currency"] ?? "") as String;
+  String get purchasePriceString => getString("purchase_price_string");
 
-  String get purchasePriceString => (jsondata["purchase_price_string"] ?? "") as String;
+  int get destination => getInt("destination");
 
-  int get destination => (jsondata["destination"] ?? -1) as int;
-
-  Map<String, dynamic> get destinationDetail => (jsondata["destination_detail"] ?? {}) as Map<String, dynamic>;
-
+  Map<String, dynamic> get destinationDetail => getMap("destination_detail");
+  
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) {
-    return InvenTreePOLineItem.fromJson(json);
-  }
+  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreePOLineItem.fromJson(json);
+
 }
 
 /*
@@ -264,7 +271,6 @@ class InvenTreePurchaseOrderAttachment extends InvenTreeAttachment {
   String get URL => "order/po/attachment/";
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) {
-    return InvenTreePurchaseOrderAttachment.fromJson(json);
-  }
+  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreePurchaseOrderAttachment.fromJson(json);
+
 }

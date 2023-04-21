@@ -27,8 +27,8 @@ class InvenTreeNotification extends InvenTreeModel {
     };
   }
 
-  String get message => (jsondata["message"] ?? "") as String;
-
+  String get message => getString("message");
+  
   DateTime? get creationDate {
     if (jsondata.containsKey("creation")) {
       return DateTime.tryParse((jsondata["creation"] ?? "") as String);
