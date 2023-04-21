@@ -567,7 +567,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       child: ListTile(
         title: Text("${widget.item.partName}"),
         subtitle: Text("${widget.item.partDescription}"),
-        leading: InvenTreeAPI().getImage(widget.item.partImage),
+        leading: InvenTreeAPI().getThumbnail(widget.item.partImage),
         trailing: Text(
           api.StockStatus.label(widget.item.status),
           style: TextStyle(
@@ -667,11 +667,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           title: Text(L10().supplierPart),
           subtitle: Text(widget.item.supplierSKU),
           leading: FaIcon(FontAwesomeIcons.building, color: COLOR_ACTION),
-          trailing: InvenTreeAPI().getImage(
-            widget.item.supplierImage,
-            width: 40,
-            height: 40,
-          ),
+          trailing: InvenTreeAPI().getThumbnail(widget.item.supplierImage),
           onTap: () async {
             showLoadingOverlay(context);
             var sp = await InvenTreeSupplierPart().get(

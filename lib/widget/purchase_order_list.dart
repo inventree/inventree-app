@@ -154,11 +154,7 @@ class _PaginatedPurchaseOrderListState extends PaginatedSearchState<PaginatedPur
     return ListTile(
       title: Text(order.reference),
       subtitle: Text(order.description),
-      leading: supplier == null ? null : InvenTreeAPI().getImage(
-        supplier.thumbnail,
-        width: 40,
-        height: 40,
-      ),
+      leading: supplier == null ? null : InvenTreeAPI().getThumbnail(supplier.thumbnail),
       trailing: Text(
         InvenTreeAPI().PurchaseOrderStatus.label(order.status),
         style: TextStyle(

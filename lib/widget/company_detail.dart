@@ -140,7 +140,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
       child: ListTile(
         title: Text("${widget.company.name}"),
         subtitle: Text("${widget.company.description}"),
-        leading: InvenTreeAPI().getImage(widget.company.image, width: 40, height: 40),
+        leading: InvenTreeAPI().getThumbnail(widget.company.image),
       ),
     ));
 

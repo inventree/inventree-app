@@ -121,7 +121,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
         child: ListTile(
           title: Text(item.partName),
           subtitle: Text(item.partDescription),
-          leading: InvenTreeAPI().getImage(item.partImage),
+          leading: InvenTreeAPI().getThumbnail(item.partImage),
         )
       )
     );

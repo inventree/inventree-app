@@ -194,7 +194,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
         child: ListTile(
           title: Text(order.reference),
           subtitle: Text(order.description),
-          leading: supplier == null ? null : InvenTreeAPI().getImage(supplier.thumbnail, width: 40, height: 40),
+          leading: supplier == null ? null : InvenTreeAPI().getThumbnail(supplier.thumbnail),
           trailing: Text(
             api.PurchaseOrderStatus.label(order.status),
             style: TextStyle(
@@ -453,7 +453,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
           ListTile(
             title: Text(supplierPart.SKU),
             subtitle: Text(supplierPart.partName),
-            leading: InvenTreeAPI().getImage(supplierPart.partImage, width: 40, height: 40),
+            leading: InvenTreeAPI().getThumbnail(supplierPart.partImage),
             trailing: Text(
               q,
               style: TextStyle(

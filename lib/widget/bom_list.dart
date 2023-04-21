@@ -153,11 +153,7 @@ class _PaginatedBomListState extends PaginatedSearchState<PaginatedBomList> {
         simpleNumberString(bomItem.quantity),
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
-      leading: InvenTreeAPI().getImage(
-        subPart?.thumbnail ?? "",
-        width: 40,
-        height: 40,
-      ),
+      leading: InvenTreeAPI().getThumbnail(subPart?.thumbnail ?? ""),
       onTap: subPart == null ? null : () async {
 
         showLoadingOverlay(context);

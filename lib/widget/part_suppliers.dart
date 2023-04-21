@@ -51,11 +51,7 @@ class _PartSupplierState extends RefreshableState<PartSupplierWidget> {
     InvenTreeSupplierPart _part = _supplierParts[index];
 
     return ListTile(
-      leading: InvenTreeAPI().getImage(
-        _part.supplierImage,
-        width: 40,
-        height: 40,
-      ),
+      leading: InvenTreeAPI().getThumbnail(_part.supplierImage),
       title: Text("${_part.SKU}"),
       subtitle: Text("${_part.manufacturerName}: ${_part.MPN}"),
       onTap: () async {

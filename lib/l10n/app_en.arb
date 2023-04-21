@@ -612,7 +612,7 @@
   "outstanding": "Outstanding",
   "@outstanding": {},
 
-  "outstandingOrderDetail": "Show outstanding orders",
+  "outstandingOrderDetail": "Show outstanding items",
   "@outstandingOrderDetail": {},
 
   "packaging": "Packaging",
@@ -797,9 +797,6 @@
   "quantityPositive": "Quantity must be positive",
   "@quantityPositive": {},
 
-  "quarantined": "Quarantined",
-  "@quarantined": {},
-
   "queryEmpty": "Enter search query",
   "@queryEmpty": {},
 
@@ -808,6 +805,9 @@
 
   "received": "Received",
   "@received": {},
+
+  "receivedFilterDetail": "Show received items",
+  "@receivedFilterDetail": {},
 
   "receiveItem": "Receive Item",
   "@receiveItem": {},
@@ -1037,6 +1037,9 @@
 
   "serverNotSelected": "Server not selected",
   "@serverNotSelected": {},
+
+  "sku": "SKU",
+  "@sku": {},
 
   "sounds": "Sounds",
   "@sounds": {},

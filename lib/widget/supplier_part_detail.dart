@@ -116,11 +116,7 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
           title: Text(L10().internalPart),
           subtitle: Text(widget.supplierPart.partName),
           leading: FaIcon(FontAwesomeIcons.shapes, color: COLOR_ACTION),
-          trailing: InvenTreeAPI().getImage(
-            widget.supplierPart.partImage,
-            width: 40,
-            height: 40,
-          ),
+          trailing: InvenTreeAPI().getThumbnail(widget.supplierPart.partImage),
           onTap: () async {
             showLoadingOverlay(context);
             final part = await InvenTreePart().get(widget.supplierPart.partId);
@@ -140,11 +136,7 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
         title: Text(L10().supplier),
         subtitle: Text(widget.supplierPart.supplierName),
         leading: FaIcon(FontAwesomeIcons.building, color: COLOR_ACTION),
-        trailing: InvenTreeAPI().getImage(
-          widget.supplierPart.supplierImage,
-          width: 40,
-          height: 40,
-        ),
+        trailing: InvenTreeAPI().getThumbnail(widget.supplierPart.supplierImage),
         onTap: () async {
           showLoadingOverlay(context);
           var supplier = await InvenTreeCompany().get(widget.supplierPart.supplierId);
@@ -175,11 +167,7 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
           title: Text(L10().manufacturer),
           subtitle: Text(widget.supplierPart.manufacturerName),
           leading: FaIcon(FontAwesomeIcons.industry, color: COLOR_ACTION),
-          trailing: InvenTreeAPI().getImage(
-            widget.supplierPart.manufacturerImage,
-            width: 40,
-            height: 40,
-          ),
+          trailing: InvenTreeAPI().getThumbnail(widget.supplierPart.manufacturerImage),
           onTap: () async {
             showLoadingOverlay(context);
             var supplier = await InvenTreeCompany().get(widget.supplierPart.manufacturerId);

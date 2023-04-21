@@ -612,7 +612,7 @@ class APIFormField {
             part.description,
             style: TextStyle(fontWeight: selected ? FontWeight.bold : FontWeight.normal),
           ) : null,
-          leading: extended ? InvenTreeAPI().getImage(part.thumbnail, width: 40, height: 40) : null,
+          leading: extended ? InvenTreeAPI().getThumbnail(part.thumbnail) : null,
         );
 
       case "partcategory":
@@ -662,11 +662,7 @@ class APIFormField {
         return ListTile(
           title: Text(company.name),
           subtitle: extended ? Text(company.description) : null,
-          leading: InvenTreeAPI().getImage(
-            company.thumbnail,
-            width: 40,
-            height: 40
-          )
+          leading: InvenTreeAPI().getThumbnail(company.thumbnail)
         );
       case "projectcode":
         var project_code = InvenTreeProjectCode.fromJson(data);

@@ -69,11 +69,7 @@ class _CompanyListState extends PaginatedSearchState<PaginatedCompanyList> {
     return ListTile(
       title: Text(company.name),
       subtitle: Text(company.description),
-      leading: InvenTreeAPI().getImage(
-        company.image,
-        width: 40,
-        height: 40
-      ),
+      leading: InvenTreeAPI().getThumbnail(company.image),
       onTap: () async {
         Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyDetailWidget(company)));
       },
