@@ -23,4 +23,6 @@ class InvenTreeProjectCode extends InvenTreeModel {
       "description": {},
     };
   }
+
+  String get code => getString("code");
 }

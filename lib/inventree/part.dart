@@ -335,7 +335,7 @@ class InvenTreePart extends InvenTreeModel {
     double get building => getDouble("building");
 
     // Get the number of BOMs this Part is used in (if it is a component)
-    int get usedInCount => getInt("used_in");
+    int get usedInCount => jsondata.containsKey("used_in") ? getInt("used_in", backup: 0) : 0;
 
     bool get isAssembly => getBool("assembly");
 

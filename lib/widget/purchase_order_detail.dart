@@ -43,6 +43,8 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
   int attachmentCount = 0;
 
+  bool supportProjectCodes = false;
+
   @override
   String getAppBarTitle() => L10().purchaseOrder;
 
@@ -139,6 +141,8 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
     lines = await order.getLineItems();
 
+    supportProjectCodes = api.supportsProjectCodes && await api.getGlobalBooleanSetting("PROJECT_CODES_ENABLED");
+
     completedLines = 0;
 
     for (var line in lines) {
@@ -157,10 +161,18 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
   // Edit the currently displayed PurchaseOrder
   Future <void> editOrder(BuildContext context) async {
     var fields = order.formFields();
+
+    // Cannot edit supplier field from here
     fields.remove("supplier");
 
+    // Contact model not supported by server
     if (!api.supportsContactModel) {
       fields.remove("contact");
+    }
+
+    // ProjectCode model not supported by server
+    if (!supportProjectCodes) {
+      fields.remove("project_code");
     }
 
     order.editForm(
@@ -201,6 +213,14 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
     InvenTreeCompany? supplier = order.supplier;
 
     tiles.add(headerTile(context));
+
+    if (supportProjectCodes && order.hasProjectCode) {
+      tiles.add(ListTile(
+        title: Text(L10().projectCode),
+        subtitle: Text("${order.projectCode} - ${order.projectCodeDescription}"),
+        leading: FaIcon(FontAwesomeIcons.list),
+      ));
+    }
 
     if (supplier != null) {
       tiles.add(ListTile(

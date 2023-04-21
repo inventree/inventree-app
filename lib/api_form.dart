@@ -15,6 +15,7 @@ import "package:inventree/l10.dart";
 
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/part.dart";
+import "package:inventree/inventree/project_code.dart";
 import "package:inventree/inventree/sentry.dart";
 import "package:inventree/inventree/stock.dart";
 
@@ -666,6 +667,13 @@ class APIFormField {
             width: 40,
             height: 40
           )
+        );
+      case "projectcode":
+        var project_code = InvenTreeProjectCode.fromJson(data);
+        return ListTile(
+          title: Text(project_code.code),
+          subtitle: Text(project_code.description),
+          leading: FaIcon(FontAwesomeIcons.list)
         );
       default:
         return ListTile(
