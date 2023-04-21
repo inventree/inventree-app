@@ -102,7 +102,8 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
   /*
    * Build a set of tiles to display for this SupplierPart
    */
-  List<Widget> detailTiles(BuildContext context) {
+  @override
+  List<Widget> getTiles(BuildContext context) {
     List<Widget> tiles = [];
 
     if (loading) {
@@ -216,16 +217,6 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
     }
 
     return tiles;
-  }
-
-  @override
-  Widget getBody(BuildContext context) {
-    return ListView(
-        children: ListTile.divideTiles(
-          context: context,
-          tiles: detailTiles(context),
-        ).toList()
-    );
   }
 
 }

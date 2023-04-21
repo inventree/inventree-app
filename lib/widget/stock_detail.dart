@@ -595,7 +595,8 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
    * Construct a list of detail elements about this StockItem.
    * The number of elements may vary depending on the StockItem details
    */
-  List<Widget> detailTiles() {
+  @override
+  List<Widget> getTiles(BuildContext context) {
     List<Widget> tiles = [];
 
     // Image / name / description
@@ -841,13 +842,4 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     return tiles;
   }
 
-  @override
-  Widget getBody(BuildContext context) {
-    return ListView(
-      children: ListTile.divideTiles(
-          context: context,
-          tiles: detailTiles()
-      ).toList()
-    );
-  }
 }

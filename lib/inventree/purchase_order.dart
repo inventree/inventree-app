@@ -176,6 +176,9 @@ class InvenTreePOLineItem extends InvenTreeModel {
   String get URL => "order/po-line/";
 
   @override
+  List<String> get rolesRequired => ["purchase_order"];
+
+  @override
   Map<String, dynamic> formFields() {
     return {
       // TODO: @Guusggg Not sure what will come here.

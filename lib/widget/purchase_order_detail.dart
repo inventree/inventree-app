@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:inventree/widget/dialogs.dart";
+import "package:inventree/widget/po_line_list.dart";
 import "package:one_context/one_context.dart";
 
 import "package:inventree/api.dart";
@@ -421,54 +422,6 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
         );
       }
     );
-
-  }
-
-  List<Widget> lineTiles(BuildContext context) {
-
-    List<Widget> tiles = [];
-
-    for (var line in lines) {
-
-      InvenTreeSupplierPart? supplierPart = line.supplierPart;
-
-      if (supplierPart != null) {
-
-        String q = simpleNumberString(line.quantity);
-
-        Color c = Colors.black;
-
-        if (order.isOpen) {
-
-          q = simpleNumberString(line.received) + " / " + simpleNumberString(line.quantity);
-
-          if (line.isComplete) {
-            c = COLOR_SUCCESS;
-          } else {
-            c = COLOR_DANGER;
-          }
-        }
-
-        tiles.add(
-          ListTile(
-            title: Text(supplierPart.SKU),
-            subtitle: Text(supplierPart.partName),
-            leading: InvenTreeAPI().getThumbnail(supplierPart.partImage),
-            trailing: Text(
-              q,
-              style: TextStyle(
-                color: c,
-              ),
-            ),
-            onTap: () {
-              lineItemMenu(context, line);
-            },
-          )
-        );
-      }
-    }
-
-    return tiles;
   }
   
   @override
@@ -484,7 +437,8 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
   List<Widget> getTabs(BuildContext context) {
     return [
       ListView(children: orderTiles(context)),
-      ListView(children: lineTiles(context)),
+      PaginatedPOLineList({"order": order.pk.toString()}, true),
+      // ListView(children: lineTiles(context)),
       PaginatedStockItemList({"purchase_order": order.pk.toString()}, true),
     ];
   }

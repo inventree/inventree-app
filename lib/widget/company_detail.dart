@@ -130,7 +130,8 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
   /*
    * Construct a list of tiles to display for this Company instance
    */
-  List<Widget> _companyTiles() {
+  @override
+  List<Widget> getTiles(BuildContext context) {
 
     List<Widget> tiles = [];
 
@@ -290,13 +291,4 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
     return tiles;
   }
 
-  @override
-  Widget getBody(BuildContext context) {
-
-    return Center(
-      child: ListView(
-        children: _companyTiles(),
-      )
-    );
-  }
 }
