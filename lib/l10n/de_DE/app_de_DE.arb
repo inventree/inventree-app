@@ -513,8 +513,6 @@
   "@quantityInvalid": {},
   "quantityPositive": "Menge muss positiv sein",
   "@quantityPositive": {},
-  "quarantined": "In Quarantäne",
-  "@quarantined": {},
   "queryEmpty": "Suchanfrage eingeben",
   "@queryEmpty": {},
   "queryNoResults": "Keine Ergebnisse für die Anfrage",
