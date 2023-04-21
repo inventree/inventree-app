@@ -3,10 +3,8 @@ import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/po_line_list.dart";
-import "package:one_context/one_context.dart";
 
 import "package:inventree/api.dart";
-import "package:inventree/api_form.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/l10.dart";
@@ -318,112 +316,6 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
   }
 
-  /*
-   * Receive a specified PurchaseOrderLineItem into stock
-   */
-  void receiveLine(BuildContext context, InvenTreePOLineItem lineItem) {
-
-    Map<String, dynamic> fields = {
-      "line_item": {
-        "parent": "items",
-        "nested": true,
-        "hidden": true,
-        "value": lineItem.pk,
-      },
-      "quantity": {
-        "parent": "items",
-        "nested": true,
-        "value": lineItem.outstanding,
-      },
-      "status": {
-        "parent": "items",
-        "nested": true,
-      },
-      "location": {
-      },
-      "barcode": {
-        "parent": "items",
-        "nested": true,
-        "type": "barcode",
-        "label": L10().barcodeAssign,
-        "required": false,
-      }
-    };
-
-    // TODO: Pre-fill the "location" value if the part has a default location specified
-
-    launchApiForm(
-        context,
-        L10().receiveItem,
-        order.receive_url,
-        fields,
-        method: "POST",
-        icon: FontAwesomeIcons.rightToBracket,
-        onSuccess: (data) async {
-          showSnackIcon(L10().receivedItem, success: true);
-          refresh(context);
-        }
-    );
-  }
-
-  /*
-   * Display a context menu for a particular PurhaseOrderLineItem
-   */
-  void lineItemMenu(BuildContext context, InvenTreePOLineItem lineItem) {
-
-    List<Widget> children = [];
-
-    // TODO: Add in this option once the SupplierPart detail view is implemented
-    /*
-    children.add(
-      SimpleDialogOption(
-        onPressed: () {
-          OneContext().popDialog();
-
-          // TODO: Navigate to the "SupplierPart" display?
-        },
-        child: ListTile(
-          title: Text(L10().viewSupplierPart),
-          leading: FaIcon(FontAwesomeIcons.eye),
-        )
-      )
-    );
-     */
-
-    if (order.isPlaced && InvenTreeAPI().supportsPoReceive) {
-      children.add(
-        SimpleDialogOption(
-          onPressed: () {
-            // Hide the dialog option
-            OneContext().popDialog();
-
-            receiveLine(context, lineItem);
-          },
-          child: ListTile(
-            title: Text(L10().receiveItem),
-            leading: FaIcon(FontAwesomeIcons.rightToBracket),
-          )
-        )
-      );
-    }
-
-    // No valid actions available
-    if (children.isEmpty) {
-      return;
-    }
-
-    children.insert(0, Divider());
-
-    OneContext().showDialog(
-      builder: (BuildContext context) {
-        return SimpleDialog(
-          title: Text(L10().lineItem),
-          children: children,
-        );
-      }
-    );
-  }
-  
   @override
   List<Widget> getTabIcons(BuildContext context) {
     return [

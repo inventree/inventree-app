@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
-import "package:inventree/api.dart";
+import "package:inventree/api_form.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/l10.dart";
@@ -65,6 +65,17 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
 
     if (widget.item.canCreate) {
       // Receive items
+      if (!widget.item.isComplete) {
+        buttons.add(
+          SpeedDialChild(
+            child: FaIcon(FontAwesomeIcons.rightToBracket, color: Colors.blue),
+            label: L10().receiveItem,
+            onTap: () async {
+              receiveLineItem(context);
+            }
+          )
+        );
+      }
     }
 
     return buttons;
@@ -88,6 +99,60 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
         showSnackIcon(L10().lineItemUpdated, success: true);
       }
     );
+  }
+
+    // Launch a form to 'receive' this line item
+  Future<void> receiveLineItem(BuildContext context) async {
+
+    // Construct fields to receive
+    Map<String, dynamic> fields = {
+      "line_item": {
+        "parent": "items",
+        "nested": true,
+        "hidden": true,
+        "value": widget.item.pk,
+      },
+      "quantity": {
+        "parent": "items",
+        "nested": true,
+        "value": widget.item.outstanding,
+      },
+      "status": {
+        "parent": "items",
+        "nested": true,
+      },
+      "location": {
+      },
+      "barcode": {
+        "parent": "items",
+        "nested": true,
+        "type": "barcode",
+        "label": L10().barcodeAssign,
+        "required": false,
+      }
+    };
+
+    showLoadingOverlay(context);
+    var order = await InvenTreePurchaseOrder().get(widget.item.orderId);
+    hideLoadingOverlay();
+
+    if (order is InvenTreePurchaseOrder) {
+    launchApiForm(
+      context,
+      L10().receiveItem,
+      order.receive_url,
+      fields,
+      method: "POST",
+      icon: FontAwesomeIcons.rightToBracket,
+      onSuccess: (data) async {
+        showSnackIcon(L10().receivedItem, success: true);
+        refresh(context);
+      }
+    );
+    } else {
+      showSnackIcon(L10().error);
+      return;
+    }
   }
 
   @override
