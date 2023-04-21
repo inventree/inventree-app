@@ -43,8 +43,8 @@ class InvenTreePartCategory extends InvenTreeModel {
     return fields;
   }
 
-  String get pathstring => (jsondata["pathstring"] ?? "") as String;
-
+  String get pathstring => getString("pathstring");
+  
   String get parentPathString {
 
     List<String> psplit = pathstring.split("/");
@@ -87,15 +87,15 @@ class InvenTreePartTestTemplate extends InvenTreeModel {
   @override
   String get URL => "part/test-template/";
 
-  String get key => (jsondata["key"] ?? "") as String;
+  String get key => getString("key");
 
-  String get testName => (jsondata["test_name"] ?? "") as String;
+  String get testName => getString("test_name");
 
-  bool get required => (jsondata["required"] ?? false) as bool;
+  bool get required => getBool("required");
+  
+  bool get requiresValue => getBool("requires_value");
 
-  bool get requiresValue => (jsondata["requires_value"] ?? false) as bool;
-
-  bool get requiresAttachment => (jsondata["requires_attachment"] ?? false) as bool;
+  bool get requiresAttachment => getBool("requires_attachment");
 
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) {
@@ -152,13 +152,13 @@ class InvenTreePartParameter extends InvenTreeModel {
   }
 
   @override
-  String get name => (jsondata["template_detail"]?["name"] ?? "") as String;
+  String get name => getString("name", subKey: "template_detail");
 
   @override
-  String get description => (jsondata["template_detail"]?["description"] ?? "") as String;
-
-  String get value => jsondata["data"] as String;
-
+  String get description => getString("description", subKey: "template_detail");
+  
+  String get value => getString("data");
+  
   String get valueString {
     String v = value;
 
@@ -170,7 +170,7 @@ class InvenTreePartParameter extends InvenTreeModel {
     return v;
   }
 
-  String get units => (jsondata["template_detail"]?["units"] ?? "") as String;
+  String get units => getString("units", subKey: "template_detail");
 }
 
 /*
@@ -254,8 +254,8 @@ class InvenTreePart extends InvenTreeModel {
     });
   }
 
-  int get supplierCount => (jsondata["suppliers"] ?? 0) as int;
-
+  int get supplierCount => getInt("suppliers", backup: 0);
+  
   // Request supplier parts for this part
   Future<List<InvenTreeSupplierPart>> getSupplierParts() async {
     List<InvenTreeSupplierPart> _supplierParts = [];
@@ -301,40 +301,26 @@ class InvenTreePart extends InvenTreeModel {
 
   int? get defaultLocation => jsondata["default_location"] as int?;
 
-    // Get the number of stock on order for this Part
-    double get onOrder => double.tryParse(jsondata["ordering"].toString()) ?? 0;
+  double get onOrder => getDouble("ordering");
 
-    String get onOrderString {
+  String get onOrderString => simpleNumberString(onOrder);
 
-      return simpleNumberString(onOrder);
+  double get inStock => getDouble("in_stock");
+
+  String get inStockString => simpleNumberString(inStock);
+
+  // Get the 'available stock' for this Part
+  double get unallocatedStock {
+
+    // Note that the 'available_stock' was not added until API v35
+    if (jsondata.containsKey("unallocated_stock")) {
+      return double.tryParse(jsondata["unallocated_stock"].toString()) ?? 0;
+    } else {
+      return inStock;
     }
+  }
 
-    // Get the stock count for this Part
-    double get inStock => double.tryParse(jsondata["in_stock"].toString()) ?? 0;
-
-    String get inStockString {
-
-      String q = simpleNumberString(inStock);
-
-      return q;
-    }
-
-    // Get the 'available stock' for this Part
-    double get unallocatedStock {
-
-      // Note that the 'available_stock' was not added until API v35
-      if (jsondata.containsKey("unallocated_stock")) {
-        return double.tryParse(jsondata["unallocated_stock"].toString()) ?? 0;
-      } else {
-        return inStock;
-      }
-    }
-
-    String get unallocatedStockString {
-      String q = simpleNumberString(unallocatedStock);
-
-      return q;
-    }
+    String get unallocatedStockString => simpleNumberString(unallocatedStock);
 
     String stockString({bool includeUnits = true}) {
       String q = unallocatedStockString;
@@ -350,39 +336,39 @@ class InvenTreePart extends InvenTreeModel {
       return q;
     }
 
-    String get units => (jsondata["units"] ?? "") as String;
+    String get units => getString("units");
 
     // Get the ID of the Part that this part is a variant of (or null)
     int? get variantOf => jsondata["variant_of"] as int?;
 
     // Get the number of units being build for this Part
-    double get building => double.tryParse(jsondata["building"].toString()) ?? 0;
+    double get building => getDouble("building");
 
     // Get the number of BOMs this Part is used in (if it is a component)
-    int get usedInCount => (jsondata["used_in"] ?? 0) as int;
+    int get usedInCount => getInt("used_in");
 
-    bool get isAssembly => (jsondata["assembly"] ?? false) as bool;
+    bool get isAssembly => getBool("assembly");
 
-    bool get isComponent => (jsondata["component"] ?? false) as bool;
+    bool get isComponent => getBool("component");
 
-    bool get isPurchaseable => (jsondata["purchaseable"] ?? false) as bool;
+    bool get isPurchaseable => getBool("purchaseable");
 
-    bool get isSalable => (jsondata["salable"] ?? false) as bool;
+    bool get isSalable => getBool("salable");
 
-    bool get isActive => (jsondata["active"] ?? false) as bool;
+    bool get isActive => getBool("active");
 
-    bool get isVirtual => (jsondata["virtual"] ?? false) as bool;
+    bool get isVirtual => getBool("virtual");
 
-    bool get isTrackable => (jsondata["trackable"] ?? false) as bool;
+    bool get isTrackable => getBool("trackable");
 
     // Get the IPN (internal part number) for the Part instance
-    String get IPN => (jsondata["IPN"] ?? "") as String;
+    String get IPN => getString("IPN");
 
     // Get the revision string for the Part instance
-    String get revision => (jsondata["revision"] ?? "") as String;
+    String get revision => getString("revision");
 
     // Get the category ID for the Part instance (or "null" if does not exist)
-    int get categoryId => (jsondata["category"] ?? -1) as int;
+    int get categoryId => getInt("category");
 
     // Get the category name for the Part instance
     String get categoryName {
@@ -404,15 +390,15 @@ class InvenTreePart extends InvenTreeModel {
       return (jsondata["category_detail"]?["description"] ?? "") as String;
     }
     // Get the image URL for the Part instance
-    String get _image  => (jsondata["image"] ?? "") as String;
+    String get _image  => getString("image");
 
     // Get the thumbnail URL for the Part instance
-    String get _thumbnail => (jsondata["thumbnail"] ?? "") as String;
+    String get _thumbnail => getString("thumbnail");
 
     // Return the fully-qualified name for the Part instance
     String get fullname {
 
-      String fn = (jsondata["full_name"] ?? "") as String;
+      String fn = getString("full_name");
 
       if (fn.isNotEmpty) return fn;
 
@@ -456,7 +442,7 @@ class InvenTreePart extends InvenTreeModel {
     }
 
     // Return the "starred" status of this part
-    bool get starred => (jsondata["starred"] ?? false) as bool;
+    bool get starred => getBool("starred");
 
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) {

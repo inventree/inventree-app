@@ -35,18 +35,18 @@ class InvenTreeStockItemTestResult extends InvenTreeModel {
     };
   }
 
-  String get key => (jsondata["key"] ?? "") as String;
+  String get key => getString("key");
+  
+  String get testName => getString("test");
 
-  String get testName => (jsondata["test"] ?? "") as String;
-
-  bool get result => (jsondata["result"] ?? false) as bool;
-
-  String get value => (jsondata["value"] ?? "") as String;
-
-  String get attachment => (jsondata["attachment"] ?? "") as String;
-
-  String get date => (jsondata["date"] ?? "") as String;
-
+  bool get result => getBool("result");
+  
+  String get value => getString("value");
+  
+  String get attachment => getString("attachment");
+  
+  String get date => getString("date");
+  
   @override
   InvenTreeStockItemTestResult createFromJson(Map<String, dynamic> json) {
     var result = InvenTreeStockItemTestResult.fromJson(json);
@@ -98,16 +98,10 @@ class InvenTreeStockItemHistory extends InvenTreeModel {
     return DateFormat("yyyy-MM-dd").format(d);
   }
 
-  String get label => (jsondata["label"] ?? "") as String;
-
+  String get label => getString("label");
+  
   // Return the "deltas" associated with this historical object
-  Map<String, dynamic> get deltas {
-    if (jsondata.containsKey("deltas")) {
-      return jsondata["deltas"] as Map<String, dynamic>;
-    } else {
-      return {};
-    }
-  }
+  Map<String, dynamic> get deltas => getMap("deltas");
 
   // Return the quantity string for this historical object
   String get quantityString {
@@ -122,12 +116,13 @@ class InvenTreeStockItemHistory extends InvenTreeModel {
     }
   }
 
-  String get userString {
-    return (jsondata["user_detail"]?["username"] ?? "") as String;
-  }
+  String get userString => getString("username", subKey: "user_detail");
 }
 
 
+/*
+ * Class representing a StockItem database instance
+ */
 class InvenTreeStockItem extends InvenTreeModel {
 
   InvenTreeStockItem() : super();
@@ -237,16 +232,16 @@ class InvenTreeStockItem extends InvenTreeModel {
     });
   }
 
-  int get status => (jsondata["status"] ?? -1) as int;
+  int get status => getInt("staus");
+  
+  String get packaging => getString("packaging");
 
-  String get packaging => (jsondata["packaging"] ?? "") as String;
+  String get batch => getString("batch");
 
-  String get batch => (jsondata["batch"] ?? "") as String;
-
-  int get partId => (jsondata["part"] ?? -1) as int;
+  int get partId => getInt("part");
   
   double? get purchasePrice {
-    String pp = (jsondata["purchase_price"] ?? "") as String;
+    String pp = getString("purchase_price");
 
     if (pp.isEmpty) {
       return null;
@@ -255,18 +250,18 @@ class InvenTreeStockItem extends InvenTreeModel {
     }
   }
 
-  String get purchasePriceCurrency => (jsondata["purchase_price_currency"] ?? "") as String;
+  String get purchasePriceCurrency => getString("purchase_price_currency");
 
   bool get hasPurchasePrice {
     double? pp = purchasePrice;
     return pp != null && pp > 0;
   }
 
-  int get purchaseOrderId => (jsondata["purchase_order"] ?? -1) as int;
+  int get purchaseOrderId => getInt("purchase_order");
 
-  int get trackingItemCount => (jsondata["tracking_items"] ?? 0) as int;
-
-  bool get isBuilding => (jsondata["is_building"] ?? false) as bool;
+  int get trackingItemCount => getInt("tracking_items", backup: 0);
+  
+  bool get isBuilding => getBool("is_building");
 
     // Date of last update
     DateTime? get updatedDate {
@@ -320,7 +315,7 @@ class InvenTreeStockItem extends InvenTreeModel {
 
       // Backup if first value fails
       if (nm.isEmpty) {
-        nm = (jsondata["part__name"] ?? "") as String;
+        nm = getString("part__name");
       }
 
       return nm;
@@ -335,7 +330,7 @@ class InvenTreeStockItem extends InvenTreeModel {
       }
 
       if (desc.isEmpty) {
-        desc = (jsondata["part__description"] ?? "") as String;
+        desc = getString("part__description");
       }
 
       return desc;
@@ -349,7 +344,7 @@ class InvenTreeStockItem extends InvenTreeModel {
       }
 
       if (img.isEmpty) {
-        img = (jsondata["part__thumbnail"] ?? "") as String;
+        img = getString("part__thumbnail");
       }
 
       return img;
@@ -371,7 +366,7 @@ class InvenTreeStockItem extends InvenTreeModel {
 
       // Try a different approach
       if (thumb.isEmpty) {
-        thumb = (jsondata["part__thumbnail"] ?? "") as String;
+        thumb = getString("part__thumbnail");
       }
 
       // Still no thumbnail? Use the "no image" image
@@ -380,7 +375,7 @@ class InvenTreeStockItem extends InvenTreeModel {
       return thumb;
     }
 
-    int get supplierPartId => (jsondata["supplier_part"] ?? -1) as int;
+    int get supplierPartId => getInt("supplier_part");
 
     String get supplierImage {
       String thumb = "";
@@ -394,33 +389,15 @@ class InvenTreeStockItem extends InvenTreeModel {
       return thumb;
     }
 
-    String get supplierName {
-      String sname = "";
+    String get supplierName => getString("supplier_name", subKey: "supplier_detail");
 
-      if (jsondata.containsKey("supplier_detail")) {
-        sname = (jsondata["supplier_detail"]["supplier_name"] ?? "") as String;
-      }
+    String get units => getString("units", subKey: "part_detail");
 
-      return sname;
-    }
+    String get supplierSKU => getString("SKU", subKey: "supplier_part_detail");
 
-    String get units {
-      return (jsondata["part_detail"]?["units"] ?? "") as String;
-    }
+    String get serialNumber => getString("serial");
 
-    String get supplierSKU {
-      String sku = "";
-
-      if (jsondata.containsKey("supplier_part_detail")) {
-        sku = (jsondata["supplier_part_detail"]["SKU"] ?? "") as String;
-      }
-
-      return sku;
-    }
-
-    String get serialNumber => (jsondata["serial"] ?? "") as String;
-
-    double get quantity => double.tryParse(jsondata["quantity"].toString()) ?? 0;
+    double get quantity => getDouble("quantity");
 
     String quantityString({bool includeUnits = false}){
 
@@ -440,11 +417,11 @@ class InvenTreeStockItem extends InvenTreeModel {
       return q;
     }
 
-    double get allocated => double.tryParse(jsondata["allocated"].toString()) ?? 0;
+    double get allocated => getDouble("allocated");
 
     double get available => quantity - allocated;
 
-    int get locationId => (jsondata["location"] ?? -1) as int;
+    int get locationId => getInt("location");
 
     bool isSerialized() => serialNumber.isNotEmpty && quantity.toInt() == 1;
 
@@ -459,15 +436,14 @@ class InvenTreeStockItem extends InvenTreeModel {
     }
 
     String get locationName {
-      String loc = "";
 
       if (locationId == -1 || !jsondata.containsKey("location_detail")) return "Unknown Location";
 
-      loc = (jsondata["location_detail"]["name"] ?? "") as String;
+      String loc = getString("name", subKey: "location_detail");
 
       // Old-style name
       if (loc.isEmpty) {
-        loc = (jsondata["location__name"] ?? "") as String;
+        loc = getString("location__name");
       }
 
       return loc;
@@ -477,8 +453,7 @@ class InvenTreeStockItem extends InvenTreeModel {
 
       if (locationId == -1 || !jsondata.containsKey("location_detail")) return L10().locationNotSet;
 
-      String _loc = (jsondata["location_detail"]["pathstring"] ?? "") as String;
-
+      String _loc = getString("pathstring", subKey: "location_detail");
       if (_loc.isNotEmpty) {
         return _loc;
       } else {
@@ -620,7 +595,7 @@ class InvenTreeStockLocation extends InvenTreeModel {
   @override
   List<String> get rolesRequired => ["stock_location"];
 
-  String get pathstring => (jsondata["pathstring"] ?? "") as String;
+  String get pathstring => getString("pathstring");
 
   @override
   Map<String, dynamic> formFields() {

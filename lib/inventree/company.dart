@@ -38,22 +38,22 @@ class InvenTreeCompany extends InvenTreeModel {
 
   String get thumbnail => (jsondata["thumbnail"] ?? jsondata["image"] ?? InvenTreeAPI.staticThumb) as String;
 
-  String get website => (jsondata["website"] ?? "") as String;
+  String get website => getString("website");
+  
+  String get phone => getString("phone");
 
-  String get phone => (jsondata["phone"] ?? "") as String;
+  String get email => getString("email");
 
-  String get email => (jsondata["email"] ?? "") as String;
+  bool get isSupplier => getBool("is_supplier");
 
-  bool get isSupplier => (jsondata["is_supplier"] ?? false) as bool;
+  bool get isManufacturer => getBool("is_manufacturer");
 
-  bool get isManufacturer => (jsondata["is_manufacturer"] ?? false)  as bool;
+  bool get isCustomer => getBool("is_customer");
 
-  bool get isCustomer => (jsondata["is_customer"] ?? false) as bool;
-
-  int get partSuppliedCount => (jsondata["parts_supplied"] ?? 0) as int;
-
-  int get partManufacturedCount => (jsondata["parts_manufactured"] ?? 0) as int;
-
+  int get partSuppliedCount => getInt("part_supplied");
+  
+  int get partManufacturedCount => getInt("parts_manufactured");
+  
   // Request a list of purchase orders against this company
   Future<List<InvenTreePurchaseOrder>> getPurchaseOrders({bool? outstanding}) async {
 
@@ -154,33 +154,33 @@ class InvenTreeSupplierPart extends InvenTreeModel {
     return _filters();
   }
 
-  int get manufacturerId => (jsondata["manufacturer_detail"]["pk"] ?? -1) as int;
-
-  String get manufacturerName => (jsondata["manufacturer_detail"]?["name"] ?? "") as String;
-
-  String get MPN => (jsondata["manufacturer_part_detail"]?["MPN"] ?? "") as String;
-
+  int get manufacturerId => getInt("pk", subKey: "manufacturer_detail");
+  
+  String get manufacturerName => getString("name", subKey: "manufacturer_detail");
+  
+  String get MPN => getString("MPN", subKey: "manufacturer_part_detail");
+  
   String get manufacturerImage => (jsondata["manufacturer_detail"]?["image"] ?? jsondata["manufacturer_detail"]["thumbnail"] ?? InvenTreeAPI.staticThumb) as String;
 
-  int get manufacturerPartId => (jsondata["manufacturer_part"] ?? -1) as int;
-
-  int get supplierId => (jsondata["supplier"] ?? -1) as int;
-
-  String get supplierName => (jsondata["supplier_detail"]?["name"] ?? "") as String;
-
+  int get manufacturerPartId => getInt("manufacturer_part");
+  
+  int get supplierId => getInt("supplier");
+  
+  String get supplierName => getString("name", subKey: "supplier_detail");
+  
   String get supplierImage => (jsondata["supplier_detail"]?["image"] ?? jsondata["supplier_detail"]["thumbnail"] ?? InvenTreeAPI.staticThumb) as String;
 
-  String get SKU => (jsondata["SKU"] ?? "") as String;
-
-  int get partId => (jsondata["part"] ?? -1) as int;
-
+  String get SKU => getString("SKU");
+  
+  int get partId => getInt("part");
+  
   String get partImage => (jsondata["part_detail"]?["thumbnail"] ?? InvenTreeAPI.staticThumb) as String;
 
-  String get partName => (jsondata["part_detail"]?["full_name"] ?? "") as String;
-
-  String get partDescription => (jsondata["part_detail"]?["description"] ?? "") as String;
-
-  String get note => (jsondata["note"] ?? "") as String;
+  String get partName => getString("full_name", subKey: "part_detail");
+  
+  String get partDescription => getString("description", subKey: "part_detail");
+  
+  String get note => getString("note");
 
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) {
@@ -207,12 +207,12 @@ class InvenTreeManufacturerPart extends InvenTreeModel {
     };
   }
 
-  int get partId => (jsondata["part"] ?? -1) as int;
-
-  int get manufacturerId => (jsondata["manufacturer"] ?? -1) as int;
-
-  String get MPN => (jsondata["MPN"] ?? "") as String;
-
+  int get partId => getInt("part");
+  
+  int get manufacturerId => getInt("manufacturer");
+  
+  String get MPN => getString("MPN");
+  
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) {
     var part = InvenTreeManufacturerPart.fromJson(json);

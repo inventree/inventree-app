@@ -252,16 +252,16 @@ class InvenTreeModel {
   // Accessor for the API
   InvenTreeAPI get api => InvenTreeAPI();
 
-  int get pk => (jsondata["pk"] ?? -1) as int;
-
+  int get pk => getInt("pk");
+  
   // Some common accessors
-  String get name => (jsondata["name"] ?? "") as String;
+  String get name => getString("name");
 
-  String get description => (jsondata["description"] ?? "") as String;
+  String get description => getString("description");
+  
+  String get notes => getString("notes");
 
-  String get notes => (jsondata["notes"] ?? "") as String;
-
-  int get parentId => (jsondata["parent"] ?? -1) as int;
+  int get parentId => getInt("parent");
 
   // Legacy API provided external link as "URL", while newer API uses "link"
   String get link => (jsondata["link"] ?? jsondata["URL"] ?? "") as String;
@@ -358,8 +358,8 @@ class InvenTreeModel {
     }
   }
 
-  String get keywords => (jsondata["keywords"] ?? "") as String;
-
+  String get keywords => getString("keywords");
+  
   // Create a new object from JSON data (not a constructor!)
   InvenTreeModel createFromJson(Map<String, dynamic> json) {
 
@@ -826,10 +826,10 @@ class InvenTreePlugin extends InvenTreeModel {
     }
   }
 
-  String get key => (jsondata["key"] ?? "") as String;
-
-  bool get active => (jsondata["active"] ?? false) as bool;
-
+  String get key => getString("key");
+  
+  bool get active => getBool("active");
+  
   // Return the metadata struct for this plugin
   Map<String, dynamic> get _meta => (jsondata["meta"] ?? {}) as Map<String, dynamic>;
 
@@ -864,11 +864,11 @@ class InvenTreeGlobalSetting extends InvenTreeModel {
   @override
   String get URL => "settings/global/";
 
-  String get key => (jsondata["key"] ?? "") as String;
-
-  String get value => (jsondata["value"] ?? "") as String;
-
-  String get type => (jsondata["type"] ?? "") as String;
+  String get key => getString("key");
+  
+  String get value => getString("value");
+  
+  String get type => getString("type");
 
 }
 
@@ -897,8 +897,8 @@ class InvenTreeAttachment extends InvenTreeModel {
   // Override this reference field for any subclasses
   String get REFERENCE_FIELD => "";
 
-  String get attachment => (jsondata["attachment"] ?? "") as String;
-
+  String get attachment => getString("attachment");
+  
   // Return the filename of the attachment
   String get filename {
     return attachment.split("/").last;
@@ -935,8 +935,8 @@ class InvenTreeAttachment extends InvenTreeModel {
     return FontAwesomeIcons.fileLines;
   }
 
-  String get comment => (jsondata["comment"] ?? "") as String;
-
+  String get comment => getString("comment");
+  
   DateTime? get uploadDate {
     if (jsondata.containsKey("upload_date")) {
       return DateTime.tryParse((jsondata["upload_date"] ?? "") as String);

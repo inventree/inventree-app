@@ -36,13 +36,13 @@ class InvenTreeBomItem extends InvenTreeModel {
   }
 
   // Extract the 'reference' value associated with this BomItem
-  String get reference => (jsondata["reference"] ?? "") as String;
-
+  String get reference => getString("reference");
+  
   // Extract the 'quantity' value associated with this BomItem
-  double get quantity => double.tryParse(jsondata["quantity"].toString()) ?? 0;
+  double get quantity => getDouble("quantity");
 
   // Extract the ID of the related part
-  int get partId => int.tryParse(jsondata["part"].toString()) ?? -1;
+  int get partId => getInt("part");
 
   // Return a Part instance for the referenced part
   InvenTreePart? get part {
@@ -69,5 +69,5 @@ class InvenTreeBomItem extends InvenTreeModel {
 }
 
   // Extract the ID of the related sub-part
-  int get subPartId => int.tryParse(jsondata["sub_part"].toString()) ?? -1;
+  int get subPartId => getInt("sub_part");
 }
