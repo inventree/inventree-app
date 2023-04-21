@@ -34,6 +34,7 @@ class InvenTreePurchaseOrder extends InvenTreeModel {
       },
       "supplier_reference": {},
       "description": {},
+      "project_code": {},
       "target_date": {},
       "link": {},
       "responsible": {},
@@ -76,6 +77,15 @@ class InvenTreePurchaseOrder extends InvenTreeModel {
   int get responsibleId => getInt("responsible");
 
   int get supplierId => getInt("supplier");
+
+  // Project code information
+  int get projectCodeId => getInt("project_code");
+
+  String get projectCode => getString("code", subKey: "project_code_detail");
+
+  String get projectCodeDescription => getString("description", subKey: "project_code_detail");
+
+  bool get hasProjectCode => projectCode.isNotEmpty;
 
   InvenTreeCompany? get supplier {
 
