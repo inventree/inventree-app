@@ -76,14 +76,27 @@ class InvenTreeModel {
 
     // If a subKey is specified, we need to dig deeper into the JSON data
     if (subKey.isNotEmpty) {
+
+      if (!data.containsKey(subKey)) {
+        debug("JSON data does not contain subKey '$subKey' for key '$key'");
+        return backup;
+      }
+
       data = (data[subKey] ?? {}) as Map<String, dynamic>;
     }
 
     if (data.containsKey(key)) {
       return data[key];
     } else {
+      debug("JSON data does not contain key '$key' (subKey '${subKey}')");
       return backup;
     }
+  }
+
+  // Helper function to get sub-map from JSON data
+  Map<String, dynamic> getMap(String key, {Map<String, dynamic> backup = const {}, String subKey = ""}) {
+    dynamic value = getValue(key, backup: backup, subKey: subKey);
+    return value as Map<String, dynamic>;
   }
 
   // Helper function to get string value from JSON data
