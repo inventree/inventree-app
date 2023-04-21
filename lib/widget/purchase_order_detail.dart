@@ -2,10 +2,9 @@ import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:inventree/widget/dialogs.dart";
-import "package:one_context/one_context.dart";
+import "package:inventree/widget/po_line_list.dart";
 
 import "package:inventree/api.dart";
-import "package:inventree/api_form.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/l10.dart";
@@ -194,7 +193,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
         child: ListTile(
           title: Text(order.reference),
           subtitle: Text(order.description),
-          leading: supplier == null ? null : InvenTreeAPI().getImage(supplier.thumbnail, width: 40, height: 40),
+          leading: supplier == null ? null : InvenTreeAPI().getThumbnail(supplier.thumbnail),
           trailing: Text(
             api.PurchaseOrderStatus.label(order.status),
             style: TextStyle(
@@ -246,10 +245,12 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       ));
     }
 
+    Color lineColor = completedLines < order.lineItemCount ? COLOR_WARNING : COLOR_SUCCESS;
+
     tiles.add(ListTile(
       title: Text(L10().lineItems),
       leading: FaIcon(FontAwesomeIcons.clipboardCheck),
-      trailing: Text("${completedLines} /  ${order.lineItemCount}"),
+      trailing: Text("${completedLines} /  ${order.lineItemCount}", style: TextStyle(color: lineColor)),
     ));
 
     tiles.add(ListTile(
@@ -317,160 +318,6 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
   }
 
-  /*
-   * Receive a specified PurchaseOrderLineItem into stock
-   */
-  void receiveLine(BuildContext context, InvenTreePOLineItem lineItem) {
-
-    Map<String, dynamic> fields = {
-      "line_item": {
-        "parent": "items",
-        "nested": true,
-        "hidden": true,
-        "value": lineItem.pk,
-      },
-      "quantity": {
-        "parent": "items",
-        "nested": true,
-        "value": lineItem.outstanding,
-      },
-      "status": {
-        "parent": "items",
-        "nested": true,
-      },
-      "location": {
-      },
-      "barcode": {
-        "parent": "items",
-        "nested": true,
-        "type": "barcode",
-        "label": L10().barcodeAssign,
-        "required": false,
-      }
-    };
-
-    // TODO: Pre-fill the "location" value if the part has a default location specified
-
-    launchApiForm(
-        context,
-        L10().receiveItem,
-        order.receive_url,
-        fields,
-        method: "POST",
-        icon: FontAwesomeIcons.rightToBracket,
-        onSuccess: (data) async {
-          showSnackIcon(L10().receivedItem, success: true);
-          refresh(context);
-        }
-    );
-  }
-
-  /*
-   * Display a context menu for a particular PurhaseOrderLineItem
-   */
-  void lineItemMenu(BuildContext context, InvenTreePOLineItem lineItem) {
-
-    List<Widget> children = [];
-
-    // TODO: Add in this option once the SupplierPart detail view is implemented
-    /*
-    children.add(
-      SimpleDialogOption(
-        onPressed: () {
-          OneContext().popDialog();
-
-          // TODO: Navigate to the "SupplierPart" display?
-        },
-        child: ListTile(
-          title: Text(L10().viewSupplierPart),
-          leading: FaIcon(FontAwesomeIcons.eye),
-        )
-      )
-    );
-     */
-
-    if (order.isPlaced && InvenTreeAPI().supportsPoReceive) {
-      children.add(
-        SimpleDialogOption(
-          onPressed: () {
-            // Hide the dialog option
-            OneContext().popDialog();
-
-            receiveLine(context, lineItem);
-          },
-          child: ListTile(
-            title: Text(L10().receiveItem),
-            leading: FaIcon(FontAwesomeIcons.rightToBracket),
-          )
-        )
-      );
-    }
-
-    // No valid actions available
-    if (children.isEmpty) {
-      return;
-    }
-
-    children.insert(0, Divider());
-
-    OneContext().showDialog(
-      builder: (BuildContext context) {
-        return SimpleDialog(
-          title: Text(L10().lineItem),
-          children: children,
-        );
-      }
-    );
-
-  }
-
-  List<Widget> lineTiles(BuildContext context) {
-
-    List<Widget> tiles = [];
-
-    for (var line in lines) {
-
-      InvenTreeSupplierPart? supplierPart = line.supplierPart;
-
-      if (supplierPart != null) {
-
-        String q = simpleNumberString(line.quantity);
-
-        Color c = Colors.black;
-
-        if (order.isOpen) {
-
-          q = simpleNumberString(line.received) + " / " + simpleNumberString(line.quantity);
-
-          if (line.isComplete) {
-            c = COLOR_SUCCESS;
-          } else {
-            c = COLOR_DANGER;
-          }
-        }
-
-        tiles.add(
-          ListTile(
-            title: Text(supplierPart.SKU),
-            subtitle: Text(supplierPart.partName),
-            leading: InvenTreeAPI().getImage(supplierPart.partImage, width: 40, height: 40),
-            trailing: Text(
-              q,
-              style: TextStyle(
-                color: c,
-              ),
-            ),
-            onTap: () {
-              lineItemMenu(context, line);
-            },
-          )
-        );
-      }
-    }
-
-    return tiles;
-  }
-  
   @override
   List<Widget> getTabIcons(BuildContext context) {
     return [
@@ -484,7 +331,8 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
   List<Widget> getTabs(BuildContext context) {
     return [
       ListView(children: orderTiles(context)),
-      ListView(children: lineTiles(context)),
+      PaginatedPOLineList({"order": order.pk.toString()}, true),
+      // ListView(children: lineTiles(context)),
       PaginatedStockItemList({"purchase_order": order.pk.toString()}, true),
     ];
   }

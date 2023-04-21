@@ -71,11 +71,7 @@ class _BillOfMaterialsState extends RefreshableState<BillOfMaterialsWidget> {
     return Column(
       children: [
         ListTile(
-          leading: InvenTreeAPI().getImage(
-            widget.part.thumbnail,
-            width: 32,
-            height: 32,
-          ),
+          leading: InvenTreeAPI().getThumbnail(widget.part.thumbnail),
           title: Text(widget.part.fullname),
           subtitle: Text(widget.isParentComponent ? L10().billOfMaterials : L10().usedInDetails),
           trailing: Text(L10().quantity),
@@ -153,11 +149,7 @@ class _PaginatedBomListState extends PaginatedSearchState<PaginatedBomList> {
         simpleNumberString(bomItem.quantity),
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
-      leading: InvenTreeAPI().getImage(
-        subPart?.thumbnail ?? "",
-        width: 40,
-        height: 40,
-      ),
+      leading: InvenTreeAPI().getThumbnail(subPart?.thumbnail ?? ""),
       onTap: subPart == null ? null : () async {
 
         showLoadingOverlay(context);

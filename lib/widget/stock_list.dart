@@ -115,11 +115,7 @@ class _PaginatedStockItemListState extends PaginatedSearchState<PaginatedStockIt
     return ListTile(
       title: Text("${item.partName}"),
       subtitle: Text("${item.locationPathString}"),
-      leading: InvenTreeAPI().getImage(
-        item.partThumbnail,
-        width: 40,
-        height: 40,
-      ),
+      leading: InvenTreeAPI().getThumbnail(item.partThumbnail),
       trailing: Text("${item.displayQuantity}",
         style: TextStyle(
           fontWeight: FontWeight.bold,

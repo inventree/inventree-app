@@ -333,7 +333,8 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
     }
   }
 
-  List<Widget> _tiles(BuildContext context) {
+  @override
+  List<Widget> getTiles(BuildContext context) {
 
     List<Widget> tiles = [];
 
@@ -542,15 +543,4 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
     return tiles;
   }
 
-  @override
-  Widget getBody(BuildContext context) {
-    return Center(
-      child: ListView(
-        children: ListTile.divideTiles(
-          context: context,
-          tiles: _tiles(context),
-        ).toList()
-      )
-    );
-  }
 }

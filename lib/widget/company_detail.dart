@@ -130,7 +130,8 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
   /*
    * Construct a list of tiles to display for this Company instance
    */
-  List<Widget> _companyTiles() {
+  @override
+  List<Widget> getTiles(BuildContext context) {
 
     List<Widget> tiles = [];
 
@@ -140,7 +141,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
       child: ListTile(
         title: Text("${widget.company.name}"),
         subtitle: Text("${widget.company.description}"),
-        leading: InvenTreeAPI().getImage(widget.company.image, width: 40, height: 40),
+        leading: InvenTreeAPI().getThumbnail(widget.company.image),
       ),
     ));
 
@@ -290,13 +291,4 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
     return tiles;
   }
 
-  @override
-  Widget getBody(BuildContext context) {
-
-    return Center(
-      child: ListView(
-        children: _companyTiles(),
-      )
-    );
-  }
 }

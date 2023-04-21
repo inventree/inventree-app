@@ -54,7 +54,8 @@ class _NotificationState extends RefreshableState<NotificationWidget> {
   /*
    * Display an individual notification message
    */
-  List<Widget> renderNotifications(BuildContext context) {
+  @override
+  List<Widget> getTiles(BuildContext context) {
 
     List<Widget> tiles = [];
 
@@ -87,17 +88,4 @@ class _NotificationState extends RefreshableState<NotificationWidget> {
     return tiles;
 
   }
-
-  @override
-  Widget getBody(BuildContext context) {
-    return Center(
-      child: ListView(
-        children: ListTile.divideTiles(
-          context: context,
-          tiles: renderNotifications(context),
-        ).toList()
-      )
-    );
-  }
-
 }

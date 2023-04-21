@@ -274,6 +274,9 @@
   "editItem": "Edit Stock Item",
   "@editItem": {},
 
+  "editLineItem": "Edit Line Item",
+  "@editLineItem": {},
+
   "enterPassword": "Enter password",
   "@enterPassword": {},
 
@@ -534,6 +537,9 @@
   "lineItems": "Line Items",
   "@lineItems": {},
 
+  "lineItemUpdated": "Line item updated",
+  "@lineItemUpdated": {},
+
   "locateItem": "Locate stock item",
   "@locateItem": {},
 
@@ -612,7 +618,7 @@
   "outstanding": "Outstanding",
   "@outstanding": {},
 
-  "outstandingOrderDetail": "Show outstanding orders",
+  "outstandingOrderDetail": "Show outstanding items",
   "@outstandingOrderDetail": {},
 
   "packaging": "Packaging",
@@ -797,9 +803,6 @@
   "quantityPositive": "Quantity must be positive",
   "@quantityPositive": {},
 
-  "quarantined": "Quarantined",
-  "@quarantined": {},
-
   "queryEmpty": "Enter search query",
   "@queryEmpty": {},
 
@@ -808,6 +811,9 @@
 
   "received": "Received",
   "@received": {},
+
+  "receivedFilterDetail": "Show received items",
+  "@receivedFilterDetail": {},
 
   "receiveItem": "Receive Item",
   "@receiveItem": {},
@@ -1038,6 +1044,9 @@
   "serverNotSelected": "Server not selected",
   "@serverNotSelected": {},
 
+  "sku": "SKU",
+  "@sku": {},
+
   "sounds": "Sounds",
   "@sounds": {},
 
@@ -1255,6 +1264,9 @@
 
   "translateHelp": "Help translate the InvenTree app",
   "@translateHelp": {},
+
+  "unitPrice": "Unit Price",
+  "@unitPrice": {},
 
   "units": "Units",
   "@units": {},

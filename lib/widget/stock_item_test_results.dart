@@ -113,7 +113,8 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
     return outputs;
   }
 
-  List<Widget> resultsList() {
+  @override
+  List<Widget> getTiles(BuildContext context) {
     List<Widget> tiles = [];
 
     tiles.add(
@@ -121,7 +122,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
         child: ListTile(
           title: Text(item.partName),
           subtitle: Text(item.partDescription),
-          leading: InvenTreeAPI().getImage(item.partImage),
+          leading: InvenTreeAPI().getThumbnail(item.partImage),
         )
       )
     );
@@ -212,16 +213,5 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
     }
 
     return tiles;
-  }
-
-  @override
-  Widget getBody(BuildContext context) {
-
-    return ListView(
-      children: ListTile.divideTiles(
-        context: context,
-        tiles: resultsList()
-      ).toList()
-    );
   }
 }

@@ -29,13 +29,19 @@ mixin BaseWidgetProperties {
     return InvenTreeDrawer(context);
   }
 
+  // Function to construct a set of tabs for this widget (override if needed)
   List<Widget> getTabs(BuildContext context) => [];
 
-  // Function to construct a body (MUST BE PROVIDED)
+  // Function to construct a set of tiles for this widget (override if needed)
+  List<Widget> getTiles(BuildContext context) => [];
+
+  // Function to construct a body
   Widget getBody(BuildContext context) {
 
-    // Default return is an empty ListView
-    return ListView();
+    // Default body calls getTiles()
+    return Column(
+      children: getTiles(context)
+    );
   }
 
 
@@ -257,15 +263,11 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> with 
       floatingActionButton: buildSpeedDial(context),
       floatingActionButtonLocation: FloatingActionButtonLocation
           .miniEndDocked,
-      body: Builder(
-          builder: (BuildContext context) {
-            return RefreshIndicator(
-                onRefresh: () async {
-                  refresh(context);
-                },
-                child: body
-            );
-          }
+      body: RefreshIndicator(
+        onRefresh: () async {
+          refresh(context);
+        },
+        child: body
       ),
       bottomNavigationBar: buildBottomAppBar(context, refreshableKey),
     );

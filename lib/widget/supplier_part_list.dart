@@ -89,16 +89,8 @@ class _PaginatedSupplierPartListState extends PaginatedSearchState<PaginatedSupp
     return ListTile(
       title: Text(supplierPart.SKU),
       subtitle: Text(supplierPart.partName),
-      leading: InvenTreeAPI().getImage(
-        supplierPart.supplierImage,
-        width: 40,
-        height: 40
-      ),
-      trailing: InvenTreeAPI().getImage(
-        supplierPart.partImage,
-        width: 40,
-        height: 40,
-      ),
+      leading: InvenTreeAPI().getThumbnail(supplierPart.supplierImage),
+      trailing: InvenTreeAPI().getThumbnail(supplierPart.partImage),
       onTap: () {
         Navigator.push(
           context,

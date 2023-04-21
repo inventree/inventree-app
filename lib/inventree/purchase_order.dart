@@ -1,3 +1,4 @@
+import "package:inventree/helpers.dart";
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/model.dart";
@@ -176,18 +177,26 @@ class InvenTreePOLineItem extends InvenTreeModel {
   String get URL => "order/po-line/";
 
   @override
+  List<String> get rolesRequired => ["purchase_order"];
+
+  @override
   Map<String, dynamic> formFields() {
     return {
-      // TODO: @Guusggg Not sure what will come here.
-      // "quantity": {},
-      // "reference": {},
-      // "notes": {},
-      // "order": {},
-      // "part": {},
-      "received": {},
-      // "purchase_price": {},
-      // "purchase_price_currency": {},
-      // "destination": {}
+      "part": {
+        // We cannot edit the supplier part field here
+        "hidden": true,
+      },
+      "order": {
+        // We cannot edit the order field here
+        "hidden": true,
+      },
+      "reference": {},
+      "quantity": {},
+      "purchase_price": {},
+      "purchase_price_currency": {},
+      "destination": {},
+      "notes": {},
+      "link": {},
     };
   }
 
@@ -211,6 +220,8 @@ class InvenTreePOLineItem extends InvenTreeModel {
 
   double get received => getDouble("received");
 
+  String get progressString => simpleNumberString(received) + " / " + simpleNumberString(quantity);
+
   double get outstanding => quantity - received;
 
   String get reference => getString("reference");
@@ -229,6 +240,12 @@ class InvenTreePOLineItem extends InvenTreeModel {
     }
   }
 
+  int get partId => getInt("pk", subKey: "part_detail");
+  
+  String get partName => getString("name", subKey: "part_detail");
+
+  String get partImage => getString("thumbnail", subKey: "part_detail");
+
   InvenTreeSupplierPart? get supplierPart {
 
     dynamic detail = jsondata["supplier_part_detail"];
@@ -239,6 +256,8 @@ class InvenTreePOLineItem extends InvenTreeModel {
       return InvenTreeSupplierPart.fromJson(detail as Map<String, dynamic>);
     }
   }
+
+  String get SKU => getString("SKU", subKey: "supplier_part_detail");
 
   double get purchasePrice => getDouble("purchase_price");
   

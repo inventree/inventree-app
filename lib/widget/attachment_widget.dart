@@ -147,19 +147,7 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
   }
 
   @override
-  Widget getBody(BuildContext context) {
-    return Center(
-        child: ListView(
-          children: ListTile.divideTiles(
-              context: context,
-              tiles: attachmentTiles(context)
-          ).toList(),
-        )
-    );
-  }
-
-
-  List<Widget> attachmentTiles(BuildContext context) {
+  List<Widget> getTiles(BuildContext context) {
 
     List<Widget> tiles = [];
 

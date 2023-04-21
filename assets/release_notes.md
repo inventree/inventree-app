@@ -2,6 +2,7 @@
 ---
 
 - Add support for Project Codes
+- Improve purchase order support
 - Fix action button colors
 - Added Norwegian translations
 - Fix serial number field when creating stock item
