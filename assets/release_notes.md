@@ -1,6 +1,7 @@
 ### 0.11.6 - April 2023
 ---
 
+- Add support for Project Codes
 - Fix action button colors
 - Added Norwegian translations
 - Fix serial number field when creating stock item
