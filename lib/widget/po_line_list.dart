@@ -1,15 +1,17 @@
 import "package:flutter/material.dart";
+
+import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/helpers.dart";
+import "package:inventree/l10.dart";
+
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/model.dart";
-import "package:inventree/widget/paginator.dart";
-
-import "package:inventree/l10.dart";
-import "package:inventree/api.dart";
-
 import "package:inventree/inventree/purchase_order.dart";
 
+import "package:inventree/widget/paginator.dart";
+import "package:inventree/widget/po_line_detail.dart";
+import "package:inventree/widget/progress.dart";
 
 /*
  * Paginated widget class for displaying a list of purchase order line items
@@ -66,14 +68,18 @@ class _PaginatedPOLineListState extends PaginatedSearchState<PaginatedPOLineList
     InvenTreePOLineItem item = model as InvenTreePOLineItem;
     InvenTreeSupplierPart? supplierPart = item.supplierPart;
 
-    String progress = simpleNumberString(item.received) + " / " + simpleNumberString(item.quantity);
-
     if (supplierPart != null) {
       return ListTile(
-        title: Text(supplierPart!.SKU),
-        subtitle: Text(supplierPart!.partName),
-        trailing: Text(progress, style: TextStyle(color: item.isComplete ? COLOR_SUCCESS : COLOR_DANGER)),
-        leading: InvenTreeAPI().getThumbnail(supplierPart.partImage)
+        title: Text(supplierPart.SKU),
+        subtitle: Text(supplierPart.partName),
+        trailing: Text(item.progressString, style: TextStyle(color: item.isComplete ? COLOR_SUCCESS : COLOR_WARNING)),
+        leading: InvenTreeAPI().getThumbnail(supplierPart.partImage),
+        onTap: () async {
+          showLoadingOverlay(context);
+          await item.reload();
+          hideLoadingOverlay();
+          Navigator.push(context, MaterialPageRoute(builder: (context) => POLineDetailWidget(item)));
+        },
       );
     } else {
       // Return an error tile

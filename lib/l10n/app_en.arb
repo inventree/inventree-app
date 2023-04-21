@@ -274,6 +274,9 @@
   "editItem": "Edit Stock Item",
   "@editItem": {},
 
+  "editLineItem": "Edit Line Item",
+  "@editLineItem": {},
+
   "enterPassword": "Enter password",
   "@enterPassword": {},
 
@@ -533,6 +536,9 @@
 
   "lineItems": "Line Items",
   "@lineItems": {},
+
+  "lineItemUpdated": "Line item updated",
+  "@lineItemUpdated": {},
 
   "locateItem": "Locate stock item",
   "@locateItem": {},
