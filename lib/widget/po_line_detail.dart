@@ -142,6 +142,17 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
       )
     );
 
+    // Pricing information
+    tiles.add(
+      ListTile(
+        title: Text(L10().unitPrice),
+        leading: FaIcon(FontAwesomeIcons.dollarSign),
+        trailing: Text(
+          renderCurrency(widget.item.purchasePrice, widget.item.purchasePriceCurrency)
+        ),
+      )
+    );
+
     // Note
     if (widget.item.notes.isNotEmpty) {
       tiles.add(

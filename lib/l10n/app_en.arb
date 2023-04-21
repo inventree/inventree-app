@@ -1265,6 +1265,9 @@
   "translateHelp": "Help translate the InvenTree app",
   "@translateHelp": {},
 
+  "unitPrice": "Unit Price",
+  "@unitPrice": {},
+
   "units": "Units",
   "@units": {},
 
