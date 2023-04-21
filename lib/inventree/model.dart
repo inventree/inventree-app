@@ -1,4 +1,5 @@
 import "dart:async";
+import "dart:convert";
 import "dart:io";
 
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
@@ -62,6 +63,56 @@ class InvenTreeModel {
   // Override the web URL for each subclass
   // Note: If the WEB_URL is the same (except for /api/) as URL then just leave blank
   String get WEB_URL => "";
+
+  // Helper function to set a value in the JSON data
+  void setValue(String key, dynamic value) {
+    jsondata[key] = value;
+  }
+
+  // Helper function to get string value from JSON data
+  String getString(String key, {String backup = ""}) {
+    String value = backup;
+
+    if (jsondata.containsKey(key)) {
+      value = jsondata[key].toString();
+    }
+
+    return value;
+  }
+
+  // Helper function to get integer value from JSON data
+  int getInt(String key, {int backup = -1}) {
+    int value = backup;
+
+    if (jsondata.containsKey(key)) {
+      value = int.tryParse(jsondata[key].toString()) ?? backup;
+    }
+
+    return value;
+  }
+
+  // Helper function to get double value from JSON data
+  double getDouble(String key, {double backup = 0.0}) {
+    double value = backup;
+
+    if (jsondata.containsKey(key)) {
+      value = double.tryParse(jsondata[key].toString()) ?? backup;
+    }
+
+    return value;
+  }
+
+  // Helper function to get boolean value from json data
+  bool getBool(String key, {bool backup = false}) {
+    bool value = backup;
+
+    if (jsondata.containsKey(key)) {
+      String str_value = (jsondata[key] ?? backup.toString()) as String;
+      value = str_value.toLowerCase() == "true";
+    }
+
+    return value;
+  }
 
   String get webUrl {
 
