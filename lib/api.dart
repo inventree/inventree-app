@@ -300,6 +300,9 @@ class InvenTreeAPI {
   // Order barcodes API v107 or newer
   bool get supportsOrderBarcodes => isConnected() && apiVersion >= 107;
 
+  // Project codes require v109 or newer
+  bool get supportsProjectCodes => isConnected() && apiVersion >= 109;
+
   // Are plugins enabled on the server?
   bool _pluginsEnabled = false;
 
