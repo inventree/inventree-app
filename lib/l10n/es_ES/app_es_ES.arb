@@ -511,8 +511,6 @@
   "@quantityInvalid": {},
   "quantityPositive": "La longitud debe ser positiva",
   "@quantityPositive": {},
-  "quarantined": "En Cuarentena",
-  "@quarantined": {},
   "queryEmpty": "Ingresar consulta de búsqueda",
   "@queryEmpty": {},
   "queryNoResults": "No hay resultados para la consulta",
