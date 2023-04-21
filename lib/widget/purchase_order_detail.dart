@@ -245,10 +245,12 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       ));
     }
 
+    Color lineColor = completedLines < order.lineItemCount ? COLOR_WARNING : COLOR_SUCCESS;
+
     tiles.add(ListTile(
       title: Text(L10().lineItems),
       leading: FaIcon(FontAwesomeIcons.clipboardCheck),
-      trailing: Text("${completedLines} /  ${order.lineItemCount}"),
+      trailing: Text("${completedLines} /  ${order.lineItemCount}", style: TextStyle(color: lineColor)),
     ));
 
     tiles.add(ListTile(
