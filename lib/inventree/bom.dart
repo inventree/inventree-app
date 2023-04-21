@@ -12,9 +12,7 @@ class InvenTreeBomItem extends InvenTreeModel {
   InvenTreeBomItem.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) {
-    return InvenTreeBomItem.fromJson(json);
-  }
+  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreeBomItem.fromJson(json);
 
   @override
   String get URL => "bom/";

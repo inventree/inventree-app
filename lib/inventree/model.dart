@@ -390,12 +390,7 @@ class InvenTreeModel {
   String get keywords => getString("keywords");
   
   // Create a new object from JSON data (not a constructor!)
-  InvenTreeModel createFromJson(Map<String, dynamic> json) {
-
-      var obj = InvenTreeModel.fromJson(json);
-
-      return obj;
-  }
+  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreeModel.fromJson(json);
 
   // Return the API detail endpoint for this Model object
   String get url => "${URL}/${pk}/".replaceAll("//", "/");
@@ -836,9 +831,7 @@ class InvenTreePlugin extends InvenTreeModel {
   InvenTreePlugin.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) {
-    return InvenTreePlugin.fromJson(json);
-  }
+  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreePlugin.fromJson(json);
 
   @override
   String get URL {
