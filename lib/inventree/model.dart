@@ -1,5 +1,4 @@
 import "dart:async";
-import "dart:convert";
 import "dart:io";
 
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
@@ -78,6 +77,14 @@ class InvenTreeModel {
     if (subKey.isNotEmpty) {
 
       if (!data.containsKey(subKey)) {
+        sentryReportMessage(
+          "getValue() called with invalid subKey",
+          context: {
+            "model": URL,
+            "key": key,
+            "subKey": subKey
+          }
+        );
         debug("JSON data does not contain subKey '$subKey' for key '$key'");
         return backup;
       }
@@ -88,6 +95,14 @@ class InvenTreeModel {
     if (data.containsKey(key)) {
       return data[key];
     } else {
+        sentryReportMessage(
+          "getValue() called with invalid key",
+          context: {
+            "model": URL,
+            "key": key,
+            "subKey": subKey
+          }
+        );
       debug("JSON data does not contain key '$key' (subKey '${subKey}')");
       return backup;
     }
