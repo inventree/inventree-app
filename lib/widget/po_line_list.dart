@@ -2,7 +2,6 @@ import "package:flutter/material.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
-import "package:inventree/helpers.dart";
 import "package:inventree/l10.dart";
 
 import "package:inventree/inventree/company.dart";
