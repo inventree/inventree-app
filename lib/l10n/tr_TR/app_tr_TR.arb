@@ -473,8 +473,6 @@
   "@quantityInvalid": {},
   "quantityPositive": "Adet pozitif bir sayı olmalı",
   "@quantityPositive": {},
-  "quarantined": "Karantinaya alındı",
-  "@quarantined": {},
   "queryEmpty": "Arama metni girin",
   "@queryEmpty": {},
   "queryNoResults": "Sorgu için sonuç yok",
