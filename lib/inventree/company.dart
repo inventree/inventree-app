@@ -81,11 +81,7 @@ class InvenTreeCompany extends InvenTreeModel {
   }
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) {
-    var company = InvenTreeCompany.fromJson(json);
-
-    return company;
-  }
+  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreeCompany.fromJson(json);
 }
 
 
@@ -183,11 +179,7 @@ class InvenTreeSupplierPart extends InvenTreeModel {
   String get note => getString("note");
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) {
-    var part = InvenTreeSupplierPart.fromJson(json);
-
-    return part;
-  }
+  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreeSupplierPart.fromJson(json);
 }
 
 
@@ -214,9 +206,5 @@ class InvenTreeManufacturerPart extends InvenTreeModel {
   String get MPN => getString("MPN");
   
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) {
-    var part = InvenTreeManufacturerPart.fromJson(json);
-
-    return part;
-  }
+  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreeManufacturerPart.fromJson(json);
 }

@@ -63,9 +63,7 @@ class InvenTreeStockItemHistory extends InvenTreeModel {
   InvenTreeStockItemHistory.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) {
-    return InvenTreeStockItemHistory.fromJson(json);
-  }
+  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreeStockItemHistory.fromJson(json);
 
   @override
   String get URL => "stock/track/";
@@ -472,9 +470,7 @@ class InvenTreeStockItem extends InvenTreeModel {
     }
 
     @override
-    InvenTreeModel createFromJson(Map<String, dynamic> json) {
-      return InvenTreeStockItem.fromJson(json);
-    }
+    InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreeStockItem.fromJson(json);
 
     /*
    * Perform stocktake action:
@@ -576,9 +572,7 @@ class InvenTreeStockItemAttachment extends InvenTreeAttachment {
   String get URL => "stock/attachment/";
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) {
-    return InvenTreeStockItemAttachment.fromJson(json);
-  }
+  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreeStockItemAttachment.fromJson(json);
 
 }
 
@@ -633,10 +627,6 @@ class InvenTreeStockLocation extends InvenTreeModel {
   int get itemcount => (jsondata["items"] ?? 0) as int;
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) {
+  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreeStockLocation.fromJson(json);
 
-    var loc = InvenTreeStockLocation.fromJson(json);
-
-    return loc;
-  }
 }

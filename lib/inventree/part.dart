@@ -67,11 +67,7 @@ class InvenTreePartCategory extends InvenTreeModel {
   int get partcount => (jsondata["part_count"] ?? jsondata["parts"] ?? 0) as int;
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) {
-    var cat = InvenTreePartCategory.fromJson(json);
-
-    return cat;
-  }
+  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreePartCategory.fromJson(json);
 }
 
 
@@ -98,11 +94,7 @@ class InvenTreePartTestTemplate extends InvenTreeModel {
   bool get requiresAttachment => getBool("requires_attachment");
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) {
-    var template = InvenTreePartTestTemplate.fromJson(json);
-
-    return template;
-  }
+  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreePartTestTemplate.fromJson(json);
 
   bool passFailStatus() {
 
@@ -142,9 +134,7 @@ class InvenTreePartParameter extends InvenTreeModel {
   String get URL => "part/parameter/";
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) {
-    return InvenTreePartParameter.fromJson(json);
-  }
+  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreePartParameter.fromJson(json);
 
   @override
   Map<String, dynamic> formFields() {
@@ -445,12 +435,7 @@ class InvenTreePart extends InvenTreeModel {
     bool get starred => getBool("starred");
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) {
-
-    var part = InvenTreePart.fromJson(json);
-
-    return part;
-  }
+  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreePart.fromJson(json);
 }
 
 /*
@@ -469,8 +454,6 @@ class InvenTreePartAttachment extends InvenTreeAttachment {
   String get URL => "part/attachment/";
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) {
-    return InvenTreePartAttachment.fromJson(json);
-  }
+  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreePartAttachment.fromJson(json);
 
 }

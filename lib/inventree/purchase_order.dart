@@ -134,9 +134,7 @@ class InvenTreePurchaseOrder extends InvenTreeModel {
   }
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) {
-    return InvenTreePurchaseOrder.fromJson(json);
-  }
+  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreePurchaseOrder.fromJson(json);
 
   /// Mark this order as "placed" / "issued"
   Future<void> issueOrder() async {
@@ -243,9 +241,8 @@ class InvenTreePOLineItem extends InvenTreeModel {
   Map<String, dynamic> get destinationDetail => getMap("destination_detail");
   
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) {
-    return InvenTreePOLineItem.fromJson(json);
-  }
+  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreePOLineItem.fromJson(json);
+
 }
 
 /*
@@ -264,7 +261,6 @@ class InvenTreePurchaseOrderAttachment extends InvenTreeAttachment {
   String get URL => "order/po/attachment/";
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) {
-    return InvenTreePurchaseOrderAttachment.fromJson(json);
-  }
+  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreePurchaseOrderAttachment.fromJson(json);
+
 }
