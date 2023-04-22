@@ -511,8 +511,6 @@
   "@quantityInvalid": {},
   "quantityPositive": "Aantal moet positief zijn",
   "@quantityPositive": {},
-  "quarantined": "In quarantaine geplaatst",
-  "@quarantined": {},
   "queryEmpty": "Voer zoekterm in",
   "@queryEmpty": {},
   "queryNoResults": "Geen resultaten",
