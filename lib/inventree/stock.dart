@@ -11,6 +11,9 @@ import "package:inventree/inventree/model.dart";
 
 
 
+/*
+ * Class representing a test result for a single stock item
+ */
 class InvenTreeStockItemTestResult extends InvenTreeModel {
 
   InvenTreeStockItemTestResult() : super();

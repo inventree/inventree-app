@@ -4,6 +4,7 @@
 - Add support for Project Codes
 - Improve purchase order support
 - Fix action button colors
+- Improvements for stock item test result display
 - Added Norwegian translations
 - Fix serial number field when creating stock item
 

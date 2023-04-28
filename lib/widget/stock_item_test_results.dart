@@ -1,15 +1,17 @@
+import "package:flutter/material.dart";
+import "package:flutter_speed_dial/flutter_speed_dial.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+
+import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
+import "package:inventree/l10.dart";
+
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/inventree/model.dart";
-import "package:inventree/api.dart";
+
 import "package:inventree/widget/progress.dart";
-
-import "package:inventree/l10.dart";
-
-import "package:flutter/material.dart";
 import "package:inventree/widget/refreshable_state.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 
 class StockItemTestResultsWidget extends StatefulWidget {
@@ -31,15 +33,25 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
   String getAppBarTitle() => L10().testResults;
 
   @override
-  List<Widget> appBarActions(BuildContext context) {
-    return [
-      IconButton(
-          icon: FaIcon(FontAwesomeIcons.circlePlus),
-          onPressed: () {
-              addTestResult(context);
+  List<Widget> appBarActions(BuildContext context) => [];
+
+  @override
+  List<SpeedDialChild> actionButtons(BuildContext context) {
+    List<SpeedDialChild> actions = [];
+
+    if (InvenTreeStockItemTestResult().canCreate) {
+      actions.add(
+        SpeedDialChild(
+          child: FaIcon(FontAwesomeIcons.circlePlus),
+          label: L10().testResultAdd,
+          onTap: () {
+            addTestResult(context);
           }
-      ),
-    ];
+        )
+      );
+    }
+
+    return actions;
   }
 
   @override
@@ -153,6 +165,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
 
     for (var item in results) {
 
+      bool _hasResult = false;
       bool _required = false;
       String _test = "";
       bool _result = false;
@@ -167,34 +180,37 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
         _result = item.passFailStatus();
         _test = item.testName;
         _required = item.required;
-        _value = item.latestResult()?.value ?? "";
+        _value = item.latestResult()?.value ?? L10().noResults;
         _valueRequired = item.requiresValue;
         _attachmentRequired = item.requiresAttachment;
-        _notes = item.latestResult()?.notes ?? "";
+        _notes = item.latestResult()?.notes ?? item.description;
+        _hasResult = item.latestResult() != null;
       } else if (item is InvenTreeStockItemTestResult) {
         _result = item.result;
         _test = item.testName;
         _required = false;
         _value = item.value;
         _notes = item.notes;
+        _hasResult = true;
       }
 
-      if (_result == true) {
-        _icon = FaIcon(FontAwesomeIcons.circleCheck,
-          color: COLOR_SUCCESS,
-        );
+      if (!_hasResult) {
+        _icon = FaIcon(FontAwesomeIcons.circleQuestion, color: Colors.blue);
+      } else if (_result == true) {
+        _icon = FaIcon(FontAwesomeIcons.circleCheck, color: COLOR_SUCCESS);
       } else if (_result == false) {
-        _icon = FaIcon(FontAwesomeIcons.circleXmark,
-          color: COLOR_DANGER,
-        );
+        _icon = FaIcon(FontAwesomeIcons.circleXmark, color: COLOR_DANGER);
       }
 
       tiles.add(ListTile(
-        title: Text(_test, style: TextStyle(fontWeight: _required ? FontWeight.bold : FontWeight.normal)),
+        title: Text(_test, style: TextStyle(
+          fontWeight: _required ? FontWeight.bold : FontWeight.normal,
+          fontStyle: _hasResult ? FontStyle.normal : FontStyle.italic
+        )),
         subtitle: Text(_notes),
         trailing: Text(_value),
         leading: _icon,
-        onLongPress: () {
+        onTap: () {
           addTestResult(
               context,
               name: _test,
