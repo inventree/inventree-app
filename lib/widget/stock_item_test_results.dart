@@ -165,6 +165,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
 
     for (var item in results) {
 
+      bool _hasResult = false;
       bool _required = false;
       String _test = "";
       bool _result = false;
@@ -183,26 +184,29 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
         _valueRequired = item.requiresValue;
         _attachmentRequired = item.requiresAttachment;
         _notes = item.latestResult()?.notes ?? item.description;
+        _hasResult = item.latestResult() != null;
       } else if (item is InvenTreeStockItemTestResult) {
         _result = item.result;
         _test = item.testName;
         _required = false;
         _value = item.value;
         _notes = item.notes;
+        _hasResult = true;
       }
 
-      if (_result == true) {
-        _icon = FaIcon(FontAwesomeIcons.circleCheck,
-          color: COLOR_SUCCESS,
-        );
+      if (!_hasResult) {
+        _icon = FaIcon(FontAwesomeIcons.circleQuestion, color: Colors.blue);
+      } else if (_result == true) {
+        _icon = FaIcon(FontAwesomeIcons.circleCheck, color: COLOR_SUCCESS);
       } else if (_result == false) {
-        _icon = FaIcon(FontAwesomeIcons.circleXmark,
-          color: COLOR_DANGER,
-        );
+        _icon = FaIcon(FontAwesomeIcons.circleXmark, color: COLOR_DANGER);
       }
 
       tiles.add(ListTile(
-        title: Text(_test, style: TextStyle(fontWeight: _required ? FontWeight.bold : FontWeight.normal)),
+        title: Text(_test, style: TextStyle(
+          fontWeight: _required ? FontWeight.bold : FontWeight.normal,
+          fontStyle: _hasResult ? FontStyle.normal : FontStyle.italic
+        )),
         subtitle: Text(_notes),
         trailing: Text(_value),
         leading: _icon,
