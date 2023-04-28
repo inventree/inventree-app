@@ -18,6 +18,7 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
   bool partShowParameters = true;
   bool partShowBom = true;
   bool stockShowHistory = false;
+  bool stockShowTests = false;
 
   @override
   void initState() {
@@ -30,6 +31,7 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
     partShowParameters = await InvenTreeSettingsManager().getValue(INV_PART_SHOW_PARAMETERS, true) as bool;
     partShowBom = await InvenTreeSettingsManager().getValue(INV_PART_SHOW_BOM, true) as bool;
     stockShowHistory = await InvenTreeSettingsManager().getValue(INV_STOCK_SHOW_HISTORY, false) as bool;
+    stockShowTests = await InvenTreeSettingsManager().getValue(INV_STOCK_SHOW_TESTS, true) as bool;
 
     if (mounted) {
       setState(() {
@@ -86,6 +88,20 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
                 },
               ),
             ),
+            ListTile(
+              title: Text(L10().testResults),
+              subtitle: Text(L10().testResultsDetail),
+              leading:  FaIcon(FontAwesomeIcons.vial),
+              trailing: Switch(
+                value: stockShowTests,
+                onChanged: (bool value) {
+                  InvenTreeSettingsManager().setValue(INV_STOCK_SHOW_TESTS, value);
+                  setState(() {
+                    stockShowTests = value;
+                  });
+                },
+              ),
+            )
           ]
         )
       )

@@ -179,10 +179,10 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
         _result = item.passFailStatus();
         _test = item.testName;
         _required = item.required;
-        _value = item.latestResult()?.value ?? "";
+        _value = item.latestResult()?.value ?? L10().noResults;
         _valueRequired = item.requiresValue;
         _attachmentRequired = item.requiresAttachment;
-        _notes = item.latestResult()?.notes ?? "";
+        _notes = item.latestResult()?.notes ?? item.description;
       } else if (item is InvenTreeStockItemTestResult) {
         _result = item.result;
         _test = item.testName;

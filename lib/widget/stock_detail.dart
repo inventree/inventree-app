@@ -47,6 +47,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   String getAppBarTitle() => L10().stockItem;
 
   bool stockShowHistory = false;
+  bool stockShowTests = true;
 
   @override
   List<Widget> appBarActions(BuildContext context) {
@@ -214,6 +215,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     await api.StockStatus.load();
 
     stockShowHistory = await InvenTreeSettingsManager().getValue(INV_STOCK_SHOW_HISTORY, false) as bool;
+    stockShowTests = await InvenTreeSettingsManager().getValue(INV_STOCK_SHOW_TESTS, true) as bool;
 
     final bool result = widget.item.pk > 0 && await widget.item.reload();
 
@@ -226,15 +228,19 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     // Request part information
     part = await InvenTreePart().get(widget.item.partId) as InvenTreePart?;
 
-    // Request test results (async)
-    widget.item.getTestResults().then((value) {
+    stockShowTests &= part?.isTrackable ?? false;
 
-      if (mounted) {
-        setState(() {
-          // Update
-        });
-      }
-    });
+    // Request test results (async)
+    if (stockShowTests) {
+      widget.item.getTestResults().then((value) {
+
+        if (mounted) {
+          setState(() {
+            // Update
+          });
+        }
+      });
+    }
 
     // Request the number of attachments
     InvenTreeStockItemAttachment().count(
@@ -753,7 +759,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     }
 
-    if ((widget.item.testResultCount > 0) || (part?.isTrackable ?? false)) {
+    if (stockShowTests || (widget.item.testResultCount > 0)) {
       tiles.add(
           ListTile(
               title: Text(L10().testResults),
