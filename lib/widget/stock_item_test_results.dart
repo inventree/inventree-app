@@ -206,7 +206,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
         subtitle: Text(_notes),
         trailing: Text(_value),
         leading: _icon,
-        onLongPress: () {
+        onTap: () {
           addTestResult(
               context,
               name: _test,
