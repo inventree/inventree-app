@@ -1,15 +1,17 @@
+import "package:flutter/material.dart";
+import "package:flutter_speed_dial/flutter_speed_dial.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+
+import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
+import "package:inventree/l10.dart";
+
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/inventree/model.dart";
-import "package:inventree/api.dart";
+
 import "package:inventree/widget/progress.dart";
-
-import "package:inventree/l10.dart";
-
-import "package:flutter/material.dart";
 import "package:inventree/widget/refreshable_state.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 
 class StockItemTestResultsWidget extends StatefulWidget {
@@ -31,15 +33,25 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
   String getAppBarTitle() => L10().testResults;
 
   @override
-  List<Widget> appBarActions(BuildContext context) {
-    return [
-      IconButton(
-          icon: FaIcon(FontAwesomeIcons.circlePlus),
-          onPressed: () {
-              addTestResult(context);
+  List<Widget> appBarActions(BuildContext context) => [];
+
+  @override
+  List<SpeedDialChild> actionButtons(BuildContext context) {
+    List<SpeedDialChild> actions = [];
+
+    if (InvenTreeStockItemTestResult().canCreate) {
+      actions.add(
+        SpeedDialChild(
+          child: FaIcon(FontAwesomeIcons.circlePlus),
+          label: L10().testResultAdd,
+          onTap: () {
+            addTestResult(context);
           }
-      ),
-    ];
+        )
+      );
+    }
+
+    return actions;
   }
 
   @override
