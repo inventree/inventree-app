@@ -1,4 +1,4 @@
-### 0.11.6 - April 2023
+### 0.12.0 - April 2023
 ---
 
 - Add support for Project Codes
