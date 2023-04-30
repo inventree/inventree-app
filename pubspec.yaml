@@ -9,14 +9,14 @@ environment:
 dependencies:
   adaptive_theme: ^3.2.0                  # Theme management (e.g. dark mode)
   audioplayers: ^3.0.1                    # Play audio files
-  cached_network_image: ^3.2.0            # Download and cache remote images
+  cached_network_image: ^3.2.3            # Download and cache remote images
   camera: ^0.10.3                         # Camera
   cupertino_icons: ^1.0.3
   currency_formatter: ^2.0.0
-  datetime_picker_formfield: ^2.0.0       # Date / time picker
-  device_info_plus: ^8.0.0                # Information about the device
-  dropdown_search: ^5.0.5                 # Dropdown autocomplete form fields
-  file_picker: ^5.2.5                     # Select files from the device
+  datetime_picker_formfield: ^2.0.1       # Date / time picker
+  device_info_plus: ^8.2.2                # Information about the device
+  dropdown_search: ^5.0.6                 # Dropdown autocomplete form fields
+  file_picker: ^5.2.11                    # Select files from the device
   flutter:
     sdk: flutter
   flutter_cache_manager: ^3.3.0
@@ -27,9 +27,9 @@ dependencies:
   flutter_overlay_loader: ^2.0.0          # Overlay screen support
   flutter_speed_dial: ^6.2.0              # Speed dial / FAB implementation
   font_awesome_flutter: ^10.3.0           # FontAwesome icon set
-  http: ^0.13.4
-  image_picker: ^0.8.6+1                  # Select or take photos
-  infinite_scroll_pagination: ^3.1.0      # Let the server do all the work!
+  http: ^0.13.5
+  image_picker: ^0.8.7+4                  # Select or take photos
+  infinite_scroll_pagination: ^3.2.0      # Let the server do all the work!
   intl: ^0.17.0
   one_context: ^2.1.0                     # Dialogs without requiring context
   open_filex: ^4.3.2                      # Open local files
@@ -38,8 +38,8 @@ dependencies:
   path_provider: ^2.0.12                  # Local file storage
   qr_code_scanner: ^1.0.1                 # Barcode scanning
   sembast: ^3.4.0+6                       # NoSQL data storage
-  sentry_flutter: ^6.19.0                 # Error reporting
-  url_launcher: ^6.1.9                    # Open link in system browser
+  sentry_flutter: ^7.5.0                 # Error reporting
+  url_launcher: ^6.1.10                    # Open link in system browser
 
 dev_dependencies:
   flutter_launcher_icons: ^0.11.0
