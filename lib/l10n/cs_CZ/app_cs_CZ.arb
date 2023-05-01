@@ -821,6 +821,8 @@
   "@testResults": {
     "description": ""
   },
+  "testResultsDetail": "Zobrazit výsledky testu skladových položek",
+  "@testResultsDetail": {},
   "testResultAdd": "Přidat výsledek testu",
   "@testResultAdd": {},
   "testResultNone": "Žádné výsledky testu",
