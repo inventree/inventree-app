@@ -821,6 +821,8 @@
   "@testResults": {
     "description": ""
   },
+  "testResultsDetail": "Mostrar resultados do teste de item de estoque",
+  "@testResultsDetail": {},
   "testResultAdd": "Adicionar resultado do test",
   "@testResultAdd": {},
   "testResultNone": "Nenhum resultado do test",
