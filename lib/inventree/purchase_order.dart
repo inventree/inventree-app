@@ -1,3 +1,4 @@
+import "package:inventree/api.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/part.dart";
@@ -26,7 +27,7 @@ class InvenTreePurchaseOrder extends InvenTreeModel {
 
   @override
   Map<String, dynamic> formFields() {
-    return {
+    var fields = {
       "reference": {},
       "supplier": {
         "filters": {
@@ -45,6 +46,13 @@ class InvenTreePurchaseOrder extends InvenTreeModel {
         }
       },
     };
+
+    if (!InvenTreeAPI().supportsProjectCodes) {
+      fields.remove("project_code");
+    }
+
+    return fields;
+
   }
 
   @override
