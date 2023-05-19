@@ -2,11 +2,8 @@
 
 name: Android
 
-on:
-  push:
-    branches:
-      - master
-  
+on: workflow_dispatch
+
 jobs:
 
   build:
@@ -38,4 +35,11 @@ jobs:
       run: |
         flutter pub get
         cp lib/dummy_dsn.dart lib/dsn.dart
-        flutter build apk --debug
+        flutter build apk --release
+    - name: Upload the Release APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: inventree-release-apk
+        path: |
+          build/app/outputs/apk/release/*.apk
+          build/app/outputs/flutter-apk/*.apk
