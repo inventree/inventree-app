@@ -1,0 +1,57 @@
+{
+  "@@locale": "fi",
+  "appTitle": "InvenTree",
+  "@appTitle": {
+    "description": "InvenTree application title string"
+  },
+  "ok": "OK",
+  "@ok": {
+    "description": "OK"
+  },
+  "accountDetails": "Tilitiedot",
+  "@accountDetails": {},
+  "address": "Osoite",
+  "@address": {},
+  "attachImage": "Liitä kuva",
+  "@attachImage": {
+    "description": "Attach an image"
+  },
+  "category": "Kategoria",
+  "@category": {},
+  "categoryCreate": "Uusi kategoria",
+  "@categoryCreate": {},
+  "configureServer": "Määritä palvelimen asetukset",
+  "@configureServer": {},
+  "connectionRefused": "Yhteys kielletty",
+  "@connectionRefused": {},
+  "damaged": "Vahingoittunut",
+  "@damaged": {},
+  "darkMode": "Tumma tila",
+  "@darkMode": {},
+  "delete": "Poista",
+  "@delete": {},
+  "deletePart": "Poista osa",
+  "@deletePart": {},
+  "deletePartDetail": "Poista tämä osa tietokannasta",
+  "@deletePartDetail": {},
+  "edit": "Muokkaa",
+  "@edit": {
+    "description": "edit"
+  },
+  "editCategory": "Muokkaa kategoriaa",
+  "@editCategory": {},
+  "editLocation": "Muokkaa sijaintia",
+  "@editLocation": {},
+  "editNotes": "Muokkaa merkintää",
+  "@editNotes": {},
+  "editPart": "Muokkaa osaa",
+  "@editPart": {
+    "description": "edit part"
+  },
+  "error": "Virhe",
+  "@error": {
+    "description": "Error"
+  },
+  "@homeShowSubscsribedDescription": {},
+  "@homeShowSupplierDescription": {}
+}
