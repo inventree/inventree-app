@@ -8,7 +8,7 @@
 import "package:flutter_test/flutter_test.dart";
 
 import "package:inventree/api.dart";
-import "package:inventree/barcode.dart";
+import "package:inventree/barcode/barcode.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/user_profile.dart";
 
