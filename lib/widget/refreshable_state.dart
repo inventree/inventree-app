@@ -3,7 +3,7 @@ import "package:flutter_speed_dial/flutter_speed_dial.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
-import "package:inventree/barcode.dart";
+import "package:inventree/barcode/barcode.dart";
 
 import "package:inventree/widget/back.dart";
 import "package:inventree/widget/drawer.dart";
