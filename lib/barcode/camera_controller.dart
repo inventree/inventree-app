@@ -8,7 +8,10 @@ import "package:inventree/l10.dart";
 import "package:inventree/barcode/handler.dart";
 import "package:inventree/barcode/controller.dart";
 
-
+/*
+ * Barcode controller which uses the device's camera to scan barcodes.
+ * Under the hood it uses the qr_code_scanner package.
+ */
 class CameraBarcodeController extends InvenTreeBarcodeController {
 
   const CameraBarcodeController(BarcodeHandler handler, {Key? key}) : super(handler, key: key);
