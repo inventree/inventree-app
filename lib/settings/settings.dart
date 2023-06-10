@@ -4,8 +4,10 @@ import "package:package_info_plus/package_info_plus.dart";
 
 import "package:inventree/app_colors.dart";
 import "package:inventree/l10.dart";
+
 import "package:inventree/settings/about.dart";
 import "package:inventree/settings/app_settings.dart";
+import "package:inventree/settings/barcode_settings.dart";
 import "package:inventree/settings/home_settings.dart";
 import "package:inventree/settings/login.dart";
 import "package:inventree/settings/part_settings.dart";
@@ -66,6 +68,14 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
                 leading: FaIcon(FontAwesomeIcons.house, color: COLOR_ACTION),
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreenSettingsWidget()));
+                }
+              ),
+              ListTile(
+                title: Text(L10().barcodes),
+                subtitle: Text(L10().barcodeSettings),
+                leading: FaIcon(FontAwesomeIcons.barcode, color: COLOR_ACTION),
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeBarcodeSettingsWidget()));
                 }
               ),
               ListTile(

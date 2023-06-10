@@ -79,6 +79,12 @@
   "availableStock": "Available Stock",
   "@availableStock": {},
 
+  "barcodes": "Barcodes",
+  "@barcodes": {},
+
+  "barcodeSettings": "Barcode Settings",
+  "@barcodeSettings": {},
+
   "barcodeAssign": "Assign Barcode",
   "@barcodeAssign": {},
 
@@ -105,6 +111,12 @@
 
   "barcodeScanAssign": "Scan to assign barcode",
   "@barcodeScanAssign": {},
+
+  "barcodeScanDelay": "Barcode Scan Delay",
+  "@barcodeScanDelay": {},
+
+  "barcodeScanDelayDetail": "Delay between barcode scans",
+  "@barcodeScanDelayDetail": {},
 
   "barcodeScanGeneral":  "Scan an InvenTree barcode",
   "@barcodeScanGeneral": {},

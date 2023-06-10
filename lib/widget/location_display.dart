@@ -4,7 +4,7 @@ import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/app_colors.dart";
-import "package:inventree/barcode.dart";
+import "package:inventree/barcode/barcode.dart";
 import "package:inventree/l10.dart";
 
 import "package:inventree/inventree/stock.dart";
@@ -94,7 +94,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) =>
-                          InvenTreeQRView(
+                          barcodeController(
                               StockLocationScanInItemsHandler(location!)))
                   ).then((value) {
                     refresh(context);
@@ -114,8 +114,8 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) =>
-                          InvenTreeQRView(
-                              ScanParentLocationHandler(location!)))
+                        barcodeController(ScanParentLocationHandler(location!))
+                      )
                   ).then((value) {
                     refresh(context);
                   });

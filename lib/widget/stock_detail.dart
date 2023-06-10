@@ -4,7 +4,7 @@ import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/app_colors.dart";
-import "package:inventree/barcode.dart";
+import "package:inventree/barcode/barcode.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/api.dart";
@@ -168,8 +168,9 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) =>
-                        InvenTreeQRView(
-                            StockItemScanIntoLocationHandler(widget.item)))
+                      barcodeController(
+                        StockItemScanIntoLocationHandler(widget.item))
+                      )
                 ).then((ctx) {
                   refresh(context);
                 });

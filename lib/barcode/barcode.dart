@@ -1,155 +1,42 @@
-import "dart:io";
 import "package:flutter/material.dart";
+
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
-import "package:inventree/inventree/purchase_order.dart";
-import "package:inventree/widget/purchase_order_detail.dart";
 import "package:one_context/one_context.dart";
-import "package:qr_code_scanner/qr_code_scanner.dart";
+
 
 import "package:inventree/api.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/l10.dart";
-import "package:inventree/preferences.dart";
+
+import "package:inventree/barcode/camera_controller.dart";
+import "package:inventree/barcode/controller.dart";
+import "package:inventree/barcode/handler.dart";
+import "package:inventree/barcode/tones.dart";
 
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/part.dart";
-import "package:inventree/inventree/sentry.dart";
+import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/inventree/stock.dart";
 
-import "package:inventree/widget/refreshable_state.dart";
-import "package:inventree/widget/supplier_part_detail.dart";
 import "package:inventree/widget/dialogs.dart";
-import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/location_display.dart";
 import "package:inventree/widget/part_detail.dart";
+import "package:inventree/widget/purchase_order_detail.dart";
+import "package:inventree/widget/refreshable_state.dart";
+import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/stock_detail.dart";
+import "package:inventree/widget/supplier_part_detail.dart";
 
 
 /*
- * Play an audible 'success' alert to the user.
+ * Return a new BarcodeController instance
  */
-Future<void> barcodeSuccessTone() async {
-
-  final bool en = await InvenTreeSettingsManager().getValue(INV_SOUNDS_BARCODE, true) as bool;
-
-  if (en) {
-    playAudioFile("sounds/barcode_scan.mp3");
-  }
+InvenTreeBarcodeController barcodeController(BarcodeHandler handler) {
+  // TODO: Make this configurable
+  return CameraBarcodeController(handler);
 }
 
-Future <void> barcodeFailureTone() async {
-
-  final bool en = await InvenTreeSettingsManager().getValue(INV_SOUNDS_BARCODE, true) as bool;
-
-  if (en) {
-    playAudioFile("sounds/barcode_error.mp3");
-  }
-}
-
-
-/* Generic class which "handles" a barcode, by communicating with the InvenTree server,
- * and handling match / unknown / error cases.
- *
- * Override functionality of this class to perform custom actions,
- * based on the response returned from the InvenTree server
- */
-class BarcodeHandler {
-
-  BarcodeHandler();
-
-  String getOverlayText(BuildContext context) => "Barcode Overlay";
-
-    Future<void> onBarcodeMatched(Map<String, dynamic> data) async {
-      // Called when the server "matches" a barcode
-      // Override this function
-    }
-
-    Future<void> onBarcodeUnknown(Map<String, dynamic> data) async {
-      // Called when the server does not know about a barcode
-      // Override this function
-
-      barcodeFailureTone();
-
-      showSnackIcon(
-        L10().barcodeNoMatch,
-        success: false,
-        icon: Icons.qr_code,
-      );
-    }
-
-  // Called when the server returns an unhandled response
-  Future<void> onBarcodeUnhandled(Map<String, dynamic> data) async {
-      barcodeFailureTone();
-      showServerError("barcode/", L10().responseUnknown, data.toString());
-    }
-
-    /*
-     * Base function to capture and process barcode data.
-     *
-     * Returns true only if the barcode scanner should remain open
-     */
-    Future<void> processBarcode(QRViewController? _controller, String barcode, {String url = "barcode/"}) async {
-
-      debug("Scanned barcode data: '${barcode}'");
-
-      barcode = barcode.trim();
-
-      // Empty barcode is invalid
-      if (barcode.isEmpty) {
-
-        barcodeFailureTone();
-
-        showSnackIcon(
-          L10().barcodeError,
-          icon: FontAwesomeIcons.circleExclamation,
-          success: false
-        );
-
-        return;
-      }
-
-      var response = await InvenTreeAPI().post(
-          url,
-          body: {
-            "barcode": barcode,
-          },
-          expectedStatusCode: null,  // Do not show an error on "unexpected code"
-      );
-
-      debug("Barcode scan response" + response.data.toString());
-
-      Map<String, dynamic> data = response.asMap();
-
-      // Handle strange response from the server
-      if (!response.isValid() || !response.isMap()) {
-        onBarcodeUnknown({});
-
-        showSnackIcon(L10().serverError, success: false);
-
-        // We want to know about this one!
-        await sentryReportMessage(
-            "BarcodeHandler.processBarcode returned unexpected value",
-            context: {
-              "data": response.data?.toString() ?? "null",
-              "barcode": barcode,
-              "url": url,
-              "statusCode": response.statusCode.toString(),
-              "valid": response.isValid().toString(),
-              "error": response.error,
-              "errorDetail": response.errorDetail,
-              "className": "${this}",
-            }
-        );
-      } else if (data.containsKey("success")) {
-        await onBarcodeMatched(data);
-      } else if ((response.statusCode >= 400) || data.containsKey("error")) {
-        await onBarcodeUnknown(data);
-      } else {
-        await onBarcodeUnhandled(data);
-      }
-    }
-}
 
 /*
  * Class for general barcode scanning.
@@ -638,168 +525,8 @@ class UniqueBarcodeHandler extends BarcodeHandler {
 }
 
 
-class InvenTreeQRView extends StatefulWidget {
-
-  const InvenTreeQRView(this._handler, {Key? key}) : super(key: key);
-
-  final BarcodeHandler _handler;
-
-  @override
-  State<StatefulWidget> createState() => _QRViewState();
-}
-
-
-class _QRViewState extends State<InvenTreeQRView> {
-
-  _QRViewState() : super();
-
-  final GlobalKey qrKey = GlobalKey(debugLabel: "QR");
-
-  QRViewController? _controller;
-
-  bool flash_status = false;
-
-  bool currently_processing = false;
-
-  Future<void> updateFlashStatus() async {
-    final bool? status = await _controller?.getFlashStatus();
-
-    flash_status = status != null && status;
-
-    // Reload
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
-  // In order to get hot reload to work we need to pause the camera if the platform
-  // is android, or resume the camera if the platform is iOS.
-  @override
-  void reassemble() {
-    super.reassemble();
-
-    if (mounted) {
-      if (Platform.isAndroid) {
-        _controller!.pauseCamera();
-      }
-
-      _controller!.resumeCamera();
-    }
-  }
-
-  /* Callback function when the Barcode scanner view is initially created */
-  void _onViewCreated(BuildContext context, QRViewController controller) {
-    _controller = controller;
-
-    controller.scannedDataStream.listen((barcode) {
-      handleBarcode(barcode.code);
-    });
-  }
-
-  /* Handle scanned data */
-  Future<void> handleBarcode(String? data) async {
-
-    // Empty or missing data, or we have navigated away
-    if (!mounted || data == null || data.isEmpty) {
-      return;
-    }
-
-    // Currently processing a barcode - return!
-    if (currently_processing) {
-      return;
-    }
-
-    setState(() {
-      currently_processing = true;
-    });
-
-    // Pause camera functionality until we are done processing
-    _controller?.pauseCamera();
-
-    // processBarcode returns true if the scanner window is to remain open
-    widget._handler.processBarcode(_controller, data).then((value) {
-      // Re-start the process after some delay
-      Future.delayed(Duration(milliseconds: 500)).then((value) {
-        if (mounted) {
-          _controller?.resumeCamera();
-          currently_processing = false;
-        }
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    _controller?.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(L10().scanBarcode),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.flip_camera_android),
-              onPressed: () {
-                _controller?.flipCamera();
-              }
-            ),
-            IconButton(
-              icon: flash_status ? Icon(Icons.flash_off) : Icon(Icons.flash_on),
-              onPressed: () {
-                _controller?.toggleFlash();
-                updateFlashStatus();
-              },
-            )
-          ],
-        ),
-        body: Stack(
-          children: <Widget>[
-            Column(
-              children: [
-                Expanded(
-                  child: QRView(
-                    key: qrKey,
-                    onQRViewCreated: (QRViewController controller) {
-                      _onViewCreated(context, controller);
-                    },
-                    overlay: QrScannerOverlayShape(
-                      borderColor: Colors.red,
-                      borderRadius: 10,
-                      borderLength: 30,
-                      borderWidth: 10,
-                      cutOutSize: 300,
-                    ),
-                  )
-                )
-              ]
-            ),
-            Center(
-                child: Column(
-                    children: [
-                      Spacer(),
-                      Padding(
-                        child: Text(widget._handler.getOverlayText(context),
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                        ),
-                        padding: EdgeInsets.all(20),
-                      ),
-                    ]
-                )
-            )
-          ],
-        )
-    );
-  }
-}
-
 Future<void> scanQrCode(BuildContext context) async {
-  Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeQRView(BarcodeScanHandler())));
+  Navigator.push(context, MaterialPageRoute(builder: (context) => barcodeController(BarcodeScanHandler())));
 
   return;
 }
@@ -829,7 +556,7 @@ SpeedDialChild customBarcodeAction(BuildContext context, RefreshableState state,
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => InvenTreeQRView(handler)
+                builder: (context) => barcodeController(handler)
             )
         );
       }
