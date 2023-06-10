@@ -1,8 +1,11 @@
 import "package:flutter/material.dart";
+import "package:one_context/one_context.dart";
 
 import "package:inventree/preferences.dart";
 
 import "package:inventree/barcode/handler.dart";
+
+import "package:inventree/widget/progress.dart";
 
 /*
  * Generic class which provides a barcode scanner interface.
@@ -55,17 +58,32 @@ class InvenTreeBarcodeControllerState extends State<InvenTreeBarcodeController> 
       processingBarcode = true;
     });
 
+    BuildContext? context = OneContext().context;
+
+    showLoadingOverlay(context!);
     await pauseScan();
+
     await widget.handler.processBarcode(data);
+
+    // processBarcode may have popped the context
+    if (!mounted) {
+      hideLoadingOverlay();
+      return;
+    }
 
     int delay = await InvenTreeSettingsManager().getValue(INV_BARCODE_SCAN_DELAY, 500) as int;
 
     Future.delayed(Duration(milliseconds: delay), () {
-      resumeScan().then((_) {
-        setState(() {
-          processingBarcode = false;
+      hideLoadingOverlay();
+      if (mounted) {
+        resumeScan().then((_) {
+          if (mounted) {
+            setState(() {
+              processingBarcode = false;
+            });
+          }
         });
-      });
+      }
     });
   }
 
