@@ -1,5 +1,7 @@
 import "package:flutter/material.dart";
 
+import "package:inventree/preferences.dart";
+
 import "package:inventree/barcode/handler.dart";
 
 /*
@@ -56,8 +58,9 @@ class InvenTreeBarcodeControllerState extends State<InvenTreeBarcodeController> 
     await pauseScan();
     await widget.handler.processBarcode(data);
 
-    // TODO: Make this delay configurable
-    Future.delayed(Duration(milliseconds: 500), () {
+    int delay = await InvenTreeSettingsManager().getValue(INV_BARCODE_SCAN_DELAY, 500) as int;
+
+    Future.delayed(Duration(milliseconds: delay), () {
       resumeScan().then((_) {
         setState(() {
           processingBarcode = false;
