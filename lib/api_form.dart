@@ -10,6 +10,7 @@ import "package:flutter/material.dart";
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/barcode/barcode.dart";
+import "package:inventree/barcode/tones.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/l10.dart";
 
@@ -349,7 +350,7 @@ class APIFormField {
 
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => InvenTreeQRView(handler)
+              MaterialPageRoute(builder: (context) => barcodeController(handler)
               )
             );
           },

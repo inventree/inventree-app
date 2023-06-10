@@ -79,6 +79,12 @@
   "availableStock": "Available Stock",
   "@availableStock": {},
 
+  "barcodes": "Barcodes",
+  "@barcodes": {},
+
+  "barcodeSettings": "Barcode Settings",
+  "@barcodeSettings": {},
+
   "barcodeAssign": "Assign Barcode",
   "@barcodeAssign": {},
 

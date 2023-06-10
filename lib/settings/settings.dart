@@ -69,6 +69,14 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
                 }
               ),
               ListTile(
+                title: Text(L10().barcodes),
+                subtitle: Text(L10().barcodeSettings),
+                leading: FaIcon(FontAwesomeIcons.barcode, color: COLOR_ACTION),
+                onTap: () {
+
+                }
+              ),
+              ListTile(
                 title: Text(L10().part),
                 subtitle: Text(L10().partSettings),
                 leading: FaIcon(FontAwesomeIcons.shapes, color: COLOR_ACTION),

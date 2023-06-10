@@ -29,6 +29,9 @@ const String INV_STOCK_SHOW_TESTS = "stockShowTests";
 const String INV_REPORT_ERRORS = "reportErrors";
 const String INV_STRICT_HTTPS = "strictHttps";
 
+// Barcode settings
+const String INV_BARCODE_SCAN_DELAY = "barcodeScanDelay";
+
 /*
  * Class for storing InvenTree preferences in a NoSql DB
  */

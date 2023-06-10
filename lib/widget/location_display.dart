@@ -94,7 +94,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) =>
-                          InvenTreeQRView(
+                          barcodeController(
                               StockLocationScanInItemsHandler(location!)))
                   ).then((value) {
                     refresh(context);
@@ -114,8 +114,8 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) =>
-                          InvenTreeQRView(
-                              ScanParentLocationHandler(location!)))
+                        barcodeController(ScanParentLocationHandler(location!))
+                      )
                   ).then((value) {
                     refresh(context);
                   });

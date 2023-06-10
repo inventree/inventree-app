@@ -168,8 +168,9 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) =>
-                        InvenTreeQRView(
-                            StockItemScanIntoLocationHandler(widget.item)))
+                      barcodeController(
+                        StockItemScanIntoLocationHandler(widget.item))
+                      )
                 ).then((ctx) {
                   refresh(context);
                 });
