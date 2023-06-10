@@ -59,12 +59,20 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
 
   @override
   Future<void> pauseScan() async {
-    await _controller?.pauseCamera();
+    try {
+      await _controller?.pauseCamera();
+    } on CameraException {
+      // do nothing
+    }
   }
 
   @override
   Future<void> resumeScan() async {
-    await _controller?.resumeCamera();
+    try {
+      await _controller?.resumeCamera();
+    } on CameraException {
+      // do nothing
+    }
   }
 
   // Toggle the status of the camera flash
