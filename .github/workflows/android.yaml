@@ -20,11 +20,6 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '11'
-    - name: Setup Dart
-      uses: dart-lang/setup-dart@v1
-      with: 
-        sdk: 2.19.5
-        channel: 'stable'
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
@@ -41,6 +36,7 @@ jobs:
         python3 collect_translations.py
     - name: Build for Android
       run: |
+        flutter upgrade
         flutter pub get
         cp lib/dummy_dsn.dart lib/dsn.dart
         flutter build apk --debug
