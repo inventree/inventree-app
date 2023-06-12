@@ -25,13 +25,14 @@ jobs:
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.7.3'
+        flutter-version: '3.10.43'
     - name: Collect Translation Files
       run: |
         cd lib/l10n
         python3 collect_translations.py
     - name: Build for iOS
       run: |
+        flutter upgrade
         flutter pub get
         cd ios
         pod repo update
