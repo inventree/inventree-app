@@ -6,8 +6,6 @@ analyzer:
     - lib/generated/**
   language:
     strict-raw-types: true
-  strong-mode:
-    implicit-casts: false
 
 linter:
   rules:
