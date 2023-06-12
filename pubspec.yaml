@@ -7,12 +7,12 @@ environment:
   sdk: ">=2.19.5 <3.0.0"
 
 dependencies:
-  adaptive_theme: ^3.2.0                  # Theme management (e.g. dark mode)
-  audioplayers: ^3.0.1                    # Play audio files
+  adaptive_theme: ^3.3.0                  # Theme management (e.g. dark mode)
+  audioplayers: ^4.1.0                    # Play audio files
   cached_network_image: ^3.2.3            # Download and cache remote images
   camera: ^0.10.3                         # Camera
   cupertino_icons: ^1.0.3
-  currency_formatter: ^2.0.0
+  currency_formatter: ^2.0.1
   datetime_picker_formfield: ^2.0.1       # Date / time picker
   device_info_plus: ^8.2.2                # Information about the device
   dropdown_search: ^5.0.6                 # Dropdown autocomplete form fields
@@ -20,7 +20,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_cache_manager: ^3.3.0
-  flutter_localizations:
+  flutter_localizations: 
     sdk: flutter
   flutter_localized_locales: ^2.0.4
   flutter_markdown: ^0.6.13+1             # Rendering markdown
@@ -30,16 +30,16 @@ dependencies:
   http: ^0.13.5
   image_picker: ^0.8.7+4                  # Select or take photos
   infinite_scroll_pagination: ^3.2.0      # Let the server do all the work!
-  intl: ^0.18.1
+  intl: ^0.18.0
   one_context: ^2.1.0                     # Dialogs without requiring context
   open_filex: ^4.3.2                      # Open local files
   package_info_plus: ^3.0.2               # App information introspection
   path: ^1.8.2
   path_provider: ^2.0.12                  # Local file storage
   qr_code_scanner: ^1.0.1                 # Barcode scanning
-  sembast: ^3.4.0+6                       # NoSQL data storage
-  sentry_flutter: ^7.5.0                 # Error reporting
-  url_launcher: ^6.1.10                    # Open link in system browser
+  sembast: ^3.4.6+1                       # NoSQL data storage
+  sentry_flutter: ^7.7.0                  # Error reporting
+  url_launcher: ^6.1.10                   # Open link in system browser
 
 dev_dependencies:
   flutter_launcher_icons: ^0.11.0
