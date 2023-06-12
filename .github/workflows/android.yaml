@@ -15,8 +15,6 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-      with:
-        submodules: recursive
     - name: Setup Java
       uses: actions/setup-java@v3
       with:
@@ -25,9 +23,11 @@ jobs:
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.7.3'
+        flutter-version: '3.10.4'
+        channel: 'stable'
+    - run: flutter --version
     - name: Setup Gradle
-      uses: gradle/gradle-build-action@v2
+      uses: gradle/gradle-build-action@v2.4.2
       with:
         gradle-version: 7.6
     - name: Collect Translation Files
@@ -36,6 +36,7 @@ jobs:
         python3 collect_translations.py
     - name: Build for Android
       run: |
+        flutter upgrade
         flutter pub get
         cp lib/dummy_dsn.dart lib/dsn.dart
         flutter build apk --debug

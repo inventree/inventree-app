@@ -538,13 +538,7 @@ class APIFormField {
         final APIResponse response = await InvenTreeAPI().get(api_url, params: _filters);
 
         if (response.isValid()) {
-          List<dynamic> results = [];
-
-          for (var result in response.data["results"] ?? []) {
-            results.add(result);
-          }
-
-          return results;
+          return response.resultsList();
         } else {
           return [];
         }
@@ -1334,10 +1328,10 @@ class _APIFormWidgetState extends State<APIFormWidget> {
           // Ensure the response is a valid JSON structure
           Map<String, dynamic> json = {};
 
-          if (response.data != null && response.data is Map) {
-            for (dynamic key in response.data.keys) {
-              json[key.toString()] = response.data[key];
-            }
+          var data = response.asMap();
+
+          for (String key in data.keys) {
+            json[key.toString()] = data[key];
           }
 
           successFunc(json);

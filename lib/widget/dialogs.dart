@@ -79,7 +79,8 @@ Future<void> showErrorDialog(String title, {String description = "", APIResponse
     switch (response.statusCode) {
       case 400:  // Bad request (typically bad input)
         if (response.data is Map<String, dynamic>) {
-          for (String field in response.data.keys) {
+
+          for (String field in response.asMap().keys) {
 
             dynamic error = response.data[field];
 
