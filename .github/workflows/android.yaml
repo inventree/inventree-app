@@ -39,4 +39,4 @@ jobs:
         flutter upgrade
         flutter pub get
         cp lib/dummy_dsn.dart lib/dsn.dart
-        flutter build apk --release --no-tree-shake-icons
+        flutter build apk --debug
