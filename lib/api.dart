@@ -80,6 +80,26 @@ class APIResponse {
       return [];
     }
   }
+
+  /*
+   * Helper function to interpret response, and return a list.
+   * Handles case where the response is paginated, or a complete set of results
+   */
+  List<dynamic> resultsList() {
+
+    if (isList()) {
+      return asList();
+    } else if (isMap()) {
+      var response = asMap();
+      if (response.containsKey("results")) {
+        return response["results"] as List<dynamic>;
+      } else {
+        return [];
+      }
+    } else {
+      return [];
+    }
+  }
 }
 
 

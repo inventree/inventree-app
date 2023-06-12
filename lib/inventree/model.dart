@@ -726,8 +726,10 @@ class InvenTreeModel {
 
        page.results = [];
 
-       for (var result in response.data["results"]) {
-         page.addResult(createFromJson(result as Map<String, dynamic>));
+       List<Map<String, dynamic>> pageResults = dataMap["results"] as List<Map<String, dynamic>>;
+
+       for (var result in pageResults) {
+         page.addResult(createFromJson(result));
        }
 
        return page;

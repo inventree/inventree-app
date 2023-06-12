@@ -280,7 +280,8 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         },
     ).then((APIResponse response) {
       if (response.isValid() && response.statusCode == 200) {
-        for (var label in response.data) {
+
+        for (var label in response.resultsList()) {
           if (label is Map<String, dynamic>) {
             labels.add(label);
           }

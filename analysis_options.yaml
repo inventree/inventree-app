@@ -19,6 +19,8 @@ linter:
 
     prefer_double_quotes: true
 
+    unreachable_from_main: false
+
     prefer_final_locals: false
 
     prefer_const_constructors: false
