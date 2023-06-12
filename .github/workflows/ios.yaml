@@ -25,7 +25,8 @@ jobs:
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.10.43'
+        flutter-version: '3.10.4'
+        channel: 'stable'
     - name: Collect Translation Files
       run: |
         cd lib/l10n
