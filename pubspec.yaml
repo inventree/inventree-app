@@ -4,7 +4,7 @@ description: InvenTree stock management
 version: 0.12.1+67
 
 environment:
-  sdk: ">=2.16.0 <3.0.0"
+  sdk: ">=2.19.5 <3.0.0"
 
 dependencies:
   adaptive_theme: ^3.2.0                  # Theme management (e.g. dark mode)
@@ -30,7 +30,7 @@ dependencies:
   http: ^0.13.5
   image_picker: ^0.8.7+4                  # Select or take photos
   infinite_scroll_pagination: ^3.2.0      # Let the server do all the work!
-  intl: ^0.17.0
+  intl: ^0.18.1
   one_context: ^2.1.0                     # Dialogs without requiring context
   open_filex: ^4.3.2                      # Open local files
   package_info_plus: ^3.0.2               # App information introspection
