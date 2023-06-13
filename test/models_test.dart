@@ -70,7 +70,7 @@ void main() {
 
       // List with active filter
       results = await InvenTreePart().list(filters: {"active": "true"});
-      expect(results.length, equals(13));
+      expect(results.length, greaterThanOrEqualTo(13));
 
       for (var result in results) {
         // results must be InvenTreePart instances

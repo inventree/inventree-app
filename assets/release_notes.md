@@ -1,4 +1,4 @@
-### -
+### 0.12.2 - June 2023
 ---
 
 - Adds options for configuring screen orientation
