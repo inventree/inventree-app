@@ -39,8 +39,10 @@ mixin BaseWidgetProperties {
   Widget getBody(BuildContext context) {
 
     // Default body calls getTiles()
-    return Column(
-      children: getTiles(context)
+    return SingleChildScrollView(
+      child: Column(
+        children: getTiles(context)
+      )
     );
   }
 
