@@ -3,6 +3,8 @@ import "package:flutter/material.dart";
 import "package:adaptive_theme/adaptive_theme.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:flutter_localized_locales/flutter_localized_locales.dart";
+import "package:inventree/app_colors.dart";
+import "package:inventree/widget/dialogs.dart";
 import "package:one_context/one_context.dart";
 
 import "package:inventree/api_form.dart";
@@ -34,6 +36,8 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
 
   bool darkMode = false;
 
+  int screenOrientation = SCREEN_ORIENTATION_SYSTEM;
+
   Locale? locale;
 
   @override
@@ -51,6 +55,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
     serverSounds = await InvenTreeSettingsManager().getValue(INV_SOUNDS_SERVER, true) as bool;
     reportErrors = await InvenTreeSettingsManager().getValue(INV_REPORT_ERRORS, true) as bool;
     strictHttps = await InvenTreeSettingsManager().getValue(INV_STRICT_HTTPS, false) as bool;
+    screenOrientation = await InvenTreeSettingsManager().getValue(INV_SCREEN_ORIENTATION, SCREEN_ORIENTATION_SYSTEM) as int;
 
     darkMode = AdaptiveTheme.of(context).mode.isDark;
 
@@ -116,8 +121,8 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
         InvenTreeApp.of(context)?.setLocale(locale);
       }
     );
-
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -126,6 +131,21 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
 
     if (locale != null) {
       languageName = LocaleNames.of(context)!.nameOf(locale.toString()) ?? L10().languageDefault;
+    }
+
+    IconData orientationIcon = Icons.screen_rotation;
+
+    switch (screenOrientation) {
+      case SCREEN_ORIENTATION_PORTRAIT:
+        orientationIcon = Icons.screen_lock_portrait;
+        break;
+      case SCREEN_ORIENTATION_LANDSCAPE:
+        orientationIcon = Icons.screen_lock_landscape;
+        break;
+      case SCREEN_ORIENTATION_SYSTEM:
+      default:
+        orientationIcon = Icons.screen_rotation;
+        break;
     }
 
     return Scaffold(
@@ -138,42 +158,6 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
           children: [
             /* Sound Settings */
             Divider(height: 3),
-            ListTile(
-              title: Text(
-                L10().sounds,
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              leading: FaIcon(FontAwesomeIcons.volumeHigh),
-            ),
-            ListTile(
-              title: Text(L10().serverError),
-              subtitle: Text(L10().soundOnServerError),
-              leading: FaIcon(FontAwesomeIcons.server),
-              trailing: Switch(
-                value: serverSounds,
-                onChanged: (bool value) {
-                  InvenTreeSettingsManager().setValue(INV_SOUNDS_SERVER, value);
-                  setState(() {
-                    serverSounds = value;
-                  });
-                },
-              ),
-            ),
-            ListTile(
-              title: Text(L10().barcodeTones),
-              subtitle: Text(L10().soundOnBarcodeAction),
-              leading: Icon(Icons.qr_code),
-              trailing: Switch(
-                value: barcodeSounds,
-                onChanged: (bool value) {
-                  InvenTreeSettingsManager().setValue(INV_SOUNDS_BARCODE, value);
-                  setState(() {
-                    barcodeSounds = value;
-                  });
-                },
-              ),
-            ),
-            Divider(height: 1),
             ListTile(
               title: Text(
                 L10().appSettings,
@@ -198,6 +182,41 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
                   });
                 }
               )
+            ),
+            GestureDetector(
+              child: ListTile(
+                title: Text(L10().orientation),
+                subtitle: Text(L10().orientationDetail),
+                leading: Icon(Icons.screen_rotation_alt),
+                trailing: Icon(orientationIcon),
+              ),
+              onTap: () async {
+                choiceDialog(
+                  L10().orientation,
+                  [
+                    ListTile(
+                      leading: Icon(Icons.screen_rotation, color: screenOrientation == SCREEN_ORIENTATION_SYSTEM ? COLOR_ACTION : null),
+                      title: Text(L10().orientationSystem),
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.screen_lock_portrait, color: screenOrientation == SCREEN_ORIENTATION_PORTRAIT ? COLOR_ACTION : null),
+                      title: Text(L10().orientationPortrait),
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.screen_lock_landscape, color: screenOrientation == SCREEN_ORIENTATION_LANDSCAPE ? COLOR_ACTION : null),
+                      title: Text(L10().orientationLandscape),
+                    )
+                  ],
+                  onSelected: (idx) async {
+                    screenOrientation = idx as int;
+
+                    InvenTreeSettingsManager().setValue(INV_SCREEN_ORIENTATION, screenOrientation);
+
+                    setState(() {
+                    });
+                  }
+                );
+              },
             ),
             ListTile(
               title: Text(L10().strictHttps),
@@ -235,6 +254,43 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
                 },
               ),
             ),
+                        ListTile(
+              title: Text(
+                L10().sounds,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              leading: FaIcon(FontAwesomeIcons.volumeHigh),
+            ),
+            Divider(),
+            ListTile(
+              title: Text(L10().serverError),
+              subtitle: Text(L10().soundOnServerError),
+              leading: FaIcon(FontAwesomeIcons.server),
+              trailing: Switch(
+                value: serverSounds,
+                onChanged: (bool value) {
+                  InvenTreeSettingsManager().setValue(INV_SOUNDS_SERVER, value);
+                  setState(() {
+                    serverSounds = value;
+                  });
+                },
+              ),
+            ),
+            ListTile(
+              title: Text(L10().barcodeTones),
+              subtitle: Text(L10().soundOnBarcodeAction),
+              leading: Icon(Icons.qr_code),
+              trailing: Switch(
+                value: barcodeSounds,
+                onChanged: (bool value) {
+                  InvenTreeSettingsManager().setValue(INV_SOUNDS_BARCODE, value);
+                  setState(() {
+                    barcodeSounds = value;
+                  });
+                },
+              ),
+            ),
+            Divider(height: 1),
           ]
         )
       )

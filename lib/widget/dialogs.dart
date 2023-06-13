@@ -11,6 +11,51 @@ import "package:inventree/widget/snacks.dart";
 
 
 /*
+ * Launch a dialog allowing the user to select from a list of options
+ */
+Future<void> choiceDialog(String title, List<Widget> items, {Function? onSelected}) async {
+
+  List<Widget> choices = [];
+
+  for (int idx = 0; idx < items.length; idx++) {
+    choices.add(
+      GestureDetector(
+        child: items[idx],
+        onTap: () {
+          Navigator.pop(OneContext().context!);
+          if (onSelected != null) {
+            onSelected(idx);
+          }
+        },
+      )
+    );
+  }
+
+  OneContext().showDialog(
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(title),
+        content: SingleChildScrollView(
+          child: Column(
+            children: choices,
+          )
+        ),
+        actions: [
+          TextButton(
+            child: Text(L10().cancel),
+            onPressed: () {
+              Navigator.pop(OneContext().context!);
+            },
+          )
+        ],
+      );
+    }
+  );
+
+}
+
+
+/*
  * Display a "confirmation" dialog allowing the user to accept or reject an action
  */
 Future<void> confirmationDialog(String title, String text, {Color? color, IconData icon = FontAwesomeIcons.circleQuestion, String? acceptText, String? rejectText, Function? onAccept, Function? onReject}) async {

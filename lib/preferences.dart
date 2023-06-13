@@ -15,6 +15,13 @@ const String INV_HOME_SHOW_MANUFACTURERS = "homeShowManufacturers";
 const String INV_HOME_SHOW_CUSTOMERS = "homeShowCustomers";
 const String INV_HOME_SHOW_SUPPLIERS = "homeShowSuppliers";
 
+const String INV_SCREEN_ORIENTATION = "appScreenOrientation";
+
+// Available screen orientation values
+const int SCREEN_ORIENTATION_SYSTEM = 0;
+const int SCREEN_ORIENTATION_PORTRAIT = 1;
+const int SCREEN_ORIENTATION_LANDSCAPE = 2;
+
 const String INV_SOUNDS_BARCODE = "barcodeSounds";
 const String INV_SOUNDS_SERVER = "serverSounds";
 
