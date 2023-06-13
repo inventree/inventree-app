@@ -4,7 +4,7 @@
 - Adds options for configuring screen orientation
 - Improvements to barcode scanning
 - Translation updates
-
+- Bug fix for scrolling long lists
 
 ### 0.12.1 - May 2023
 
