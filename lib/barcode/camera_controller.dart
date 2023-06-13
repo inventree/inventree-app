@@ -71,6 +71,12 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
 
   @override
   Future<void> resumeScan() async {
+
+    // Do not attempt to resume if the widget is not mounted
+    if (!mounted) {
+      return;
+    }
+
     try {
       await _controller?.resumeCamera();
     } on CameraException {
