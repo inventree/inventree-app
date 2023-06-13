@@ -1,5 +1,7 @@
 ### -
 ---
+
+- Adds options for configuring screen orientation
 - Improvements to barcode scanning
 - Translation updates
 

@@ -627,6 +627,21 @@
   "onOrderDetails": "Items currently on order",
   "@onOrderDetails": {},
 
+  "orientation": "Screen Orientation",
+  "@orientation": {},
+
+  "orientationDetail": "Screen orientation (requires restart)",
+  "@orientationDetail": {},
+
+  "orientationLandscape": "Landscape",
+  "@orientationLandscape": {},
+  
+  "orientationPortrait": "Portrait",
+  "@orientationPortrait": {},
+
+  "orientationSystem": "System",
+  "@orientationSystem": {},
+
   "outstanding": "Outstanding",
   "@outstanding": {},
 

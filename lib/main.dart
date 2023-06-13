@@ -55,9 +55,29 @@ Future<void> main() async {
       );
     };
 
-    runApp(
-      InvenTreeApp(savedThemeMode)
-    );
+    final int orientation = await InvenTreeSettingsManager().getValue(INV_SCREEN_ORIENTATION, SCREEN_ORIENTATION_SYSTEM) as int;
+
+    List<DeviceOrientation> orientations = [];
+
+    switch (orientation) {
+      case SCREEN_ORIENTATION_PORTRAIT:
+        orientations.add(DeviceOrientation.portraitUp);
+        break;
+      case SCREEN_ORIENTATION_LANDSCAPE:
+        orientations.add(DeviceOrientation.landscapeLeft);
+        break;
+      default:
+        orientations.add(DeviceOrientation.portraitUp);
+        orientations.add(DeviceOrientation.landscapeLeft);
+        orientations.add(DeviceOrientation.landscapeRight);
+        break;
+    }
+
+    SystemChrome.setPreferredOrientations(orientations).then((_) {
+      runApp(
+        InvenTreeApp(savedThemeMode)
+      );
+    });
 
   }, (Object error, StackTrace stackTrace) async {
     sentryReportError("main.runZonedGuarded", error, stackTrace);
