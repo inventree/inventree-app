@@ -35,9 +35,10 @@ Future<void> choiceDialog(String title, List<Widget> items, {Function? onSelecte
     builder: (BuildContext context) {
       return AlertDialog(
         title: Text(title),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: choices,
+        content: SingleChildScrollView(
+          child: Column(
+            children: choices,
+          )
         ),
         actions: [
           TextButton(
