@@ -1,5 +1,21 @@
 {
   "@@locale": "id",
   "@homeShowSubscsribedDescription": {},
-  "@homeShowSupplierDescription": {}
+  "@homeShowSupplierDescription": {},
+  "imageUploadSuccess": "Gambar telah diunggah",
+  "@imageUploadSuccess": {},
+  "save": "Simpan",
+  "@save": {
+    "description": "Save"
+  },
+  "sounds": "Suara",
+  "@sounds": {},
+  "status": "Status",
+  "@status": {},
+  "testResultUploadPass": "Hasil tes telah diunggah",
+  "@testResultUploadPass": {},
+  "uploadSuccess": "Berkas telah diunggah",
+  "@uploadSuccess": {},
+  "website": "Situs",
+  "@website": {}
 }
