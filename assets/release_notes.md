@@ -1,3 +1,8 @@
+### - 
+---
+
+- Improved filters for stock list
+
 ### 0.12.2 - June 2023
 ---
 
@@ -7,6 +12,7 @@
 - Bug fix for scrolling long lists
 
 ### 0.12.1 - May 2023
+---
 
 - Fixes bug in purchase order form
 

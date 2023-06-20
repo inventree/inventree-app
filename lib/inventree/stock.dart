@@ -186,7 +186,6 @@ class InvenTreeStockItem extends InvenTreeModel {
       "part_detail": "true",
       "location_detail": "true",
       "supplier_detail": "true",
-      "in_stock": "true",
     };
   }
 
