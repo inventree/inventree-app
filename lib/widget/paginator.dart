@@ -296,8 +296,6 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
         params.addAll(f);
       }
 
-      print("filters: ${params.toString()}");
-
       final page = await requestPage(
         _pageSize,
         pageKey,
