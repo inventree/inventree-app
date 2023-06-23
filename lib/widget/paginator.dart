@@ -38,44 +38,39 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
   // Override in implementing class
   String get prefix => "prefix_";
 
-  // Return a map of boolean filtering options available for this list
   // Should be overridden by an implementing subclass
   Map<String, Map<String, dynamic>> get filterOptions => {};
 
   // Return the boolean value of a particular boolean filter
-  Future<bool?> getBooleanFilterValue(String key) async {
-    key = "${prefix}bool_${key}";
+  Future<dynamic> getFilterValue(String key) async {
+    key = "${prefix}filter_${key}";
 
     Map<String, dynamic> opts = filterOptions[key] ?? {};
+    dynamic backup = opts["default"];
+    final result = await InvenTreeSettingsManager().getValue(key, backup);
 
-    bool? backup;
-    dynamic v = opts["default"];
-
-    if (v is bool) {
-      backup = v;
-    }
-
-    final result = await InvenTreeSettingsManager().getTriState(key, backup);
     return result;
   }
 
   // Set the boolean value of a particular boolean filter
-  Future<void> setBooleanFilterValue(String key, bool? value) async {
-    key = "${prefix}bool_${key}";
+  Future<void> setFilterValue(String key, dynamic value) async {
+    key = "${prefix}filter_${key}";
     await InvenTreeSettingsManager().setValue(key, value);
   }
 
   // Construct the boolean filter options for this list
-  Future<Map<String, String>> constructBooleanFilters() async {
+  Future<Map<String, String>> constructFilters() async {
 
     Map<String, String> f = {};
 
     for (String k in filterOptions.keys) {
-      bool? value = await getBooleanFilterValue(k);
+      dynamic value = await getFilterValue(k);
 
-      if (value is bool) {
-        f[k] = value ? "true" : "false";
+      // Skip null values
+      if (value == null) {
+        continue;
       }
+      f[k] = value.toString();
     }
 
     return f;
@@ -164,7 +159,7 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
       }
     };
 
-    // Add in boolean filter options
+    // Add in selected filter options
     for (String key in filterOptions.keys) {
       Map<String, dynamic> opts = filterOptions[key] ?? {};
 
@@ -172,17 +167,18 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
       String label = (opts["label"] ?? key) as String;
       String? help_text = opts["help_text"] as String?;
 
+      List<dynamic> choices = (opts["choices"] ?? []) as List<dynamic>;
+
       bool tristate = (opts["tristate"] ?? true) as bool;
 
-      bool? v = await getBooleanFilterValue(key);
+      dynamic v = await getFilterValue(key);
 
       // Prevent null value if not tristate
       if (!tristate && v == null) {
         v = false;
       }
 
-      // Add in the particular field
-      fields[key] = {
+      Map<String, dynamic> filter = {
         "type": "boolean",
         "display_name": label,
         "label": label,
@@ -190,6 +186,16 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
         "value": v,
         "tristate": (opts["tristate"] ?? true) as bool,
       };
+
+      if (choices.isNotEmpty) {
+        // Configure as a choice input
+        filter["type"] = "choice";
+        filter["choices"] = choices;
+
+        filter.remove("tristate");
+      }
+
+      fields[key] = filter;
     }
 
     // Launch an interactive form for the user to select options
@@ -211,16 +217,7 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
 
         // Save boolean fields
         for (String key in filterOptions.keys) {
-
-          bool? v;
-
-          dynamic value = data[key];
-
-          if (value is bool) {
-            v = value;
-          }
-
-          await setBooleanFilterValue(key, v);
+          await setFilterValue(key, data[key]);
         }
 
         // Refresh data from the server
@@ -293,11 +290,13 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
         params["ordering"] = o;
       }
 
-      Map<String, String> f = await constructBooleanFilters();
+      Map<String, String> f = await constructFilters();
 
       if (f.isNotEmpty) {
         params.addAll(f);
       }
+
+      print("filters: ${params.toString()}");
 
       final page = await requestPage(
         _pageSize,

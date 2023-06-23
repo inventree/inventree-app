@@ -275,6 +275,7 @@ class APIFormField {
 
   // Construct a widget for this input
   Widget constructField(BuildContext context) {
+
     switch (type) {
       case "string":
       case "url":
@@ -732,12 +733,21 @@ class APIFormField {
   // Construct a boolean input element
   Widget _constructBoolean() {
 
+    bool? initial_value;
+
+    if (value is bool || value == null) {
+      initial_value = value as bool?;
+    } else {
+      String vs = value.toString().toLowerCase();
+      initial_value = ["1", "true", "yes"].contains(vs);
+    }
+
     return CheckBoxField(
       label: label,
       labelStyle: _labelStyle(),
       helperText: helpText,
       helperStyle: _helperStyle(),
-      initial: value as bool?,
+      initial: initial_value,
       tristate: (getParameter("tristate") ?? false) as bool,
       onSaved: (val) {
         data["value"] = val;

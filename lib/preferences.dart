@@ -126,7 +126,12 @@ class InvenTreeSettingsManager {
 
   Future<dynamic> getValue(String key, dynamic backup) async {
 
-    final value = await store.record(key).get(await _db);
+    dynamic value = await store.record(key).get(await _db);
+
+    // Retrieve value
+    if (value == "__null__") {
+      value = null;
+    }
 
     if (value == null) {
       return backup;
@@ -173,7 +178,7 @@ class InvenTreeSettingsManager {
   Future<void> setValue(String key, dynamic value) async {
 
     // Encode null values as strings
-    value ??= "null";
+    value ??= "__null__";
 
     await store.record(key).put(await _db, value);
   }

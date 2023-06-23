@@ -95,6 +95,11 @@ class _PaginatedStockItemListState extends PaginatedSearchState<PaginatedStockIt
     "serialized": {
       "label": L10().filterSerialized,
       "help_text": L10().filterSerializedDetail,
+    },
+    "status": {
+      "label": L10().status,
+      "help_text": L10().statusCode,
+      "choices": InvenTreeAPI().StockStatus.choices,
     }
   };
 

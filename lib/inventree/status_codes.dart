@@ -23,6 +23,26 @@ class InvenTreeStatusCode {
   // Internal status code data loaded from server
   Map<String, dynamic> data = {};
 
+  /*
+   * Construct a list of "choices" suitable for a form
+   */
+  List<dynamic> get choices {
+    List<dynamic> _choices = [];
+
+    for (String key in data.keys) {
+      dynamic _entry = data[key];
+
+      if (_entry is Map<String, dynamic>) {
+        _choices.add({
+          "value": _entry["key"],
+          "display_name": _entry["label"]
+        });
+      }
+    }
+
+    return _choices;
+  }
+
   // Load status code information from the server
   Future<void> load({bool forceReload = false}) async {
 
