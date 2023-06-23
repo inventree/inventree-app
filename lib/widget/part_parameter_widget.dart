@@ -75,7 +75,7 @@ class _PaginatedParameterState extends PaginatedSearchState<PaginatedParameterLi
 
   @override
   Map<String, String> get orderingOptions => {
-    // TODO
+
   };
 
   @override

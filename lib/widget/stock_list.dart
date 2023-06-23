@@ -125,6 +125,7 @@ class _PaginatedStockItemListState extends PaginatedSearchState<PaginatedStockIt
       trailing: Text("${item.displayQuantity}",
         style: TextStyle(
           fontWeight: FontWeight.bold,
+          fontSize: 16,
           color: InvenTreeAPI().StockStatus.color(item.status),
         ),
       ),
