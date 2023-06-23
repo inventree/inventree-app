@@ -71,7 +71,7 @@ mixin BaseWidgetProperties {
    */
   BottomAppBar? buildBottomAppBar(BuildContext context, GlobalKey<ScaffoldState> key) {
 
-    const double iconSize = 32;
+    const double iconSize = 40;
 
     List<Widget> icons = [
       IconButton(
