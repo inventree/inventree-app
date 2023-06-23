@@ -98,7 +98,7 @@ mixin BaseWidgetProperties {
         },
       ),
       IconButton(
-        icon: Icon(Icons.qr_code_scanner, color: COLOR_ACTION),
+        icon: Icon(Icons.barcode_reader, color: COLOR_ACTION),
         iconSize: iconSize,
         onPressed: () {
           if (InvenTreeAPI().checkConnection()) {
