@@ -228,20 +228,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     });
   }
 
-
-  /*
-   * Toggle the "star" status of this paricular part
-   */
-  Future <void> _toggleStar(BuildContext context) async {
-
-    if (InvenTreePart().canView) {
-      showLoadingOverlay(context);
-      await part.update(values: {"starred": "${!part.starred}"});
-      hideLoadingOverlay();
-      refresh(context);
-    }
-  }
-
   void _editPartDialog(BuildContext context) {
 
     part.editForm(
@@ -259,13 +245,11 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         child: ListTile(
           title: Text("${part.fullname}"),
           subtitle: Text("${part.description}"),
-          trailing: IconButton(
-            icon: FaIcon(part.starred ? FontAwesomeIcons.solidStar : FontAwesomeIcons.star,
-              color: part.starred ? Colors.yellowAccent : null,
-            ),
-            onPressed: () {
-              _toggleStar(context);
-            },
+          trailing: Text(
+            part.stockString(),
+            style: TextStyle(
+              fontSize: 20,
+            )
           ),
           leading: GestureDetector(
             child: api.getImage(part.thumbnail),
