@@ -399,7 +399,7 @@ class InvenTreeStockItem extends InvenTreeModel {
 
     double get quantity => getDouble("quantity");
 
-    String quantityString({bool includeUnits = false}){
+    String quantityString({bool includeUnits = true}){
 
       String q = "";
 
@@ -467,7 +467,13 @@ class InvenTreeStockItem extends InvenTreeModel {
       if (serialNumber.isNotEmpty) {
         return "SN: $serialNumber";
       } else {
-        return simpleNumberString(quantity);
+        String q = simpleNumberString(quantity);
+
+        if (units.isNotEmpty) {
+          q += " ${units}";
+        }
+
+        return q;
       }
     }
 

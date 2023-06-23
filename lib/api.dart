@@ -1332,7 +1332,20 @@ class InvenTreeAPI {
 
   static String get staticThumb => "/static/img/blank_image.thumbnail.png";
 
-  CachedNetworkImage getThumbnail(String imageUrl, {double size = 40}) => getImage(imageUrl, width: size, height: size);
+  CachedNetworkImage? getThumbnail(String imageUrl, {double size = 40, bool hideIfNull = false}) {
+
+    if (hideIfNull) {
+      if (imageUrl.isEmpty) {
+        return null;
+      }
+    }
+
+    return getImage(
+        imageUrl,
+        width: size,
+        height: size
+    );
+  }
 
   /*
    * Load image from the InvenTree server,
