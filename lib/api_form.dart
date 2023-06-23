@@ -696,6 +696,14 @@ class APIFormField {
   // Construct a string input element
   Widget _constructString() {
 
+    if (readOnly) {
+      return ListTile(
+        title: Text(label),
+        subtitle: Text(helpText),
+        trailing: Text(value.toString()),
+      );
+    }
+
     return TextFormField(
       decoration: InputDecoration(
         labelText: required ? label + "*" : label,
@@ -1261,6 +1269,10 @@ class _APIFormWidgetState extends State<APIFormWidget> {
     // Iterate through and find "simple" top-level fields
 
     for (var field in widget.fields) {
+
+      if (field.readOnly) {
+        continue;
+      }
 
       if (field.isSimple) {
         // Simple top-level field data

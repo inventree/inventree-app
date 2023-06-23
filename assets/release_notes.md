@@ -1,6 +1,7 @@
 ### - 
 ---
 
+- Edit part parameters from within the app
 - Increase visibility of stock quantity in widgets
 - Improved filters for stock list
 
