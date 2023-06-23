@@ -348,6 +348,10 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
   void updateSearchTerm() {
     searchTerm = searchController.text;
     _pagingController.refresh();
+
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   // Function to construct a single paginated item
@@ -409,19 +413,19 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
    */
   Widget buildSearchInput(BuildContext context) {
     return ListTile(
-      trailing: orderingOptions.isEmpty ? null : GestureDetector(
-        child: FaIcon(FontAwesomeIcons.sort, color: COLOR_ACTION),
+      leading: orderingOptions.isEmpty ? null : GestureDetector(
+        child: Icon(Icons.filter_list, color: COLOR_ACTION, size: 32),
         onTap: () async {
           _saveOrderingOptions(context);
         },
       ),
-      leading: GestureDetector(
+      trailing: GestureDetector(
         child: FaIcon(
           searchController.text.isEmpty ? FontAwesomeIcons.magnifyingGlass : FontAwesomeIcons.deleteLeft,
-          color: searchController.text.isNotEmpty ? COLOR_DANGER : null,
+          color: searchController.text.isNotEmpty ? COLOR_DANGER : COLOR_ACTION,
         ),
         onTap: () {
-          if (searchController.text.isEmpty) {
+          if (searchController.text.isNotEmpty) {
             searchController.clear();
           }
           updateSearchTerm();
