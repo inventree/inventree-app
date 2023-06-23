@@ -160,7 +160,11 @@ class InvenTreePartParameter extends InvenTreeModel {
     return v;
   }
 
+  bool get as_bool => value.toLowerCase() == "true";
+
   String get units => getString("units", subKey: "template_detail");
+  
+  bool get is_checkbox => getBool("checkbox", subKey: "template_detail", backup: false);
 }
 
 /*

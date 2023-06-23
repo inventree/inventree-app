@@ -99,7 +99,11 @@ class _PaginatedParameterState extends PaginatedSearchState<PaginatedParameterLi
     return ListTile(
       title: Text(parameter.name),
       subtitle: Text(parameter.description),
-      trailing: Text(parameter.valueString),
+      trailing: parameter.is_checkbox
+        ? Switch(
+          value: parameter.as_bool,
+          onChanged: null,
+      ) : Text(parameter.valueString),
     );
   }
 }
