@@ -349,11 +349,7 @@ class APIFormField {
               );
             });
 
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => barcodeController(handler)
-              )
-            );
+            scanBarcode(context, handler: handler);
           },
         ),
       )

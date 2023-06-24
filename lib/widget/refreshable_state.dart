@@ -102,7 +102,7 @@ mixin BaseWidgetProperties {
         iconSize: iconSize,
         onPressed: () {
           if (InvenTreeAPI().checkConnection()) {
-            scanQrCode(context);
+            scanBarcode(context);
           }
         },
       )

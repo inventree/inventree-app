@@ -165,12 +165,9 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
               child: Icon(Icons.qr_code_scanner),
               label: L10().scanIntoLocation,
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) =>
-                      barcodeController(
-                        StockItemScanIntoLocationHandler(widget.item))
-                      )
+                scanBarcode(
+                  context,
+                  handler: StockItemScanIntoLocationHandler(widget.item)
                 ).then((ctx) {
                   refresh(context);
                 });

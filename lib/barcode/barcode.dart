@@ -30,11 +30,26 @@ import "package:inventree/widget/supplier_part_detail.dart";
 
 
 /*
- * Return a new BarcodeController instance
+ * Launch a barcode scanner with a particular context and handler.
+ * 
+ * - Can be called with a custom BarcodeHandler instance, or use the default handler
+ * - Returns a Future which resolves when the scanner is dismissed
+ * - The provided BarcodeHandler instance is used to handle the scanned barcode
  */
-InvenTreeBarcodeController barcodeController(BarcodeHandler handler) {
-  // TODO: Make this configurable
-  return CameraBarcodeController(handler);
+Future<Object?> scanBarcode(BuildContext context, {BarcodeHandler? handler}) async {
+
+  // Default to generic scan handler
+  handler ??= BarcodeScanHandler();
+
+  // Only support camera controller on iOS
+  InvenTreeBarcodeController controller = CameraBarcodeController(handler);
+
+  return Navigator.of(context).push(
+    PageRouteBuilder(
+      pageBuilder: (context, _, __) => controller,
+      opaque: false,
+    )
+  );
 }
 
 
@@ -525,13 +540,6 @@ class UniqueBarcodeHandler extends BarcodeHandler {
 }
 
 
-Future<void> scanQrCode(BuildContext context) async {
-  Navigator.push(context, MaterialPageRoute(builder: (context) => barcodeController(BarcodeScanHandler())));
-
-  return;
-}
-
-
 SpeedDialChild customBarcodeAction(BuildContext context, RefreshableState state, String barcode, String model, int pk) {
 
   if (barcode.isEmpty) {
@@ -552,13 +560,7 @@ SpeedDialChild customBarcodeAction(BuildContext context, RefreshableState state,
             state.refresh(context);
           });
         });
-
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => barcodeController(handler)
-            )
-        );
+        scanBarcode(context, handler: handler);
       }
     );
   } else {
