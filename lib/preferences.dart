@@ -153,27 +153,6 @@ class InvenTreeSettingsManager {
     }
   }
 
-  // Load a tristate (true / false / null) setting
-  Future<bool?> getTriState(String key, dynamic backup) async {
-    final dynamic value = await getValue(key, backup);
-
-    if (value == null) {
-      return null;
-    } else if (value is bool) {
-      return value;
-    } else {
-      String s = value.toString().toLowerCase();
-
-      if (s.contains("t")) {
-        return true;
-      } else if (s.contains("f")) {
-        return false;
-      } else {
-        return null;
-      }
-    }
-  }
-
   // Store a key:value pair in the database
   Future<void> setValue(String key, dynamic value) async {
 
