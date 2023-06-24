@@ -577,8 +577,9 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         subtitle: Text("${widget.item.partDescription}"),
         leading: InvenTreeAPI().getThumbnail(widget.item.partImage),
         trailing: Text(
-          api.StockStatus.label(widget.item.status),
+          widget.item.quantityString(),
           style: TextStyle(
+            fontSize: 20,
             color: api.StockStatus.color(widget.item.status),
           )
         ),
@@ -615,6 +616,41 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       return tiles;
     }
 
+    // Location information
+    if ((widget.item.locationId > 0) && (widget.item.locationName.isNotEmpty)) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().stockLocation),
+          subtitle: Text("${widget.item.locationPathString}"),
+          leading: FaIcon(
+            FontAwesomeIcons.locationDot,
+            color: COLOR_ACTION,
+          ),
+          onTap: () async {
+            if (widget.item.locationId > 0) {
+
+              showLoadingOverlay(context);
+              var loc = await InvenTreeStockLocation().get(widget.item.locationId);
+              hideLoadingOverlay();
+
+              if (loc is InvenTreeStockLocation) {
+                Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => LocationDisplayWidget(loc)));
+              }
+            }
+          },
+        ),
+      );
+    } else {
+      tiles.add(
+          ListTile(
+            title: Text(L10().stockLocation),
+            leading: FaIcon(FontAwesomeIcons.locationDot),
+            subtitle: Text(L10().locationNotSet),
+          )
+      );
+    }
+
     // Quantity information
     if (widget.item.isSerialized()) {
       tiles.add(
@@ -634,40 +670,19 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     }
 
-    // Location information
-    if ((widget.item.locationId > 0) && (widget.item.locationName.isNotEmpty)) {
-      tiles.add(
-          ListTile(
-            title: Text(L10().stockLocation),
-            subtitle: Text("${widget.item.locationPathString}"),
-            leading: FaIcon(
-              FontAwesomeIcons.locationDot,
-              color: COLOR_ACTION,
-            ),
-            onTap: () async {
-              if (widget.item.locationId > 0) {
-
-                showLoadingOverlay(context);
-                var loc = await InvenTreeStockLocation().get(widget.item.locationId);
-                hideLoadingOverlay();
-
-                if (loc is InvenTreeStockLocation) {
-                  Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => LocationDisplayWidget(loc)));
-                }
-              }
-            },
-          ),
-      );
-    } else {
-      tiles.add(
-          ListTile(
-            title: Text(L10().stockLocation),
-            leading: FaIcon(FontAwesomeIcons.locationDot),
-            subtitle: Text(L10().locationNotSet),
+    // Stock item status information
+    tiles.add(
+      ListTile(
+        title: Text(L10().status),
+        leading: FaIcon(FontAwesomeIcons.circleInfo),
+        trailing: Text(
+          api.StockStatus.label(widget.item.status),
+          style: TextStyle(
+            color: api.StockStatus.color(widget.item.status),
           )
-      );
-    }
+        )
+      )
+    );
 
     // Supplier part information (if available)
     if (widget.item.supplierPartId > 0) {
@@ -676,7 +691,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           title: Text(L10().supplierPart),
           subtitle: Text(widget.item.supplierSKU),
           leading: FaIcon(FontAwesomeIcons.building, color: COLOR_ACTION),
-          trailing: InvenTreeAPI().getThumbnail(widget.item.supplierImage),
+          trailing: InvenTreeAPI().getThumbnail(widget.item.supplierImage, hideIfNull: true),
           onTap: () async {
             showLoadingOverlay(context);
             var sp = await InvenTreeSupplierPart().get(

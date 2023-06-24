@@ -71,7 +71,7 @@ mixin BaseWidgetProperties {
    */
   BottomAppBar? buildBottomAppBar(BuildContext context, GlobalKey<ScaffoldState> key) {
 
-    const double iconSize = 32;
+    const double iconSize = 40;
 
     List<Widget> icons = [
       IconButton(
@@ -98,7 +98,7 @@ mixin BaseWidgetProperties {
         },
       ),
       IconButton(
-        icon: Icon(Icons.qr_code_scanner, color: COLOR_ACTION),
+        icon: Icon(Icons.barcode_reader, color: COLOR_ACTION),
         iconSize: iconSize,
         onPressed: () {
           if (InvenTreeAPI().checkConnection()) {

@@ -13,6 +13,7 @@ coverage/*
 
 # This file is auto-generated as part of the CI process
 test/coverage_helper_test.dart
+InvenTreeSettings.db
 
 # Sentry API key
 lib/dsn.dart

@@ -278,6 +278,9 @@
   "editNotes": "Edit Notes",
   "@editNotes": {},
 
+  "editParameter": "Edit Parameter",
+  "@editParameter": {},
+
   "editPart": "Edit Part",
   "@editPart": {
     "description": "edit part"

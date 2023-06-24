@@ -134,11 +134,28 @@ class InvenTreePartParameter extends InvenTreeModel {
   String get URL => "part/parameter/";
 
   @override
+  List<String> get rolesRequired => ["part"];
+
+  @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreePartParameter.fromJson(json);
 
   @override
   Map<String, dynamic> formFields() {
-    return {};
+
+    Map<String, dynamic> fields = {
+      "header": {
+        "type": "string",
+        "read_only": true,
+        "label": name,
+        "help_text": description,
+        "value": "",
+      },
+      "data": {
+        "type": "string",
+      }
+    };
+
+    return fields;
   }
 
   @override
@@ -160,7 +177,11 @@ class InvenTreePartParameter extends InvenTreeModel {
     return v;
   }
 
+  bool get as_bool => value.toLowerCase() == "true";
+
   String get units => getString("units", subKey: "template_detail");
+  
+  bool get is_checkbox => getBool("checkbox", subKey: "template_detail", backup: false);
 }
 
 /*

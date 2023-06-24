@@ -126,7 +126,12 @@ class InvenTreeSettingsManager {
 
   Future<dynamic> getValue(String key, dynamic backup) async {
 
-    final value = await store.record(key).get(await _db);
+    dynamic value = await store.record(key).get(await _db);
+
+    // Retrieve value
+    if (value == "__null__") {
+      value = null;
+    }
 
     if (value == null) {
       return backup;
@@ -148,32 +153,11 @@ class InvenTreeSettingsManager {
     }
   }
 
-  // Load a tristate (true / false / null) setting
-  Future<bool?> getTriState(String key, dynamic backup) async {
-    final dynamic value = await getValue(key, backup);
-
-    if (value == null) {
-      return null;
-    } else if (value is bool) {
-      return value;
-    } else {
-      String s = value.toString().toLowerCase();
-
-      if (s.contains("t")) {
-        return true;
-      } else if (s.contains("f")) {
-        return false;
-      } else {
-        return null;
-      }
-    }
-  }
-
   // Store a key:value pair in the database
   Future<void> setValue(String key, dynamic value) async {
 
     // Encode null values as strings
-    value ??= "null";
+    value ??= "__null__";
 
     await store.record(key).put(await _db, value);
   }

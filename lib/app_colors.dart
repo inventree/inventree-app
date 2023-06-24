@@ -16,6 +16,6 @@ Color get COLOR_ACTION {
 }
 
 const Color COLOR_WARNING = Color.fromRGBO(250, 150, 50, 1);
-const Color COLOR_DANGER = Color.fromRGBO(250, 50, 50, 1);
-const Color COLOR_SUCCESS = Color.fromRGBO(50, 250, 50, 1);
-const Color COLOR_PROGRESS = Color.fromRGBO(50, 50, 250, 1);
+const Color COLOR_DANGER = Color.fromRGBO(200, 50, 75, 1);
+const Color COLOR_SUCCESS = Color.fromRGBO(100, 200, 75, 1);
+const Color COLOR_PROGRESS = Color.fromRGBO(50, 100, 200, 1);

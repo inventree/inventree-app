@@ -154,8 +154,8 @@ class CheckBoxField extends FormField<bool> {
         onSaved: onSaved,
         initialValue: initial,
         builder: (FormFieldState<bool> state) {
+
           return CheckboxListTile(
-            //dense: state.hasError,
             title: label != null ? Text(label, style: labelStyle) : null,
             value: state.value,
             tristate: tristate,

@@ -133,7 +133,13 @@ class _PaginatedPartListState extends PaginatedSearchState<PaginatedPartList> {
     return ListTile(
       title: Text(part.fullname),
       subtitle: Text(part.description),
-      trailing: Text(part.stockString()),
+      trailing: Text(
+        part.stockString(),
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold
+        )
+      ),
       leading: InvenTreeAPI().getThumbnail(part.thumbnail),
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));

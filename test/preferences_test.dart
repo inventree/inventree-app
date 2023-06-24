@@ -47,25 +47,5 @@ void main() {
       assert(await InvenTreeSettingsManager().getBool("chicken", true) == false);
 
     });
-
-    test("Tri State", () async {
-      // Tests for tristate values
-
-      await InvenTreeSettingsManager().removeValue("dog");
-
-      // Use default values when a setting does not exist
-      for (bool? value in [true, false, null]) {
-        assert(await InvenTreeSettingsManager().getTriState("dog", value) == value);
-      }
-
-      // Explicitly set to a value
-      for (bool? value in [true, false, null]) {
-        await InvenTreeSettingsManager().setValue("dog", value);
-
-        assert(await InvenTreeSettingsManager().getTriState("dog", true) == value);
-        assert(await InvenTreeSettingsManager().getTriState("dog", false) == value);
-        assert(await InvenTreeSettingsManager().getTriState("dog", null) == value);
-      }
-    });
   });
 }

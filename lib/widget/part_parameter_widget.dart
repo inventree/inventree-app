@@ -4,6 +4,7 @@ import "package:inventree/inventree/model.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/widget/paginator.dart";
+import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
 
 /*
@@ -75,7 +76,7 @@ class _PaginatedParameterState extends PaginatedSearchState<PaginatedParameterLi
 
   @override
   Map<String, String> get orderingOptions => {
-    // TODO
+
   };
 
   @override
@@ -91,6 +92,22 @@ class _PaginatedParameterState extends PaginatedSearchState<PaginatedParameterLi
     return page;
   }
 
+  Future<void> editParameter(InvenTreePartParameter parameter) async {
+
+    // Checkbox values are handled separately
+    if (parameter.is_checkbox) {
+      return;
+    } else {
+      parameter.editForm(
+          context,
+          L10().editParameter,
+          onSuccess: (data) async {
+            updateSearchTerm();
+          }
+      );
+    }
+  }
+
   @override
   Widget buildItem(BuildContext context, InvenTreeModel model) {
 
@@ -99,7 +116,28 @@ class _PaginatedParameterState extends PaginatedSearchState<PaginatedParameterLi
     return ListTile(
       title: Text(parameter.name),
       subtitle: Text(parameter.description),
-      trailing: Text(parameter.valueString),
+      trailing: parameter.is_checkbox
+        ? Switch(
+          value: parameter.as_bool,
+          onChanged: (bool value) {
+            if (parameter.canEdit) {
+              showLoadingOverlay(context);
+              parameter.update(
+                values: {
+                  "data": value.toString()
+                }
+              ).then((value) async{
+                hideLoadingOverlay();
+                updateSearchTerm();
+              });
+            }
+          },
+      ) : Text(parameter.valueString),
+      onTap: parameter.is_checkbox ? null : () async {
+        if (parameter.canEdit) {
+          editParameter(parameter);
+        }
+      },
     );
   }
 }
