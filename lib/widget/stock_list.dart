@@ -79,29 +79,37 @@ class _PaginatedStockItemListState extends PaginatedSearchState<PaginatedStockIt
   };
 
   @override
-  Map<String, Map<String, dynamic>> get filterOptions => {
-    "in_stock": {
-      "default": true,
-      "label": L10().filterInStock,
-      "help_text": L10().filterInStockDetail,
-      "tristate": true,
-    },
-    "cascade": {
-      "default": false,
-      "label": L10().includeSublocations,
-      "help_text": L10().includeSublocationsDetail,
-      "tristate": false,
-    },
-    "serialized": {
-      "label": L10().filterSerialized,
-      "help_text": L10().filterSerializedDetail,
-    },
-    "status": {
-      "label": L10().status,
-      "help_text": L10().statusCode,
-      "choices": InvenTreeAPI().StockStatus.choices,
+  Map<String, Map<String, dynamic>> get filterOptions {
+    Map<String, Map<String, dynamic>> filters = {
+      "in_stock": {
+        "default": true,
+        "label": L10().filterInStock,
+        "help_text": L10().filterInStockDetail,
+        "tristate": true,
+      },
+      "cascade": {
+        "default": false,
+        "label": L10().includeSublocations,
+        "help_text": L10().includeSublocationsDetail,
+        "tristate": false,
+      },
+      "serialized": {
+        "label": L10().filterSerialized,
+        "help_text": L10().filterSerializedDetail,
+      },
+      "status": {
+        "label": L10().status,
+        "help_text": L10().statusCode,
+        "choices": InvenTreeAPI().StockStatus.choices,
+      }
+    };
+
+    if (!InvenTreeAPI().supportsStatusLabelEndpoints) {
+      filters.remove("status");
     }
-  };
+
+    return filters;
+  }
 
   @override
   Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
