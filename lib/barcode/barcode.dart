@@ -40,8 +40,7 @@ Future<Object?> scanBarcode(BuildContext context, {BarcodeHandler? handler}) asy
 
   // Default to generic scan handler
   handler ??= BarcodeScanHandler();
-
-  // Only support camera controller on iOS
+  
   InvenTreeBarcodeController controller = CameraBarcodeController(handler);
 
   return Navigator.of(context).push(
