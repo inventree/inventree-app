@@ -91,11 +91,9 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
                 child: FaIcon(FontAwesomeIcons.qrcode),
                 label: L10().barcodeScanItem,
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) =>
-                          barcodeController(
-                              StockLocationScanInItemsHandler(location!)))
+                  scanBarcode(
+                    context,
+                    handler: StockLocationScanInItemsHandler(location!),
                   ).then((value) {
                     refresh(context);
                   });
@@ -111,11 +109,9 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
                 child: FaIcon(FontAwesomeIcons.qrcode),
                 label: L10().transferStockLocation,
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) =>
-                        barcodeController(ScanParentLocationHandler(location!))
-                      )
+                  scanBarcode(
+                    context,
+                    handler: ScanParentLocationHandler(location!),
                   ).then((value) {
                     refresh(context);
                   });

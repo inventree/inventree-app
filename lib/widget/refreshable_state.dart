@@ -102,15 +102,22 @@ mixin BaseWidgetProperties {
         iconSize: iconSize,
         onPressed: () {
           if (InvenTreeAPI().checkConnection()) {
-            scanQrCode(context);
+            scanBarcode(context);
           }
         },
       )
     ];
 
     return BottomAppBar(
-        shape: CircularNotchedRectangle(),
-        notchMargin: 20,
+        shape: AutomaticNotchedShape(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+          ),
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(40)),
+          ),
+        ),
+        notchMargin: 10,
         child: IconTheme(
             data: IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
             child: Row(

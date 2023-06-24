@@ -181,21 +181,18 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
         ),
       ),
       onTap: () {
-
         if (!allowed) {
           showSnackIcon(
             L10().permissionRequired,
             icon: FontAwesomeIcons.circleExclamation,
             success: false,
           );
-
           return;
         }
 
         if (callback != null) {
           callback();
         }
-
       },
     );
   }
