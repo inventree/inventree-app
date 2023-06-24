@@ -8,6 +8,7 @@
 import "package:flutter/material.dart";
 
 import "package:inventree/api.dart";
+import "package:inventree/app_colors.dart";
 import "package:inventree/helpers.dart";
 
 
@@ -112,17 +113,17 @@ class InvenTreeStatusCode {
 
     switch (color_name.toLowerCase()) {
       case "success":
-        return Colors.green;
+        return COLOR_SUCCESS;
       case "primary":
-        return Colors.blue;
+        return COLOR_PROGRESS;
       case "secondary":
         return Colors.grey;
       case "dark":
         return Colors.black;
       case "danger":
-        return Colors.red;
+        return COLOR_DANGER;
       case "warning":
-        return Colors.orange;
+        return COLOR_WARNING;
       case "info":
         return Colors.lightBlue;
       default:
