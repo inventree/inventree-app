@@ -476,6 +476,8 @@ class APIFormField {
   // Construct a floating point numerical input field
   Widget _constructFloatField() {
 
+    double initial = double.tryParse(value.toString()) ?? 0;
+
     return TextFormField(
       decoration: InputDecoration(
         labelText: required ? label + "*" : label,
@@ -484,7 +486,7 @@ class APIFormField {
         helperStyle: _helperStyle(),
         hintText: placeholderText,
       ),
-      initialValue: simpleNumberString(double.tryParse(value.toString()) ?? 0),
+      initialValue: initial.toString(),
       keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
       validator: (value) {
 
