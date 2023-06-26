@@ -486,7 +486,7 @@ class APIFormField {
         helperStyle: _helperStyle(),
         hintText: placeholderText,
       ),
-      initialValue: initial.toString(),
+      initialValue: simpleNumberString(initial),
       keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
       validator: (value) {
 

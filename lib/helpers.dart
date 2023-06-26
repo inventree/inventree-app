@@ -58,10 +58,17 @@ void debug(dynamic msg) {
 }
 
 
+/*
+ * Simplify string representation of a floating point value
+ * Basically, don't display fractional component if it is an integer
+ */
 String simpleNumberString(double number) {
-  // Ref: https://stackoverflow.com/questions/55152175/how-to-remove-trailing-zeros-using-dart
 
-  return number.toStringAsFixed(number.truncateToDouble() == number ? 0 : 1);
+  if (number.toInt() == number) {
+    return number.toInt().toString();
+  } else {
+    return number.toString();
+  }
 }
 
 /*
