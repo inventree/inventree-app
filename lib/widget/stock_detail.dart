@@ -544,7 +544,9 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         "nested": true,
         "value": widget.item.quantity,
       },
-      "location": {},
+      "location": {
+        "value": widget.item.locationId,
+      },
       "notes": {},
     };
 
