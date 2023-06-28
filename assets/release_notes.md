@@ -1,3 +1,9 @@
+### 0.12.4 -
+---
+
+- Pre-fill stock location when transferring stock amount
+
+
 ### - 0.12.3 - June 2023
 ---
 
