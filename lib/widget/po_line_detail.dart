@@ -121,7 +121,10 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
         "parent": "items",
         "nested": true,
       },
-      "location": {
+      "location": {},
+      "batch_code": {
+        "parent": "items",
+        "nested": true,
       },
       "barcode": {
         "parent": "items",
