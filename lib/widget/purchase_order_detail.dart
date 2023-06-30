@@ -331,9 +331,9 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
   List<Widget> getTabs(BuildContext context) {
     return [
       ListView(children: orderTiles(context)),
-      PaginatedPOLineList({"order": order.pk.toString()}, true),
+      PaginatedPOLineList({"order": order.pk.toString()}),
       // ListView(children: lineTiles(context)),
-      PaginatedStockItemList({"purchase_order": order.pk.toString()}, true),
+      PaginatedStockItemList({"purchase_order": order.pk.toString()}),
     ];
   }
 

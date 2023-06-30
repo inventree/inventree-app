@@ -17,7 +17,10 @@ import "package:inventree/widget/progress.dart";
  */
 class PaginatedPOLineList extends PaginatedSearchWidget {
 
-  const PaginatedPOLineList(Map<String, String> filters, bool showSearch) : super(filters: filters, showSearch: showSearch);
+  const PaginatedPOLineList(Map<String, String> filters) : super(filters: filters);
+
+  @override
+  String get searchTitle => L10().lineItems;
 
   @override
   _PaginatedPOLineListState createState() => _PaginatedPOLineListState();

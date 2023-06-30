@@ -31,23 +31,9 @@ class _SupplierPartListState extends RefreshableState<SupplierPartList> {
   @override
   String getAppBarTitle() => L10().supplierParts;
 
-  bool showFilterOptions = false;
-
   @override
-  List<Widget> appBarActions(BuildContext context) => [
-    IconButton(
-      icon: FaIcon(FontAwesomeIcons.filter),
-      onPressed: () async {
-        setState(() {
-          showFilterOptions = !showFilterOptions;
-        });
-      },
-    )
-  ];
-
-  @override
-  Widget getBody(BuildContext  context) {
-    return PaginatedSupplierPartList(widget.filters, showFilterOptions);
+  Widget getBody(BuildContext context) {
+    return PaginatedSupplierPartList(widget.filters);
   }
 
 }
@@ -55,7 +41,10 @@ class _SupplierPartListState extends RefreshableState<SupplierPartList> {
 
 class PaginatedSupplierPartList extends PaginatedSearchWidget {
 
-  const PaginatedSupplierPartList(Map<String, String> filters, bool showSearch) : super(filters: filters, showSearch: showSearch);
+  const PaginatedSupplierPartList(Map<String, String> filters) : super(filters: filters);
+
+  @override
+  String get searchTitle => L10().supplierParts;
 
   @override
   _PaginatedSupplierPartListState createState() => _PaginatedSupplierPartListState();

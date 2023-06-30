@@ -38,8 +38,6 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
   final InvenTreeStockLocation? location;
 
-  bool showFilterOptions = false;
-
   @override
   String getAppBarTitle() {
     return L10().stockLocation;
@@ -345,26 +343,12 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
   List<Widget> detailTiles() {
     List<Widget> tiles = [
       locationDescriptionCard(),
-      ListTile(
-          title: Text(
-            L10().sublocations,
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          trailing: GestureDetector(
-            child: FaIcon(FontAwesomeIcons.filter),
-            onTap: () async {
-              setState(() {
-                showFilterOptions = !showFilterOptions;
-              });
-            },
-          )
-      ),
       Expanded(
         child: PaginatedStockLocationList(
           {
             "parent": location?.pk.toString() ?? "null",
           },
-          showFilterOptions,
+          title: L10().sublocations,
         ),
         flex: 10,
       )
@@ -380,25 +364,8 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     };
 
     return [
-      ListTile(
-        title: Text(
-          L10().stock,
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        trailing: GestureDetector(
-          child: FaIcon(FontAwesomeIcons.filter),
-          onTap: () async {
-            setState(() {
-              showFilterOptions = !showFilterOptions;
-            });
-          },
-        ),
-      ),
       Expanded(
-        child: PaginatedStockItemList(
-          filters,
-          showFilterOptions,
-        ),
+        child: PaginatedStockItemList(filters),
         flex: 10,
       )
     ];

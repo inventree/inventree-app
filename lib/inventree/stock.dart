@@ -1,4 +1,5 @@
 import "dart:async";
+import "dart:convert";
 
 import "package:intl/intl.dart";
 
@@ -117,7 +118,16 @@ class InvenTreeStockItemHistory extends InvenTreeModel {
     }
   }
 
-  String get userString => getString("username", subKey: "user_detail");
+  int? get user => getValue("user") as int?;
+
+  String get userString {
+
+    if (user != null) {
+      return getString("username", subKey: "user_detail");
+    } else {
+      return "";
+    }
+  }
 }
 
 

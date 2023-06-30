@@ -30,8 +30,6 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
   _CategoryDisplayState();
 
-  bool showFilterOptions = false;
-
   @override
   String getAppBarTitle() => L10().partCategory;
 
@@ -204,26 +202,12 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
     List<Widget> tiles = <Widget>[
       getCategoryDescriptionCard(),
-      ListTile(
-        title: Text(
-          L10().subcategories,
-          style: TextStyle(fontWeight: FontWeight.bold)
-        ),
-        trailing: GestureDetector(
-          child: FaIcon(FontAwesomeIcons.filter),
-          onTap: () async {
-            setState(() {
-              showFilterOptions = !showFilterOptions;
-            });
-          },
-        )
-      ),
       Expanded(
         child: PaginatedPartCategoryList(
-            {
-              "parent": widget.category?.pk.toString() ?? "null"
-            },
-            showFilterOptions,
+          {
+            "parent": widget.category?.pk.toString() ?? "null"
+          },
+          title: L10().subcategories,
         ),
         flex: 10,
       )
@@ -240,25 +224,8 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
     };
 
     return [
-      ListTile(
-        title: Text(
-          L10().parts,
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        trailing: GestureDetector(
-          child: FaIcon(FontAwesomeIcons.filter),
-          onTap: () async {
-            setState(() {
-              showFilterOptions = !showFilterOptions;
-            });
-          },
-        ),
-      ),
       Expanded(
-        child: PaginatedPartList(
-          filters,
-          showFilterOptions,
-        ),
+        child: PaginatedPartList(filters),
         flex: 10,
       )
     ];

@@ -22,8 +22,6 @@ class _StockItemHistoryDisplayState extends RefreshableState<StockItemHistoryWid
 
   final InvenTreeStockItem item;
 
-  bool showFilterOptions = false;
-
   @override
   String getAppBarTitle() => L10().stockItemHistory;
 
@@ -36,7 +34,7 @@ class _StockItemHistoryDisplayState extends RefreshableState<StockItemHistoryWid
       "item": widget.item.pk.toString(),
     };
 
-    return PaginatedStockHistoryList(filters, showFilterOptions);
+    return PaginatedStockHistoryList(filters);
   }
 
 }
@@ -45,8 +43,10 @@ class _StockItemHistoryDisplayState extends RefreshableState<StockItemHistoryWid
  * Widget which displays a paginated stock history list
  */
 class PaginatedStockHistoryList extends PaginatedSearchWidget {
-  const PaginatedStockHistoryList(Map<String, String> filters, bool showSearch)
-      : super(filters: filters, showSearch: showSearch);
+  const PaginatedStockHistoryList(Map<String, String> filters) : super(filters: filters);
+
+  @override
+  String get searchTitle => L10().stockItemHistory;
 
   @override
   _PaginatedStockHistoryState createState() => _PaginatedStockHistoryState();

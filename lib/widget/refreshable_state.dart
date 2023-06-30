@@ -270,8 +270,7 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> with 
       appBar: buildAppBar(context, refreshableKey),
       drawer: getDrawer(context),
       floatingActionButton: buildSpeedDial(context),
-      floatingActionButtonLocation: FloatingActionButtonLocation
-          .miniEndDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
       body: RefreshIndicator(
         onRefresh: () async {
           refresh(context);

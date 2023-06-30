@@ -36,14 +36,19 @@ class _CompanyListWidgetState extends RefreshableState<CompanyListWidget> {
 
   @override
   Widget getBody(BuildContext context) {
-    return PaginatedCompanyList(widget.filters, true);
+    return PaginatedCompanyList(widget.title, widget.filters);
   }
 
 }
 
 class PaginatedCompanyList extends PaginatedSearchWidget {
 
-  const PaginatedCompanyList(Map<String, String> filters, bool showSearch) : super(filters: filters, showSearch: showSearch);
+  const PaginatedCompanyList(this.companyTitle, Map<String, String> filters) : super(filters: filters);
+
+  final String companyTitle;
+
+  @override
+  String get searchTitle => companyTitle;
 
   @override
   _CompanyListState createState() => _CompanyListState();

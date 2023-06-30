@@ -80,7 +80,6 @@ class _BillOfMaterialsState extends RefreshableState<BillOfMaterialsWidget> {
         Expanded(
           child: PaginatedBomList(
             filters,
-            showSearch: showFilterOptions,
             isParentPart: widget.isParentComponent,
           ),
         ),
@@ -95,9 +94,12 @@ class _BillOfMaterialsState extends RefreshableState<BillOfMaterialsWidget> {
  */
 class PaginatedBomList extends PaginatedSearchWidget {
 
-  const PaginatedBomList(Map<String, String> filters, {bool showSearch = false, this.isParentPart = true}) : super(filters: filters, showSearch: showSearch);
+  const PaginatedBomList(Map<String, String> filters, {this.isParentPart = true}) : super(filters: filters);
 
   final bool isParentPart;
+
+  @override
+  String get searchTitle => isParentPart ? L10().billOfMaterials : L10().usedInDetails;
 
   @override
   _PaginatedBomListState createState() => _PaginatedBomListState();
