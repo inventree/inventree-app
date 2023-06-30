@@ -44,10 +44,7 @@ class _ParameterWidgetState extends RefreshableState<PartParameterWidget> {
     return Column(
       children: [
         Expanded(
-          child: PaginatedParameterList(
-            filters,
-            false,
-          )
+          child: PaginatedParameterList(filters)
         )
       ],
     );
@@ -60,7 +57,10 @@ class _ParameterWidgetState extends RefreshableState<PartParameterWidget> {
  */
 class PaginatedParameterList extends PaginatedSearchWidget {
 
-  const PaginatedParameterList(Map<String, String> filters, bool showSearch) : super(filters: filters, showSearch: showSearch);
+  const PaginatedParameterList(Map<String, String> filters) : super(filters: filters);
+
+  @override
+  String get searchTitle => L10().parts;
 
   @override
   _PaginatedParameterState createState() => _PaginatedParameterState();

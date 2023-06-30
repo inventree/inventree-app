@@ -1,5 +1,4 @@
 import "package:flutter/material.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/l10.dart";
@@ -39,20 +38,8 @@ class _PartListState extends RefreshableState<PartList> {
   String getAppBarTitle() => title.isNotEmpty ? title : L10().parts;
 
   @override
-  List<Widget> appBarActions(BuildContext context) => [
-    IconButton(
-      icon: FaIcon(FontAwesomeIcons.filter),
-      onPressed: () async {
-        setState(() {
-          showFilterOptions = !showFilterOptions;
-        });
-      },
-    )
-  ];
-
-  @override
   Widget getBody(BuildContext context) {
-    return PaginatedPartList(filters, showFilterOptions);
+    return PaginatedPartList(filters);
   }
 
 }
@@ -60,7 +47,10 @@ class _PartListState extends RefreshableState<PartList> {
 
 class PaginatedPartList extends PaginatedSearchWidget {
 
-  const PaginatedPartList(Map<String, String> filters, bool showSearch) : super(filters: filters, showSearch: showSearch);
+  const PaginatedPartList(Map<String, String> filters) : super(filters: filters);
+
+  @override
+  String get searchTitle => L10().parts;
 
   @override
   _PaginatedPartListState createState() => _PaginatedPartListState();

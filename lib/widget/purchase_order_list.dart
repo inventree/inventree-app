@@ -31,22 +31,8 @@ class _PurchaseOrderListWidgetState extends RefreshableState<PurchaseOrderListWi
 
   final Map<String, String> filters;
 
-  bool showFilterOptions = false;
-
   @override
   String getAppBarTitle() => L10().purchaseOrders;
-
-  @override
-  List<Widget> appBarActions(BuildContext context) => [
-    IconButton(
-      icon: FaIcon(FontAwesomeIcons.filter),
-      onPressed: () async {
-        setState(() {
-          showFilterOptions = !showFilterOptions;
-        });
-      },
-    )
-  ];
 
   @override
   List<SpeedDialChild> actionButtons(BuildContext context) {
@@ -95,14 +81,17 @@ class _PurchaseOrderListWidgetState extends RefreshableState<PurchaseOrderListWi
 
   @override
   Widget getBody(BuildContext context) {
-    return PaginatedPurchaseOrderList(filters, showFilterOptions);
+    return PaginatedPurchaseOrderList(filters);
   }
 }
 
 
 class PaginatedPurchaseOrderList extends PaginatedSearchWidget {
 
-  const PaginatedPurchaseOrderList(Map<String, String> filters, bool showSearch) : super(filters: filters, showSearch: showSearch);
+  const PaginatedPurchaseOrderList(Map<String, String> filters) : super(filters: filters);
+
+  @override
+  String get searchTitle => L10().purchaseOrders;
 
   @override
   _PaginatedPurchaseOrderListState createState() => _PaginatedPurchaseOrderListState();

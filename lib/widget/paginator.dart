@@ -19,11 +19,13 @@ import "package:inventree/widget/refreshable_state.dart";
  */
 abstract class PaginatedSearchWidget extends StatefulWidget {
 
-  const PaginatedSearchWidget({this.filters = const {}, this.showSearch = false});
+  const PaginatedSearchWidget({this.filters = const {}, this.title = ""});
+
+  final String title;
+
+  String get searchTitle => title;
 
   final Map<String, String> filters;
-
-  final bool showSearch;
 }
 
 
@@ -33,6 +35,8 @@ abstract class PaginatedSearchWidget extends StatefulWidget {
 abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends State<T> with BaseWidgetProperties {
 
   static const _pageSize = 25;
+
+  bool showSearchWidget = false;
 
   // Prefix for storing and loading pagination options
   // Override in implementing class
@@ -116,7 +120,7 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
   }
 
   // Update the (configurable) filters for this paginated list
-  Future<void> _saveOrderingOptions(BuildContext context) async {
+  Future<void> _setOrderingOptions(BuildContext context) async {
     // Retrieve stored setting
     dynamic _field = await orderingField();
     dynamic _order = await orderingOrder();
@@ -281,7 +285,17 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
 
       // Include user search term
       if (searchTerm.isNotEmpty) {
-        params["search"] = "${searchTerm}";
+
+        String _search = searchTerm;
+
+        // Include original search in search test
+        String original = params["original_search"] ?? "";
+
+        if (original.isNotEmpty) {
+          _search = "${original} ${_search}";
+        }
+
+        params["search"] = "${_search}";
       }
 
       // Use custom query ordering if available
@@ -369,9 +383,12 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
   @override
   Widget build (BuildContext context) {
 
-    List<Widget> children = [];
+    List<Widget> children = [
+      buildTitleWidget(context),
+      Divider(),
+    ];
 
-    if (widget.showSearch) {
+    if (showSearchWidget) {
       children.add(buildSearchInput(context));
     }
 
@@ -392,7 +409,7 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
                       return NoResultsWidget(noResultsText);
                     }
                 ),
-                separatorBuilder: (context, item) => const Divider(height: 1),
+                separatorBuilder: (context, item) => const Divider(height: .1),
               )
             ]
         )
@@ -406,16 +423,64 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
   }
 
   /*
+   * Build the title widget for this list
+   */
+  Widget buildTitleWidget(BuildContext context) {
+
+    const double icon_size = 32;
+
+    List<Widget> _icons = [];
+
+    if (filterOptions.isNotEmpty || orderingOptions.isNotEmpty) {
+      _icons.add(IconButton(
+        onPressed: () async {
+          _setOrderingOptions(context);
+        },
+        icon: Icon(Icons.filter_alt, size: icon_size)
+      ));
+    }
+
+    _icons.add(IconButton(
+        onPressed: () {
+          setState(() {
+            showSearchWidget = !showSearchWidget;
+          });
+        },
+        icon: Icon(showSearchWidget ? Icons.zoom_out : Icons.search, size: icon_size)
+    ));
+
+    _icons.add(IconButton(
+      onPressed: () async {
+        updateSearchTerm();
+      },
+      icon: Icon(Icons.refresh, size: icon_size),
+    ));
+
+    return ListTile(
+      title: Text(
+        widget.searchTitle,
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      subtitle: Text(
+        "${L10().results}: ${resultCount}",
+        style: TextStyle(
+          fontStyle: FontStyle.italic
+        ),
+      ),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: _icons,
+      ),
+    );
+  }
+
+  /*
    * Construct a search input text field for the user to enter a search term
    */
   Widget buildSearchInput(BuildContext context) {
     return ListTile(
-      leading: orderingOptions.isEmpty ? null : GestureDetector(
-        child: Icon(Icons.filter_list, color: COLOR_ACTION, size: 32),
-        onTap: () async {
-          _saveOrderingOptions(context);
-        },
-      ),
       trailing: GestureDetector(
         child: FaIcon(
           searchController.text.isEmpty ? FontAwesomeIcons.magnifyingGlass : FontAwesomeIcons.deleteLeft,
@@ -435,7 +500,6 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
         },
         decoration: InputDecoration(
           hintText: L10().search,
-          helperText: resultsString(),
         ),
       )
     );

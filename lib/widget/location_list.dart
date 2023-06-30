@@ -1,5 +1,4 @@
 import "package:flutter/material.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/stock.dart";
@@ -27,33 +26,22 @@ class _StockLocationListState extends RefreshableState<StockLocationList> {
 
   final Map<String, String> filters;
 
-  bool showFilterOptions = false;
-
-  @override
-  List<Widget> appBarActions(BuildContext context) => [
-    IconButton(
-      icon: FaIcon(FontAwesomeIcons.filter),
-      onPressed: () async {
-        setState(() {
-          showFilterOptions = !showFilterOptions;
-        });
-      },
-    )
-  ];
-
   @override
   String getAppBarTitle() => L10().stockLocations;
 
   @override
   Widget getBody(BuildContext context) {
-    return PaginatedStockLocationList(filters, showFilterOptions);
+    return PaginatedStockLocationList(filters);
   }
 }
 
 
 class PaginatedStockLocationList extends PaginatedSearchWidget {
 
-  const PaginatedStockLocationList(Map<String, String> filters, bool showSearch) : super(filters: filters, showSearch: showSearch);
+  const PaginatedStockLocationList(Map<String, String> filters, {String title = ""}) : super(filters: filters, title: title);
+
+  @override
+  String get searchTitle => title.isNotEmpty ? title : L10().stockLocations;
 
   @override
   _PaginatedStockLocationListState createState() => _PaginatedStockLocationListState();

@@ -681,11 +681,11 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           ).toList()
         )
       ),
-      PaginatedStockItemList({"part": part.pk.toString()}, true)
+      PaginatedStockItemList({"part": part.pk.toString()})
     ];
 
     if (showParameters) {
-      tabs.add(PaginatedParameterList({"part": part.pk.toString()}, true));
+      tabs.add(PaginatedParameterList({"part": part.pk.toString()}));
     }
 
     return tabs;
