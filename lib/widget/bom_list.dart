@@ -99,7 +99,7 @@ class PaginatedBomList extends PaginatedSearchWidget {
   final bool isParentPart;
 
   @override
-  String get searchTitle => isParentPart ? L10().billOfMaterials : L10().usedInDetails;
+  String get searchTitle => L10().parts;
 
   @override
   _PaginatedBomListState createState() => _PaginatedBomListState();
