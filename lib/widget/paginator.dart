@@ -289,7 +289,7 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
         String _search = searchTerm;
 
         // Include original search in search test
-        String original = (params["original_search"] ?? "") as String;
+        String original = params["original_search"] ?? "";
 
         if (original.isNotEmpty) {
           _search = "${original} ${_search}";

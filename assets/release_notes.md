@@ -2,7 +2,7 @@
 ---
 
 - Pre-fill stock location when transferring stock amount
-
+- UX improvements for searching data
 
 ### - 0.12.3 - June 2023
 ---
