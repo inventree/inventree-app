@@ -285,7 +285,17 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
 
       // Include user search term
       if (searchTerm.isNotEmpty) {
-        params["search"] = "${searchTerm}";
+
+        String _search = searchTerm;
+
+        // Include original search in search test
+        String original = (params["original_search"] ?? "") as String;
+
+        if (original.isNotEmpty) {
+          _search = "${original} ${_search}";
+        }
+
+        params["search"] = "${_search}";
       }
 
       // Use custom query ordering if available
