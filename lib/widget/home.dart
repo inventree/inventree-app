@@ -320,9 +320,10 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
     return Center(
       child: Column(
         children: [
+          Spacer(),
           Image.asset(
             "assets/image/logo_transparent.png",
-            color: Colors.white.withOpacity(0.2),
+            color: Colors.white.withOpacity(0.05),
             colorBlendMode: BlendMode.modulate,
             scale: 0.5,
           ),
@@ -340,8 +341,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
   }
 
   /*
-   * Return the main body widget for display.
-   * This depends on the current value of _tabIndex
+   * Return the main body widget for display
    */
   @override
   Widget getBody(BuildContext context) {
