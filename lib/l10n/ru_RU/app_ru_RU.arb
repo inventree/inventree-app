@@ -368,6 +368,8 @@
   "@partSettings": {},
   "partsStarred": "Детали с включёнными уведомлениями",
   "@partsStarred": {},
+  "partCategory": "Категория детали",
+  "@partCategory": {},
   "partCategoryTopLevel": "Категория детали верхнего уровня",
   "@partCategoryTopLevel": {},
   "password": "Пароль",
@@ -544,6 +546,8 @@
   "@stockItemCreate": {},
   "stockTopLevel": "Склад верхнего уровня",
   "@stockTopLevel": {},
+  "subcategory": "Подкатегория:",
+  "@subcategory": {},
   "website": "Сайт",
   "@website": {}
 }
