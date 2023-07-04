@@ -192,6 +192,8 @@
   "@editLocation": {},
   "editNotes": "Editar notas",
   "@editNotes": {},
+  "editParameter": "Editar Parâmetro",
+  "@editParameter": {},
   "editPart": "Editar a peça",
   "@editPart": {
     "description": "edit part"
