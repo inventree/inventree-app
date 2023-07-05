@@ -60,7 +60,7 @@ class PaginatedParameterList extends PaginatedSearchWidget {
   const PaginatedParameterList(Map<String, String> filters) : super(filters: filters);
 
   @override
-  String get searchTitle => L10().parts;
+  String get searchTitle => L10().parameters;
 
   @override
   _PaginatedParameterState createState() => _PaginatedParameterState();
