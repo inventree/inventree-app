@@ -69,6 +69,12 @@ class _PaginatedStockItemListState extends PaginatedSearchState<PaginatedStockIt
   @override
   Map<String, Map<String, dynamic>> get filterOptions {
     Map<String, Map<String, dynamic>> filters = {
+      "available": {
+        "default": null,
+        "label": L10().available,
+        "help_text": L10().availableStock,
+        "tristate": true,
+      },
       "in_stock": {
         "default": true,
         "label": L10().filterInStock,
@@ -80,6 +86,12 @@ class _PaginatedStockItemListState extends PaginatedSearchState<PaginatedStockIt
         "label": L10().includeSublocations,
         "help_text": L10().includeSublocationsDetail,
         "tristate": false,
+      },
+      "external": {
+        "default": null,
+        "label": L10().filterExternal,
+        "help_text": L10().filterExternalDetail,
+        "tristate": true,
       },
       "serialized": {
         "label": L10().filterSerialized,
