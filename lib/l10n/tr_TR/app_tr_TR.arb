@@ -797,6 +797,8 @@
   "@takePicture": {},
   "targetDate": "Hedeflenen Tarih",
   "@targetDate": {},
+  "templatePart": "Üst Şablon Parçası",
+  "@templatePart": {},
   "testName": "Test Adı",
   "@testName": {},
   "testPassedOrFailed": "Test başarılı veya hatalı",
