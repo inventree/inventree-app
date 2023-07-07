@@ -586,8 +586,8 @@ class APIFormField {
       });
   }
 
+  // Render a "related field" based on the "model" type
   Widget _renderRelatedField(dynamic item, bool selected, bool extended) {
-    // Render a "related field" based on the "model" type
 
     // Convert to JSON
     var data = Map<String, dynamic>.from((item ?? {}) as Map);

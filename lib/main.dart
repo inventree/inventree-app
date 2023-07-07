@@ -38,6 +38,8 @@ Future<void> main() async {
       options.dsn = SENTRY_DSN_KEY;
       options.release = release;
       options.environment = isInDebugMode() ? "debug" : "release";
+      options.diagnosticLevel = SentryLevel.debug;
+      options.attachStacktrace = true;
     });
 
     // Pass any flutter errors off to the Sentry reporting context!
