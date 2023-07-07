@@ -98,7 +98,7 @@ class UserProfileDBManager {
 
     if (exists) {
       debug("addProfile() : UserProfile '${profile.name}' already exists");
-      return false;
+      return true;
     } else {
       debug("Adding new profile: '${profile.name}'");
     }
@@ -137,6 +137,8 @@ class UserProfileDBManager {
    * Remove a user profile from the database
    */
   Future<void> deleteProfile(UserProfile profile) async {
+    debug("deleteProfile: ${profile.name}");
+
     await store.record(profile.key).delete(await _db);
   }
 
