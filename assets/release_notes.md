@@ -1,9 +1,16 @@
+### 0.12.5 - July 2023
+---
+
+- Adds extra filtering options for stock items
+- Updated translations
+
 ### 0.12.4 - July 2023
 ---
 
 - Pre-fill stock location when transferring stock amount
 - UX improvements for searching data
 - Updated translations
+
 ### - 0.12.3 - June 2023
 ---
 
