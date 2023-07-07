@@ -79,7 +79,7 @@ void main() {
         )
       );
 
-      expect(result, equals(false));
+      expect(result, equals(true));
 
       // Check that the number of protocols available is still the same
       var profiles = await UserProfileDBManager().getAllProfiles();

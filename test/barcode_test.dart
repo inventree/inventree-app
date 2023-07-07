@@ -26,7 +26,7 @@ void main() {
     final prf = await UserProfileDBManager().getProfileByName("Test Profile");
 
     if (prf != null) {
-      UserProfileDBManager().deleteProfile(prf);
+      await UserProfileDBManager().deleteProfile(prf);
     }
 
     bool result = await UserProfileDBManager().addProfile(

@@ -1,6 +1,7 @@
 import "dart:io";
 
 import "package:device_info_plus/device_info_plus.dart";
+import "package:one_context/one_context.dart";
 import "package:package_info_plus/package_info_plus.dart";
 import "package:sentry_flutter/sentry_flutter.dart";
 
@@ -148,7 +149,7 @@ Future<bool> sentryReportMessage(String message, {Map<String, String>? context})
 /*
  * Report an error message to sentry.io
  */
-Future<void> sentryReportError(String source, dynamic error, dynamic stackTrace, {Map<String, String> context = const {}}) async {
+Future<void> sentryReportError(String source, dynamic error, StackTrace? stackTrace, {Map<String, String> context = const {}}) async {
 
   print("----- Sentry Intercepted error: $error -----");
   print(stackTrace);
@@ -191,6 +192,15 @@ Future<void> sentryReportError(String source, dynamic error, dynamic stackTrace,
 
   // Ensure we pass the 'source' of the error
   context["source"] = source;
+
+  if (OneContext.hasContext) {
+    final ctx = OneContext().context;
+
+    if (ctx != null) {
+      context["widget"] = ctx.widget.toString();
+      context["widgetType"] = ctx.widget.runtimeType.toString();
+    }
+  }
 
   Sentry.configureScope((scope) {
     scope.setExtra("server", server_info);
