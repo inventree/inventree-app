@@ -255,8 +255,12 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       }
     });
 
+    // Determine if label printing is supported
+    allowLabelPrinting = await InvenTreeSettingsManager().getBool(INV_ENABLE_LABEL_PRINTING, true);
+    allowLabelPrinting &= api.getPlugins(mixin: "labels").isNotEmpty;
+
     // Request information on labels available for this stock item
-    if (InvenTreeAPI().pluginsEnabled()) {
+    if (allowLabelPrinting) {
       _getLabels();
     }
   }
@@ -318,91 +322,11 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   /// Opens a popup dialog allowing user to select a label for printing
   Future <void> _printLabel(BuildContext context) async {
 
-    var plugins = InvenTreeAPI().getPlugins(mixin: "labels");
-
-    dynamic initial_label;
-    dynamic initial_plugin;
-
-    List<Map<String, dynamic>> label_options = [];
-    List<Map<String, dynamic>> plugin_options = [];
-
-    for (var label in labels) {
-      label_options.add({
-        "display_name": label["description"],
-        "value": label["pk"],
-      });
-    }
-
-    for (var plugin in plugins) {
-      plugin_options.add({
-        "display_name": plugin.humanName,
-        "value": plugin.key,
-      });
-    }
-
-    if (labels.length == 1) {
-      initial_label =  labels.first["pk"];
-    }
-
-    if (plugins.length == 1) {
-      initial_plugin = plugins.first.key;
-    }
-
-    Map<String, dynamic> fields = {
-      "label": {
-        "label": L10().labelTemplate,
-        "type": "choice",
-        "value": initial_label,
-        "choices": label_options,
-        "required": true,
-      },
-      "plugin": {
-        "label": L10().pluginPrinter,
-        "type": "choice",
-        "value": initial_plugin,
-        "choices": plugin_options,
-        "required": true,
-      }
-    };
-
-    launchApiForm(
-      context,
-      L10().printLabel,
-      "",
-      fields,
-      icon: FontAwesomeIcons.print,
-      onSuccess: (Map<String, dynamic> data) async {
-        int labelId = (data["label"] ?? -1) as int;
-        String pluginKey = (data["plugin"] ?? "") as String;
-
-        if (labelId != -1 && pluginKey.isNotEmpty) {
-          String url = "/label/stock/${labelId}/print/?item=${widget.item.pk}&plugin=${pluginKey}";
-
-          InvenTreeAPI().get(url).then((APIResponse response) {
-            if (response.isValid() && response.statusCode == 200) {
-
-              var data = response.asMap();
-
-              if (data.containsKey("file")) {
-                var label_file = (data["file"] ?? "") as String;
-
-                // Attempt to open remote file
-                api.downloadFile(label_file);
-              }
-
-              showSnackIcon(
-                L10().printLabelSuccess,
-                success: true
-              );
-            } else {
-              showSnackIcon(
-                L10().printLabelFailure,
-                success: false,
-              );
-            }
-          });
-        }
-      },
+    selectAndPrintLabel(
+        context,
+        labels,
+        "stock",
+        "item=${widget.item.pk}"
     );
   }
 
