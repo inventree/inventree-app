@@ -9,6 +9,7 @@ import "package:inventree/helpers.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/api.dart";
 import "package:inventree/api_form.dart";
+import "package:inventree/labels.dart";
 import "package:inventree/preferences.dart";
 
 import "package:inventree/inventree/company.dart";
@@ -261,39 +262,12 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     // Request information on labels available for this stock item
     if (allowLabelPrinting) {
-      _getLabels();
+      // Clear the existing labels list
+      labels.clear();
+      labels = await getLabelTemplates("stock", {
+        "item": widget.item.pk.toString()
+      });
     }
-  }
-
-  Future <void> _getLabels() async {
-    // Clear the existing labels list
-    labels.clear();
-
-    // If the server does not support label printing, don't bother!
-    if (!InvenTreeAPI().supportsMixin("labels")) {
-      return;
-    }
-
-    InvenTreeAPI().get(
-        "/label/stock/",
-        params: {
-          "enabled": "true",
-          "item": "${widget.item.pk}",
-        },
-    ).then((APIResponse response) {
-      if (response.isValid() && response.statusCode == 200) {
-
-        for (var label in response.resultsList()) {
-          if (label is Map<String, dynamic>) {
-            labels.add(label);
-          }
-        }
-
-        if (mounted) {
-          setState(() {});
-        }
-      }
-    });
   }
 
   /// Delete the stock item from the database
