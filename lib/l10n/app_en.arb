@@ -533,6 +533,12 @@
   "keywords": "Keywords",
   "@keywords": {},
 
+  "labelPrinting": "Label Printing",
+  "@labelPrinting": {},
+
+  "labelPrintingDetail": "Enable label printing",
+  "@labelPrintingDetail": {},
+
   "labelTemplate": "Label Template",
   "@labelTemplate": {},
 

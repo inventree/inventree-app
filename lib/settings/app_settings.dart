@@ -1,18 +1,18 @@
 import "package:flutter/material.dart";
+import "package:one_context/one_context.dart";
 
 import "package:adaptive_theme/adaptive_theme.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:flutter_localized_locales/flutter_localized_locales.dart";
-import "package:inventree/app_colors.dart";
-import "package:inventree/widget/dialogs.dart";
-import "package:one_context/one_context.dart";
 
+import "package:inventree/app_colors.dart";
 import "package:inventree/api_form.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/l10n/supported_locales.dart";
 import "package:inventree/main.dart";
 import "package:inventree/preferences.dart";
 
+import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/progress.dart";
 
 
@@ -33,7 +33,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
 
   bool reportErrors = true;
   bool strictHttps = false;
-
+  bool enableLabelPrinting = true;
   bool darkMode = false;
 
   int screenOrientation = SCREEN_ORIENTATION_SYSTEM;
@@ -56,6 +56,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
     reportErrors = await InvenTreeSettingsManager().getValue(INV_REPORT_ERRORS, true) as bool;
     strictHttps = await InvenTreeSettingsManager().getValue(INV_STRICT_HTTPS, false) as bool;
     screenOrientation = await InvenTreeSettingsManager().getValue(INV_SCREEN_ORIENTATION, SCREEN_ORIENTATION_SYSTEM) as int;
+    enableLabelPrinting = await InvenTreeSettingsManager().getValue(INV_ENABLE_LABEL_PRINTING, true) as bool;
 
     darkMode = AdaptiveTheme.of(context).mode.isDark;
 
@@ -217,6 +218,20 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
                   }
                 );
               },
+            ),
+            ListTile(
+              title: Text(L10().labelPrinting),
+              subtitle: Text(L10().labelPrintingDetail),
+              leading: FaIcon(FontAwesomeIcons.print),
+              trailing: Switch(
+                value: enableLabelPrinting,
+                onChanged: (bool value) {
+                  InvenTreeSettingsManager().setValue(INV_ENABLE_LABEL_PRINTING, value);
+                  setState(() {
+                    enableLabelPrinting = value;
+                  });
+                }
+              ),
             ),
             ListTile(
               title: Text(L10().strictHttps),

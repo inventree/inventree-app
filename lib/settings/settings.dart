@@ -13,8 +13,8 @@ import "package:inventree/settings/login.dart";
 import "package:inventree/settings/part_settings.dart";
 
 
+// InvenTree settings view
 class InvenTreeSettingsWidget extends StatefulWidget {
-  // InvenTree settings view
 
   @override
   _InvenTreeSettingsState createState() => _InvenTreeSettingsState();
