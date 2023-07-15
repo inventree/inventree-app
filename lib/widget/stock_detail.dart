@@ -379,6 +379,16 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
           InvenTreeAPI().get(url).then((APIResponse response) {
             if (response.isValid() && response.statusCode == 200) {
+
+              var data = response.asMap();
+
+              if (data.containsKey("file")) {
+                var label_file = (data["file"] ?? "") as String;
+
+                // Attempt to open remote file
+                api.downloadFile(label_file);
+              }
+
               showSnackIcon(
                 L10().printLabelSuccess,
                 success: true
