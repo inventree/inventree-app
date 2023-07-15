@@ -8,6 +8,7 @@ import "package:inventree/barcode/barcode.dart";
 import "package:inventree/l10.dart";
 
 import "package:inventree/inventree/stock.dart";
+import "package:inventree/preferences.dart";
 
 import "package:inventree/widget/location_list.dart";
 import "package:inventree/widget/progress.dart";
@@ -15,6 +16,7 @@ import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/stock_detail.dart";
 import "package:inventree/widget/stock_list.dart";
+import "package:inventree/labels.dart";
 
 
 /*
@@ -37,6 +39,10 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
   _LocationDisplayState(this.location);
 
   final InvenTreeStockLocation? location;
+
+  bool allowLabelPrinting = true;
+
+  List<Map<String, dynamic>> labels = [];
 
   @override
   String getAppBarTitle() {
@@ -163,6 +169,23 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       );
     }
 
+    if (widget.location != null && allowLabelPrinting && labels.isNotEmpty) {
+      actions.add(
+          SpeedDialChild(
+              child: FaIcon(FontAwesomeIcons.print),
+              label: L10().printLabel,
+              onTap: () async {
+                selectAndPrintLabel(
+                    context,
+                    labels,
+                    "location",
+                    "location=${widget.location!.pk}"
+                );
+              }
+          )
+      );
+    }
+
     return actions;
   }
 
@@ -199,6 +222,19 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
       if (!result) {
         Navigator.of(context).pop();
+      }
+    }
+
+    allowLabelPrinting = await InvenTreeSettingsManager().getBool(INV_ENABLE_LABEL_PRINTING, true);
+    allowLabelPrinting &= api.getPlugins(mixin: "labels").isNotEmpty;
+
+    if (allowLabelPrinting) {
+      labels.clear();
+
+      if (widget.location != null) {
+        labels = await getLabelTemplates("location", {
+          "location": widget.location!.pk.toString()
+        });
       }
     }
 

@@ -25,6 +25,8 @@ const int SCREEN_ORIENTATION_LANDSCAPE = 2;
 const String INV_SOUNDS_BARCODE = "barcodeSounds";
 const String INV_SOUNDS_SERVER = "serverSounds";
 
+const String INV_ENABLE_LABEL_PRINTING = "enableLabelPrinting";
+
 // Part settings
 const String INV_PART_SHOW_PARAMETERS = "partShowParameters";
 const String INV_PART_SHOW_BOM = "partShowBom";

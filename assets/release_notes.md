@@ -1,3 +1,9 @@
+### 0.12.6 - July 2023
+--- 
+
+- Enable label printing for stock locations
+- Enable label printing for parts
+
 ### 0.12.5 - July 2023
 ---
 

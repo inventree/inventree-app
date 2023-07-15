@@ -9,6 +9,7 @@ import "package:inventree/helpers.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/api.dart";
 import "package:inventree/api_form.dart";
+import "package:inventree/labels.dart";
 import "package:inventree/preferences.dart";
 
 import "package:inventree/inventree/company.dart";
@@ -127,13 +128,18 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     }
 
-    if (labels.isNotEmpty) {
+    if (allowLabelPrinting && labels.isNotEmpty) {
       actions.add(
         SpeedDialChild(
           child: FaIcon(FontAwesomeIcons.print),
           label: L10().printLabel,
-          onTap: () {
-            _printLabel(context);
+          onTap: () async {
+            selectAndPrintLabel(
+                context,
+                labels,
+                "stock",
+                "item=${widget.item.pk}"
+            );
           }
         )
       );
@@ -198,9 +204,10 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
   int attachmentCount = 0;
 
+  bool allowLabelPrinting = true;
+
   @override
   Future<void> onBuild(BuildContext context) async {
-
     // Load part data if not already loaded
     if (part == null) {
       refresh(context);
@@ -209,9 +216,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
   @override
   Future<void> request(BuildContext context) async {
-
     await api.StockStatus.load();
-
     stockShowHistory = await InvenTreeSettingsManager().getValue(INV_STOCK_SHOW_HISTORY, false) as bool;
     stockShowTests = await InvenTreeSettingsManager().getValue(INV_STOCK_SHOW_TESTS, true) as bool;
 
@@ -254,41 +259,18 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       }
     });
 
+    // Determine if label printing is supported
+    allowLabelPrinting = await InvenTreeSettingsManager().getBool(INV_ENABLE_LABEL_PRINTING, true);
+    allowLabelPrinting &= api.getPlugins(mixin: "labels").isNotEmpty;
+
     // Request information on labels available for this stock item
-    if (InvenTreeAPI().pluginsEnabled()) {
-      _getLabels();
+    if (allowLabelPrinting) {
+      // Clear the existing labels list
+      labels.clear();
+      labels = await getLabelTemplates("stock", {
+        "item": widget.item.pk.toString()
+      });
     }
-  }
-
-  Future <void> _getLabels() async {
-    // Clear the existing labels list
-    labels.clear();
-
-    // If the server does not support label printing, don't bother!
-    if (!InvenTreeAPI().supportsMixin("labels")) {
-      return;
-    }
-
-    InvenTreeAPI().get(
-        "/label/stock/",
-        params: {
-          "enabled": "true",
-          "item": "${widget.item.pk}",
-        },
-    ).then((APIResponse response) {
-      if (response.isValid() && response.statusCode == 200) {
-
-        for (var label in response.resultsList()) {
-          if (label is Map<String, dynamic>) {
-            labels.add(label);
-          }
-        }
-
-        if (mounted) {
-          setState(() {});
-        }
-      }
-    });
   }
 
   /// Delete the stock item from the database
@@ -312,87 +294,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       },
     );
 
-  }
-
-  /// Opens a popup dialog allowing user to select a label for printing
-  Future <void> _printLabel(BuildContext context) async {
-
-    var plugins = InvenTreeAPI().getPlugins(mixin: "labels");
-
-    dynamic initial_label;
-    dynamic initial_plugin;
-
-    List<Map<String, dynamic>> label_options = [];
-    List<Map<String, dynamic>> plugin_options = [];
-
-    for (var label in labels) {
-      label_options.add({
-        "display_name": label["description"],
-        "value": label["pk"],
-      });
-    }
-
-    for (var plugin in plugins) {
-      plugin_options.add({
-        "display_name": plugin.humanName,
-        "value": plugin.key,
-      });
-    }
-
-    if (labels.length == 1) {
-      initial_label =  labels.first["pk"];
-    }
-
-    if (plugins.length == 1) {
-      initial_plugin = plugins.first.key;
-    }
-
-    Map<String, dynamic> fields = {
-      "label": {
-        "label": L10().labelTemplate,
-        "type": "choice",
-        "value": initial_label,
-        "choices": label_options,
-        "required": true,
-      },
-      "plugin": {
-        "label": L10().pluginPrinter,
-        "type": "choice",
-        "value": initial_plugin,
-        "choices": plugin_options,
-        "required": true,
-      }
-    };
-
-    launchApiForm(
-      context,
-      L10().printLabel,
-      "",
-      fields,
-      icon: FontAwesomeIcons.print,
-      onSuccess: (Map<String, dynamic> data) async {
-        int labelId = (data["label"] ?? -1) as int;
-        String pluginKey = (data["plugin"] ?? "") as String;
-
-        if (labelId != -1 && pluginKey.isNotEmpty) {
-          String url = "/label/stock/${labelId}/print/?item=${widget.item.pk}&plugin=${pluginKey}";
-
-          InvenTreeAPI().get(url).then((APIResponse response) {
-            if (response.isValid() && response.statusCode == 200) {
-              showSnackIcon(
-                L10().printLabelSuccess,
-                success: true
-              );
-            } else {
-              showSnackIcon(
-                L10().printLabelFailure,
-                success: false,
-              );
-            }
-          });
-        }
-      },
-    );
   }
 
   Future <void> _editStockItem(BuildContext context) async {
