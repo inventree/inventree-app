@@ -127,7 +127,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     }
 
-    if (labels.isNotEmpty) {
+    if (allowLabelPrinting && labels.isNotEmpty) {
       actions.add(
         SpeedDialChild(
           child: FaIcon(FontAwesomeIcons.print),
@@ -198,8 +198,11 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
   int attachmentCount = 0;
 
+  bool allowLabelPrinting = true;
+
   @override
   Future<void> onBuild(BuildContext context) async {
+    allowLabelPrinting = await InvenTreeSettingsManager().getBool(INV_ENABLE_LABEL_PRINTING, true);
 
     // Load part data if not already loaded
     if (part == null) {
@@ -209,9 +212,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
   @override
   Future<void> request(BuildContext context) async {
-
     await api.StockStatus.load();
-
     stockShowHistory = await InvenTreeSettingsManager().getValue(INV_STOCK_SHOW_HISTORY, false) as bool;
     stockShowTests = await InvenTreeSettingsManager().getValue(INV_STOCK_SHOW_TESTS, true) as bool;
 
