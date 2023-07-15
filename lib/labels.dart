@@ -22,7 +22,7 @@ Future<List<Map<String, dynamic>>> getLabelTemplates(
   data["enabled"] = "true";
 
   List<Map<String, dynamic>> labels = [];
-  
+
   await InvenTreeAPI().get(
     "/label/${labelType}/",
     params: data,

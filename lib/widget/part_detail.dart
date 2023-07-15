@@ -11,6 +11,7 @@ import "package:inventree/helpers.dart";
 import "package:inventree/inventree/bom.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/stock.dart";
+import "package:inventree/labels.dart";
 import "package:inventree/preferences.dart";
 
 import "package:inventree/widget/attachment_widget.dart";
@@ -54,16 +55,15 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   int parameterCount = 0;
 
   bool showParameters = false;
-
   bool showBom = false;
+  bool allowLabelPrinting = true;
 
   int attachmentCount = 0;
-
   int bomCount = 0;
-
   int usedInCount = 0;
-
   int variantCount = 0;
+
+  List<Map<String, dynamic>> labels = [];
 
   @override
   String getAppBarTitle() => L10().partDetails;
@@ -111,11 +111,28 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
     if (InvenTreeStockItem().canCreate) {
       actions.add(
+          SpeedDialChild(
+              child: FaIcon(FontAwesomeIcons.box),
+              label: L10().stockItemCreate,
+              onTap: () {
+                _newStockItem(context);
+              }
+          )
+      );
+    }
+
+    if (allowLabelPrinting && labels.isNotEmpty) {
+      actions.add(
         SpeedDialChild(
-          child: FaIcon(FontAwesomeIcons.box),
-          label: L10().stockItemCreate,
-          onTap: () {
-            _newStockItem(context);
+          child: FaIcon(FontAwesomeIcons.print),
+          label: L10().printLabel,
+          onTap: () async {
+            selectAndPrintLabel(
+              context,
+              labels,
+              "part",
+              "part=${widget.part.pk}"
+            );
           }
         )
       );
@@ -226,6 +243,16 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         });
       }
     });
+
+    allowLabelPrinting = await InvenTreeSettingsManager().getBool(INV_ENABLE_LABEL_PRINTING, true);
+    allowLabelPrinting &= api.getPlugins(mixin: "labels").isNotEmpty;
+
+    if (allowLabelPrinting) {
+      labels.clear();
+      labels = await getLabelTemplates("part", {
+        "part": widget.part.pk.toString(),
+      });
+    }
   }
 
   void _editPartDialog(BuildContext context) {

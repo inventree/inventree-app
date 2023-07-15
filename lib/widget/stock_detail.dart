@@ -133,8 +133,13 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         SpeedDialChild(
           child: FaIcon(FontAwesomeIcons.print),
           label: L10().printLabel,
-          onTap: () {
-            _printLabel(context);
+          onTap: () async {
+            selectAndPrintLabel(
+                context,
+                labels,
+                "stock",
+                "item=${widget.item.pk}"
+            );
           }
         )
       );
@@ -203,8 +208,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
   @override
   Future<void> onBuild(BuildContext context) async {
-    allowLabelPrinting = await InvenTreeSettingsManager().getBool(INV_ENABLE_LABEL_PRINTING, true);
-
     // Load part data if not already loaded
     if (part == null) {
       refresh(context);
@@ -291,17 +294,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       },
     );
 
-  }
-
-  /// Opens a popup dialog allowing user to select a label for printing
-  Future <void> _printLabel(BuildContext context) async {
-
-    selectAndPrintLabel(
-        context,
-        labels,
-        "stock",
-        "item=${widget.item.pk}"
-    );
   }
 
   Future <void> _editStockItem(BuildContext context) async {
