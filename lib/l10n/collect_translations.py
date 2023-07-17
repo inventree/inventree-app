@@ -96,7 +96,13 @@ def generate_locale_list(locales):
 
         output.write("const List<Locale> supported_locales = [\n");
 
+        locales = sorted(locales)
+
         for locale in locales:
+
+            if locale.startswith('.'):
+                continue
+
             splt = locale.split("_")
 
             if len(splt) == 2:
