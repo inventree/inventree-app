@@ -3,6 +3,7 @@
 
 - Enable label printing for stock locations
 - Enable label printing for parts
+- Updated translation support
 
 ### 0.12.5 - July 2023
 ---

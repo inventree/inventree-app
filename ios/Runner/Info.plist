@@ -34,11 +34,13 @@
 		<string>pt-BR</string>
 		<string>pt-PT</string>
 		<string>ru-RU</string>
+		<string>sl_SI</string>
 		<string>sv-SE</string>
 		<string>th-TH</string>
 		<string>tr-TR</string>
 		<string>vi-VN</string>
 		<string>zh-CN</string>
+		<string>zh-TW</string>
 	</array>
 	<key>CFBundleName</key>
 	<string>InvenTree</string>
