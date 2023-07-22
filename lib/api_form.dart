@@ -582,7 +582,7 @@ class APIFormField {
           return false;
         }
 
-        return item["pk"] == selectedItem["pk"];
+        return item["pk"].toString() == selectedItem["pk"].toString();
       });
   }
 
