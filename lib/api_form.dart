@@ -566,7 +566,7 @@ class APIFormField {
         }
       },
       dropdownBuilder: (context, item) {
-        return _renderRelatedField(item, true, false);
+        return _renderRelatedField(name, item, true, false);
       },
       onSaved: (item) {
         if (item != null) {
@@ -609,91 +609,90 @@ class APIFormField {
       );
     }
 
-      switch (model) {
-        case "part":
+    switch (model) {
+      case "part":
 
-          var part = InvenTreePart.fromJson(data);
+        var part = InvenTreePart.fromJson(data);
 
-          return ListTile(
-            title: Text(
-                part.fullname,
-                style: TextStyle(fontWeight: selected && extended ? FontWeight.bold : FontWeight.normal)
-            ),
-            subtitle: extended ? Text(
-              part.description,
-              style: TextStyle(fontWeight: selected ? FontWeight.bold : FontWeight.normal),
-            ) : null,
-            leading: extended ? InvenTreeAPI().getThumbnail(part.thumbnail) : null,
-          );
+        return ListTile(
+          title: Text(
+              part.fullname,
+              style: TextStyle(fontWeight: selected && extended ? FontWeight.bold : FontWeight.normal)
+          ),
+          subtitle: extended ? Text(
+            part.description,
+            style: TextStyle(fontWeight: selected ? FontWeight.bold : FontWeight.normal),
+          ) : null,
+          leading: extended ? InvenTreeAPI().getThumbnail(part.thumbnail) : null,
+        );
 
-        case "partcategory":
+      case "partcategory":
 
-          var cat = InvenTreePartCategory.fromJson(data);
+        var cat = InvenTreePartCategory.fromJson(data);
 
-          return ListTile(
-            title: Text(
-                cat.pathstring,
-                style: TextStyle(fontWeight: selected && extended ? FontWeight.bold : FontWeight.normal)
-            ),
-            subtitle: extended ? Text(
-              cat.description,
-              style: TextStyle(fontWeight: selected ? FontWeight.bold : FontWeight.normal),
-            ) : null,
-          );
-        case "stocklocation":
+        return ListTile(
+          title: Text(
+              cat.pathstring,
+              style: TextStyle(fontWeight: selected && extended ? FontWeight.bold : FontWeight.normal)
+          ),
+          subtitle: extended ? Text(
+            cat.description,
+            style: TextStyle(fontWeight: selected ? FontWeight.bold : FontWeight.normal),
+          ) : null,
+        );
+      case "stocklocation":
 
-          var loc = InvenTreeStockLocation.fromJson(data);
+        var loc = InvenTreeStockLocation.fromJson(data);
 
-          return ListTile(
-            title: Text(
-                loc.pathstring,
-                style: TextStyle(fontWeight: selected && extended ? FontWeight.bold : FontWeight.normal)
-            ),
-            subtitle: extended ? Text(
-              loc.description,
-              style: TextStyle(fontWeight: selected ? FontWeight.bold : FontWeight.normal),
-            ) : null,
-          );
-        case "owner":
-          String name = (data["name"] ?? "") as String;
-          bool isGroup = (data["label"] ?? "") == "group";
-          return ListTile(
-            title: Text(name),
-            leading: FaIcon(isGroup ? FontAwesomeIcons.users : FontAwesomeIcons.user),
-          );
-        case "contact":
-          String name = (data["name"] ?? "") as String;
-          String role = (data["role"] ?? "") as String;
-          return ListTile(
-            title: Text(name),
-            subtitle: Text(role),
-          );
-        case "company":
-          var company = InvenTreeCompany.fromJson(data);
-          return ListTile(
-              title: Text(company.name),
-              subtitle: extended ? Text(company.description) : null,
-              leading: InvenTreeAPI().getThumbnail(company.thumbnail)
-          );
-        case "projectcode":
-          var project_code = InvenTreeProjectCode.fromJson(data);
-          return ListTile(
-              title: Text(project_code.code),
-              subtitle: Text(project_code.description),
-              leading: FaIcon(FontAwesomeIcons.list)
-          );
-        default:
-          return ListTile(
-            title: Text(
-                "Unsupported model",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: COLOR_DANGER
-                )
-            ),
-            subtitle: Text("Model '${model}' rendering not supported"),
-          );
-      }
+        return ListTile(
+          title: Text(
+              loc.pathstring,
+              style: TextStyle(fontWeight: selected && extended ? FontWeight.bold : FontWeight.normal)
+          ),
+          subtitle: extended ? Text(
+            loc.description,
+            style: TextStyle(fontWeight: selected ? FontWeight.bold : FontWeight.normal),
+          ) : null,
+        );
+      case "owner":
+        String name = (data["name"] ?? "") as String;
+        bool isGroup = (data["label"] ?? "") == "group";
+        return ListTile(
+          title: Text(name),
+          leading: FaIcon(isGroup ? FontAwesomeIcons.users : FontAwesomeIcons.user),
+        );
+      case "contact":
+        String name = (data["name"] ?? "") as String;
+        String role = (data["role"] ?? "") as String;
+        return ListTile(
+          title: Text(name),
+          subtitle: Text(role),
+        );
+      case "company":
+        var company = InvenTreeCompany.fromJson(data);
+        return ListTile(
+            title: Text(company.name),
+            subtitle: extended ? Text(company.description) : null,
+            leading: InvenTreeAPI().getThumbnail(company.thumbnail)
+        );
+      case "projectcode":
+        var project_code = InvenTreeProjectCode.fromJson(data);
+        return ListTile(
+            title: Text(project_code.code),
+            subtitle: Text(project_code.description),
+            leading: FaIcon(FontAwesomeIcons.list)
+        );
+      default:
+        return ListTile(
+          title: Text(
+              "Unsupported model",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: COLOR_DANGER
+              )
+          ),
+          subtitle: Text("Model '${model}' rendering not supported"),
+        );
     }
   }
 
