@@ -513,7 +513,7 @@ class APIFormField {
         isFilterOnline: true,
         showSearchBox: true,
         itemBuilder: (context, item, isSelected) {
-          return _renderRelatedField(item, isSelected, true);
+          return _renderRelatedField(name, item, isSelected, true);
         },
         emptyBuilder: (context, item) {
           return _renderEmptyResult();
@@ -587,95 +587,113 @@ class APIFormField {
   }
 
   // Render a "related field" based on the "model" type
-  Widget _renderRelatedField(dynamic item, bool selected, bool extended) {
+  Widget _renderRelatedField(String fieldName, dynamic item, bool selected, bool extended) {
 
     // Convert to JSON
-    var data = Map<String, dynamic>.from((item ?? {}) as Map);
+    Map<String, dynamic> data = {};
 
-    switch (model) {
-      case "part":
+    try {
+      data = Map<String, dynamic>.from((item ?? {}) as Map);
+    } catch (error, stackTrace) {
+      data = {};
 
-        var part = InvenTreePart.fromJson(data);
+      sentryReportError(
+        "_renderRelatedField", error, stackTrace,
+        context: {
+          "method": "_renderRelateField",
+          "field_name": fieldName,
+          "item": item.toString(),
+          "selected": selected.toString(),
+          "extended": extended.toString(),
+        }
+      );
+    }
 
-        return ListTile(
-          title: Text(
-            part.fullname,
-              style: TextStyle(fontWeight: selected && extended ? FontWeight.bold : FontWeight.normal)
-          ),
-          subtitle: extended ? Text(
-            part.description,
-            style: TextStyle(fontWeight: selected ? FontWeight.bold : FontWeight.normal),
-          ) : null,
-          leading: extended ? InvenTreeAPI().getThumbnail(part.thumbnail) : null,
-        );
+      switch (model) {
+        case "part":
 
-      case "partcategory":
+          var part = InvenTreePart.fromJson(data);
 
-        var cat = InvenTreePartCategory.fromJson(data);
+          return ListTile(
+            title: Text(
+                part.fullname,
+                style: TextStyle(fontWeight: selected && extended ? FontWeight.bold : FontWeight.normal)
+            ),
+            subtitle: extended ? Text(
+              part.description,
+              style: TextStyle(fontWeight: selected ? FontWeight.bold : FontWeight.normal),
+            ) : null,
+            leading: extended ? InvenTreeAPI().getThumbnail(part.thumbnail) : null,
+          );
 
-        return ListTile(
-          title: Text(
-            cat.pathstring,
-            style: TextStyle(fontWeight: selected && extended ? FontWeight.bold : FontWeight.normal)
-          ),
-          subtitle: extended ? Text(
-            cat.description,
-            style: TextStyle(fontWeight: selected ? FontWeight.bold : FontWeight.normal),
-          ) : null,
-        );
-      case "stocklocation":
+        case "partcategory":
 
-        var loc = InvenTreeStockLocation.fromJson(data);
+          var cat = InvenTreePartCategory.fromJson(data);
 
-        return ListTile(
-          title: Text(
-            loc.pathstring,
-              style: TextStyle(fontWeight: selected && extended ? FontWeight.bold : FontWeight.normal)
-          ),
-          subtitle: extended ? Text(
-            loc.description,
-            style: TextStyle(fontWeight: selected ? FontWeight.bold : FontWeight.normal),
-          ) : null,
-        );
-      case "owner":
-        String name = (data["name"] ?? "") as String;
-        bool isGroup = (data["label"] ?? "") == "group";
-        return ListTile(
-          title: Text(name),
-          leading: FaIcon(isGroup ? FontAwesomeIcons.users : FontAwesomeIcons.user),
-        );
-      case "contact":
-        String name = (data["name"] ?? "") as String;
-        String role = (data["role"] ?? "") as String;
-        return ListTile(
-          title: Text(name),
-          subtitle: Text(role),
-        );
-      case "company":
-        var company = InvenTreeCompany.fromJson(data);
-        return ListTile(
-          title: Text(company.name),
-          subtitle: extended ? Text(company.description) : null,
-          leading: InvenTreeAPI().getThumbnail(company.thumbnail)
-        );
-      case "projectcode":
-        var project_code = InvenTreeProjectCode.fromJson(data);
-        return ListTile(
-          title: Text(project_code.code),
-          subtitle: Text(project_code.description),
-          leading: FaIcon(FontAwesomeIcons.list)
-        );
-      default:
-        return ListTile(
-          title: Text(
-            "Unsupported model",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: COLOR_DANGER
-            )
-          ),
-          subtitle: Text("Model '${model}' rendering not supported"),
-        );
+          return ListTile(
+            title: Text(
+                cat.pathstring,
+                style: TextStyle(fontWeight: selected && extended ? FontWeight.bold : FontWeight.normal)
+            ),
+            subtitle: extended ? Text(
+              cat.description,
+              style: TextStyle(fontWeight: selected ? FontWeight.bold : FontWeight.normal),
+            ) : null,
+          );
+        case "stocklocation":
+
+          var loc = InvenTreeStockLocation.fromJson(data);
+
+          return ListTile(
+            title: Text(
+                loc.pathstring,
+                style: TextStyle(fontWeight: selected && extended ? FontWeight.bold : FontWeight.normal)
+            ),
+            subtitle: extended ? Text(
+              loc.description,
+              style: TextStyle(fontWeight: selected ? FontWeight.bold : FontWeight.normal),
+            ) : null,
+          );
+        case "owner":
+          String name = (data["name"] ?? "") as String;
+          bool isGroup = (data["label"] ?? "") == "group";
+          return ListTile(
+            title: Text(name),
+            leading: FaIcon(isGroup ? FontAwesomeIcons.users : FontAwesomeIcons.user),
+          );
+        case "contact":
+          String name = (data["name"] ?? "") as String;
+          String role = (data["role"] ?? "") as String;
+          return ListTile(
+            title: Text(name),
+            subtitle: Text(role),
+          );
+        case "company":
+          var company = InvenTreeCompany.fromJson(data);
+          return ListTile(
+              title: Text(company.name),
+              subtitle: extended ? Text(company.description) : null,
+              leading: InvenTreeAPI().getThumbnail(company.thumbnail)
+          );
+        case "projectcode":
+          var project_code = InvenTreeProjectCode.fromJson(data);
+          return ListTile(
+              title: Text(project_code.code),
+              subtitle: Text(project_code.description),
+              leading: FaIcon(FontAwesomeIcons.list)
+          );
+        default:
+          return ListTile(
+            title: Text(
+                "Unsupported model",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: COLOR_DANGER
+                )
+            ),
+            subtitle: Text("Model '${model}' rendering not supported"),
+          );
+      }
     }
   }
 
