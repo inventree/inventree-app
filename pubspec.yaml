@@ -70,3 +70,7 @@ flutter:
     - assets/sounds/barcode_scan.mp3
     - assets/sounds/barcode_error.mp3
     - assets/sounds/server_error.mp3
+
+sentry:
+  upload_debug_symbols: true
+  upload_source_maps: true

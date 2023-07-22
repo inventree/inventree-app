@@ -513,7 +513,7 @@ class APIFormField {
         isFilterOnline: true,
         showSearchBox: true,
         itemBuilder: (context, item, isSelected) {
-          return _renderRelatedField(item, isSelected, true);
+          return _renderRelatedField(name, item, isSelected, true);
         },
         emptyBuilder: (context, item) {
           return _renderEmptyResult();
@@ -566,7 +566,7 @@ class APIFormField {
         }
       },
       dropdownBuilder: (context, item) {
-        return _renderRelatedField(item, true, false);
+        return _renderRelatedField(name, item, true, false);
       },
       onSaved: (item) {
         if (item != null) {
@@ -582,15 +582,32 @@ class APIFormField {
           return false;
         }
 
-        return item["pk"] == selectedItem["pk"];
+        return item["pk"].toString() == selectedItem["pk"].toString();
       });
   }
 
   // Render a "related field" based on the "model" type
-  Widget _renderRelatedField(dynamic item, bool selected, bool extended) {
+  Widget _renderRelatedField(String fieldName, dynamic item, bool selected, bool extended) {
 
     // Convert to JSON
-    var data = Map<String, dynamic>.from((item ?? {}) as Map);
+    Map<String, dynamic> data = {};
+
+    try {
+      data = Map<String, dynamic>.from((item ?? {}) as Map);
+    } catch (error, stackTrace) {
+      data = {};
+
+      sentryReportError(
+        "_renderRelatedField", error, stackTrace,
+        context: {
+          "method": "_renderRelateField",
+          "field_name": fieldName,
+          "item": item.toString(),
+          "selected": selected.toString(),
+          "extended": extended.toString(),
+        }
+      );
+    }
 
     switch (model) {
       case "part":
@@ -599,7 +616,7 @@ class APIFormField {
 
         return ListTile(
           title: Text(
-            part.fullname,
+              part.fullname,
               style: TextStyle(fontWeight: selected && extended ? FontWeight.bold : FontWeight.normal)
           ),
           subtitle: extended ? Text(
@@ -615,8 +632,8 @@ class APIFormField {
 
         return ListTile(
           title: Text(
-            cat.pathstring,
-            style: TextStyle(fontWeight: selected && extended ? FontWeight.bold : FontWeight.normal)
+              cat.pathstring,
+              style: TextStyle(fontWeight: selected && extended ? FontWeight.bold : FontWeight.normal)
           ),
           subtitle: extended ? Text(
             cat.description,
@@ -629,7 +646,7 @@ class APIFormField {
 
         return ListTile(
           title: Text(
-            loc.pathstring,
+              loc.pathstring,
               style: TextStyle(fontWeight: selected && extended ? FontWeight.bold : FontWeight.normal)
           ),
           subtitle: extended ? Text(
@@ -654,25 +671,25 @@ class APIFormField {
       case "company":
         var company = InvenTreeCompany.fromJson(data);
         return ListTile(
-          title: Text(company.name),
-          subtitle: extended ? Text(company.description) : null,
-          leading: InvenTreeAPI().getThumbnail(company.thumbnail)
+            title: Text(company.name),
+            subtitle: extended ? Text(company.description) : null,
+            leading: InvenTreeAPI().getThumbnail(company.thumbnail)
         );
       case "projectcode":
         var project_code = InvenTreeProjectCode.fromJson(data);
         return ListTile(
-          title: Text(project_code.code),
-          subtitle: Text(project_code.description),
-          leading: FaIcon(FontAwesomeIcons.list)
+            title: Text(project_code.code),
+            subtitle: Text(project_code.description),
+            leading: FaIcon(FontAwesomeIcons.list)
         );
       default:
         return ListTile(
           title: Text(
-            "Unsupported model",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: COLOR_DANGER
-            )
+              "Unsupported model",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: COLOR_DANGER
+              )
           ),
           subtitle: Text("Model '${model}' rendering not supported"),
         );
