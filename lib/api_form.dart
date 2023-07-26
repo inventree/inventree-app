@@ -299,7 +299,7 @@ class APIFormField {
       default:
         return ListTile(
           title: Text(
-            "Unsupported field type: '${type}'",
+            "Unsupported field type: '${type}' for field '${name}'",
             style: TextStyle(
                 color: COLOR_DANGER,
                 fontStyle: FontStyle.italic),
