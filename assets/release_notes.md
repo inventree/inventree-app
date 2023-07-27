@@ -1,3 +1,8 @@
+### 0.12.7 - July 2023
+---
+
+- Bug fix for Supplier Part editing page
+
 ### 0.12.6 - July 2023
 --- 
 

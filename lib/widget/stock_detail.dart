@@ -636,7 +636,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         ListTile(
           title: Text(L10().packaging),
           subtitle: Text(widget.item.packaging),
-          leading: FaIcon(FontAwesomeIcons.box),
+          leading: FaIcon(FontAwesomeIcons.boxesPacking),
         )
       );
     }

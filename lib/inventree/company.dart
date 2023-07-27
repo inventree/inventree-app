@@ -122,14 +122,22 @@ class InvenTreeSupplierPart extends InvenTreeModel {
 
   @override
   Map<String, dynamic> formFields() {
-    return {
+    Map<String, dynamic> fields = {
       "supplier": {},
       "SKU": {},
       "link": {},
       "note": {},
       "packaging": {},
-      "pack_size": {},
     };
+
+    // At some point, pack_size was changed to pack_quantity
+    if (InvenTreeAPI().apiVersion < 117) {
+      fields["pack_size"] = {};
+    } else {
+      fields["pack_quantity"] = {};
+    }
+
+    return fields;
   }
 
   Map<String, String> _filters() {
@@ -177,6 +185,16 @@ class InvenTreeSupplierPart extends InvenTreeModel {
   String get partDescription => getString("description", subKey: "part_detail");
   
   String get note => getString("note");
+
+  String get packaging => getString("packaging");
+
+  String get pack_quantity {
+    if (InvenTreeAPI().apiVersion < 117) {
+      return getString("pack_size");
+    } else {
+      return getString("pack_quantity");
+    }
+  }
 
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreeSupplierPart.fromJson(json);
