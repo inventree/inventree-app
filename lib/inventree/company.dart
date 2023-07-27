@@ -186,6 +186,16 @@ class InvenTreeSupplierPart extends InvenTreeModel {
   
   String get note => getString("note");
 
+  String get packaging => getString("packaging");
+
+  String get pack_quantity {
+    if (InvenTreeAPI().apiVersion < 117) {
+      return getString("pack_size");
+    } else {
+      return getString("pack_quantity");
+    }
+  }
+
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreeSupplierPart.fromJson(json);
 }

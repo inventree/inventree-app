@@ -192,6 +192,18 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
       );
     }
 
+    // Packaging
+    if (widget.supplierPart.packaging.isNotEmpty || widget.supplierPart.pack_quantity.isNotEmpty) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().packaging),
+          subtitle: widget.supplierPart.packaging.isNotEmpty ? Text(widget.supplierPart.packaging) : null,
+          leading: FaIcon(FontAwesomeIcons.boxesPacking),
+          trailing: widget.supplierPart.pack_quantity.isNotEmpty ? Text(widget.supplierPart.pack_quantity) : null,
+        )
+      );
+    }
+
     if (widget.supplierPart.link.isNotEmpty) {
       tiles.add(
         ListTile(
