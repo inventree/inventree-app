@@ -673,6 +673,8 @@
   "@stockTopLevel": {},
   "subcategory": "Подкатегория:",
   "@subcategory": {},
+  "upload": "Загрузить",
+  "@upload": {},
   "website": "Сайт",
   "@website": {}
 }
