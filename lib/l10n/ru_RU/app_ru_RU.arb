@@ -537,6 +537,10 @@
   "@remove": {
     "description": "remove"
   },
+  "removeStock": "Удалить запасы",
+  "@removeStock": {
+    "description": "remove stock"
+  },
   "reportBug": "Сообщить об ошибке",
   "@reportBug": {},
   "reportBugDescription": "Отправить сообщение об ошибке (требуется учетная запись GitHub)",
@@ -699,7 +703,7 @@
   "@stockItemCreate": {},
   "stockItemCreateDetail": "Создать новый компонент в этом месте",
   "@stockItemCreateDetail": {},
-  "stockItemDelete": "Удалить компонент со склада",
+  "stockItemDelete": "Удалить складскую позицию",
   "@stockItemDelete": {},
   "stockItemDeleteConfirm": "Вы уверены, что хотите удалить этот элемент Bom?",
   "@stockItemDeleteConfirm": {},
@@ -725,6 +729,8 @@
   "@tokenMissingFromResponse": {},
   "totalPrice": "Общая стоимость",
   "@totalPrice": {},
+  "transferStockLocation": "Изменить местоположение склада",
+  "@transferStockLocation": {},
   "translate": "Перевод",
   "@translate": {},
   "translateHelp": "Помочь перевести приложение InvenTree",
