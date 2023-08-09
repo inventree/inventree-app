@@ -40,8 +40,6 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
   final InvenTreeStockLocation? location;
 
-  bool allowLabelPrinting = true;
-
   List<Map<String, dynamic>> labels = [];
 
   @override
@@ -169,7 +167,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       );
     }
 
-    if (widget.location != null && allowLabelPrinting && labels.isNotEmpty) {
+    if (widget.location != null && labels.isNotEmpty) {
       actions.add(
           SpeedDialChild(
               child: FaIcon(FontAwesomeIcons.print),
@@ -225,21 +223,23 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       }
     }
 
-    allowLabelPrinting = await InvenTreeSettingsManager().getBool(INV_ENABLE_LABEL_PRINTING, true);
+    List<Map<String, dynamic>> _labels = [];
+    bool allowLabelPrinting = await InvenTreeSettingsManager().getBool(INV_ENABLE_LABEL_PRINTING, true);
     allowLabelPrinting &= api.getPlugins(mixin: "labels").isNotEmpty;
 
     if (allowLabelPrinting) {
-      labels.clear();
 
       if (widget.location != null) {
-        labels = await getLabelTemplates("location", {
+        _labels = await getLabelTemplates("location", {
           "location": widget.location!.pk.toString()
         });
       }
     }
 
     if (mounted) {
-      setState(() {});
+      setState(() {
+        labels = _labels;
+      });
     }
   }
 
