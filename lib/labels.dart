@@ -66,7 +66,7 @@ Future<void> selectAndPrintLabel(
 
   // Construct list of available label templates
   for (var label in labels) {
-    String display_name = (label["description"] ?? "").toString();
+    String display_name = (label["description"] ?? label["name"] ?? "").toString();
     int pk = (label["pk"] ?? -1) as int;
 
     if (display_name.isNotEmpty && pk > 0) {
