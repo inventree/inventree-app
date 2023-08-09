@@ -259,7 +259,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     List<Map<String, dynamic>> _labels = [];
     bool allowLabelPrinting = await InvenTreeSettingsManager().getBool(INV_ENABLE_LABEL_PRINTING, true);
-    allowLabelPrinting &= api.getPlugins(mixin: "labels").isNotEmpty;
+    allowLabelPrinting &= api.supportsMixin("labels");
 
     // Request information on labels available for this stock item
     if (allowLabelPrinting) {
@@ -272,6 +272,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     if (mounted) {
       setState(() {
         labels = _labels;
+        print("labels: ${labels.length}");
       });
     }
   }

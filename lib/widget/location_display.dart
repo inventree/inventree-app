@@ -225,7 +225,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
     List<Map<String, dynamic>> _labels = [];
     bool allowLabelPrinting = await InvenTreeSettingsManager().getBool(INV_ENABLE_LABEL_PRINTING, true);
-    allowLabelPrinting &= api.getPlugins(mixin: "labels").isNotEmpty;
+    allowLabelPrinting &= api.supportsMixin("labels");
 
     if (allowLabelPrinting) {
 
