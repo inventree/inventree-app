@@ -272,7 +272,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     if (mounted) {
       setState(() {
         labels = _labels;
-        print("labels: ${labels.length}");
       });
     }
   }
