@@ -289,7 +289,7 @@
   "@homeShowSubscribed": {},
   "homeShowSubscribedDescription": "Показывать детали, на которые включены уведомления, на главной странице",
   "@homeShowSubscsribedDescription": {},
-  "homeShowPoDescription": "Показать кнопку заказа заказа на главной станице",
+  "homeShowPoDescription": "Показывать кнопку заказа на главном экране",
   "@homeShowPoDescription": {},
   "homeShowSuppliers": "Показать поставщиков",
   "@homeShowSuppliers": {},
@@ -729,6 +729,10 @@
   "@tokenMissingFromResponse": {},
   "totalPrice": "Общая стоимость",
   "@totalPrice": {},
+  "transferStock": "Переместить запасы",
+  "@transferStock": {
+    "description": "transfer stock"
+  },
   "transferStockLocation": "Изменить местоположение склада",
   "@transferStockLocation": {},
   "translate": "Перевод",
