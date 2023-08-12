@@ -1,7 +1,9 @@
-### 0.12.7 - July 2023
+### 0.12.7 - August 2023
 ---
 
 - Bug fix for Supplier Part editing page
+- Bug fix for label printing (blank template names)
+- Updated translations
 
 ### 0.12.6 - July 2023
 --- 
@@ -9,7 +11,7 @@
 - Enable label printing for stock locations
 - Enable label printing for parts
 - Updated translation support
-- Bug files
+- Bug fixes
 
 ### 0.12.5 - July 2023
 ---
