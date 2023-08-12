@@ -645,11 +645,7 @@ class InvenTreeAPI {
   // Request plugin information from the server
   Future<bool> getPluginInformation() async {
 
-    // The server does not support plugins, or they are not enabled
-    if (!pluginsEnabled()) {
-      _plugins.clear();
-      return true;
-    }
+    _plugins.clear();
 
     debug("API: getPluginInformation()");
 

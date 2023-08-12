@@ -128,7 +128,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     }
 
-    if (allowLabelPrinting && labels.isNotEmpty) {
+    if (labels.isNotEmpty) {
       actions.add(
         SpeedDialChild(
           child: FaIcon(FontAwesomeIcons.print),
@@ -204,8 +204,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
   int attachmentCount = 0;
 
-  bool allowLabelPrinting = true;
-
   @override
   Future<void> onBuild(BuildContext context) async {
     // Load part data if not already loaded
@@ -259,16 +257,21 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       }
     });
 
-    // Determine if label printing is supported
-    allowLabelPrinting = await InvenTreeSettingsManager().getBool(INV_ENABLE_LABEL_PRINTING, true);
-    allowLabelPrinting &= api.getPlugins(mixin: "labels").isNotEmpty;
+    List<Map<String, dynamic>> _labels = [];
+    bool allowLabelPrinting = await InvenTreeSettingsManager().getBool(INV_ENABLE_LABEL_PRINTING, true);
+    allowLabelPrinting &= api.supportsMixin("labels");
 
     // Request information on labels available for this stock item
     if (allowLabelPrinting) {
       // Clear the existing labels list
-      labels.clear();
-      labels = await getLabelTemplates("stock", {
+      _labels = await getLabelTemplates("stock", {
         "item": widget.item.pk.toString()
+      });
+    }
+
+    if (mounted) {
+      setState(() {
+        labels = _labels;
       });
     }
   }

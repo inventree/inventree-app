@@ -56,7 +56,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   bool showParameters = false;
   bool showBom = false;
-  bool allowLabelPrinting = true;
 
   int attachmentCount = 0;
   int bomCount = 0;
@@ -121,7 +120,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       );
     }
 
-    if (allowLabelPrinting && labels.isNotEmpty) {
+    if (labels.isNotEmpty) {
       actions.add(
         SpeedDialChild(
           child: FaIcon(FontAwesomeIcons.print),
@@ -244,13 +243,19 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       }
     });
 
-    allowLabelPrinting = await InvenTreeSettingsManager().getBool(INV_ENABLE_LABEL_PRINTING, true);
-    allowLabelPrinting &= api.getPlugins(mixin: "labels").isNotEmpty;
+    List<Map<String, dynamic>> _labels = [];
+    bool allowLabelPrinting = await InvenTreeSettingsManager().getBool(INV_ENABLE_LABEL_PRINTING, true);
+    allowLabelPrinting &= api.supportsMixin("labels");
 
     if (allowLabelPrinting) {
-      labels.clear();
-      labels = await getLabelTemplates("part", {
+      _labels = await getLabelTemplates("part", {
         "part": widget.part.pk.toString(),
+      });
+    }
+
+    if (mounted) {
+      setState(() {
+        labels = _labels;
       });
     }
   }
