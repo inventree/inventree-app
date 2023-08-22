@@ -23,7 +23,7 @@ jobs:
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.10.4'
+        flutter-version: '3.13.0'
         channel: 'stable'
     - run: flutter --version
     - name: Setup Gradle
