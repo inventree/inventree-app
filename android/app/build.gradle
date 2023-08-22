@@ -48,7 +48,7 @@ android {
 
     defaultConfig {
         applicationId "inventree.inventree_app"
-        minSdkVersion 25
+        minSdkVersion 33
         targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
