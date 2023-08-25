@@ -36,7 +36,6 @@ jobs:
         python3 collect_translations.py
     - name: Build for Android
       run: |
-        flutter upgrade
         flutter pub get
         cp lib/dummy_dsn.dart lib/dsn.dart
         flutter build apk --debug
