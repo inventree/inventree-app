@@ -33,7 +33,6 @@ jobs:
         python3 collect_translations.py
     - name: Build for iOS
       run: |
-        flutter upgrade
         flutter pub get
         cd ios
         pod repo update

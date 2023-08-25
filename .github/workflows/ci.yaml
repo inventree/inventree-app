@@ -46,7 +46,6 @@ jobs:
           python3 collect_translations.py
       - name: Static Analysis Tests
         run: |
-          flutter upgrade
           cp lib/dummy_dsn.dart lib/dsn.dart
           python3 find_dart_files.py
           flutter pub get
