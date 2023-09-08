@@ -451,12 +451,28 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       "location": {
         "value": widget.item.locationId,
       },
+      "status": {
+        "parent": "items",
+        "nested": true,
+        "value": widget.item.status,
+      },
+      "packaging": {
+        "parent": "items",
+        "nested": true,
+        "value": widget.item.packaging,
+      },
       "notes": {},
     };
 
     if (widget.item.isSerialized()) {
       // Prevent editing of 'quantity' field if the item is serialized
       fields["quantity"]["hidden"] = true;
+    }
+
+    // Old API does not support these fields
+    if (!api.supportsStockAdjustExtraFields) {
+      fields.remove("packaging");
+      fields.remove("status");
     }
 
     launchApiForm(

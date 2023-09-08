@@ -1,3 +1,8 @@
+### 0.12.8 - September 2023
+---
+
+- Added extra options for transferring stock items
+
 ### 0.12.7 - August 2023
 ---
 
