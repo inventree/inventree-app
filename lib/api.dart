@@ -323,6 +323,9 @@ class InvenTreeAPI {
   // Project codes require v109 or newer
   bool get supportsProjectCodes => isConnected() && apiVersion >= 109;
 
+  // Does the server support extra fields on stock adjustment actions?
+  bool get supportsStockAdjustExtraFields => isConnected() && apiVersion >= 133;
+
   // Are plugins enabled on the server?
   bool _pluginsEnabled = false;
 
