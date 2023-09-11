@@ -58,8 +58,9 @@ class BarcodeHandler {
     *
     * Returns true only if the barcode scanner should remain open
     */
-  Future<void> processBarcode(String barcode, {String url = "barcode/"}) async {
-
+  Future<void> processBarcode(String barcode,
+      {String url = "barcode/",
+      Map<String, dynamic> extra_data = const {}}) async {
     debug("Scanned barcode data: '${barcode}'");
 
     barcode = barcode.trim();
@@ -82,6 +83,7 @@ class BarcodeHandler {
         url,
         body: {
           "barcode": barcode,
+          ...extra_data,
         },
         expectedStatusCode: null,  // Do not show an error on "unexpected code"
     );

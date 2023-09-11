@@ -104,6 +104,19 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
         );
       }
 
+      actions.add(
+        SpeedDialChild(
+          child: Icon(Icons.barcode_reader),
+          label: L10().scanReceivedParts,
+          onTap:() async {
+            scanBarcode(
+              context,
+              handler: POReceiveBarcodeHandler(location: location),
+            );
+          },
+        )
+      );
+
       // Scan this location into another one
       if (InvenTreeStockLocation().canEdit) {
         actions.add(

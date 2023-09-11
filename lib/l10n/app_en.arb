@@ -988,6 +988,9 @@
   "scanIntoLocationDetail": "Scan this item into location",
   "@scanIntoLocationDetail": {},
 
+  "scanReceivedParts": "Scan Received Parts",
+  "@scanReceivedParts": {},
+
   "search": "Search",
   "@search": {
     "description": "search"

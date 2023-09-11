@@ -645,6 +645,8 @@
   "@scanIntoLocation": {},
   "scanIntoLocationDetail": "Artikel per Scan zu Lagerort hinzufügen",
   "@scanIntoLocationDetail": {},
+  "scanReceivedParts": "Empfangene Artikel scannen",
+  "@scanReceivedParts": {},
   "search": "Suchen",
   "@search": {
     "description": "search"
