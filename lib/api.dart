@@ -326,6 +326,8 @@ class InvenTreeAPI {
   // Does the server support extra fields on stock adjustment actions?
   bool get supportsStockAdjustExtraFields => isConnected() && apiVersion >= 133;
 
+  bool get supportsBarcodePOReceiveEndpoint => isConnected() && apiVersion >= 135;
+
   // Are plugins enabled on the server?
   bool _pluginsEnabled = false;
 
