@@ -5,6 +5,8 @@ import "dart:io";
 import "package:flutter/foundation.dart";
 import "package:http/http.dart" as http;
 import "package:intl/intl.dart";
+import "package:inventree/main.dart";
+import "package:one_context/one_context.dart";
 import "package:open_filex/open_filex.dart";
 import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/material.dart";
@@ -772,10 +774,9 @@ class InvenTreeAPI {
       _request = await client.openUrl("GET", _uri).timeout(Duration(seconds: 10));
 
       // Set headers
-      _request.headers.set(HttpHeaders.authorizationHeader, _authorizationHeader());
-      _request.headers.set(HttpHeaders.acceptHeader, "application/json");
-      _request.headers.set(HttpHeaders.contentTypeHeader, "application/json");
-      _request.headers.set(HttpHeaders.acceptLanguageHeader, Intl.getCurrentLocale());
+      defaultHeaders().forEach((key, value) {
+        _request?.headers.set(key, value);
+      });
 
     } on SocketException catch (error) {
       debug("SocketException at ${url}: ${error.toString()}");
@@ -1083,10 +1084,9 @@ class InvenTreeAPI {
       _request = await client.openUrl(method, _uri).timeout(Duration(seconds: 10));
 
       // Set headers
-      _request.headers.set(HttpHeaders.authorizationHeader, _authorizationHeader());
-      _request.headers.set(HttpHeaders.acceptHeader, "application/json");
-      _request.headers.set(HttpHeaders.contentTypeHeader, "application/json");
-      _request.headers.set(HttpHeaders.acceptLanguageHeader, Intl.getCurrentLocale());
+      defaultHeaders().forEach((key, value) {
+        _request?.headers.set(key, value);
+      });
 
       return _request;
     } on SocketException catch (error) {
@@ -1268,6 +1268,7 @@ class InvenTreeAPI {
       urlParams: params,
     );
 
+
     if (request == null) {
       // Return an "invalid" APIResponse
       return APIResponse(
@@ -1305,6 +1306,28 @@ class InvenTreeAPI {
     );
   }
 
+  // Find the current locale code for the running app
+  String get currentLocale {
+
+    if (OneContext.hasContext) {
+      // Try to get app context
+      BuildContext? context = OneContext().context;
+
+      if (context != null) {
+        Locale? locale = InvenTreeApp
+            .of(context)
+            ?.locale;
+
+        if (locale != null) {
+          return locale.languageCode; //.toString();
+        }
+      }
+    }
+
+    // Fallback value
+    return Intl.getCurrentLocale();
+  }
+
   // Return a list of request headers
   Map<String, String> defaultHeaders() {
     Map<String, String> headers = {};
@@ -1312,7 +1335,7 @@ class InvenTreeAPI {
     headers[HttpHeaders.authorizationHeader] = _authorizationHeader();
     headers[HttpHeaders.acceptHeader] = "application/json";
     headers[HttpHeaders.contentTypeHeader] = "application/json";
-    headers[HttpHeaders.acceptLanguageHeader] = Intl.getCurrentLocale();
+    headers[HttpHeaders.acceptLanguageHeader] = currentLocale;
 
     return headers;
   }
@@ -1526,6 +1549,12 @@ class InvenTreeAPI {
   InvenTreeStatusCode get StockHistoryStatus => _get_status_class("stock/track/status/");
   InvenTreeStatusCode get StockStatus => _get_status_class("stock/status/");
   InvenTreeStatusCode get PurchaseOrderStatus => _get_status_class("order/po/status/");
+
+  void clearStatusCodeData() {
+    StockHistoryStatus.data.clear();
+    StockStatus.data.clear();
+    PurchaseOrderStatus.data.clear();
+  }
 
   int notification_counter = 0;
 
