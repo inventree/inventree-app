@@ -1309,14 +1309,18 @@ class InvenTreeAPI {
   // Find the current locale code for the running app
   String get currentLocale {
 
-    // Try to get app context
-    BuildContext? context = OneContext().context;
+    if (OneContext.hasContext) {
+      // Try to get app context
+      BuildContext? context = OneContext().context;
 
-    if (context != null) {
-      Locale? locale = InvenTreeApp.of(context)?.locale;
+      if (context != null) {
+        Locale? locale = InvenTreeApp
+            .of(context)
+            ?.locale;
 
-      if (locale != null) {
-        return locale.languageCode; //.toString();
+        if (locale != null) {
+          return locale.languageCode; //.toString();
+        }
       }
     }
 
