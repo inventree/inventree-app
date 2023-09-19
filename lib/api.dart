@@ -1546,6 +1546,12 @@ class InvenTreeAPI {
   InvenTreeStatusCode get StockStatus => _get_status_class("stock/status/");
   InvenTreeStatusCode get PurchaseOrderStatus => _get_status_class("order/po/status/");
 
+  void clearStatusCodeData() {
+    StockHistoryStatus.data.clear();
+    StockStatus.data.clear();
+    PurchaseOrderStatus.data.clear();
+  }
+
   int notification_counter = 0;
 
   Timer? _notification_timer;
