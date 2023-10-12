@@ -112,6 +112,9 @@
   "barcodeNotAssigned": "Barcode not assigned",
   "@barcodeNotAssigned": {},
 
+  "barcodeReceivePart": "Scan barcode to receive part",
+  "@barcodeReceivePart": {},
+
   "barcodeScanAssign": "Scan to assign barcode",
   "@barcodeScanAssign": {},
 

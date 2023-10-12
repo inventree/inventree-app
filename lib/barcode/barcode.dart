@@ -478,6 +478,9 @@ class POReceiveBarcodeHandler extends BarcodeHandler {
   InvenTreeStockLocation? location;
 
   @override
+  String getOverlayText(BuildContext context) => L10().barcodeReceivePart;
+
+  @override
   Future<void> processBarcode(String barcode,
       {String url = "barcode/po-receive/",
       Map<String, dynamic> extra_data = const {}}) {
