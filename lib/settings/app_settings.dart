@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:inventree/api.dart";
 import "package:one_context/one_context.dart";
 
 import "package:adaptive_theme/adaptive_theme.dart";
@@ -120,6 +121,9 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
 
         // Refresh the entire app locale
         InvenTreeApp.of(context)?.setLocale(locale);
+
+        // Clear the cached status label information
+        InvenTreeAPI().clearStatusCodeData();
       }
     );
   }

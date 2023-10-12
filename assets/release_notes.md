@@ -2,6 +2,7 @@
 ---
 
 - Added extra options for transferring stock items
+- Fixes bug where API data was not fetched with correct locale
 
 ### 0.12.7 - August 2023
 ---

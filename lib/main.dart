@@ -152,6 +152,8 @@ class InvenTreeAppState extends State<StatefulWidget> {
     });
   }
 
+  Locale? get locale => _locale;
+
   @override
   Widget build(BuildContext context) {
 
