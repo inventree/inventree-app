@@ -527,7 +527,7 @@ class POReceiveBarcodeHandler extends BarcodeHandler {
       "quantity": {
         "parent": "items",
         "nested": true,
-        "value": lineItemData["quantity"] as int?,
+        "value": lineItemData["quantity"] as double?,
       },
       "status": {
         "parent": "items",
