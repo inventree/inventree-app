@@ -1,3 +1,8 @@
+### 0.13.0 - October 2023
+---
+
+- Add ability to scan in received items using supplier barcodes
+
 ### 0.12.8 - September 2023
 ---
 
