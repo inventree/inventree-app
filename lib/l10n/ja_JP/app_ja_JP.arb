@@ -1,5 +1,9 @@
 {
   "@@locale": "ja",
+  "ok": "はい",
+  "@ok": {
+    "description": "OK"
+  },
   "about": "概要",
   "@about": {},
   "accountDetails": "アカウントの詳細",
@@ -48,6 +52,8 @@
   "@attention": {},
   "availableStock": "在庫あり",
   "@availableStock": {},
+  "barcodeSettings": "バーコード設定",
+  "@barcodeSettings": {},
   "barcodeAssign": "バーコードを割り当てる",
   "@barcodeAssign": {},
   "barcodeAssigned": "バーコードが割り当てられました",
@@ -190,11 +196,11 @@
   "@feedbackSuccess": {},
   "filterActive": "有効",
   "@filterActive": {},
-  "filterActiveDetail": "有効な部品を表示",
+  "filterActiveDetail": "有効なパーツを表示",
   "@filterActiveDetail": {},
   "filterAssembly": "組立済み",
   "@filterAssembly": {},
-  "filterAssemblyDetail": "組み立てられた部品を表示",
+  "filterAssemblyDetail": "組み立てられたパーツを表示",
   "@filterAssemblyDetail": {},
   "filterComponent": "コンポーネント",
   "@filterComponent": {},
@@ -202,11 +208,13 @@
   "@filterComponentDetail": {},
   "filterInStock": "在庫あり",
   "@filterInStock": {},
-  "filterInStockDetail": "在庫がある部品を表示",
+  "filterInStockDetail": "在庫があるパーツを表示",
   "@filterInStockDetail": {},
   "filterTemplate": "テンプレート",
   "@filterTemplate": {},
-  "filterVirtualDetail": "仮想部品を表示",
+  "filterVirtual": "仮想",
+  "@filterVirtual": {},
+  "filterVirtualDetail": "仮想パーツを表示",
   "@filterVirtualDetail": {},
   "formatException": "フォーマットの例外エラー",
   "@formatException": {},
@@ -338,6 +346,8 @@
   "@part": {
     "description": "Part (single)"
   },
+  "partCreateDetail": "このカテゴリに新しいパーツを作成",
+  "@partCreateDetail": {},
   "parts": "パーツ",
   "@parts": {
     "description": "Part (multiple)"
@@ -558,6 +568,8 @@
   "@stock": {
     "description": "stock"
   },
+  "stockDetails": "現在の在庫数",
+  "@stockDetails": {},
   "stockItem": "在庫アイテム",
   "@stockItem": {
     "description": "stock item title"
@@ -660,6 +672,10 @@
   "@transferStock": {
     "description": "transfer stock"
   },
+  "transferStockLocation": "在庫の保管場所を移動",
+  "@transferStockLocation": {},
+  "transferStockLocationDetail": "この在庫を他の場所に移動する",
+  "@transferStockLocationDetail": {},
   "translate": "翻訳",
   "@translate": {},
   "translateHelp": "InvenTree アプリの翻訳に協力する",
