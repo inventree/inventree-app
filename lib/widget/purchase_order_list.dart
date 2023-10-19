@@ -9,6 +9,7 @@ import "package:inventree/widget/purchase_order_detail.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/api.dart";
+import "package:inventree/barcode/barcode.dart";
 import "package:inventree/inventree/purchase_order.dart";
 
 /*
@@ -77,6 +78,28 @@ class _PurchaseOrderListWidgetState extends RefreshableState<PurchaseOrderListWi
         }
       }
     );
+  }
+
+  @override
+  List<SpeedDialChild> barcodeButtons(BuildContext context) {
+    List<SpeedDialChild> actions = [];
+
+    if (api.supportsBarcodePOReceiveEndpoint) {
+      actions.add(
+        SpeedDialChild(
+          child: Icon(Icons.barcode_reader),
+          label: L10().scanReceivedParts,
+          onTap:() async {
+            scanBarcode(
+              context,
+              handler: POReceiveBarcodeHandler(),
+            );
+          },
+        )
+      );
+    }
+
+    return actions;
   }
 
   @override
