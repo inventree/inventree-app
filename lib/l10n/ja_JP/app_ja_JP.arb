@@ -500,7 +500,7 @@
   "@search": {
     "description": "search"
   },
-  "searchLocation": "在庫場所場所を検索",
+  "searchLocation": "在庫場所を検索",
   "@searchLocation": {},
   "searchParts": "パーツの検索",
   "@searchParts": {},
