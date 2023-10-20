@@ -44,7 +44,7 @@ Future<Map<String, dynamic>> getDeviceInfo() async {
       "hardware": androidDeviceInfo.hardware,
       "manufacturer": androidDeviceInfo.manufacturer,
       "product": androidDeviceInfo.product,
-      "version": androidDeviceInfo.version.release,
+      "systemVersion": androidDeviceInfo.version.release,
       "supported32BitAbis": androidDeviceInfo.supported32BitAbis,
       "supported64BitAbis": androidDeviceInfo.supported64BitAbis,
       "supportedAbis": androidDeviceInfo.supportedAbis,

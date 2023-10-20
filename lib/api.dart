@@ -479,7 +479,42 @@ class InvenTreeAPI {
     // Clear the existing token value
     _token = "";
 
-    response = await get(_URL_GET_TOKEN);
+    // Embed platform information into the token request
+    // This allows specific tokens to be revoked by the server
+    String platform_name = "inventree-mobile-app";
+
+    final deviceInfo = await getDeviceInfo();
+
+    if (Platform.isAndroid) {
+      platform_name += "-android";
+    } else if (Platform.isIOS) {
+      platform_name += "-ios";
+    } else if (Platform.isMacOS) {
+      platform_name += "-macos";
+    } else if (Platform.isLinux) {
+      platform_name += "-linux";
+    } else if (Platform.isWindows) {
+      platform_name += "-windows";
+    }
+
+    if (deviceInfo.containsKey("name")) {
+      platform_name += "-" + (deviceInfo["name"] as String);
+    }
+
+    if (deviceInfo.containsKey("model")) {
+      platform_name += "-" + (deviceInfo["model"] as String);
+    }
+
+    if (deviceInfo.containsKey("systemVersion")) {
+      platform_name += "-" + (deviceInfo["systemVersion"] as String);
+    }
+
+    response = await get(
+      _URL_GET_TOKEN,
+      params: {
+        "name": platform_name,
+      }
+    );
 
     // Invalid response
     if (!response.successful()) {
