@@ -391,17 +391,15 @@ class InvenTreeAPI {
     if (profile == null) return false;
 
     String address = profile?.server ?? "";
-    String username = profile?.username ?? "";
-    String password = profile?.password ?? "";
+    String token = profile?.token ?? "";
 
     address = address.trim();
-    username = username.trim();
-    password = password.trim();
+    token = token.trim();
 
     // Cache the "strictHttps" setting, so we can use it later without async requirement
     _strictHttps = await InvenTreeSettingsManager().getValue(INV_STRICT_HTTPS, false) as bool;
 
-    if (address.isEmpty || username.isEmpty || password.isEmpty) {
+    if (address.isEmpty) {
       showSnackIcon(
         L10().incompleteDetails,
         icon: FontAwesomeIcons.circleExclamation,
@@ -419,7 +417,7 @@ class InvenTreeAPI {
     // Clear the list of available plugins
     _plugins.clear();
 
-    debug("Connecting to ${apiUrl} -> username=${username}");
+    debug("Connecting to ${apiUrl}");
 
     APIResponse response;
 
@@ -1381,7 +1379,9 @@ class InvenTreeAPI {
     if (_token.isNotEmpty) {
       return "Token $_token";
     } else if (profile != null) {
-      return "Basic " + base64Encode(utf8.encode("${profile?.username}:${profile?.password}"));
+      // TODO: Fix this
+      return "Basic " + base64Encode(utf8.encode("username:password"));
+      // return "Basic " + base64Encode(utf8.encode("${profile?.username}:${profile?.password}"));
     } else {
       return "";
     }

@@ -16,11 +16,14 @@ class UserProfile {
 
   factory UserProfile.fromJson(int key, Map<String, dynamic> json, bool isSelected) => UserProfile(
     key: key,
-    name: json["name"] as String,
-    server: json["server"] as String,
-    token: json["token"] as String,
+    name: (json["name"] ?? "") as String,
+    server: (json["server"] ?? "") as String,
+    token: (json["token"] ?? "") as String,
     selected: isSelected,
   );
+
+  // Return true if this profile has a token
+  bool get hasToken => token.isNotEmpty;
 
   // ID of the profile
   int? key;

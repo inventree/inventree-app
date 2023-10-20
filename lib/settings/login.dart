@@ -139,6 +139,7 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeLoginSettingsWidget> {
           ),
           tileColor: profile.selected ? Theme.of(context).secondaryHeaderColor : null,
           subtitle: Text("${profile.server}"),
+          leading: profile.hasToken ? FaIcon(FontAwesomeIcons.userCheck, color: COLOR_SUCCESS) : FaIcon(FontAwesomeIcons.userSlash, color: COLOR_WARNING),
           trailing: _getProfileIcon(profile),
           onTap: () {
             _selectProfile(context, profile);
@@ -272,8 +273,6 @@ class _ProfileEditState extends State<ProfileEditWidget> {
                   UserProfile profile = UserProfile(
                     name: name,
                     server: server,
-                    username: username,
-                    password: password,
                   );
 
                   await UserProfileDBManager().addProfile(profile);
@@ -281,8 +280,6 @@ class _ProfileEditState extends State<ProfileEditWidget> {
 
                   prf.name = name;
                   prf.server = server;
-                  prf.username = username;
-                  prf.password = password;
 
                   await UserProfileDBManager().updateProfile(prf);
                 }
@@ -374,7 +371,7 @@ class _ProfileEditState extends State<ProfileEditWidget> {
                   labelStyle: TextStyle(fontWeight: FontWeight.bold),
                   hintText: L10().enterUsername
                 ),
-                initialValue: widget.profile?.username ?? "",
+                initialValue: "", //widget.profile?.username ?? "",
                 keyboardType: TextInputType.text,
                 onSaved: (value) {
                   username = value?.trim() ?? "";
@@ -401,7 +398,7 @@ class _ProfileEditState extends State<ProfileEditWidget> {
                     },
                   ),
                 ),
-                initialValue: widget.profile?.password ?? "",
+                initialValue: "", //widget.profile?.password ?? "",
                 keyboardType: TextInputType.visiblePassword,
                 obscureText: _obscured,
                 onSaved: (value) {
