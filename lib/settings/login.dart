@@ -250,8 +250,6 @@ class _ProfileEditState extends State<ProfileEditWidget> {
 
   String name = "";
   String server = "";
-  String username = "";
-  String password = "";
 
   bool _obscured = true;
 
@@ -365,53 +363,6 @@ class _ProfileEditState extends State<ProfileEditWidget> {
                   return null;
                 },
               ),
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: L10().username,
-                  labelStyle: TextStyle(fontWeight: FontWeight.bold),
-                  hintText: L10().enterUsername
-                ),
-                initialValue: "", //widget.profile?.username ?? "",
-                keyboardType: TextInputType.text,
-                onSaved: (value) {
-                  username = value?.trim() ?? "";
-                },
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return L10().usernameEmpty;
-                  }
-
-                  return null;
-                },
-              ),
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: L10().password,
-                  labelStyle: TextStyle(fontWeight: FontWeight.bold),
-                  hintText: L10().enterPassword,
-                  suffixIcon: IconButton(
-                    icon: _obscured ? FaIcon(FontAwesomeIcons.eye) : FaIcon(FontAwesomeIcons.solidEyeSlash),
-                    onPressed: () {
-                      setState(() {
-                        _obscured = !_obscured;
-                      });
-                    },
-                  ),
-                ),
-                initialValue: "", //widget.profile?.password ?? "",
-                keyboardType: TextInputType.visiblePassword,
-                obscureText: _obscured,
-                onSaved: (value) {
-                  password = value ?? "";
-                },
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return L10().passwordEmpty;
-                  }
-
-                  return null;
-                }
-              )
             ]
           ),
           padding: EdgeInsets.all(16),
