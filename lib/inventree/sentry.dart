@@ -57,7 +57,8 @@ Future<Map<String, dynamic>> getDeviceInfo() async {
 
 
 Map<String, dynamic> getServerInfo() => {
-  "version": InvenTreeAPI().version,
+  "version": InvenTreeAPI().serverVersion,
+  "apiVersion": InvenTreeAPI().apiVersion,
 };
 
 
