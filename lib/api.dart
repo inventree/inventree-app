@@ -632,9 +632,17 @@ class InvenTreeAPI {
     _connectionStatusChanged();
   }
 
+  /*
+   * Check if the selected profile has an API token
+   */
+  Future<bool> checkHasToken() async {
+
+    final _prf = await UserProfileDBManager().getSelectedProfile();
+    return _prf?.hasToken ?? false;
+  }
+
   /* Public facing connection function.
    */
-
   Future<bool> connectToServer() async {
 
     // Ensure server is first disconnected

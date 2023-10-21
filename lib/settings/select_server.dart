@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:inventree/settings/login.dart";
 import "package:one_context/one_context.dart";
 
 import "package:inventree/app_colors.dart";
@@ -12,17 +13,17 @@ import "package:inventree/user_profile.dart";
 class InvenTreeSelectServerWidget extends StatefulWidget {
 
   @override
-  _InvenTreeLoginSettingsState createState() => _InvenTreeLoginSettingsState();
+  _InvenTreeSelectServerState createState() => _InvenTreeSelectServerState();
 }
 
 
-class _InvenTreeLoginSettingsState extends State<InvenTreeSelectServerWidget> {
+class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
 
-  _InvenTreeLoginSettingsState() {
+  _InvenTreeSelectServerState() {
     _reload();
   }
 
-  final GlobalKey<_InvenTreeLoginSettingsState> _loginKey = GlobalKey<_InvenTreeLoginSettingsState>();
+  final GlobalKey<_InvenTreeSelectServerState> _loginKey = GlobalKey<_InvenTreeSelectServerState>();
 
   List<UserProfile> profiles = [];
 
@@ -38,6 +39,23 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeSelectServerWidget> {
     });
   }
 
+  /*
+   * Logout the selected profile (delete the stored token)
+   */
+  void _logoutProfile(BuildContext context, {UserProfile? userProfile}) async {
+
+    if (userProfile != null) {
+      userProfile.token = "";
+      await UserProfileDBManager().updateProfile(userProfile!);
+
+      _reload();
+    }
+
+  }
+
+  /*
+   * Edit the selected profile
+   */
   void _editProfile(BuildContext context, {UserProfile? userProfile, bool createNew = false}) {
 
     Navigator.push(
@@ -62,6 +80,14 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeSelectServerWidget> {
     }
 
     await UserProfileDBManager().selectProfile(key);
+
+    // First check if the profile has an associate token
+    if (!await InvenTreeAPI().checkHasToken()) {
+      // Redirect user to login screen
+      Navigator.push(context,
+        MaterialPageRoute(builder: (context) => InvenTreeLoginWidget(profile))
+      );
+    }
 
     if (!mounted) {
       return;
@@ -169,6 +195,16 @@ class _InvenTreeLoginSettingsState extends State<InvenTreeSelectServerWidget> {
                         child: ListTile(
                           title: Text(L10().profileEdit),
                           leading: FaIcon(FontAwesomeIcons.penToSquare)
+                        )
+                      ),
+                      SimpleDialogOption(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          _logoutProfile(context, userProfile: profile);
+                        },
+                        child: ListTile(
+                          title: Text(L10().profileLogout),
+                          leading: FaIcon(FontAwesomeIcons.userSlash),
                         )
                       ),
                       SimpleDialogOption(

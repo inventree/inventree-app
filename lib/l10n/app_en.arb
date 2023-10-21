@@ -591,6 +591,9 @@
   "locationUpdated": "Stock location updated",
   "@locationUpdated": {},
 
+  "login": "Login",
+  "@login": {},
+
   "link": "Link",
   "@link": {},
 
@@ -794,6 +797,9 @@
 
   "profileDelete": "Delete Server Profile",
   "@profileDelete": {},
+
+  "profileLogout": "Logout Profile",
+  "@profileLogout": {},
 
   "profileName": "Profile Name",
   "@profileName": {},
