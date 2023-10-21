@@ -400,6 +400,14 @@ class InvenTreeAPI {
 
     if (!await _checkAuth()) {
       showServerError(_URL_ME, L10().serverNotConnected, L10().serverAuthenticationError);
+
+
+      // Invalidate the token
+      if (profile != null) {
+        profile!.token = "";
+        await UserProfileDBManager().updateProfile(profile!);
+      }
+
       return false;
     }
 
