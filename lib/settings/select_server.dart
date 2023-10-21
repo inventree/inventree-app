@@ -51,6 +51,9 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
       _reload();
     }
 
+    InvenTreeAPI().disconnectFromServer();
+    _reload();
+
   }
 
   /*
@@ -86,7 +89,17 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
       // Redirect user to login screen
       Navigator.push(context,
         MaterialPageRoute(builder: (context) => InvenTreeLoginWidget(profile))
-      );
+      ).then((value) async {
+        _reload();
+        if (await InvenTreeAPI().checkHasToken()) {
+          InvenTreeAPI().connectToServer().then((result) {
+            _reload();
+          });
+        }
+      });
+
+      // Exit now, login handled by next widget
+      return;
     }
 
     if (!mounted) {
@@ -125,10 +138,7 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
 
     // Selected, but (for some reason) not the same as the API...
     if ((InvenTreeAPI().profile?.key ?? "") != profile.key) {
-      return FaIcon(
-        FontAwesomeIcons.circleQuestion,
-        color: COLOR_WARNING
-      );
+      return null;
     }
 
     // Reflect the connection status of the server
@@ -207,6 +217,7 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
                           leading: FaIcon(FontAwesomeIcons.userSlash),
                         )
                       ),
+                      Divider(),
                       SimpleDialogOption(
                         onPressed: () {
                           Navigator.of(context).pop();
@@ -268,6 +279,9 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
 }
 
 
+/*
+ * Widget for editing server details
+ */
 class ProfileEditWidget extends StatefulWidget {
 
   const ProfileEditWidget(this.profile) : super();

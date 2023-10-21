@@ -1,11 +1,15 @@
 
 
+import "dart:convert";
+
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:inventree/app_colors.dart";
 import "package:inventree/user_profile.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/api.dart";
+import "package:inventree/widget/progress.dart";
 
 /**
  * clas
@@ -32,12 +36,46 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
 
   bool _obscured = true;
 
+  // Attempt login
+  Future<void> _doLogin(BuildContext context) async {
+
+    // Save form
+    formKey.currentState?.save();
+
+    bool valid = formKey.currentState?.validate() ?? false;
+
+    if (valid) {
+
+      showLoadingOverlay(context);
+
+      // Attempt login
+      String auth = "Basic " + base64Encode(utf8.encode("${username}:${password}"));
+      final result = await InvenTreeAPI().fetchToken(widget.profile, auth);
+
+      hideLoadingOverlay();
+
+      if (result) {
+        // Return to the server selector screen
+        Navigator.of(context).pop();
+      }
+    }
+
+  }
+
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
       appBar: AppBar(
         title: Text(L10().login),
+        actions: [
+          IconButton(
+            icon: FaIcon(FontAwesomeIcons.arrowRightToBracket, color: COLOR_SUCCESS),
+            onPressed: () async {
+              _doLogin(context);
+            },
+          )
+        ]
       ),
       body: Form(
         key: formKey,
@@ -84,7 +122,7 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
                   keyboardType: TextInputType.visiblePassword,
                   obscureText: _obscured,
                   onSaved: (value) {
-                    password = value ?? "";
+                    password = value?.trim() ?? "";
                   },
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
@@ -94,15 +132,9 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
                     return null;
                   }
               ),
-              Spacer(),
-              TextButton(
-                child: Text(L10().login),
-                onPressed: () {
-                  // TODO: attempt login
-                },
-              )
             ],
-          )
+          ),
+          padding: EdgeInsets.all(16),
         )
       )
     );

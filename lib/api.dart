@@ -392,15 +392,11 @@ class InvenTreeAPI {
     }
 
     if (!hasToken) {
-      // Pass off to manual login procedure
-      if (!await _doLogin()) {
-        return false;
-      }
+      return false;
     }
 
     if (!await _checkAuth()) {
       showServerError(_URL_ME, L10().serverNotConnected, L10().serverAuthenticationError);
-
 
       // Invalidate the token
       if (profile != null) {
@@ -503,23 +499,6 @@ class InvenTreeAPI {
 
 
   /*
-   * Login to the server manually, to get an API token
-   */
-  Future<bool> _doLogin() async {
-
-    // TODO: Fetch token
-
-    String auth = "Basic " + base64Encode(utf8.encode("admin:inventree"));
-
-    if (!await _fetchToken(auth)) {
-      showServerError(_URL_TOKEN, L10().tokenError, L10().serverAuthenticationError);
-      return false;
-    }
-
-    return true;
-  }
-
-  /*
    * Check that the user is authenticated
    * Fetch the user information
    */
@@ -533,8 +512,7 @@ class InvenTreeAPI {
    * Fetch a token from the server,
    * with a temporary authentication header
    */
-  Future<bool> _fetchToken(String authHeader) async {
-    if (profile == null) return false;
+  Future<bool> fetchToken(UserProfile userProfile, String authHeader) async {
 
     debug("Fetching user token");
 
@@ -608,11 +586,11 @@ class InvenTreeAPI {
     }
 
     // Save the token to the user profile
-    profile?.token = (data["token"] ?? "") as String;
+    userProfile.token = (data["token"] ?? "") as String;
 
     debug("Received token from server");
 
-    bool result = await UserProfileDBManager().updateProfile(profile!);
+    bool result = await UserProfileDBManager().updateProfile(userProfile);
 
     return result;
   }
