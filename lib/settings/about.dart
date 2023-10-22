@@ -98,6 +98,14 @@ class InvenTreeAboutWidget extends StatelessWidget {
 
       tiles.add(
         ListTile(
+          title: Text(L10().username),
+          subtitle: Text(InvenTreeAPI().username),
+          leading: InvenTreeAPI().username.isNotEmpty ? FaIcon(FontAwesomeIcons.user) : FaIcon(FontAwesomeIcons.userSlash, color: COLOR_DANGER),
+        )
+      );
+
+      tiles.add(
+        ListTile(
           title: Text(L10().version),
           subtitle: Text(InvenTreeAPI().serverVersion.isNotEmpty ? InvenTreeAPI().serverVersion : L10().notConnected),
           leading: FaIcon(FontAwesomeIcons.circleInfo),

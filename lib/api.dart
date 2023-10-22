@@ -270,6 +270,11 @@ class InvenTreeAPI {
     return true;
   }
 
+  // Map of user information
+  Map<String, dynamic> userInfo = {};
+
+  String get username => (userInfo["username"] ?? "") as String;
+
   // Map of server information
   Map<String, dynamic> serverInfo = {};
 
@@ -494,9 +499,13 @@ class InvenTreeAPI {
    */
   Future<bool> _checkAuth() async {
     debug("Checking user auth @ ${_URL_ME}");
+
+    userInfo.clear();
+
     final response = await get(_URL_ME);
 
     if (response.successful() && response.statusCode == 200) {
+      userInfo = response.asMap();
       return true;
     } else {
       debug("Auth request failed: Server returned status ${response.statusCode}");
