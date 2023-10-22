@@ -9,7 +9,7 @@ import "package:inventree/settings/about.dart";
 import "package:inventree/settings/app_settings.dart";
 import "package:inventree/settings/barcode_settings.dart";
 import "package:inventree/settings/home_settings.dart";
-import "package:inventree/settings/login.dart";
+import "package:inventree/settings/select_server.dart";
 import "package:inventree/settings/part_settings.dart";
 
 
@@ -51,7 +51,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
                   subtitle: Text(L10().configureServer),
                   leading: FaIcon(FontAwesomeIcons.server, color: COLOR_ACTION),
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeLoginSettingsWidget()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeSelectServerWidget()));
                   },
               ),
               ListTile(

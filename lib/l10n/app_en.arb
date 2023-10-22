@@ -591,6 +591,15 @@
   "locationUpdated": "Stock location updated",
   "@locationUpdated": {},
 
+  "login": "Login",
+  "@login": {},
+
+  "loginEnter": "Enter login details",
+  "@loginEnter": {},
+
+  "loginEnterDetails": "Username and password are not stored locally",
+  "@loginEnterDetails": {},
+
   "link": "Link",
   "@link": {},
 
@@ -794,6 +803,9 @@
 
   "profileDelete": "Delete Server Profile",
   "@profileDelete": {},
+
+  "profileLogout": "Logout Profile",
+  "@profileLogout": {},
 
   "profileName": "Profile Name",
   "@profileName": {},

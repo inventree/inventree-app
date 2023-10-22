@@ -17,37 +17,11 @@ void main() {
 
   setUp(() async {
 
-    if (! await UserProfileDBManager().profileNameExists("Test Profile")) {
-      // Create and select a profile to user
-
-      print("TEST: Creating profile for user 'testuser'");
-
-      await UserProfileDBManager().addProfile(UserProfile(
-        name: "Test Profile",
-        server: "http://localhost:12345",
-        username: "testuser",
-        password: "testpassword",
-        selected: true,
-      ));
-    }
-
-    var prf = await UserProfileDBManager().getSelectedProfile();
-
-    // Ensure that the server settings are correct by default,
-    // as they can get overwritten by subsequent tests
-
-    if (prf != null) {
-      prf.name = "Test Profile";
-      prf.server = "http://localhost:12345";
-      prf.username = "testuser";
-      prf.password = "testpassword";
-
-      await UserProfileDBManager().updateProfile(prf);
-    }
+    await setupServerProfile(select: true);
 
     // Ensure the profile is selected
     assert(! await UserProfileDBManager().selectProfileByName("Missing Profile"));
-    assert(await UserProfileDBManager().selectProfileByName("Test Profile"));
+    assert(await UserProfileDBManager().selectProfileByName(testServerName));
 
   });
 
@@ -71,53 +45,57 @@ void main() {
       var api = InvenTreeAPI();
 
       // Incorrect server address
-      var profile = await UserProfileDBManager().getSelectedProfile();
+      var profile = await setupServerProfile();
 
-      assert(profile != null);
+      profile.server = "http://localhost:5555";
 
-      if (profile != null) {
-        profile.server = "http://localhost:5555";
-        await UserProfileDBManager().updateProfile(profile);
+      bool result = await api.connectToServer(profile);
+      assert(!result);
 
-        bool result = await api.connectToServer();
-        assert(!result);
+      debugContains("SocketException at");
 
-        debugContains("SocketException at");
+      // Test incorrect login details
+      profile.server = testServerAddress;
 
-        // Test incorrect login details
-        profile.server = "http://localhost:12345";
-        profile.username = "invalidusername";
+      final response = await api.fetchToken(profile, "baduser", "badpassword");
+      assert(!response.successful());
 
-        await UserProfileDBManager().updateProfile(profile);
+      debugContains("Token request failed");
 
-        await api.connectToServer();
-        assert(!result);
+      assert(!api.checkConnection());
 
-        debugContains("Token request failed");
+      debugContains("Token request failed: STATUS 401");
+      debugContains("showSnackIcon: 'Not Connected'");
 
-        assert(!api.checkConnection());
+    });
 
-        debugContains("Token request failed: STATUS 401");
-        debugContains("showSnackIcon: 'Not Connected'");
+    test("Bad Token", () async {
+      // Test that login fails with a bad token
+      var profile = await setupServerProfile();
 
-      } else {
-        assert(false);
-      }
+      profile.token = "bad-token";
 
+      bool result = await InvenTreeAPI().connectToServer(profile);
+      assert(!result);
     });
 
     test("Login Success", () async {
       // Test that we can login to the server successfully
       var api = InvenTreeAPI();
 
-      // Attempt to connect
-      final bool result = await api.connectToServer();
+      final profile = await setupServerProfile(select: true, fetchToken: true);
+      assert(profile.hasToken);
+
+      // Now, connect to the server
+      bool result = await api.connectToServer(profile);
 
       // Check expected values
       assert(result);
       assert(api.hasToken);
-      expect(api.baseUrl, equals("http://localhost:12345/"));
 
+      expect(api.baseUrl, equals(testServerAddress));
+
+      assert(api.hasToken);
       assert(api.isConnected());
       assert(!api.isConnecting());
       assert(api.checkConnection());
@@ -127,7 +105,8 @@ void main() {
       // Test server version information
       var api = InvenTreeAPI();
 
-      assert(await api.connectToServer());
+      final profile = await setupServerProfile(fetchToken: true);
+      assert(await api.connectToServer(profile));
 
       // Check supported functions
       assert(api.apiVersion >= 50);
@@ -135,12 +114,15 @@ void main() {
       assert(api.supportsNotifications);
       assert(api.supportsPoReceive);
 
-      // Ensure we can request (and receive) user roles
-      assert(await api.getUserRoles());
+      assert(api.serverInstance.isNotEmpty);
+      assert(api.serverVersion.isNotEmpty);
+
+      // Ensure we can have user role data
+      assert(api.roles.isNotEmpty);
 
       // Check available permissions
       assert(api.checkPermission("part", "change"));
-      assert(api.checkPermission("stocklocation", "delete"));
+      assert(api.checkPermission("stock_location", "delete"));
       assert(!api.checkPermission("part", "weirdpermission"));
       assert(api.checkPermission("blah", "bloo"));
 

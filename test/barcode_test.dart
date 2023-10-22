@@ -10,7 +10,6 @@ import "package:flutter_test/flutter_test.dart";
 import "package:inventree/api.dart";
 import "package:inventree/barcode/barcode.dart";
 import "package:inventree/helpers.dart";
-import "package:inventree/user_profile.dart";
 
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/stock.dart";
@@ -23,26 +22,7 @@ void main() {
 
   // Connect to the server
   setUpAll(() async {
-    final prf = await UserProfileDBManager().getProfileByName("Test Profile");
-
-    if (prf != null) {
-      await UserProfileDBManager().deleteProfile(prf);
-    }
-
-    bool result = await UserProfileDBManager().addProfile(
-      UserProfile(
-        name: "Test Profile",
-        server: "http://localhost:12345",
-        username: "testuser",
-        password: "testpassword",
-        selected: true,
-      ),
-    );
-
-    assert(result);
-
-    assert(await UserProfileDBManager().selectProfileByName("Test Profile"));
-    assert(await InvenTreeAPI().connectToServer());
+    await connectToTestServer();
   });
 
   setUp(() async {
@@ -91,8 +71,8 @@ void main() {
     test("Scan Into Location", () async {
 
       final item = await InvenTreeStockItem().get(1) as InvenTreeStockItem?;
-
       assert(item != null);
+
       assert(item!.pk == 1);
 
       var handler = StockItemScanIntoLocationHandler(item!);

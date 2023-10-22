@@ -98,8 +98,16 @@ class InvenTreeAboutWidget extends StatelessWidget {
 
       tiles.add(
         ListTile(
+          title: Text(L10().username),
+          subtitle: Text(InvenTreeAPI().username),
+          leading: InvenTreeAPI().username.isNotEmpty ? FaIcon(FontAwesomeIcons.user) : FaIcon(FontAwesomeIcons.userSlash, color: COLOR_DANGER),
+        )
+      );
+
+      tiles.add(
+        ListTile(
           title: Text(L10().version),
-          subtitle: Text(InvenTreeAPI().version.isNotEmpty ? InvenTreeAPI().version : L10().notConnected),
+          subtitle: Text(InvenTreeAPI().serverVersion.isNotEmpty ? InvenTreeAPI().serverVersion : L10().notConnected),
           leading: FaIcon(FontAwesomeIcons.circleInfo),
         )
       );
@@ -107,13 +115,13 @@ class InvenTreeAboutWidget extends StatelessWidget {
       tiles.add(
         ListTile(
           title: Text(L10().serverInstance),
-          subtitle: Text(InvenTreeAPI().instance.isNotEmpty ? InvenTreeAPI().instance : L10().notConnected),
+          subtitle: Text(InvenTreeAPI().serverInstance.isNotEmpty ? InvenTreeAPI().serverInstance : L10().notConnected),
           leading: FaIcon(FontAwesomeIcons.server),
         )
       );
 
       // Display extra tile if the server supports plugins
-      if (InvenTreeAPI().pluginsEnabled()) {
+      if (InvenTreeAPI().pluginsEnabled) {
         tiles.add(
           ListTile(
             title: Text(L10().pluginSupport),

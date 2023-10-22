@@ -8,7 +8,7 @@ import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/preferences.dart";
 import "package:inventree/l10.dart";
-import "package:inventree/settings/login.dart";
+import "package:inventree/settings/select_server.dart";
 import "package:inventree/user_profile.dart";
 
 import "package:inventree/widget/category_display.dart";
@@ -119,7 +119,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
 
   void _selectProfile() {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => InvenTreeLoginSettingsWidget())
+        context, MaterialPageRoute(builder: (context) => InvenTreeSelectServerWidget())
     ).then((context) {
       // Once we return
       _loadProfile();
@@ -147,7 +147,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
       if (!InvenTreeAPI().isConnected() && !InvenTreeAPI().isConnecting()) {
 
         // Attempt server connection
-        InvenTreeAPI().connectToServer().then((result) {
+        InvenTreeAPI().connectToServer(_profile!).then((result) {
           if (mounted) {
             setState(() {});
           }

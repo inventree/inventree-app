@@ -235,49 +235,8 @@ Future<void> showServerError(String url, String title, String description) async
  */
 Future<void> showStatusCodeError(String url, int status, {String details=""}) async {
 
-  String msg = L10().responseInvalid;
+  String msg = statusCodeToString(status);
   String extra = url + "\n" + "${L10().statusCode}: ${status}";
-
-  switch (status) {
-    case 400:
-      msg = L10().response400;
-      break;
-    case 401:
-      msg = L10().response401;
-      break;
-    case 403:
-      msg = L10().response403;
-      break;
-    case 404:
-      msg = L10().response404;
-      break;
-    case 405:
-      msg = L10().response405;
-      break;
-    case 429:
-      msg = L10().response429;
-      break;
-    case 500:
-      msg = L10().response500;
-      break;
-    case 501:
-      msg = L10().response501;
-      break;
-    case 502:
-      msg = L10().response502;
-      break;
-    case 503:
-      msg = L10().response503;
-      break;
-    case 504:
-      msg = L10().response504;
-      break;
-    case 505:
-      msg = L10().response505;
-      break;
-    default:
-      break;
-  }
 
   if (details.isNotEmpty) {
     extra += "\n";
@@ -289,6 +248,41 @@ Future<void> showStatusCodeError(String url, int status, {String details=""}) as
     msg,
     extra,
   );
+}
+
+
+/*
+ * Provide a human-readable descriptor for a particular error code
+ */
+String statusCodeToString(int status) {
+  switch (status) {
+    case 400:
+      return L10().response400;
+    case 401:
+      return L10().response401;
+    case 403:
+      return L10().response403;
+    case 404:
+      return L10().response404;
+    case 405:
+      return L10().response405;
+    case 429:
+      return L10().response429;
+    case 500:
+      return L10().response500;
+    case 501:
+      return L10().response501;
+    case 502:
+      return L10().response502;
+    case 503:
+      return L10().response503;
+    case 504:
+      return L10().response504;
+    case 505:
+      return L10().response505;
+    default:
+      return L10().responseInvalid + " : ${status}";
+  }
 }
 
 

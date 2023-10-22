@@ -10,19 +10,20 @@ class UserProfile {
     this.key,
     this.name = "",
     this.server = "",
-    this.username = "",
-    this.password = "",
+    this.token = "",
     this.selected = false,
   });
 
   factory UserProfile.fromJson(int key, Map<String, dynamic> json, bool isSelected) => UserProfile(
     key: key,
-    name: json["name"] as String,
-    server: json["server"] as String,
-    username: json["username"] as String,
-    password: json["password"] as String,
+    name: (json["name"] ?? "") as String,
+    server: (json["server"] ?? "") as String,
+    token: (json["token"] ?? "") as String,
     selected: isSelected,
   );
+
+  // Return true if this profile has a token
+  bool get hasToken => token.isNotEmpty;
 
   // ID of the profile
   int? key;
@@ -33,11 +34,8 @@ class UserProfile {
   // Base address of the InvenTree server
   String server = "";
 
-  // Username
-  String username = "";
-
-  // Password
-  String password = "";
+  // API token
+  String token = "";
 
   bool selected = false;
 
@@ -47,13 +45,12 @@ class UserProfile {
   Map<String, dynamic> toJson() => {
     "name": name,
     "server": server,
-    "username": username,
-    "password": password,
+    "token": token,
   };
 
   @override
   String toString() {
-    return "<${key}> ${name} : ${server} - ${username}:${password}";
+    return "<${key}> ${name} : ${server}";
   }
 }
 
@@ -88,7 +85,7 @@ class UserProfileDBManager {
    */
   Future<bool> addProfile(UserProfile profile) async {
 
-    if (profile.name.isEmpty || profile.username.isEmpty || profile.password.isEmpty) {
+    if (profile.name.isEmpty) {
       debug("addProfile() : Profile missing required values - not adding to database");
       return false;
     }
@@ -118,7 +115,7 @@ class UserProfileDBManager {
   Future<bool> updateProfile(UserProfile profile) async {
 
     // Prevent invalid profile data from being updated
-    if (profile.name.isEmpty || profile.username.isEmpty || profile.password.isEmpty) {
+    if (profile.name.isEmpty) {
       debug("updateProfile() : Profile missing required values - not updating");
       return false;
     }
@@ -204,8 +201,6 @@ class UserProfileDBManager {
         UserProfile demoProfile = UserProfile(
           name: "InvenTree Demo",
           server: "https://demo.inventree.org",
-          username: "allaccess",
-          password: "nolimits",
         );
 
         await addProfile(demoProfile);
@@ -216,6 +211,26 @@ class UserProfileDBManager {
 
     return profileList;
   }
+
+
+  /*
+   * Retrieve a profile by key (or null if no match exists)
+   */
+  Future<UserProfile?> getProfileByKey(int key) async {
+    final profiles = await getAllProfiles();
+
+    UserProfile? prf;
+
+    for (UserProfile profile in profiles) {
+      if (profile.key == key) {
+        prf = profile;
+        break;
+      }
+    }
+
+    return prf;
+  }
+
 
   /*
    * Retrieve a profile by name (or null if no match exists)

@@ -131,7 +131,17 @@ class InvenTreePurchaseOrder extends InvenTreeModel {
     }
   }
 
-  String get totalPriceCurrency => getString("total_price_currency");
+  // Return the currency for this order
+  // Note that the nomenclature in the API changed at some point
+  String get totalPriceCurrency {
+    if (jsondata.containsKey("order_currency")) {
+      return getString("order_currency");
+    } else if (jsondata.containsKey("total_price_currency")) {
+      return getString("total_price_currency");
+    } else {
+      return "";
+    }
+  }
 
   Future<List<InvenTreePOLineItem>> getLineItems() async {
 
