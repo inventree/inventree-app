@@ -594,6 +594,12 @@
   "login": "Login",
   "@login": {},
 
+  "loginEnter": "Enter login details",
+  "@loginEnter": {},
+
+  "loginEnterDetails": "Username and password are not stored locally",
+  "@loginEnterDetails": {},
+
   "link": "Link",
   "@link": {},
 

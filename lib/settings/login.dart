@@ -88,6 +88,17 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              ListTile(
+                title: Text(L10().loginEnter),
+                subtitle: Text(L10().loginEnterDetails),
+                leading: FaIcon(FontAwesomeIcons.userCheck),
+              ),
+              ListTile(
+                title: Text(L10().server),
+                subtitle: Text(widget.profile.server),
+                leading: FaIcon(FontAwesomeIcons.server),
+              ),
+              Divider(),
               TextFormField(
                 decoration: InputDecoration(
                     labelText: L10().username,
