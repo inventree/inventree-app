@@ -26,8 +26,8 @@ void setupTestEnv() {
 // Accessors for default testing values
 const String testServerAddress = "http://localhost:8000/";
 const String testServerName = "Test Server";
-const String testUsername = "allaccess";
-const String testPassword = "nolimits";
+const String testUsername = "testuser";
+const String testPassword = "testpassword";
 
 
 /*
