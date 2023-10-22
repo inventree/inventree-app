@@ -1,7 +1,4 @@
 
-
-import "dart:convert";
-
 import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:inventree/app_colors.dart";
@@ -15,7 +12,7 @@ class InvenTreeLoginWidget extends StatefulWidget {
 
   InvenTreeLoginWidget(this.profile) : super();
 
-  UserProfile profile;
+  final UserProfile profile;
 
   @override
   _InvenTreeLoginState createState() => _InvenTreeLoginState();

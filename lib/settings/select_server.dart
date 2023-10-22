@@ -42,11 +42,11 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
   /*
    * Logout the selected profile (delete the stored token)
    */
-  void _logoutProfile(BuildContext context, {UserProfile? userProfile}) async {
+  Future<void> _logoutProfile(BuildContext context, {UserProfile? userProfile}) async {
 
     if (userProfile != null) {
       userProfile.token = "";
-      await UserProfileDBManager().updateProfile(userProfile!);
+      await UserProfileDBManager().updateProfile(userProfile);
 
       _reload();
     }
@@ -308,8 +308,6 @@ class _ProfileEditState extends State<ProfileEditWidget> {
 
   String name = "";
   String server = "";
-
-  bool _obscured = true;
 
   @override
   Widget build(BuildContext context) {
