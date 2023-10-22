@@ -30,15 +30,16 @@ const String testUsername = "allaccess";
 const String testPassword = "nolimits";
 
 
+/*
+ * Request an API token for the given profile
+ */
 Future<bool> fetchProfileToken({
   UserProfile? profile,
   String username = testUsername,
   String password = testPassword
 }) async {
 
-  if (profile == null) {
-    profile = await UserProfileDBManager().getProfileByName(testServerName);
-  }
+  profile ??= await UserProfileDBManager().getProfileByName(testServerName);
 
   assert(profile != null);
 
@@ -77,7 +78,7 @@ Future<UserProfile> setupServerProfile({bool select = true, bool fetchToken = fa
   if (fetchToken && !profile!.hasToken) {
     final bool result = await fetchProfileToken(profile: profile);
     assert(result);
-    assert(profile!.hasToken);
+    assert(profile.hasToken);
   }
 
   return profile!;

@@ -47,32 +47,25 @@ void main() {
       // Incorrect server address
       var profile = await setupServerProfile();
 
-      assert(profile != null);
+      profile.server = "http://localhost:5555";
 
-      if (profile != null) {
-        profile.server = "http://localhost:5555";
+      bool result = await api.connectToServer(profile);
+      assert(!result);
 
-        bool result = await api.connectToServer(profile);
-        assert(!result);
+      debugContains("SocketException at");
 
-        debugContains("SocketException at");
+      // Test incorrect login details
+      profile.server = testServerAddress;
 
-        // Test incorrect login details
-        profile.server = testServerAddress;
+      final response = await api.fetchToken(profile, "baduser", "badpassword");
+      assert(!response.successful());
 
-        final response = await api.fetchToken(profile, "baduser", "badpassword");
-        assert(!response.successful());
+      debugContains("Token request failed");
 
-        debugContains("Token request failed");
+      assert(!api.checkConnection());
 
-        assert(!api.checkConnection());
-
-        debugContains("Token request failed: STATUS 401");
-        debugContains("showSnackIcon: 'Not Connected'");
-
-      } else {
-        assert(false);
-      }
+      debugContains("Token request failed: STATUS 401");
+      debugContains("showSnackIcon: 'Not Connected'");
 
     });
 
@@ -94,7 +87,7 @@ void main() {
       assert(profile.hasToken);
 
       // Now, connect to the server
-      bool result = await api.connectToServer(profile!);
+      bool result = await api.connectToServer(profile);
 
       // Check expected values
       assert(result);

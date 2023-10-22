@@ -5,7 +5,6 @@
 import "package:test/test.dart";
 
 import "package:inventree/api.dart";
-import "package:inventree/user_profile.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/part.dart";
 
