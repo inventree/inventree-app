@@ -16,16 +16,7 @@ void main() {
   setupTestEnv();
 
   setUp(() async {
-    await UserProfileDBManager().addProfile(UserProfile(
-      name: "Test Profile",
-      server: "http://localhost:12345",
-      username: "testuser",
-      password: "testpassword",
-      selected: true,
-    ));
-
-    assert(await UserProfileDBManager().selectProfileByName("Test Profile"));
-    assert(await InvenTreeAPI().connectToServer());
+    await connectToTestServer();
   });
 
   group("Category Tests:", () {

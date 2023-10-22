@@ -74,11 +74,24 @@ Future<UserProfile> setupServerProfile({bool select = true, bool fetchToken = fa
     assert(await UserProfileDBManager().selectProfileByName(testServerName));
   }
 
-  if (fetchToken) {
+  if (fetchToken && !profile!.hasToken) {
     final bool result = await fetchProfileToken(profile: profile);
     assert(result);
     assert(profile!.hasToken);
   }
 
   return profile!;
+}
+
+
+/*
+ * Complete all steps necessary to login to the server
+ */
+Future<void> connectToTestServer() async {
+
+  // Setup profile, and fetch user token as necessary
+  final profile = await setupServerProfile(fetchToken: true);
+
+  // Connect to the server
+  assert(await InvenTreeAPI().connectToServer(profile));
 }

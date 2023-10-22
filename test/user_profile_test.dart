@@ -27,10 +27,8 @@ void main() {
 
     // Now, create one!
     bool result = await UserProfileDBManager().addProfile(UserProfile(
-      name: "Test Profile",
-      username: "testuser",
-      password: "testpassword""",
-      server: "http://localhost:12345",
+      name: testServerName,
+      server: testServerAddress,
       selected: true,
     ));
 
@@ -62,10 +60,7 @@ void main() {
     test("Add Invalid Profiles", () async {
       // Add a profile with missing data
       bool result = await UserProfileDBManager().addProfile(
-        UserProfile(
-          username: "what",
-          password: "why",
-        )
+        UserProfile()
       );
 
       expect(result, equals(false));
@@ -74,8 +69,6 @@ void main() {
       result = await UserProfileDBManager().addProfile(
         UserProfile(
           name: "Test Profile",
-          username: "xyz",
-          password: "hunter42",
         )
       );
 
@@ -104,23 +97,16 @@ void main() {
       if (prf != null) {
         UserProfile p = prf;
 
-        expect(p.name, equals("Test Profile"));
-        expect(p.username, equals("testuser"));
-        expect(p.password, equals("testpassword"));
-        expect(p.server, equals("http://localhost:12345"));
+        expect(p.name, equals(testServerName));
+        expect(p.server, equals(testServerAddress));
 
-        expect(p.toString(), equals("<${p.key}> Test Profile : http://localhost:12345 - testuser:testpassword"));
+        expect(p.toString(), equals("<${p.key}> Test Profile : http://localhost:8000"));
 
         // Test that we can update the profile
         p.name = "different name";
 
         bool result = await UserProfileDBManager().updateProfile(p);
         expect(result, equals(true));
-
-        // Trying to update with an invalid value will fail!
-        p.password = "";
-        result = await UserProfileDBManager().updateProfile(p);
-        expect(result, equals(false));
       }
     });
   });
