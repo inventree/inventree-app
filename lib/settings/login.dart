@@ -5,6 +5,7 @@ import "package:inventree/app_colors.dart";
 import "package:inventree/user_profile.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/api.dart";
+import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/progress.dart";
 
 
@@ -29,6 +30,8 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
 
   bool _obscured = true;
 
+  String error = "";
+
   // Attempt login
   Future<void> _doLogin(BuildContext context) async {
 
@@ -49,13 +52,26 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
       showLoadingOverlay(context);
 
       // Attempt login
-      final result = await InvenTreeAPI().fetchToken(widget.profile, username, password);
+      final response = await InvenTreeAPI().fetchToken(widget.profile, username, password);
 
       hideLoadingOverlay();
 
-      if (result) {
+      if (response.successful()) {
         // Return to the server selector screen
         Navigator.of(context).pop();
+      } else {
+        var data = response.asMap();
+
+        String err;
+
+        if (data.containsKey("detail")) {
+          err = (data["detail"] ?? "") as String;
+        } else {
+          err = statusCodeToString(response.statusCode);
+        }
+        setState(() {
+          error = err;
+        });
       }
     }
 
@@ -64,6 +80,30 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
   @override
   Widget build(BuildContext context) {
 
+    List<Widget> before = [
+      ListTile(
+        title: Text(L10().loginEnter),
+        subtitle: Text(L10().loginEnterDetails),
+        leading: FaIcon(FontAwesomeIcons.userCheck),
+      ),
+      ListTile(
+        title: Text(L10().server),
+        subtitle: Text(widget.profile.server),
+        leading: FaIcon(FontAwesomeIcons.server),
+      ),
+      Divider(),
+    ];
+
+    List<Widget> after = [];
+
+    if (error.isNotEmpty) {
+      after.add(Divider());
+      after.add(ListTile(
+        leading: FaIcon(FontAwesomeIcons.circleExclamation, color: COLOR_DANGER),
+        title: Text(L10().error, style: TextStyle(color: COLOR_DANGER)),
+        subtitle: Text(error, style: TextStyle(color: COLOR_DANGER)),
+      ));
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text(L10().login),
@@ -84,17 +124,7 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ListTile(
-                title: Text(L10().loginEnter),
-                subtitle: Text(L10().loginEnterDetails),
-                leading: FaIcon(FontAwesomeIcons.userCheck),
-              ),
-              ListTile(
-                title: Text(L10().server),
-                subtitle: Text(widget.profile.server),
-                leading: FaIcon(FontAwesomeIcons.server),
-              ),
-              Divider(),
+              ...before,
               TextFormField(
                 decoration: InputDecoration(
                     labelText: L10().username,
@@ -142,6 +172,7 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
                     return null;
                   }
               ),
+              ...after,
             ],
           ),
           padding: EdgeInsets.all(16),

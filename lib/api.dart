@@ -512,7 +512,7 @@ class InvenTreeAPI {
    * Fetch a token from the server,
    * with a temporary authentication header
    */
-  Future<bool> fetchToken(UserProfile userProfile, String username, String password) async {
+  Future<APIResponse> fetchToken(UserProfile userProfile, String username, String password) async {
 
     debug("Fetching user token from ${userProfile.server}");
 
@@ -574,8 +574,6 @@ class InvenTreeAPI {
       }
 
       debug("Token request failed: STATUS ${response.statusCode}");
-
-      return false;
     }
 
     final data = response.asMap();
@@ -586,8 +584,6 @@ class InvenTreeAPI {
         L10().tokenMissing,
         L10().tokenMissingFromResponse,
       );
-
-      return false;
     }
 
     // Save the token to the user profile
@@ -595,9 +591,9 @@ class InvenTreeAPI {
 
     debug("Received token from server: ${userProfile.token}");
 
-    bool result = await UserProfileDBManager().updateProfile(userProfile);
+    await UserProfileDBManager().updateProfile(userProfile);
 
-    return result;
+    return response;
   }
 
   void disconnectFromServer() {

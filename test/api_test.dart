@@ -60,8 +60,8 @@ void main() {
         // Test incorrect login details
         profile.server = testServerAddress;
 
-        result = await api.fetchToken(profile, "baduser", "badpassword");
-        assert(!result);
+        final response = await api.fetchToken(profile, "baduser", "badpassword");
+        assert(!response.successful());
 
         debugContains("Token request failed");
 

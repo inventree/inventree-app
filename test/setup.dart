@@ -42,8 +42,8 @@ Future<bool> fetchProfileToken({
 
   assert(profile != null);
 
-  bool result = await InvenTreeAPI().fetchToken(profile!, username, password);
-  return result;
+  final response = await InvenTreeAPI().fetchToken(profile!, username, password);
+  return response.successful();
 }
 
 
