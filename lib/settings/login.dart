@@ -13,7 +13,7 @@ import "package:inventree/widget/progress.dart";
 
 class InvenTreeLoginWidget extends StatefulWidget {
 
-  InvenTreeLoginWidget(this.profile);
+  InvenTreeLoginWidget(this.profile) : super();
 
   UserProfile profile;
 

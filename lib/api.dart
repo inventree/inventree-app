@@ -196,12 +196,9 @@ class InvenTreeAPI {
   static const _URL_ROLES = "user/roles/";
   static const _URL_ME = "user/me/";
 
-  // Base URL for InvenTree API e.g. http://192.168.120.10:8000
-  String _BASE_URL = "";
-
   // Accessors for various url endpoints
   String get baseUrl {
-    String url = _BASE_URL;
+    String url = profile?.server ?? "";
 
     if (!url.endsWith("/")) {
       url += "/";
@@ -385,8 +382,6 @@ class InvenTreeAPI {
    */
   Future<bool> _connectToServer() async {
 
-    debug("Connecting to server...");
-
     if (!await _checkServer()) {
       return false;
     }
@@ -440,9 +435,6 @@ class InvenTreeAPI {
     if (!address.endsWith("/")) {
       address = address + "/";
     }
-
-    // Save the base URL
-    _BASE_URL = address;
 
     // Cache the "strictHttps" setting, so we can use it later without async requirement
     _strictHttps = await InvenTreeSettingsManager().getValue(INV_STRICT_HTTPS, false) as bool;
@@ -522,7 +514,9 @@ class InvenTreeAPI {
    */
   Future<bool> fetchToken(UserProfile userProfile, String authHeader) async {
 
-    debug("Fetching user token");
+    debug("Fetching user token from ${userProfile.server}");
+
+    profile = userProfile;
 
     // Form a name to request the token with
     String platform_name = "inventree-mobile-app";

@@ -84,7 +84,7 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
 
     await UserProfileDBManager().selectProfile(key);
 
-    UserProfile? prf = await UserProfileDBManager().getSelectedProfile();
+    UserProfile? prf = await UserProfileDBManager().getProfileByKey(key);
 
     if (prf == null) {
       return;
@@ -97,7 +97,8 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
         MaterialPageRoute(builder: (context) => InvenTreeLoginWidget(profile))
       ).then((value) async {
         _reload();
-        prf = await UserProfileDBManager().getSelectedProfile();
+        // Reload profile
+        prf = await UserProfileDBManager().getProfileByKey(key);
         if (prf?.hasToken ?? false) {
           InvenTreeAPI().connectToServer(prf!).then((result) {
             _reload();

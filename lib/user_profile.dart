@@ -212,6 +212,26 @@ class UserProfileDBManager {
     return profileList;
   }
 
+
+  /*
+   * Retrieve a profile by key (or null if no match exists)
+   */
+  Future<UserProfile?> getProfileByKey(int key) async {
+    final profiles = await getAllProfiles();
+
+    UserProfile? prf;
+
+    for (UserProfile profile in profiles) {
+      if (profile.key == key) {
+        prf = profile;
+        break;
+      }
+    }
+
+    return prf;
+  }
+
+
   /*
    * Retrieve a profile by name (or null if no match exists)
    */
