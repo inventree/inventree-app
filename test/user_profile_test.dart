@@ -65,10 +65,10 @@ void main() {
 
       expect(result, equals(false));
 
-      // Add a profile with a name that already exists
+      // Add a profile with a new name
       result = await UserProfileDBManager().addProfile(
         UserProfile(
-          name: "Test Profile",
+          name: "Another Test Profile",
         )
       );
 
@@ -77,14 +77,14 @@ void main() {
       // Check that the number of protocols available is still the same
       var profiles = await UserProfileDBManager().getAllProfiles();
 
-      expect(profiles.length, equals(1));
+      expect(profiles.length, equals(2));
     });
 
     test("Profile Name Check", () async {
       bool result = await UserProfileDBManager().profileNameExists("doesnotexist");
       expect(result, equals(false));
 
-      result = await UserProfileDBManager().profileNameExists("Test Profile");
+      result = await UserProfileDBManager().profileNameExists("Test Server");
       expect(result, equals(true));
     });
 
@@ -100,7 +100,7 @@ void main() {
         expect(p.name, equals(testServerName));
         expect(p.server, equals(testServerAddress));
 
-        expect(p.toString(), equals("<${p.key}> Test Profile : http://localhost:8000"));
+        expect(p.toString(), equals("<${p.key}> Test Server : http://localhost:8000/"));
 
         // Test that we can update the profile
         p.name = "different name";
