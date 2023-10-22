@@ -2,6 +2,9 @@
 ---
 
 - Add ability to scan in received items using supplier barcodes
+- Store API token, rather than username:password
+- Ensure that user will lose access if token is revoked by server
+
 
 ### 0.12.8 - September 2023
 ---

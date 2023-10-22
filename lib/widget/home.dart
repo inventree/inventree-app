@@ -147,7 +147,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
       if (!InvenTreeAPI().isConnected() && !InvenTreeAPI().isConnecting()) {
 
         // Attempt server connection
-        InvenTreeAPI().connectToServer().then((result) {
+        InvenTreeAPI().connectToServer(_profile!).then((result) {
           if (mounted) {
             setState(() {});
           }

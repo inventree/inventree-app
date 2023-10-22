@@ -84,15 +84,22 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
 
     await UserProfileDBManager().selectProfile(key);
 
+    UserProfile? prf = await UserProfileDBManager().getSelectedProfile();
+
+    if (prf == null) {
+      return;
+    }
+
     // First check if the profile has an associate token
-    if (!await InvenTreeAPI().checkHasToken()) {
+    if (!prf.hasToken) {
       // Redirect user to login screen
       Navigator.push(context,
         MaterialPageRoute(builder: (context) => InvenTreeLoginWidget(profile))
       ).then((value) async {
         _reload();
-        if (await InvenTreeAPI().checkHasToken()) {
-          InvenTreeAPI().connectToServer().then((result) {
+        prf = await UserProfileDBManager().getSelectedProfile();
+        if (prf?.hasToken ?? false) {
+          InvenTreeAPI().connectToServer(prf!).then((result) {
             _reload();
           });
         }
@@ -109,7 +116,7 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
     _reload();
 
     // Attempt server login (this will load the newly selected profile
-    InvenTreeAPI().connectToServer().then((result) {
+    InvenTreeAPI().connectToServer(prf).then((result) {
       _reload();
     });
 

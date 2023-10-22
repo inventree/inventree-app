@@ -459,9 +459,7 @@ class InvenTreeAPI {
 
     Map<String, dynamic> _data = response.asMap();
 
-    if (_data is Map<String, dynamic>) {
-      serverInfo = {..._data};
-    }
+    serverInfo = {..._data};
 
     if (serverVersion.isEmpty) {
       showServerError(
@@ -505,7 +503,17 @@ class InvenTreeAPI {
   Future<bool> _checkAuth() async {
     debug("Checking user auth @ ${_URL_ME}");
     final response = await get(_URL_ME);
-    return response.successful() && response.statusCode == 200;
+
+    if (response.successful() && response.statusCode == 200) {
+      return true;
+    } else {
+      debug("Auth request failed: Server returned status ${response.statusCode}");
+      if (response.data != null) {
+        debug("Server response: ${response.data.toString()}");
+      }
+
+      return false;
+    }
   }
 
   /*
@@ -588,7 +596,7 @@ class InvenTreeAPI {
     // Save the token to the user profile
     userProfile.token = (data["token"] ?? "") as String;
 
-    debug("Received token from server");
+    debug("Received token from server: ${userProfile.token}");
 
     bool result = await UserProfileDBManager().updateProfile(userProfile);
 
@@ -610,24 +618,15 @@ class InvenTreeAPI {
     _connectionStatusChanged();
   }
 
-  /*
-   * Check if the selected profile has an API token
-   */
-  Future<bool> checkHasToken() async {
-
-    final _prf = await UserProfileDBManager().getSelectedProfile();
-    return _prf?.hasToken ?? false;
-  }
 
   /* Public facing connection function.
    */
-  Future<bool> connectToServer() async {
+  Future<bool> connectToServer(UserProfile prf) async {
 
     // Ensure server is first disconnected
     disconnectFromServer();
 
-    // Load selected profile
-    profile = await UserProfileDBManager().getSelectedProfile();
+    profile = prf;
 
     if (profile == null) {
       showSnackIcon(

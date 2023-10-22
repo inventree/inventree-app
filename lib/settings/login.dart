@@ -2,7 +2,6 @@
 
 import "dart:convert";
 
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:inventree/app_colors.dart";
@@ -11,9 +10,6 @@ import "package:inventree/l10.dart";
 import "package:inventree/api.dart";
 import "package:inventree/widget/progress.dart";
 
-/**
- * clas
- */
 
 class InvenTreeLoginWidget extends StatefulWidget {
 
@@ -45,6 +41,13 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
     bool valid = formKey.currentState?.validate() ?? false;
 
     if (valid) {
+
+      // Dismiss the keyboard
+      FocusScopeNode currentFocus = FocusScope.of(context);
+
+      if (!currentFocus.hasPrimaryFocus) {
+        currentFocus.unfocus();
+      }
 
       showLoadingOverlay(context);
 
