@@ -583,6 +583,10 @@ class InvenTreeAPI {
       }
 
       debug("Token request failed: STATUS ${response.statusCode}");
+
+      if (response.data != null) {
+        debug("Response data: ${response.data.toString()}");
+      }
     }
 
     final data = response.asMap();
