@@ -18,9 +18,6 @@ env:
   INVENTREE_ADMIN_USER: testuser
   INVENTREE_ADMIN_PASSWORD: testpassword
   INVENTREE_ADMIN_EMAIL: test@test.com
-  INVENTREE_PYTHON_TEST_SERVER: http://localhost:12345
-  INVENTREE_PYTHON_TEST_USERNAME: testuser
-  INVENTREE_PYTHON_TEST_PASSWORD: testpassword
 jobs:
 
   test:
@@ -64,7 +61,7 @@ jobs:
           invoke install
           invoke migrate
           invoke import-fixtures
-          invoke server -a 127.0.0.1:12345 &
+          invoke server -a 127.0.0.1:8000 &
           invoke wait
           sleep 30
       - name: Unit Tests
