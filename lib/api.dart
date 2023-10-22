@@ -512,7 +512,7 @@ class InvenTreeAPI {
    * Fetch a token from the server,
    * with a temporary authentication header
    */
-  Future<bool> fetchToken(UserProfile userProfile, String authHeader) async {
+  Future<bool> fetchToken(UserProfile userProfile, String username, String password) async {
 
     debug("Fetching user token from ${userProfile.server}");
 
@@ -546,6 +546,9 @@ class InvenTreeAPI {
     if (deviceInfo.containsKey("systemVersion")) {
       platform_name += "-" + (deviceInfo["systemVersion"] as String);
     }
+
+    // Construct auth header from username and password
+    String authHeader = "Basic " + base64Encode(utf8.encode("${username}:${password}"));
 
     // Perform request to get a token
     final response = await get(
@@ -736,7 +739,7 @@ class InvenTreeAPI {
 
     if (roles[role] == null) {
       debug("checkPermission - role '$role' is null!");
-      return true;
+      return false;
     }
 
     try {

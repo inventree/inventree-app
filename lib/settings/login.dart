@@ -52,8 +52,7 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
       showLoadingOverlay(context);
 
       // Attempt login
-      String auth = "Basic " + base64Encode(utf8.encode("${username}:${password}"));
-      final result = await InvenTreeAPI().fetchToken(widget.profile, auth);
+      final result = await InvenTreeAPI().fetchToken(widget.profile, username, password);
 
       hideLoadingOverlay();
 
