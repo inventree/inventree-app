@@ -11,6 +11,7 @@ import "package:inventree/helpers.dart";
 import "package:inventree/l10.dart";
 
 import "package:inventree/barcode/camera_controller.dart";
+import "package:inventree/barcode/wedge_controller.dart";
 import "package:inventree/barcode/controller.dart";
 import "package:inventree/barcode/handler.dart";
 import "package:inventree/barcode/tones.dart";
@@ -42,7 +43,9 @@ Future<Object?> scanBarcode(BuildContext context, {BarcodeHandler? handler}) asy
   // Default to generic scan handler
   handler ??= BarcodeScanHandler();
   
-  InvenTreeBarcodeController controller = CameraBarcodeController(handler);
+  InvenTreeBarcodeController controller = CameraBarcodeController(handler); // WedgeBarcodeController(handler); // CameraBarcodeController(handler);
+
+  controller = WedgeBarcodeController(handler);
 
   return Navigator.of(context).push(
     PageRouteBuilder(
