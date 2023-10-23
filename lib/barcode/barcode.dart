@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:inventree/preferences.dart";
 import "package:one_context/one_context.dart";
 
 
@@ -43,9 +44,20 @@ Future<Object?> scanBarcode(BuildContext context, {BarcodeHandler? handler}) asy
   // Default to generic scan handler
   handler ??= BarcodeScanHandler();
   
-  InvenTreeBarcodeController controller = CameraBarcodeController(handler); // WedgeBarcodeController(handler); // CameraBarcodeController(handler);
+  InvenTreeBarcodeController controller = CameraBarcodeController(handler);
 
-  controller = WedgeBarcodeController(handler);
+  // Select barcode controller based on user preference
+  final int barcodeControllerType = await InvenTreeSettingsManager().getValue(INV_BARCODE_SCAN_TYPE, BARCODE_CONTROLLER_CAMERA) as int;
+
+  switch (barcodeControllerType) {
+    case BARCODE_CONTROLLER_WEDGE:
+      controller = WedgeBarcodeController(handler);
+      break;
+    case BARCODE_CONTROLLER_CAMERA:
+    default:
+      // Already set as default option
+      break;
+  }
 
   return Navigator.of(context).push(
     PageRouteBuilder(

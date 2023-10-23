@@ -127,7 +127,7 @@ class _InvenTreeBarcodeSettingsState extends State<InvenTreeBarcodeSettingsWidge
                       leading: FaIcon(FontAwesomeIcons.camera),
                     ),
                     ListTile(
-                      title: Text(L10().scannerExteranl),
+                      title: Text(L10().scannerExternal),
                       subtitle: Text(L10().scannerExternalDetail),
                       leading: Icon(Icons.barcode_reader),
                     )
