@@ -1,7 +1,9 @@
 import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
+
 import "package:inventree/l10.dart";
 import "package:inventree/preferences.dart";
+import "package:inventree/widget/dialogs.dart";
 
 
 class InvenTreeBarcodeSettingsWidget extends StatefulWidget {
@@ -15,6 +17,7 @@ class _InvenTreeBarcodeSettingsState extends State<InvenTreeBarcodeSettingsWidge
  _InvenTreeBarcodeSettingsState();
 
  int barcodeScanDelay = 500;
+ int barcodeScanType = BARCODE_CONTROLLER_CAMERA;
 
  final TextEditingController _barcodeScanDelayController = TextEditingController();
 
@@ -26,6 +29,7 @@ class _InvenTreeBarcodeSettingsState extends State<InvenTreeBarcodeSettingsWidge
 
   Future<void> loadSettings() async {
     barcodeScanDelay = await InvenTreeSettingsManager().getValue(INV_BARCODE_SCAN_DELAY, 500) as int;
+    barcodeScanType = await InvenTreeSettingsManager().getValue(INV_BARCODE_SCAN_TYPE, BARCODE_CONTROLLER_CAMERA) as int;
 
     if (mounted) {
       setState(() {
@@ -89,11 +93,55 @@ class _InvenTreeBarcodeSettingsState extends State<InvenTreeBarcodeSettingsWidge
 
   @override
   Widget build(BuildContext context) {
+
+    // Construct an icon for the barcode scanner input
+    Widget? barcodeInputIcon;
+
+    switch (barcodeScanType) {
+      case BARCODE_CONTROLLER_WEDGE:
+        barcodeInputIcon = Icon(Icons.barcode_reader);
+        break;
+      case BARCODE_CONTROLLER_CAMERA:
+      default:
+        barcodeInputIcon = FaIcon(FontAwesomeIcons.camera);
+        break;
+    }
+
     return Scaffold(
       appBar: AppBar(title: Text(L10().barcodes)),
       body: Container(
         child: ListView(
           children: [
+            ListTile(
+              title: Text(L10().barcodeScanController),
+              subtitle: Text(L10().barcodeScanControllerDetail),
+              leading: Icon(Icons.qr_code_scanner),
+              trailing: barcodeInputIcon,
+              onTap: () async {
+                choiceDialog(
+                  L10().barcodeScanController,
+                  [
+                    ListTile(
+                      title: Text(L10().cameraInternal),
+                      subtitle: Text(L10().cameraInternalDetail),
+                      leading: FaIcon(FontAwesomeIcons.camera),
+                    ),
+                    ListTile(
+                      title: Text(L10().scannerExteranl),
+                      subtitle: Text(L10().scannerExternalDetail),
+                      leading: Icon(Icons.barcode_reader),
+                    )
+                  ],
+                  onSelected: (idx) async {
+                    barcodeScanType = idx as int;
+                    InvenTreeSettingsManager().setValue(INV_BARCODE_SCAN_TYPE, barcodeScanType);
+                    if (mounted) {
+                      setState(() {});
+                    }
+                  }
+                );
+              }
+            ),
             ListTile(
               title: Text(L10().barcodeScanDelay),
               subtitle: Text(L10().barcodeScanDelayDetail),
@@ -104,7 +152,7 @@ class _InvenTreeBarcodeSettingsState extends State<InvenTreeBarcodeSettingsWidge
                   _editBarcodeScanDelay(context);
                 },
               ),
-            )
+            ),
           ],
         )
       )
