@@ -11,6 +11,7 @@ dependencies:
   audioplayers: ^4.1.0                    # Play audio files
   cached_network_image: ^3.2.3            # Download and cache remote images
   camera: ^0.10.3                         # Camera
+  code_scan_listener: 0.4.1               # Keyboard wedge barcode interface
   cupertino_icons: ^1.0.3
   currency_formatter: ^2.0.1
   datetime_picker_formfield: ^2.0.1       # Date / time picker
