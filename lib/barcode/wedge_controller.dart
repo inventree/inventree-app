@@ -8,6 +8,7 @@ import "package:inventree/app_colors.dart";
 import "package:inventree/barcode/controller.dart";
 import "package:inventree/barcode/handler.dart";
 import "package:inventree/l10.dart";
+import "package:inventree/helpers.dart";
 
 /*
  * Barcode controller which acts as a keyboard wedge,
@@ -67,6 +68,7 @@ class _WedgeBarcodeControllerState extends InvenTreeBarcodeControllerState {
             FaIcon(FontAwesomeIcons.barcode, size: 64),
             Spacer(flex: 5),
             CodeScanListener(
+              useKeyDownEvent: true,
               child: SizedBox(
                 child: CircularProgressIndicator(
                   color: scanning ? COLOR_ACTION : COLOR_PROGRESS
@@ -75,6 +77,7 @@ class _WedgeBarcodeControllerState extends InvenTreeBarcodeControllerState {
                 height: 64,
               ),
               onBarcodeScanned: (String barcode) {
+                debug("scanned: ${barcode}");
                 if (scanning) {
                   // Process the barcode data
                   handleBarcodeData(barcode);

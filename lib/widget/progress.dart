@@ -14,7 +14,12 @@ Widget progressIndicator() {
 }
 
 
-void showLoadingOverlay(BuildContext context) {
+void showLoadingOverlay(BuildContext? context) {
+
+  if (context == null) {
+    return;
+  }
+
   Loader.show(
     context,
     themeData: Theme.of(context).copyWith(colorScheme: ColorScheme.fromSwatch())
