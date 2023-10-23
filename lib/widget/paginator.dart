@@ -394,31 +394,36 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
 
     children.add(
       Expanded(
-        child: CustomScrollView(
-            shrinkWrap: true,
-            physics: ClampingScrollPhysics(),
-            scrollDirection: Axis.vertical,
-            slivers: <Widget>[
-              PagedSliverList.separated(
-                pagingController: _pagingController,
-                builderDelegate: PagedChildBuilderDelegate<InvenTreeModel>(
-                    itemBuilder: (ctx, item, index) {
-                      return buildItem(ctx, item);
-                    },
-                    noItemsFoundIndicatorBuilder: (context) {
-                      return NoResultsWidget(noResultsText);
-                    }
-                ),
-                separatorBuilder: (context, item) => const Divider(height: .1),
-              )
-            ]
+          child: CustomScrollView(
+              shrinkWrap: true,
+              physics: AlwaysScrollableScrollPhysics(),
+              scrollDirection: Axis.vertical,
+              slivers: <Widget>[
+                PagedSliverList.separated(
+                  pagingController: _pagingController,
+                  builderDelegate: PagedChildBuilderDelegate<InvenTreeModel>(
+                      itemBuilder: (ctx, item, index) {
+                        return buildItem(ctx, item);
+                      },
+                      noItemsFoundIndicatorBuilder: (context) {
+                        return NoResultsWidget(noResultsText);
+                      }
+                  ),
+                  separatorBuilder: (context, item) => const Divider(height: 1),
+                )
+              ]
+          )
         )
-      )
     );
 
-    return Column(
+    return RefreshIndicator(
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: children,
+      ),
+      onRefresh: () async {
+        _pagingController.refresh();
+      },
     );
   }
 
