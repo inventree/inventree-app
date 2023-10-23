@@ -60,40 +60,38 @@ class _WedgeBarcodeControllerState extends InvenTreeBarcodeControllerState {
       ),
       backgroundColor: Colors.black.withOpacity(0.9),
       body: Center(
-        child: Expanded(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Spacer(flex: 5),
-              FaIcon(FontAwesomeIcons.barcode, size: 64),
-              Spacer(flex: 5),
-              CodeScanListener(
-                child: SizedBox(
-                  child: CircularProgressIndicator(
-                    color: scanning ? COLOR_ACTION : COLOR_PROGRESS
-                  ),
-                  width: 64,
-                  height: 64,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Spacer(flex: 5),
+            FaIcon(FontAwesomeIcons.barcode, size: 64),
+            Spacer(flex: 5),
+            CodeScanListener(
+              child: SizedBox(
+                child: CircularProgressIndicator(
+                  color: scanning ? COLOR_ACTION : COLOR_PROGRESS
                 ),
-                onBarcodeScanned: (String barcode) {
-                  if (scanning) {
-                    // Process the barcode data
-                    handleBarcodeData(barcode);
-                  }
-                },
+                width: 64,
+                height: 64,
               ),
-              Spacer(flex: 5),
-              Padding(
-                child: Text(
-                  widget.handler.getOverlayText(context),
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white)
-                ),
-                padding: EdgeInsets.all(20),
-              )
-            ],
-          )
+              onBarcodeScanned: (String barcode) {
+                if (scanning) {
+                  // Process the barcode data
+                  handleBarcodeData(barcode);
+                }
+              },
+            ),
+            Spacer(flex: 5),
+            Padding(
+              child: Text(
+                widget.handler.getOverlayText(context),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white)
+              ),
+              padding: EdgeInsets.all(20),
+            )
+          ],
         )
       )
     );
