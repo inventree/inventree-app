@@ -21,7 +21,7 @@ mixin BaseWidgetProperties {
    */
   List<Widget> appBarActions(BuildContext context) => [];
 
-  // Return a title for the appBar
+  // Return a title for the appBar (placeholder)
   String getAppBarTitle() { return "--- app bar ---"; }
 
   // Function to construct a drawer (override if needed)
@@ -40,6 +40,7 @@ mixin BaseWidgetProperties {
 
     // Default body calls getTiles()
     return SingleChildScrollView(
+      physics: AlwaysScrollableScrollPhysics(),
       child: Column(
         children: getTiles(context)
       )
@@ -202,7 +203,8 @@ mixin BaseWidgetProperties {
  */
 abstract class RefreshableState<T extends StatefulWidget> extends State<T> with BaseWidgetProperties {
 
-  final refreshableKey = GlobalKey<ScaffoldState>();
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
 
   // Storage for context once "Build" is called
   late BuildContext? _context;
@@ -265,19 +267,31 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> with 
 
     Widget body = tabs.isEmpty ? getBody(context) : TabBarView(children: getTabs(context));
 
+    // predicateDepth needs to be different based on the child type
+    // hack, determined experimentally
+    int predicateDepth = 0;
+
+    if (tabs.isNotEmpty) {
+      predicateDepth = 1;
+    }
+
     Scaffold view = Scaffold(
-      key: refreshableKey,
-      appBar: buildAppBar(context, refreshableKey),
+      key: scaffoldKey,
+      appBar: buildAppBar(context, scaffoldKey),
       drawer: getDrawer(context),
       floatingActionButton: buildSpeedDial(context),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
       body: RefreshIndicator(
+        key: refreshKey,
+        notificationPredicate: (ScrollNotification notification) {
+          return notification.depth == predicateDepth;
+        },
         onRefresh: () async {
           refresh(context);
         },
         child: body
       ),
-      bottomNavigationBar: buildBottomAppBar(context, refreshableKey),
+      bottomNavigationBar: buildBottomAppBar(context, scaffoldKey),
     );
 
     // Default implementation is *not* tabbed
