@@ -23,6 +23,8 @@ class _NotificationState extends RefreshableState<NotificationWidget> {
 
   List<InvenTreeNotification> notifications = [];
 
+  bool isDismissing = false;
+
   @override
   String getAppBarTitle() => L10().notifications;
 
@@ -45,10 +47,23 @@ class _NotificationState extends RefreshableState<NotificationWidget> {
    */
   Future<void> dismissNotification(BuildContext context, InvenTreeNotification notification) async {
 
+    if (mounted) {
+      setState(() {
+        isDismissing = true;
+      });
+    } else {
+      return;
+    }
+
     await notification.dismiss();
 
-    refresh(context);
+    if (mounted) {
+      refresh(context);
 
+      setState(() {
+        isDismissing = false;
+      });
+    }
   }
 
   /*
@@ -77,7 +92,7 @@ class _NotificationState extends RefreshableState<NotificationWidget> {
           subtitle: Text(notification.message),
           trailing: IconButton(
             icon: FaIcon(FontAwesomeIcons.bookmark),
-            onPressed: () async {
+            onPressed: isDismissing ? null : () async {
               dismissNotification(context, notification);
             },
           ),
