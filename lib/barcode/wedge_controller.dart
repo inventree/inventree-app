@@ -1,8 +1,7 @@
 
 import "package:flutter/material.dart";
-
-import "package:code_scan_listener/code_scan_listener.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_barcode_listener/flutter_barcode_listener.dart";
 
 import "package:inventree/app_colors.dart";
 import "package:inventree/barcode/controller.dart";
@@ -67,7 +66,7 @@ class _WedgeBarcodeControllerState extends InvenTreeBarcodeControllerState {
             Spacer(flex: 5),
             FaIcon(FontAwesomeIcons.barcode, size: 64),
             Spacer(flex: 5),
-            CodeScanListener(
+            BarcodeKeyboardListener(
               useKeyDownEvent: true,
               child: SizedBox(
                 child: CircularProgressIndicator(

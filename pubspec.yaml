@@ -11,7 +11,6 @@ dependencies:
   audioplayers: ^4.1.0                    # Play audio files
   cached_network_image: ^3.2.3            # Download and cache remote images
   camera: ^0.10.3                         # Camera
-  code_scan_listener: 0.4.1               # Keyboard wedge barcode interface
   cupertino_icons: ^1.0.3
   currency_formatter: ^2.0.1
   datetime_picker_formfield: ^2.0.1       # Date / time picker
@@ -20,6 +19,10 @@ dependencies:
   file_picker: ^5.2.11                    # Select files from the device
   flutter:
     sdk: flutter
+  flutter_barcode_listener:               # Custom fork of flutter_barcode_listener which handles shift keys properly
+    git:
+      url: https://github.com/fuadreza/flutter_barcode_listener.git
+      ref: 60e8f8eed96cfacaaf5492aa0ff9764abe13a354
   flutter_cache_manager: ^3.3.0
   flutter_localizations: 
     sdk: flutter
