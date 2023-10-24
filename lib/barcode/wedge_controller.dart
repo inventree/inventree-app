@@ -1,11 +1,11 @@
 
 import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
-import "package:flutter_barcode_listener/flutter_barcode_listener.dart";
 
 import "package:inventree/app_colors.dart";
 import "package:inventree/barcode/controller.dart";
 import "package:inventree/barcode/handler.dart";
+import "package:inventree/barcode/flutter_barcode_listener.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/helpers.dart";
 

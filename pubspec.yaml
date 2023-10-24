@@ -19,10 +19,6 @@ dependencies:
   file_picker: ^5.2.11                    # Select files from the device
   flutter:
     sdk: flutter
-  flutter_barcode_listener:               # Custom fork of flutter_barcode_listener which handles shift keys properly
-    git:
-      url: https://github.com/fuadreza/flutter_barcode_listener.git
-      ref: 60e8f8eed96cfacaaf5492aa0ff9764abe13a354
   flutter_cache_manager: ^3.3.0
   flutter_localizations: 
     sdk: flutter

@@ -374,15 +374,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_barcode_listener:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: "60e8f8eed96cfacaaf5492aa0ff9764abe13a354"
-      resolved-ref: "60e8f8eed96cfacaaf5492aa0ff9764abe13a354"
-      url: "https://github.com/fuadreza/flutter_barcode_listener.git"
-    source: git
-    version: "0.1.3"
   flutter_blurhash:
     dependency: transitive
     description:
