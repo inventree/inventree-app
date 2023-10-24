@@ -24,7 +24,7 @@ void main() {
     await simulateKeyDownEvent(LogicalKeyboardKey.enter);
 
     // Check debug output
-    debugContains("scanned: ABC");
+    debugContains("scanned: abc");
     debugContains("No match for barcode");
     debugContains("Server Error");
 
