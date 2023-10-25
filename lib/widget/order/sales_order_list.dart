@@ -39,7 +39,7 @@ class _SalesOrderListWidgetState extends RefreshableState<SalesOrderListWidget> 
       actions.add(
           SpeedDialChild(
               child: FaIcon(FontAwesomeIcons.circlePlus),
-              label: L10().purchaseOrderCreate,
+              label: L10().salesOrderCreate,
               onTap: () {
                 _createSalesOrder(context);
               }

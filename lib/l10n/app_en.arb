@@ -1006,6 +1006,9 @@
   "salesOrders": "Sales Orders",
   "@salesOrders": {},
 
+  "salesOrderCreate": "New Sales Order",
+  "@saleOrderCreate": {},
+
   "save": "Save",
   "@save": {
     "description": "Save"
