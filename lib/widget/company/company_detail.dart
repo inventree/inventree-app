@@ -11,10 +11,10 @@ import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/purchase_order.dart";
 
 import "package:inventree/widget/attachment_widget.dart";
-import "package:inventree/widget/purchase_order_list.dart";
+import 'package:inventree/widget/order/purchase_order_list.dart';
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
-import "package:inventree/widget/supplier_part_list.dart";
+import 'package:inventree/widget/company/supplier_part_list.dart';
 
 
 /*

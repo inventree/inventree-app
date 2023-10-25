@@ -23,13 +23,13 @@ import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/inventree/stock.dart";
 
 import "package:inventree/widget/dialogs.dart";
-import "package:inventree/widget/location_display.dart";
-import "package:inventree/widget/part_detail.dart";
-import "package:inventree/widget/purchase_order_detail.dart";
+import 'package:inventree/widget/stock/location_display.dart';
+import 'package:inventree/widget/part/part_detail.dart';
+import 'package:inventree/widget/order/purchase_order_detail.dart';
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
-import "package:inventree/widget/stock_detail.dart";
-import "package:inventree/widget/supplier_part_detail.dart";
+import 'package:inventree/widget/stock/stock_detail.dart';
+import 'package:inventree/widget/company/supplier_part_detail.dart';
 
 
 /*
