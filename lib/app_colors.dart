@@ -6,6 +6,11 @@ const Color COLOR_GRAY_LIGHT = Color.fromRGBO(150, 150, 150, 1);
 // Return an "action" color based on the current theme
 Color get COLOR_ACTION {
 
+  // OneContext might not have context, e.g. in testing
+  if (!OneContext.hasContext) {
+    return Colors.lightBlue;
+  }
+
   BuildContext? context = OneContext().context;
 
   if (context != null) {

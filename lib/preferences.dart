@@ -40,6 +40,11 @@ const String INV_STRICT_HTTPS = "strictHttps";
 
 // Barcode settings
 const String INV_BARCODE_SCAN_DELAY = "barcodeScanDelay";
+const String INV_BARCODE_SCAN_TYPE = "barcodeScanType";
+
+// Barcode scanner types
+const int BARCODE_CONTROLLER_CAMERA = 0;
+const int BARCODE_CONTROLLER_WEDGE = 1;
 
 /*
  * Class for storing InvenTree preferences in a NoSql DB

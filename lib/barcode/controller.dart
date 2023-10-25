@@ -58,9 +58,9 @@ class InvenTreeBarcodeControllerState extends State<InvenTreeBarcodeController> 
       processingBarcode = true;
     });
 
-    BuildContext? context = OneContext().context;
+    BuildContext? context = OneContext.hasContext ? OneContext().context : null;
 
-    showLoadingOverlay(context!);
+    showLoadingOverlay(context);
     await pauseScan();
 
     await widget.handler.processBarcode(data);

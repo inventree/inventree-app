@@ -1,6 +1,7 @@
 ### 0.13.0 - October 2023
 ---
 
+- Adds "wedge scanner" mode, allowing use with external barcode readers
 - Add ability to scan in received items using supplier barcodes
 - Store API token, rather than username:password
 - Ensure that user will lose access if token is revoked by server

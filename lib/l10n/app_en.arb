@@ -118,6 +118,12 @@
   "barcodeScanAssign": "Scan to assign barcode",
   "@barcodeScanAssign": {},
 
+  "barcodeScanController": "Scanner Input",
+  "@barcodeScanController": {},
+
+  "barcodeScanControllerDetail": "Select barcode scanner input source",
+  "@barcodeScanControllerDetail": {},
+
   "barcodeScanDelay": "Barcode Scan Delay",
   "@barcodeScanDelay": {},
 
@@ -168,6 +174,12 @@
 
   "building": "Building",
   "@building": {},
+
+  "cameraInternal": "Internal Camera",
+  "@cameraInternal": {},
+
+  "cameraInternalDetail": "Use internal camera to read barcodes",
+  "@cameraInternalDetail": {},
 
   "cancel": "Cancel",
   "@cancel": {
@@ -1002,6 +1014,12 @@
 
   "scanIntoLocationDetail": "Scan this item into location",
   "@scanIntoLocationDetail": {},
+
+  "scannerExternal": "External Scanner",
+  "@scannerExternal": {},
+
+  "scannerExternalDetail": "Use external scanner to read barcodes (wedge mode)",
+  "@scannerExternalDetail": {},
 
   "scanReceivedParts": "Scan Received Parts",
   "@scanReceivedParts": {},
