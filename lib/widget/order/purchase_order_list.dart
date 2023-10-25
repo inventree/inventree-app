@@ -22,15 +22,13 @@ class PurchaseOrderListWidget extends StatefulWidget {
   final Map<String, String> filters;
 
   @override
-  _PurchaseOrderListWidgetState createState() => _PurchaseOrderListWidgetState(filters);
+  _PurchaseOrderListWidgetState createState() => _PurchaseOrderListWidgetState();
 }
 
 
 class _PurchaseOrderListWidgetState extends RefreshableState<PurchaseOrderListWidget> {
 
-  _PurchaseOrderListWidgetState(this.filters);
-
-  final Map<String, String> filters;
+  _PurchaseOrderListWidgetState();
 
   @override
   String getAppBarTitle() => L10().purchaseOrders;
@@ -104,7 +102,7 @@ class _PurchaseOrderListWidgetState extends RefreshableState<PurchaseOrderListWi
 
   @override
   Widget getBody(BuildContext context) {
-    return PaginatedPurchaseOrderList(filters);
+    return PaginatedPurchaseOrderList(widget.filters);
   }
 }
 
@@ -153,7 +151,6 @@ class _PaginatedPurchaseOrderListState extends PaginatedSearchState<PaginatedPur
     final page = await InvenTreePurchaseOrder().listPaginated(limit, offset, filters: params);
 
     return page;
-
   }
 
   @override

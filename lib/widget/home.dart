@@ -11,15 +11,16 @@ import "package:inventree/l10.dart";
 import "package:inventree/settings/select_server.dart";
 import "package:inventree/user_profile.dart";
 
-import 'package:inventree/widget/part/category_display.dart';
+import "package:inventree/widget/part/category_display.dart";
 import "package:inventree/widget/drawer.dart";
-import 'package:inventree/widget/stock/location_display.dart';
-import 'package:inventree/widget/part/part_list.dart';
-import 'package:inventree/widget/order/purchase_order_list.dart';
+import "package:inventree/widget/stock/location_display.dart";
+import "package:inventree/widget/part/part_list.dart";
+import "package:inventree/widget/order/purchase_order_list.dart";
+import "package:inventree/widget/order/sales_order_list.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/spinner.dart";
-import 'package:inventree/widget/company/company_list.dart';
+import "package:inventree/widget/company/company_list.dart";
 
 
 class InvenTreeHomePage extends StatefulWidget {
@@ -101,7 +102,12 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
   void _showSalesOrders(BuildContext context) {
     if (!InvenTreeAPI().checkConnection()) return;
 
-    // TODO
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => SalesOrderListWidget(filters: {})
+        )
+    );
   }
 
   void _showSuppliers(BuildContext context) {

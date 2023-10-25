@@ -9,6 +9,7 @@ import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/settings/settings.dart";
+import "package:inventree/widget/order/sales_order_list.dart";
 import 'package:inventree/widget/part/category_display.dart';
 import "package:inventree/widget/notifications.dart";
 import 'package:inventree/widget/order/purchase_order_list.dart';
@@ -63,7 +64,12 @@ class InvenTreeDrawer extends StatelessWidget {
   void _salesOrders() {
     _closeDrawer();
 
-    // TODO: Navigate to sales orders page
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => SalesOrderListWidget(filters: {})
+        )
+    );
   }
   
   // Load "purchase orders" page

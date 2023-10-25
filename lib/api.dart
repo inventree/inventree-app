@@ -1624,11 +1624,13 @@ class InvenTreeAPI {
   InvenTreeStatusCode get StockHistoryStatus => _get_status_class("stock/track/status/");
   InvenTreeStatusCode get StockStatus => _get_status_class("stock/status/");
   InvenTreeStatusCode get PurchaseOrderStatus => _get_status_class("order/po/status/");
+  InvenTreeStatusCode get SalesOrderStatus => _get_status_class("order/so/status/");
 
   void clearStatusCodeData() {
     StockHistoryStatus.data.clear();
     StockStatus.data.clear();
     PurchaseOrderStatus.data.clear();
+    SalesOrderStatus.data.clear();
   }
 
   int notification_counter = 0;
