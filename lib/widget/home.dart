@@ -53,6 +53,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
   final homeKey = GlobalKey<ScaffoldState>();
 
   bool homeShowPo = false;
+  bool homeShowSo = false;
   bool homeShowSubscribed = false;
   bool homeShowManufacturers = false;
   bool homeShowCustomers = false;
@@ -97,6 +98,12 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
     );
   }
 
+  void _showSalesOrders(BuildContext context) {
+    if (!InvenTreeAPI().checkConnection()) return;
+
+    // TODO
+  }
+
   void _showSuppliers(BuildContext context) {
     if (!InvenTreeAPI().checkConnection()) return;
 
@@ -130,6 +137,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
 
     homeShowSubscribed = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_SUBSCRIBED, true) as bool;
     homeShowPo = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_PO, true) as bool;
+    homeShowSo = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_SO, true) as bool;
     homeShowManufacturers = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_MANUFACTURERS, true) as bool;
     homeShowCustomers = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_CUSTOMERS, true) as bool;
     homeShowSuppliers = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_SUPPLIERS, true) as bool;
@@ -247,6 +255,17 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
           callback: () {
             _showPurchaseOrders(context);
           }
+      ));
+    }
+
+    if (homeShowSo) {
+      tiles.add(_listTile(
+        context,
+        L10().salesOrders,
+        FontAwesomeIcons.truck,
+        callback: () {
+          _showSalesOrders(context);
+        }
       ));
     }
 

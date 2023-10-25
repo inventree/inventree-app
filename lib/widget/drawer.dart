@@ -5,6 +5,7 @@ import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/purchase_order.dart";
+import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/settings/settings.dart";
@@ -56,6 +57,13 @@ class InvenTreeDrawer extends StatelessWidget {
       context,
       MaterialPageRoute(builder: (context) => LocationDisplayWidget(null))
     );
+  }
+
+  // Load "sales orders" page
+  void _salesOrders() {
+    _closeDrawer();
+
+    // TODO: Navigate to sales orders page
   }
   
   // Load "purchase orders" page
@@ -124,6 +132,16 @@ class InvenTreeDrawer extends StatelessWidget {
           title: Text(L10().purchaseOrders),
           leading: FaIcon(FontAwesomeIcons.cartShopping, color: COLOR_ACTION),
           onTap: _purchaseOrders,
+        )
+      );
+    }
+
+    if (InvenTreeSalesOrder().canView) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().salesOrders),
+          leading: FaIcon(FontAwesomeIcons.truck, color: COLOR_ACTION),
+          onTap: _salesOrders,
         )
       );
     }

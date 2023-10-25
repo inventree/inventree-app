@@ -440,14 +440,20 @@
   "homeShowPo":  "Show Purchase Orders",
   "@homeShowPo": {},
 
+  "homeShowPoDescription": "Show purchase order button on home screen",
+  "@homeShowPoDescription": {},
+
+  "homeShowSo": "Show Sales Orders",
+  "@homeShowSo": {},
+
+  "homeShowSoDescription": "Show sales order button on home screen",
+  "@homeShowSoDescription": {},
+
   "homeShowSubscribed": "Subscribed Parts",
   "@homeShowSubscribed": {},
 
   "homeShowSubscribedDescription": "Show subscribed parts on home screen",
   "@homeShowSubscsribedDescription": {},
-
-  "homeShowPoDescription": "Show purchase order button on home screen",
-  "@homeShowPoDescription": {},
 
   "homeShowSuppliers": "Show Suppliers",
   "@homeShowSuppliers": {},
