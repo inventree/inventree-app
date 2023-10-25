@@ -16,16 +16,16 @@ import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/inventree/part.dart";
 
-import 'package:inventree/widget/company/supplier_part_detail.dart';
+import "package:inventree/widget/company/supplier_part_detail.dart";
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/attachment_widget.dart";
-import 'package:inventree/widget/stock/location_display.dart';
-import 'package:inventree/widget/part/part_detail.dart';
+import "package:inventree/widget/stock/location_display.dart";
+import "package:inventree/widget/part/part_detail.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
-import 'package:inventree/widget/stock/stock_item_history.dart';
-import 'package:inventree/widget/stock/stock_item_test_results.dart';
+import "package:inventree/widget/stock/stock_item_history.dart";
+import "package:inventree/widget/stock/stock_item_test_results.dart";
 import "package:inventree/widget/notes_widget.dart";
 
 

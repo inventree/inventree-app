@@ -10,8 +10,8 @@ import "package:inventree/l10.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/company.dart";
 
-import 'package:inventree/widget/company/company_detail.dart';
-import 'package:inventree/widget/part/part_detail.dart';
+import "package:inventree/widget/company/company_detail.dart";
+import "package:inventree/widget/part/part_detail.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";

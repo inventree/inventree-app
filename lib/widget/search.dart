@@ -11,13 +11,13 @@ import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/inventree/stock.dart";
 
-import 'package:inventree/widget/part/part_list.dart';
-import 'package:inventree/widget/order/purchase_order_list.dart';
+import "package:inventree/widget/part/part_list.dart";
+import "package:inventree/widget/order/purchase_order_list.dart";
 import "package:inventree/widget/refreshable_state.dart";
-import 'package:inventree/widget/stock/stock_list.dart';
-import 'package:inventree/widget/part/category_list.dart';
-import 'package:inventree/widget/company/company_list.dart';
-import 'package:inventree/widget/stock/location_list.dart';
+import "package:inventree/widget/stock/stock_list.dart";
+import "package:inventree/widget/part/category_list.dart";
+import "package:inventree/widget/company/company_list.dart";
+import "package:inventree/widget/stock/location_list.dart";
 
 
 // Widget for performing database-wide search

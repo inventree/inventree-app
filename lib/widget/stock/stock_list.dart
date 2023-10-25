@@ -5,7 +5,7 @@ import "package:inventree/inventree/stock.dart";
 import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/l10.dart";
-import 'package:inventree/widget/stock/stock_detail.dart';
+import "package:inventree/widget/stock/stock_detail.dart";
 import "package:inventree/api.dart";
 
 
