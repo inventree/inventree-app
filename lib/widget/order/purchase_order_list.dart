@@ -43,7 +43,7 @@ class _PurchaseOrderListWidgetState extends RefreshableState<PurchaseOrderListWi
           child: FaIcon(FontAwesomeIcons.circlePlus),
           label: L10().purchaseOrderCreate,
           onTap: () {
-            createPurchaseOrder(context);
+            _createPurchaseOrder(context);
           }
         )
       );
@@ -52,9 +52,11 @@ class _PurchaseOrderListWidgetState extends RefreshableState<PurchaseOrderListWi
     return actions;
   }
 
-  Future<void> createPurchaseOrder(BuildContext context) async {
+  // Launch form to create a new PurchaseOrder
+  Future<void> _createPurchaseOrder(BuildContext context) async {
     var fields = InvenTreePurchaseOrder().formFields();
 
+    // Cannot set contact until company is locked in
     fields.remove("contact");
 
     InvenTreePurchaseOrder().createForm(

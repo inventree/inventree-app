@@ -51,8 +51,32 @@ class _SalesOrderListWidgetState extends RefreshableState<SalesOrderListWidget> 
     return actions;
   }
 
+  // Launch form to create a new SalesOrder
   Future<void> _createSalesOrder(BuildContext context) async {
-    // TODO: Create new sales order
+    var fields = InvenTreeSalesOrder().formFields();
+
+    // Cannot set contact until company is locked in
+    fields.remove("contact");
+
+    InvenTreeSalesOrder().createForm(
+        context,
+        L10().salesOrderCreate,
+        fields: fields,
+        onSuccess: (result) async {
+          Map<String, dynamic> data = result as Map<String, dynamic>;
+
+          if (data.containsKey("pk")) {
+            var order = InvenTreeSalesOrder.fromJson(data);
+
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SalesOrderDetailWidget(order)
+              )
+            );
+          }
+        }
+    );
   }
 
   @override

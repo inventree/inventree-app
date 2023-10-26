@@ -15,6 +15,8 @@ import "package:inventree/widget/notes_widget.dart";
 
 import "package:inventree/widget/snacks.dart";
 
+import "package:inventree/widget/company/company_detail.dart";
+
 /*
  * Widget for viewing a single SalesOrder instance
  */
@@ -169,7 +171,12 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
         subtitle: Text(customer.name),
         leading: FaIcon(FontAwesomeIcons.userTie, color: COLOR_ACTION),
         onTap: () {
-          // TODO
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => CompanyDetailWidget(customer)
+              )
+          );
         }
       ));
     }
