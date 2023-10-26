@@ -1,5 +1,6 @@
 
 
+import "package:inventree/helpers.dart";
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/orders.dart";
@@ -134,6 +135,10 @@ class InvenTreeSOLineItem extends InvenTreeOrderLine {
   bool get isAllocated => allocated >= quantity;
 
   double get shipped => getDouble("shipped");
+
+  double get outstanding => quantity - shipped;
+
+  String get progressString => simpleNumberString(shipped) + " / " + simpleNumberString(quantity);
 
   bool get isComplete => shipped >= quantity;
 

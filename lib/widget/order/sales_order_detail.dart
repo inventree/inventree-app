@@ -4,6 +4,7 @@ import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/sales_order.dart";
+import "package:inventree/widget/order/so_line_list.dart";
 import "package:inventree/widget/refreshable_state.dart";
 
 import "package:inventree/l10.dart";
@@ -252,7 +253,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
   List<Widget> getTabs(BuildContext context) {
     return [
       ListView(children: orderTiles(context)),
-      Center(), // TODO: Line items
+      PaginatedSOLineList({"order": widget.order.pk.toString()}),
       Center(), // TODO: Delivered stock
     ];
   }

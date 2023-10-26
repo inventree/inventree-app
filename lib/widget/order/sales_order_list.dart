@@ -91,7 +91,10 @@ class _PaginatedSalesOrderListState extends PaginatedSearchState<PaginatedSalesO
 
   @override
   Map<String, String> get orderingOptions => {
-    // TODO: Custom ordering options
+    "reference": L10().reference,
+    "status": L10().status,
+    "target_date": L10().targetDate,
+    "customer__name": L10().customer,
   };
 
   @override
