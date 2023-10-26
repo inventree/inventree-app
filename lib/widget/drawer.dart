@@ -30,6 +30,10 @@ class InvenTreeDrawer extends StatelessWidget {
     Navigator.of(context).pop();
   }
 
+  bool _checkConnection() {
+    return InvenTreeAPI().checkConnection();
+  }
+
   /*
    * Return to the 'home' screen.
    * This will empty the navigation stack.
@@ -45,49 +49,63 @@ class InvenTreeDrawer extends StatelessWidget {
   // Load "parts" page
   void _parts() {
     _closeDrawer();
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null))
-    );
+
+    if (_checkConnection()) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null))
+      );
+    }
   }
 
   // Load "stock" page
   void _stock() {
     _closeDrawer();
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => LocationDisplayWidget(null))
-    );
+
+    if (_checkConnection()) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => LocationDisplayWidget(null))
+      );
+    }
   }
 
   // Load "sales orders" page
   void _salesOrders() {
     _closeDrawer();
 
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => SalesOrderListWidget(filters: {})
-        )
-    );
+    if (_checkConnection()) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => SalesOrderListWidget(filters: {})
+          )
+      );
+    }
   }
   
   // Load "purchase orders" page
   void _purchaseOrders() {
     _closeDrawer();
 
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => PurchaseOrderListWidget(filters: {})
-        )
-    );
+    if (_checkConnection()) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => PurchaseOrderListWidget(filters: {})
+          )
+      );
+    }
   }
 
   // Load notifications screen
   void _notifications() {
     _closeDrawer();
-    Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationWidget()));
+
+    if (_checkConnection()) {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => NotificationWidget()));
+    }
   }
 
   // Load settings widget

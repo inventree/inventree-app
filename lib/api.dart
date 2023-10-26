@@ -735,6 +735,10 @@ class InvenTreeAPI {
    */
   bool checkPermission(String role, String permission) {
 
+    if (!_connected) {
+      return false;
+    }
+
     // If we do not have enough information, assume permission is allowed
     if (roles.isEmpty) {
       debug("checkPermission - no roles defined!");
