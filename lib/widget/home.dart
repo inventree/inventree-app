@@ -123,12 +123,12 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
     Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyListWidget(L10().manufacturers, {"is_manufacturer": "true"})));
   }
 
+  */
   void _showCustomers(BuildContext context) {
     if (!InvenTreeAPI().checkConnection()) return;
 
     Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyListWidget(L10().customers, {"is_customer": "true"})));
   }
-   */
 
   void _selectProfile() {
     Navigator.push(
@@ -302,7 +302,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
           }
       ));
     }
-
+    */
     // Customers
     if (homeShowCustomers) {
       tiles.add(_listTile(
@@ -314,7 +314,6 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
           }
       ));
     }
-     */
 
     return tiles;
   }

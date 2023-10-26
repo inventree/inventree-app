@@ -63,7 +63,7 @@ class _PaginatedSOLineListState extends PaginatedSearchState<PaginatedSOLineList
         leading: InvenTreeAPI().getThumbnail(part.thumbnail),
         trailing: Text(item.progressString),
         onTap: () async {
-          // TODO - ??
+          // TODO - Navigate to line item detail view
         }
       );
     } else {

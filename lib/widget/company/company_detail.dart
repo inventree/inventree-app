@@ -9,9 +9,11 @@ import "package:inventree/helpers.dart";
 
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/purchase_order.dart";
+import "package:inventree/inventree/sales_order.dart";
 
 import "package:inventree/widget/attachment_widget.dart";
 import "package:inventree/widget/order/purchase_order_list.dart";
+import "package:inventree/widget/order/sales_order_list.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/company/supplier_part_list.dart";
@@ -36,9 +38,10 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
 
   _CompanyDetailState();
 
-  List<InvenTreePurchaseOrder> outstandingOrders = [];
-  
   int supplierPartCount = 0;
+
+  int outstandingPurchaseOrders = 0;
+  int outstandingSalesOrders = 0;
 
   int attachmentCount = 0;
 
@@ -83,10 +86,17 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
       return;
     }
 
-    if (widget.company.isSupplier) {
-      outstandingOrders =
-      await widget.company.getPurchaseOrders(outstanding: true);
-    }
+    outstandingPurchaseOrders = widget.company.isSupplier ?
+        await InvenTreePurchaseOrder().count(filters: {
+          "supplier": widget.company.pk.toString(),
+          "outstanding": "true"
+        }) : 0;
+
+    outstandingSalesOrders = widget.company.isCustomer ?
+        await InvenTreeSalesOrder().count(filters: {
+          "customer": widget.company.pk.toString(),
+          "outstanding": "true"
+        }) : 0;
 
     InvenTreeSupplierPart().count(
         filters: {
@@ -224,7 +234,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
         ListTile(
           title: Text(L10().purchaseOrders),
           leading: FaIcon(FontAwesomeIcons.cartShopping, color: COLOR_ACTION),
-          trailing: Text("${outstandingOrders.length}"),
+          trailing: Text("${outstandingPurchaseOrders}"),
           onTap: () {
             Navigator.push(
               context,
@@ -257,7 +267,25 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
     }
 
     if (widget.company.isCustomer) {
-      // TODO - Add list of sales orders
+      tiles.add(
+        ListTile(
+          title: Text(L10().salesOrders),
+          leading: FaIcon(FontAwesomeIcons.truck),
+          trailing: Text("${outstandingSalesOrders}"),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SalesOrderListWidget(
+                  filters: {
+                    "customer": widget.company.pk.toString()
+                  }
+                )
+              )
+            );
+          }
+        )
+      );
     }
 
     if (widget.company.notes.isNotEmpty) {

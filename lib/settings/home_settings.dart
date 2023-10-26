@@ -132,6 +132,7 @@ class _HomeScreenSettingsState extends State<HomeScreenSettingsWidget> {
                       },
                     ),
                   ),
+                  */
                   ListTile(
                     title: Text(L10().homeShowCustomers),
                     subtitle: Text(L10().homeShowCustomersDescription),
@@ -146,7 +147,6 @@ class _HomeScreenSettingsState extends State<HomeScreenSettingsWidget> {
                       },
                     ),
                   ),
-                   */
                 ]
             )
         )
