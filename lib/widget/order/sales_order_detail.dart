@@ -144,15 +144,39 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
       ));
     }
 
-    // TODO: Customer reference
+    if (widget.order.customerReference.isNotEmpty) {
+      tiles.add(ListTile(
+        title: Text(L10().customerReference),
+        subtitle: Text(widget.order.customerReference),
+        leading: FaIcon(FontAwesomeIcons.hashtag),
+      ));
+    }
 
-    // TODO: Line item count
+    Color lineColor = completedLines < widget.order.lineItemCount ? COLOR_WARNING : COLOR_SUCCESS;
+
+    tiles.add(ListTile(
+      title: Text(L10().lineItems),
+      leading: FaIcon(FontAwesomeIcons.clipboardCheck),
+      trailing: Text("${completedLines} / ${widget.order.lineItemCount}", style: TextStyle(color: lineColor)),
+    ));
 
     // TODO: total price
 
-    // TODO: Issue date
+    if (widget.order.issueDate.isNotEmpty) {
+      tiles.add(ListTile(
+        title: Text(L10().issueDate),
+        subtitle: Text(widget.order.issueDate),
+        leading: FaIcon(FontAwesomeIcons.calendarDays),
+      ));
+    }
 
-    // TODO: target date
+    if (widget.order.targetDate.isNotEmpty) {
+      tiles.add(ListTile(
+        title: Text(L10().targetDate),
+        subtitle: Text(widget.order.targetDate),
+        leading: FaIcon(FontAwesomeIcons.calendarDays),
+      ));
+    }
 
     // Notes tile
     tiles.add(

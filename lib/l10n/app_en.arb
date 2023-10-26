@@ -241,6 +241,9 @@
   "customers": "Customers",
   "@customers": {},
 
+  "customerReference": "Customer Reference",
+  "@customerReference": {},
+
   "damaged": "Damaged",
   "@damaged": {},
 

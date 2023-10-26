@@ -620,6 +620,8 @@ class InvenTreeAPI {
     _globalSettings.clear();
     _userSettings.clear();
 
+    roles.clear();
+    _plugins.clear();
     serverInfo.clear();
     _connectionStatusChanged();
   }
