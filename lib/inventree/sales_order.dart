@@ -4,6 +4,8 @@ import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/orders.dart";
 
+import "package:inventree/api.dart";
+
 
 /*
  * Class representing an individual SalesOrder
@@ -25,8 +27,35 @@ class InvenTreeSalesOrder extends InvenTreeOrder {
 
   @override
   Map<String, dynamic> formFields() {
-    // TODO: Implement fields for editing a sales order
-    return {};
+    var fields = {
+      "reference": {},
+      "customer": {
+        "filters": {
+          "is_customer": true,
+        }
+      },
+      "customer_reference": {},
+      "description": {},
+      "project_code": {},
+      "target_date": {},
+      "link": {},
+      "responsible": {},
+      "contact": {
+        "filters": {
+          "company": customerId,
+        }
+      }
+    };
+
+    if (!InvenTreeAPI().supportsProjectCodes) {
+      fields.remove("project_code");
+    }
+
+    if (!InvenTreeAPI().supportsContactModel) {
+      fields.remove("contact");
+    }
+
+    return fields;
   }
 
   @override

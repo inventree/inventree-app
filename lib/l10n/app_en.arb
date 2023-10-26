@@ -1018,6 +1018,12 @@
   "salesOrderCreate": "New Sales Order",
   "@saleOrderCreate": {},
 
+  "salesOrderEdit": "Edit Sales Order",
+  "@salesOrderEdit": {},
+
+  "salesOrderUpdated": "Sales order updated",
+  "@salesOrderUpdated": {},
+
   "save": "Save",
   "@save": {
     "description": "Save"

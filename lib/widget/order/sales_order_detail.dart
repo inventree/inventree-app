@@ -12,6 +12,8 @@ import "package:inventree/app_colors.dart";
 import "package:inventree/widget/attachment_widget.dart";
 import "package:inventree/widget/notes_widget.dart";
 
+import "package:inventree/widget/snacks.dart";
+
 /*
  * Widget for viewing a single SalesOrder instance
  */
@@ -48,7 +50,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
         IconButton(
           icon: Icon(Icons.edit_square),
           onPressed: () {
-            // TODO: Edit
+            editOrder(context);
           },
         )
       );
@@ -99,6 +101,33 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
         });
       }
     });
+  }
+
+  // Edit the current SalesOrder instance
+  Future<void> editOrder(BuildContext context) async {
+    var fields = widget.order.formFields();
+
+    fields.remove("customer");
+
+    // Contact model not supported by server
+    if (!api.supportsContactModel) {
+      fields.remove("contact");
+    }
+
+    // ProjectCode model not supported by server
+    if (!supportsProjectCodes) {
+      fields.remove("project_code");
+    }
+
+    widget.order.editForm(
+      context,
+      L10().salesOrderEdit,
+      fields: fields,
+      onSuccess: (data) async {
+        refresh(context);
+        showSnackIcon(L10().salesOrderUpdated, success: true);
+      }
+    );
   }
 
   // Construct header tile
@@ -161,14 +190,6 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
     ));
 
     // TODO: total price
-
-    if (widget.order.issueDate.isNotEmpty) {
-      tiles.add(ListTile(
-        title: Text(L10().issueDate),
-        subtitle: Text(widget.order.issueDate),
-        leading: FaIcon(FontAwesomeIcons.calendarDays),
-      ));
-    }
 
     if (widget.order.targetDate.isNotEmpty) {
       tiles.add(ListTile(
