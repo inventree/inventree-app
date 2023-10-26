@@ -6,6 +6,10 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
+import "package:inventree/inventree/part.dart";
+import "package:inventree/inventree/purchase_order.dart";
+import "package:inventree/inventree/sales_order.dart";
+import "package:inventree/inventree/stock.dart";
 import "package:inventree/preferences.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/settings/select_server.dart";
@@ -221,17 +225,19 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
     ];
 
     // Parts
-    tiles.add(_listTile(
-      context,
-      L10().parts,
-      FontAwesomeIcons.shapes,
-      callback: () {
-        _showParts(context);
-      },
-    ));
+    if (InvenTreePart().canView) {
+      tiles.add(_listTile(
+        context,
+        L10().parts,
+        FontAwesomeIcons.shapes,
+        callback: () {
+          _showParts(context);
+        },
+      ));
+    }
 
     // Starred parts
-    if (homeShowSubscribed) {
+    if (homeShowSubscribed && InvenTreePart().canView) {
       tiles.add(_listTile(
         context,
         L10().partsStarred,
@@ -243,17 +249,19 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
     }
 
     // Stock button
-    tiles.add(_listTile(
-        context,
-        L10().stock,
-        FontAwesomeIcons.boxesStacked,
-        callback: () {
-          _showStock(context);
-        }
-    ));
+    if (InvenTreeStockItem().canView) {
+      tiles.add(_listTile(
+          context,
+          L10().stock,
+          FontAwesomeIcons.boxesStacked,
+          callback: () {
+            _showStock(context);
+          }
+      ));
+    }
 
     // Purchase orders
-    if (homeShowPo) {
+    if (homeShowPo && InvenTreePurchaseOrder().canView) {
       tiles.add(_listTile(
           context,
           L10().purchaseOrders,
@@ -264,7 +272,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
       ));
     }
 
-    if (homeShowSo) {
+    if (homeShowSo && InvenTreeSalesOrder().canView) {
       tiles.add(_listTile(
         context,
         L10().salesOrders,
@@ -276,7 +284,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
     }
 
     // Suppliers
-    if (homeShowSuppliers) {
+    if (homeShowSuppliers && InvenTreePurchaseOrder().canView) {
       tiles.add(_listTile(
           context,
           L10().suppliers,
