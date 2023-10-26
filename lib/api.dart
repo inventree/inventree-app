@@ -674,6 +674,8 @@ class InvenTreeAPI {
 
     _connectionStatusChanged();
 
+    fetchStatusCodeData();
+
     return _connected;
   }
 
@@ -1637,6 +1639,13 @@ class InvenTreeAPI {
     StockStatus.data.clear();
     PurchaseOrderStatus.data.clear();
     SalesOrderStatus.data.clear();
+  }
+
+  Future<void> fetchStatusCodeData({bool forceReload = true}) async {
+    StockHistoryStatus.load(forceReload: forceReload);
+    StockStatus.load(forceReload: forceReload);
+    PurchaseOrderStatus.load(forceReload: forceReload);
+    SalesOrderStatus.load(forceReload: forceReload);
   }
 
   int notification_counter = 0;

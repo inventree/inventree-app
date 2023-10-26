@@ -5,14 +5,9 @@ import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/orders.dart";
 
 
-// TODO: Replace these status codes with ones fetched from the API?
-const int PO_STATUS_PENDING = 10;
-const int PO_STATUS_PLACED = 20;
-const int PO_STATUS_COMPLETE = 30;
-const int PO_STATUS_CANCELLED = 40;
-const int PO_STATUS_LOST = 50;
-const int PO_STATUS_RETURNED = 60;
-
+/*
+ * Class representing an individual PurchaseOrder instance
+ */
 class InvenTreePurchaseOrder extends InvenTreeOrder {
 
   InvenTreePurchaseOrder() : super();
@@ -89,13 +84,13 @@ class InvenTreePurchaseOrder extends InvenTreeOrder {
 
   String get supplierReference => getString("supplier_reference");
 
-  bool get isOpen => status == PO_STATUS_PENDING || status == PO_STATUS_PLACED;
+  bool get isOpen => api.PurchaseOrderStatus.isNameIn(status, ["PENDING", "PLACED"]);
 
-  bool get isPending => status == PO_STATUS_PENDING;
+  bool get isPending => api.PurchaseOrderStatus.isNameIn(status, ["PENDING"]);
 
-  bool get isPlaced => status == PO_STATUS_PLACED;
+  bool get isPlaced => api.PurchaseOrderStatus.isNameIn(status, ["PLACED"]);
 
-  bool get isFailed => status == PO_STATUS_CANCELLED || status == PO_STATUS_LOST || status == PO_STATUS_RETURNED;
+  bool get isFailed => api.PurchaseOrderStatus.isNameIn(status, ["CANCELLED", "LOST", "RETURNED"]);
 
   Future<List<InvenTreePOLineItem>> getLineItems() async {
 

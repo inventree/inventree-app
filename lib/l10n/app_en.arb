@@ -588,6 +588,9 @@
   "level": "Level",
   "@level": {},
 
+  "lineItemAdd": "Add Line Item",
+  "@lineItemAdd": {},
+
   "lineItem": "Line Item",
   "@lineItem": {},
 

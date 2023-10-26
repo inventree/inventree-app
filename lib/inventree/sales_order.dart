@@ -87,7 +87,9 @@ class InvenTreeSalesOrder extends InvenTreeOrder {
 
   String get customerReference => getString("customer_reference");
 
-  // TODO: Order status interpretation
+  bool get isOpen => api.SalesOrderStatus.isNameIn(status, ["PENDING", "IN_PROGRESS"]);
+
+  bool get isComplete => api.SalesOrderStatus.isNameIn(status, ["SHIPPED"]);
 
 }
 

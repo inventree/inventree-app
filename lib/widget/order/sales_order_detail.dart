@@ -66,7 +66,18 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
   List<SpeedDialChild> actionButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
-    // TODO:
+    // Add line item
+    if (widget.order.isOpen && InvenTreeSOLineItem().canCreate) {
+      actions.add(
+        SpeedDialChild(
+          child: FaIcon(FontAwesomeIcons.circlePlus),
+          label: L10().lineItemAdd,
+          onTap: () async {
+            // TODO
+          }
+        )
+      );
+    }
 
     return actions;
   }
@@ -142,9 +153,12 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
         title: Text(widget.order.reference),
         subtitle: Text(widget.order.description),
         leading: customer == null ? null : api.getThumbnail(customer.thumbnail),
-        onTap: () {
-          // TODO
-        }
+        trailing: Text(
+          api.SalesOrderStatus.label(widget.order.status),
+          style: TextStyle(
+              color: api.SalesOrderStatus.color(widget.order.status)
+          ),
+        ),
       )
     );
   }
