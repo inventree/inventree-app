@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:inventree/inventree/sales_order.dart";
+import "package:inventree/widget/order/sales_order_detail.dart";
 import "package:inventree/widget/paginator.dart";
 
 import "package:inventree/widget/refreshable_state.dart";
@@ -55,8 +56,8 @@ class _SalesOrderListWidgetState extends RefreshableState<SalesOrderListWidget> 
   }
 
   @override
-  List<SpeedDialChild> barcodeActions(BuildContext context) {
-    // TODO: return cstuom barcode actions
+  List<SpeedDialChild> barcodeButtons(BuildContext context) {
+    // TODO: return custom barcode actions
     return [];
   }
 
@@ -125,7 +126,12 @@ class _PaginatedSalesOrderListState extends PaginatedSearchState<PaginatedSalesO
         )
       ),
       onTap: () async {
-        // TODO: Jump to sales order detail page
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SalesOrderDetailWidget(order)
+          )
+        );
       }
     );
 
