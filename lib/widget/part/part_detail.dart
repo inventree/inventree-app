@@ -634,7 +634,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     fields.remove("serial");
 
     // Hide the "part" field
-    fields["part"]["hidden"] = true;
+    fields["part"]?["hidden"] = true;
 
     int? default_location = part.defaultLocation;
 

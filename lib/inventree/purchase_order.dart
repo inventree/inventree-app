@@ -31,8 +31,8 @@ class InvenTreePurchaseOrder extends InvenTreeOrder {
   String get receive_url => "${url}receive/";
 
   @override
-  Map<String, dynamic> formFields() {
-    var fields = {
+  Map<String, Map<String, dynamic>> formFields() {
+    Map<String, Map<String, dynamic>> fields = {
       "reference": {},
       "supplier": {
         "filters": {
@@ -152,7 +152,7 @@ class InvenTreePOLineItem extends InvenTreeOrderLine {
   List<String> get rolesRequired => ["purchase_order"];
 
   @override
-  Map<String, dynamic> formFields() {
+  Map<String, Map<String, dynamic>> formFields() {
     return {
       "part": {
         // We cannot edit the supplier part field here

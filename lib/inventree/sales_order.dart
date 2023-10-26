@@ -27,8 +27,8 @@ class InvenTreeSalesOrder extends InvenTreeOrder {
   List<String> get rolesRequired => ["sales_order"];
 
   @override
-  Map<String, dynamic> formFields() {
-    var fields = {
+  Map<String, Map<String, dynamic>> formFields() {
+    Map<String, Map<String, dynamic>> fields = {
       "reference": {},
       "customer": {
         "filters": {
@@ -111,7 +111,7 @@ class InvenTreeSOLineItem extends InvenTreeOrderLine {
   List<String> get rolesRequired => ["sales_order"];
 
   @override
-  Map<String, dynamic> formFields() {
+  Map<String, Map<String, dynamic>> formFields() {
     // TODO: Return set of form fields
     return {};
   }
