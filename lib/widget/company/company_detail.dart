@@ -17,6 +17,8 @@ import "package:inventree/widget/order/sales_order_list.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/company/supplier_part_list.dart";
+import "package:inventree/widget/order/sales_order_detail.dart";
+import "package:inventree/widget/order/purchase_order_detail.dart";
 
 
 /*
@@ -71,9 +73,85 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
   List<SpeedDialChild> actionButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
-    // TODO - Actions for this company
+    if (widget.company.isCustomer && InvenTreeSalesOrder().canCreate) {
+      actions.add(SpeedDialChild(
+        child: FaIcon(FontAwesomeIcons.truck),
+        label: L10().salesOrderCreate,
+        onTap: () async {
+          _createSalesOrder(context);
+        }
+      ));
+    }
+
+    if (widget.company.isSupplier && InvenTreePurchaseOrder().canCreate) {
+      actions.add(SpeedDialChild(
+        child: FaIcon(FontAwesomeIcons.cartShopping),
+        label: L10().purchaseOrderCreate,
+        onTap: () async {
+          _createPurchaseOrder(context);
+        }
+      ));
+    }
 
     return actions;
+  }
+
+  Future<void> _createSalesOrder(BuildContext context) async {
+    var fields = InvenTreeSalesOrder().formFields();
+
+    // Cannot set contact until company is locked in
+    fields.remove("contact");
+
+    fields["customer"]?["value"] = widget.company.pk;
+
+    InvenTreeSalesOrder().createForm(
+        context,
+        L10().salesOrderCreate,
+        fields: fields,
+        onSuccess: (result) async {
+          Map<String, dynamic> data = result as Map<String, dynamic>;
+
+          if (data.containsKey("pk")) {
+            var order = InvenTreeSalesOrder.fromJson(data);
+
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SalesOrderDetailWidget(order)
+                )
+            );
+          }
+        }
+    );
+  }
+
+  Future<void> _createPurchaseOrder(BuildContext context) async {
+    var fields = InvenTreePurchaseOrder().formFields();
+
+    // Cannot set contact until company is locked in
+    fields.remove("contact");
+
+    fields["supplier"]?["value"] = widget.company.pk;
+
+    InvenTreePurchaseOrder().createForm(
+        context,
+        L10().purchaseOrderCreate,
+        fields: fields,
+        onSuccess: (result) async {
+          Map<String, dynamic> data = result as Map<String, dynamic>;
+
+          if (data.containsKey("pk")) {
+            var order = InvenTreePurchaseOrder.fromJson(data);
+
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PurchaseOrderDetailWidget(order)
+                )
+            );
+          }
+        }
+    );
   }
 
   @override
