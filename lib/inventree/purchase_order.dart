@@ -1,10 +1,8 @@
 import "package:inventree/api.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/inventree/company.dart";
-import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/model.dart";
-
-import "orders.dart";
+import "package:inventree/inventree/orders.dart";
 
 
 // TODO: Replace these status codes with ones fetched from the API?

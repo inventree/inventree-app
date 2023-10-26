@@ -4,7 +4,6 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/order/po_line_list.dart";
 
-import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/barcode/barcode.dart";
 import "package:inventree/helpers.dart";
