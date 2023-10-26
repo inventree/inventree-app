@@ -102,7 +102,11 @@ class InvenTreeSOLineItem extends InvenTreeOrderLine {
 
   double get allocated => getDouble("allocated");
 
+  bool get isAllocated => allocated >= quantity;
+
   double get shipped => getDouble("shipped");
+
+  bool get isComplete => shipped >= quantity;
 
   double get available => getDouble("available_stock") + getDouble("available_variant_stock");
 

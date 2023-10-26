@@ -175,11 +175,15 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       }
     }
 
-    attachmentCount = await InvenTreePurchaseOrderAttachment().count(
-      filters: {
-        "order": widget.order.pk.toString()
+    InvenTreePurchaseOrderAttachment().count(filters: {
+      "order": widget.order.pk.toString()
+    }).then((int value) {
+      if (mounted) {
+        setState(() {
+          attachmentCount = value;
+        });
       }
-    );
+    });
   }
 
   // Edit the currently displayed PurchaseOrder
@@ -218,7 +222,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
         child: ListTile(
           title: Text(widget.order.reference),
           subtitle: Text(widget.order.description),
-          leading: supplier == null ? null : InvenTreeAPI().getThumbnail(supplier.thumbnail),
+          leading: supplier == null ? null : api.getThumbnail(supplier.thumbnail),
           trailing: Text(
             api.PurchaseOrderStatus.label(widget.order.status),
             style: TextStyle(

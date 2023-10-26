@@ -235,6 +235,9 @@
   "credits": "Credits",
   "@credits": {},
 
+  "customer": "Customer",
+  "@customer": {},
+
   "customers": "Customers",
   "@customers": {},
 
@@ -1003,6 +1006,9 @@
   "returned": "Returned",
   "@returned": {},
 
+  "salesOrder": "Sales Order",
+  "@salesOrder": {},
+
   "salesOrders": "Sales Orders",
   "@salesOrders": {},
 
@@ -1133,6 +1139,9 @@
 
   "serverNotSelected": "Server not selected",
   "@serverNotSelected": {},
+
+  "shipped": "Shipped",
+  "@shipped": {},
 
   "sku": "SKU",
   "@sku": {},
