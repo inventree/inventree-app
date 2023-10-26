@@ -97,7 +97,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
           "customer": widget.company.pk.toString(),
           "outstanding": "true"
         }) : 0;
-
+  
     InvenTreeSupplierPart().count(
         filters: {
           "supplier": widget.company.pk.toString()
@@ -270,7 +270,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
       tiles.add(
         ListTile(
           title: Text(L10().salesOrders),
-          leading: FaIcon(FontAwesomeIcons.truck),
+          leading: FaIcon(FontAwesomeIcons.truck, color: COLOR_ACTION),
           trailing: Text("${outstandingSalesOrders}"),
           onTap: () {
             Navigator.push(
