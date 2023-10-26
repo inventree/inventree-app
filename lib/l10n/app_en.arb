@@ -699,8 +699,14 @@
   "outstanding": "Outstanding",
   "@outstanding": {},
 
-  "outstandingOrderDetail": "Show outstanding items",
+  "outstandingOrderDetail": "Show outstanding orders",
   "@outstandingOrderDetail": {},
+
+  "overdue": "Overdue",
+  "@overdue": {},
+
+  "overdueDetail": "Show overdue orders",
+  "@overdueDetail": {},
 
   "packaging": "Packaging",
   "@packaging": {},

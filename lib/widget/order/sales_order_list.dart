@@ -96,7 +96,16 @@ class _PaginatedSalesOrderListState extends PaginatedSearchState<PaginatedSalesO
 
   @override
   Map<String, Map<String, dynamic>> get filterOptions => {
-    // TODO: Custom filtering options
+    "outstanding": {
+      "label": L10().outstanding,
+      "help_text": L10().outstandingOrderDetail,
+      "tristate": true,
+    },
+    "overdue": {
+      "label": L10().overdue,
+      "help_text": L10().overdueDetail,
+      "tristate": true,
+    }
   };
 
   @override

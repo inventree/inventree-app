@@ -141,6 +141,11 @@ class _PaginatedPurchaseOrderListState extends PaginatedSearchState<PaginatedPur
       "label": L10().outstanding,
       "help_text": L10().outstandingOrderDetail,
       "tristate": true,
+    },
+    "overdue": {
+      "label": L10().overdue,
+      "help_text": L10().overdueDetail,
+      "tristate": true,
     }
   };
 
