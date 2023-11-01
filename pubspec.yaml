@@ -34,9 +34,11 @@ dependencies:
   one_context: ^2.1.0                     # Dialogs without requiring context
   open_filex: ^4.3.2                      # Open local files
   package_info_plus: ^3.0.2               # App information introspection
+  pasteboard: ^0.2.0
   path: ^1.8.2
   path_provider: ^2.0.12                  # Local file storage
   qr_code_scanner: ^1.0.1                 # Barcode scanning
+  random_string: ^2.3.1
   sembast: ^3.4.6+1                       # NoSQL data storage
   sentry_flutter: ^7.7.0                  # Error reporting
   url_launcher: ^6.1.10                   # Open link in system browser

@@ -6,6 +6,9 @@ import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:image_picker/image_picker.dart";
 import "package:one_context/one_context.dart";
+import "package:pasteboard/pasteboard.dart";
+import "package:path_provider/path_provider.dart";
+import "package:random_string/random_string.dart";
 
 import "package:inventree/l10.dart";
 
@@ -48,6 +51,23 @@ class FilePickerDialog {
       if (path != null) {
         return File(path);
       }
+    }
+
+    return null;
+  }
+
+  static Future<File?> pickImageFromPasteboard() async {
+    final imageBytes = await Pasteboard.image;
+
+    if (imageBytes != null) {
+      final tempDir = await getTemporaryDirectory();
+
+      final pickedImage =
+          await File("${tempDir.path}/${randomAlpha(8)}.png").create();
+
+      pickedImage.writeAsBytesSync(imageBytes);
+
+      return File(pickedImage.path);
     }
 
     return null;
@@ -122,9 +142,25 @@ class FilePickerDialog {
                 onPicked(file);
               }
             }
-          }
-        )
-      );
+          }));
+
+      actions.add(SimpleDialogOption(
+          child: ListTile(
+            leading: FaIcon(FontAwesomeIcons.clipboard),
+            title: Text(L10().insert),
+          ),
+          onPressed: () async {
+            // Close the dialog
+            OneContext().popDialog();
+
+            File? file = await pickImageFromPasteboard();
+
+            if (file != null) {
+              if (onPicked != null) {
+                onPicked(file);
+              }
+            }
+          }));
     }
 
     OneContext().showDialog(
