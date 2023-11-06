@@ -29,13 +29,17 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
   QRViewController? _controller;
 
   bool flash_status = false;
+  bool processBarcode = true;
+  MaterialColor qrBorderColor = Colors.red;
 
   /* Callback function when the Barcode scanner view is initially created */
   void _onViewCreated(BuildContext context, QRViewController controller) {
     _controller = controller;
 
     controller.scannedDataStream.listen((barcode) {
-      handleBarcodeData(barcode.code);
+      if (processBarcode) {
+        handleBarcodeData(barcode.code);
+      }
     });
   }
 
@@ -122,18 +126,32 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
             Column(
               children: [
                 Expanded(
-                  child: QRView(
-                    key: barcodeControllerKey,
-                    onQRViewCreated: (QRViewController controller) {
-                      _onViewCreated(context, controller);
+                  child: Listener(
+                    onPointerDown: (details) {
+                      processBarcode = false;
+                      setState(() {
+                        qrBorderColor = Colors.green;
+                      });
                     },
-                    overlay: QrScannerOverlayShape(
-                      borderColor: Colors.red,
-                      borderRadius: 10,
-                      borderLength: 30,
-                      borderWidth: 10,
-                      cutOutSize: 300,
-                    ),
+                    onPointerUp: (details) {
+                      processBarcode = true;
+                      setState(() {
+                        qrBorderColor = Colors.red;
+                      });
+                    },
+                    child: QRView(
+                      key: barcodeControllerKey,
+                      onQRViewCreated: (QRViewController controller) {
+                        _onViewCreated(context, controller);
+                      },
+                      overlay: QrScannerOverlayShape(
+                        borderColor: Colors.red,
+                        borderRadius: 10,
+                        borderLength: 30,
+                        borderWidth: 10,
+                        cutOutSize: 300,
+                      ),
+                    )
                   )
                 )
               ]
