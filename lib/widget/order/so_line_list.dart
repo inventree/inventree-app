@@ -1,11 +1,13 @@
 import "package:flutter/material.dart";
 import "package:inventree/l10.dart";
+import "package:inventree/widget/order/so_line_detail.dart";
 import "package:inventree/widget/paginator.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
+import "package:inventree/widget/progress.dart";
 
 
 /*
@@ -63,7 +65,14 @@ class _PaginatedSOLineListState extends PaginatedSearchState<PaginatedSOLineList
         leading: InvenTreeAPI().getThumbnail(part.thumbnail),
         trailing: Text(item.progressString),
         onTap: () async {
-          // TODO - Navigate to line item detail view
+          showLoadingOverlay(context);
+          await item.reload();
+          hideLoadingOverlay();
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SoLineDetailWidget(item))
+          );
         }
       );
     } else {
