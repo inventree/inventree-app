@@ -17,7 +17,7 @@ import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/company/supplier_part_detail.dart";
 
 /*
- * Widget for displaying detail view of a purchase order line item
+ * Widget for displaying detail view of a single PurchaseOrderLineItem
 */
 class POLineDetailWidget extends StatefulWidget {
 
@@ -171,7 +171,6 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
         trailing: api.getThumbnail(widget.item.partImage),
         onTap: () async {
           showLoadingOverlay(context);
-          print("part id: ${widget.item.partId}");
           var part = await InvenTreePart().get(widget.item.partId);
           hideLoadingOverlay();
 
@@ -200,15 +199,31 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
       )
     );
 
-    // Recevied
+    // Received quantity
     tiles.add(
       ListTile(
         title: Text(L10().received),
-        subtitle: Text(widget.item.received.toString()),
-        trailing: Text(widget.item.progressString, style: TextStyle(color: widget.item.isComplete ? COLOR_SUCCESS: COLOR_WARNING)),
+        subtitle: ProgressBar(widget.item.progressRatio),
+        trailing: Text(
+            widget.item.progressString,
+            style: TextStyle(
+                color: widget.item.isComplete ? COLOR_SUCCESS: COLOR_WARNING
+            )
+        ),
         leading: FaIcon(FontAwesomeIcons.boxOpen),
       )
     );
+
+    // Reference
+    if (widget.item.reference.isNotEmpty) {
+      tiles.add(
+          ListTile(
+            title: Text(L10().reference),
+            subtitle: Text(widget.item.reference),
+            leading: FaIcon(FontAwesomeIcons.hashtag),
+          )
+      );
+    }
 
     // Pricing information
     tiles.add(

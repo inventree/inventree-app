@@ -146,6 +146,14 @@ class InvenTreeSOLineItem extends InvenTreeOrderLine {
 
   double get outstanding => quantity - shipped;
 
+  double get progressRatio {
+    if (quantity <= 0 || shipped <= 0) {
+      return 0;
+    }
+
+    return shipped / quantity;
+  }
+
   String get progressString => simpleNumberString(shipped) + " / " + simpleNumberString(quantity);
 
   bool get isComplete => shipped >= quantity;

@@ -12,10 +12,9 @@ import "package:inventree/l10.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/widget/attachment_widget.dart";
 import "package:inventree/widget/notes_widget.dart";
-
 import "package:inventree/widget/snacks.dart";
-
 import "package:inventree/widget/company/company_detail.dart";
+import "package:inventree/widget/progress.dart";
 
 /*
  * Widget for viewing a single SalesOrder instance
@@ -224,6 +223,10 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
 
     tiles.add(ListTile(
       title: Text(L10().lineItems),
+      subtitle: ProgressBar(
+        completedLines.toDouble(),
+        maximum: widget.order.lineItemCount.toDouble()
+      ),
       leading: FaIcon(FontAwesomeIcons.clipboardCheck),
       trailing: Text("${completedLines} / ${widget.order.lineItemCount}", style: TextStyle(color: lineColor)),
     ));

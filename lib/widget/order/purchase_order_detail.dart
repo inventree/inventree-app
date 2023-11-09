@@ -14,6 +14,7 @@ import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/widget/attachment_widget.dart";
 import "package:inventree/widget/company/company_detail.dart";
 import "package:inventree/widget/notes_widget.dart";
+import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/stock/stock_list.dart";
@@ -277,6 +278,10 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
     tiles.add(ListTile(
       title: Text(L10().lineItems),
+      subtitle: ProgressBar(
+        completedLines.toDouble(),
+        maximum: widget.order.lineItemCount.toDouble(),
+      ),
       leading: FaIcon(FontAwesomeIcons.clipboardCheck),
       trailing: Text("${completedLines} /  ${widget.order.lineItemCount}", style: TextStyle(color: lineColor)),
     ));

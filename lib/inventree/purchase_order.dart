@@ -185,6 +185,14 @@ class InvenTreePOLineItem extends InvenTreeOrderLine {
 
   bool get isComplete => received >= quantity;
 
+  double get progressRatio {
+    if (quantity <= 0 || received <= 0) {
+      return 0;
+    }
+
+    return received / quantity;
+  }
+
   String get progressString => simpleNumberString(received) + " / " + simpleNumberString(quantity);
 
   double get outstanding => quantity - received;
