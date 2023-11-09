@@ -62,6 +62,23 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
     return actions;
   }
 
+  // Add a new line item to this sales order
+  Future<void> _addLineItem(BuildContext context) async {
+    var fields = InvenTreeSOLineItem().formFields();
+
+    fields["order"]?["value"] = widget.order.pk;
+    fields["order"]?["hidden"] = true;
+
+    InvenTreeSOLineItem().createForm(
+        context,
+        L10().lineItemAdd,
+        fields: fields,
+        onSuccess: (result) async {
+          refresh(context);
+        }
+    );
+  }
+
   @override
   List<SpeedDialChild> actionButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
@@ -73,7 +90,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
           child: FaIcon(FontAwesomeIcons.circlePlus),
           label: L10().lineItemAdd,
           onTap: () async {
-            // TODO
+            _addLineItem(context);
           }
         )
       );
