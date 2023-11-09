@@ -16,6 +16,7 @@ import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/part/part_detail.dart";
 
 import "package:inventree/helpers.dart";
+import "package:inventree/widget/snacks.dart";
 
 
 class SoLineDetailWidget extends StatefulWidget {
@@ -46,12 +47,31 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
         IconButton(
             icon: Icon(Icons.edit_square),
             onPressed: () {
-              // TODO
+              _editLineItem(context);
             }),
       );
     }
 
     return actions;
+  }
+
+  Future<void> _editLineItem(BuildContext context) async {
+    var fields = widget.item.formFields();
+
+    // Prevent editing of the line item
+    if (widget.item.shipped > 0) {
+      fields["part"]?["hidden"] = true;
+    }
+
+    widget.item.editForm(
+      context,
+      L10().editLineItem,
+      fields: fields,
+      onSuccess: (data) async {
+        refresh(context);
+        showSnackIcon(L10().lineItemUpdated, success: true);
+      }
+    );
   }
 
   @override

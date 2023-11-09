@@ -115,7 +115,9 @@ class InvenTreeSOLineItem extends InvenTreeOrderLine {
   @override
   Map<String, Map<String, dynamic>> formFields() {
     return {
-      "order": {},
+      "order": {
+        "hidden": true,
+      },
       "part": {},
       "quantity": {},
       "reference": {},
