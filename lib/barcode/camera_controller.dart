@@ -1,5 +1,7 @@
 import "dart:io";
 import "package:flutter/material.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:inventree/app_colors.dart";
 
 import "package:qr_code_scanner/qr_code_scanner.dart";
 
@@ -30,12 +32,17 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
 
   bool flash_status = false;
 
+  bool scanning_paused = false;
+
   /* Callback function when the Barcode scanner view is initially created */
   void _onViewCreated(BuildContext context, QRViewController controller) {
     _controller = controller;
 
     controller.scannedDataStream.listen((barcode) {
-      handleBarcodeData(barcode.code);
+
+      if (!scanning_paused) {
+        handleBarcodeData(barcode.code);
+      }
     });
   }
 
@@ -98,6 +105,12 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
   @override
   Widget build(BuildContext context) {
 
+    Widget actionIcon = FaIcon(FontAwesomeIcons.pause, color: COLOR_WARNING, size: 48);
+
+    if (scanning_paused) {
+      actionIcon = FaIcon(FontAwesomeIcons.play, color: COLOR_ACTION, size: 48);
+    }
+
     return Scaffold(
         appBar: AppBar(
           title: Text(L10().scanBarcode),
@@ -128,7 +141,7 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
                       _onViewCreated(context, controller);
                     },
                     overlay: QrScannerOverlayShape(
-                      borderColor: Colors.red,
+                      borderColor: scanning_paused ? COLOR_WARNING : COLOR_ACTION,
                       borderRadius: 10,
                       borderLength: 30,
                       borderWidth: 10,
@@ -142,6 +155,18 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
                 child: Column(
                     children: [
                       Spacer(),
+                      SizedBox(
+                        child: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              scanning_paused = !scanning_paused;
+                            });
+                          },
+                          icon: actionIcon,
+                        ),
+                        width: 64,
+                        height: 64,
+                      ),
                       Padding(
                         child: Text(widget.handler.getOverlayText(context),
                           style: TextStyle(
