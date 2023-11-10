@@ -2,6 +2,7 @@ import "dart:io";
 import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:inventree/app_colors.dart";
+import "package:inventree/preferences.dart";
 
 import "package:qr_code_scanner/qr_code_scanner.dart";
 
@@ -32,18 +33,41 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
 
   bool flash_status = false;
 
+  bool manual_scanning = false;
   bool scanning_paused = false;
+
+  Future<void> _loadSettings() async {
+    bool _manual = await InvenTreeSettingsManager().getBool(INV_BARCODE_SCAN_MANUAL, false);
+
+    if (mounted) {
+      setState(() {
+        manual_scanning = _manual;
+      });
+    }
+  }
 
   /* Callback function when the Barcode scanner view is initially created */
   void _onViewCreated(BuildContext context, QRViewController controller) {
     _controller = controller;
 
     controller.scannedDataStream.listen((barcode) {
-
       if (!scanning_paused) {
-        handleBarcodeData(barcode.code);
+
+        handleBarcodeData(barcode.code).then((value) => {
+
+          // If in manual scanning mode, pause after successful scan
+          if (manual_scanning && mounted) {
+            setState(() {
+              scanning_paused = true;
+            })
+          }
+        });
+
+
       }
     });
+
+    _loadSettings();
   }
 
   // In order to get hot reload to work we need to pause the camera if the platform
@@ -154,6 +178,16 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
             Center(
                 child: Column(
                     children: [
+                      Padding(
+                        child: scanning_paused ?
+                          Text(
+                            "Tap to resume scanning",
+                            style: TextStyle(
+                              color: Colors.white
+                            )
+                          ) : CircularProgressIndicator(),
+                        padding: EdgeInsets.all(40),
+                      ),
                       Spacer(),
                       SizedBox(
                         child: IconButton(
@@ -164,8 +198,8 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
                           },
                           icon: actionIcon,
                         ),
-                        width: 64,
-                        height: 64,
+                        width: 80,
+                        height: 80,
                       ),
                       Padding(
                         child: Text(widget.handler.getOverlayText(context),
