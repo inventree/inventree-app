@@ -139,6 +139,12 @@
   "barcodeScanLocation": "Scan stock location",
   "@barcodeScanLocation": {},
 
+  "barcodeScanManual": "Manual Scanning",
+  "@barcodeScanManual": {},
+
+  "barcodeScanManualDetail": "Manually triggered camera scanning",
+  "@barvodeScanManualDetail": {},
+
   "barcodeScanIntoLocationSuccess": "Scanned into location",
   "@barcodeScanIntoLocationSuccess": {},
 

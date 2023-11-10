@@ -18,6 +18,7 @@ class _InvenTreeBarcodeSettingsState extends State<InvenTreeBarcodeSettingsWidge
 
  int barcodeScanDelay = 500;
  int barcodeScanType = BARCODE_CONTROLLER_CAMERA;
+ bool barcodeScanManual = false;
 
  final TextEditingController _barcodeScanDelayController = TextEditingController();
 
@@ -30,6 +31,7 @@ class _InvenTreeBarcodeSettingsState extends State<InvenTreeBarcodeSettingsWidge
   Future<void> loadSettings() async {
     barcodeScanDelay = await InvenTreeSettingsManager().getValue(INV_BARCODE_SCAN_DELAY, 500) as int;
     barcodeScanType = await InvenTreeSettingsManager().getValue(INV_BARCODE_SCAN_TYPE, BARCODE_CONTROLLER_CAMERA) as int;
+    barcodeScanManual = await InvenTreeSettingsManager().getBool(INV_BARCODE_SCAN_MANUAL, false);
 
     if (mounted) {
       setState(() {
@@ -153,6 +155,20 @@ class _InvenTreeBarcodeSettingsState extends State<InvenTreeBarcodeSettingsWidge
                 },
               ),
             ),
+            ListTile(
+              title: Text(L10().barcodeScanManual),
+              subtitle: Text(L10().barcodeScanManualDetail),
+              leading: Icon(Icons.barcode_reader),
+              trailing: Switch(
+                value: barcodeScanManual,
+                onChanged: (bool v) {
+                  InvenTreeSettingsManager().setValue(INV_BARCODE_SCAN_MANUAL, v);
+                  setState(() {
+                    barcodeScanManual = v;
+                  });
+                },
+              ),
+            )
           ],
         )
       )
