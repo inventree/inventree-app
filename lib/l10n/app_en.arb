@@ -139,11 +139,11 @@
   "barcodeScanLocation": "Scan stock location",
   "@barcodeScanLocation": {},
 
-  "barcodeScanManual": "Manual Scanning",
-  "@barcodeScanManual": {},
+  "barcodeScanContinuous": "Continuous Scanning",
+  "@barcodeScanContinous": {},
 
-  "barcodeScanManualDetail": "Manually triggered camera scanning",
-  "@barvodeScanManualDetail": {},
+  "barcodeScanContinuousDetail": "Enable continuous barcode scanning with camera",
+  "@barvodeScanContinuousDetail": {},
 
   "barcodeScanIntoLocationSuccess": "Scanned into location",
   "@barcodeScanIntoLocationSuccess": {},

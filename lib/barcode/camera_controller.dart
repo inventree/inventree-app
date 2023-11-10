@@ -33,15 +33,16 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
 
   bool flash_status = false;
 
-  bool manual_scanning = false;
-  bool scanning_paused = false;
+  bool continuous_scanning = true;
+  bool scanning_paused = true;
 
   Future<void> _loadSettings() async {
-    bool _manual = await InvenTreeSettingsManager().getBool(INV_BARCODE_SCAN_MANUAL, false);
+    bool _manual = await InvenTreeSettingsManager().getBool(INV_BARCODE_SCAN_CONTINUOUS, true);
 
     if (mounted) {
       setState(() {
-        manual_scanning = _manual;
+        continuous_scanning = _manual;
+        scanning_paused = !continuous_scanning;
       });
     }
   }
@@ -56,7 +57,7 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
         handleBarcodeData(barcode.code).then((value) => {
 
           // If in manual scanning mode, pause after successful scan
-          if (manual_scanning && mounted) {
+          if (!continuous_scanning && mounted) {
             setState(() {
               scanning_paused = true;
             })
