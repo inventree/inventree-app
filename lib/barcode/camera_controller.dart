@@ -16,17 +16,14 @@ import "package:inventree/barcode/controller.dart";
  * Under the hood it uses the qr_code_scanner package.
  */
 class CameraBarcodeController extends InvenTreeBarcodeController {
-
-  const CameraBarcodeController(BarcodeHandler handler, {Key? key}) : super(handler, key: key);
+  const CameraBarcodeController(BarcodeHandler handler, {Key? key})
+      : super(handler, key: key);
 
   @override
   State<StatefulWidget> createState() => _CameraBarcodeControllerState();
-
 }
 
-
 class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
-
   _CameraBarcodeControllerState() : super();
 
   QRViewController? _controller;
@@ -34,15 +31,16 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
   bool flash_status = false;
 
   bool continuous_scanning = true;
-  bool scanning_paused = true;
+  bool scanning_paused = false;
 
   Future<void> _loadSettings() async {
-    bool _manual = await InvenTreeSettingsManager().getBool(INV_BARCODE_SCAN_CONTINUOUS, true);
+    bool _manual = await InvenTreeSettingsManager()
+        .getBool(INV_BARCODE_SCAN_CONTINUOUS, true);
 
     if (mounted) {
       setState(() {
         continuous_scanning = _manual;
-        scanning_paused = !continuous_scanning;
+        scanning_paused = false;
       });
     }
   }
@@ -53,18 +51,15 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
 
     controller.scannedDataStream.listen((barcode) {
       if (!scanning_paused) {
-
         handleBarcodeData(barcode.code).then((value) => {
-
-          // If in manual scanning mode, pause after successful scan
-          if (!continuous_scanning && mounted) {
-            setState(() {
-              scanning_paused = true;
-            })
-          }
-        });
-
-
+              // If in manual scanning mode, pause after successful scan
+              if (!continuous_scanning && mounted)
+                {
+                  setState(() {
+                    scanning_paused = true;
+                  })
+                }
+            });
       }
     });
 
@@ -103,7 +98,6 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
 
   @override
   Future<void> resumeScan() async {
-
     // Do not attempt to resume if the widget is not mounted
     if (!mounted) {
       return;
@@ -129,11 +123,22 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
 
   @override
   Widget build(BuildContext context) {
-
-    Widget actionIcon = FaIcon(FontAwesomeIcons.pause, color: COLOR_WARNING, size: 48);
+    Widget actionIcon =
+        FaIcon(FontAwesomeIcons.pause, color: COLOR_WARNING, size: 64);
 
     if (scanning_paused) {
-      actionIcon = FaIcon(FontAwesomeIcons.play, color: COLOR_ACTION, size: 48);
+      actionIcon = FaIcon(FontAwesomeIcons.play, color: COLOR_ACTION, size: 64);
+    }
+
+    String info_text;
+
+    info_text = L10().barcodeScanPaused;
+    info_text += "\n";
+
+    if (continuous_scanning) {
+      info_text += L10().barcodeScanReleaseResume;
+    } else {
+      info_text += L10().barcodeScanTapResume;
     }
 
     return Scaffold(
@@ -141,11 +146,10 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
           title: Text(L10().scanBarcode),
           actions: [
             IconButton(
-              icon: Icon(Icons.flip_camera_android),
-              onPressed: () {
-                _controller?.flipCamera();
-              }
-            ),
+                icon: Icon(Icons.flip_camera_android),
+                onPressed: () {
+                  _controller?.flipCamera();
+                }),
             IconButton(
               icon: flash_status ? Icon(Icons.flash_off) : Icon(Icons.flash_on),
               onPressed: () {
@@ -155,66 +159,83 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
             )
           ],
         ),
-        body: Stack(
-          children: <Widget>[
-            Column(
-              children: [
-                Expanded(
-                  child: QRView(
+        body: GestureDetector(
+            onTapDown: (details) async {
+              bool pause_state = false;
+
+              // Outcome depends on scanning mode
+              if (continuous_scanning) {
+                pause_state = true;
+              } else {
+                pause_state = !scanning_paused;
+              }
+              setState(() {
+                scanning_paused = pause_state;
+              });
+            },
+            onTapUp: (detail) async {
+              if (continuous_scanning) {
+                setState(() {
+                  scanning_paused = false;
+                });
+              }
+            },
+            onTapCancel: () async {
+              if (continuous_scanning) {
+                setState(() {
+                  scanning_paused = false;
+                });
+              }
+            },
+            child: Stack(
+              children: <Widget>[
+                Column(children: [
+                  Expanded(
+                      child: QRView(
                     key: barcodeControllerKey,
                     onQRViewCreated: (QRViewController controller) {
                       _onViewCreated(context, controller);
                     },
                     overlay: QrScannerOverlayShape(
-                      borderColor: scanning_paused ? COLOR_WARNING : COLOR_ACTION,
+                      borderColor:
+                          scanning_paused ? COLOR_WARNING : COLOR_ACTION,
                       borderRadius: 10,
                       borderLength: 30,
                       borderWidth: 10,
                       cutOutSize: 300,
                     ),
-                  )
-                )
-              ]
-            ),
-            Center(
-                child: Column(
-                    children: [
-                      Padding(
-                        child: scanning_paused ?
-                          Text(
-                            "Tap to resume scanning",
+                  ))
+                ]),
+                Center(
+                    child: Column(children: [
+                  Padding(
+                    child: scanning_paused
+                        ? Text(info_text,
+                            textAlign: TextAlign.center,
                             style: TextStyle(
-                              color: Colors.white
-                            )
-                          ) : CircularProgressIndicator(),
-                        padding: EdgeInsets.all(40),
-                      ),
-                      Spacer(),
-                      SizedBox(
-                        child: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              scanning_paused = !scanning_paused;
-                            });
-                          },
-                          icon: actionIcon,
-                        ),
-                        width: 80,
-                        height: 80,
-                      ),
-                      Padding(
-                        child: Text(widget.handler.getOverlayText(context),
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                        ),
-                        padding: EdgeInsets.all(20),
-                      ),
-                    ]
-                )
-            )
-          ],
-        )
-    );
+                              color: Colors.white,
+                            ))
+                        : CircularProgressIndicator(),
+                    padding: EdgeInsets.all(40),
+                  ),
+                  Spacer(),
+                  SizedBox(
+                    child: Center(
+                      child: actionIcon,
+                    ),
+                    width: 100,
+                    height: 150,
+                  ),
+                  Padding(
+                    child: Text(
+                      widget.handler.getOverlayText(context),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.white),
+                    ),
+                    padding: EdgeInsets.all(20),
+                  ),
+                ]))
+              ],
+            )));
   }
 }
