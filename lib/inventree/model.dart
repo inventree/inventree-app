@@ -230,7 +230,7 @@ class InvenTreeModel {
 
   // Fields for editing / creating this model
   // Override per-model
-  Map<String, dynamic> formFields() {
+  Map<String, Map<String, dynamic>> formFields() {
 
     return {};
   }

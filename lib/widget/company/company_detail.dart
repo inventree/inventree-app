@@ -9,12 +9,16 @@ import "package:inventree/helpers.dart";
 
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/purchase_order.dart";
+import "package:inventree/inventree/sales_order.dart";
 
 import "package:inventree/widget/attachment_widget.dart";
-import "package:inventree/widget/purchase_order_list.dart";
+import "package:inventree/widget/order/purchase_order_list.dart";
+import "package:inventree/widget/order/sales_order_list.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
-import "package:inventree/widget/supplier_part_list.dart";
+import "package:inventree/widget/company/supplier_part_list.dart";
+import "package:inventree/widget/order/sales_order_detail.dart";
+import "package:inventree/widget/order/purchase_order_detail.dart";
 
 
 /*
@@ -36,9 +40,10 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
 
   _CompanyDetailState();
 
-  List<InvenTreePurchaseOrder> outstandingOrders = [];
-  
   int supplierPartCount = 0;
+
+  int outstandingPurchaseOrders = 0;
+  int outstandingSalesOrders = 0;
 
   int attachmentCount = 0;
 
@@ -68,9 +73,85 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
   List<SpeedDialChild> actionButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
-    // TODO - Actions for this company
+    if (widget.company.isCustomer && InvenTreeSalesOrder().canCreate) {
+      actions.add(SpeedDialChild(
+        child: FaIcon(FontAwesomeIcons.truck),
+        label: L10().salesOrderCreate,
+        onTap: () async {
+          _createSalesOrder(context);
+        }
+      ));
+    }
+
+    if (widget.company.isSupplier && InvenTreePurchaseOrder().canCreate) {
+      actions.add(SpeedDialChild(
+        child: FaIcon(FontAwesomeIcons.cartShopping),
+        label: L10().purchaseOrderCreate,
+        onTap: () async {
+          _createPurchaseOrder(context);
+        }
+      ));
+    }
 
     return actions;
+  }
+
+  Future<void> _createSalesOrder(BuildContext context) async {
+    var fields = InvenTreeSalesOrder().formFields();
+
+    // Cannot set contact until company is locked in
+    fields.remove("contact");
+
+    fields["customer"]?["value"] = widget.company.pk;
+
+    InvenTreeSalesOrder().createForm(
+        context,
+        L10().salesOrderCreate,
+        fields: fields,
+        onSuccess: (result) async {
+          Map<String, dynamic> data = result as Map<String, dynamic>;
+
+          if (data.containsKey("pk")) {
+            var order = InvenTreeSalesOrder.fromJson(data);
+
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SalesOrderDetailWidget(order)
+                )
+            );
+          }
+        }
+    );
+  }
+
+  Future<void> _createPurchaseOrder(BuildContext context) async {
+    var fields = InvenTreePurchaseOrder().formFields();
+
+    // Cannot set contact until company is locked in
+    fields.remove("contact");
+
+    fields["supplier"]?["value"] = widget.company.pk;
+
+    InvenTreePurchaseOrder().createForm(
+        context,
+        L10().purchaseOrderCreate,
+        fields: fields,
+        onSuccess: (result) async {
+          Map<String, dynamic> data = result as Map<String, dynamic>;
+
+          if (data.containsKey("pk")) {
+            var order = InvenTreePurchaseOrder.fromJson(data);
+
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PurchaseOrderDetailWidget(order)
+                )
+            );
+          }
+        }
+    );
   }
 
   @override
@@ -83,11 +164,18 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
       return;
     }
 
-    if (widget.company.isSupplier) {
-      outstandingOrders =
-      await widget.company.getPurchaseOrders(outstanding: true);
-    }
+    outstandingPurchaseOrders = widget.company.isSupplier ?
+        await InvenTreePurchaseOrder().count(filters: {
+          "supplier": widget.company.pk.toString(),
+          "outstanding": "true"
+        }) : 0;
 
+    outstandingSalesOrders = widget.company.isCustomer ?
+        await InvenTreeSalesOrder().count(filters: {
+          "customer": widget.company.pk.toString(),
+          "outstanding": "true"
+        }) : 0;
+  
     InvenTreeSupplierPart().count(
         filters: {
           "supplier": widget.company.pk.toString()
@@ -224,7 +312,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
         ListTile(
           title: Text(L10().purchaseOrders),
           leading: FaIcon(FontAwesomeIcons.cartShopping, color: COLOR_ACTION),
-          trailing: Text("${outstandingOrders.length}"),
+          trailing: Text("${outstandingPurchaseOrders}"),
           onTap: () {
             Navigator.push(
               context,
@@ -257,7 +345,25 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
     }
 
     if (widget.company.isCustomer) {
-      // TODO - Add list of sales orders
+      tiles.add(
+        ListTile(
+          title: Text(L10().salesOrders),
+          leading: FaIcon(FontAwesomeIcons.truck, color: COLOR_ACTION),
+          trailing: Text("${outstandingSalesOrders}"),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SalesOrderListWidget(
+                  filters: {
+                    "customer": widget.company.pk.toString()
+                  }
+                )
+              )
+            );
+          }
+        )
+      );
     }
 
     if (widget.company.notes.isNotEmpty) {

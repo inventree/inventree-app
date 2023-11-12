@@ -22,7 +22,7 @@ class InvenTreeCompany extends InvenTreeModel {
   List<String> get rolesRequired => ["purchase_order", "sales_order", "return_order"];
 
   @override
-  Map<String, dynamic> formFields() {
+  Map<String, Map<String, dynamic>> formFields() {
     return {
       "name": {},
       "description": {},
@@ -121,8 +121,8 @@ class InvenTreeSupplierPart extends InvenTreeModel {
   List<String> get rolesRequired => ["part", "purchase_order"];
 
   @override
-  Map<String, dynamic> formFields() {
-    Map<String, dynamic> fields = {
+  Map<String, Map<String, dynamic>> formFields() {
+    Map<String, Map<String, dynamic>> fields = {
       "supplier": {},
       "SKU": {},
       "link": {},

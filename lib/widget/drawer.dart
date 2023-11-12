@@ -3,15 +3,17 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
-import "package:inventree/inventree/company.dart";
+import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/purchase_order.dart";
+import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/settings/settings.dart";
-import "package:inventree/widget/category_display.dart";
+import "package:inventree/widget/order/sales_order_list.dart";
+import "package:inventree/widget/part/category_display.dart";
 import "package:inventree/widget/notifications.dart";
-import "package:inventree/widget/purchase_order_list.dart";
-import "package:inventree/widget/location_display.dart";
+import "package:inventree/widget/order/purchase_order_list.dart";
+import "package:inventree/widget/stock/location_display.dart";
 
 
 /*
@@ -26,6 +28,10 @@ class InvenTreeDrawer extends StatelessWidget {
   void _closeDrawer() {
     // Close the drawer
     Navigator.of(context).pop();
+  }
+
+  bool _checkConnection() {
+    return InvenTreeAPI().checkConnection();
   }
 
   /*
@@ -43,37 +49,63 @@ class InvenTreeDrawer extends StatelessWidget {
   // Load "parts" page
   void _parts() {
     _closeDrawer();
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null))
-    );
+
+    if (_checkConnection()) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null))
+      );
+    }
   }
 
   // Load "stock" page
   void _stock() {
     _closeDrawer();
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => LocationDisplayWidget(null))
-    );
+
+    if (_checkConnection()) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => LocationDisplayWidget(null))
+      );
+    }
+  }
+
+  // Load "sales orders" page
+  void _salesOrders() {
+    _closeDrawer();
+
+    if (_checkConnection()) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => SalesOrderListWidget(filters: {})
+          )
+      );
+    }
   }
   
   // Load "purchase orders" page
   void _purchaseOrders() {
     _closeDrawer();
 
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => PurchaseOrderListWidget(filters: {})
-        )
-    );
+    if (_checkConnection()) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => PurchaseOrderListWidget(filters: {})
+          )
+      );
+    }
   }
 
   // Load notifications screen
   void _notifications() {
     _closeDrawer();
-    Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationWidget()));
+
+    if (_checkConnection()) {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => NotificationWidget()));
+    }
   }
 
   // Load settings widget
@@ -98,7 +130,7 @@ class InvenTreeDrawer extends StatelessWidget {
 
     tiles.add(Divider());
 
-    if (InvenTreeCompany().canView) {
+    if (InvenTreePart().canView) {
       tiles.add(
         ListTile(
           title: Text(L10().parts),
@@ -124,6 +156,16 @@ class InvenTreeDrawer extends StatelessWidget {
           title: Text(L10().purchaseOrders),
           leading: FaIcon(FontAwesomeIcons.cartShopping, color: COLOR_ACTION),
           onTap: _purchaseOrders,
+        )
+      );
+    }
+
+    if (InvenTreeSalesOrder().canView) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().salesOrders),
+          leading: FaIcon(FontAwesomeIcons.truck, color: COLOR_ACTION),
+          onTap: _salesOrders,
         )
       );
     }

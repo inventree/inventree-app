@@ -9,7 +9,7 @@ import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/purchase_order.dart";
 
 import "package:inventree/widget/paginator.dart";
-import "package:inventree/widget/po_line_detail.dart";
+import "package:inventree/widget/order/po_line_detail.dart";
 import "package:inventree/widget/progress.dart";
 
 /*

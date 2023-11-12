@@ -8,7 +8,7 @@ import "package:inventree/inventree/model.dart";
 
 import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/refreshable_state.dart";
-import "package:inventree/widget/supplier_part_detail.dart";
+import "package:inventree/widget/company/supplier_part_detail.dart";
 
 
 /*

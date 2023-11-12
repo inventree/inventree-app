@@ -21,6 +21,7 @@ class _HomeScreenSettingsState extends State<HomeScreenSettingsWidget> {
   // Home screen settings
   bool homeShowSubscribed = true;
   bool homeShowPo = true;
+  bool homeShowSo = true;
   bool homeShowSuppliers = true;
   bool homeShowManufacturers = true;
   bool homeShowCustomers = true;
@@ -38,6 +39,7 @@ class _HomeScreenSettingsState extends State<HomeScreenSettingsWidget> {
 
     homeShowSubscribed = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_SUBSCRIBED, true) as bool;
     homeShowPo = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_PO, true) as bool;
+    homeShowSo = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_SO, true) as bool;
     homeShowManufacturers = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_MANUFACTURERS, true) as bool;
     homeShowCustomers = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_CUSTOMERS, true) as bool;
     homeShowSuppliers = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_SUPPLIERS, true) as bool;
@@ -86,6 +88,20 @@ class _HomeScreenSettingsState extends State<HomeScreenSettingsWidget> {
                     ),
                   ),
                   ListTile(
+                    title: Text(L10().homeShowSo),
+                    subtitle: Text(L10().homeShowSoDescription),
+                    leading: FaIcon(FontAwesomeIcons.truck),
+                    trailing: Switch(
+                      value: homeShowSo,
+                      onChanged: (bool value) {
+                        InvenTreeSettingsManager().setValue(INV_HOME_SHOW_SO, value);
+                        setState(() {
+                          homeShowSo = value;
+                        });
+                      },
+                    ),
+                  ),
+                  ListTile(
                     title: Text(L10().homeShowSuppliers),
                     subtitle: Text(L10().homeShowSuppliersDescription),
                     leading: FaIcon(FontAwesomeIcons.building),
@@ -116,6 +132,7 @@ class _HomeScreenSettingsState extends State<HomeScreenSettingsWidget> {
                       },
                     ),
                   ),
+                  */
                   ListTile(
                     title: Text(L10().homeShowCustomers),
                     subtitle: Text(L10().homeShowCustomersDescription),
@@ -130,7 +147,6 @@ class _HomeScreenSettingsState extends State<HomeScreenSettingsWidget> {
                       },
                     ),
                   ),
-                   */
                 ]
             )
         )

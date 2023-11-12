@@ -114,6 +114,10 @@
   "@build": {},
   "building": "Gebäude",
   "@building": {},
+  "cameraInternal": "Integrierte Kamera",
+  "@cameraInternal": {},
+  "cameraInternalDetail": "Integrierte Kamera zum Lesen von Barcodes verwenden",
+  "@cameraInternalDetail": {},
   "cancel": "Abbrechen",
   "@cancel": {
     "description": "Cancel"
@@ -399,6 +403,8 @@
   "@locationNotSet": {},
   "locationUpdated": "Lagerort aktualisiert",
   "@locationUpdated": {},
+  "loginEnterDetails": "Benutzername und Passwort werden nicht lokal gespeichert",
+  "@loginEnterDetails": {},
   "link": "Link",
   "@link": {},
   "lost": "Verloren",
@@ -537,6 +543,8 @@
   "@profileEdit": {},
   "profileDelete": "Server-Profil löschen",
   "@profileDelete": {},
+  "profileLogout": "Profil abmelden",
+  "@profileLogout": {},
   "profileName": "Profil-Name",
   "@profileName": {},
   "profileNone": "Keine Profile angelegt",
@@ -671,6 +679,10 @@
   "@scanIntoLocation": {},
   "scanIntoLocationDetail": "Artikel per Scan zu Lagerort hinzufügen",
   "@scanIntoLocationDetail": {},
+  "scannerExternal": "Externer Scanner",
+  "@scannerExternal": {},
+  "scannerExternalDetail": "Benutze externen Scanner um Barcodes zu lesen",
+  "@scannerExternalDetail": {},
   "search": "Suchen",
   "@search": {
     "description": "search"
