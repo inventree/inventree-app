@@ -553,10 +553,14 @@ class InvenTreeModel {
         return false;
       }
     } else {
+
+      String detail = L10().errorFetch;
+      detail += "\n${L10().statusCode}: ${response.statusCode}";
+
       showServerError(
         url,
         L10().serverError,
-        L10().errorFetch,
+        detail
       );
 
       return false;
