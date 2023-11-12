@@ -3,6 +3,7 @@ import "dart:io";
 
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:flutter/material.dart";
+import "package:inventree/widget/snacks.dart";
 import "package:url_launcher/url_launcher.dart";
 import "package:path/path.dart" as path;
 
@@ -554,14 +555,24 @@ class InvenTreeModel {
       }
     } else {
 
-      String detail = L10().errorFetch;
-      detail += "\n${L10().statusCode}: ${response.statusCode}";
+      switch (response.statusCode) {
+        case 404: // Object has been deleted
+          showSnackIcon(
+            L10().itemDeleted,
+            success: false,
+          );
+          break;
+        default:
+          String detail = L10().errorFetch;
+          detail += "\n${L10().statusCode}: ${response.statusCode}";
 
-      showServerError(
-        url,
-        L10().serverError,
-        detail
-      );
+          showServerError(
+              url,
+              L10().serverError,
+              detail
+          );
+          break;
+      }
 
       return false;
     }
