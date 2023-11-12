@@ -235,8 +235,14 @@
   "credits": "Credits",
   "@credits": {},
 
+  "customer": "Customer",
+  "@customer": {},
+
   "customers": "Customers",
   "@customers": {},
+
+  "customerReference": "Customer Reference",
+  "@customerReference": {},
 
   "damaged": "Damaged",
   "@damaged": {},
@@ -440,14 +446,20 @@
   "homeShowPo":  "Show Purchase Orders",
   "@homeShowPo": {},
 
+  "homeShowPoDescription": "Show purchase order button on home screen",
+  "@homeShowPoDescription": {},
+
+  "homeShowSo": "Show Sales Orders",
+  "@homeShowSo": {},
+
+  "homeShowSoDescription": "Show sales order button on home screen",
+  "@homeShowSoDescription": {},
+
   "homeShowSubscribed": "Subscribed Parts",
   "@homeShowSubscribed": {},
 
   "homeShowSubscribedDescription": "Show subscribed parts on home screen",
   "@homeShowSubscsribedDescription": {},
-
-  "homeShowPoDescription": "Show purchase order button on home screen",
-  "@homeShowPoDescription": {},
 
   "homeShowSuppliers": "Show Suppliers",
   "@homeShowSuppliers": {},
@@ -576,6 +588,9 @@
   "level": "Level",
   "@level": {},
 
+  "lineItemAdd": "Add Line Item",
+  "@lineItemAdd": {},
+
   "lineItem": "Line Item",
   "@lineItem": {},
 
@@ -687,8 +702,14 @@
   "outstanding": "Outstanding",
   "@outstanding": {},
 
-  "outstandingOrderDetail": "Show outstanding items",
+  "outstandingOrderDetail": "Show outstanding orders",
   "@outstandingOrderDetail": {},
+
+  "overdue": "Overdue",
+  "@overdue": {},
+
+  "overdueDetail": "Show overdue orders",
+  "@overdueDetail": {},
 
   "packaging": "Packaging",
   "@packaging": {},
@@ -997,8 +1018,20 @@
   "returned": "Returned",
   "@returned": {},
 
+  "salesOrder": "Sales Order",
+  "@salesOrder": {},
+
   "salesOrders": "Sales Orders",
   "@salesOrders": {},
+
+  "salesOrderCreate": "New Sales Order",
+  "@saleOrderCreate": {},
+
+  "salesOrderEdit": "Edit Sales Order",
+  "@salesOrderEdit": {},
+
+  "salesOrderUpdated": "Sales order updated",
+  "@salesOrderUpdated": {},
 
   "save": "Save",
   "@save": {
@@ -1124,6 +1157,9 @@
 
   "serverNotSelected": "Server not selected",
   "@serverNotSelected": {},
+
+  "shipped": "Shipped",
+  "@shipped": {},
 
   "sku": "SKU",
   "@sku": {},

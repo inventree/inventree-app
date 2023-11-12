@@ -105,6 +105,24 @@ class InvenTreeStatusCode {
     }
   }
 
+  // Return the 'name' (untranslated) associated with a given status code
+  String name(int status) {
+    Map<String, dynamic> _entry = entry(status);
+
+    String _name = (_entry["name"] ?? "") as String;
+
+    if (_name.isEmpty) {
+      debug("No match for status code ${status} at '${URL}'");
+    }
+
+    return _name;
+  }
+
+  // Test if the name associated with the given code is in the provided list
+  bool isNameIn(int code, List<String> names) {
+    return names.contains(name(code));
+  }
+
   // Return the 'color' associated with a given status code
   Color color(int status) {
     Map<String, dynamic> _entry = entry(status);

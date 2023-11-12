@@ -27,9 +27,9 @@ class InvenTreePartCategory extends InvenTreeModel {
   List<String> get rolesRequired => ["part_category"];
 
   @override
-  Map<String, dynamic> formFields() {
+  Map<String, Map<String, dynamic>> formFields() {
 
-    Map<String, dynamic> fields = {
+    Map<String, Map<String, dynamic>> fields = {
       "name": {},
       "description": {},
       "parent": {},
@@ -140,9 +140,9 @@ class InvenTreePartParameter extends InvenTreeModel {
   InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreePartParameter.fromJson(json);
 
   @override
-  Map<String, dynamic> formFields() {
+  Map<String, Map<String, dynamic>> formFields() {
 
-    Map<String, dynamic> fields = {
+    Map<String, Map<String, dynamic>> fields = {
       "header": {
         "type": "string",
         "read_only": true,
@@ -200,7 +200,7 @@ class InvenTreePart extends InvenTreeModel {
   List<String> get rolesRequired => ["part"];
 
   @override
-  Map<String, dynamic> formFields() {
+  Map<String, Map<String, dynamic>> formFields() {
     return {
       "name": {},
       "description": {},

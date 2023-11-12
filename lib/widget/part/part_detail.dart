@@ -15,18 +15,18 @@ import "package:inventree/labels.dart";
 import "package:inventree/preferences.dart";
 
 import "package:inventree/widget/attachment_widget.dart";
-import "package:inventree/widget/bom_list.dart";
-import "package:inventree/widget/part_list.dart";
+import "package:inventree/widget/part/bom_list.dart";
+import "package:inventree/widget/part/part_list.dart";
 import "package:inventree/widget/notes_widget.dart";
-import "package:inventree/widget/part_parameter_widget.dart";
+import "package:inventree/widget/part/part_parameter_widget.dart";
 import "package:inventree/widget/progress.dart";
-import "package:inventree/widget/category_display.dart";
+import "package:inventree/widget/part/category_display.dart";
 import "package:inventree/widget/refreshable_state.dart";
-import "package:inventree/widget/part_image_widget.dart";
+import "package:inventree/widget/part/part_image_widget.dart";
 import "package:inventree/widget/snacks.dart";
-import "package:inventree/widget/stock_detail.dart";
-import "package:inventree/widget/stock_list.dart";
-import "package:inventree/widget/supplier_part_list.dart";
+import "package:inventree/widget/stock/stock_detail.dart";
+import "package:inventree/widget/stock/stock_list.dart";
+import "package:inventree/widget/company/supplier_part_list.dart";
 
 
 /*
@@ -634,7 +634,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     fields.remove("serial");
 
     // Hide the "part" field
-    fields["part"]["hidden"] = true;
+    fields["part"]?["hidden"] = true;
 
     int? default_location = part.defaultLocation;
 

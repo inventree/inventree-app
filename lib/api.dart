@@ -620,6 +620,8 @@ class InvenTreeAPI {
     _globalSettings.clear();
     _userSettings.clear();
 
+    roles.clear();
+    _plugins.clear();
     serverInfo.clear();
     _connectionStatusChanged();
   }
@@ -671,6 +673,8 @@ class InvenTreeAPI {
     }
 
     _connectionStatusChanged();
+
+    fetchStatusCodeData();
 
     return _connected;
   }
@@ -734,6 +738,10 @@ class InvenTreeAPI {
    * e.g. "part", "change"
    */
   bool checkPermission(String role, String permission) {
+
+    if (!_connected) {
+      return false;
+    }
 
     // If we do not have enough information, assume permission is allowed
     if (roles.isEmpty) {
@@ -1624,11 +1632,20 @@ class InvenTreeAPI {
   InvenTreeStatusCode get StockHistoryStatus => _get_status_class("stock/track/status/");
   InvenTreeStatusCode get StockStatus => _get_status_class("stock/status/");
   InvenTreeStatusCode get PurchaseOrderStatus => _get_status_class("order/po/status/");
+  InvenTreeStatusCode get SalesOrderStatus => _get_status_class("order/so/status/");
 
   void clearStatusCodeData() {
     StockHistoryStatus.data.clear();
     StockStatus.data.clear();
     PurchaseOrderStatus.data.clear();
+    SalesOrderStatus.data.clear();
+  }
+
+  Future<void> fetchStatusCodeData({bool forceReload = true}) async {
+    StockHistoryStatus.load(forceReload: forceReload);
+    StockStatus.load(forceReload: forceReload);
+    PurchaseOrderStatus.load(forceReload: forceReload);
+    SalesOrderStatus.load(forceReload: forceReload);
   }
 
   int notification_counter = 0;

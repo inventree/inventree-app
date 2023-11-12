@@ -2,9 +2,8 @@ import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:inventree/widget/dialogs.dart";
-import "package:inventree/widget/po_line_list.dart";
+import "package:inventree/widget/order/po_line_list.dart";
 
-import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/barcode/barcode.dart";
 import "package:inventree/helpers.dart";
@@ -13,13 +12,17 @@ import "package:inventree/l10.dart";
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/widget/attachment_widget.dart";
-import "package:inventree/widget/company_detail.dart";
+import "package:inventree/widget/company/company_detail.dart";
 import "package:inventree/widget/notes_widget.dart";
+import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
-import "package:inventree/widget/stock_list.dart";
+import "package:inventree/widget/stock/stock_list.dart";
 
 
+/*
+ * Widget for viewing a single PurchaseOrder instance
+ */
 class PurchaseOrderDetailWidget extends StatefulWidget {
 
   const PurchaseOrderDetailWidget(this.order, {Key? key}): super(key: key);
@@ -27,16 +30,14 @@ class PurchaseOrderDetailWidget extends StatefulWidget {
   final InvenTreePurchaseOrder order;
 
   @override
-  _PurchaseOrderDetailState createState() => _PurchaseOrderDetailState(order);
+  _PurchaseOrderDetailState createState() => _PurchaseOrderDetailState();
 }
 
 
 class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidget> {
 
-  _PurchaseOrderDetailState(this.order);
-
-  final InvenTreePurchaseOrder order;
-
+  _PurchaseOrderDetailState();
+  
   List<InvenTreePOLineItem> lines = [];
 
   int completedLines = 0;
@@ -52,7 +53,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
   List<Widget> appBarActions(BuildContext context) {
     List<Widget> actions = [];
 
-    if (order.canEdit) {
+    if (widget.order.canEdit) {
       actions.add(
         IconButton(
           icon: Icon(Icons.edit_square),
@@ -71,8 +72,8 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
   List<SpeedDialChild> actionButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
-    if (order.canCreate) {
-      if (order.isPending) {
+    if (widget.order.canCreate) {
+      if (widget.order.isPending) {
         actions.add(
           SpeedDialChild(
             child: FaIcon(FontAwesomeIcons.paperPlane, color: Colors.blue),
@@ -84,7 +85,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
         );
       }
 
-      if (order.isOpen) {
+      if (widget.order.isOpen) {
         actions.add(
           SpeedDialChild(
             child: FaIcon(FontAwesomeIcons.circleXmark, color: Colors.red),
@@ -109,7 +110,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       color: Colors.blue,
       acceptText: L10().issue,
       onAccept: () async {
-        await order.issueOrder().then((dynamic) {
+        await widget.order.issueOrder().then((dynamic) {
           refresh(context);
         });
       }
@@ -125,7 +126,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       color: Colors.red,
       acceptText: L10().cancel,
       onAccept: () async {
-        await order.cancelOrder().then((dynamic) {
+        await widget.order.cancelOrder().then((dynamic) {
           print("callback");
           refresh(context);
         });
@@ -145,7 +146,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
           onTap:() async {
             scanBarcode(
               context,
-              handler: POReceiveBarcodeHandler(purchaseOrder: order),
+              handler: POReceiveBarcodeHandler(purchaseOrder: widget.order),
             );
           },
         )
@@ -158,11 +159,11 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
   @override
   Future<void> request(BuildContext context) async {
-    await order.reload();
+    await widget.order.reload();
 
     await api.PurchaseOrderStatus.load();
 
-    lines = await order.getLineItems();
+    lines = await widget.order.getLineItems();
 
     supportProjectCodes = api.supportsProjectCodes && await api.getGlobalBooleanSetting("PROJECT_CODES_ENABLED");
 
@@ -174,16 +175,20 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       }
     }
 
-    attachmentCount = await InvenTreePurchaseOrderAttachment().count(
-      filters: {
-        "order": order.pk.toString()
+    InvenTreePurchaseOrderAttachment().count(filters: {
+      "order": widget.order.pk.toString()
+    }).then((int value) {
+      if (mounted) {
+        setState(() {
+          attachmentCount = value;
+        });
       }
-    );
+    });
   }
 
   // Edit the currently displayed PurchaseOrder
   Future <void> editOrder(BuildContext context) async {
-    var fields = order.formFields();
+    var fields = widget.order.formFields();
 
     // Cannot edit supplier field from here
     fields.remove("supplier");
@@ -198,7 +203,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       fields.remove("project_code");
     }
 
-    order.editForm(
+    widget.order.editForm(
       context,
       L10().purchaseOrderEdit,
       fields: fields,
@@ -211,17 +216,17 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
   Widget headerTile(BuildContext context) {
 
-    InvenTreeCompany? supplier = order.supplier;
+    InvenTreeCompany? supplier = widget.order.supplier;
 
     return Card(
         child: ListTile(
-          title: Text(order.reference),
-          subtitle: Text(order.description),
-          leading: supplier == null ? null : InvenTreeAPI().getThumbnail(supplier.thumbnail),
+          title: Text(widget.order.reference),
+          subtitle: Text(widget.order.description),
+          leading: supplier == null ? null : api.getThumbnail(supplier.thumbnail),
           trailing: Text(
-            api.PurchaseOrderStatus.label(order.status),
+            api.PurchaseOrderStatus.label(widget.order.status),
             style: TextStyle(
-              color: api.PurchaseOrderStatus.color(order.status)
+              color: api.PurchaseOrderStatus.color(widget.order.status)
             ),
           )
         )
@@ -233,14 +238,14 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
     List<Widget> tiles = [];
 
-    InvenTreeCompany? supplier = order.supplier;
+    InvenTreeCompany? supplier = widget.order.supplier;
 
     tiles.add(headerTile(context));
 
-    if (supportProjectCodes && order.hasProjectCode) {
+    if (supportProjectCodes && widget.order.hasProjectCode) {
       tiles.add(ListTile(
         title: Text(L10().projectCode),
-        subtitle: Text("${order.projectCode} - ${order.projectCodeDescription}"),
+        subtitle: Text("${widget.order.projectCode} - ${widget.order.projectCodeDescription}"),
         leading: FaIcon(FontAwesomeIcons.list),
       ));
     }
@@ -261,20 +266,24 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       ));
     }
 
-    if (order.supplierReference.isNotEmpty) {
+    if (widget.order.supplierReference.isNotEmpty) {
       tiles.add(ListTile(
         title: Text(L10().supplierReference),
-        subtitle: Text(order.supplierReference),
+        subtitle: Text(widget.order.supplierReference),
         leading: FaIcon(FontAwesomeIcons.hashtag),
       ));
     }
 
-    Color lineColor = completedLines < order.lineItemCount ? COLOR_WARNING : COLOR_SUCCESS;
+    Color lineColor = completedLines < widget.order.lineItemCount ? COLOR_WARNING : COLOR_SUCCESS;
 
     tiles.add(ListTile(
       title: Text(L10().lineItems),
+      subtitle: ProgressBar(
+        completedLines.toDouble(),
+        maximum: widget.order.lineItemCount.toDouble(),
+      ),
       leading: FaIcon(FontAwesomeIcons.clipboardCheck),
-      trailing: Text("${completedLines} /  ${order.lineItemCount}", style: TextStyle(color: lineColor)),
+      trailing: Text("${completedLines} /  ${widget.order.lineItemCount}", style: TextStyle(color: lineColor)),
     ));
 
     tiles.add(ListTile(
@@ -285,18 +294,18 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       ),
     ));
 
-    if (order.issueDate.isNotEmpty) {
+    if (widget.order.issueDate.isNotEmpty) {
       tiles.add(ListTile(
         title: Text(L10().issueDate),
-        subtitle: Text(order.issueDate),
+        subtitle: Text(widget.order.issueDate),
         leading: FaIcon(FontAwesomeIcons.calendarDays),
       ));
     }
 
-    if (order.targetDate.isNotEmpty) {
+    if (widget.order.targetDate.isNotEmpty) {
       tiles.add(ListTile(
         title: Text(L10().targetDate),
-        subtitle: Text(order.targetDate),
+        subtitle: Text(widget.order.targetDate),
         leading: FaIcon(FontAwesomeIcons.calendarDays),
       ));
     }
@@ -310,7 +319,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => NotesWidget(order)
+                builder: (context) => NotesWidget(widget.order)
               )
             );
           },
@@ -329,8 +338,8 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
               MaterialPageRoute(
                 builder: (context) => AttachmentWidget(
                     InvenTreePurchaseOrderAttachment(),
-                    order.pk,
-                    order.canEdit
+                    widget.order.pk,
+                    widget.order.canEdit
                 )
               )
             );
@@ -355,9 +364,9 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
   List<Widget> getTabs(BuildContext context) {
     return [
       ListView(children: orderTiles(context)),
-      PaginatedPOLineList({"order": order.pk.toString()}),
+      PaginatedPOLineList({"order": widget.order.pk.toString()}),
       // ListView(children: lineTiles(context)),
-      PaginatedStockItemList({"purchase_order": order.pk.toString()}),
+      PaginatedStockItemList({"purchase_order": widget.order.pk.toString()}),
     ];
   }
 

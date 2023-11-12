@@ -5,7 +5,7 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/widget/paginator.dart";
-import "package:inventree/widget/purchase_order_detail.dart";
+import "package:inventree/widget/order/purchase_order_detail.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/api.dart";
@@ -22,15 +22,13 @@ class PurchaseOrderListWidget extends StatefulWidget {
   final Map<String, String> filters;
 
   @override
-  _PurchaseOrderListWidgetState createState() => _PurchaseOrderListWidgetState(filters);
+  _PurchaseOrderListWidgetState createState() => _PurchaseOrderListWidgetState();
 }
 
 
 class _PurchaseOrderListWidgetState extends RefreshableState<PurchaseOrderListWidget> {
 
-  _PurchaseOrderListWidgetState(this.filters);
-
-  final Map<String, String> filters;
+  _PurchaseOrderListWidgetState();
 
   @override
   String getAppBarTitle() => L10().purchaseOrders;
@@ -45,7 +43,7 @@ class _PurchaseOrderListWidgetState extends RefreshableState<PurchaseOrderListWi
           child: FaIcon(FontAwesomeIcons.circlePlus),
           label: L10().purchaseOrderCreate,
           onTap: () {
-            createPurchaseOrder(context);
+            _createPurchaseOrder(context);
           }
         )
       );
@@ -54,9 +52,11 @@ class _PurchaseOrderListWidgetState extends RefreshableState<PurchaseOrderListWi
     return actions;
   }
 
-  Future<void> createPurchaseOrder(BuildContext context) async {
+  // Launch form to create a new PurchaseOrder
+  Future<void> _createPurchaseOrder(BuildContext context) async {
     var fields = InvenTreePurchaseOrder().formFields();
 
+    // Cannot set contact until company is locked in
     fields.remove("contact");
 
     InvenTreePurchaseOrder().createForm(
@@ -104,7 +104,7 @@ class _PurchaseOrderListWidgetState extends RefreshableState<PurchaseOrderListWi
 
   @override
   Widget getBody(BuildContext context) {
-    return PaginatedPurchaseOrderList(filters);
+    return PaginatedPurchaseOrderList(widget.filters);
   }
 }
 
@@ -143,6 +143,11 @@ class _PaginatedPurchaseOrderListState extends PaginatedSearchState<PaginatedPur
       "label": L10().outstanding,
       "help_text": L10().outstandingOrderDetail,
       "tristate": true,
+    },
+    "overdue": {
+      "label": L10().overdue,
+      "help_text": L10().overdueDetail,
+      "tristate": true,
     }
   };
 
@@ -153,7 +158,6 @@ class _PaginatedPurchaseOrderListState extends PaginatedSearchState<PaginatedPur
     final page = await InvenTreePurchaseOrder().listPaginated(limit, offset, filters: params);
 
     return page;
-
   }
 
   @override

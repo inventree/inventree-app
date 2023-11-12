@@ -27,7 +27,7 @@ class InvenTreeStockItemTestResult extends InvenTreeModel {
   List<String> get rolesRequired => ["stock"];
 
   @override
-  Map<String, dynamic> formFields() {
+  Map<String, Map<String, dynamic>> formFields() {
     return {
       "stock_item": {"hidden": true},
       "test": {},
@@ -158,8 +158,8 @@ class InvenTreeStockItem extends InvenTreeModel {
   String get WEB_URL => "stock/item/";
 
   @override
-  Map<String, dynamic> formFields() {
-    return {
+  Map<String, Map<String, dynamic>> formFields() {
+    Map<String, Map<String, dynamic>> fields = {
       "part": {},
       "location": {},
       "quantity": {},
@@ -175,6 +175,8 @@ class InvenTreeStockItem extends InvenTreeModel {
       "packaging": {},
       "link": {},
     };
+
+    return fields;
   }
 
   @override
@@ -609,8 +611,8 @@ class InvenTreeStockLocation extends InvenTreeModel {
   String get pathstring => getString("pathstring");
 
   @override
-  Map<String, dynamic> formFields() {
-    Map<String, dynamic> fields = {
+  Map<String, Map<String, dynamic>> formFields() {
+    Map<String, Map<String, dynamic>> fields = {
       "name": {},
       "description": {},
       "parent": {},

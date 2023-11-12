@@ -6,20 +6,25 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
+import "package:inventree/inventree/part.dart";
+import "package:inventree/inventree/purchase_order.dart";
+import "package:inventree/inventree/sales_order.dart";
+import "package:inventree/inventree/stock.dart";
 import "package:inventree/preferences.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/settings/select_server.dart";
 import "package:inventree/user_profile.dart";
 
-import "package:inventree/widget/category_display.dart";
+import "package:inventree/widget/part/category_display.dart";
 import "package:inventree/widget/drawer.dart";
-import "package:inventree/widget/location_display.dart";
-import "package:inventree/widget/part_list.dart";
-import "package:inventree/widget/purchase_order_list.dart";
+import "package:inventree/widget/stock/location_display.dart";
+import "package:inventree/widget/part/part_list.dart";
+import "package:inventree/widget/order/purchase_order_list.dart";
+import "package:inventree/widget/order/sales_order_list.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/spinner.dart";
-import "package:inventree/widget/company_list.dart";
+import "package:inventree/widget/company/company_list.dart";
 
 
 class InvenTreeHomePage extends StatefulWidget {
@@ -53,6 +58,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
   final homeKey = GlobalKey<ScaffoldState>();
 
   bool homeShowPo = false;
+  bool homeShowSo = false;
   bool homeShowSubscribed = false;
   bool homeShowManufacturers = false;
   bool homeShowCustomers = false;
@@ -97,6 +103,17 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
     );
   }
 
+  void _showSalesOrders(BuildContext context) {
+    if (!InvenTreeAPI().checkConnection()) return;
+
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => SalesOrderListWidget(filters: {})
+        )
+    );
+  }
+
   void _showSuppliers(BuildContext context) {
     if (!InvenTreeAPI().checkConnection()) return;
 
@@ -110,12 +127,12 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
     Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyListWidget(L10().manufacturers, {"is_manufacturer": "true"})));
   }
 
+  */
   void _showCustomers(BuildContext context) {
     if (!InvenTreeAPI().checkConnection()) return;
 
     Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyListWidget(L10().customers, {"is_customer": "true"})));
   }
-   */
 
   void _selectProfile() {
     Navigator.push(
@@ -130,6 +147,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
 
     homeShowSubscribed = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_SUBSCRIBED, true) as bool;
     homeShowPo = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_PO, true) as bool;
+    homeShowSo = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_SO, true) as bool;
     homeShowManufacturers = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_MANUFACTURERS, true) as bool;
     homeShowCustomers = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_CUSTOMERS, true) as bool;
     homeShowSuppliers = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_SUPPLIERS, true) as bool;
@@ -207,17 +225,19 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
     ];
 
     // Parts
-    tiles.add(_listTile(
-      context,
-      L10().parts,
-      FontAwesomeIcons.shapes,
-      callback: () {
-        _showParts(context);
-      },
-    ));
+    if (InvenTreePart().canView) {
+      tiles.add(_listTile(
+        context,
+        L10().parts,
+        FontAwesomeIcons.shapes,
+        callback: () {
+          _showParts(context);
+        },
+      ));
+    }
 
     // Starred parts
-    if (homeShowSubscribed) {
+    if (homeShowSubscribed && InvenTreePart().canView) {
       tiles.add(_listTile(
         context,
         L10().partsStarred,
@@ -229,17 +249,19 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
     }
 
     // Stock button
-    tiles.add(_listTile(
-        context,
-        L10().stock,
-        FontAwesomeIcons.boxesStacked,
-        callback: () {
-          _showStock(context);
-        }
-    ));
+    if (InvenTreeStockItem().canView) {
+      tiles.add(_listTile(
+          context,
+          L10().stock,
+          FontAwesomeIcons.boxesStacked,
+          callback: () {
+            _showStock(context);
+          }
+      ));
+    }
 
     // Purchase orders
-    if (homeShowPo) {
+    if (homeShowPo && InvenTreePurchaseOrder().canView) {
       tiles.add(_listTile(
           context,
           L10().purchaseOrders,
@@ -250,8 +272,19 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
       ));
     }
 
+    if (homeShowSo && InvenTreeSalesOrder().canView) {
+      tiles.add(_listTile(
+        context,
+        L10().salesOrders,
+        FontAwesomeIcons.truck,
+        callback: () {
+          _showSalesOrders(context);
+        }
+      ));
+    }
+
     // Suppliers
-    if (homeShowSuppliers) {
+    if (homeShowSuppliers && InvenTreePurchaseOrder().canView) {
       tiles.add(_listTile(
           context,
           L10().suppliers,
@@ -277,7 +310,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
           }
       ));
     }
-
+    */
     // Customers
     if (homeShowCustomers) {
       tiles.add(_listTile(
@@ -289,7 +322,6 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
           }
       ));
     }
-     */
 
     return tiles;
   }

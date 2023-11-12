@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/part.dart";
-import "package:inventree/widget/category_display.dart";
+import "package:inventree/widget/part/category_display.dart";
 import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/refreshable_state.dart";
 
