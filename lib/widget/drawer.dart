@@ -3,7 +3,6 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
-import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/inventree/sales_order.dart";
