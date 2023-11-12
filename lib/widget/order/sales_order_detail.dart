@@ -286,7 +286,8 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
     return [
       Tab(text: L10().details),
       Tab(text: L10().lineItems),
-      Tab(text: L10().shipped)
+      // TODO: Add in the "shipped items" tab
+      // Tab(text: L10().shipped)
     ];
   }
 
@@ -295,7 +296,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
     return [
       ListView(children: orderTiles(context)),
       PaginatedSOLineList({"order": widget.order.pk.toString()}),
-      Center(), // TODO: Delivered stock
+      // Center(), // TODO: Delivered stock
     ];
   }
 
