@@ -1,3 +1,9 @@
+### 0.14.0 - November 2023
+---
+
+- Adds support for Sales Orders
+- Fixes bug when removing entire quantity of a stock item
+
 ### 0.13.0 - October 2023
 ---
 
