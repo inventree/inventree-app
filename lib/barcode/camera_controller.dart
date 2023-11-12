@@ -40,7 +40,7 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
     if (mounted) {
       setState(() {
         continuous_scanning = _manual;
-        scanning_paused = false;
+        scanning_paused = !continuous_scanning;
       });
     }
   }
@@ -124,21 +124,26 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
   @override
   Widget build(BuildContext context) {
     Widget actionIcon =
-        FaIcon(FontAwesomeIcons.pause, color: COLOR_WARNING, size: 64);
+        FaIcon(FontAwesomeIcons.play, color: COLOR_ACTION, size: 64);
 
     if (scanning_paused) {
-      actionIcon = FaIcon(FontAwesomeIcons.play, color: COLOR_ACTION, size: 64);
+      actionIcon = FaIcon(FontAwesomeIcons.pause, color: COLOR_WARNING, size: 64);
     }
 
     String info_text;
 
-    info_text = L10().barcodeScanPaused;
-    info_text += "\n";
-
     if (continuous_scanning) {
-      info_text += L10().barcodeScanReleaseResume;
+      if (scanning_paused) {
+        info_text = L10().barcodeScanTapReleaseResume;
+      } else {
+        info_text = L10().barcodeScanTapHoldPause;
+      }
     } else {
-      info_text += L10().barcodeScanTapResume;
+       if (scanning_paused) {
+        info_text = L10().barcodeScanTapHoldResume;
+      } else {
+        info_text = L10().barcodeScanTapReleasePause;
+      }
     }
 
     return Scaffold(
@@ -161,31 +166,22 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
         ),
         body: GestureDetector(
             onTapDown: (details) async {
+              setState(() {
+                scanning_paused = !scanning_paused;
+              });
+            },
+            onLongPressEnd: (details) async {
               bool pause_state = false;
 
               // Outcome depends on scanning mode
               if (continuous_scanning) {
-                pause_state = true;
+                pause_state = false;
               } else {
-                pause_state = !scanning_paused;
+                pause_state = true;
               }
               setState(() {
                 scanning_paused = pause_state;
               });
-            },
-            onTapUp: (detail) async {
-              if (continuous_scanning) {
-                setState(() {
-                  scanning_paused = false;
-                });
-              }
-            },
-            onTapCancel: () async {
-              if (continuous_scanning) {
-                setState(() {
-                  scanning_paused = false;
-                });
-              }
             },
             child: Stack(
               children: <Widget>[
@@ -209,16 +205,13 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
                 Center(
                     child: Column(children: [
                   Padding(
-                    child: scanning_paused
-                        ? Text(info_text,
+                    child: Text(info_text,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Colors.white,
-                            ))
-                        : CircularProgressIndicator(),
-                    padding: EdgeInsets.all(40),
+                            )),
+                    padding: EdgeInsets.all(10),
                   ),
-                  Spacer(),
                   SizedBox(
                     child: Center(
                       child: actionIcon,
@@ -226,6 +219,7 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
                     width: 100,
                     height: 150,
                   ),
+                  Spacer(),
                   Padding(
                     child: Text(
                       widget.handler.getOverlayText(context),

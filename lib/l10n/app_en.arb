@@ -115,14 +115,17 @@
   "barcodeReceivePart": "Scan barcode to receive part",
   "@barcodeReceivePart": {},
 
-  "barcodeScanPaused": "Barcode scanning paused",
-  "@barodeScanPaused": {},
+  "barcodeScanTapHoldResume": "Tap or hold to resume scanning",
+  "@barcodeScanTapHoldResume": {},
 
-  "barcodeScanTapResume": "Tap to resume scanning",
-  "@barcodeScanTapResume": {},
+  "barcodeScanTapReleaseResume": "Tap or release to resume scanning",
+  "@barcodeScanTapReleaseResume": {},
 
-  "barcodeScanReleaseResume": "Release to resume scanning",
-  "@barcodeScanReleaseResume": {},
+  "barcodeScanTapHoldPause": "Tap or hold to pause scanning",
+  "@barcodeScanTapHoldPause": {},
+
+  "barcodeScanTapReleasePause": "Tap or release to pause scanning",
+  "@barcodeScanTapReleasePause": {},
 
   "barcodeScanAssign": "Scan to assign barcode",
   "@barcodeScanAssign": {},
