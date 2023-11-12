@@ -572,6 +572,9 @@
   "itemInLocation": "Item already in location",
   "@itemInLocation": {},
 
+  "itemDeleted": "Item has been removed",
+  "@itemDeleted": {},
+
   "keywords": "Keywords",
   "@keywords": {},
 
