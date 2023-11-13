@@ -30,16 +30,21 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
 
   bool flash_status = false;
 
-  bool continuous_scanning = true;
+  bool hold_to_pause = false;
+  bool single_scanning = false;
   bool scanning_paused = false;
 
   Future<void> _loadSettings() async {
-    bool _manual = await InvenTreeSettingsManager()
-        .getBool(INV_BARCODE_SCAN_CONTINUOUS, true);
+    bool _single = await InvenTreeSettingsManager()
+        .getBool(INV_BARCODE_SCAN_SINGLE, false);
+
+    int _pause_mode = await InvenTreeSettingsManager()
+        .getValue(INV_BARCODE_PAUSE_MODE, BARCODE_PAUSE_MODE_TAP) as int;
 
     if (mounted) {
       setState(() {
-        continuous_scanning = _manual;
+        hold_to_pause = _pause_mode == BARCODE_PAUSE_MODE_HOLD;
+        single_scanning = _single;
         scanning_paused = false;
       });
     }
@@ -52,8 +57,8 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
     controller.scannedDataStream.listen((barcode) {
       if (!scanning_paused) {
         handleBarcodeData(barcode.code).then((value) => {
-              // If in manual scanning mode, pause after successful scan
-              if (!continuous_scanning && mounted)
+              // If in single-scanning mode, pause after successful scan
+              if (single_scanning && mounted)
                 {
                   setState(() {
                     scanning_paused = true;
@@ -124,21 +129,30 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
   @override
   Widget build(BuildContext context) {
     Widget actionIcon =
-        FaIcon(FontAwesomeIcons.pause, color: COLOR_WARNING, size: 64);
+        FaIcon(FontAwesomeIcons.circlePause, color: COLOR_WARNING, size: 64);
 
     if (scanning_paused) {
-      actionIcon = FaIcon(FontAwesomeIcons.play, color: COLOR_ACTION, size: 64);
+      actionIcon =
+          FaIcon(FontAwesomeIcons.circlePlay, color: COLOR_ACTION, size: 64);
     }
 
-    String info_text;
+    String info_text = "";
 
-    info_text = L10().barcodeScanPaused;
-    info_text += "\n";
+    if (scanning_paused) {
+      info_text += L10().barcodeScanPaused;
+      info_text += "\n";
 
-    if (continuous_scanning) {
-      info_text += L10().barcodeScanReleaseResume;
+      if (hold_to_pause) {
+        info_text += L10().barcodeScanReleaseResume;
+      } else {
+        info_text += L10().barcodeScanTapResume;
+      }
     } else {
-      info_text += L10().barcodeScanTapResume;
+      if (hold_to_pause) {
+        info_text += L10().barcodeScanHoldPause;
+      } else {
+        info_text += L10().barcodeScanTapPause;
+      }
     }
 
     return Scaffold(
@@ -161,27 +175,19 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
         ),
         body: GestureDetector(
             onTapDown: (details) async {
-              bool pause_state = false;
-
-              // Outcome depends on scanning mode
-              if (continuous_scanning) {
-                pause_state = true;
-              } else {
-                pause_state = !scanning_paused;
-              }
               setState(() {
-                scanning_paused = pause_state;
+                scanning_paused = !scanning_paused;
               });
             },
             onTapUp: (detail) async {
-              if (continuous_scanning) {
+              if (hold_to_pause && mounted) {
                 setState(() {
                   scanning_paused = false;
                 });
               }
             },
-            onTapCancel: () async {
-              if (continuous_scanning) {
+            onLongPressEnd: (details) async {
+              if (hold_to_pause && mounted) {
                 setState(() {
                   scanning_paused = false;
                 });
@@ -209,13 +215,16 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
                 Center(
                     child: Column(children: [
                   Padding(
-                    child: scanning_paused
-                        ? Text(info_text,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                            ))
-                        : CircularProgressIndicator(),
+                      child: Text(
+                        widget.handler.getOverlayText(context),
+                        style: TextStyle(
+                          fontSize: 16,
+                            fontWeight: FontWeight.bold, color: Colors.white),
+                      ),
+                      padding: EdgeInsets.all(25)),
+                  Padding(
+                    child: CircularProgressIndicator(
+                        value: scanning_paused ? 0 : null),
                     padding: EdgeInsets.all(40),
                   ),
                   Spacer(),
@@ -227,12 +236,12 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
                     height: 150,
                   ),
                   Padding(
-                    child: Text(
-                      widget.handler.getOverlayText(context),
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.white),
-                    ),
-                    padding: EdgeInsets.all(20),
+                    child: Text(info_text,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                        )),
+                    padding: EdgeInsets.all(25),
                   ),
                 ]))
               ],

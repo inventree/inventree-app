@@ -18,7 +18,8 @@ class _InvenTreeBarcodeSettingsState extends State<InvenTreeBarcodeSettingsWidge
 
  int barcodeScanDelay = 500;
  int barcodeScanType = BARCODE_CONTROLLER_CAMERA;
- bool barcodeScanContinuous = true;
+ int barcodePauseMode = BARCODE_PAUSE_MODE_TAP;
+ bool barcodeScanSingle = false;
 
  final TextEditingController _barcodeScanDelayController = TextEditingController();
 
@@ -31,7 +32,8 @@ class _InvenTreeBarcodeSettingsState extends State<InvenTreeBarcodeSettingsWidge
   Future<void> loadSettings() async {
     barcodeScanDelay = await InvenTreeSettingsManager().getValue(INV_BARCODE_SCAN_DELAY, 500) as int;
     barcodeScanType = await InvenTreeSettingsManager().getValue(INV_BARCODE_SCAN_TYPE, BARCODE_CONTROLLER_CAMERA) as int;
-    barcodeScanContinuous = await InvenTreeSettingsManager().getBool(INV_BARCODE_SCAN_CONTINUOUS, true);
+    barcodeScanSingle = await InvenTreeSettingsManager().getBool(INV_BARCODE_SCAN_SINGLE, false);
+    barcodePauseMode = await InvenTreeSettingsManager().getValue(INV_BARCODE_PAUSE_MODE, BARCODE_PAUSE_MODE_TAP) as int;
 
     if (mounted) {
       setState(() {
@@ -156,15 +158,43 @@ class _InvenTreeBarcodeSettingsState extends State<InvenTreeBarcodeSettingsWidge
               ),
             ),
             ListTile(
-              title: Text(L10().barcodeScanContinuous),
-              subtitle: Text(L10().barcodeScanContinuousDetail),
+              title: Text(L10().barcodePauseMode),
+              subtitle: Text(L10().barcodePauseModeDetail),
+              leading: Icon(Icons.pause),
+              trailing: Text(
+                barcodePauseMode == BARCODE_PAUSE_MODE_HOLD ? L10().hold : L10().tap
+              ),
+              onTap: () async {
+                choiceDialog(
+                  L10().barcodePauseMode,
+                  [
+                    ListTile(
+                      title: Text(L10().barcodePauseModeTap),
+                    ),
+                    ListTile(
+                      title: Text(L10().barcodePauseModeHold),
+                    )
+                  ],
+                  onSelected: (idx) async {
+                    barcodePauseMode = idx as int;
+                    InvenTreeSettingsManager().setValue(INV_BARCODE_PAUSE_MODE, barcodePauseMode);
+                    if (mounted) {
+                      setState(() {});
+                    }
+                  }
+                );
+              },
+            ),
+            ListTile(
+              title: Text(L10().barcodeScanSingle),
+              subtitle: Text(L10().barcodeScanSingleDetail),
               leading: Icon(Icons.barcode_reader),
               trailing: Switch(
-                value: barcodeScanContinuous,
+                value: barcodeScanSingle,
                 onChanged: (bool v) {
-                  InvenTreeSettingsManager().setValue(INV_BARCODE_SCAN_CONTINUOUS, v);
+                  InvenTreeSettingsManager().setValue(INV_BARCODE_SCAN_SINGLE, v);
                   setState(() {
-                    barcodeScanContinuous = v;
+                    barcodeScanSingle = v;
                   });
                 },
               ),
