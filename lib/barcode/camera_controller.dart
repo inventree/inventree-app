@@ -30,7 +30,6 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
 
   bool flash_status = false;
 
-  bool hold_to_pause = false;
   bool single_scanning = false;
   bool scanning_paused = false;
 
@@ -38,12 +37,8 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
     bool _single = await InvenTreeSettingsManager()
         .getBool(INV_BARCODE_SCAN_SINGLE, false);
 
-    int _pause_mode = await InvenTreeSettingsManager()
-        .getValue(INV_BARCODE_PAUSE_MODE, BARCODE_PAUSE_MODE_TAP) as int;
-
     if (mounted) {
       setState(() {
-        hold_to_pause = _pause_mode == BARCODE_PAUSE_MODE_HOLD;
         single_scanning = _single;
         scanning_paused = false;
       });
@@ -136,25 +131,7 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
           FaIcon(FontAwesomeIcons.circlePlay, color: COLOR_ACTION, size: 64);
     }
 
-    String info_text = "";
-
-    if (scanning_paused) {
-      info_text += L10().barcodeScanPaused;
-      info_text += "\n";
-
-      if (hold_to_pause) {
-        info_text += L10().barcodeScanReleaseResume;
-      } else {
-        info_text += L10().barcodeScanTapResume;
-      }
-    } else {
-      info_text += " \n";
-      if (hold_to_pause) {
-        info_text += L10().barcodeScanHoldPause;
-      } else {
-        info_text += L10().barcodeScanTapPause;
-      }
-    }
+    String info_text = scanning_paused ? L10().barcodeScanPaused : L10().barcodeScanPause;
 
     return Scaffold(
         appBar: AppBar(
@@ -180,15 +157,8 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
                 scanning_paused = !scanning_paused;
               });
             },
-            onTapUp: (detail) async {
-              if (hold_to_pause && mounted) {
-                setState(() {
-                  scanning_paused = false;
-                });
-              }
-            },
             onLongPressEnd: (details) async {
-              if (hold_to_pause && mounted) {
+              if (mounted) {
                 setState(() {
                   scanning_paused = false;
                 });

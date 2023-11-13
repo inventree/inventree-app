@@ -118,17 +118,8 @@
   "barcodeScanPaused": "Barcode scanning paused",
   "@barodeScanPaused": {},
 
-  "barcodeScanTapPause": "Tap to pause scanning",
-  "@barcodeScanTapPause": {},
-
-  "barcodeScanTapResume": "Tap to resume scanning",
-  "@barcodeScanTapResume": {},
-
-  "barcodeScanHoldPause": "Hold to pause scanning",
-  "@barcodeScanHoldPause": {},
-
-  "barcodeScanReleaseResume": "Release to resume scanning",
-  "@barcodeScanReleaseResume": {},
+  "barcodeScanPause": "Tap or hold to pause scanning",
+  "@barcodeScanPause": {},
 
   "barcodeScanAssign": "Scan to assign barcode",
   "@barcodeScanAssign": {},
@@ -153,24 +144,6 @@
 
   "barcodeScanLocation": "Scan stock location",
   "@barcodeScanLocation": {},
-
-  "barcodePauseMode": "Barcode pause mode",
-  "@barcodePauseMode": {},
-
-  "barcodePauseModeDetail": "Pause behaviour for camera barcode scanner",
-  "@barcodePauseModeDetail": {},
-
-  "barcodePauseModeHold": "Hold to pause scanning",
-  "@barcodePauseModeHold": {},
-
-  "barcodePauseModeTap": "Tap to pause scanning",
-  "@barcodePauseModeTap": {},
-
-  "tap": "Tap",
-  "@tap": {},
-
-  "hold": "Hold",
-  "@hold": {},
 
   "barcodeScanSingle": "Single Scan Mode",
   "@barcodeScanSingle": {},

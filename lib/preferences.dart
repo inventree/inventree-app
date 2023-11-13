@@ -43,11 +43,6 @@ const String INV_STRICT_HTTPS = "strictHttps";
 const String INV_BARCODE_SCAN_DELAY = "barcodeScanDelay";
 const String INV_BARCODE_SCAN_TYPE = "barcodeScanType";
 const String INV_BARCODE_SCAN_SINGLE = "barcodeScanSingle";
-const String INV_BARCODE_PAUSE_MODE = "barcodePauseMode";
-
-// Barcode pause modes
-const int BARCODE_PAUSE_MODE_TAP = 0;
-const int BARCODE_PAUSE_MODE_HOLD = 1;
 
 // Barcode scanner types
 const int BARCODE_CONTROLLER_CAMERA = 0;
