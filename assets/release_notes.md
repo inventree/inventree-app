@@ -2,7 +2,10 @@
 ---
 
 - Adds support for Sales Orders
+- Adds option to pause and resume barcode scanning with camera
+- Adds option for "single shot" barcode scanning with camera
 - Fixes bug when removing entire quantity of a stock item
+
 
 ### 0.13.0 - October 2023
 ---

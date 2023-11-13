@@ -115,6 +115,12 @@
   "barcodeReceivePart": "Scan barcode to receive part",
   "@barcodeReceivePart": {},
 
+  "barcodeScanPaused": "Barcode scanning paused",
+  "@barodeScanPaused": {},
+
+  "barcodeScanPause": "Tap or hold to pause scanning",
+  "@barcodeScanPause": {},
+
   "barcodeScanAssign": "Scan to assign barcode",
   "@barcodeScanAssign": {},
 
@@ -138,6 +144,12 @@
 
   "barcodeScanLocation": "Scan stock location",
   "@barcodeScanLocation": {},
+
+  "barcodeScanSingle": "Single Scan Mode",
+  "@barcodeScanSingle": {},
+
+  "barcodeScanSingleDetail": "Pause barcode scanner after each scan",
+  "@barcodeScanSingleDetail": {},
 
   "barcodeScanIntoLocationSuccess": "Scanned into location",
   "@barcodeScanIntoLocationSuccess": {},
