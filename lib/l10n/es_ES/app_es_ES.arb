@@ -263,12 +263,12 @@
   "@homeScreenSettings": {},
   "homeShowPo": "Mostrar órdenes de compra",
   "@homeShowPo": {},
+  "homeShowPoDescription": "Mostrar botón de orden de compra en la pantalla de inicio",
+  "@homeShowPoDescription": {},
   "homeShowSubscribed": "Piezas Destacadas",
   "@homeShowSubscribed": {},
   "homeShowSubscribedDescription": "Mostrar piezas destacadas en la pantalla de inicio",
   "@homeShowSubscsribedDescription": {},
-  "homeShowPoDescription": "Mostrar botón de orden de compra en la pantalla de inicio",
-  "@homeShowPoDescription": {},
   "homeShowSuppliers": "Mostrar Proveedores",
   "@homeShowSuppliers": {},
   "homeShowSuppliersDescription": "Mostrar botón de proveedores en la pantalla de inicio",
@@ -595,6 +595,7 @@
   "@returned": {},
   "salesOrders": "Órdenes de venta",
   "@salesOrders": {},
+  "@saleOrderCreate": {},
   "save": "Guardar",
   "@save": {
     "description": "Save"
