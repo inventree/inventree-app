@@ -148,6 +148,7 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
         info_text += L10().barcodeScanTapResume;
       }
     } else {
+      info_text += " \n";
       if (hold_to_pause) {
         info_text += L10().barcodeScanHoldPause;
       } else {
