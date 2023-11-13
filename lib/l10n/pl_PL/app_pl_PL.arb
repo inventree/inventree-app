@@ -204,12 +204,12 @@
   "@homeScreenSettings": {},
   "homeShowPo": "Pokaż zamówienia zakupu",
   "@homeShowPo": {},
+  "homeShowPoDescription": "Pokaż przycisk zamówienia zakupu na ekranie głównym",
+  "@homeShowPoDescription": {},
   "homeShowSubscribed": "Obserwowane części",
   "@homeShowSubscribed": {},
   "homeShowSubscribedDescription": "Pokaż obserwowane elementy na stronie głównej",
   "@homeShowSubscsribedDescription": {},
-  "homeShowPoDescription": "Pokaż przycisk zamówienia zakupu na ekranie głównym",
-  "@homeShowPoDescription": {},
   "homeShowSuppliers": "Pokaż dostawców",
   "@homeShowSuppliers": {},
   "homeShowSuppliersDescription": "Pokaż przycisk dostawców na ekranie głównym",
@@ -484,6 +484,7 @@
   "@returned": {},
   "salesOrders": "Zlecenia Sprzedaży",
   "@salesOrders": {},
+  "@saleOrderCreate": {},
   "save": "Zapisz",
   "@save": {
     "description": "Save"

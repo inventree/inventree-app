@@ -289,12 +289,12 @@
   "@homeScreenSettings": {},
   "homeShowPo": "Satın Alma Siparişlerini Göster",
   "@homeShowPo": {},
+  "homeShowPoDescription": "Satınalma sipariş butonunu ana ekranda göster",
+  "@homeShowPoDescription": {},
   "homeShowSubscribed": "Parça bildirimlerine abone ol",
   "@homeShowSubscribed": {},
   "homeShowSubscribedDescription": "Abone olunan bölümleri ana ekranda göster",
   "@homeShowSubscsribedDescription": {},
-  "homeShowPoDescription": "Satınalma sipariş butonunu ana ekranda göster",
-  "@homeShowPoDescription": {},
   "homeShowSuppliers": "Tedarikçileri Göster",
   "@homeShowSuppliers": {},
   "homeShowSuppliersDescription": "Tedarikçi butonunu ana ekranda göster",
@@ -643,6 +643,7 @@
   "@returned": {},
   "salesOrders": "Satış Siparişleri",
   "@salesOrders": {},
+  "@saleOrderCreate": {},
   "save": "Kaydet",
   "@save": {
     "description": "Save"

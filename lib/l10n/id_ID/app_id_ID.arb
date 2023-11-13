@@ -4,6 +4,7 @@
   "@homeShowSupplierDescription": {},
   "imageUploadSuccess": "Gambar telah diunggah",
   "@imageUploadSuccess": {},
+  "@saleOrderCreate": {},
   "save": "Simpan",
   "@save": {
     "description": "Save"

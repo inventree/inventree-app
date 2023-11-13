@@ -199,5 +199,6 @@
   "lastUpdated": "Ultima atualização",
   "@lastUpdated": {},
   "lineItems": "Itens de linha",
-  "@lineItems": {}
+  "@lineItems": {},
+  "@saleOrderCreate": {}
 }

@@ -325,6 +325,7 @@
   "@response505": {},
   "responseUnknown": "Tuntematon vastaus",
   "@responseUnknown": {},
+  "@saleOrderCreate": {},
   "save": "Tallenna",
   "@save": {
     "description": "Save"
