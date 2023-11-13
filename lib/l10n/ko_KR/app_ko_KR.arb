@@ -50,6 +50,7 @@
   "@reportBug": {},
   "response505": "지원되지 않는 HTTP 버전",
   "@response505": {},
+  "@saleOrderCreate": {},
   "save": "저장",
   "@save": {
     "description": "Save"

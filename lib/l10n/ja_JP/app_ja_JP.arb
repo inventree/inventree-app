@@ -488,6 +488,7 @@
   },
   "returned": "返品済",
   "@returned": {},
+  "@saleOrderCreate": {},
   "save": "保存",
   "@save": {
     "description": "Save"

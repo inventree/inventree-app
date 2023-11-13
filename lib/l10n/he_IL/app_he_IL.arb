@@ -1,5 +1,6 @@
 {
   "@@locale": "he",
   "@homeShowSubscsribedDescription": {},
-  "@homeShowSupplierDescription": {}
+  "@homeShowSupplierDescription": {},
+  "@saleOrderCreate": {}
 }

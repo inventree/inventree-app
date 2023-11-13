@@ -154,6 +154,7 @@
   "@password": {},
   "reference": "Referens",
   "@reference": {},
+  "@saleOrderCreate": {},
   "save": "Spara",
   "@save": {
     "description": "Save"
