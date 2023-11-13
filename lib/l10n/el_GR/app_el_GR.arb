@@ -31,5 +31,6 @@
   "categoryCreate": "Νέα Κατηγορία",
   "@categoryCreate": {},
   "@homeShowSubscsribedDescription": {},
-  "@homeShowSupplierDescription": {}
+  "@homeShowSupplierDescription": {},
+  "@saleOrderCreate": {}
 }
