@@ -187,6 +187,7 @@
   "@parts": {
     "description": "Part (multiple)"
   },
+  "@saleOrderCreate": {},
   "stock": "庫存",
   "@stock": {
     "description": "stock"
