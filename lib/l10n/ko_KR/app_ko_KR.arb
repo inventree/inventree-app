@@ -12,6 +12,7 @@
   "@appReleaseNotes": {},
   "appSettings": "앱 설정",
   "@appSettings": {},
+  "@barodeScanPaused": {},
   "billOfMaterials": "부품 명세서",
   "@billOfMaterials": {},
   "cancel": "취소",
