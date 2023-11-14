@@ -72,6 +72,7 @@
   "@barcodeNoMatch": {},
   "barcodeNotAssigned": "Codice a barre non assegnato",
   "@barcodeNotAssigned": {},
+  "@barodeScanPaused": {},
   "barcodeScanAssign": "Scansiona per assegnare codice a barre",
   "@barcodeScanAssign": {},
   "barcodeScanGeneral": "Scansiona un codice a barre InvenTree",
