@@ -70,6 +70,7 @@
   "@barcodeNoMatch": {},
   "barcodeNotAssigned": "Código de barras não atribuído",
   "@barcodeNotAssigned": {},
+  "@barodeScanPaused": {},
   "barcodeScanAssign": "Escaneie para atribuir código de barras",
   "@barcodeScanAssign": {},
   "barcodeScanGeneral": "Escaneie um código de barras do InvenTree",
