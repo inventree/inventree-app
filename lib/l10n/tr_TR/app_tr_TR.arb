@@ -78,6 +78,7 @@
   "@barcodeNoMatch": {},
   "barcodeNotAssigned": "Barkod atanmış değil",
   "@barcodeNotAssigned": {},
+  "@barodeScanPaused": {},
   "barcodeScanAssign": "Atanmış barkodu tara",
   "@barcodeScanAssign": {},
   "barcodeScanDelay": "Barkod Tarama Gecikmesi",
