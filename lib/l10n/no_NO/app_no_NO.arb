@@ -72,6 +72,7 @@
   "@barcodeNoMatch": {},
   "barcodeNotAssigned": "Strekkode ikke tildelt",
   "@barcodeNotAssigned": {},
+  "@barodeScanPaused": {},
   "barcodeScanAssign": "Skann for å tildele strekkode",
   "@barcodeScanAssign": {},
   "barcodeScanGeneral": "Skann en InvenTree-strekkode",
