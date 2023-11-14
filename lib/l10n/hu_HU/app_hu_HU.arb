@@ -78,6 +78,7 @@
   "@barcodeNoMatch": {},
   "barcodeNotAssigned": "Vonalkód nincs hozzárendelve",
   "@barcodeNotAssigned": {},
+  "@barodeScanPaused": {},
   "barcodeScanAssign": "Kódolvasás a hozzárendeléshez",
   "@barcodeScanAssign": {},
   "barcodeScanDelay": "Vonalkód olvasási késleltetés",
