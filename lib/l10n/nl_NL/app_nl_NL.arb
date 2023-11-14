@@ -78,6 +78,7 @@
   "@barcodeNoMatch": {},
   "barcodeNotAssigned": "Streepjescode niet toegewezen",
   "@barcodeNotAssigned": {},
+  "@barodeScanPaused": {},
   "barcodeScanAssign": "Scan om streepjescode toe te wijzen",
   "@barcodeScanAssign": {},
   "barcodeScanDelay": "Barcode Scan vertraging",
