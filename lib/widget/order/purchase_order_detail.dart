@@ -74,6 +74,17 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
     if (widget.order.canCreate) {
       if (widget.order.isPending) {
+
+        actions.add(
+          SpeedDialChild(
+            child: FaIcon(FontAwesomeIcons.circlePlus, color: Colors.green),
+            label: L10().lineItemAdd,
+            onTap: () async {
+              _addLineItem(context);
+            }
+          )
+        );
+
         actions.add(
           SpeedDialChild(
             child: FaIcon(FontAwesomeIcons.paperPlane, color: Colors.blue),
@@ -99,6 +110,30 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
     }
 
     return actions;
+  }
+
+  /// Add a new line item to this order
+  Future<void> _addLineItem(BuildContext context) async {
+
+    var fields = InvenTreePOLineItem().formFields();
+
+    // Update part field definition
+    fields["part"]?["hidden"] = false;
+    fields["part"]?["filters"] = {
+      "supplier": widget.order.supplierId
+    };
+
+    fields["order"]?["value"] = widget.order.pk;
+
+    InvenTreePOLineItem().createForm(
+      context,
+      L10().lineItemAdd,
+      fields: fields,
+      onSuccess: (data) async {
+        refresh(context);
+        showSnackIcon(L10().lineItemUpdated, success: true);
+      }
+    );
   }
 
   /// Issue this order

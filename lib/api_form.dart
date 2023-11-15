@@ -642,6 +642,7 @@ class APIFormField {
           title: Text(part.SKU),
           subtitle: Text(part.partName),
           leading: extended ? InvenTreeAPI().getThumbnail(part.partImage) : null,
+          trailing: extended && part.supplierImage.isNotEmpty ? InvenTreeAPI().getThumbnail(part.supplierImage) : null,
         );
       case "partcategory":
 
