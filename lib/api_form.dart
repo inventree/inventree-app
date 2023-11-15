@@ -524,11 +524,10 @@ class APIFormField {
       ),
       selectedItem: initial_data,
       asyncItems: (String filter) async {
-        Map<String, String> _filters = {};
-
-        filters.forEach((key, value) {
-          _filters[key] = value;
-        });
+        Map<String, String> _filters = {
+          ..._relatedFieldFilters(),
+          ...filters,
+        };
 
         _filters["search"] = filter;
         _filters["offset"] = "0";
@@ -586,6 +585,17 @@ class APIFormField {
       });
   }
 
+  // Construct a set of custom filters for the dropdown search
+  Map<String, String> _relatedFieldFilters() {
+
+    switch (model) {
+      case "supplierpart":
+        return InvenTreeSupplierPart().defaultListFilters();
+    }
+
+    return {};
+  }
+
   // Render a "related field" based on the "model" type
   Widget _renderRelatedField(String fieldName, dynamic item, bool selected, bool extended) {
 
@@ -611,7 +621,6 @@ class APIFormField {
 
     switch (model) {
       case "part":
-
         var part = InvenTreePart.fromJson(data);
 
         return ListTile(
@@ -626,6 +635,15 @@ class APIFormField {
           leading: extended ? InvenTreeAPI().getThumbnail(part.thumbnail) : null,
         );
 
+      case "supplierpart":
+        var part = InvenTreeSupplierPart.fromJson(data);
+
+        return ListTile(
+          title: Text(part.SKU),
+          subtitle: Text(part.partName),
+          leading: extended ? InvenTreeAPI().getThumbnail(part.partImage) : null,
+          trailing: extended && part.supplierImage.isNotEmpty ? InvenTreeAPI().getThumbnail(part.supplierImage) : null,
+        );
       case "partcategory":
 
         var cat = InvenTreePartCategory.fromJson(data);
