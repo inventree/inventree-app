@@ -58,6 +58,7 @@
   "@barcodeNoMatch": {},
   "barcodeNotAssigned": "Kod kreskowy nieprzypisany",
   "@barcodeNotAssigned": {},
+  "@barodeScanPaused": {},
   "barcodeScanAssign": "Zeskanuj aby przypisać kod kreskowy",
   "@barcodeScanAssign": {},
   "barcodeScanGeneral": "Zeskanuj kod kreskowy InvenTree",

@@ -78,6 +78,7 @@
   "@barcodeNoMatch": {},
   "barcodeNotAssigned": "Штрих-код не назначен",
   "@barcodeNotAssigned": {},
+  "@barodeScanPaused": {},
   "barcodeScanAssign": "Сканировать для присвоения штрих-кода",
   "@barcodeScanAssign": {},
   "barcodeScanDelay": "Задержка сканирования штрих-кода",

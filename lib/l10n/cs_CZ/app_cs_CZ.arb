@@ -72,6 +72,7 @@
   "@barcodeNoMatch": {},
   "barcodeNotAssigned": "Čárový kód nebyl přiřazen",
   "@barcodeNotAssigned": {},
+  "@barodeScanPaused": {},
   "barcodeScanAssign": "Skenovat pro přiřazení čárového kódu",
   "@barcodeScanAssign": {},
   "barcodeScanGeneral": "Naskenuj čárový kód InvenTree",

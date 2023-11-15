@@ -80,6 +80,7 @@
   "@barcodeNotAssigned": {},
   "barcodeReceivePart": "扫描条形码以接收部件",
   "@barcodeReceivePart": {},
+  "@barodeScanPaused": {},
   "barcodeScanAssign": "扫描以分配条码",
   "@barcodeScanAssign": {},
   "barcodeScanController": "扫描仪输入",

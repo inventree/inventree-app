@@ -1,5 +1,6 @@
 {
   "@@locale": "id",
+  "@barodeScanPaused": {},
   "@homeShowSubscsribedDescription": {},
   "@homeShowSupplierDescription": {},
   "imageUploadSuccess": "Gambar telah diunggah",

@@ -60,6 +60,7 @@
   "@barcodeError": {},
   "barcodeInUse": "Viivakoodi on jo käytössä",
   "@barcodeInUse": {},
+  "@barodeScanPaused": {},
   "barcodeUnknown": "Viivakoodia ei tunnistettu",
   "@barcodeUnknown": {},
   "cancel": "Peruuta",

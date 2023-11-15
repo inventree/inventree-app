@@ -28,6 +28,7 @@
   "@availableStock": {},
   "barcodeAssign": "Αντιστοίχιση Barcode",
   "@barcodeAssign": {},
+  "@barodeScanPaused": {},
   "categoryCreate": "Νέα Κατηγορία",
   "@categoryCreate": {},
   "@homeShowSubscsribedDescription": {},

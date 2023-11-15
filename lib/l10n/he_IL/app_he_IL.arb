@@ -1,5 +1,6 @@
 {
   "@@locale": "he",
+  "@barodeScanPaused": {},
   "@homeShowSubscsribedDescription": {},
   "@homeShowSupplierDescription": {},
   "@saleOrderCreate": {}

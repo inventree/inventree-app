@@ -54,6 +54,7 @@
   "@available": {},
   "barcodes": "條碼",
   "@barcodes": {},
+  "@barodeScanPaused": {},
   "billOfMaterials": "材料清單",
   "@billOfMaterials": {},
   "bom": "材料清單",

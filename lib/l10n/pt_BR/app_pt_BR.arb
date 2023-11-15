@@ -78,6 +78,7 @@
   "@barcodeNoMatch": {},
   "barcodeNotAssigned": "Código de barras não atribuído",
   "@barcodeNotAssigned": {},
+  "@barodeScanPaused": {},
   "barcodeScanAssign": "Escaneie para atribuir código de barras",
   "@barcodeScanAssign": {},
   "barcodeScanDelay": "Atraso na leitura de Código de Barras",

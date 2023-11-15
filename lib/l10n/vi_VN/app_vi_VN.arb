@@ -78,6 +78,7 @@
   "@barcodeNoMatch": {},
   "barcodeNotAssigned": "Mã vạch chưa được quét",
   "@barcodeNotAssigned": {},
+  "@barodeScanPaused": {},
   "barcodeScanAssign": "Quét để gán mã vạch",
   "@barcodeScanAssign": {},
   "barcodeScanDelay": "Độ trễ quét mã vạch",

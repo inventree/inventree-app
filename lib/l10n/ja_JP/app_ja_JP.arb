@@ -68,6 +68,7 @@
   "@barcodeNoMatch": {},
   "barcodeNotAssigned": "バーコードが割り当てられていません",
   "@barcodeNotAssigned": {},
+  "@barodeScanPaused": {},
   "barcodeScanAssign": "スキャンしてバーコードを割り当てます",
   "@barcodeScanAssign": {},
   "barcodeScanGeneral": "InvenTree バーコードをスキャンする",
