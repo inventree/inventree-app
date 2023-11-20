@@ -2,7 +2,9 @@ import "package:flutter/material.dart";
 
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/preferences.dart";
+import "package:inventree/widget/order/sales_order_detail.dart";
 import "package:one_context/one_context.dart";
 
 
@@ -165,6 +167,16 @@ class BarcodeScanHandler extends BarcodeHandler {
     }
   }
 
+  // Response when a SalesOrder instance is scanned
+  Future<void> handleSalesOrder(int pk) async {
+    var order = await InvenTreeSalesOrder().get(pk);
+
+    if (order is InvenTreeSalesOrder) {
+      OneContext().pop();
+      OneContext().push(MaterialPageRoute(
+        builder: (context) => SalesOrderDetailWidget(order)));
+    }
+  }
 
   @override
   Future<void> onBarcodeMatched(Map<String, dynamic> data) async {
@@ -183,6 +195,7 @@ class BarcodeScanHandler extends BarcodeHandler {
 
     if (InvenTreeAPI().supportsOrderBarcodes) {
       validModels.add("purchaseorder");
+      validModels.add("salesorder");
     }
 
     for (var key in validModels) {
@@ -217,6 +230,9 @@ class BarcodeScanHandler extends BarcodeHandler {
           return;
         case "purchaseorder":
           await handlePurchaseOrder(pk);
+          return;
+        case "salesorder":
+          await handleSalesOrder(pk);
           return;
           // TODO: Handle manufacturer part
         default:
