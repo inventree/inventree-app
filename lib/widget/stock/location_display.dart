@@ -5,6 +5,7 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/app_colors.dart";
 import "package:inventree/barcode/barcode.dart";
+import "package:inventree/barcode/purchase_order.dart";
 import "package:inventree/l10.dart";
 
 import "package:inventree/inventree/stock.dart";

@@ -6,6 +6,7 @@ import "package:inventree/widget/order/po_line_list.dart";
 
 import "package:inventree/app_colors.dart";
 import "package:inventree/barcode/barcode.dart";
+import "package:inventree/barcode/purchase_order.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/l10.dart";
 
@@ -173,7 +174,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
   List<SpeedDialChild> barcodeButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
-    if (api.supportsBarcodePOReceiveEndpoint) {
+    if (api.supportsBarcodePOReceiveEndpoint && widget.order.isPlaced) {
       actions.add(
         SpeedDialChild(
           child: Icon(Icons.barcode_reader),
@@ -182,8 +183,25 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
             scanBarcode(
               context,
               handler: POReceiveBarcodeHandler(purchaseOrder: widget.order),
-            );
+            ).then((value) {
+              refresh(context);
+            });
           },
+        )
+      );
+    }
+
+    if (widget.order.isPending && api.supportsBarcodePOAddLineEndpoint) {
+      actions.add(
+        SpeedDialChild(
+          child: FaIcon(FontAwesomeIcons.circlePlus, color: COLOR_SUCCESS),
+          label: L10().lineItemAdd,
+          onTap: () async {
+            scanBarcode(
+              context,
+              handler: POAllocateBarcodeHandler(purchaseOrder: widget.order),
+            );
+          }
         )
       );
     }

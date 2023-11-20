@@ -41,7 +41,7 @@ class BarcodeHandler {
     barcodeFailureTone();
 
     showSnackIcon(
-      L10().barcodeNoMatch,
+      (data["error"] ?? L10().barcodeNoMatch) as String,
       success: false,
       icon: Icons.qr_code,
     );

@@ -10,6 +10,7 @@ import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/api.dart";
 import "package:inventree/barcode/barcode.dart";
+import "package:inventree/barcode/purchase_order.dart";
 import "package:inventree/inventree/purchase_order.dart";
 
 /*
