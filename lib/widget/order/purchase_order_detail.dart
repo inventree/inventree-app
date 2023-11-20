@@ -195,7 +195,10 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
           child: FaIcon(FontAwesomeIcons.circlePlus, color: COLOR_SUCCESS),
           label: L10().lineItemAdd,
           onTap: () async {
-            // TODO
+            scanBarcode(
+              context,
+              handler: POAllocateBarcodeHandler(purchaseOrder: widget.order),
+            );
           }
         )
       );

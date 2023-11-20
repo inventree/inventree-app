@@ -122,3 +122,58 @@ class POReceiveBarcodeHandler extends BarcodeHandler {
     );
   }
 }
+
+
+/*
+ * Barcode handler to add a line item to a purchase order
+ */
+class POAllocateBarcodeHandler extends BarcodeHandler {
+
+  POAllocateBarcodeHandler({this.purchaseOrder});
+
+  InvenTreePurchaseOrder? purchaseOrder;
+
+  @override
+  String getOverlayText(BuildContext context) => "FIX ME";
+
+  @override
+  Future<void> processBarcode(String barcode, {
+    String url = "barcode/po-allocate/",
+    Map<String, dynamic> extra_data = const {}}
+  ) {
+
+    final po_extra_data = {
+      "purchase_order": purchaseOrder?.pk,
+      ...extra_data,
+    };
+
+    return super.processBarcode(
+      barcode,
+      url: url,
+      extra_data: po_extra_data,
+    );
+  }
+
+  @override
+  Future<void> onBarcodeMatched(Map<String, dynamic> data) async {
+    // Server must respond with a suppliertpart instance
+    if (!data.containsKey("supplierpart")) {
+      return onBarcodeUnknown(data);
+    }
+
+    // TODO: Open dialog box?
+  }
+
+  @override
+  Future<void> onBarcodeUnhandled(Map<String, dynamic> data) async {
+
+    print("onBarcodeUnhandled:");
+    print(data.toString());
+  }
+
+  @override
+  Future<void> onBarcodeUnknown(Map<String, dynamic> data) async {
+    print("onBarcodeUnknown:");
+    print(data.toString());
+  }
+}
