@@ -183,7 +183,9 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
             scanBarcode(
               context,
               handler: POReceiveBarcodeHandler(purchaseOrder: widget.order),
-            );
+            ).then((value) {
+              refresh(context);
+            });
           },
         )
       );

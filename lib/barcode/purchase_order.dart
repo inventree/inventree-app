@@ -161,7 +161,35 @@ class POAllocateBarcodeHandler extends BarcodeHandler {
       return onBarcodeUnknown(data);
     }
 
-    // TODO: Open dialog box?
+    dynamic supplier_part = data["supplierpart"];
+
+    int supplier_part_pk = -1;
+
+    if (supplier_part is Map<String, dynamic>) {
+      supplier_part_pk = (supplier_part["pk"] ?? -1) as int;
+    } else {
+      return onBarcodeUnknown(data);
+    }
+
+    // Dispose of the barcode scanner
+    if (OneContext.hasContext) {
+      OneContext().pop();
+    }
+
+    final context = OneContext().context!;
+
+    var fields = InvenTreePOLineItem().formFields();
+
+    fields["order"]?["value"] = purchaseOrder!.pk;
+    fields["part"]?["hidden"] = false;
+    fields["part"]?["value"] = supplier_part_pk;
+
+    InvenTreePOLineItem().createForm(
+      context,
+      L10().lineItemAdd,
+      fields: fields,
+      onSuccess: (data) async {},
+    );
   }
 
   @override
@@ -169,11 +197,7 @@ class POAllocateBarcodeHandler extends BarcodeHandler {
 
     print("onBarcodeUnhandled:");
     print(data.toString());
-  }
 
-  @override
-  Future<void> onBarcodeUnknown(Map<String, dynamic> data) async {
-    print("onBarcodeUnknown:");
-    print(data.toString());
+    super.onBarcodeUnhandled(data);
   }
 }
