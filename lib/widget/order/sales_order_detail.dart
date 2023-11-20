@@ -37,7 +37,6 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
   List<InvenTreeSOLineItem> lines = [];
 
   bool supportsProjectCodes = false;
-  int completedLines = 0;
   int attachmentCount = 0;
 
   @override
@@ -113,14 +112,6 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
     await api.SalesOrderStatus.load();
 
     supportsProjectCodes = api.supportsProjectCodes && await api.getGlobalBooleanSetting("PROJECT_CODES_ENABLED");
-
-    completedLines = 0;
-
-    for (var line in lines) {
-      if (line.isComplete) {
-        completedLines += 1;
-      }
-    }
 
     InvenTreeSalesOrderAttachment().count(filters: {
       "order": widget.order.pk.toString()
@@ -219,16 +210,16 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
       ));
     }
 
-    Color lineColor = completedLines < widget.order.lineItemCount ? COLOR_WARNING : COLOR_SUCCESS;
+    Color lineColor = widget.order.complete ? COLOR_WARNING : COLOR_SUCCESS;
 
     tiles.add(ListTile(
       title: Text(L10().lineItems),
       subtitle: ProgressBar(
-        completedLines.toDouble(),
+        widget.order.completedLineItemCount.toDouble(),
         maximum: widget.order.lineItemCount.toDouble()
       ),
       leading: FaIcon(FontAwesomeIcons.clipboardCheck),
-      trailing: Text("${completedLines} / ${widget.order.lineItemCount}", style: TextStyle(color: lineColor)),
+      trailing: Text("${widget.order.completedLineItemCount} / ${widget.order.lineItemCount}", style: TextStyle(color: lineColor)),
     ));
 
     // TODO: total price
