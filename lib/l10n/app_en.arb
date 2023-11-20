@@ -1057,6 +1057,9 @@
   "@scanBarcode": {
   },
 
+  "scanSupplierPart": "Scan supplier part barcode",
+  "@scanSupplierPart": {},
+
   "scanIntoLocation": "Scan Into Location",
   "@scanIntoLocation": {},
 

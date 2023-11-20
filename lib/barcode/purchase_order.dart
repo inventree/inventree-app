@@ -134,7 +134,7 @@ class POAllocateBarcodeHandler extends BarcodeHandler {
   InvenTreePurchaseOrder? purchaseOrder;
 
   @override
-  String getOverlayText(BuildContext context) => "FIX ME";
+  String getOverlayText(BuildContext context) => L10().scanSupplierPart;
 
   @override
   Future<void> processBarcode(String barcode, {
