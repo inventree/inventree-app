@@ -26,6 +26,10 @@ class InvenTreeOrder extends InvenTreeModel {
 
   int get lineItemCount => getInt("line_items", backup: 0);
 
+  int get completedLineItemCount => getInt("completed_lines", backup: 0);
+
+  bool get complete => completedLineItemCount >= lineItemCount;
+
   bool get overdue => getBool("overdue");
 
   String get reference => getString("reference");
