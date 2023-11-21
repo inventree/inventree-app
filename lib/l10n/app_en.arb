@@ -112,6 +112,9 @@
   "barcodeNotAssigned": "Barcode not assigned",
   "@barcodeNotAssigned": {},
 
+  "barcodeScanPart": "Scan part barcode",
+  "@barcodeScanPart": {},
+
   "barcodeReceivePart": "Scan barcode to receive part",
   "@barcodeReceivePart": {},
 
@@ -765,6 +768,9 @@
   "@parts": {
     "description": "Part (multiple)"
   },
+
+  "partNotSalable": "Part not marked as salable",
+  "@partNotSalable": {},
 
   "partsNone": "No Parts",
   "@partsNone": {},
