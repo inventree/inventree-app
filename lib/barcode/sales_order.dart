@@ -1,21 +1,15 @@
 import "package:flutter/material.dart";
 
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/sales_order.dart";
 import "package:one_context/one_context.dart";
 
 import "package:inventree/l10.dart";
-import "package:inventree/api_form.dart";
 
 import "package:inventree/barcode/handler.dart";
 import "package:inventree/barcode/tones.dart";
 
-import "package:inventree/inventree/purchase_order.dart";
-import "package:inventree/inventree/stock.dart";
-
 import "package:inventree/widget/snacks.dart";
-import "package:qr_code_scanner/qr_code_scanner.dart";
 
 
 /*
