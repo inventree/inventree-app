@@ -7,6 +7,8 @@
 - Fixes bug when removing entire quantity of a stock item
 - Add line items to purchase orders directly from the app
 - Add line items to purchase order using barcode scanner
+- Add line items to sales orders directly from the app
+- Add line items to sales order using barcode scanner
 
 
 ### 0.13.0 - October 2023
