@@ -188,7 +188,6 @@ class POAllocateBarcodeHandler extends BarcodeHandler {
       context,
       L10().lineItemAdd,
       fields: fields,
-      onSuccess: (data) async {},
     );
   }
 

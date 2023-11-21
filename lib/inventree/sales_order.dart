@@ -118,7 +118,11 @@ class InvenTreeSOLineItem extends InvenTreeOrderLine {
       "order": {
         "hidden": true,
       },
-      "part": {},
+      "part": {
+        "filters": {
+          "salable": true,
+        }
+      },
       "quantity": {},
       "reference": {},
       "notes": {},
