@@ -174,6 +174,24 @@ class InvenTreeSOLineItem extends InvenTreeOrderLine {
 
 
 /*
+ * Class representing a sales order shipment
+ */
+class InvenTreeSalesOrderShipment extends InvenTreeModel {
+
+  InvenTreeSalesOrderShipment() : super();
+
+  InvenTreeSalesOrderShipment.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+
+  @override
+  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreeSalesOrderShipment.fromJson(json);
+
+  @override
+  String get URL => "/order/so/shipment";
+}
+
+
+
+/*
  * Class representing an attachment file against a SalesOrder object
  */
 class InvenTreeSalesOrderAttachment extends InvenTreeAttachment {
