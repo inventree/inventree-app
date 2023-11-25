@@ -47,6 +47,9 @@
   "appDetails": "App Details",
   "@appDetails": {},
 
+  "allocateStock": "Allocate Stock",
+  "@allocateStock": {},
+
   "appReleaseNotes": "Display app release notes",
   "@appReleaseNotes": {},
 
