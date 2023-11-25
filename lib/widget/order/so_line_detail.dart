@@ -35,6 +35,8 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
 
   _SOLineDetailWidgetState();
 
+  InvenTreeSalesOrder? order;
+
   @override
   String getAppBarTitle() => L10().lineItem;
 
@@ -76,13 +78,35 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
 
   @override
   List<SpeedDialChild> actionButtons(BuildContext context) {
-    // TODO
-    return [];
+
+    List<SpeedDialChild> buttons = [];
+
+    if (order != null && order!.isOpen) {
+      buttons.add(
+        SpeedDialChild(
+          child: FaIcon(FontAwesomeIcons.rightToBracket, color: Colors.blue),
+          label: L10().allocateStock,
+          onTap: () async {
+            // TODO
+          }
+        )
+      );
+    }
+
+    return buttons;
   }
 
   @override
   Future<void> request(BuildContext context) async {
     await widget.item.reload();
+
+    final so = await InvenTreeSalesOrder().get(widget.item.orderId);
+
+    if (mounted) {
+      setState(() {
+        order = (so is InvenTreeSalesOrder ? so : null);
+      });
+    }
   }
 
   @override
