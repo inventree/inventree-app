@@ -186,7 +186,7 @@ class InvenTreeSalesOrderShipment extends InvenTreeModel {
   InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreeSalesOrderShipment.fromJson(json);
 
   @override
-  String get URL => "/order/so/shipment";
+  String get URL => "/order/so/shipment/";
 
   @override
   Map<String, Map<String, dynamic>> formFields() {
