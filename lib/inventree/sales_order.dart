@@ -187,6 +187,20 @@ class InvenTreeSalesOrderShipment extends InvenTreeModel {
 
   @override
   String get URL => "/order/so/shipment";
+
+  @override
+  Map<String, Map<String, dynamic>> formFields() {
+    Map<String, Map<String, dynamic>> fields = {
+      "order": {},
+      "reference": {},
+      "tracking_number": {},
+      "invoice_number": {},
+      "delivery_date": {},
+      "link": {},
+    };
+
+    return fields;
+  }
 }
 
 

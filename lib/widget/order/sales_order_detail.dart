@@ -62,6 +62,25 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
     return actions;
   }
 
+  // Add a new shipment against this sales order
+  Future<void> _addShipment(BuildContext context) async {
+
+    var fields = InvenTreeSalesOrderShipment().formFields();
+
+    fields["order"]?["value"] = widget.order.pk;
+    fields["order"]?["hidden"] = true;
+
+    InvenTreeSalesOrderShipment().createForm(
+      context,
+      L10().shipmentAdd,
+      fields: fields,
+      onSuccess: (result) async {
+        refresh(context);
+      }
+    );
+
+  }
+
   // Add a new line item to this sales order
   Future<void> _addLineItem(BuildContext context) async {
     var fields = InvenTreeSOLineItem().formFields();
@@ -91,6 +110,16 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
           label: L10().lineItemAdd,
           onTap: () async {
             _addLineItem(context);
+          }
+        )
+      );
+
+      actions.add(
+        SpeedDialChild(
+          child: FaIcon(FontAwesomeIcons.circlePlus),
+          label: L10().shipmentAdd,
+          onTap: () async {
+            _addShipment(context);
           }
         )
       );

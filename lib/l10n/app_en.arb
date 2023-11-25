@@ -1185,6 +1185,9 @@
   "serverNotSelected": "Server not selected",
   "@serverNotSelected": {},
 
+  "shipmentAdd": "Add Shipment",
+  "@shipmentAdd": {},
+
   "shipped": "Shipped",
   "@shipped": {},
 
