@@ -26,6 +26,8 @@ class InvenTreeSalesOrder extends InvenTreeOrder {
   @override
   List<String> get rolesRequired => ["sales_order"];
 
+  String get allocate_url => "${url}allocate/";
+
   @override
   Map<String, Map<String, dynamic>> formFields() {
     Map<String, Map<String, dynamic>> fields = {

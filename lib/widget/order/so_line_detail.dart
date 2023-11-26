@@ -3,20 +3,23 @@
 /*
  * Widget for displaying detail view of a single SalesOrderLineItem
  */
+
 import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
-import "package:inventree/app_colors.dart";
-import "package:inventree/l10.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/sales_order.dart";
+
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/part/part_detail.dart";
-
-import "package:inventree/helpers.dart";
 import "package:inventree/widget/snacks.dart";
+
+import "package:inventree/app_colors.dart";
+import "package:inventree/l10.dart";
+import "package:inventree/helpers.dart";
+import "package:inventree/api_form.dart";
 
 
 class SoLineDetailWidget extends StatefulWidget {
@@ -57,6 +60,52 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
     return actions;
   }
 
+  Future<void> _allocateStock(BuildContext context) async {
+
+    if (order == null) {
+      return;
+    }
+
+    Map<String, dynamic> fields = {
+      "line_item": {
+        "parent": "items",
+        "nested": true,
+        "hidden": true,
+        "value": widget.item.pk,
+      },
+      "stock_item": {
+        "parent": "items",
+        "nested": true,
+        "filters": {
+          "part": widget.item.pk,
+        }
+      },
+      "quantity": {
+        "parent": "items",
+        "nested": true,
+        "value": 1,
+      },
+      "shipment": {
+        "filters": {
+          "order": order!.pk.toString(),
+        }
+      },
+    };
+
+    launchApiForm(
+      context,
+      L10().allocateStock,
+      order!.allocate_url,
+      fields,
+      method: "POST",
+      icon: FontAwesomeIcons.rightToBracket,
+      onSuccess: (data) async {
+        refresh(context);
+      }
+    );
+
+  }
+
   Future<void> _editLineItem(BuildContext context) async {
     var fields = widget.item.formFields();
 
@@ -87,7 +136,7 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
           child: FaIcon(FontAwesomeIcons.rightToBracket, color: Colors.blue),
           label: L10().allocateStock,
           onTap: () async {
-            // TODO
+            _allocateStock(context);
           }
         )
       );
