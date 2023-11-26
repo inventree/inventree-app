@@ -195,12 +195,21 @@ class InvenTreeSalesOrderShipment extends InvenTreeModel {
       "reference": {},
       "tracking_number": {},
       "invoice_number": {},
-      "delivery_date": {},
       "link": {},
     };
 
     return fields;
   }
+
+  String get reference => getString("reference");
+
+  String get tracking_number => getString("tracking_number");
+
+  String get invoice_number => getString("invoice_number");
+
+  String? get shipment_date => getString("shipment_date");
+
+  bool get shipped => shipment_date != null && shipment_date!.isNotEmpty;
 }
 
 

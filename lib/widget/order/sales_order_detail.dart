@@ -7,6 +7,7 @@ import "package:inventree/barcode/sales_order.dart";
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/widget/order/so_line_list.dart";
+import "package:inventree/widget/order/so_shipment_list.dart";
 import "package:inventree/widget/refreshable_state.dart";
 
 import "package:inventree/l10.dart";
@@ -321,8 +322,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
     return [
       Tab(text: L10().details),
       Tab(text: L10().lineItems),
-      // TODO: Add in the "shipped items" tab
-      // Tab(text: L10().shipped)
+      Tab(text: L10().shipments),
     ];
   }
 
@@ -331,7 +331,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
     return [
       ListView(children: orderTiles(context)),
       PaginatedSOLineList({"order": widget.order.pk.toString()}),
-      // Center(), // TODO: Delivered stock
+      PaginatedSOShipmentList({"order": widget.order.pk.toString()}),
     ];
   }
 
