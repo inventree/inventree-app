@@ -26,6 +26,8 @@ class InvenTreeSalesOrder extends InvenTreeOrder {
   @override
   List<String> get rolesRequired => ["sales_order"];
 
+  String get allocate_url => "${url}allocate/";
+
   @override
   Map<String, Map<String, dynamic>> formFields() {
     Map<String, Map<String, dynamic>> fields = {
@@ -148,9 +150,31 @@ class InvenTreeSOLineItem extends InvenTreeOrderLine {
 
   bool get isAllocated => allocated >= quantity;
 
+  double get allocatedRatio {
+    if (quantity <= 0 || allocated <= 0) {
+      return 0;
+    }
+
+    return allocated / quantity;
+  }
+
+  double get unallocatedQuantity {
+    double unallocated = quantity - allocated;
+
+    if (unallocated < 0) {
+      unallocated = 0;
+    }
+
+    return unallocated;
+  }
+
+  String get allocatedString => simpleNumberString(allocated) + " / " + simpleNumberString(quantity);
+
   double get shipped => getDouble("shipped");
 
   double get outstanding => quantity - shipped;
+
+  double get availableStock => getDouble("available_stock");
 
   double get progressRatio {
     if (quantity <= 0 || shipped <= 0) {
@@ -174,6 +198,47 @@ class InvenTreeSOLineItem extends InvenTreeOrderLine {
 
 
 /*
+ * Class representing a sales order shipment
+ */
+class InvenTreeSalesOrderShipment extends InvenTreeModel {
+
+  InvenTreeSalesOrderShipment() : super();
+
+  InvenTreeSalesOrderShipment.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+
+  @override
+  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreeSalesOrderShipment.fromJson(json);
+
+  @override
+  String get URL => "/order/so/shipment/";
+
+  @override
+  Map<String, Map<String, dynamic>> formFields() {
+    Map<String, Map<String, dynamic>> fields = {
+      "order": {},
+      "reference": {},
+      "tracking_number": {},
+      "invoice_number": {},
+      "link": {},
+    };
+
+    return fields;
+  }
+
+  String get reference => getString("reference");
+
+  String get tracking_number => getString("tracking_number");
+
+  String get invoice_number => getString("invoice_number");
+
+  String? get shipment_date => getString("shipment_date");
+
+  bool get shipped => shipment_date != null && shipment_date!.isNotEmpty;
+}
+
+
+
+/*
  * Class representing an attachment file against a SalesOrder object
  */
 class InvenTreeSalesOrderAttachment extends InvenTreeAttachment {
@@ -189,6 +254,6 @@ class InvenTreeSalesOrderAttachment extends InvenTreeAttachment {
   String get REFERENCE_FIELD => "order";
 
   @override
-  String get URL => "order/po/attachment/";
+  String get URL => "order/so/attachment/";
 
 }

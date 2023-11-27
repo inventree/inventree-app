@@ -47,6 +47,12 @@
   "appDetails": "App Details",
   "@appDetails": {},
 
+  "allocated": "Allocated",
+  "@allocated": {},
+
+  "allocateStock": "Allocate Stock",
+  "@allocateStock": {},
+
   "appReleaseNotes": "Display app release notes",
   "@appReleaseNotes": {},
 
@@ -1181,6 +1187,12 @@
 
   "serverNotSelected": "Server not selected",
   "@serverNotSelected": {},
+
+  "shipments": "Shipments",
+  "@shipments": {},
+
+  "shipmentAdd": "Add Shipment",
+  "@shipmentAdd": {},
 
   "shipped": "Shipped",
   "@shipped": {},

@@ -12,6 +12,7 @@ import "package:inventree/app_colors.dart";
 import "package:inventree/barcode/barcode.dart";
 import "package:inventree/barcode/tones.dart";
 import "package:inventree/helpers.dart";
+import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/l10.dart";
 
 import "package:inventree/inventree/company.dart";
@@ -591,6 +592,8 @@ class APIFormField {
     switch (model) {
       case "supplierpart":
         return InvenTreeSupplierPart().defaultListFilters();
+      case "stockitem":
+        return InvenTreeStockItem().defaultListFilters();
     }
 
     return {};
@@ -658,6 +661,16 @@ class APIFormField {
             style: TextStyle(fontWeight: selected ? FontWeight.bold : FontWeight.normal),
           ) : null,
         );
+      case "stockitem":
+        var item = InvenTreeStockItem.fromJson(data);
+
+        return ListTile(
+          title: Text(
+            item.partName,
+          ),
+          leading: InvenTreeAPI().getThumbnail(item.partThumbnail),
+          trailing: Text(item.quantityString()),
+        );
       case "stocklocation":
 
         var loc = InvenTreeStockLocation.fromJson(data);
@@ -671,6 +684,14 @@ class APIFormField {
             loc.description,
             style: TextStyle(fontWeight: selected ? FontWeight.bold : FontWeight.normal),
           ) : null,
+        );
+      case "salesordershipment":
+        var shipment = InvenTreeSalesOrderShipment.fromJson(data);
+
+        return ListTile(
+          title: Text(shipment.reference),
+          subtitle: Text(shipment.tracking_number),
+          trailing: shipment.shipped ? Text(shipment.shipment_date!) : null,
         );
       case "owner":
         String name = (data["name"] ?? "") as String;

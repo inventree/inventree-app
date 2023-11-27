@@ -9,7 +9,7 @@
 - Add line items to purchase order using barcode scanner
 - Add line items to sales orders directly from the app
 - Add line items to sales order using barcode scanner
-
+- Allocate stock items against existing sales orders
 
 ### 0.13.0 - October 2023
 ---
