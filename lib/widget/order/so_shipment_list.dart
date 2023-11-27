@@ -49,7 +49,8 @@ class _PaginatedSOShipmentListState extends PaginatedSearchState<PaginatedSOShip
     return ListTile(
       title: Text(shipment.reference),
       subtitle: Text(shipment.tracking_number),
-      trailing: shipment.shipped ? FaIcon(FontAwesomeIcons.circleCheck, color: COLOR_SUCCESS) : FaIcon(FontAwesomeIcons.spinner),
+      leading: shipment.shipped ? FaIcon(FontAwesomeIcons.calendarCheck, color: COLOR_SUCCESS) : FaIcon(FontAwesomeIcons.calendarXmark, color: COLOR_WARNING),
+      trailing: shipment.shipped ? Text(shipment.shipment_date ?? "") : null
     );
 
   }
