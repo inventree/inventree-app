@@ -77,7 +77,8 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
         "parent": "items",
         "nested": true,
         "filters": {
-          "part": widget.item.pk,
+          "part": widget.item.partId,
+          "in_stock": true,
         }
       },
       "quantity": {
@@ -178,6 +179,30 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
             Navigator.push(context, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
           }
         }
+      )
+    );
+
+    // Available quantity
+    tiles.add(
+      ListTile(
+        title: Text(L10().availableStock),
+        leading: FaIcon(FontAwesomeIcons.boxesStacked),
+        trailing: Text(simpleNumberString(widget.item.availableStock))
+      )
+    );
+
+    // Allocated quantity
+    tiles.add(
+      ListTile(
+        leading: FaIcon(FontAwesomeIcons.clipboardCheck),
+        title: Text(L10().allocated),
+        subtitle: ProgressBar(widget.item.allocatedRatio),
+        trailing: Text(
+          widget.item.allocatedString,
+          style: TextStyle(
+            color: widget.item.isAllocated ? COLOR_SUCCESS : COLOR_WARNING
+          )
+        )
       )
     );
 

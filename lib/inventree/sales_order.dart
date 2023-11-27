@@ -150,9 +150,21 @@ class InvenTreeSOLineItem extends InvenTreeOrderLine {
 
   bool get isAllocated => allocated >= quantity;
 
+  double get allocatedRatio {
+    if (quantity <= 0 || allocated <= 0) {
+      return 0;
+    }
+
+    return allocated / quantity;
+  }
+
+  String get allocatedString => simpleNumberString(allocated) + " / " + simpleNumberString(quantity);
+
   double get shipped => getDouble("shipped");
 
   double get outstanding => quantity - shipped;
+
+  double get availableStock => getDouble("available_stock");
 
   double get progressRatio {
     if (quantity <= 0 || shipped <= 0) {

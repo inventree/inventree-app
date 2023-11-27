@@ -47,6 +47,9 @@
   "appDetails": "App Details",
   "@appDetails": {},
 
+  "allocated": "Allocated",
+  "@allocated": {},
+
   "allocateStock": "Allocate Stock",
   "@allocateStock": {},
 
