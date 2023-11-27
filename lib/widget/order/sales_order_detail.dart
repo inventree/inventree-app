@@ -255,7 +255,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
       ));
     }
 
-    Color lineColor = widget.order.complete ? COLOR_WARNING : COLOR_SUCCESS;
+    Color lineColor = widget.order.complete ? COLOR_SUCCESS : COLOR_WARNING;
 
     tiles.add(ListTile(
       title: Text(L10().lineItems),

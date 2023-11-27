@@ -158,6 +158,16 @@ class InvenTreeSOLineItem extends InvenTreeOrderLine {
     return allocated / quantity;
   }
 
+  double get unallocatedQuantity {
+    double unallocated = quantity - allocated;
+
+    if (unallocated < 0) {
+      unallocated = 0;
+    }
+
+    return unallocated;
+  }
+
   String get allocatedString => simpleNumberString(allocated) + " / " + simpleNumberString(quantity);
 
   double get shipped => getDouble("shipped");

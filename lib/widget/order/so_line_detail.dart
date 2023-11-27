@@ -84,7 +84,7 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
       "quantity": {
         "parent": "items",
         "nested": true,
-        "value": 1,
+        "value": widget.item.unallocatedQuantity,
       },
       "shipment": {
         "filters": {
