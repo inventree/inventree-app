@@ -113,8 +113,14 @@ class _PaginatedParameterState extends PaginatedSearchState<PaginatedParameterLi
 
     InvenTreePartParameter parameter = model as InvenTreePartParameter;
 
+    String title = parameter.name;
+
+    if (parameter.units.isNotEmpty) {
+      title += " [${parameter.units}]";
+    }
+
     return ListTile(
-      title: Text(parameter.name),
+      title: Text(title),
       subtitle: Text(parameter.description),
       trailing: parameter.is_checkbox
         ? Switch(
@@ -132,7 +138,7 @@ class _PaginatedParameterState extends PaginatedSearchState<PaginatedParameterLi
               });
             }
           },
-      ) : Text(parameter.valueString),
+      ) : Text(parameter.value),
       onTap: parameter.is_checkbox ? null : () async {
         if (parameter.canEdit) {
           editParameter(parameter);
