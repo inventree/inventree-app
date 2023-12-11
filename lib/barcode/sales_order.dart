@@ -1,3 +1,5 @@
+import "dart:html";
+
 import "package:flutter/material.dart";
 
 import "package:inventree/inventree/part.dart";
@@ -77,5 +79,39 @@ class SOAddItemBarcodeHandler extends BarcodeHandler {
     }
 
   }
+}
 
+
+class SOAllocateStockHandler extends BarcodeHandler {
+
+  SOAllocateStockHandler({this.salesOrder, this.lineItem, this.shipment});
+
+  InvenTreeSalesOrder? salesOrder;
+  InvenTreeSOLineItem? lineItem;
+  InvenTreeSalesOrderShipment? shipment;
+
+  @override
+  String getOverlayText(BuildContext context) => L10().allocateStock;
+
+  @override
+  Future<void> processBarcode(String barcode,
+  {
+    String url = "barcode/so-allocate/",
+    Map<String, dynamic> extra_data = const {}}) {
+
+    final so_extra_data = {
+      "sales_order": salesOrder?.pk,
+      "shipment": shipment?.pk,
+      "line": lineItem?.pk,
+      ...extra_data
+    };
+
+    return super.processBarcode(barcode, url: url, extra_data: so_extra_data);
+  }
+
+  @override
+  Future<void> onBarcodeMatched(Map<String, dynamic> data) async {
+    // TODO
+    return onBarcodeUnknown(data);
+  }
 }
