@@ -66,31 +66,17 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
       return;
     }
 
-    Map<String, dynamic> fields = {
-      "line_item": {
-        "parent": "items",
-        "nested": true,
-        "hidden": true,
-        "value": widget.item.pk,
-      },
-      "stock_item": {
-        "parent": "items",
-        "nested": true,
-        "filters": {
-          "part": widget.item.partId,
-          "in_stock": true,
-        }
-      },
-      "quantity": {
-        "parent": "items",
-        "nested": true,
-        "value": widget.item.unallocatedQuantity,
-      },
-      "shipment": {
-        "filters": {
-          "order": order!.pk.toString(),
-        }
-      },
+    var fields = InvenTreeSOLineItem().allocateFormFields();
+
+    fields["line_item"]?["value"] = widget.item.pk.toString();
+    fields["stock_item"]?["filters"] = {
+      "in_stock": true,
+      "available": true,
+      "part": widget.item.partId.toString()
+    };
+    fields["quantity"]?["value"] = widget.item.unallocatedQuantity.toString();
+    fields["shipment"]?["filters"] = {
+      "order": order!.pk.toString()
     };
 
     launchApiForm(
