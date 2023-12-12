@@ -7,6 +7,8 @@
 import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:inventree/barcode/barcode.dart";
+import "package:inventree/barcode/sales_order.dart";
 
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/sales_order.dart";
@@ -130,6 +132,34 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
     }
 
     return buttons;
+  }
+
+  @override
+  List<SpeedDialChild> barcodeButtons(BuildContext context) {
+    List<SpeedDialChild> actions = [];
+
+    if (order != null && order!.isOpen && InvenTreeSOLineItem().canCreate) {
+
+      if (api.supportsBarcodeSOAllocateEndpoint) {
+        actions.add(
+            SpeedDialChild(
+              child: FaIcon(FontAwesomeIcons.rightToBracket),
+              label: L10().allocateStock,
+              onTap: () async {
+                scanBarcode(
+                  context,
+                  handler: SOAllocateStockHandler(
+                    salesOrder: order,
+                    lineItem: widget.item
+                  )
+                );
+              }
+            )
+        );
+      }
+    }
+
+    return actions;
   }
 
   @override
