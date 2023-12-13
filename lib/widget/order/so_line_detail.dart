@@ -7,6 +7,8 @@
 import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:inventree/barcode/barcode.dart";
+import "package:inventree/barcode/sales_order.dart";
 
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/sales_order.dart";
@@ -66,31 +68,17 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
       return;
     }
 
-    Map<String, dynamic> fields = {
-      "line_item": {
-        "parent": "items",
-        "nested": true,
-        "hidden": true,
-        "value": widget.item.pk,
-      },
-      "stock_item": {
-        "parent": "items",
-        "nested": true,
-        "filters": {
-          "part": widget.item.partId,
-          "in_stock": true,
-        }
-      },
-      "quantity": {
-        "parent": "items",
-        "nested": true,
-        "value": widget.item.unallocatedQuantity,
-      },
-      "shipment": {
-        "filters": {
-          "order": order!.pk.toString(),
-        }
-      },
+    var fields = InvenTreeSOLineItem().allocateFormFields();
+
+    fields["line_item"]?["value"] = widget.item.pk.toString();
+    fields["stock_item"]?["filters"] = {
+      "in_stock": true,
+      "available": true,
+      "part": widget.item.partId.toString()
+    };
+    fields["quantity"]?["value"] = widget.item.unallocatedQuantity.toString();
+    fields["shipment"]?["filters"] = {
+      "order": order!.pk.toString()
     };
 
     launchApiForm(
@@ -144,6 +132,34 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
     }
 
     return buttons;
+  }
+
+  @override
+  List<SpeedDialChild> barcodeButtons(BuildContext context) {
+    List<SpeedDialChild> actions = [];
+
+    if (order != null && order!.isOpen && InvenTreeSOLineItem().canCreate) {
+
+      if (api.supportsBarcodeSOAllocateEndpoint) {
+        actions.add(
+            SpeedDialChild(
+              child: FaIcon(FontAwesomeIcons.rightToBracket),
+              label: L10().allocateStock,
+              onTap: () async {
+                scanBarcode(
+                  context,
+                  handler: SOAllocateStockHandler(
+                    salesOrder: order,
+                    lineItem: widget.item
+                  )
+                );
+              }
+            )
+        );
+      }
+    }
+
+    return actions;
   }
 
   @override

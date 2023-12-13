@@ -132,6 +132,29 @@ class InvenTreeSOLineItem extends InvenTreeOrderLine {
     };
   }
 
+  Map<String, Map<String, dynamic>> allocateFormFields() {
+
+    return {
+      "line_item": {
+        "parent": "items",
+        "nested": true,
+        "hidden": true,
+      },
+      "stock_item": {
+        "parent": "items",
+        "nested": true,
+        "filters": {},
+      },
+      "quantity": {
+        "parent": "items",
+        "nested": true,
+      },
+      "shipment": {
+        "filters": {}
+      }
+    };
+  }
+
   @override
   Map<String, String> defaultGetFilters() {
     return {

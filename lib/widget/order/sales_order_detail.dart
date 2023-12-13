@@ -146,6 +146,23 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
           }
         )
       );
+
+      if (api.supportsBarcodeSOAllocateEndpoint) {
+        actions.add(
+          SpeedDialChild(
+            child: FaIcon(FontAwesomeIcons.rightToBracket),
+            label: L10().allocateStock,
+            onTap: () async {
+              scanBarcode(
+                context,
+                handler: SOAllocateStockHandler(
+                  salesOrder: widget.order,
+                )
+              );
+            }
+          )
+        );
+      }
     }
 
     return actions;
