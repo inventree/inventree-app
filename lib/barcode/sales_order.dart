@@ -122,9 +122,6 @@ class SOAllocateStockHandler extends BarcodeHandler {
   @override
   Future<void> onBarcodeUnhandled(Map<String, dynamic> data) async {
 
-    print("onBarcodeUnhandled:");
-    print(data.toString());
-
     if (!data.containsKey("action_required") || !data.containsKey("line_item")) {
       return super.onBarcodeUnhandled(data);
     }
