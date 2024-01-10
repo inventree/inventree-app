@@ -629,15 +629,17 @@ class InvenTreeModel {
 
     if (!response.isValid() || response.data == null || response.data is! Map) {
 
-      // Report error
-      reportModelError(
-          "InvenTreeModel.getModel() returned invalid response",
-          response,
-          context: {
-            "filters": filters.toString(),
-            "pk": pk,
-          }
-      );
+      if (response.statusCode != -1) {
+        // Report error
+        reportModelError(
+            "InvenTreeModel.getModel() returned invalid response",
+            response,
+            context: {
+              "filters": filters.toString(),
+              "pk": pk,
+            }
+        );
+      }
 
       showServerError(
         url,
