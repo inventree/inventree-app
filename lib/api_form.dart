@@ -582,7 +582,16 @@ class APIFormField {
           return false;
         }
 
-        return item["pk"].toString() == selectedItem["pk"].toString();
+        bool result = false;
+
+        try {
+          result = item["pk"].toString() == selectedItem["pk"].toString();
+        } catch (error) {
+          // Catch any conversion errors
+          result = false;
+        }
+
+        return result;
       });
   }
 
@@ -606,7 +615,11 @@ class APIFormField {
     Map<String, dynamic> data = {};
 
     try {
-      data = Map<String, dynamic>.from((item ?? {}) as Map);
+      if (item is Map<String, dynamic>) {
+        data = Map<String, dynamic>.from(item);
+      } else {
+        data = {};
+      }
     } catch (error, stackTrace) {
       data = {};
 
