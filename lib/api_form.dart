@@ -615,7 +615,11 @@ class APIFormField {
     Map<String, dynamic> data = {};
 
     try {
-      data = Map<String, dynamic>.from((item ?? {}) as Map);
+      if (item is Map<String, dynamic>) {
+        data = Map<String, dynamic>.from(item);
+      } else {
+        data = {};
+      }
     } catch (error, stackTrace) {
       data = {};
 
