@@ -1,3 +1,8 @@
+### 0.14.1 - January 2024
+---
+
+- Squashing bugs
+
 ### 0.14.0 - December 2023
 ---
 
