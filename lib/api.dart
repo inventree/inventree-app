@@ -1452,11 +1452,16 @@ class InvenTreeAPI {
       }
     }
 
-    return getImage(
-        imageUrl,
-        width: size,
-        height: size
-    );
+    try {
+      return getImage(
+          imageUrl,
+          width: size,
+          height: size
+      );
+    } catch (error, stackTrace) {
+      sentryReportError("_getThumbnail", error, stackTrace);
+      return null;
+    }
   }
 
   /*
