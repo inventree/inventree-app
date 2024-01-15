@@ -1,3 +1,8 @@
+### 0.14.2 - January 2024
+---
+
+- Updated error reporting
+
 ### 0.14.1 - January 2024
 ---
 
