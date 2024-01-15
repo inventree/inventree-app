@@ -950,7 +950,7 @@ class InvenTreeAPI {
       response.data = json.decode(jsondata);
 
       // Report a server-side error
-      if (response.statusCode >= 500) {
+      if (response.statusCode == 500) {
         sentryReportMessage(
             "Server error in uploadFile()",
             context: {
@@ -1247,6 +1247,7 @@ class InvenTreeAPI {
         // Some server errors are not ones for us to worry about!
         switch (_response.statusCode) {
           case 502:   // Bad gateway
+          case 503:   // Service unavailable
           case 504:   // Gateway timeout
             break;
           default:    // Any other error code
@@ -1317,6 +1318,11 @@ class InvenTreeAPI {
         case 403:
         case 404:
           // Ignore for unauthorized pages
+          break;
+        case 502:
+        case 503:
+        case 504:
+          // Ignore for server errors
           break;
         default:
           sentryReportMessage(
