@@ -1,7 +1,9 @@
-### 0.14.2 - January 2024
+### 0.14.2 - February 2024
 ---
 
 - Updated error reporting
+- Support for updated server API endpoints
+- Updated translations
 
 ### 0.14.1 - January 2024
 ---
