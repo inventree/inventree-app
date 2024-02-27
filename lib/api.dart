@@ -339,6 +339,9 @@ class InvenTreeAPI {
   // Does the server support allocating stock to sales order using barcodes?
   bool get supportsBarcodeSOAllocateEndpoint => isConnected() && apiVersion >= 160;
 
+  // Does the server support "null" top-level filtering for PartCategory and StockLocation endpoints?
+  bool get supportsNullTopLevelFiltering => isConnected() && apiVersion < 174;
+
   // Cached list of plugins (refreshed when we connect to the server)
   List<InvenTreePlugin> _plugins = [];
 
