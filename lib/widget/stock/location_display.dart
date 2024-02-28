@@ -393,13 +393,22 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
   // Construct the "details" panel
   List<Widget> detailTiles() {
+
+    Map<String, String> filters = {};
+
+    int? parent = location?.pk;
+
+    if (parent != null) {
+      filters["parent"] = parent.toString();
+    } else if (api.supportsNullTopLevelFiltering) {
+      filters["parent"] = "null";
+    }
+
     List<Widget> tiles = [
       locationDescriptionCard(),
       Expanded(
         child: PaginatedStockLocationList(
-          {
-            "parent": location?.pk.toString() ?? "null",
-          },
+          filters,
           title: L10().sublocations,
         ),
         flex: 10,

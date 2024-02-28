@@ -200,13 +200,21 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
   // Construct the "details" panel
   List<Widget> detailTiles() {
 
+    Map<String, String> filters = {};
+
+    int? parent = widget.category?.pk;
+
+    if (parent != null) {
+      filters["parent"] = parent.toString();
+    } else if (api.supportsNullTopLevelFiltering) {
+      filters["parent"] = "null";
+    }
+
     List<Widget> tiles = <Widget>[
       getCategoryDescriptionCard(),
       Expanded(
         child: PaginatedPartCategoryList(
-          {
-            "parent": widget.category?.pk.toString() ?? "null"
-          },
+          filters,
           title: L10().subcategories,
         ),
         flex: 10,
