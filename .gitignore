@@ -15,9 +15,6 @@ coverage/*
 test/coverage_helper_test.dart
 InvenTreeSettings.db
 
-# Sentry API key
-lib/dsn.dart
-
 # App signing key
 android/key.properties
 
