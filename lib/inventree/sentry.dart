@@ -6,6 +6,7 @@ import "package:package_info_plus/package_info_plus.dart";
 import "package:sentry_flutter/sentry_flutter.dart";
 
 import "package:inventree/api.dart";
+import "package:inventree/dsn.dart";
 import "package:inventree/preferences.dart";
 
 Future<Map<String, dynamic>> getDeviceInfo() async {
@@ -85,6 +86,10 @@ bool isInDebugMode() {
 
 Future<bool> sentryReportMessage(String message, {Map<String, String>? context}) async {
 
+  if (SENTRY_DSN_KEY.isEmpty) {
+    return false;
+  }
+
   final server_info = getServerInfo();
   final app_info = await getAppInfo();
   final device_info = await getDeviceInfo();
@@ -161,6 +166,10 @@ Future<void> sentryReportError(String source, dynamic error, StackTrace? stackTr
   if (isInDebugMode()) {
 
     print("----- In dev mode. Not sending report to Sentry.io -----");
+    return;
+  }
+
+  if (SENTRY_DSN_KEY.isEmpty) {
     return;
   }
 
