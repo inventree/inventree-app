@@ -2,6 +2,7 @@
 import "package:flutter/material.dart";
 
 import "package:inventree/api.dart";
+import "package:inventree/l10.dart";
 
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/model.dart";
@@ -57,6 +58,22 @@ class PaginatedCompanyList extends PaginatedSearchWidget {
 class _CompanyListState extends PaginatedSearchState<PaginatedCompanyList> {
 
   _CompanyListState() : super();
+
+  @override
+  Map<String, Map<String, dynamic>> get filterOptions {
+
+    Map<String, Map<String, dynamic>> filters = {};
+
+    if (InvenTreeAPI().supportsCompanyActiveStatus) {
+      filters["active"] = {
+        "label": L10().filterActive,
+        "help_text": L10().filterActiveDetail,
+        "tristate": true,
+      };
+    }
+
+    return filters;
+  }
 
   @override
   Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {

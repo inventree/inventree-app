@@ -62,7 +62,20 @@ class _PaginatedSupplierPartListState extends PaginatedSearchState<PaginatedSupp
   Map<String, String> get orderingOptions => {};
 
   @override
-  Map<String, Map<String, dynamic>> get filterOptions => {};
+  Map<String, Map<String, dynamic>> get filterOptions {
+
+    Map<String, Map<String, dynamic>> filters = {};
+
+    if (InvenTreeAPI().supportsCompanyActiveStatus) {
+      filters["active"] = {
+        "label": L10().filterActive,
+        "help_text": L10().filterActiveDetail,
+        "tristate": true,
+      };
+    }
+
+    return filters;
+  }
 
   @override
   Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
