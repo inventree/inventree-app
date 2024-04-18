@@ -32,6 +32,35 @@ import "package:inventree/widget/stock/stock_detail.dart";
 import "package:inventree/widget/company/supplier_part_detail.dart";
 
 
+// Signal a barcode scan success to the user
+Future<void> barcodeSuccess(String msg) async {
+
+  barcodeSuccessTone();
+  showSnackIcon(msg, success: true);
+}
+
+// Signal a barcode scan failure to the user
+Future<void> barcodeFailure(String msg, dynamic extra) async {
+  barcodeFailureTone();
+  showSnackIcon(
+      msg,
+      success: false,
+    onAction: () {
+        OneContext().showDialog(
+          builder: (BuildContext context) => SimpleDialog(
+            title: Text(L10().barcodeError),
+            children: <Widget>[
+              ListTile(
+                title: Text(L10().responseData),
+                subtitle: Text(extra.toString())
+              )
+            ]
+          )
+        );
+    }
+  );
+}
+
 /*
  * Launch a barcode scanner with a particular context and handler.
  * 

@@ -19,7 +19,7 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
   bool partShowBom = true;
   bool stockShowHistory = false;
   bool stockShowTests = false;
-  bool stockConfirmScan = true;
+  bool stockConfirmScan = false;
 
   @override
   void initState() {
@@ -33,7 +33,7 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
     partShowBom = await InvenTreeSettingsManager().getValue(INV_PART_SHOW_BOM, true) as bool;
     stockShowHistory = await InvenTreeSettingsManager().getValue(INV_STOCK_SHOW_HISTORY, false) as bool;
     stockShowTests = await InvenTreeSettingsManager().getValue(INV_STOCK_SHOW_TESTS, true) as bool;
-    stockConfirmScan = await InvenTreeSettingsManager().getValue(INV_STOCK_CONFIRM_SCAN, true) as bool;
+    stockConfirmScan = await InvenTreeSettingsManager().getValue(INV_STOCK_CONFIRM_SCAN, false) as bool;
 
     if (mounted) {
       setState(() {

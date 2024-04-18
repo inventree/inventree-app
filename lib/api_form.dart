@@ -342,12 +342,7 @@ class APIFormField {
               controller.text = hash;
               data["value"] = hash;
 
-              barcodeSuccessTone();
-
-              showSnackIcon(
-                  L10().barcodeAssigned,
-                  success: true
-              );
+              barcodeSuccess(L10().barcodeAssigned);
             });
 
             scanBarcode(context, handler: handler);

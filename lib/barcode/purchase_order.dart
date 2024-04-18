@@ -6,6 +6,7 @@ import "package:one_context/one_context.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/api_form.dart";
 
+import "package:inventree/barcode/barcode.dart";
 import "package:inventree/barcode/handler.dart";
 import "package:inventree/barcode/tones.dart";
 
@@ -51,8 +52,7 @@ class POReceiveBarcodeHandler extends BarcodeHandler {
       return onBarcodeUnknown(data);
     }
 
-    barcodeSuccessTone();
-    showSnackIcon(L10().receivedItem, success: true);
+    barcodeSuccess(L10().receivedItem);
   }
 
   @override

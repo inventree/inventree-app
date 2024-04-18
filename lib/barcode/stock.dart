@@ -1,9 +1,13 @@
 import "package:flutter/cupertino.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:inventree/api_form.dart";
+import "package:inventree/preferences.dart";
 import "package:one_context/one_context.dart";
 
 import "package:inventree/helpers.dart";
 import "package:inventree/l10.dart";
 
+import "package:inventree/barcode/barcode.dart";
 import "package:inventree/barcode/handler.dart";
 import "package:inventree/barcode/tones.dart";
 
@@ -128,11 +132,36 @@ class StockItemScanIntoLocationHandler extends BarcodeScanStockLocationHandler {
   @override
   Future<bool> onLocationScanned(int locationId) async {
 
-    final result = await item.transferStock(locationId);
+    final bool confirm = await InvenTreeSettingsManager().getBool(INV_STOCK_CONFIRM_SCAN, false);
+
+    bool result = false;
+
+    if (confirm) {
+
+      Map<String, dynamic> fields = item.transferFields();
+
+      // Override location with scanned value
+      fields["location"]?["value"] = locationId;
+
+      launchApiForm(
+        OneContext().context!,
+        L10().transferStock,
+        InvenTreeStockItem.transferStockUrl(),
+        fields,
+        method: "POST",
+        icon: FontAwesomeIcons.dolly,
+        onSuccess: (data) async {
+          showSnackIcon(L10().stockItemUpdated, success: true);
+        }
+      );
+
+      return true;
+    } else {
+      result = await item.transferStock(locationId);
+    }
 
     if (result) {
-      barcodeSuccessTone();
-      showSnackIcon(L10().barcodeScanIntoLocationSuccess, success: true);
+      barcodeSuccess(L10().barcodeScanIntoLocationSuccess);
     } else {
       barcodeFailureTone();
       showSnackIcon(L10().barcodeScanIntoLocationFailure, success: false);
@@ -215,8 +244,7 @@ class ScanParentLocationHandler extends BarcodeScanStockLocationHandler {
     switch (response.statusCode) {
       case 200:
       case 201:
-        barcodeSuccessTone();
-        showSnackIcon(L10().barcodeScanIntoLocationSuccess, success: true);
+        barcodeSuccess(L10().barcodeScanIntoLocationSuccess);
         return true;
       case 400:  // Invalid parent location chosen
         barcodeFailureTone();
