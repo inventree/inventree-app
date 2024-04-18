@@ -3,6 +3,7 @@
 
 - Support "active" field for Company model
 - Support "active" field for SupplierPart model
+- Adjustments to barcode scanning workflow
 - Updated translations
 
 ### 0.14.2 - February 2024

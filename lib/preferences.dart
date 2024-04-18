@@ -35,6 +35,7 @@ const String INV_PART_SHOW_BOM = "partShowBom";
 // Stock settings
 const String INV_STOCK_SHOW_HISTORY = "stockShowHistory";
 const String INV_STOCK_SHOW_TESTS = "stockShowTests";
+const String INV_STOCK_CONFIRM_SCAN = "stockConfirmScan";
 
 const String INV_REPORT_ERRORS = "reportErrors";
 const String INV_STRICT_HTTPS = "strictHttps";
