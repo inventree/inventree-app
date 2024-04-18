@@ -131,6 +131,29 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
         )
     );
 
+    if (!widget.supplierPart.active) {
+      tiles.add(
+          ListTile(
+            title: Text(
+                L10().inactive,
+                style: TextStyle(
+                    color: COLOR_DANGER
+                )
+            ),
+            subtitle: Text(
+                L10().inactiveDetail,
+                style: TextStyle(
+                    color: COLOR_DANGER
+                )
+            ),
+            leading: FaIcon(
+                FontAwesomeIcons.circleExclamation,
+                color: COLOR_DANGER
+            ),
+          )
+      );
+    }
+
     // Supplier details
     tiles.add(
       ListTile(

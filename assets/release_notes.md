@@ -1,3 +1,10 @@
+### 0.14.3 - April 2024
+---
+
+- Support "active" field for Company model
+- Support "active" field for SupplierPart model
+- Updated translations
+
 ### 0.14.2 - February 2024
 ---
 
