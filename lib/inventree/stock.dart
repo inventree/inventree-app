@@ -145,6 +145,50 @@ class InvenTreeStockItem extends InvenTreeModel {
   @override
   List<String> get rolesRequired => ["stock"];
 
+  // Return a set of fields to transfer this stock item via dialog
+  Map<String, dynamic> transferFields() {
+    Map<String, dynamic> fields = {
+      "pk": {
+        "parent": "items",
+        "nested": true,
+        "hidden": true,
+        "value": pk,
+      },
+      "quantity": {
+        "parent": "items",
+        "nested": true,
+        "value": quantity,
+      },
+      "location": {
+        "value": locationId,
+      },
+      "status": {
+        "parent": "items",
+        "nested": true,
+        "value": status,
+      },
+      "packaging": {
+        "parent": "items",
+        "nested": true,
+        "value": packaging,
+      },
+      "notes": {},
+    };
+
+    if (isSerialized()) {
+      // Prevent editing of 'quantity' field if the item is serialized
+      fields["quantity"]["hidden"] = true;
+    }
+
+    // Old API does not support these fields
+    if (!api.supportsStockAdjustExtraFields) {
+      fields.remove("packaging");
+      fields.remove("status");
+    }
+
+    return fields;
+  }
+
   // URLs for performing stock actions
   static String transferStockUrl() => "stock/transfer/";
 

@@ -110,7 +110,7 @@ class _InvenTreeBarcodeSettingsState extends State<InvenTreeBarcodeSettingsWidge
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text(L10().barcodes)),
+      appBar: AppBar(title: Text(L10().barcodeSettings)),
       body: Container(
         child: ListView(
           children: [

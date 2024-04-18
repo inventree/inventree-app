@@ -19,6 +19,7 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
   bool partShowBom = true;
   bool stockShowHistory = false;
   bool stockShowTests = false;
+  bool stockConfirmScan = false;
 
   @override
   void initState() {
@@ -32,6 +33,7 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
     partShowBom = await InvenTreeSettingsManager().getValue(INV_PART_SHOW_BOM, true) as bool;
     stockShowHistory = await InvenTreeSettingsManager().getValue(INV_STOCK_SHOW_HISTORY, false) as bool;
     stockShowTests = await InvenTreeSettingsManager().getValue(INV_STOCK_SHOW_TESTS, true) as bool;
+    stockConfirmScan = await InvenTreeSettingsManager().getValue(INV_STOCK_CONFIRM_SCAN, false) as bool;
 
     if (mounted) {
       setState(() {
@@ -42,7 +44,7 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(L10().part)),
+      appBar: AppBar(title: Text(L10().partSettings)),
       body: Container(
         child: ListView(
           children: [
@@ -74,6 +76,7 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
                 },
               ),
             ),
+            Divider(),
             ListTile(
               title: Text(L10().stockItemHistory),
               subtitle: Text(L10().stockItemHistoryDetail),
@@ -100,6 +103,20 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
                     stockShowTests = value;
                   });
                 },
+              ),
+            ),
+            ListTile(
+              title: Text(L10().confirmScan),
+              subtitle: Text(L10().confirmScanDetail),
+              leading: FaIcon(FontAwesomeIcons.qrcode),
+              trailing: Switch(
+                value: stockConfirmScan,
+                onChanged: (bool value) {
+                  InvenTreeSettingsManager().setValue(INV_STOCK_CONFIRM_SCAN, value);
+                  setState(() {
+                    stockConfirmScan = value;
+                  });
+                }
               ),
             )
           ]

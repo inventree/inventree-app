@@ -240,6 +240,12 @@
   "configureServer": "Configure server settings",
   "@configureServer": {},
 
+  "confirmScan": "Confirm Transfer",
+  "@confirmScan": {},
+
+  "confirmScanDetail": "Confirm stock transfer details when scanning barcodes",
+  "@confirmScan": {},
+
   "connectionRefused": "Connection Refused",
   "@connectionRefused": {},
 

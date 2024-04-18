@@ -10,7 +10,6 @@ import "package:flutter/material.dart";
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/barcode/barcode.dart";
-import "package:inventree/barcode/tones.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/l10.dart";
@@ -342,12 +341,7 @@ class APIFormField {
               controller.text = hash;
               data["value"] = hash;
 
-              barcodeSuccessTone();
-
-              showSnackIcon(
-                  L10().barcodeAssigned,
-                  success: true
-              );
+              barcodeSuccess(L10().barcodeAssigned);
             });
 
             scanBarcode(context, handler: handler);

@@ -5,6 +5,7 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 
 import "package:inventree/app_colors.dart";
 import "package:inventree/barcode/barcode.dart";
+import "package:inventree/barcode/stock.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/api.dart";
@@ -436,44 +437,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
    */
   Future <void> _transferStockDialog(BuildContext context) async {
 
-    Map<String, dynamic> fields = {
-      "pk": {
-        "parent": "items",
-        "nested": true,
-        "hidden": true,
-        "value": widget.item.pk,
-      },
-      "quantity": {
-        "parent": "items",
-        "nested": true,
-        "value": widget.item.quantity,
-      },
-      "location": {
-        "value": widget.item.locationId,
-      },
-      "status": {
-        "parent": "items",
-        "nested": true,
-        "value": widget.item.status,
-      },
-      "packaging": {
-        "parent": "items",
-        "nested": true,
-        "value": widget.item.packaging,
-      },
-      "notes": {},
-    };
-
-    if (widget.item.isSerialized()) {
-      // Prevent editing of 'quantity' field if the item is serialized
-      fields["quantity"]["hidden"] = true;
-    }
-
-    // Old API does not support these fields
-    if (!api.supportsStockAdjustExtraFields) {
-      fields.remove("packaging");
-      fields.remove("status");
-    }
+    Map<String, dynamic> fields = widget.item.transferFields();
 
     launchApiForm(
         context,

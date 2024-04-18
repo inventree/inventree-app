@@ -8,6 +8,7 @@ import "package:one_context/one_context.dart";
 
 import "package:inventree/l10.dart";
 
+import "package:inventree/barcode/barcode.dart";
 import "package:inventree/barcode/handler.dart";
 import "package:inventree/barcode/tones.dart";
 
@@ -115,8 +116,7 @@ class SOAllocateStockHandler extends BarcodeHandler {
       return onBarcodeUnknown(data);
     }
 
-    barcodeSuccessTone();
-    showSnackIcon(L10().allocated, success: true);
+    barcodeSuccess(L10().allocated);
   }
 
   @override
