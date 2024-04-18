@@ -342,6 +342,9 @@ class InvenTreeAPI {
   // Does the server support "null" top-level filtering for PartCategory and StockLocation endpoints?
   bool get supportsNullTopLevelFiltering => isConnected() && apiVersion < 174;
 
+  // Does the server support "active" status on Company and SupplierPart API endpoints?
+  bool get supportsCompanyActiveStatus => isConnected() && apiVersion >= 189;
+
   // Cached list of plugins (refreshed when we connect to the server)
   List<InvenTreePlugin> _plugins = [];
 

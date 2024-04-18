@@ -23,7 +23,7 @@ class InvenTreeCompany extends InvenTreeModel {
 
   @override
   Map<String, Map<String, dynamic>> formFields() {
-    return {
+    Map<String, Map<String, dynamic>> fields = {
       "name": {},
       "description": {},
       "website": {},
@@ -32,6 +32,12 @@ class InvenTreeCompany extends InvenTreeModel {
       "is_customer": {},
       "currency": {},
     };
+
+    if (InvenTreeAPI().supportsCompanyActiveStatus) {
+      fields["active"] = {};
+    }
+
+    return fields;
   }
 
   String get image => (jsondata["image"] ?? jsondata["thumbnail"] ?? InvenTreeAPI.staticImage) as String;
@@ -49,6 +55,8 @@ class InvenTreeCompany extends InvenTreeModel {
   bool get isManufacturer => getBool("is_manufacturer");
 
   bool get isCustomer => getBool("is_customer");
+
+  bool get active => getBool("active");
 
   int get partSuppliedCount => getInt("part_supplied");
   
@@ -137,6 +145,10 @@ class InvenTreeSupplierPart extends InvenTreeModel {
       fields["pack_quantity"] = {};
     }
 
+    if (InvenTreeAPI().supportsCompanyActiveStatus) {
+      fields["active"] = {};
+    }
+
     return fields;
   }
 
@@ -175,6 +187,8 @@ class InvenTreeSupplierPart extends InvenTreeModel {
   String get supplierImage => (jsondata["supplier_detail"]?["image"] ?? jsondata["supplier_detail"]["thumbnail"] ?? InvenTreeAPI.staticThumb) as String;
 
   String get SKU => getString("SKU");
+
+  bool get active => getBool("active");
   
   int get partId => getInt("part");
   
