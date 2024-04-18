@@ -233,6 +233,29 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
       ),
     ));
 
+    if (!widget.company.active) {
+      tiles.add(
+          ListTile(
+            title: Text(
+                L10().inactive,
+                style: TextStyle(
+                    color: COLOR_DANGER
+                )
+            ),
+            subtitle: Text(
+                L10().inactiveCompany,
+                style: TextStyle(
+                    color: COLOR_DANGER
+                )
+            ),
+            leading: FaIcon(
+                FontAwesomeIcons.circleExclamation,
+                color: COLOR_DANGER
+            ),
+          )
+      );
+    }
+
   if (widget.company.website.isNotEmpty) {
     tiles.add(ListTile(
       title: Text("${widget.company.website}"),
