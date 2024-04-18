@@ -509,6 +509,9 @@
   "inactive": "Inactive",
   "@inactive": {},
 
+  "inactiveCompany": "This company is marked as inactive",
+  "@inactiveCompany": {},
+
   "inactiveDetail": "This part is marked as inactive",
   "@inactiveDetail": {},
 

@@ -243,7 +243,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
                 )
             ),
             subtitle: Text(
-                L10().inactiveDetail,
+                L10().inactiveCompany,
                 style: TextStyle(
                     color: COLOR_DANGER
                 )
