@@ -56,7 +56,7 @@ class InvenTreeCompany extends InvenTreeModel {
 
   bool get isCustomer => getBool("is_customer");
 
-  bool get active => getBool("active");
+  bool get active => getBool("active", backup: true);
 
   int get partSuppliedCount => getInt("part_supplied");
   
@@ -188,7 +188,7 @@ class InvenTreeSupplierPart extends InvenTreeModel {
 
   String get SKU => getString("SKU");
 
-  bool get active => getBool("active");
+  bool get active => getBool("active", backup: true);
   
   int get partId => getInt("part");
   
