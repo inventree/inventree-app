@@ -192,6 +192,7 @@ class StockLocationScanInItemsHandler extends BarcodeScanStockItemHandler {
   Future<bool> onItemScanned(int itemId) async {
 
     final InvenTreeStockItem? item = await InvenTreeStockItem().get(itemId) as InvenTreeStockItem?;
+    final bool confirm = await InvenTreeSettingsManager().getBool(INV_STOCK_CONFIRM_SCAN, false);
 
     bool result = false;
 
@@ -203,14 +204,36 @@ class StockLocationScanInItemsHandler extends BarcodeScanStockItemHandler {
         showSnackIcon(L10().itemInLocation, success: true);
         return false;
       } else {
-        result = await item.transferStock(location.pk);
+        if (confirm) {
+          Map<String, dynamic> fields = item.transferFields();
+
+          // Override location with provided location value
+          fields["location"]?["value"] = location.pk;
+
+          launchApiForm(
+              OneContext().context!,
+              L10().transferStock,
+              InvenTreeStockItem.transferStockUrl(),
+              fields,
+              method: "POST",
+              icon: FontAwesomeIcons.dolly,
+              onSuccess: (data) async {
+                showSnackIcon(L10().stockItemUpdated, success: true);
+              }
+          );
+
+          return true;
+
+        } else {
+          result = await item.transferStock(location.pk);
+
+          showSnackIcon(
+              result ? L10().barcodeScanIntoLocationSuccess : L10().barcodeScanIntoLocationFailure,
+              success: result
+          );
+        }
       }
     }
-
-    showSnackIcon(
-        result ? L10().barcodeScanIntoLocationSuccess : L10().barcodeScanIntoLocationFailure,
-        success: result
-    );
 
     // We always return false here, to ensure the barcode scan dialog remains open
     return false;
