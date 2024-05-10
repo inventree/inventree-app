@@ -21,10 +21,19 @@ Future<List<Map<String, dynamic>>> getLabelTemplates(
   // Filter by active plugins
   data["enabled"] = "true";
 
+  String url = "/label/template/";
+
+  if (InvenTreeAPI().supportsModenLabelPrinting) {
+    data["model_type"] = labelType;
+  } else {
+    // Legacy label printing API endpoint
+    url = "/label/${labelType}/";
+  }
+
   List<Map<String, dynamic>> labels = [];
 
   await InvenTreeAPI().get(
-    "/label/${labelType}/",
+    url,
     params: data,
   ).then((APIResponse response) {
     if (response.isValid() && response.statusCode == 200) {
