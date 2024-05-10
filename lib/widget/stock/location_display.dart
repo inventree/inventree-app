@@ -247,7 +247,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     if (allowLabelPrinting) {
 
       if (widget.location != null) {
-        _labels = await getLabelTemplates("location", {
+        _labels = await getLabelTemplates(api.supportsModenLabelPrinting ? InvenTreeStockLocation().MODEL_TYPE : "location", {
           "location": widget.location!.pk.toString()
         });
       }

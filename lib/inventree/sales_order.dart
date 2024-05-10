@@ -24,6 +24,9 @@ class InvenTreeSalesOrder extends InvenTreeOrder {
   String get URL => "order/so/";
 
   @override
+  String get MODEL_TYPE => "salesorder";
+
+  @override
   List<String> get rolesRequired => ["sales_order"];
 
   String get allocate_url => "${url}allocate/";

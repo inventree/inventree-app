@@ -248,7 +248,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     allowLabelPrinting &= api.supportsMixin("labels");
 
     if (allowLabelPrinting) {
-      _labels = await getLabelTemplates("part", {
+      _labels = await getLabelTemplates(api.supportsModenLabelPrinting ? InvenTreePart().MODEL_TYPE : "part", {
         "part": widget.part.pk.toString(),
       });
     }
