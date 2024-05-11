@@ -138,6 +138,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
             selectAndPrintLabel(
                 context,
                 labels,
+                widget.item.pk,
                 "stock",
                 "item=${widget.item.pk}"
             );

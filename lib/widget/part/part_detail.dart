@@ -129,6 +129,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
             selectAndPrintLabel(
               context,
               labels,
+              widget.part.pk,
               "part",
               "part=${widget.part.pk}"
             );

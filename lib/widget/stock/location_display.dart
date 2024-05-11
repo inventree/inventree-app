@@ -193,6 +193,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
                 selectAndPrintLabel(
                     context,
                     labels,
+                    widget.location!.pk,
                     "location",
                     "location=${widget.location!.pk}"
                 );
