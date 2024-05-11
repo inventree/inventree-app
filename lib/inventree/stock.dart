@@ -143,7 +143,7 @@ class InvenTreeStockItem extends InvenTreeModel {
   String get URL => "stock/";
 
   @override
-  String get MODEL_TYPE => "stockitem":
+  String get MODEL_TYPE => "stockitem";
 
   @override
   List<String> get rolesRequired => ["stock"];
