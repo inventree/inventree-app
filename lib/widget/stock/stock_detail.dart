@@ -264,10 +264,17 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     // Request information on labels available for this stock item
     if (allowLabelPrinting) {
+
+      String model_type = api.supportsModenLabelPrinting ? InvenTreeStockLocation().MODEL_TYPE : "stock";
+      String item_key = api.supportsModenLabelPrinting ? "items" : "item";
+
       // Clear the existing labels list
-      _labels = await getLabelTemplates(api.supportsModenLabelPrinting ? InvenTreeStockItem().MODEL_TYPE : "stock", {
-        "item": widget.item.pk.toString()
-      });
+      _labels = await getLabelTemplates(
+          model_type,
+          {
+              item_key: widget.item.pk.toString()
+          }
+      );
     }
 
     if (mounted) {

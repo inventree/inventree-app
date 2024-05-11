@@ -11,7 +11,7 @@ import "package:inventree/widget/snacks.dart";
  */
 Future<List<Map<String, dynamic>>> getLabelTemplates(
   String labelType,
-  Map<String, String> data,
+  Map<String, dynamic> data,
 ) async {
 
   if (!InvenTreeAPI().isConnected() || !InvenTreeAPI().supportsMixin("labels")) {
