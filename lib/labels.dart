@@ -92,17 +92,18 @@ Future<void> selectAndPrintLabel(
     icon: FontAwesomeIcons.print,
     onSuccess: (Map<String, dynamic> data) async {
       int labelId = (data["label"] ?? -1) as int;
-      String pluginKey = (data["plugin"] ?? "") as String;
+      var pluginKey = data["plugin"];
 
       bool result = false;
 
-      if (labelId != -1 && pluginKey.isNotEmpty) {
+      if (labelId != -1 && pluginKey != null) {
 
         showLoadingOverlay(context);
 
         if (InvenTreeAPI().supportsModenLabelPrinting) {
+
           // Modern label printing API uses a POST request to a single API endpoint.
-          InvenTreeAPI().post(
+          await InvenTreeAPI().post(
             "/label/print/",
             body: {
               "plugin": pluginKey,
@@ -129,7 +130,7 @@ Future<void> selectAndPrintLabel(
           // Legacy label printing API
           // Uses a GET request to a specially formed URL which depends on the parameters
           String url = "/label/${labelType}/${labelId}/print/?${labelQuery}&plugin=${pluginKey}";
-          InvenTreeAPI().get(url).then((APIResponse response) {
+          await InvenTreeAPI().get(url).then((APIResponse response) {
             hideLoadingOverlay();
             if (response.isValid() && response.statusCode == 200) {
               var data = response.asMap();
