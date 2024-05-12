@@ -197,6 +197,9 @@ class InvenTreePart extends InvenTreeModel {
   String get URL => "part/";
 
   @override
+  String get MODEL_TYPE => "part";
+
+  @override
   List<String> get rolesRequired => ["part"];
 
   @override

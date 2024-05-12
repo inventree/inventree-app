@@ -7,49 +7,17 @@ import "package:inventree/l10.dart";
 import "package:inventree/widget/snacks.dart";
 
 /*
- * Discover which label templates are available for a given item
- */
-Future<List<Map<String, dynamic>>> getLabelTemplates(
-  String labelType,
-  Map<String, String> data,
-) async {
-
-  if (!InvenTreeAPI().isConnected() || !InvenTreeAPI().supportsMixin("labels")) {
-    return [];
-  }
-
-  // Filter by active plugins
-  data["enabled"] = "true";
-
-  List<Map<String, dynamic>> labels = [];
-
-  await InvenTreeAPI().get(
-    "/label/${labelType}/",
-    params: data,
-  ).then((APIResponse response) {
-    if (response.isValid() && response.statusCode == 200) {
-      for (var label in response.resultsList()) {
-        if (label is Map<String, dynamic>) {
-          labels.add(label);
-        }
-      }
-    }
-  });
-
-  return labels;
-}
-
-
-/*
  * Select a particular label, from a provided list of options,
  * and print against the selected instances.
+ *
  */
 Future<void> selectAndPrintLabel(
-    BuildContext context,
-    List<Map<String, dynamic>> labels,
-    String labelType,
-    String labelQuery,
-    ) async {
+  BuildContext context,
+  List<Map<String, dynamic>> labels,
+  int instanceId,
+  String labelType,
+  String labelQuery,
+) async {
 
   if (!InvenTreeAPI().isConnected()) {
     return;
@@ -91,7 +59,7 @@ Future<void> selectAndPrintLabel(
   for (var plugin in plugins) {
     plugin_options.add({
       "display_name": plugin.humanName,
-      "value": plugin.key
+      "value": InvenTreeAPI().supportsModenLabelPrinting ? plugin.pk : plugin.key
     });
   }
 
@@ -124,38 +92,113 @@ Future<void> selectAndPrintLabel(
     icon: FontAwesomeIcons.print,
     onSuccess: (Map<String, dynamic> data) async {
       int labelId = (data["label"] ?? -1) as int;
-      String pluginKey = (data["plugin"] ?? "") as String;
+      var pluginKey = data["plugin"];
 
-      if (labelId != -1 && pluginKey.isNotEmpty) {
-        String url = "/label/${labelType}/${labelId}/print/?${labelQuery}&plugin=${pluginKey}";
+      bool result = false;
+
+      if (labelId != -1 && pluginKey != null) {
 
         showLoadingOverlay(context);
 
-        InvenTreeAPI().get(url).then((APIResponse response) {
-          hideLoadingOverlay();
-          if (response.isValid() && response.statusCode == 200) {
+        if (InvenTreeAPI().supportsModenLabelPrinting) {
 
-            var data = response.asMap();
-
-            if (data.containsKey("file")) {
-              var label_file = (data["file"] ?? "") as String;
-
-              // Attempt to open remote file
-              InvenTreeAPI().downloadFile(label_file);
-            } else {
-              showSnackIcon(
-                  L10().printLabelSuccess,
-                  success: true
-              );
+          // Modern label printing API uses a POST request to a single API endpoint.
+          await InvenTreeAPI().post(
+            "/label/print/",
+            body: {
+              "plugin": pluginKey,
+              "template": labelId,
+              "items": [instanceId]
             }
-          } else {
-            showSnackIcon(
-              L10().printLabelFailure,
-              success: false,
-            );
-          }
+          ).then((APIResponse response) {
+            hideLoadingOverlay();
+
+            if (response.isValid() && response.statusCode >= 200 &&
+                response.statusCode <= 201) {
+              var data = response.asMap();
+
+              if (data.containsKey("output")) {
+                var label_file = (data["output"] ?? "") as String;
+
+                // Attempt to open generated file
+                InvenTreeAPI().downloadFile(label_file);
+                result = true;
+              }
+            }
         });
+      } else {
+          // Legacy label printing API
+          // Uses a GET request to a specially formed URL which depends on the parameters
+          String url = "/label/${labelType}/${labelId}/print/?${labelQuery}&plugin=${pluginKey}";
+          await InvenTreeAPI().get(url).then((APIResponse response) {
+            hideLoadingOverlay();
+            if (response.isValid() && response.statusCode == 200) {
+              var data = response.asMap();
+              if (data.containsKey("file")) {
+                var label_file = (data["file"] ?? "") as String;
+
+                // Attempt to open remote file
+                InvenTreeAPI().downloadFile(label_file);
+                result = true;
+              }
+            }
+          });
       }
-    },
-  );
+
+      if (result) {
+        showSnackIcon(
+          L10().printLabelSuccess,
+          success: true
+        );
+      } else {
+        showSnackIcon(
+          L10().printLabelFailure,
+          success: false,
+        );
+      }
+    }
+  });
+}
+
+
+/*
+ * Discover which label templates are available for a given item
+ */
+Future<List<Map<String, dynamic>>> getLabelTemplates(
+  String labelType,
+  Map<String, String> data,
+) async {
+
+  if (!InvenTreeAPI().isConnected() || !InvenTreeAPI().supportsMixin("labels")) {
+    return [];
+  }
+
+  // Filter by active plugins
+  data["enabled"] = "true";
+
+  String url = "/label/template/";
+
+  if (InvenTreeAPI().supportsModenLabelPrinting) {
+    data["model_type"] = labelType;
+  } else {
+    // Legacy label printing API endpoint
+    url = "/label/${labelType}/";
+  }
+
+  List<Map<String, dynamic>> labels = [];
+
+  await InvenTreeAPI().get(
+    url,
+    params: data,
+  ).then((APIResponse response) {
+    if (response.isValid() && response.statusCode == 200) {
+      for (var label in response.resultsList()) {
+        if (label is Map<String, dynamic>) {
+          labels.add(label);
+        }
+      }
+    }
+  });
+
+  return labels;
 }

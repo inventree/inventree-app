@@ -64,6 +64,9 @@ class InvenTreeModel {
   // Note: If the WEB_URL is the same (except for /api/) as URL then just leave blank
   String get WEB_URL => "";
 
+  // Return the "model type" of this model
+  String get MODEL_TYPE => "";
+
   // Helper function to set a value in the JSON data
   void setValue(String key, dynamic value) {
     jsondata[key] = value;

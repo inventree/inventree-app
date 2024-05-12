@@ -194,7 +194,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
     tiles.add(
       ListTile(
         title: Text(L10().documentation),
-        subtitle: Text("https://docs.inventree.org"),
+        subtitle: Text("https://docs.inventree.org/app"),
         leading: FaIcon(FontAwesomeIcons.book, color: COLOR_ACTION),
         onTap: () {
           _openDocs();

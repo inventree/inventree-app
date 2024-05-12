@@ -193,6 +193,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
                 selectAndPrintLabel(
                     context,
                     labels,
+                    widget.location!.pk,
                     "location",
                     "location=${widget.location!.pk}"
                 );
@@ -247,9 +248,16 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     if (allowLabelPrinting) {
 
       if (widget.location != null) {
-        _labels = await getLabelTemplates("location", {
-          "location": widget.location!.pk.toString()
-        });
+
+        String model_type = api.supportsModenLabelPrinting ? InvenTreeStockLocation().MODEL_TYPE : "location";
+        String item_key = api.supportsModenLabelPrinting ? "items" : "location";
+
+        _labels = await getLabelTemplates(
+          model_type,
+          {
+            item_key: widget.location!.pk.toString()
+          }
+        );
       }
     }
 

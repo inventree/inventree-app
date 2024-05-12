@@ -143,6 +143,9 @@ class InvenTreeStockItem extends InvenTreeModel {
   String get URL => "stock/";
 
   @override
+  String get MODEL_TYPE => "stockitem";
+
+  @override
   List<String> get rolesRequired => ["stock"];
 
   // Return a set of fields to transfer this stock item via dialog
@@ -648,6 +651,9 @@ class InvenTreeStockLocation extends InvenTreeModel {
 
   @override
   String get URL => "stock/location/";
+
+  @override
+  String get MODEL_TYPE => "stocklocation";
 
   @override
   List<String> get rolesRequired => ["stock_location"];

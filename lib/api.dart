@@ -345,6 +345,9 @@ class InvenTreeAPI {
   // Does the server support "active" status on Company and SupplierPart API endpoints?
   bool get supportsCompanyActiveStatus => isConnected() && apiVersion >= 189;
 
+  // Does the server support the "modern" (consolidated) label printing API?
+  bool get supportsModenLabelPrinting => isConnected() && apiVersion >= 197;
+
   // Cached list of plugins (refreshed when we connect to the server)
   List<InvenTreePlugin> _plugins = [];
 

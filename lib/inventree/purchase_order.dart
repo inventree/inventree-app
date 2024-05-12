@@ -21,6 +21,9 @@ class InvenTreePurchaseOrder extends InvenTreeOrder {
   String get URL => "order/po/";
 
   @override
+  String get MODEL_TYPE => "purchaseorder";
+
+  @override
   List<String> get rolesRequired => ["purchase_order"];
 
   String get receive_url => "${url}receive/";

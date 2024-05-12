@@ -1,3 +1,9 @@
+### 0.15.0 - May 2024
+---
+
+- Support modern label printing API
+- Updated translations
+
 ### 0.14.3 - April 2024
 ---
 
