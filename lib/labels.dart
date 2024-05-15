@@ -59,7 +59,7 @@ Future<void> selectAndPrintLabel(
   for (var plugin in plugins) {
     plugin_options.add({
       "display_name": plugin.humanName,
-      "value": InvenTreeAPI().supportsModenLabelPrinting ? plugin.pk : plugin.key
+      "value": plugin.key,
     });
   }
 
@@ -100,7 +100,7 @@ Future<void> selectAndPrintLabel(
 
         showLoadingOverlay(context);
 
-        if (InvenTreeAPI().supportsModenLabelPrinting) {
+        if (InvenTreeAPI().supportsModernLabelPrinting) {
 
           // Modern label printing API uses a POST request to a single API endpoint.
           await InvenTreeAPI().post(
@@ -178,7 +178,7 @@ Future<List<Map<String, dynamic>>> getLabelTemplates(
 
   String url = "/label/template/";
 
-  if (InvenTreeAPI().supportsModenLabelPrinting) {
+  if (InvenTreeAPI().supportsModernLabelPrinting) {
     data["model_type"] = labelType;
   } else {
     // Legacy label printing API endpoint
