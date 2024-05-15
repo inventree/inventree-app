@@ -59,7 +59,7 @@ Future<void> selectAndPrintLabel(
   for (var plugin in plugins) {
     plugin_options.add({
       "display_name": plugin.humanName,
-      "value": InvenTreeAPI().supportsModenLabelPrinting ? plugin.pk : plugin.key
+      "value": plugin.key,
     });
   }
 
