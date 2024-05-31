@@ -25,15 +25,15 @@ We use the [invoke](https://www.pyinvoke.org) to run some core tasks - you will 
 
 Initial project setup (after you have installed all required dev tools) is as follows:
 
-Install required flutter packages:
-```
-flutter pub get
-```
-
 Generate initial translation files:
 
 ```
 invoke translate
+```
+
+Install required flutter packages:
+```
+flutter pub get
 ```
 
 You should now be ready to debug on a connected or emulated device!
