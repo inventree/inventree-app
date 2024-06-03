@@ -467,7 +467,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         title: Text("${widget.item.partName}"),
         subtitle: Text("${widget.item.partDescription}"),
         leading: InvenTreeAPI().getThumbnail(widget.item.partImage),
-        trailing: Text(
+        trailing: widget.item.isSerialized() ? null : Text(
           widget.item.quantityString(),
           style: TextStyle(
             fontSize: 20,
@@ -548,7 +548,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           ListTile(
             title: Text(L10().serialNumber),
             leading: FaIcon(FontAwesomeIcons.hashtag),
-            trailing: Text("${widget.item.serialNumber}"),
+            subtitle: Text("${widget.item.serialNumber}"),
           )
       );
     } else {
