@@ -133,14 +133,17 @@ class _PaginatedStockItemListState extends PaginatedSearchState<PaginatedStockIt
 
     return ListTile(
       title: Text("${item.partName}"),
-      subtitle: Text("${item.locationPathString}"),
+      subtitle: Text(item.locationPathString),
       leading: InvenTreeAPI().getThumbnail(item.partThumbnail),
-      trailing: Text("${item.displayQuantity}",
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 16,
-          color: InvenTreeAPI().StockStatus.color(item.status),
-        ),
+      trailing: SizedBox(
+        width: 48,
+        child: Text("${item.displayQuantity}",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+            color: InvenTreeAPI().StockStatus.color(item.status),
+          ),
+        )
       ),
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) => StockDetailWidget(item)));
