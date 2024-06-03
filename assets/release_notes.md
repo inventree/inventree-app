@@ -1,7 +1,8 @@
-### 0.15.0 - May 2024
+### 0.15.0 - June 2024
 ---
 
 - Support modern label printing API
+- Improved display of stock item serial numbers
 - Updated translations
 
 ### 0.14.3 - April 2024
