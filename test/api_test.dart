@@ -110,10 +110,6 @@ void main() {
 
       // Check supported functions
       assert(api.apiVersion >= 50);
-      assert(api.supportsSettings);
-      assert(api.supportsNotifications);
-      assert(api.supportsPoReceive);
-
       assert(api.serverInstance.isNotEmpty);
       assert(api.serverVersion.isNotEmpty);
 

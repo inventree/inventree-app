@@ -36,10 +36,6 @@ class InvenTreePartCategory extends InvenTreeModel {
       "structural": {},
     };
 
-    if (!api.supportsStructuralCategories) {
-      fields.remove("structural");
-    }
-
     return fields;
   }
 

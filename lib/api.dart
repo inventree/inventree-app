@@ -283,30 +283,6 @@ class InvenTreeAPI {
   String get serverVersion => (serverInfo["version"] ?? "") as String;
   int get apiVersion => (serverInfo["apiVersion"] ?? 1) as int;
 
-  // Plugins enabled at API v34 and above
-  bool get pluginsEnabled => apiVersion >= 34 && (serverInfo["plugins_enabled"] ?? false) as bool;
-
-  // API endpoint for receiving purchase order line items was introduced in v12
-  bool get supportsPoReceive => apiVersion >= 12;
-
-  // Notification support requires API v25 or newer
-  bool get supportsNotifications => isConnected() && apiVersion >= 25;
-
-  // Return True if the API supports 'settings' (requires API v46)
-  bool get supportsSettings => isConnected() && apiVersion >= 46;
-
-  // Part parameter support requires API v56 or newer
-  bool get supportsPartParameters => isConnected() && apiVersion >= 56;
-
-  // Supports 'modern' barcode API (v80 or newer)
-  bool get supportModernBarcodes => isConnected() && apiVersion >= 80;
-
-  // Structural categories requires API v83 or newer
-  bool get supportsStructuralCategories => isConnected() && apiVersion >= 83;
-
-  // Company attachments require API v95 or newer
-  bool get supportCompanyAttachments => isConnected() && apiVersion >= 95;
-
   // Consolidated search request API v102 or newer
   bool get supportsConsolidatedSearch => isConnected() && apiVersion >= 102;
 
@@ -1518,7 +1494,6 @@ class InvenTreeAPI {
   Map<String, InvenTreeUserSetting> _userSettings = {};
 
   Future<String> getGlobalSetting(String key) async {
-    if (!supportsSettings) return "";
 
     InvenTreeGlobalSetting? setting = _globalSettings[key];
 
@@ -1544,7 +1519,6 @@ class InvenTreeAPI {
   }
 
   Future<String> getUserSetting(String key) async {
-    if (!supportsSettings) return "";
 
     InvenTreeUserSetting? setting = _userSettings[key];
 
@@ -1685,10 +1659,6 @@ class InvenTreeAPI {
    */
   Future<void> _refreshNotifications() async {
     if (!isConnected()) {
-      return;
-    }
-
-    if (!supportsNotifications) {
       return;
     }
 

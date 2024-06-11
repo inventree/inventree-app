@@ -90,15 +90,13 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     List<SpeedDialChild> actions = [];
 
     if (InvenTreePart().canEdit) {
-      if (api.supportModernBarcodes) {
-        actions.add(
-            customBarcodeAction(
-                context, this,
-                widget.part.customBarcode, "part",
-                widget.part.pk
-            )
-        );
-      }
+      actions.add(
+          customBarcodeAction(
+              context, this,
+              widget.part.customBarcode, "part",
+              widget.part.pk
+          )
+      );
     }
 
     return actions;
@@ -184,11 +182,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     });
 
     // Request the number of parameters for this part
-    if (api.supportsPartParameters) {
-      showParameters = await InvenTreeSettingsManager().getValue(INV_PART_SHOW_PARAMETERS, true) as bool;
-    } else {
-      showParameters = false;
-    }
+    showParameters = await InvenTreeSettingsManager().getValue(INV_PART_SHOW_PARAMETERS, true) as bool;
 
     // Request the number of attachments
     InvenTreePartAttachment().count(

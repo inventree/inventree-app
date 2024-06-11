@@ -183,15 +183,13 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           )
       );
 
-      if (api.supportModernBarcodes) {
-        actions.add(
-            customBarcodeAction(
-                context, this,
-                widget.item.customBarcode,
-                "stockitem", widget.item.pk
-            )
-        );
-      }
+      actions.add(
+          customBarcodeAction(
+              context, this,
+              widget.item.customBarcode,
+              "stockitem", widget.item.pk
+          )
+      );
     }
 
     return actions;
