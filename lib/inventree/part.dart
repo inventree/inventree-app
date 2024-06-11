@@ -471,7 +471,7 @@ class InvenTreePartAttachment extends InvenTreeAttachment {
   String get REFERENCE_FIELD => "part";
 
   @override
-  String get MODEL_TYPE => "part";
+  String get REF_MODEL_TYPE => "part";
 
   @override
   String get URL => InvenTreeAPI().supportsModernAttachments ? "attachment/" : "part/attachment/";

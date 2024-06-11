@@ -635,7 +635,7 @@ class InvenTreeStockItemAttachment extends InvenTreeAttachment {
   String get REFERENCE_FIELD => "stock_item";
 
   @override
-  String get MODEL_TYPE => "stockitem";
+  String get REF_MODEL_TYPE => "stockitem";
 
   @override
   String get URL => InvenTreeAPI().supportsModernAttachments ? "attachment/" : "stock/attachment/";

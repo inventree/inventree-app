@@ -106,7 +106,7 @@ class InvenTreeCompanyAttachment extends InvenTreeAttachment {
   String get REFERENCE_FIELD => "company";
 
   @override
-  String get MODEL_TYPE => "company";
+  String get REF_MODEL_TYPE => "company";
 
   @override
   String get URL => InvenTreeAPI().supportsModernAttachments ? "attachment/" : "company/attachment/";

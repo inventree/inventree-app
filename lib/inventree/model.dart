@@ -945,9 +945,9 @@ class InvenTreeAttachment extends InvenTreeModel {
   // Note: This is used for the *legacy* attachment API
   String get REFERENCE_FIELD => "";
 
-  // Override this reference field for anyn subclasses
+  // Override this reference field for any subclasses
   // Note: This is used for the *modern* attachment API
-  String get MODEL_TYPE => "";
+  String get REF_MODEL_TYPE => "";
 
   String get attachment => getString("attachment");
   
@@ -1003,7 +1003,7 @@ class InvenTreeAttachment extends InvenTreeModel {
     Map<String, String> filters = {};
 
     if (InvenTreeAPI().supportsModernAttachments) {
-      filters["model_type"] = MODEL_TYPE;
+      filters["model_type"] = REF_MODEL_TYPE;
       filters["model_id"] = modelId.toString();
     } else {
       filters[REFERENCE_FIELD] = modelId.toString();
