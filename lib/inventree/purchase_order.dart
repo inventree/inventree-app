@@ -237,6 +237,9 @@ class InvenTreePurchaseOrderAttachment extends InvenTreeAttachment {
   String get REFERENCE_FIELD => "order";
 
   @override
+  String get MODEL_TYPE => "purchaseorder";
+
+  @override
   String get URL => InvenTreeAPI().supportsModernAttachments ? "attachment/" : "order/po/attachment/";
 
   @override

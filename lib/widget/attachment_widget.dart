@@ -26,10 +26,9 @@ import "package:inventree/widget/refreshable_state.dart";
  */
 class AttachmentWidget extends StatefulWidget {
 
-  const AttachmentWidget(this.attachmentClass, this.modelType, this.modelId, this.hasUploadPermission) : super();
+  const AttachmentWidget(this.attachmentClass, this.modelId, this.hasUploadPermission) : super();
 
   final InvenTreeAttachment attachmentClass;
-  final String modelType;
   final int modelId;
   final bool hasUploadPermission;
 
@@ -77,7 +76,7 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
 
     showLoadingOverlay(context);
 
-    final bool result = await widget.attachmentClass.uploadAttachment(file, widget.modelType, widget.modelId);
+    final bool result = await widget.attachmentClass.uploadAttachment(file, widget.attachmentClass.MODEL_TYPE, widget.modelId);
 
     hideLoadingOverlay();
 
@@ -137,22 +136,22 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
 
     Map<String, String> filters = {};
 
-    InvenTreeModel attachmentClass = widget.attachmentClass;
-
     if (InvenTreeAPI().supportsModernAttachments) {
-      attachmentClass = InvenTreeAttachment();
-      filters["model_type"] = widget.modelType;
+      filters["model_type"] = widget.attachmentClass.MODEL_TYPE;
       filters["model_id"] = widget.modelId.toString();
     } else {
       filters[widget.attachmentClass.REFERENCE_FIELD] = widget.modelId.toString();
     }
 
-    await attachmentClass.list(
+    await widget.attachmentClass.list(
       filters: filters
     ).then((var results) {
       attachments.clear();
 
+      print("Found ${results.length} results:");
+
       for (var result in results) {
+        print(result.toString());
         if (result is InvenTreeAttachment) {
           attachments.add(result);
         }

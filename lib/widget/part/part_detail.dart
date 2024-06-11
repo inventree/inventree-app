@@ -185,11 +185,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     showParameters = await InvenTreeSettingsManager().getValue(INV_PART_SHOW_PARAMETERS, true) as bool;
 
     // Request the number of attachments
-    InvenTreePartAttachment().count(
-      filters: {
-        "part": part.pk.toString(),
-      }
-    ).then((int value) {
+    InvenTreePartAttachment().countAttachments(part.pk).then((int value) {
       if (mounted) {
         setState(() {
           attachmentCount = value;
@@ -592,7 +588,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
             MaterialPageRoute(
               builder: (context) => AttachmentWidget(
                   InvenTreePartAttachment(),
-                  "part",
                   part.pk,
                   part.canEdit
                 )

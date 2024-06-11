@@ -942,7 +942,12 @@ class InvenTreeAttachment extends InvenTreeModel {
   String get URL => "attachment/";
 
   // Override this reference field for any subclasses
+  // Note: This is used for the *legacy* attachment API
   String get REFERENCE_FIELD => "";
+
+  // Override this reference field for anyn subclasses
+  // Note: This is used for the *modern* attachment API
+  String get MODEL_TYPE => "";
 
   String get attachment => getString("attachment");
   
@@ -990,6 +995,21 @@ class InvenTreeAttachment extends InvenTreeModel {
     } else {
       return null;
     }
+  }
+
+  // Return a count of how many attachments exist against the specified model ID
+  Future<int> countAttachments(int modelId) {
+
+    Map<String, String> filters = {};
+
+    if (InvenTreeAPI().supportsModernAttachments) {
+      filters["model_type"] = MODEL_TYPE;
+      filters["model_id"] = modelId.toString();
+    } else {
+      filters[REFERENCE_FIELD] = modelId.toString();
+    }
+
+    return count(filters: filters);
   }
 
   Future<bool> uploadAttachment(File attachment, String modelType, int modelId, {String comment = "", Map<String, String> fields = const {}}) async {

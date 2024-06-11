@@ -244,12 +244,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     }
 
     // Request the number of attachments
-    InvenTreeStockItemAttachment().count(
-      filters: {
-        "stock_item": widget.item.pk.toString()
-      }
-    ).then((int value) {
-
+    InvenTreeStockItemAttachment().countAttachments(widget.item.pk).then((int value) {
       if (mounted) {
         setState(() {
           attachmentCount = value;
@@ -742,7 +737,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
               MaterialPageRoute(
                 builder: (context) => AttachmentWidget(
                   InvenTreeStockItemAttachment(),
-                  "stockitem",
                   widget.item.pk,
                   widget.item.canEdit,
                 )

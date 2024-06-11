@@ -188,11 +188,8 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
       }
     });
 
-    InvenTreeCompanyAttachment().count(
-      filters: {
-        "company": widget.company.pk.toString()
-      }
-    ).then((value) {
+    InvenTreeCompanyAttachment().countAttachments(widget.company.pk)
+    .then((value) {
       if (mounted) {
         setState(() {
           attachmentCount = value;
@@ -406,7 +403,6 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
           MaterialPageRoute(
             builder: (context) => AttachmentWidget(
               InvenTreeCompanyAttachment(),
-              "company",
               widget.company.pk,
               InvenTreeCompany().canEdit
             )
