@@ -1,3 +1,10 @@
+### 0.16.0 - June 2024
+---
+
+- Add support for new file attachments API
+- Drop support for legacy servers with API version < 100
+
+
 ### 0.15.0 - June 2024
 ---
 
