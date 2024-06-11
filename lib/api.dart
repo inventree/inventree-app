@@ -187,7 +187,8 @@ class InvenTreeAPI {
   }
 
   // Minimum required API version for server
-  static const _minApiVersion = 20;
+  // 2023-03-04
+  static const _minApiVersion = 100;
 
   bool _strictHttps = false;
 
