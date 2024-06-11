@@ -183,15 +183,13 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           )
       );
 
-      if (api.supportModernBarcodes) {
-        actions.add(
-            customBarcodeAction(
-                context, this,
-                widget.item.customBarcode,
-                "stockitem", widget.item.pk
-            )
-        );
-      }
+      actions.add(
+          customBarcodeAction(
+              context, this,
+              widget.item.customBarcode,
+              "stockitem", widget.item.pk
+          )
+      );
     }
 
     return actions;
@@ -246,12 +244,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     }
 
     // Request the number of attachments
-    InvenTreeStockItemAttachment().count(
-      filters: {
-        "stock_item": widget.item.pk.toString()
-      }
-    ).then((int value) {
-
+    InvenTreeStockItemAttachment().countAttachments(widget.item.pk).then((int value) {
       if (mounted) {
         setState(() {
           attachmentCount = value;

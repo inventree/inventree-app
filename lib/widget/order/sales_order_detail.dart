@@ -175,9 +175,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
 
     supportsProjectCodes = api.supportsProjectCodes && await api.getGlobalBooleanSetting("PROJECT_CODES_ENABLED");
 
-    InvenTreeSalesOrderAttachment().count(filters: {
-      "order": widget.order.pk.toString()
-    }).then((int value) {
+    InvenTreeSalesOrderAttachment().countAttachments(widget.order.pk).then((int value) {
       if (mounted) {
         setState(() {
           attachmentCount = value;

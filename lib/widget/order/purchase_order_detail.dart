@@ -228,9 +228,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       }
     }
 
-    InvenTreePurchaseOrderAttachment().count(filters: {
-      "order": widget.order.pk.toString()
-    }).then((int value) {
+    InvenTreePurchaseOrderAttachment().countAttachments(widget.order.pk).then((int value) {
       if (mounted) {
         setState(() {
           attachmentCount = value;

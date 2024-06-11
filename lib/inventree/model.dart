@@ -938,8 +938,16 @@ class InvenTreeAttachment extends InvenTreeModel {
 
   InvenTreeAttachment.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
+  @override
+  String get URL => "attachment/";
+
   // Override this reference field for any subclasses
+  // Note: This is used for the *legacy* attachment API
   String get REFERENCE_FIELD => "";
+
+  // Override this reference field for any subclasses
+  // Note: This is used for the *modern* attachment API
+  String get REF_MODEL_TYPE => "";
 
   String get attachment => getString("attachment");
   
@@ -989,15 +997,39 @@ class InvenTreeAttachment extends InvenTreeModel {
     }
   }
 
-  Future<bool> uploadAttachment(File attachment, int parentId, {String comment = "", Map<String, String> fields = const {}}) async {
+  // Return a count of how many attachments exist against the specified model ID
+  Future<int> countAttachments(int modelId) {
+
+    Map<String, String> filters = {};
+
+    if (InvenTreeAPI().supportsModernAttachments) {
+      filters["model_type"] = REF_MODEL_TYPE;
+      filters["model_id"] = modelId.toString();
+    } else {
+      filters[REFERENCE_FIELD] = modelId.toString();
+    }
+
+    return count(filters: filters);
+  }
+
+  Future<bool> uploadAttachment(File attachment, String modelType, int modelId, {String comment = "", Map<String, String> fields = const {}}) async {
 
     // Ensure that the correct reference field is set
     Map<String, String> data = Map<String, String>.from(fields);
 
-    data[REFERENCE_FIELD] = parentId.toString();
+    String url = URL;
+
+    if (InvenTreeAPI().supportsModernAttachments) {
+      // All attachments are stored in a consolidated table
+      url = "attachment/";
+      data["model_id"] = modelId.toString();
+      data["model_type"] = modelType;
+    } else {
+      data[REFERENCE_FIELD] = modelId.toString();
+    }
 
     final APIResponse response = await InvenTreeAPI().uploadFile(
-        URL,
+        url,
         attachment,
         method: "POST",
         name: "attachment",

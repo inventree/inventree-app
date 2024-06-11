@@ -174,18 +174,16 @@ class InvenTreeDrawer extends StatelessWidget {
       tiles.add(Divider());
     }
 
-    if (InvenTreeAPI().supportsNotifications) {
-      int notification_count = InvenTreeAPI().notification_counter;
+    int notification_count = InvenTreeAPI().notification_counter;
 
-      tiles.add(
-        ListTile(
-          leading: FaIcon(FontAwesomeIcons.bell, color: COLOR_ACTION),
-          trailing: notification_count > 0 ? Text(notification_count.toString()) : null,
-          title: Text(L10().notifications),
-          onTap: _notifications,
-        )
-      );
-    }
+    tiles.add(
+      ListTile(
+        leading: FaIcon(FontAwesomeIcons.bell, color: COLOR_ACTION),
+        trailing: notification_count > 0 ? Text(notification_count.toString()) : null,
+        title: Text(L10().notifications),
+        onTap: _notifications,
+      )
+    );
 
     tiles.add(
       ListTile(

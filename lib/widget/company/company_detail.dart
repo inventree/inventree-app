@@ -188,19 +188,14 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
       }
     });
 
-    if (api.supportCompanyAttachments) {
-      InvenTreeCompanyAttachment().count(
-        filters: {
-          "company": widget.company.pk.toString()
-        }
-      ).then((value) {
-        if (mounted) {
-          setState(() {
-            attachmentCount = value;
-          });
-        }
-      });
-    }
+    InvenTreeCompanyAttachment().countAttachments(widget.company.pk)
+    .then((value) {
+      if (mounted) {
+        setState(() {
+          attachmentCount = value;
+        });
+      }
+    });
   }
 
   Future <void> editCompany(BuildContext context) async {
@@ -397,25 +392,24 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
       ));
     }
 
-    if (api.supportCompanyAttachments) {
-      tiles.add(ListTile(
-        title: Text(L10().attachments),
-        leading: FaIcon(FontAwesomeIcons.fileLines, color: COLOR_ACTION),
-        trailing: attachmentCount > 0 ? Text(attachmentCount.toString()) : null,
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AttachmentWidget(
-                InvenTreeCompanyAttachment(),
-                widget.company.pk,
-                InvenTreeCompany().canEdit
-              )
+
+    tiles.add(ListTile(
+      title: Text(L10().attachments),
+      leading: FaIcon(FontAwesomeIcons.fileLines, color: COLOR_ACTION),
+      trailing: attachmentCount > 0 ? Text(attachmentCount.toString()) : null,
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AttachmentWidget(
+              InvenTreeCompanyAttachment(),
+              widget.company.pk,
+              InvenTreeCompany().canEdit
             )
-          );
-        }
-      ));
-    }
+          )
+        );
+      }
+    ));
 
     return tiles;
   }

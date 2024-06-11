@@ -6,6 +6,7 @@ import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:one_context/one_context.dart";
 import "package:url_launcher/url_launcher.dart";
 
+import "package:inventree/api.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/app_colors.dart";
 
@@ -25,10 +26,10 @@ import "package:inventree/widget/refreshable_state.dart";
  */
 class AttachmentWidget extends StatefulWidget {
 
-  const AttachmentWidget(this.attachment, this.referenceId, this.hasUploadPermission) : super();
+  const AttachmentWidget(this.attachmentClass, this.modelId, this.hasUploadPermission) : super();
 
-  final InvenTreeAttachment attachment;
-  final int referenceId;
+  final InvenTreeAttachment attachmentClass;
+  final int modelId;
   final bool hasUploadPermission;
 
   @override
@@ -74,7 +75,9 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
     if (file == null) return;
 
     showLoadingOverlay(context);
-    final bool result = await widget.attachment.uploadAttachment(file, widget.referenceId);
+
+    final bool result = await widget.attachmentClass.uploadAttachment(file, widget.attachmentClass.MODEL_TYPE, widget.modelId);
+
     hideLoadingOverlay();
 
     if (result) {
@@ -131,14 +134,24 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
   @override
   Future<void> request(BuildContext context) async {
 
-    await widget.attachment.list(
-      filters: {
-        widget.attachment.REFERENCE_FIELD: widget.referenceId.toString()
-      }
+    Map<String, String> filters = {};
+
+    if (InvenTreeAPI().supportsModernAttachments) {
+      filters["model_type"] = widget.attachmentClass.MODEL_TYPE;
+      filters["model_id"] = widget.modelId.toString();
+    } else {
+      filters[widget.attachmentClass.REFERENCE_FIELD] = widget.modelId.toString();
+    }
+
+    await widget.attachmentClass.list(
+      filters: filters
     ).then((var results) {
       attachments.clear();
 
+      print("Found ${results.length} results:");
+
       for (var result in results) {
+        print(result.toString());
         if (result is InvenTreeAttachment) {
           attachments.add(result);
         }

@@ -341,12 +341,7 @@ class UniqueBarcodeHandler extends BarcodeHandler {
     } else {
       String barcode;
 
-      if (InvenTreeAPI().supportModernBarcodes) {
-        barcode = (data["barcode_data"] ?? "") as String;
-      } else {
-        // Legacy barcode API
-        barcode = (data["hash"] ?? data["barcode_hash"] ?? "") as String;
-      }
+      barcode = (data["barcode_data"] ?? "") as String;
 
       if (barcode.isEmpty) {
         barcodeFailureTone();
