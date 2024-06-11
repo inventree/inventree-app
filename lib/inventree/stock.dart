@@ -635,7 +635,7 @@ class InvenTreeStockItemAttachment extends InvenTreeAttachment {
   String get REFERENCE_FIELD => "stock_item";
 
   @override
-  String get URL => "stock/attachment/";
+  String get URL => InvenTreeAPI().supportsModernAttachments ? "attachment/" : "stock/attachment/";
 
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreeStockItemAttachment.fromJson(json);

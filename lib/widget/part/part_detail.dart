@@ -592,6 +592,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
             MaterialPageRoute(
               builder: (context) => AttachmentWidget(
                   InvenTreePartAttachment(),
+                  "part",
                   part.pk,
                   part.canEdit
                 )

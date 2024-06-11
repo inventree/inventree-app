@@ -471,7 +471,7 @@ class InvenTreePartAttachment extends InvenTreeAttachment {
   String get REFERENCE_FIELD => "part";
 
   @override
-  String get URL => "part/attachment/";
+  String get URL => InvenTreeAPI().supportsModernAttachments ? "attachment/" : "part/attachment/";
 
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreePartAttachment.fromJson(json);

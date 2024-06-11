@@ -406,6 +406,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
           MaterialPageRoute(
             builder: (context) => AttachmentWidget(
               InvenTreeCompanyAttachment(),
+              "company",
               widget.company.pk,
               InvenTreeCompany().canEdit
             )

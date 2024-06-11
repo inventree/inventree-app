@@ -391,6 +391,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
               MaterialPageRoute(
                 builder: (context) => AttachmentWidget(
                     InvenTreePurchaseOrderAttachment(),
+                    "purchaseorder",
                     widget.order.pk,
                     widget.order.canEdit
                 )

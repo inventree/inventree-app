@@ -938,6 +938,9 @@ class InvenTreeAttachment extends InvenTreeModel {
 
   InvenTreeAttachment.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
+  @override
+  String get URL => "attachment/";
+
   // Override this reference field for any subclasses
   String get REFERENCE_FIELD => "";
 
@@ -989,15 +992,24 @@ class InvenTreeAttachment extends InvenTreeModel {
     }
   }
 
-  Future<bool> uploadAttachment(File attachment, int parentId, {String comment = "", Map<String, String> fields = const {}}) async {
+  Future<bool> uploadAttachment(File attachment, String modelType, int modelId, {String comment = "", Map<String, String> fields = const {}}) async {
 
     // Ensure that the correct reference field is set
     Map<String, String> data = Map<String, String>.from(fields);
 
-    data[REFERENCE_FIELD] = parentId.toString();
+    String url = URL;
+
+    if (InvenTreeAPI().supportsModernAttachments) {
+      // All attachments are stored in a consolidated table
+      url = "attachment/";
+      data["model_id"] = modelId.toString();
+      data["model_type"] = modelType;
+    } else {
+      data[REFERENCE_FIELD] = modelId.toString();
+    }
 
     final APIResponse response = await InvenTreeAPI().uploadFile(
-        URL,
+        url,
         attachment,
         method: "POST",
         name: "attachment",

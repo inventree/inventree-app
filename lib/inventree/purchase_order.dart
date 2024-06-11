@@ -237,7 +237,7 @@ class InvenTreePurchaseOrderAttachment extends InvenTreeAttachment {
   String get REFERENCE_FIELD => "order";
 
   @override
-  String get URL => "order/po/attachment/";
+  String get URL => InvenTreeAPI().supportsModernAttachments ? "attachment/" : "order/po/attachment/";
 
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreePurchaseOrderAttachment.fromJson(json);

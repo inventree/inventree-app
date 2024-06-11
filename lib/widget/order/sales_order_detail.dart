@@ -322,6 +322,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
           MaterialPageRoute(
             builder: (context) => AttachmentWidget(
             InvenTreeSalesOrderAttachment(),
+            "salesorder",
             widget.order.pk,
             widget.order.canEdit
             )

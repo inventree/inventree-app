@@ -323,7 +323,11 @@ class InvenTreeAPI {
   bool get supportsCompanyActiveStatus => isConnected() && apiVersion >= 189;
 
   // Does the server support the "modern" (consolidated) label printing API?
-  bool get supportsModernLabelPrinting => isConnected() && apiVersion >= 198;
+  bool get supportsModernLabelPrinting => isConnected() && apiVersion >= 201;
+
+  // Does the server support the "modern" (consolidated) attachment API?
+  // Ref: https://github.com/inventree/InvenTree/pull/7420
+  bool get supportsModernAttachments => isConnected() && apiVersion >= 207;
 
   // Cached list of plugins (refreshed when we connect to the server)
   List<InvenTreePlugin> _plugins = [];

@@ -280,6 +280,6 @@ class InvenTreeSalesOrderAttachment extends InvenTreeAttachment {
   String get REFERENCE_FIELD => "order";
 
   @override
-  String get URL => "order/so/attachment/";
+  String get URL => InvenTreeAPI().supportsModernAttachments ? "attachment/" : "order/so/attachment/";
 
 }

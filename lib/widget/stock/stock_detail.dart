@@ -742,6 +742,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
               MaterialPageRoute(
                 builder: (context) => AttachmentWidget(
                   InvenTreeStockItemAttachment(),
+                  "stockitem",
                   widget.item.pk,
                   widget.item.canEdit,
                 )
