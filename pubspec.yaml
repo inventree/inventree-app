@@ -30,8 +30,8 @@ dependencies:
   http: ^0.13.5
   image_picker: ^1.0.2                  # Select or take photos
   infinite_scroll_pagination: ^4.0.0      # Let the server do all the work!
-  intl: ^0.18.0
-  one_context: ^2.1.0                     # Dialogs without requiring context
+  intl: ^0.19.0
+  one_context: ^4.0.0                     # Dialogs without requiring context
   open_filex: ^4.3.2                      # Open local files
   package_info_plus: ^3.0.2               # App information introspection
   path: ^1.8.2
