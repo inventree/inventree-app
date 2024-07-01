@@ -82,7 +82,7 @@
   "@barcodeNoMatch": {},
   "barcodeNotAssigned": "Codice a barre non assegnato",
   "@barcodeNotAssigned": {},
-  "barcodeScanPart": "Scan part barcode",
+  "barcodeScanPart": "Scansiona codice a barre del prodotto",
   "@barcodeScanPart": {},
   "barcodeReceivePart": "Scan barcode to receive part",
   "@barcodeReceivePart": {},
