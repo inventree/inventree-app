@@ -283,7 +283,7 @@
   "@filterExternal": {},
   "filterExternalDetail": "Show stock in external locations",
   "@filterExternalDetail": {},
-  "filterInStock": "In Stock",
+  "filterInStock": "Laos",
   "@filterInStock": {},
   "filterInStockDetail": "Show parts which have stock",
   "@filterInStockDetail": {},
@@ -828,7 +828,7 @@
   "@status": {},
   "statusCode": "Status Code",
   "@statusCode": {},
-  "stock": "Stock",
+  "stock": "Ladu",
   "@stock": {
     "description": "stock"
   },
