@@ -11,35 +11,35 @@ dependencies:
   audioplayers: ^4.1.0                    # Play audio files
   cached_network_image: ^3.3.1            # Download and cache remote images
   camera: ^0.10.3                         # Camera
-  cupertino_icons: ^1.0.3
+  cupertino_icons: ^1.0.8
   currency_formatter: ^2.0.1
   datetime_picker_formfield: ^2.0.1       # Date / time picker
   device_info_plus: ^8.2.2                # Information about the device
   dropdown_search: ^5.0.6                 # Dropdown autocomplete form fields
-  file_picker: ^5.2.11                    # Select files from the device
+  file_picker: ^5.3.1                     # Select files from the device
   flutter:
     sdk: flutter
   flutter_cache_manager: ^3.3.0
   flutter_localizations: 
     sdk: flutter
   flutter_localized_locales: ^2.0.4
-  flutter_markdown: ^0.6.13+1             # Rendering markdown
+  flutter_markdown: ^0.6.19               # Rendering markdown
   flutter_overlay_loader: ^2.0.0          # Overlay screen support
   flutter_speed_dial: ^6.2.0              # Speed dial / FAB implementation
-  font_awesome_flutter: ^10.3.0           # FontAwesome icon set
-  http: ^0.13.5
-  image_picker: ^1.0.2                  # Select or take photos
+  font_awesome_flutter: ^10.7.0           # FontAwesome icon set
+  http: ^0.13.6
+  image_picker: ^1.0.8                    # Select or take photos
   infinite_scroll_pagination: ^4.0.0      # Let the server do all the work!
   intl: ^0.18.0
-  one_context: ^4.0.0                     # Dialogs without requiring context
-  open_filex: ^4.3.2                      # Open local files
+  one_context: ^2.1.0                     # Dialogs without requiring context
+  open_filex: ^4.4.0                      # Open local files
   package_info_plus: ^3.0.2               # App information introspection
   path: ^1.8.2
-  path_provider: ^2.0.12                  # Local file storage
+  path_provider: ^2.1.3                   # Local file storage
   qr_code_scanner: ^1.0.1                 # Barcode scanning
-  sembast: ^3.4.6+1                       # NoSQL data storage
+  sembast: ^3.6.0                         # NoSQL data storage
   sentry_flutter: ^8.3.0                  # Error reporting
-  url_launcher: ^6.1.10                   # Open link in system browser
+  url_launcher: ^6.2.4                    # Open link in system browser
 
 dev_dependencies:
   flutter_launcher_icons: ^0.11.0
