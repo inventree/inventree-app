@@ -1,3 +1,8 @@
+### 0.16.1 - July 2024
+---
+
+- Update base packages for Android
+
 ### 0.16.0 - June 2024
 ---
 
