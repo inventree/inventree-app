@@ -52,7 +52,7 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
     if (widget.item.canEdit) {
       actions.add(
         IconButton(
-            icon: Icon(Icons.edit_square),
+            icon: Icon(TablerIcons.edit),
             onPressed: () {
               _editLineItem(context);
             }),

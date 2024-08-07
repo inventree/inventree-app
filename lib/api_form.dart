@@ -335,7 +335,7 @@ class APIFormField {
           controller: controller,
         ),
         trailing: IconButton(
-          icon: Icon(Icons.qr_code),
+          icon: Icon(TablerIcons.qrcode),
           onPressed: () async {
             var handler = UniqueBarcodeHandler((String hash) {
               controller.text = hash;

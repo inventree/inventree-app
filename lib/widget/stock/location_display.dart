@@ -69,7 +69,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     if (location != null && InvenTreeStockLocation().canEdit) {
       actions.add(
           IconButton(
-              icon: Icon(Icons.edit_square),
+              icon: Icon(TablerIcons.edit),
               tooltip: L10().editLocation,
               onPressed: () {
                 _editLocationDialog(context);

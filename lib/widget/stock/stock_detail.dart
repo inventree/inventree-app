@@ -70,7 +70,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     if (widget.item.canEdit) {
       actions.add(
           IconButton(
-              icon: Icon(Icons.edit_square),
+              icon: Icon(TablerIcons.edit),
               tooltip: L10().editItem,
               onPressed: () {
                 _editStockItem(context);
@@ -120,7 +120,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       // Transfer item
       actions.add(
         SpeedDialChild(
-          child: Icon(Icons.trolley),
+          child: Icon(TablerIcons.transfer),
           label: L10().transferStock,
           onTap: () {
             _transferStockDialog(context);

@@ -73,7 +73,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     if (InvenTreePart().canEdit) {
       actions.add(
           IconButton(
-              icon: Icon(Icons.edit_square),
+              icon: Icon(TablerIcons.edit),
               tooltip: L10().editPart,
               onPressed: () {
                 _editPartDialog(context);

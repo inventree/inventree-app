@@ -48,7 +48,7 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
     if (widget.item.canEdit) {
       actions.add(
         IconButton(
-          icon: Icon(Icons.edit_square),
+          icon: Icon(TablerIcons.edit),
           onPressed: () {
             _editLineItem(context);
           },

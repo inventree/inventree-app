@@ -53,7 +53,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
     if (widget.order.canEdit) {
       actions.add(
         IconButton(
-          icon: Icon(Icons.edit_square),
+          icon: Icon(TablerIcons.edit),
           onPressed: () {
             editOrder(context);
           },

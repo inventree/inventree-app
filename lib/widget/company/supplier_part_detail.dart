@@ -78,7 +78,7 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
     if (widget.supplierPart.canEdit) {
       actions.add(
           IconButton(
-              icon: Icon(Icons.edit_square),
+              icon: Icon(TablerIcons.edit),
               tooltip: L10().edit,
               onPressed: () {
                 editSupplierPart(context);

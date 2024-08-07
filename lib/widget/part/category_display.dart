@@ -41,7 +41,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
       if (InvenTreePartCategory().canEdit) {
         actions.add(
           IconButton(
-            icon:  Icon(Icons.edit_square),
+            icon:  Icon(TablerIcons.edit),
             tooltip: L10().editCategory,
             onPressed: () {
               _editCategoryDialog(context);

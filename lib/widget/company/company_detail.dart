@@ -57,7 +57,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
     if (InvenTreeCompany().canEdit) {
       actions.add(
         IconButton(
-            icon: Icon(Icons.edit_square),
+            icon: Icon(TablerIcons.edit),
             tooltip: L10().companyEdit,
             onPressed: () {
               editCompany(context);

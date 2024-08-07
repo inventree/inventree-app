@@ -57,7 +57,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
     if (widget.order.canEdit) {
       actions.add(
         IconButton(
-          icon: Icon(Icons.edit_square),
+          icon: Icon(TablerIcons.edit),
           tooltip: L10().purchaseOrderEdit,
           onPressed: () {
             editOrder(context);

@@ -298,7 +298,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
             ListTile(
               title: Text(L10().barcodeTones),
               subtitle: Text(L10().soundOnBarcodeAction),
-              leading: Icon(Icons.qr_code),
+              leading: Icon(TablerIcons.qrcode),
               trailing: Switch(
                 value: barcodeSounds,
                 onChanged: (bool value) {
