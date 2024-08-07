@@ -14,12 +14,11 @@ import "package:inventree/l10.dart";
 
 import "package:inventree/app_colors.dart";
 import "package:inventree/widget/attachment_widget.dart";
+import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/notes_widget.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/company/company_detail.dart";
 import "package:inventree/widget/progress.dart";
-
-import "../dialogs.dart";
 
 /*
  * Widget for viewing a single SalesOrder instance
