@@ -78,6 +78,23 @@ class InvenTreeSalesOrder extends InvenTreeOrder {
     };
   }
 
+  Future<void> issueOrder() async {
+    if (!isPending) {
+      return;
+    }
+
+    await api.post("${url}issue/", expectedStatusCode: 201);
+  }
+
+  /// Mark this order as "cancelled"
+  Future<void> cancelOrder() async {
+    if (!isOpen) {
+      return;
+    }
+
+    await api.post("${url}cancel/", expectedStatusCode: 201);
+  }
+
   int get customerId => getInt("customer");
 
   InvenTreeCompany? get customer {
@@ -92,7 +109,11 @@ class InvenTreeSalesOrder extends InvenTreeOrder {
 
   String get customerReference => getString("customer_reference");
 
-  bool get isOpen => api.SalesOrderStatus.isNameIn(status, ["PENDING", "IN_PROGRESS"]);
+  bool get isOpen => api.SalesOrderStatus.isNameIn(status, ["PENDING", "IN_PROGRESS", "ON_HOLD"]);
+
+  bool get isPending => api.SalesOrderStatus.isNameIn(status, ["PENDING", "ON_HOLD"]);
+
+  bool get isInProgress => api.SalesOrderStatus.isNameIn(status, ["IN_PROGRESS"]);
 
   bool get isComplete => api.SalesOrderStatus.isNameIn(status, ["SHIPPED"]);
 
