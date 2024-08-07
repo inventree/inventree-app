@@ -14,6 +14,7 @@ import "package:inventree/l10.dart";
 
 import "package:inventree/app_colors.dart";
 import "package:inventree/widget/attachment_widget.dart";
+import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/notes_widget.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/company/company_detail.dart";
@@ -99,15 +100,71 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
     );
   }
 
+  /// Issue this order
+  Future<void> _issueOrder(BuildContext context) async {
+
+    confirmationDialog(
+        L10().issueOrder, "",
+        icon: FontAwesomeIcons.paperPlane,
+        color: Colors.blue,
+        acceptText: L10().issue,
+        onAccept: () async {
+          await widget.order.issueOrder().then((dynamic) {
+            refresh(context);
+          });
+        }
+    );
+  }
+
+  /// Cancel this order
+  Future<void> _cancelOrder(BuildContext context) async {
+
+    confirmationDialog(
+        L10().cancelOrder, "",
+        icon: FontAwesomeIcons.circleXmark,
+        color: Colors.red,
+        acceptText: L10().cancel,
+        onAccept: () async {
+          await widget.order.cancelOrder().then((dynamic) {
+            refresh(context);
+          });
+        }
+    );
+  }
+
   @override
   List<SpeedDialChild> actionButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
+    if (widget.order.isPending) {
+      actions.add(
+          SpeedDialChild(
+              child: FaIcon(FontAwesomeIcons.paperPlane, color: Colors.blue),
+              label: L10().issueOrder,
+              onTap: () async {
+                _issueOrder(context);
+              }
+          )
+      );
+    }
+
+    if (widget.order.isOpen) {
+      actions.add(
+          SpeedDialChild(
+              child: FaIcon(FontAwesomeIcons.circleXmark, color: Colors.red),
+              label: L10().cancelOrder,
+              onTap: () async {
+                _cancelOrder(context);
+              }
+          )
+      );
+    }
+
     // Add line item
-    if (widget.order.isOpen && InvenTreeSOLineItem().canCreate) {
+    if (widget.order.isInProgress && InvenTreeSOLineItem().canCreate) {
       actions.add(
         SpeedDialChild(
-          child: FaIcon(FontAwesomeIcons.circlePlus),
+          child: FaIcon(FontAwesomeIcons.circlePlus, color: Colors.green),
           label: L10().lineItemAdd,
           onTap: () async {
             _addLineItem(context);
@@ -117,7 +174,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
 
       actions.add(
         SpeedDialChild(
-          child: FaIcon(FontAwesomeIcons.circlePlus),
+          child: FaIcon(FontAwesomeIcons.truck, color: Colors.green),
           label: L10().shipmentAdd,
           onTap: () async {
             _addShipment(context);
@@ -133,7 +190,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
   List<SpeedDialChild> barcodeButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
-    if (widget.order.isOpen && InvenTreeSOLineItem().canCreate) {
+    if (widget.order.isInProgress && InvenTreeSOLineItem().canCreate) {
       actions.add(
         SpeedDialChild(
           child: Icon(Icons.barcode_reader),
