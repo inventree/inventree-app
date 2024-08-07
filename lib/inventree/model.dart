@@ -310,14 +310,28 @@ class InvenTreeModel {
    */
   IconData? get customIcon {
     String icon = (jsondata["icon"] ?? "").toString().trim();
-
+    
     // Empty icon (default)
     if (icon.isEmpty) {
       return null;
     }
 
+    // Tabler icon is of the format "ti:<icon>:<style"
+    if (!icon.startsWith("ti:")) {
+      return null;
+    }
+
+    List<String> items = icon.split(":");
+
+    if (items.length < 2) {
+      return null;
+    }
+
+    String key = items[1] ?? "";
+    key = key.replaceAll("-", "_");
+
     // Tabler icon lookup
-    return TablerIcons.all[icon];
+    return TablerIcons.all[key];
   }
 
   /* Extract any custom barcode data available for the model.
