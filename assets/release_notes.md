@@ -1,3 +1,9 @@
+### 0.16.2 - August 2024
+---
+
+- Support "ON_HOLD" status for Purchase Orders
+- Support "ON_HOLD" status for Sales Orders
+
 ### 0.16.1 - July 2024
 ---
 

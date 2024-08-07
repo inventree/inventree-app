@@ -163,7 +163,6 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       acceptText: L10().cancel,
       onAccept: () async {
         await widget.order.cancelOrder().then((dynamic) {
-          print("callback");
           refresh(context);
         });
       }

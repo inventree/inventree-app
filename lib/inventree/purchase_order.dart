@@ -87,9 +87,9 @@ class InvenTreePurchaseOrder extends InvenTreeOrder {
 
   String get supplierReference => getString("supplier_reference");
 
-  bool get isOpen => api.PurchaseOrderStatus.isNameIn(status, ["PENDING", "PLACED"]);
+  bool get isOpen => api.PurchaseOrderStatus.isNameIn(status, ["PENDING", "PLACED", "ON_HOLD"]);
 
-  bool get isPending => api.PurchaseOrderStatus.isNameIn(status, ["PENDING"]);
+  bool get isPending => api.PurchaseOrderStatus.isNameIn(status, ["PENDING", "ON_HOLD"]);
 
   bool get isPlaced => api.PurchaseOrderStatus.isNameIn(status, ["PLACED"]);
 
