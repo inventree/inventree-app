@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 
-import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:infinite_scroll_pagination/infinite_scroll_pagination.dart";
 
 import "package:inventree/api_form.dart";

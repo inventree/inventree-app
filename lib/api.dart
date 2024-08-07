@@ -10,7 +10,7 @@ import "package:one_context/one_context.dart";
 import "package:open_filex/open_filex.dart";
 import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/material.dart";
-import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:flutter_cache_manager/flutter_cache_manager.dart";
 import "package:path_provider/path_provider.dart";
 

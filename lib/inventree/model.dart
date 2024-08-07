@@ -1,7 +1,7 @@
 import "dart:async";
 import "dart:io";
 
-import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:flutter/material.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:url_launcher/url_launcher.dart";
@@ -9,7 +9,6 @@ import "package:path/path.dart" as path;
 
 import "package:inventree/api.dart";
 import "package:inventree/api_form.dart";
-import "package:inventree/fa_icon_mapping.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/inventree/sentry.dart";
