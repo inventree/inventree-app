@@ -1,6 +1,7 @@
 
 import "package:flutter/material.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
+
 import "package:inventree/l10.dart";
 import "package:inventree/preferences.dart";
 
@@ -51,7 +52,7 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
             ListTile(
               title: Text(L10().parameters),
               subtitle: Text(L10().parametersSettingDetail),
-              leading: FaIcon(FontAwesomeIcons.tableList),
+              leading: Icon(TablerIcons.list),
               trailing: Switch(
                 value: partShowParameters,
                 onChanged: (bool value) {
@@ -65,7 +66,7 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
             ListTile(
               title: Text(L10().bom),
               subtitle: Text(L10().bomEnable),
-              leading: FaIcon(FontAwesomeIcons.list),
+              leading: Icon(TablerIcons.list),
               trailing: Switch(
                 value: partShowBom,
                 onChanged: (bool value) {
@@ -80,7 +81,7 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
             ListTile(
               title: Text(L10().stockItemHistory),
               subtitle: Text(L10().stockItemHistoryDetail),
-              leading: FaIcon(FontAwesomeIcons.clockRotateLeft),
+              leading: Icon(TablerIcons.history),
               trailing: Switch(
                 value: stockShowHistory,
                 onChanged: (bool value) {
@@ -94,7 +95,7 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
             ListTile(
               title: Text(L10().testResults),
               subtitle: Text(L10().testResultsDetail),
-              leading:  FaIcon(FontAwesomeIcons.vial),
+              leading:  Icon(TablerIcons.test_pipe),
               trailing: Switch(
                 value: stockShowTests,
                 onChanged: (bool value) {
@@ -108,7 +109,7 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
             ListTile(
               title: Text(L10().confirmScan),
               subtitle: Text(L10().confirmScanDetail),
-              leading: FaIcon(FontAwesomeIcons.qrcode),
+              leading: Icon(TablerIcons.qrcode),
               trailing: Switch(
                 value: stockConfirmScan,
                 onChanged: (bool value) {

@@ -2,7 +2,7 @@
 import "dart:io";
 
 import "package:flutter/material.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 import "package:one_context/one_context.dart";
 import "package:url_launcher/url_launcher.dart";
 
@@ -52,7 +52,7 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
 
     return [
       IconButton(
-        icon: FaIcon(FontAwesomeIcons.camera),
+        icon: Icon(TablerIcons.camera),
         onPressed: () async {
           FilePickerDialog.pickImageFromCamera().then((File? file) {
             upload(context, file);
@@ -60,7 +60,7 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
         }
       ),
       IconButton(
-        icon: FaIcon(FontAwesomeIcons.fileArrowUp),
+        icon: Icon(TablerIcons.file_upload),
         onPressed: () async {
           FilePickerDialog.pickFileFromDevice().then((File? file) {
             upload(context, file);
@@ -122,7 +122,7 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
               },
               child: ListTile(
                 title: Text(L10().delete),
-                leading: FaIcon(FontAwesomeIcons.trashCan),
+                leading: Icon(TablerIcons.trash),
               )
             )
           ]
@@ -171,7 +171,7 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
         tiles.add(ListTile(
           title: Text(attachment.filename),
           subtitle: Text(attachment.comment),
-          leading: FaIcon(attachment.icon, color: COLOR_ACTION),
+          leading: Icon(attachment.icon, color: COLOR_ACTION),
           onTap: () async {
             showLoadingOverlay(context);
             await attachment.downloadAttachment();
@@ -187,7 +187,7 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
         tiles.add(ListTile(
           title: Text(attachment.link),
           subtitle: Text(attachment.comment),
-          leading: FaIcon(FontAwesomeIcons.link, color: COLOR_ACTION),
+          leading: Icon(TablerIcons.link, color: COLOR_ACTION),
           onTap: () async {
             var uri = Uri.tryParse(attachment.link.trimLeft());
             if (uri != null && await canLaunchUrl(uri)) {

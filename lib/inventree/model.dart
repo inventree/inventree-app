@@ -1,7 +1,7 @@
 import "dart:async";
 import "dart:io";
 
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 import "package:flutter/material.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:url_launcher/url_launcher.dart";
@@ -309,49 +309,16 @@ class InvenTreeModel {
    * - Second part specifies the icon
    *
    */
-  FaIcon? get customIcon {
-    String icon = (jsondata["icon"] ?? "").toString();
+  IconData? get customIcon {
+    String icon = (jsondata["icon"] ?? "").toString().trim();
 
     // Empty icon (default)
     if (icon.isEmpty) {
       return null;
     }
 
-    final split = icon.trim().split(" ");
-
-    // Must have two distinct units
-    if (split.length != 2) {
-      return null;
-    }
-
-    String style = split[0];
-    String name = split[1];
-
-    // Remove "fa-" leading text (if provided)
-    if (name.startsWith("fa-")) {
-      name = name.substring(3);
-    }
-
-    int iconHex = fontAwesomeIconMap[name] ?? 0;
-
-    // No match for the icon name
-    if (iconHex == 0) {
-      return null;
-    }
-
-    switch (style) {
-      case "fas":
-        return FaIcon(IconDataSolid(iconHex));
-      case "fab":
-        return FaIcon(IconDataBrands(iconHex));
-      case "fa":
-        return FaIcon(IconDataRegular(iconHex));
-      case "fal":
-        return FaIcon(IconDataLight(iconHex));
-      default:
-        // No match
-        return null;
-    }
+    // Tabler icon lookup
+    return TablerIcons.all[icon];
   }
 
   /* Extract any custom barcode data available for the model.
@@ -960,13 +927,13 @@ class InvenTreeAttachment extends InvenTreeModel {
     String fn = filename.toLowerCase();
 
     if (fn.endsWith(".pdf")) {
-      return FontAwesomeIcons.filePdf;
+      return TablerIcons.file_type_pdf;
     } else if (fn.endsWith(".csv")) {
-      return FontAwesomeIcons.fileCsv;
+      return TablerIcons.file_type_csv;
     } else if (fn.endsWith(".doc") || fn.endsWith(".docx")) {
-      return FontAwesomeIcons.fileWord;
+      return TablerIcons.file_type_doc;
     } else if (fn.endsWith(".xls") || fn.endsWith(".xlsx")) {
-      return FontAwesomeIcons.fileExcel;
+      return TablerIcons.file_type_xls;
     }
 
     // Image formats
@@ -980,11 +947,11 @@ class InvenTreeAttachment extends InvenTreeModel {
 
     for (String fmt in img_formats) {
       if (fn.endsWith(fmt)) {
-        return FontAwesomeIcons.fileImage;
+        return TablerIcons.file_type_jpg;
       }
     }
 
-    return FontAwesomeIcons.fileLines;
+    return TablerIcons.file;
   }
 
   String get comment => getString("comment");

@@ -1,6 +1,6 @@
 import "dart:io";
 import "package:flutter/material.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/preferences.dart";
 
@@ -124,11 +124,11 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
   @override
   Widget build(BuildContext context) {
     Widget actionIcon =
-        FaIcon(FontAwesomeIcons.circlePause, color: COLOR_WARNING, size: 64);
+        Icon(TablerIcons.player_pause, color: COLOR_WARNING, size: 64);
 
     if (scanning_paused) {
       actionIcon =
-          FaIcon(FontAwesomeIcons.circlePlay, color: COLOR_ACTION, size: 64);
+          Icon(TablerIcons.player_play, color: COLOR_ACTION, size: 64);
     }
 
     String info_text = scanning_paused ? L10().barcodeScanPaused : L10().barcodeScanPause;

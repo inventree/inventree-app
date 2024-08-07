@@ -3,7 +3,7 @@ import "dart:io";
 
 import "package:file_picker/file_picker.dart";
 import "package:flutter/material.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 import "package:image_picker/image_picker.dart";
 import "package:one_context/one_context.dart";
 
@@ -80,7 +80,7 @@ class FilePickerDialog {
     actions.add(
       SimpleDialogOption(
         child: ListTile(
-          leading: FaIcon(FontAwesomeIcons.fileArrowUp),
+          leading: Icon(TablerIcons.arrow_up),
           title: Text(allowFiles ? L10().selectFile : L10().selectImage),
         ),
         onPressed: () async {
@@ -108,7 +108,7 @@ class FilePickerDialog {
       actions.add(
         SimpleDialogOption(
           child: ListTile(
-            leading: FaIcon(FontAwesomeIcons.camera),
+            leading: Icon(TablerIcons.camera),
             title: Text(L10().takePicture),
           ),
           onPressed: () async {

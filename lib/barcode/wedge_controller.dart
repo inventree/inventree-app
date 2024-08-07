@@ -1,6 +1,6 @@
 
 import "package:flutter/material.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/app_colors.dart";
 import "package:inventree/barcode/controller.dart";
@@ -64,7 +64,7 @@ class _WedgeBarcodeControllerState extends InvenTreeBarcodeControllerState {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Spacer(flex: 5),
-            FaIcon(FontAwesomeIcons.barcode, size: 64),
+            Icon(TablerIcons.barcode, size: 64),
             Spacer(flex: 5),
             BarcodeKeyboardListener(
               useKeyDownEvent: true,

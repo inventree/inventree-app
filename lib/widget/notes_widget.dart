@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 import "package:inventree/inventree/model.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:flutter_markdown/flutter_markdown.dart";
@@ -47,7 +47,7 @@ class _NotesState extends RefreshableState<NotesWidget> {
     if (widget.model.canEdit) {
       actions.add(
         IconButton(
-          icon: FaIcon(FontAwesomeIcons.penToSquare),
+          icon: Icon(TablerIcons.edit),
           tooltip: L10().edit,
           onPressed: () {
             widget.model.editForm(

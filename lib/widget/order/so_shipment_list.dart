@@ -1,6 +1,6 @@
 
 import "package:flutter/material.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/widget/paginator.dart";
@@ -47,7 +47,7 @@ class _PaginatedSOShipmentListState extends PaginatedSearchState<PaginatedSOShip
     return ListTile(
       title: Text(shipment.reference),
       subtitle: Text(shipment.tracking_number),
-      leading: shipment.shipped ? FaIcon(FontAwesomeIcons.calendarCheck, color: COLOR_SUCCESS) : FaIcon(FontAwesomeIcons.calendarXmark, color: COLOR_WARNING),
+      leading: shipment.shipped ? Icon(TablerIcons.calendar_check, color: COLOR_SUCCESS) : Icon(TablerIcons.calendar_cancel, color: COLOR_WARNING),
       trailing: shipment.shipped ? Text(shipment.shipment_date ?? "") : null
     );
 

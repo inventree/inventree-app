@@ -1,5 +1,5 @@
 import "package:flutter/cupertino.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/api_form.dart";
 import "package:inventree/preferences.dart";
 import "package:one_context/one_context.dart";
@@ -149,7 +149,7 @@ class StockItemScanIntoLocationHandler extends BarcodeScanStockLocationHandler {
         InvenTreeStockItem.transferStockUrl(),
         fields,
         method: "POST",
-        icon: FontAwesomeIcons.dolly,
+        icon: TablerIcons.transfer,
         onSuccess: (data) async {
           showSnackIcon(L10().stockItemUpdated, success: true);
         }
@@ -216,7 +216,7 @@ class StockLocationScanInItemsHandler extends BarcodeScanStockItemHandler {
               InvenTreeStockItem.transferStockUrl(),
               fields,
               method: "POST",
-              icon: FontAwesomeIcons.dolly,
+              icon: TablerIcons.transfer,
               onSuccess: (data) async {
                 showSnackIcon(L10().stockItemUpdated, success: true);
               }

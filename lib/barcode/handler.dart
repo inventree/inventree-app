@@ -1,7 +1,6 @@
 
 import "package:flutter/material.dart";
-
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/helpers.dart";
@@ -72,7 +71,7 @@ class BarcodeHandler {
 
       showSnackIcon(
         L10().barcodeError,
-        icon: FontAwesomeIcons.circleExclamation,
+        icon: TablerIcons.exclamation_circle,
         success: false
       );
 

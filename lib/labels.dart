@@ -1,5 +1,5 @@
 import "package:flutter/cupertino.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 import "package:inventree/api.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/api_form.dart";
@@ -89,7 +89,7 @@ Future<void> selectAndPrintLabel(
     L10().printLabel,
     "",
     fields,
-    icon: FontAwesomeIcons.print,
+    icon: TablerIcons.printer,
     onSuccess: (Map<String, dynamic> data) async {
       int labelId = (data["label"] ?? -1) as int;
       var pluginKey = data["plugin"];

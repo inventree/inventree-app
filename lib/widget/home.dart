@@ -1,8 +1,7 @@
 import "dart:async";
 
 import "package:flutter/material.dart";
-
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
@@ -193,7 +192,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
           horizontal: 12
         ),
         child: ListTile(
-          leading: FaIcon(icon, color: connected && allowed ? COLOR_ACTION : Colors.grey),
+          leading: Icon(icon, color: connected && allowed ? COLOR_ACTION : Colors.grey),
           title: Text(label),
           trailing: trailing,
         ),
@@ -202,7 +201,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
         if (!allowed) {
           showSnackIcon(
             L10().permissionRequired,
-            icon: FontAwesomeIcons.circleExclamation,
+            icon: TablerIcons.exclamation_circle,
             success: false,
           );
           return;
@@ -229,7 +228,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
       tiles.add(_listTile(
         context,
         L10().parts,
-        FontAwesomeIcons.shapes,
+        TablerIcons.box,
         callback: () {
           _showParts(context);
         },
@@ -241,7 +240,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
       tiles.add(_listTile(
         context,
         L10().partsStarred,
-        FontAwesomeIcons.bell,
+        TablerIcons.bell,
         callback: () {
           _showStarredParts(context);
         }
@@ -253,7 +252,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
       tiles.add(_listTile(
           context,
           L10().stock,
-          FontAwesomeIcons.boxesStacked,
+          TablerIcons.package,
           callback: () {
             _showStock(context);
           }
@@ -265,7 +264,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
       tiles.add(_listTile(
           context,
           L10().purchaseOrders,
-          FontAwesomeIcons.cartShopping,
+          TablerIcons.shopping_cart,
           callback: () {
             _showPurchaseOrders(context);
           }
@@ -276,7 +275,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
       tiles.add(_listTile(
         context,
         L10().salesOrders,
-        FontAwesomeIcons.truck,
+        TablerIcons.truck_delivery,
         callback: () {
           _showSalesOrders(context);
         }
@@ -288,7 +287,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
       tiles.add(_listTile(
           context,
           L10().suppliers,
-          FontAwesomeIcons.building,
+          TablerIcons.building,
           callback: () {
             _showSuppliers(context);
           }
@@ -304,7 +303,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
       tiles.add(_listTile(
           context,
           L10().manufacturers,
-          FontAwesomeIcons.industry,
+          TablerIcons.building_factory_2,
           callback: () {
             _showManufacturers(context);
           }
@@ -316,7 +315,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
       tiles.add(_listTile(
           context,
           L10().customers,
-          FontAwesomeIcons.userTie,
+          TablerIcons.building_store,
           callback: () {
             _showCustomers(context);
           }
@@ -336,8 +335,8 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
     bool validAddress = serverAddress != null;
     bool connecting = !InvenTreeAPI().isConnected() && InvenTreeAPI().isConnecting();
 
-    Widget leading = FaIcon(FontAwesomeIcons.circleExclamation, color: COLOR_DANGER);
-    Widget trailing = FaIcon(FontAwesomeIcons.server, color: COLOR_ACTION);
+    Widget leading = Icon(TablerIcons.exclamation_circle, color: COLOR_DANGER);
+    Widget trailing = Icon(TablerIcons.server, color: COLOR_ACTION);
     String title = L10().serverNotConnected;
     String subtitle = L10().profileSelectOrCreate;
 
@@ -346,7 +345,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
     } else if (connecting) {
       title = L10().serverConnecting;
       subtitle = serverAddress;
-      leading = Spinner(icon: FontAwesomeIcons.spinner, color: COLOR_PROGRESS);
+      leading = Spinner(icon: TablerIcons.loader_2, color: COLOR_PROGRESS);
     }
 
     return Center(
@@ -400,8 +399,8 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
         title: Text(L10().appTitle),
         actions: [
           IconButton(
-            icon: FaIcon(
-              FontAwesomeIcons.server,
+            icon: Icon(
+              TablerIcons.server,
               color: connected ? COLOR_SUCCESS : (connecting ? COLOR_PROGRESS: COLOR_DANGER),
             ),
             onPressed: _selectProfile,

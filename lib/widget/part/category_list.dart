@@ -98,7 +98,7 @@ class _PaginatedPartCategoryListState extends PaginatedSearchState<PaginatedPart
       title: Text(category.name),
       subtitle: Text(category.pathstring),
       trailing: Text("${category.partcount}"),
-      leading: category.customIcon,
+      leading: category.customIcon == null ? null : Icon(category.customIcon),
       onTap: () {
         Navigator.push(
           context,

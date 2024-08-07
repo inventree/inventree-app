@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/model.dart";
@@ -41,7 +41,7 @@ class _PurchaseOrderListWidgetState extends RefreshableState<PurchaseOrderListWi
     if (InvenTreePurchaseOrder().canCreate) {
       actions.add(
         SpeedDialChild(
-          child: FaIcon(FontAwesomeIcons.circlePlus),
+          child: Icon(TablerIcons.circle_plus),
           label: L10().purchaseOrderCreate,
           onTap: () {
             _createPurchaseOrder(context);

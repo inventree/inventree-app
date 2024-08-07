@@ -1,6 +1,7 @@
 
 import "package:flutter/material.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
+
 import "package:inventree/app_colors.dart";
 import "package:inventree/user_profile.dart";
 import "package:inventree/l10.dart";
@@ -84,12 +85,12 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
       ListTile(
         title: Text(L10().loginEnter),
         subtitle: Text(L10().loginEnterDetails),
-        leading: FaIcon(FontAwesomeIcons.userCheck),
+        leading: Icon(TablerIcons.user_check),
       ),
       ListTile(
         title: Text(L10().server),
         subtitle: Text(widget.profile.server),
-        leading: FaIcon(FontAwesomeIcons.server),
+        leading: Icon(TablerIcons.server),
       ),
       Divider(),
     ];
@@ -99,7 +100,7 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
     if (error.isNotEmpty) {
       after.add(Divider());
       after.add(ListTile(
-        leading: FaIcon(FontAwesomeIcons.circleExclamation, color: COLOR_DANGER),
+        leading: Icon(TablerIcons.exclamation_circle, color: COLOR_DANGER),
         title: Text(L10().error, style: TextStyle(color: COLOR_DANGER)),
         subtitle: Text(error, style: TextStyle(color: COLOR_DANGER)),
       ));
@@ -109,7 +110,7 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
         title: Text(L10().login),
         actions: [
           IconButton(
-            icon: FaIcon(FontAwesomeIcons.arrowRightToBracket, color: COLOR_SUCCESS),
+            icon: Icon(TablerIcons.transition_right, color: COLOR_SUCCESS),
             onPressed: () async {
               _doLogin(context);
             },
@@ -150,7 +151,7 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
                     labelStyle: TextStyle(fontWeight: FontWeight.bold),
                     hintText: L10().enterPassword,
                     suffixIcon: IconButton(
-                      icon: _obscured ? FaIcon(FontAwesomeIcons.eye) : FaIcon(FontAwesomeIcons.solidEyeSlash),
+                      icon: _obscured ? Icon(TablerIcons.eye) : Icon(TablerIcons.eye_off),
                       onPressed: () {
                         setState(() {
                           _obscured = !_obscured;

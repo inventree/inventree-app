@@ -1,8 +1,7 @@
 import "dart:io";
 
 import "package:flutter/material.dart";
-
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/inventree/part.dart";
@@ -47,7 +46,7 @@ class _PartImageState extends RefreshableState<PartImageWidget> {
       // File upload
       actions.add(
         IconButton(
-          icon: FaIcon(FontAwesomeIcons.fileArrowUp),
+          icon: Icon(TablerIcons.file_upload),
           onPressed: () async {
 
             FilePickerDialog.pickFile(

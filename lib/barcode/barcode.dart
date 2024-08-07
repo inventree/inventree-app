@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/preferences.dart";
 import "package:inventree/widget/order/sales_order_detail.dart";
@@ -121,7 +121,7 @@ class BarcodeScanHandler extends BarcodeHandler {
 
     showSnackIcon(
         L10().barcodeNoMatch,
-        icon: FontAwesomeIcons.circleExclamation,
+        icon: TablerIcons.exclamation_circle,
         success: false,
     );
   }

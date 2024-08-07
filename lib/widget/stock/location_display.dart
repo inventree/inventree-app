@@ -1,7 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
-
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/app_colors.dart";
 import "package:inventree/barcode/barcode.dart";
@@ -92,7 +91,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       if (InvenTreeStockItem().canEdit) {
         actions.add(
             SpeedDialChild(
-                child: FaIcon(FontAwesomeIcons.qrcode),
+                child: Icon(TablerIcons.qrcode),
                 label: L10().barcodeScanItem,
                 onTap: () {
                   scanBarcode(
@@ -125,7 +124,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       if (InvenTreeStockLocation().canEdit) {
         actions.add(
             SpeedDialChild(
-                child: FaIcon(FontAwesomeIcons.qrcode),
+                child: Icon(TablerIcons.qrcode),
                 label: L10().transferStockLocation,
                 onTap: () {
                   scanBarcode(
@@ -160,7 +159,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     if (InvenTreeStockLocation().canCreate) {
       actions.add(
           SpeedDialChild(
-              child: FaIcon(FontAwesomeIcons.sitemap),
+              child: Icon(TablerIcons.sitemap),
               label: L10().locationCreate,
               onTap: () async {
                 _newLocation(context);
@@ -173,7 +172,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     if (InvenTreeStockItem().canCreate) {
       actions.add(
           SpeedDialChild(
-              child: FaIcon(FontAwesomeIcons.boxesStacked),
+              child: Icon(TablerIcons.packages),
               label: L10().stockItemCreate,
               onTap: () async {
                 _newStockItem(context);
@@ -185,7 +184,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     if (widget.location != null && labels.isNotEmpty) {
       actions.add(
           SpeedDialChild(
-              child: FaIcon(FontAwesomeIcons.print),
+              child: Icon(TablerIcons.printer),
               label: L10().printLabel,
               onTap: () async {
                 selectAndPrintLabel(
@@ -334,7 +333,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
                 L10().stockTopLevel,
                 style: TextStyle(fontStyle: FontStyle.italic)
             ),
-            leading: FaIcon(FontAwesomeIcons.boxesStacked),
+            leading: Icon(TablerIcons.packages),
           )
       );
     } else {
@@ -342,8 +341,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
         ListTile(
           title: Text("${location!.name}"),
           subtitle: Text("${location!.description}"),
-          leading: location!.customIcon ??
-              FaIcon(FontAwesomeIcons.boxesStacked),
+          leading: location!.customIcon == null ? Icon(TablerIcons.packages) : Icon(location!.customIcon)
         ),
       ];
 
@@ -352,7 +350,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
             ListTile(
               title: Text(L10().parentLocation),
               subtitle: Text("${location!.parentPathString}"),
-              leading: FaIcon(FontAwesomeIcons.turnUp, color: COLOR_ACTION),
+              leading: Icon(TablerIcons.arrow_move_up, color: COLOR_ACTION),
               onTap: () async {
                 int parentId = location?.parentId ?? -1;
 
