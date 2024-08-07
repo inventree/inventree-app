@@ -105,7 +105,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
 
     confirmationDialog(
         L10().issueOrder, "",
-        icon: FontAwesomeIcons.paperPlane,
+        icon: TablerIcons.send,
         color: Colors.blue,
         acceptText: L10().issue,
         onAccept: () async {
@@ -121,7 +121,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
 
     confirmationDialog(
         L10().cancelOrder, "",
-        icon: FontAwesomeIcons.circleXmark,
+        icon: TablerIcons.circle_x,
         color: Colors.red,
         acceptText: L10().cancel,
         onAccept: () async {
@@ -139,7 +139,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
     if (widget.order.isPending) {
       actions.add(
           SpeedDialChild(
-              child: FaIcon(FontAwesomeIcons.paperPlane, color: Colors.blue),
+              child: Icon(TablerIcons.send, color: Colors.blue),
               label: L10().issueOrder,
               onTap: () async {
                 _issueOrder(context);
@@ -151,7 +151,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
     if (widget.order.isOpen) {
       actions.add(
           SpeedDialChild(
-              child: FaIcon(FontAwesomeIcons.circleXmark, color: Colors.red),
+              child: Icon(TablerIcons.circle_x, color: Colors.red),
               label: L10().cancelOrder,
               onTap: () async {
                 _cancelOrder(context);
