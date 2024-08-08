@@ -1,7 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
-
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/app_colors.dart";
 import "package:inventree/barcode/barcode.dart";
@@ -74,7 +73,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     if (InvenTreePart().canEdit) {
       actions.add(
           IconButton(
-              icon: Icon(Icons.edit_square),
+              icon: Icon(TablerIcons.edit),
               tooltip: L10().editPart,
               onPressed: () {
                 _editPartDialog(context);
@@ -109,7 +108,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     if (InvenTreeStockItem().canCreate) {
       actions.add(
           SpeedDialChild(
-              child: FaIcon(FontAwesomeIcons.box),
+              child: Icon(TablerIcons.packages),
               label: L10().stockItemCreate,
               onTap: () {
                 _newStockItem(context);
@@ -121,7 +120,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     if (labels.isNotEmpty) {
       actions.add(
         SpeedDialChild(
-          child: FaIcon(FontAwesomeIcons.print),
+          child: Icon(TablerIcons.printer),
           label: L10().printLabel,
           onTap: () async {
             selectAndPrintLabel(
@@ -329,8 +328,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
               color: COLOR_DANGER
             )
           ),
-          leading: FaIcon(
-              FontAwesomeIcons.circleExclamation,
+          leading: Icon(
+              TablerIcons.exclamation_circle,
               color: COLOR_DANGER
           ),
         )
@@ -363,7 +362,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         ListTile(
             title: Text(L10().partCategory),
             subtitle: Text("${part.categoryName}"),
-            leading: FaIcon(FontAwesomeIcons.sitemap, color: COLOR_ACTION),
+            leading: Icon(TablerIcons.sitemap, color: COLOR_ACTION),
             onTap: () async {
               if (part.categoryId > 0) {
 
@@ -384,7 +383,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           ListTile(
             title: Text(L10().partCategory),
             subtitle: Text(L10().partCategoryTopLevel),
-            leading: FaIcon(FontAwesomeIcons.sitemap, color: COLOR_ACTION),
+            leading: Icon(TablerIcons.sitemap, color: COLOR_ACTION),
             onTap: () {
               Navigator.push(context, MaterialPageRoute(
                   builder: (context) => CategoryDisplayWidget(null)));
@@ -398,7 +397,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       tiles.add(
           ListTile(
             title: Text(L10().variants),
-            leading: FaIcon(FontAwesomeIcons.shapes, color: COLOR_ACTION),
+            leading: Icon(TablerIcons.versions, color: COLOR_ACTION),
             trailing: Text(variantCount.toString()),
             onTap: () {
               Navigator.push(
@@ -421,7 +420,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       ListTile(
         title: Text(L10().availableStock),
         subtitle: Text(L10().stockDetails),
-        leading: FaIcon(FontAwesomeIcons.boxesStacked),
+        leading: Icon(TablerIcons.packages),
         trailing: Text(
           part.stockString(),
           style: TextStyle(
@@ -439,7 +438,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         ListTile(
           title: Text(L10().onOrder),
           subtitle: Text(L10().onOrderDetails),
-          leading: FaIcon(FontAwesomeIcons.cartShopping),
+          leading: Icon(TablerIcons.shopping_cart),
           trailing: Text("${part.onOrderString}"),
           onTap: () {
             // TODO - Order views
@@ -456,7 +455,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         tiles.add(
             ListTile(
                 title: Text(L10().billOfMaterials),
-                leading: FaIcon(FontAwesomeIcons.tableList, color: COLOR_ACTION),
+                leading: Icon(TablerIcons.list_tree, color: COLOR_ACTION),
                 trailing: Text(bomCount.toString()),
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(
@@ -471,7 +470,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         tiles.add(
             ListTile(
               title: Text(L10().building),
-              leading: FaIcon(FontAwesomeIcons.screwdriverWrench),
+              leading: Icon(TablerIcons.tools),
               trailing: Text("${simpleNumberString(part.building)}"),
               onTap: () {
                 // TODO
@@ -487,7 +486,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           ListTile(
             title: Text(L10().usedIn),
             subtitle: Text(L10().usedInDetails),
-            leading: FaIcon(FontAwesomeIcons.layerGroup, color: COLOR_ACTION),
+            leading: Icon(TablerIcons.stack_2, color: COLOR_ACTION),
             trailing: Text(usedInCount.toString()),
               onTap: () {
                 Navigator.push(
@@ -507,7 +506,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       tiles.add(
           ListTile(
             title: Text("${part.keywords}"),
-            leading: FaIcon(FontAwesomeIcons.tags),
+            leading: Icon(TablerIcons.tags),
           )
       );
     }
@@ -517,7 +516,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       tiles.add(
           ListTile(
             title: Text("${part.link}"),
-            leading: FaIcon(FontAwesomeIcons.link, color: COLOR_ACTION),
+            leading: Icon(TablerIcons.link, color: COLOR_ACTION),
             onTap: () {
               part.openLink();
             },
@@ -532,7 +531,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         ListTile(
           title: Text(L10().usedIn),
           subtitle: Text(L10().usedInDetails),
-          leading: FaIcon(FontAwesomeIcons.sitemap),
+          leading: Icon(TablerIcons.sitemap),
           trailing: Text("${part.usedInCount}"),
           onTap: () {
             // TODO
@@ -547,7 +546,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         tiles.add(
             ListTile(
               title: Text(L10().suppliers),
-              leading: FaIcon(FontAwesomeIcons.industry, color: COLOR_ACTION),
+              leading: Icon(TablerIcons.building_factory, color: COLOR_ACTION),
               trailing: Text("${part.supplierCount}"),
                 onTap: () {
                   Navigator.push(
@@ -566,7 +565,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     tiles.add(
         ListTile(
           title: Text(L10().notes),
-          leading: FaIcon(FontAwesomeIcons.noteSticky, color: COLOR_ACTION),
+          leading: Icon(TablerIcons.note, color: COLOR_ACTION),
           trailing: Text(""),
           onTap: () {
             Navigator.push(
@@ -580,7 +579,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     tiles.add(
       ListTile(
         title: Text(L10().attachments),
-        leading: FaIcon(FontAwesomeIcons.fileLines, color: COLOR_ACTION),
+        leading: Icon(TablerIcons.file, color: COLOR_ACTION),
         trailing: attachmentCount > 0 ? Text(attachmentCount.toString()) : null,
         onTap: () {
           Navigator.push(

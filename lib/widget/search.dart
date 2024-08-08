@@ -1,7 +1,7 @@
 import "dart:async";
 import "package:async/async.dart";
 import "package:flutter/material.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
@@ -357,8 +357,8 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
           },
         ),
         trailing: GestureDetector(
-          child: FaIcon(
-            searchController.text.isEmpty ? FontAwesomeIcons.magnifyingGlass : FontAwesomeIcons.deleteLeft,
+          child: Icon(
+            searchController.text.isEmpty ? TablerIcons.search : TablerIcons.backspace,
             color: searchController.text.isEmpty ? COLOR_ACTION : COLOR_DANGER,
           ),
           onTap: () {
@@ -379,7 +379,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
       results.add(
         ListTile(
           title: Text(L10().parts),
-          leading: FaIcon(FontAwesomeIcons.shapes),
+          leading: Icon(TablerIcons.box),
           trailing: Text("${nPartResults}"),
           onTap: () {
             Navigator.push(
@@ -402,7 +402,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
       results.add(
         ListTile(
           title: Text(L10().partCategories),
-          leading: FaIcon(FontAwesomeIcons.sitemap),
+          leading: Icon(TablerIcons.sitemap),
           trailing: Text("${nCategoryResults}"),
           onTap: () {
             Navigator.push(
@@ -425,7 +425,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
       results.add(
         ListTile(
           title: Text(L10().stockItems),
-          leading: FaIcon(FontAwesomeIcons.boxesStacked),
+          leading: Icon(TablerIcons.package),
           trailing: Text("${nStockResults}"),
           onTap: () {
             Navigator.push(
@@ -448,7 +448,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
       results.add(
         ListTile(
           title: Text(L10().stockLocations),
-          leading: FaIcon(FontAwesomeIcons.locationDot),
+          leading: Icon(TablerIcons.location),
           trailing: Text("${nLocationResults}"),
           onTap: () {
             Navigator.push(
@@ -471,7 +471,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
       results.add(
         ListTile(
           title: Text(L10().suppliers),
-          leading: FaIcon(FontAwesomeIcons.building),
+          leading: Icon(TablerIcons.building),
           trailing: Text("${nSupplierResults}"),
           onTap: () {
             Navigator.push(
@@ -496,7 +496,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
       results.add(
         ListTile(
           title: Text(L10().purchaseOrders),
-          leading: FaIcon(FontAwesomeIcons.cartShopping),
+          leading: Icon(TablerIcons.shopping_cart),
           trailing: Text("${nPurchaseOrderResults}"),
           onTap: () {
             Navigator.push(
@@ -518,7 +518,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
       tiles.add(
         ListTile(
           title: Text(L10().searching),
-          leading: FaIcon(FontAwesomeIcons.magnifyingGlass),
+          leading: Icon(TablerIcons.search),
           trailing: CircularProgressIndicator(),
         )
       );
@@ -531,7 +531,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
             L10().queryNoResults,
             style: TextStyle(fontStyle: FontStyle.italic),
           ),
-          leading: FaIcon(FontAwesomeIcons.magnifyingGlassMinus),
+          leading: Icon(TablerIcons.zoom_cancel),
         )
       );
     } else {

@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/order/po_line_list.dart";
 
@@ -57,7 +57,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
     if (widget.order.canEdit) {
       actions.add(
         IconButton(
-          icon: Icon(Icons.edit_square),
+          icon: Icon(TablerIcons.edit),
           tooltip: L10().purchaseOrderEdit,
           onPressed: () {
             editOrder(context);
@@ -78,7 +78,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
         actions.add(
           SpeedDialChild(
-            child: FaIcon(FontAwesomeIcons.circlePlus, color: Colors.green),
+            child: Icon(TablerIcons.circle_plus, color: Colors.green),
             label: L10().lineItemAdd,
             onTap: () async {
               _addLineItem(context);
@@ -88,7 +88,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
         actions.add(
           SpeedDialChild(
-            child: FaIcon(FontAwesomeIcons.paperPlane, color: Colors.blue),
+            child: Icon(TablerIcons.send, color: Colors.blue),
             label: L10().issueOrder,
             onTap: () async {
               _issueOrder(context);
@@ -100,7 +100,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       if (widget.order.isOpen) {
         actions.add(
           SpeedDialChild(
-            child: FaIcon(FontAwesomeIcons.circleXmark, color: Colors.red),
+            child: Icon(TablerIcons.circle_x, color: Colors.red),
             label: L10().cancelOrder,
             onTap: () async {
               _cancelOrder(context);
@@ -142,7 +142,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
     confirmationDialog(
       L10().issueOrder, "",
-      icon: FontAwesomeIcons.paperPlane,
+      icon: TablerIcons.send,
       color: Colors.blue,
       acceptText: L10().issue,
       onAccept: () async {
@@ -158,7 +158,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
     confirmationDialog(
       L10().cancelOrder, "",
-      icon: FontAwesomeIcons.circleXmark,
+      icon: TablerIcons.circle_x,
       color: Colors.red,
       acceptText: L10().cancel,
       onAccept: () async {
@@ -193,7 +193,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
     if (widget.order.isPending && api.supportsBarcodePOAddLineEndpoint) {
       actions.add(
         SpeedDialChild(
-          child: FaIcon(FontAwesomeIcons.circlePlus, color: COLOR_SUCCESS),
+          child: Icon(TablerIcons.circle_plus, color: COLOR_SUCCESS),
           label: L10().lineItemAdd,
           onTap: () async {
             scanBarcode(
@@ -296,7 +296,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       tiles.add(ListTile(
         title: Text(L10().projectCode),
         subtitle: Text("${widget.order.projectCode} - ${widget.order.projectCodeDescription}"),
-        leading: FaIcon(FontAwesomeIcons.list),
+        leading: Icon(TablerIcons.list),
       ));
     }
 
@@ -304,7 +304,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       tiles.add(ListTile(
         title: Text(L10().supplier),
         subtitle: Text(supplier.name),
-        leading: FaIcon(FontAwesomeIcons.building, color: COLOR_ACTION),
+        leading: Icon(TablerIcons.building, color: COLOR_ACTION),
         onTap: () {
           Navigator.push(
             context,
@@ -320,7 +320,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       tiles.add(ListTile(
         title: Text(L10().supplierReference),
         subtitle: Text(widget.order.supplierReference),
-        leading: FaIcon(FontAwesomeIcons.hashtag),
+        leading: Icon(TablerIcons.hash),
       ));
     }
 
@@ -332,13 +332,13 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
         completedLines.toDouble(),
         maximum: widget.order.lineItemCount.toDouble(),
       ),
-      leading: FaIcon(FontAwesomeIcons.clipboardCheck),
+      leading: Icon(TablerIcons.clipboard_check),
       trailing: Text("${completedLines} /  ${widget.order.lineItemCount}", style: TextStyle(color: lineColor)),
     ));
 
     tiles.add(ListTile(
       title: Text(L10().totalPrice),
-      leading: FaIcon(FontAwesomeIcons.dollarSign),
+      leading: Icon(TablerIcons.currency_dollar),
       trailing: Text(
         renderCurrency(widget.order.totalPrice, widget.order.totalPriceCurrency)
       ),
@@ -348,7 +348,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       tiles.add(ListTile(
         title: Text(L10().issueDate),
         subtitle: Text(widget.order.issueDate),
-        leading: FaIcon(FontAwesomeIcons.calendarDays),
+        leading: Icon(TablerIcons.calendar),
       ));
     }
 
@@ -356,7 +356,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       tiles.add(ListTile(
         title: Text(L10().targetDate),
         subtitle: Text(widget.order.targetDate),
-        leading: FaIcon(FontAwesomeIcons.calendarDays),
+        leading: Icon(TablerIcons.calendar),
       ));
     }
 
@@ -364,7 +364,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
     tiles.add(
         ListTile(
           title: Text(L10().notes),
-          leading: FaIcon(FontAwesomeIcons.noteSticky, color: COLOR_ACTION),
+          leading: Icon(TablerIcons.note, color: COLOR_ACTION),
           onTap: () {
             Navigator.push(
               context,
@@ -380,7 +380,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
     tiles.add(
         ListTile(
           title: Text(L10().attachments),
-          leading: FaIcon(FontAwesomeIcons.fileLines, color: COLOR_ACTION),
+          leading: Icon(TablerIcons.file, color: COLOR_ACTION),
           trailing: attachmentCount > 0 ? Text(attachmentCount.toString()) : null,
           onTap: () {
             Navigator.push(

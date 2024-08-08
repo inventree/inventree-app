@@ -10,7 +10,7 @@ import "package:one_context/one_context.dart";
 import "package:open_filex/open_filex.dart";
 import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/material.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:flutter_cache_manager/flutter_cache_manager.dart";
 import "package:path_provider/path_provider.dart";
 
@@ -261,7 +261,7 @@ class InvenTreeAPI {
       showSnackIcon(
         L10().notConnected,
         success: false,
-        icon: FontAwesomeIcons.server
+        icon: TablerIcons.server
       );
 
       return false;
@@ -428,7 +428,7 @@ class InvenTreeAPI {
     if (address.isEmpty) {
       showSnackIcon(
           L10().incompleteDetails,
-          icon: FontAwesomeIcons.circleExclamation,
+          icon: TablerIcons.exclamation_circle,
           success: false
       );
       return false;
@@ -637,7 +637,7 @@ class InvenTreeAPI {
       showSnackIcon(
           L10().profileSelect,
           success: false,
-          icon: FontAwesomeIcons.circleExclamation
+          icon: TablerIcons.exclamation_circle
       );
       return false;
     }
@@ -655,7 +655,7 @@ class InvenTreeAPI {
     if (_connected) {
       showSnackIcon(
         L10().serverConnected,
-        icon: FontAwesomeIcons.server,
+        icon: TablerIcons.server,
         success: true,
       );
 
@@ -1485,7 +1485,7 @@ class InvenTreeAPI {
     return CachedNetworkImage(
       imageUrl: url,
       placeholder: (context, url) => CircularProgressIndicator(),
-      errorWidget: (context, url, error) => FaIcon(FontAwesomeIcons.circleXmark, color: COLOR_DANGER),
+      errorWidget: (context, url, error) => Icon(TablerIcons.circle_x, color: COLOR_DANGER),
       httpHeaders: defaultHeaders(),
       height: height,
       width: width,
@@ -1589,7 +1589,7 @@ class InvenTreeAPI {
           L10().locateLocation,
           "",
           fields,
-          icon: FontAwesomeIcons.magnifyingGlassLocation,
+          icon: TablerIcons.location_search,
           onSuccess: (Map<String, dynamic> data) async {
             plugin_name = (data["plugin"] ?? "") as String;
           }

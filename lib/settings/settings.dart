@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:package_info_plus/package_info_plus.dart";
 
 import "package:inventree/app_colors.dart";
@@ -49,7 +49,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
               ListTile(
                   title: Text(L10().server),
                   subtitle: Text(L10().configureServer),
-                  leading: FaIcon(FontAwesomeIcons.server, color: COLOR_ACTION),
+                  leading: Icon(TablerIcons.server, color: COLOR_ACTION),
                   onTap: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeSelectServerWidget()));
                   },
@@ -57,7 +57,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
               ListTile(
                   title: Text(L10().appSettings),
                   subtitle: Text(L10().appSettingsDetails),
-                  leading: FaIcon(FontAwesomeIcons.gears, color: COLOR_ACTION),
+                  leading: Icon(TablerIcons.settings, color: COLOR_ACTION),
                   onTap: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeAppSettingsWidget()));
                   }
@@ -65,7 +65,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
               ListTile(
                 title: Text(L10().homeScreen),
                 subtitle: Text(L10().homeScreenSettings),
-                leading: FaIcon(FontAwesomeIcons.house, color: COLOR_ACTION),
+                leading: Icon(TablerIcons.home, color: COLOR_ACTION),
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreenSettingsWidget()));
                 }
@@ -73,7 +73,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
               ListTile(
                 title: Text(L10().barcodes),
                 subtitle: Text(L10().barcodeSettings),
-                leading: FaIcon(FontAwesomeIcons.barcode, color: COLOR_ACTION),
+                leading: Icon(TablerIcons.barcode, color: COLOR_ACTION),
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeBarcodeSettingsWidget()));
                 }
@@ -81,7 +81,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
               ListTile(
                 title: Text(L10().part),
                 subtitle: Text(L10().partSettings),
-                leading: FaIcon(FontAwesomeIcons.shapes, color: COLOR_ACTION),
+                leading: Icon(TablerIcons.box, color: COLOR_ACTION),
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreePartSettingsWidget()));
                 }
@@ -89,7 +89,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
               Divider(),
               ListTile(
                 title: Text(L10().about),
-                leading: FaIcon(FontAwesomeIcons.circleInfo, color: COLOR_ACTION),
+                leading: Icon(TablerIcons.info_circle, color: COLOR_ACTION),
                 onTap: _about,
               )
             ]

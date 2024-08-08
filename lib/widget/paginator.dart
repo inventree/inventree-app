@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:infinite_scroll_pagination/infinite_scroll_pagination.dart";
 
 import "package:inventree/api_form.dart";
@@ -208,7 +208,7 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
       L10().filteringOptions,
       "",
       fields,
-      icon: FontAwesomeIcons.circleCheck,
+      icon: TablerIcons.circle_check,
       onSuccess: (Map<String, dynamic> data) async {
 
         // Extract data from the processed form
@@ -487,8 +487,8 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
   Widget buildSearchInput(BuildContext context) {
     return ListTile(
       trailing: GestureDetector(
-        child: FaIcon(
-          searchController.text.isEmpty ? FontAwesomeIcons.magnifyingGlass : FontAwesomeIcons.deleteLeft,
+        child: Icon(
+          searchController.text.isEmpty ? TablerIcons.search : TablerIcons.backspace,
           color: searchController.text.isNotEmpty ? COLOR_DANGER : COLOR_ACTION,
         ),
         onTap: () {
@@ -526,7 +526,7 @@ class NoResultsWidget extends StatelessWidget {
         description,
         style: TextStyle(fontStyle: FontStyle.italic),
       ),
-      leading: FaIcon(FontAwesomeIcons.circleExclamation, color: COLOR_WARNING),
+      leading: Icon(TablerIcons.exclamation_circle, color: COLOR_WARNING),
     );
   }
 

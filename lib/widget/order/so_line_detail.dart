@@ -6,7 +6,7 @@
 
 import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/barcode/barcode.dart";
 import "package:inventree/barcode/sales_order.dart";
 
@@ -52,7 +52,7 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
     if (widget.item.canEdit) {
       actions.add(
         IconButton(
-            icon: Icon(Icons.edit_square),
+            icon: Icon(TablerIcons.edit),
             onPressed: () {
               _editLineItem(context);
             }),
@@ -87,7 +87,7 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
       order!.allocate_url,
       fields,
       method: "POST",
-      icon: FontAwesomeIcons.rightToBracket,
+      icon: TablerIcons.transition_right,
       onSuccess: (data) async {
         refresh(context);
       }
@@ -122,7 +122,7 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
     if (order != null && order!.isOpen) {
       buttons.add(
         SpeedDialChild(
-          child: FaIcon(FontAwesomeIcons.rightToBracket, color: Colors.blue),
+          child: Icon(TablerIcons.transition_right, color: Colors.blue),
           label: L10().allocateStock,
           onTap: () async {
             _allocateStock(context);
@@ -143,7 +143,7 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
       if (api.supportsBarcodeSOAllocateEndpoint) {
         actions.add(
             SpeedDialChild(
-              child: FaIcon(FontAwesomeIcons.rightToBracket),
+              child: Icon(TablerIcons.transition_right),
               label: L10().allocateStock,
               onTap: () async {
                 scanBarcode(
@@ -184,7 +184,7 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
       ListTile(
         title: Text(L10().part),
         subtitle: Text(widget.item.partName),
-        leading: FaIcon(FontAwesomeIcons.shapes, color: COLOR_ACTION),
+        leading: Icon(TablerIcons.box, color: COLOR_ACTION),
         trailing: api.getThumbnail(widget.item.partImage),
         onTap: () async {
           showLoadingOverlay(context);
@@ -202,7 +202,7 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
     tiles.add(
       ListTile(
         title: Text(L10().availableStock),
-        leading: FaIcon(FontAwesomeIcons.boxesStacked),
+        leading: Icon(TablerIcons.packages),
         trailing: Text(simpleNumberString(widget.item.availableStock))
       )
     );
@@ -210,7 +210,7 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
     // Allocated quantity
     tiles.add(
       ListTile(
-        leading: FaIcon(FontAwesomeIcons.clipboardCheck),
+        leading: Icon(TablerIcons.clipboard_check),
         title: Text(L10().allocated),
         subtitle: ProgressBar(widget.item.allocatedRatio),
         trailing: Text(
@@ -233,7 +233,7 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
             color: widget.item.isComplete ? COLOR_SUCCESS : COLOR_WARNING
           ),
         ),
-        leading: FaIcon(FontAwesomeIcons.truck)
+        leading: Icon(TablerIcons.truck)
       )
     );
 
@@ -243,7 +243,7 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
         ListTile(
           title: Text(L10().reference),
           subtitle: Text(widget.item.reference),
-          leading: FaIcon(FontAwesomeIcons.hashtag)
+          leading: Icon(TablerIcons.hash)
         )
       );
     }
@@ -254,7 +254,7 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
           ListTile(
             title: Text(L10().notes),
             subtitle: Text(widget.item.notes),
-            leading: FaIcon(FontAwesomeIcons.noteSticky),
+            leading: Icon(TablerIcons.note),
           )
       );
     }
@@ -265,7 +265,7 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
           ListTile(
             title: Text(L10().link),
             subtitle: Text(widget.item.link),
-            leading: FaIcon(FontAwesomeIcons.link, color: COLOR_ACTION),
+            leading: Icon(TablerIcons.link, color: COLOR_ACTION),
             onTap: () async {
               await openLink(widget.item.link);
             },

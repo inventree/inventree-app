@@ -4,7 +4,7 @@ import "package:inventree/settings/release.dart";
 
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:package_info_plus/package_info_plus.dart";
 
 import "package:inventree/l10.dart";
@@ -91,8 +91,8 @@ class InvenTreeAboutWidget extends StatelessWidget {
           ListTile(
             title: Text(L10().address),
             subtitle: Text(InvenTreeAPI().baseUrl.isNotEmpty ? InvenTreeAPI().baseUrl : L10().notConnected),
-            leading: FaIcon(FontAwesomeIcons.globe),
-            trailing: InvenTreeAPI().isConnected() ? FaIcon(FontAwesomeIcons.circleCheck, color: COLOR_SUCCESS) : FaIcon(FontAwesomeIcons.circleXmark, color: COLOR_DANGER),
+            leading: Icon(TablerIcons.globe),
+            trailing: InvenTreeAPI().isConnected() ? Icon(TablerIcons.circle_check, color: COLOR_SUCCESS) : Icon(TablerIcons.circle_x, color: COLOR_DANGER),
           )
       );
 
@@ -100,7 +100,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
         ListTile(
           title: Text(L10().username),
           subtitle: Text(InvenTreeAPI().username),
-          leading: InvenTreeAPI().username.isNotEmpty ? FaIcon(FontAwesomeIcons.user) : FaIcon(FontAwesomeIcons.userSlash, color: COLOR_DANGER),
+          leading: InvenTreeAPI().username.isNotEmpty ? Icon(TablerIcons.user) : Icon(TablerIcons.user_cancel, color: COLOR_DANGER),
         )
       );
 
@@ -108,7 +108,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
         ListTile(
           title: Text(L10().version),
           subtitle: Text(InvenTreeAPI().serverVersion.isNotEmpty ? InvenTreeAPI().serverVersion : L10().notConnected),
-          leading: FaIcon(FontAwesomeIcons.circleInfo),
+          leading: Icon(TablerIcons.info_circle),
         )
       );
 
@@ -116,7 +116,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
         ListTile(
           title: Text(L10().serverInstance),
           subtitle: Text(InvenTreeAPI().serverInstance.isNotEmpty ? InvenTreeAPI().serverInstance : L10().notConnected),
-          leading: FaIcon(FontAwesomeIcons.server),
+          leading: Icon(TablerIcons.server),
         )
       );
 
@@ -125,7 +125,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
         ListTile(
           title: Text(L10().pluginSupport),
           subtitle: Text(L10().pluginSupportDetail),
-          leading: FaIcon(FontAwesomeIcons.plug),
+          leading: Icon(TablerIcons.plug),
         )
       );
 
@@ -137,7 +137,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
             L10().serverNotConnected,
             style: TextStyle(fontStyle: FontStyle.italic),
           ),
-          leading: FaIcon(FontAwesomeIcons.circleExclamation)
+          leading: Icon(TablerIcons.exclamation_circle)
         )
       );
     }
@@ -155,7 +155,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
       ListTile(
         title: Text(L10().packageName),
         subtitle: Text("${info.packageName}"),
-        leading: FaIcon(FontAwesomeIcons.box)
+        leading: Icon(TablerIcons.box)
       )
     );
 
@@ -163,7 +163,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
       ListTile(
         title: Text(L10().version),
         subtitle: Text("${info.version} - Build ${info.buildNumber}"),
-        leading: FaIcon(FontAwesomeIcons.circleInfo)
+        leading: Icon(TablerIcons.info_circle)
       )
     );
 
@@ -171,7 +171,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
       ListTile(
         title: Text(L10().releaseNotes),
         subtitle: Text(L10().appReleaseNotes),
-        leading: FaIcon(FontAwesomeIcons.fileLines, color: COLOR_ACTION),
+        leading: Icon(TablerIcons.file, color: COLOR_ACTION),
         onTap: () {
           _releaseNotes(context);
         },
@@ -182,7 +182,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
       ListTile(
         title: Text(L10().credits),
         subtitle: Text(L10().appCredits),
-        leading: FaIcon(FontAwesomeIcons.bullhorn, color: COLOR_ACTION),
+        leading: Icon(TablerIcons.balloon, color: COLOR_ACTION),
         onTap: () {
           _credits(context);
         }
@@ -193,7 +193,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
       ListTile(
         title: Text(L10().documentation),
         subtitle: Text("https://docs.inventree.org/app"),
-        leading: FaIcon(FontAwesomeIcons.book, color: COLOR_ACTION),
+        leading: Icon(TablerIcons.book, color: COLOR_ACTION),
         onTap: () {
           _openDocs();
         },
@@ -204,7 +204,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
       ListTile(
         title: Text(L10().translate),
         subtitle: Text(L10().translateHelp),
-        leading: FaIcon(FontAwesomeIcons.language, color: COLOR_ACTION),
+        leading: Icon(TablerIcons.language, color: COLOR_ACTION),
         onTap: () {
           _translate();
         }
@@ -215,7 +215,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
       ListTile(
         title: Text(L10().reportBug),
         subtitle: Text(L10().reportBugDescription),
-        leading: FaIcon(FontAwesomeIcons.bug, color: COLOR_ACTION),
+        leading: Icon(TablerIcons.bug, color: COLOR_ACTION),
         onTap: () {
         _reportBug(context);
         },

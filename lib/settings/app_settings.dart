@@ -3,7 +3,7 @@ import "package:inventree/api.dart";
 import "package:one_context/one_context.dart";
 
 import "package:adaptive_theme/adaptive_theme.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:flutter_localized_locales/flutter_localized_locales.dart";
 
 import "package:inventree/app_colors.dart";
@@ -101,7 +101,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
       L10().languageSelect,
       "",
       fields,
-      icon: FontAwesomeIcons.circleCheck,
+      icon: TablerIcons.circle_check,
       onSuccess: (Map<String, dynamic> data) async {
 
         String locale_name = (data["locale"] ?? "") as String;
@@ -168,12 +168,12 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
                 L10().appSettings,
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              leading: FaIcon(FontAwesomeIcons.mobile),
+              leading: Icon(TablerIcons.device_mobile),
             ),
             ListTile(
               title: Text(L10().darkMode),
               subtitle: Text(L10().darkModeEnable),
-              leading: FaIcon(FontAwesomeIcons.moon),
+              leading: Icon(TablerIcons.moon),
               trailing: Switch(
                 value: darkMode,
                 onChanged: (bool value) {
@@ -226,7 +226,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
             ListTile(
               title: Text(L10().labelPrinting),
               subtitle: Text(L10().labelPrintingDetail),
-              leading: FaIcon(FontAwesomeIcons.print),
+              leading: Icon(TablerIcons.printer),
               trailing: Switch(
                 value: enableLabelPrinting,
                 onChanged: (bool value) {
@@ -240,7 +240,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
             ListTile(
               title: Text(L10().strictHttps),
               subtitle: Text(L10().strictHttpsDetails),
-              leading: FaIcon(FontAwesomeIcons.lock),
+              leading: Icon(TablerIcons.lock),
               trailing: Switch(
                 value: strictHttps,
                 onChanged: (bool value) {
@@ -254,7 +254,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
             ListTile(
               title: Text(L10().language),
               subtitle: Text(languageName),
-              leading: FaIcon(FontAwesomeIcons.language),
+              leading: Icon(TablerIcons.language),
               onTap: () async {
                 _selectLocale(context);
               },
@@ -262,7 +262,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
             ListTile(
               title: Text(L10().errorReportUpload),
               subtitle: Text(L10().errorReportUploadDetails),
-              leading: FaIcon(FontAwesomeIcons.bug),
+              leading: Icon(TablerIcons.bug),
               trailing: Switch(
                 value: reportErrors,
                 onChanged: (bool value) {
@@ -278,13 +278,13 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
                 L10().sounds,
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              leading: FaIcon(FontAwesomeIcons.volumeHigh),
+              leading: Icon(TablerIcons.volume),
             ),
             Divider(),
             ListTile(
               title: Text(L10().serverError),
               subtitle: Text(L10().soundOnServerError),
-              leading: FaIcon(FontAwesomeIcons.server),
+              leading: Icon(TablerIcons.server),
               trailing: Switch(
                 value: serverSounds,
                 onChanged: (bool value) {
@@ -298,7 +298,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
             ListTile(
               title: Text(L10().barcodeTones),
               subtitle: Text(L10().soundOnBarcodeAction),
-              leading: Icon(Icons.qr_code),
+              leading: Icon(TablerIcons.qrcode),
               trailing: Switch(
                 value: barcodeSounds,
                 onChanged: (bool value) {

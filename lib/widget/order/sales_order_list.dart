@@ -1,7 +1,7 @@
 
 import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/widget/order/sales_order_detail.dart";
 import "package:inventree/widget/paginator.dart";
@@ -39,7 +39,7 @@ class _SalesOrderListWidgetState extends RefreshableState<SalesOrderListWidget> 
     if (InvenTreeSalesOrder().canCreate) {
       actions.add(
           SpeedDialChild(
-              child: FaIcon(FontAwesomeIcons.circlePlus),
+              child: Icon(TablerIcons.circle_plus),
               label: L10().salesOrderCreate,
               onTap: () {
                 _createSalesOrder(context);

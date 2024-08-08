@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/l10.dart";
 import "package:inventree/api.dart";
@@ -57,7 +57,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
     if (InvenTreeCompany().canEdit) {
       actions.add(
         IconButton(
-            icon: Icon(Icons.edit_square),
+            icon: Icon(TablerIcons.edit),
             tooltip: L10().companyEdit,
             onPressed: () {
               editCompany(context);
@@ -75,7 +75,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
 
     if (widget.company.isCustomer && InvenTreeSalesOrder().canCreate) {
       actions.add(SpeedDialChild(
-        child: FaIcon(FontAwesomeIcons.truck),
+        child: Icon(TablerIcons.truck),
         label: L10().salesOrderCreate,
         onTap: () async {
           _createSalesOrder(context);
@@ -85,7 +85,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
 
     if (widget.company.isSupplier && InvenTreePurchaseOrder().canCreate) {
       actions.add(SpeedDialChild(
-        child: FaIcon(FontAwesomeIcons.cartShopping),
+        child: Icon(TablerIcons.shopping_cart),
         label: L10().purchaseOrderCreate,
         onTap: () async {
           _createPurchaseOrder(context);
@@ -243,8 +243,8 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
                     color: COLOR_DANGER
                 )
             ),
-            leading: FaIcon(
-                FontAwesomeIcons.circleExclamation,
+            leading: Icon(
+                TablerIcons.exclamation_circle,
                 color: COLOR_DANGER
             ),
           )
@@ -254,7 +254,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
   if (widget.company.website.isNotEmpty) {
     tiles.add(ListTile(
       title: Text("${widget.company.website}"),
-      leading: FaIcon(FontAwesomeIcons.globe, color: COLOR_ACTION),
+      leading: Icon(TablerIcons.globe, color: COLOR_ACTION),
       onTap: () async {
         openLink(widget.company.website);
       },
@@ -266,7 +266,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
   if (widget.company.email.isNotEmpty) {
     tiles.add(ListTile(
       title: Text("${widget.company.email}"),
-      leading: FaIcon(FontAwesomeIcons.at, color: COLOR_ACTION),
+      leading: Icon(TablerIcons.at, color: COLOR_ACTION),
       onTap: () async {
         openLink("mailto:${widget.company.email}");
       },
@@ -278,7 +278,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
   if (widget.company.phone.isNotEmpty) {
     tiles.add(ListTile(
       title: Text("${widget.company.phone}"),
-      leading: FaIcon(FontAwesomeIcons.phone, color: COLOR_ACTION),
+      leading: Icon(TablerIcons.phone, color: COLOR_ACTION),
       onTap: () {
         openLink("tel:${widget.company.phone}");
       },
@@ -291,7 +291,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
     if (widget.company.link.isNotEmpty) {
       tiles.add(ListTile(
         title: Text("${widget.company.link}"),
-        leading: FaIcon(FontAwesomeIcons.link, color: COLOR_ACTION),
+        leading: Icon(TablerIcons.link, color: COLOR_ACTION),
         onTap: () {
           widget.company.openLink();
         },
@@ -310,7 +310,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
         tiles.add(
           ListTile(
             title: Text(L10().supplierParts),
-            leading: FaIcon(FontAwesomeIcons.building, color: COLOR_ACTION),
+            leading: Icon(TablerIcons.building, color: COLOR_ACTION),
             trailing: Text(supplierPartCount.toString()),
             onTap: () {
               Navigator.push(
@@ -329,7 +329,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
       tiles.add(
         ListTile(
           title: Text(L10().purchaseOrders),
-          leading: FaIcon(FontAwesomeIcons.cartShopping, color: COLOR_ACTION),
+          leading: Icon(TablerIcons.shopping_cart, color: COLOR_ACTION),
           trailing: Text("${outstandingPurchaseOrders}"),
           onTap: () {
             Navigator.push(
@@ -351,7 +351,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
       tiles.add(
         ListTile(
           title: Text(L10().suppliedParts),
-          leading: FaIcon(FontAwesomeIcons.shapes),
+          leading: Icon(TablerIcons.box),
           trailing: Text("${company.partSuppliedCount}"),
         )
       );
@@ -366,7 +366,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
       tiles.add(
         ListTile(
           title: Text(L10().salesOrders),
-          leading: FaIcon(FontAwesomeIcons.truck, color: COLOR_ACTION),
+          leading: Icon(TablerIcons.truck, color: COLOR_ACTION),
           trailing: Text("${outstandingSalesOrders}"),
           onTap: () {
             Navigator.push(
@@ -387,7 +387,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
     if (widget.company.notes.isNotEmpty) {
       tiles.add(ListTile(
         title: Text(L10().notes),
-        leading: FaIcon(FontAwesomeIcons.noteSticky),
+        leading: Icon(TablerIcons.note),
         onTap: null,
       ));
     }
@@ -395,7 +395,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
 
     tiles.add(ListTile(
       title: Text(L10().attachments),
-      leading: FaIcon(FontAwesomeIcons.fileLines, color: COLOR_ACTION),
+      leading: Icon(TablerIcons.file, color: COLOR_ACTION),
       trailing: attachmentCount > 0 ? Text(attachmentCount.toString()) : null,
       onTap: () {
         Navigator.push(

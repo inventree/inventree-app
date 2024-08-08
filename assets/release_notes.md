@@ -3,6 +3,7 @@
 
 - Support "ON_HOLD" status for Purchase Orders
 - Support "ON_HOLD" status for Sales Orders
+- Change base icon package from FontAwesome to TablerIcons
 
 ### 0.16.1 - July 2024
 ---

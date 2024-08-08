@@ -2,7 +2,7 @@
 import "dart:io";
 
 import "package:intl/intl.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:dropdown_search/dropdown_search.dart";
 import "package:datetime_picker_formfield/datetime_picker_formfield.dart";
 import "package:flutter/material.dart";
@@ -335,7 +335,7 @@ class APIFormField {
           controller: controller,
         ),
         trailing: IconButton(
-          icon: Icon(Icons.qr_code),
+          icon: Icon(TablerIcons.qrcode),
           onPressed: () async {
             var handler = UniqueBarcodeHandler((String hash) {
               controller.text = hash;
@@ -409,7 +409,7 @@ class APIFormField {
           controller: controller,
         ),
         trailing: IconButton(
-          icon: FaIcon(FontAwesomeIcons.circlePlus),
+          icon: Icon(TablerIcons.circle_plus),
           onPressed: () async {
             FilePickerDialog.pickFile(
               message: L10().attachmentSelect,
@@ -705,7 +705,7 @@ class APIFormField {
         bool isGroup = (data["label"] ?? "") == "group";
         return ListTile(
           title: Text(name),
-          leading: FaIcon(isGroup ? FontAwesomeIcons.users : FontAwesomeIcons.user),
+          leading: Icon(isGroup ? TablerIcons.users : TablerIcons.user),
         );
       case "contact":
         String name = (data["name"] ?? "") as String;
@@ -726,7 +726,7 @@ class APIFormField {
         return ListTile(
             title: Text(project_code.code),
             subtitle: Text(project_code.description),
-            leading: FaIcon(FontAwesomeIcons.list)
+            leading: Icon(TablerIcons.list)
         );
       default:
         return ListTile(
@@ -745,7 +745,7 @@ class APIFormField {
   // Construct a widget to instruct the user that no results were found
   Widget _renderEmptyResult() {
     return ListTile(
-      leading: FaIcon(FontAwesomeIcons.magnifyingGlass),
+      leading: Icon(TablerIcons.search),
       title: Text(L10().noResults),
       subtitle: Text(
         L10().queryNoResults,
@@ -955,7 +955,7 @@ Future<void> launchApiForm(
       String method = "PATCH",
       Function(Map<String, dynamic>)? onSuccess,
       Function? onCancel,
-      IconData icon = FontAwesomeIcons.floppyDisk,
+      IconData icon = TablerIcons.device_floppy
     }) async {
 
   showLoadingOverlay(context);
@@ -979,7 +979,7 @@ Future<void> launchApiForm(
       // User does not have permission to perform this action
       showSnackIcon(
         L10().response403,
-        icon: FontAwesomeIcons.userXmark,
+        icon: TablerIcons.user_x,
       );
 
       hideLoadingOverlay();
@@ -1061,7 +1061,7 @@ class APIFormWidget extends StatefulWidget {
         Key? key,
         this.onSuccess,
         this.fileField = "",
-        this.icon = FontAwesomeIcons.floppyDisk,
+        this.icon = TablerIcons.device_floppy,
       }
       ) : super(key: key);
 
@@ -1114,8 +1114,8 @@ class _APIFormWidgetState extends State<APIFormWidget> {
                 color: COLOR_DANGER,
               ),
             ),
-            leading: FaIcon(
-              FontAwesomeIcons.circleExclamation,
+            leading: Icon(
+              TablerIcons.exclamation_circle,
               color: COLOR_DANGER
             ),
           )
@@ -1487,7 +1487,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
         title: Text(widget.title),
         actions: [
           IconButton(
-            icon: FaIcon(widget.icon),
+            icon: Icon(widget.icon),
             onPressed: () {
 
               if (_formKey.currentState!.validate()) {

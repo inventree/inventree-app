@@ -1,7 +1,8 @@
 import "package:flutter/material.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
-import "package:inventree/settings/login.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:one_context/one_context.dart";
+
+import "package:inventree/settings/login.dart";
 
 import "package:inventree/app_colors.dart";
 import "package:inventree/widget/dialogs.dart";
@@ -151,18 +152,18 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
 
     // Reflect the connection status of the server
     if (InvenTreeAPI().isConnected()) {
-      return FaIcon(
-        FontAwesomeIcons.circleCheck,
+      return Icon(
+        TablerIcons.circle_check,
         color: COLOR_SUCCESS
       );
     } else if (InvenTreeAPI().isConnecting()) {
       return Spinner(
-        icon: FontAwesomeIcons.spinner,
+        icon: TablerIcons.loader_2,
         color: COLOR_PROGRESS,
       );
     } else {
-      return FaIcon(
-        FontAwesomeIcons.circleXmark,
+      return Icon(
+        TablerIcons.circle_x,
         color: COLOR_DANGER,
       );
     }
@@ -183,7 +184,7 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
           ),
           tileColor: profile.selected ? Theme.of(context).secondaryHeaderColor : null,
           subtitle: Text("${profile.server}"),
-          leading: profile.hasToken ? FaIcon(FontAwesomeIcons.userCheck, color: COLOR_SUCCESS) : FaIcon(FontAwesomeIcons.userSlash, color: COLOR_WARNING),
+          leading: profile.hasToken ? Icon(TablerIcons.user_check, color: COLOR_SUCCESS) : Icon(TablerIcons.user_cancel, color: COLOR_WARNING),
           trailing: _getProfileIcon(profile),
           onTap: () {
             _selectProfile(context, profile);
@@ -202,7 +203,7 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
                         },
                         child: ListTile(
                           title: Text(L10().profileConnect),
-                          leading: FaIcon(FontAwesomeIcons.server),
+                          leading: Icon(TablerIcons.server),
                         )
                       ),
                       SimpleDialogOption(
@@ -212,7 +213,7 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
                         },
                         child: ListTile(
                           title: Text(L10().profileEdit),
-                          leading: FaIcon(FontAwesomeIcons.penToSquare)
+                          leading: Icon(TablerIcons.edit)
                         )
                       ),
                       SimpleDialogOption(
@@ -222,7 +223,7 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
                         },
                         child: ListTile(
                           title: Text(L10().profileLogout),
-                          leading: FaIcon(FontAwesomeIcons.userSlash),
+                          leading: Icon(TablerIcons.logout),
                         )
                       ),
                       Divider(),
@@ -234,7 +235,7 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
                             L10().delete,
                             L10().profileDelete + "?",
                             color: Colors.red,
-                            icon: FontAwesomeIcons.trashCan,
+                            icon: TablerIcons.trash,
                             onAccept: () {
                               _deleteProfile(profile);
                             }
@@ -242,7 +243,7 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
                         },
                         child: ListTile(
                           title: Text(L10().profileDelete, style: TextStyle(color: Colors.red)),
-                          leading: FaIcon(FontAwesomeIcons.trashCan, color: Colors.red),
+                          leading: Icon(TablerIcons.trash, color: Colors.red),
                         )
                       )
                     ],
@@ -267,7 +268,7 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
         title: Text(L10().profileSelect),
         actions: [
           IconButton(
-            icon: FaIcon(FontAwesomeIcons.circlePlus),
+            icon: Icon(TablerIcons.circle_plus),
             onPressed: () {
               _editProfile(context, createNew: true);
             },
@@ -316,7 +317,7 @@ class _ProfileEditState extends State<ProfileEditWidget> {
         title: Text(widget.profile == null ? L10().profileAdd : L10().profileEdit),
         actions: [
           IconButton(
-            icon: FaIcon(FontAwesomeIcons.floppyDisk),
+            icon: Icon(TablerIcons.device_floppy),
             onPressed: () async {
               if (formKey.currentState!.validate()) {
                 formKey.currentState!.save();

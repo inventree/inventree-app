@@ -1,7 +1,7 @@
 
 import "package:flutter/material.dart";
 
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/l10.dart";
 import "package:inventree/inventree/model.dart";
@@ -80,7 +80,7 @@ class _NotificationState extends RefreshableState<NotificationWidget> {
           L10().notifications,
         ),
         subtitle: notifications.isEmpty ? Text(L10().notificationsEmpty) : null,
-        leading: notifications.isEmpty ? FaIcon(FontAwesomeIcons.bellSlash) : FaIcon(FontAwesomeIcons.bell),
+        leading: notifications.isEmpty ? Icon(TablerIcons.bell_exclamation) : Icon(TablerIcons.bell),
         trailing: Text("${notifications.length}"),
       )
     );
@@ -91,7 +91,7 @@ class _NotificationState extends RefreshableState<NotificationWidget> {
           title: Text(notification.name),
           subtitle: Text(notification.message),
           trailing: IconButton(
-            icon: FaIcon(FontAwesomeIcons.bookmark),
+            icon: Icon(TablerIcons.bookmark),
             onPressed: isDismissing ? null : () async {
               dismissNotification(context, notification);
             },

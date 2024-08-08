@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/app_colors.dart";
 import "package:inventree/l10.dart";
@@ -41,7 +41,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
       if (InvenTreePartCategory().canEdit) {
         actions.add(
           IconButton(
-            icon:  Icon(Icons.edit_square),
+            icon:  Icon(TablerIcons.edit),
             tooltip: L10().editCategory,
             onPressed: () {
               _editCategoryDialog(context);
@@ -61,7 +61,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
     if (InvenTreePart().canCreate) {
      actions.add(
        SpeedDialChild(
-         child: FaIcon(FontAwesomeIcons.shapes),
+         child: Icon(TablerIcons.box),
          label: L10().partCreateDetail,
          onTap: _newPart,
        )
@@ -71,7 +71,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
     if (InvenTreePartCategory().canCreate) {
       actions.add(
         SpeedDialChild(
-          child: FaIcon(FontAwesomeIcons.sitemap),
+          child: Icon(TablerIcons.sitemap),
           label: L10().categoryCreateDetail,
           onTap: () {
             _newCategory(context);
@@ -123,7 +123,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
     if (widget.category == null) {
       return Card(
         child: ListTile(
-          leading: FaIcon(FontAwesomeIcons.shapes),
+          leading: Icon(TablerIcons.packages),
           title: Text(
             L10().partCategoryTopLevel,
             style: TextStyle(fontStyle: FontStyle.italic),
@@ -138,7 +138,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
               style: TextStyle(fontWeight: FontWeight.bold)
           ),
           subtitle: Text("${widget.category?.description}"),
-          leading: widget.category!.customIcon ?? FaIcon(FontAwesomeIcons.sitemap),
+          leading: widget.category!.customIcon != null ? Icon(widget.category!.customIcon) : Icon(TablerIcons.sitemap)
         ),
       ];
 
@@ -147,8 +147,8 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
             ListTile(
               title: Text(L10().parentCategory),
               subtitle: Text("${widget.category?.parentPathString}"),
-              leading: FaIcon(
-                FontAwesomeIcons.turnUp,
+              leading: Icon(
+                TablerIcons.arrow_move_up,
                 color: COLOR_ACTION,
               ),
               onTap: () async {

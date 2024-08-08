@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/api_form.dart";
 
 import "package:inventree/inventree/part.dart";
@@ -159,7 +159,7 @@ class SOAllocateStockHandler extends BarcodeHandler {
       salesOrder!.allocate_url,
     fields,
     method: "POST",
-    icon: FontAwesomeIcons.rightToBracket,
+    icon: TablerIcons.transition_right,
     onSuccess: (data) async {
         showSnackIcon(L10().allocated, success: true);
     });

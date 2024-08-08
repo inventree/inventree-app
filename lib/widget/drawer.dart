@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
@@ -120,7 +120,7 @@ class InvenTreeDrawer extends StatelessWidget {
 
     // "Home" access
     tiles.add(ListTile(
-      leading: FaIcon(FontAwesomeIcons.house, color: COLOR_ACTION),
+      leading: Icon(TablerIcons.home, color: COLOR_ACTION),
       title: Text(
         L10().appTitle,
         style: TextStyle(fontWeight: FontWeight.bold),
@@ -134,7 +134,7 @@ class InvenTreeDrawer extends StatelessWidget {
       tiles.add(
         ListTile(
           title: Text(L10().parts),
-          leading: FaIcon(FontAwesomeIcons.shapes, color: COLOR_ACTION),
+          leading: Icon(TablerIcons.box, color: COLOR_ACTION),
           onTap: _parts,
         )
       );
@@ -144,7 +144,7 @@ class InvenTreeDrawer extends StatelessWidget {
       tiles.add(
         ListTile(
           title: Text(L10().stock),
-          leading: FaIcon(FontAwesomeIcons.boxesStacked, color: COLOR_ACTION),
+          leading: Icon(TablerIcons.package, color: COLOR_ACTION),
           onTap: _stock,
         )
       );
@@ -154,7 +154,7 @@ class InvenTreeDrawer extends StatelessWidget {
       tiles.add(
         ListTile(
           title: Text(L10().purchaseOrders),
-          leading: FaIcon(FontAwesomeIcons.cartShopping, color: COLOR_ACTION),
+          leading: Icon(TablerIcons.shopping_cart, color: COLOR_ACTION),
           onTap: _purchaseOrders,
         )
       );
@@ -164,7 +164,7 @@ class InvenTreeDrawer extends StatelessWidget {
       tiles.add(
         ListTile(
           title: Text(L10().salesOrders),
-          leading: FaIcon(FontAwesomeIcons.truck, color: COLOR_ACTION),
+          leading: Icon(TablerIcons.truck_delivery, color: COLOR_ACTION),
           onTap: _salesOrders,
         )
       );
@@ -178,7 +178,7 @@ class InvenTreeDrawer extends StatelessWidget {
 
     tiles.add(
       ListTile(
-        leading: FaIcon(FontAwesomeIcons.bell, color: COLOR_ACTION),
+        leading: Icon(TablerIcons.bell, color: COLOR_ACTION),
         trailing: notification_count > 0 ? Text(notification_count.toString()) : null,
         title: Text(L10().notifications),
         onTap: _notifications,

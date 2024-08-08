@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:one_context/one_context.dart";
 
 import "package:inventree/api.dart";
@@ -58,7 +58,7 @@ Future<void> choiceDialog(String title, List<Widget> items, {Function? onSelecte
 /*
  * Display a "confirmation" dialog allowing the user to accept or reject an action
  */
-Future<void> confirmationDialog(String title, String text, {Color? color, IconData icon = FontAwesomeIcons.circleQuestion, String? acceptText, String? rejectText, Function? onAccept, Function? onReject}) async {
+Future<void> confirmationDialog(String title, String text, {Color? color, IconData icon = TablerIcons.help_circle, String? acceptText, String? rejectText, Function? onAccept, Function? onReject}) async {
 
   String _accept = acceptText ?? L10().ok;
   String _reject = rejectText ?? L10().cancel;
@@ -69,7 +69,7 @@ Future<void> confirmationDialog(String title, String text, {Color? color, IconDa
         iconColor: color,
         title: ListTile(
           title: Text(title, style: TextStyle(color: color)),
-          leading: FaIcon(icon, color: color),
+          leading: Icon(icon, color: color),
         ),
         content: text.isEmpty ? Text(text) : null,
         actions: [
@@ -109,7 +109,7 @@ Future<void> confirmationDialog(String title, String text, {Color? color, IconDa
  * @description = Simple string description of error
  * @data = Error response (e.g from server)
  */
-Future<void> showErrorDialog(String title, {String description = "", APIResponse? response, IconData icon = FontAwesomeIcons.circleExclamation, Function? onDismissed}) async {
+Future<void> showErrorDialog(String title, {String description = "", APIResponse? response, IconData icon = TablerIcons.exclamation_circle, Function? onDismissed}) async {
 
   List<Widget> children = [];
 
@@ -180,7 +180,7 @@ Future<void> showErrorDialog(String title, {String description = "", APIResponse
     builder: (context) => SimpleDialog(
       title: ListTile(
         title: Text(title),
-        leading: FaIcon(icon),
+        leading: Icon(icon),
       ),
       children: children
     )
@@ -224,7 +224,7 @@ Future<void> showServerError(String url, String title, String description) async
       showErrorDialog(
           L10().serverError,
           description: description,
-          icon: FontAwesomeIcons.server
+          icon: TablerIcons.server
       );
     }
   );

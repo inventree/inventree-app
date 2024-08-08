@@ -1,6 +1,6 @@
 
 import "package:flutter/material.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/helpers.dart";
@@ -48,7 +48,7 @@ class _BillOfMaterialsState extends RefreshableState<BillOfMaterialsWidget> {
   @override
   List<Widget> appBarActions(BuildContext context) => [
     IconButton(
-      icon: FaIcon(FontAwesomeIcons.filter),
+      icon: Icon(TablerIcons.filter),
       onPressed: () async {
         setState(() {
           showFilterOptions = !showFilterOptions;

@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/api_form.dart";
 import "package:inventree/app_colors.dart";
@@ -48,7 +48,7 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
     if (widget.item.canEdit) {
       actions.add(
         IconButton(
-          icon: Icon(Icons.edit_square),
+          icon: Icon(TablerIcons.edit),
           onPressed: () {
             _editLineItem(context);
           },
@@ -68,7 +68,7 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
       if (!widget.item.isComplete) {
         buttons.add(
           SpeedDialChild(
-            child: FaIcon(FontAwesomeIcons.rightToBracket, color: Colors.blue),
+            child: Icon(TablerIcons.transition_right, color: Colors.blue),
             label: L10().receiveItem,
             onTap: () async {
               receiveLineItem(context);
@@ -146,7 +146,7 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
       order.receive_url,
       fields,
       method: "POST",
-      icon: FontAwesomeIcons.rightToBracket,
+      icon: TablerIcons.transition_right,
       onSuccess: (data) async {
         showSnackIcon(L10().receivedItem, success: true);
         refresh(context);
@@ -167,7 +167,7 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
       ListTile(
         title: Text(L10().internalPart),
         subtitle: Text(widget.item.partName),
-        leading: FaIcon(FontAwesomeIcons.shapes, color: COLOR_ACTION),
+        leading: Icon(TablerIcons.box, color: COLOR_ACTION),
         trailing: api.getThumbnail(widget.item.partImage),
         onTap: () async {
           showLoadingOverlay(context);
@@ -186,7 +186,7 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
       ListTile(
         title: Text(L10().supplierPart),
         subtitle: Text(widget.item.SKU),
-        leading: FaIcon(FontAwesomeIcons.building, color: COLOR_ACTION),
+        leading: Icon(TablerIcons.building, color: COLOR_ACTION),
         onTap: () async {
           showLoadingOverlay(context);
           var part = await InvenTreeSupplierPart().get(widget.item.supplierPartId);
@@ -210,7 +210,7 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
                 color: widget.item.isComplete ? COLOR_SUCCESS: COLOR_WARNING
             )
         ),
-        leading: FaIcon(FontAwesomeIcons.boxOpen),
+        leading: Icon(TablerIcons.progress),
       )
     );
 
@@ -220,7 +220,7 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
           ListTile(
             title: Text(L10().reference),
             subtitle: Text(widget.item.reference),
-            leading: FaIcon(FontAwesomeIcons.hashtag),
+            leading: Icon(TablerIcons.hash),
           )
       );
     }
@@ -229,7 +229,7 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
     tiles.add(
       ListTile(
         title: Text(L10().unitPrice),
-        leading: FaIcon(FontAwesomeIcons.dollarSign),
+        leading: Icon(TablerIcons.currency_dollar),
         trailing: Text(
           renderCurrency(widget.item.purchasePrice, widget.item.purchasePriceCurrency)
         ),
@@ -242,7 +242,7 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
         ListTile(
           title: Text(L10().notes),
           subtitle: Text(widget.item.notes),
-          leading: FaIcon(FontAwesomeIcons.noteSticky),
+          leading: Icon(TablerIcons.note),
         )
       );
     }
@@ -253,7 +253,7 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
         ListTile(
           title: Text(L10().link),
           subtitle: Text(widget.item.link),
-          leading: FaIcon(FontAwesomeIcons.link, color: COLOR_ACTION),
+          leading: Icon(TablerIcons.link, color: COLOR_ACTION),
           onTap: () async {
             await openLink(widget.item.link);
           },

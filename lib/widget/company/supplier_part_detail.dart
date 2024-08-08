@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
@@ -78,7 +78,7 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
     if (widget.supplierPart.canEdit) {
       actions.add(
           IconButton(
-              icon: Icon(Icons.edit_square),
+              icon: Icon(TablerIcons.edit),
               tooltip: L10().edit,
               onPressed: () {
                 editSupplierPart(context);
@@ -116,7 +116,7 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
         ListTile(
           title: Text(L10().internalPart),
           subtitle: Text(widget.supplierPart.partName),
-          leading: FaIcon(FontAwesomeIcons.shapes, color: COLOR_ACTION),
+          leading: Icon(TablerIcons.box, color: COLOR_ACTION),
           trailing: InvenTreeAPI().getThumbnail(widget.supplierPart.partImage),
           onTap: () async {
             showLoadingOverlay(context);
@@ -146,8 +146,8 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
                     color: COLOR_DANGER
                 )
             ),
-            leading: FaIcon(
-                FontAwesomeIcons.circleExclamation,
+            leading: Icon(
+                TablerIcons.exclamation_circle,
                 color: COLOR_DANGER
             ),
           )
@@ -159,7 +159,7 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
       ListTile(
         title: Text(L10().supplier),
         subtitle: Text(widget.supplierPart.supplierName),
-        leading: FaIcon(FontAwesomeIcons.building, color: COLOR_ACTION),
+        leading: Icon(TablerIcons.building, color: COLOR_ACTION),
         trailing: InvenTreeAPI().getThumbnail(widget.supplierPart.supplierImage),
         onTap: () async {
           showLoadingOverlay(context);
@@ -180,7 +180,7 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
         ListTile(
           title: Text(L10().supplierPartNumber),
           subtitle: Text(widget.supplierPart.SKU),
-          leading: FaIcon(FontAwesomeIcons.barcode),
+          leading: Icon(TablerIcons.barcode),
         )
     );
 
@@ -190,7 +190,7 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
         ListTile(
           title: Text(L10().manufacturer),
           subtitle: Text(widget.supplierPart.manufacturerName),
-          leading: FaIcon(FontAwesomeIcons.industry, color: COLOR_ACTION),
+          leading: Icon(TablerIcons.building_factory_2, color: COLOR_ACTION),
           trailing: InvenTreeAPI().getThumbnail(widget.supplierPart.manufacturerImage),
           onTap: () async {
             showLoadingOverlay(context);
@@ -210,7 +210,7 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
         ListTile(
           title: Text(L10().manufacturerPartNumber),
           subtitle: Text(widget.supplierPart.MPN),
-          leading: FaIcon(FontAwesomeIcons.barcode),
+          leading: Icon(TablerIcons.barcode),
         )
       );
     }
@@ -221,7 +221,7 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
         ListTile(
           title: Text(L10().packaging),
           subtitle: widget.supplierPart.packaging.isNotEmpty ? Text(widget.supplierPart.packaging) : null,
-          leading: FaIcon(FontAwesomeIcons.boxesPacking),
+          leading: Icon(TablerIcons.package),
           trailing: widget.supplierPart.pack_quantity.isNotEmpty ? Text(widget.supplierPart.pack_quantity) : null,
         )
       );
@@ -231,7 +231,7 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
       tiles.add(
         ListTile(
           title: Text(widget.supplierPart.link),
-          leading: FaIcon(FontAwesomeIcons.link, color: COLOR_ACTION),
+          leading: Icon(TablerIcons.link, color: COLOR_ACTION),
           onTap: () async {
             var uri = Uri.tryParse(widget.supplierPart.link);
             if (uri != null && await canLaunchUrl(uri)) {
@@ -246,7 +246,7 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
       tiles.add(
         ListTile(
           title: Text(widget.supplierPart.note),
-          leading: FaIcon(FontAwesomeIcons.pencil),
+          leading: Icon(TablerIcons.pencil),
         )
       );
     }

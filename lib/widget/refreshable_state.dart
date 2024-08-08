@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
@@ -85,7 +86,7 @@ mixin BaseWidgetProperties {
         },
       ),
       IconButton(
-        icon: Icon(Icons.search, color: COLOR_ACTION),
+        icon: Icon(TablerIcons.search, color: COLOR_ACTION),
         iconSize: iconSize,
         onPressed: () {
           if (InvenTreeAPI().checkConnection()) {

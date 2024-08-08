@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
@@ -42,7 +42,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
     if (InvenTreeStockItemTestResult().canCreate) {
       actions.add(
         SpeedDialChild(
-          child: FaIcon(FontAwesomeIcons.circlePlus),
+          child: Icon(TablerIcons.circle_plus),
           label: L10().testResultAdd,
           onTap: () {
             addTestResult(context);
@@ -172,7 +172,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
       String _value = "";
       String _notes = "";
 
-      FaIcon _icon = FaIcon(FontAwesomeIcons.circleQuestion, color: Colors.lightBlue);
+      Widget _icon = Icon(TablerIcons.help_circle, color: Colors.lightBlue);
       bool _valueRequired = false;
       bool _attachmentRequired = false;
 
@@ -195,11 +195,11 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
       }
 
       if (!_hasResult) {
-        _icon = FaIcon(FontAwesomeIcons.circleQuestion, color: Colors.blue);
+        _icon = Icon(TablerIcons.help_circle, color: Colors.blue);
       } else if (_result == true) {
-        _icon = FaIcon(FontAwesomeIcons.circleCheck, color: COLOR_SUCCESS);
+        _icon = Icon(TablerIcons.circle_check, color: COLOR_SUCCESS);
       } else if (_result == false) {
-        _icon = FaIcon(FontAwesomeIcons.circleXmark, color: COLOR_DANGER);
+        _icon = Icon(TablerIcons.circle_x, color: COLOR_DANGER);
       }
 
       tiles.add(ListTile(

@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/l10.dart";
 import "package:inventree/preferences.dart";
@@ -105,7 +105,7 @@ class _InvenTreeBarcodeSettingsState extends State<InvenTreeBarcodeSettingsWidge
         break;
       case BARCODE_CONTROLLER_CAMERA:
       default:
-        barcodeInputIcon = FaIcon(FontAwesomeIcons.camera);
+        barcodeInputIcon = Icon(TablerIcons.camera);
         break;
     }
 
@@ -126,7 +126,7 @@ class _InvenTreeBarcodeSettingsState extends State<InvenTreeBarcodeSettingsWidge
                     ListTile(
                       title: Text(L10().cameraInternal),
                       subtitle: Text(L10().cameraInternalDetail),
-                      leading: FaIcon(FontAwesomeIcons.camera),
+                      leading: Icon(TablerIcons.camera),
                     ),
                     ListTile(
                       title: Text(L10().scannerExternal),
@@ -147,7 +147,7 @@ class _InvenTreeBarcodeSettingsState extends State<InvenTreeBarcodeSettingsWidge
             ListTile(
               title: Text(L10().barcodeScanDelay),
               subtitle: Text(L10().barcodeScanDelayDetail),
-              leading: FaIcon(FontAwesomeIcons.stopwatch),
+              leading: Icon(TablerIcons.hourglass),
               trailing: GestureDetector(
                 child: Text("${barcodeScanDelay} ms"),
                 onTap: () {

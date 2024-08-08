@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:one_context/one_context.dart";
 
 import "package:inventree/helpers.dart";
@@ -32,14 +32,14 @@ void showSnackIcon(String text, {IconData? icon, Function()? onAction, bool? suc
 
     // Select an icon if we do not have an action
     if (icon == null && onAction == null) {
-      icon = FontAwesomeIcons.circleCheck;
+      icon = TablerIcons.circle_check;
     }
 
   } else if (success != null && success == false) {
     backgroundColor = Colors.deepOrange;
 
     if (icon == null && onAction == null) {
-      icon = FontAwesomeIcons.circleExclamation;
+      icon = TablerIcons.exclamation_circle;
     }
   }
 
@@ -51,7 +51,7 @@ void showSnackIcon(String text, {IconData? icon, Function()? onAction, bool? suc
   ];
 
   if (icon != null) {
-    childs.add(FaIcon(icon));
+    childs.add(Icon(icon));
   }
 
   OneContext().showSnackBar(builder: (context) => SnackBar(

@@ -1,10 +1,8 @@
 
 import "package:flutter/material.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/l10.dart";
-
-import "package:font_awesome_flutter/font_awesome_flutter.dart";
-
 import "package:inventree/preferences.dart";
 
 class HomeScreenSettingsWidget extends StatefulWidget {
@@ -62,7 +60,7 @@ class _HomeScreenSettingsState extends State<HomeScreenSettingsWidget> {
                   ListTile(
                       title: Text(L10().homeShowSubscribed),
                       subtitle: Text(L10().homeShowSubscribedDescription),
-                      leading: FaIcon(FontAwesomeIcons.bell),
+                      leading: Icon(TablerIcons.bell),
                       trailing: Switch(
                         value: homeShowSubscribed,
                         onChanged: (bool value) {
@@ -76,7 +74,7 @@ class _HomeScreenSettingsState extends State<HomeScreenSettingsWidget> {
                   ListTile(
                     title: Text(L10().homeShowPo),
                     subtitle: Text(L10().homeShowPoDescription),
-                    leading: FaIcon(FontAwesomeIcons.cartShopping),
+                    leading: Icon(TablerIcons.shopping_cart),
                     trailing: Switch(
                       value: homeShowPo,
                       onChanged: (bool value) {
@@ -90,7 +88,7 @@ class _HomeScreenSettingsState extends State<HomeScreenSettingsWidget> {
                   ListTile(
                     title: Text(L10().homeShowSo),
                     subtitle: Text(L10().homeShowSoDescription),
-                    leading: FaIcon(FontAwesomeIcons.truck),
+                    leading: Icon(TablerIcons.truck),
                     trailing: Switch(
                       value: homeShowSo,
                       onChanged: (bool value) {
@@ -104,7 +102,7 @@ class _HomeScreenSettingsState extends State<HomeScreenSettingsWidget> {
                   ListTile(
                     title: Text(L10().homeShowSuppliers),
                     subtitle: Text(L10().homeShowSuppliersDescription),
-                    leading: FaIcon(FontAwesomeIcons.building),
+                    leading: Icon(TablerIcons.building),
                     trailing: Switch(
                       value: homeShowSuppliers,
                       onChanged: (bool value) {
@@ -121,7 +119,7 @@ class _HomeScreenSettingsState extends State<HomeScreenSettingsWidget> {
                   ListTile(
                     title: Text(L10().homeShowManufacturers),
                     subtitle: Text(L10().homeShowManufacturersDescription),
-                    leading: FaIcon(FontAwesomeIcons.industry),
+                    leading: Icon(TablerIcons.building_factory_2),
                     trailing: Switch(
                       value: homeShowManufacturers,
                       onChanged: (bool value) {
@@ -136,7 +134,7 @@ class _HomeScreenSettingsState extends State<HomeScreenSettingsWidget> {
                   ListTile(
                     title: Text(L10().homeShowCustomers),
                     subtitle: Text(L10().homeShowCustomersDescription),
-                    leading: FaIcon(FontAwesomeIcons.userTie),
+                    leading: Icon(TablerIcons.user),
                     trailing: Switch(
                       value: homeShowCustomers,
                       onChanged: (bool value) {
