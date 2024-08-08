@@ -310,7 +310,7 @@ class InvenTreeModel {
    */
   IconData? get customIcon {
     String icon = (jsondata["icon"] ?? "").toString().trim();
-    
+
     // Empty icon (default)
     if (icon.isEmpty) {
       return null;
@@ -327,7 +327,8 @@ class InvenTreeModel {
       return null;
     }
 
-    String key = items[1] ?? "";
+    String key = items[1];
+
     key = key.replaceAll("-", "_");
 
     // Tabler icon lookup
