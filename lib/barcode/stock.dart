@@ -44,8 +44,8 @@ class BarcodeScanStockLocationHandler extends BarcodeHandler {
 
         if (result && OneContext.hasContext) {
           OneContext().pop();
-          return;
         }
+        return;
       }
     }
 
