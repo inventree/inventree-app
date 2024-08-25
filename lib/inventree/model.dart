@@ -1001,11 +1001,23 @@ class InvenTreeAttachment extends InvenTreeModel {
     String url = URL;
 
     if (InvenTreeAPI().supportsModernAttachments) {
-      // All attachments are stored in a consolidated table
+
+      if (modelType.isEmpty) {
+        sentryReportMessage("uploadAttachment called with empty 'modelType'");
+        return false;
+      }
+
       url = "attachment/";
       data["model_id"] = modelId.toString();
       data["model_type"] = modelType;
+
     } else {
+
+      if (REFERENCE_FIELD.isEmpty) {
+        sentryReportMessage("uploadAttachment called with empty 'REFERENCE_FIELD'");
+        return false;
+      }
+
       data[REFERENCE_FIELD] = modelId.toString();
     }
 
