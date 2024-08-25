@@ -1,6 +1,6 @@
 {
   "@@locale": "ar",
-  "appTitle": "InvenTree",
+  "appTitle": "",
   "@appTitle": {
     "description": "InvenTree application title string"
   },
@@ -78,7 +78,7 @@
   "@barcodeInUse": {},
   "barcodeMissingHash": "Barcode hash data missing from response",
   "@barcodeMissingHash": {},
-  "barcodeNoMatch": "No match for barcode",
+  "barcodeNoMatch": "",
   "@barcodeNoMatch": {},
   "barcodeNotAssigned": "Barcode not assigned",
   "@barcodeNotAssigned": {},
@@ -110,7 +110,7 @@
   "@barcodeScanSingle": {},
   "barcodeScanSingleDetail": "Pause barcode scanner after each scan",
   "@barcodeScanSingleDetail": {},
-  "barcodeScanIntoLocationSuccess": "Scanned into location",
+  "barcodeScanIntoLocationSuccess": "تم فحصها في الموقع",
   "@barcodeScanIntoLocationSuccess": {},
   "barcodeScanIntoLocationFailure": "Item not scanned in",
   "@barcodeScanIntoLocationFailure": {},
@@ -227,7 +227,7 @@
   "@editNotes": {},
   "editParameter": "Edit Parameter",
   "@editParameter": {},
-  "editPart": "Edit Part",
+  "editPart": "تعديل المنتج",
   "@editPart": {
     "description": "edit part"
   },
