@@ -76,7 +76,11 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
 
     showLoadingOverlay(context);
 
-    final bool result = await widget.attachmentClass.uploadAttachment(file, widget.attachmentClass.MODEL_TYPE, widget.modelId);
+    final bool result = await widget.attachmentClass.uploadAttachment(
+        file,
+        widget.attachmentClass.REF_MODEL_TYPE,
+        widget.modelId
+    );
 
     hideLoadingOverlay();
 
@@ -137,7 +141,7 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
     Map<String, String> filters = {};
 
     if (InvenTreeAPI().supportsModernAttachments) {
-      filters["model_type"] = widget.attachmentClass.MODEL_TYPE;
+      filters["model_type"] = widget.attachmentClass.REF_MODEL_TYPE;
       filters["model_id"] = widget.modelId.toString();
     } else {
       filters[widget.attachmentClass.REFERENCE_FIELD] = widget.modelId.toString();
@@ -148,10 +152,7 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
     ).then((var results) {
       attachments.clear();
 
-      print("Found ${results.length} results:");
-
       for (var result in results) {
-        print(result.toString());
         if (result is InvenTreeAttachment) {
           attachments.add(result);
         }

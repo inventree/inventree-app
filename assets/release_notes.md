@@ -1,3 +1,10 @@
+### 0.16.3 - August 2024
+---
+
+- Fixes bug relating to viewing attachment files
+- Fixes bug relating to uploading attachment files
+
+
 ### 0.16.2 - August 2024
 ---
 
