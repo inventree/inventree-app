@@ -142,9 +142,9 @@
   "@cancel": {
     "description": "Cancel"
   },
-  "cancelOrder": "Cancel Order",
+  "cancelOrder": "Batalkan Pesanan",
   "@cancelOrder": {},
-  "category": "Category",
+  "category": "Kategori",
   "@category": {},
   "categoryCreate": "Kategori Baru",
   "@categoryCreate": {},
@@ -311,7 +311,7 @@
   "@formatExceptionJson": {},
   "formError": "Form Error",
   "@formError": {},
-  "history": "History",
+  "history": "Riwayat",
   "@history": {
     "description": "history"
   },
