@@ -832,7 +832,7 @@
   "@stock": {
     "description": "stock"
   },
-  "stockDetails": "Mevcut kullanılabilir stok miktarı",
+  "stockDetails": "Şimdiki mevcut stok miktarı",
   "@stockDetails": {},
   "stockItem": "Stok Kalemi",
   "@stockItem": {
