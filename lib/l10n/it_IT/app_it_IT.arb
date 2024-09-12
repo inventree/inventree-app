@@ -84,7 +84,7 @@
   "@barcodeNotAssigned": {},
   "barcodeScanPart": "Scansiona codice a barre del prodotto",
   "@barcodeScanPart": {},
-  "barcodeReceivePart": "Scan barcode to receive part",
+  "barcodeReceivePart": "Scansione codice a barre per ricevere la parte",
   "@barcodeReceivePart": {},
   "barcodeScanPaused": "Scansione codice a barre in pausa",
   "@barodeScanPaused": {},
