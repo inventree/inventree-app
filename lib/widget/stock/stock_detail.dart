@@ -259,7 +259,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     // Request information on labels available for this stock item
     if (allowLabelPrinting) {
 
-      String model_type = api.supportsModernLabelPrinting ? InvenTreeStockLocation().MODEL_TYPE : "stock";
+      String model_type = api.supportsModernLabelPrinting ? InvenTreeStockItem().MODEL_TYPE : "stock";
       String item_key = api.supportsModernLabelPrinting ? "items" : "item";
 
       // Clear the existing labels list
