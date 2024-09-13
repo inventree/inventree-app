@@ -59,8 +59,8 @@ jobs:
           cd inventree_server
           invoke install
           invoke migrate
-          invoke import-fixtures
-          invoke server -a 127.0.0.1:8000 &
+          invoke dev.import-fixtures
+          invoke dev.server -a 127.0.0.1:8000 &
           invoke wait
           sleep 30
       - name: Unit Tests
