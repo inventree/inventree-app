@@ -1,3 +1,8 @@
+### 0.16.4 - September 2024
+---
+
+- Fixes bug related to printing stock item labels
+
 ### 0.16.3 - August 2024
 ---
 
