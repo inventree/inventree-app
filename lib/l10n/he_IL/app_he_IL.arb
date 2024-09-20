@@ -8,27 +8,27 @@
   "@ok": {
     "description": "OK"
   },
-  "about": "About",
+  "about": "אודות",
   "@about": {},
-  "accountDetails": "Account Details",
+  "accountDetails": "פרטי חשבון",
   "@accountDetails": {},
-  "actions": "Actions",
+  "actions": "פעולות",
   "@actions": {
     "description": ""
   },
-  "actionsNone": "No actions available",
+  "actionsNone": "אין פעולות זמינות",
   "@actionsNone": {},
-  "add": "Add",
+  "add": "הוסף",
   "@add": {
     "description": "add"
   },
-  "addStock": "Add Stock",
+  "addStock": "הוסף מלאי",
   "@addStock": {
     "description": "add stock"
   },
   "address": "Address",
   "@address": {},
-  "appAbout": "About InvenTree",
+  "appAbout": "אודות InvenTree",
   "@appAbout": {},
   "appCredits": "Additional app credits",
   "@appCredits": {},
