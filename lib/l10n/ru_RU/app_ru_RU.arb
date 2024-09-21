@@ -166,7 +166,7 @@
   "@configureServer": {},
   "confirmScan": "Подтвердить перенос",
   "@confirmScan": {},
-  "confirmScanDetail": "Confirm stock transfer details when scanning barcodes",
+  "confirmScanDetail": "Подтвердите детали перевода по складу при сканировании штрих-кодов",
   "connectionRefused": "Отказано в подключении",
   "@connectionRefused": {},
   "count": "Количество",
