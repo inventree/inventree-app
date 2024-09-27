@@ -471,7 +471,14 @@ class APIFormField {
   // Construct a floating point numerical input field
   Widget _constructFloatField() {
 
-    double initial = double.tryParse(value.toString()) ?? 0;
+    // Initial value: try to cast to a valid number
+    String initial = "";
+
+    double? initialNumber = double.tryParse(value.toString());
+
+    if (initialNumber != null) {
+      initial = simpleNumberString(initialNumber);
+    }
 
     return TextFormField(
       decoration: InputDecoration(
@@ -481,7 +488,7 @@ class APIFormField {
         helperStyle: _helperStyle(),
         hintText: placeholderText,
       ),
-      initialValue: simpleNumberString(initial),
+      initialValue: initial,
       keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
       validator: (value) {
         value = value?.trim() ?? "";
