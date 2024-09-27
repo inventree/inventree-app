@@ -484,6 +484,12 @@ class APIFormField {
       initialValue: simpleNumberString(initial),
       keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
       validator: (value) {
+        value = value?.trim() ?? "";
+
+        // Allow empty numbers, *if* this field is not required
+        if (value.isEmpty && !required) {
+          return null;
+        }
 
         double? quantity = double.tryParse(value.toString());
 
