@@ -1,3 +1,8 @@
+### 0.16.5 - September 2024
+---
+
+- Allow blank values to be entered into numerical fields
+
 ### 0.16.4 - September 2024
 ---
 
