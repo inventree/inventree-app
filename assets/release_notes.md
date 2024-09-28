@@ -2,6 +2,7 @@
 ---
 
 - Allow blank values to be entered into numerical fields
+- Updated translations
 
 ### 0.16.4 - September 2024
 ---
