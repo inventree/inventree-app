@@ -12,7 +12,7 @@ dependencies:
   cached_network_image: ^3.3.1            # Download and cache remote images
   camera: ^0.10.3                         # Camera
   cupertino_icons: ^1.0.8
-  currency_formatter: ^2.0.1
+  currency_formatter: ^2.2.5
   datetime_picker_formfield: ^2.0.1       # Date / time picker
   device_info_plus: ^10.1.2               # Information about the device
   dropdown_search: ^5.0.6                 # Dropdown autocomplete form fields

@@ -3,7 +3,6 @@ import "dart:ui";
 
 import "package:inventree/l10n/supported_locales.dart";
 import "package:path_provider/path_provider.dart";
-import "package:sembast/sembast.dart";
 import "package:sembast/sembast_io.dart";
 import "package:path/path.dart";
 

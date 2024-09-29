@@ -117,20 +117,12 @@ String renderCurrency(double? amount, String currency, {int decimals = 2}) {
 
   if (currency.isEmpty) return "-";
 
-  CurrencyFormatterSettings backupSettings = CurrencyFormatterSettings(
-    symbol: "\$",
-    symbolSide: SymbolSide.left,
-  );
+  CurrencyFormat fmt = CurrencyFormat.fromCode(currency.toLowerCase()) ?? CurrencyFormat.usd;
 
   String value = CurrencyFormatter.format(
     amount,
-    CurrencyFormatter.majors[currency.toLowerCase()] ?? backupSettings
+    fmt
   );
-
-  // If we were not able to determine the currency
-  if (!CurrencyFormatter.majors.containsKey(currency.toLowerCase())) {
-    value += " ${currency}";
-  }
 
   return value;
 }

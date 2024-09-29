@@ -9,7 +9,7 @@ bool isDarkMode() {
     return false;
   }
 
-  return AdaptiveTheme.of(context!).brightness == Brightness.dark;
+  return AdaptiveTheme.of(context).brightness == Brightness.dark;
 }
 
 // Return an "action" color based on the current theme
