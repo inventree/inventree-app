@@ -3,6 +3,11 @@ import "package:flutter/material.dart";
 import "package:one_context/one_context.dart";
 
 bool isDarkMode() {
+
+  if (!OneContext.hasContext) {
+    return false;
+  }
+
   BuildContext? context = OneContext().context;
 
   if (context == null) {

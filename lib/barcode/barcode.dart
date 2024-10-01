@@ -46,17 +46,20 @@ Future<void> barcodeFailure(String msg, dynamic extra) async {
       msg,
       success: false,
     onAction: () {
-        OneContext().showDialog(
-          builder: (BuildContext context) => SimpleDialog(
-            title: Text(L10().barcodeError),
-            children: <Widget>[
-              ListTile(
-                title: Text(L10().responseData),
-                subtitle: Text(extra.toString())
-              )
-            ]
-          )
-        );
+        if (OneContext.hasContext) {
+          OneContext().showDialog(
+              builder: (BuildContext context) =>
+                  SimpleDialog(
+                      title: Text(L10().barcodeError),
+                      children: <Widget>[
+                        ListTile(
+                            title: Text(L10().responseData),
+                            subtitle: Text(extra.toString())
+                        )
+                      ]
+                  )
+          );
+        }
     }
   );
 }
