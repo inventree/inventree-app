@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
+import "package:inventree/helpers.dart";
 import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/preferences.dart";
 import "package:inventree/widget/order/sales_order_detail.dart";
@@ -46,7 +47,7 @@ Future<void> barcodeFailure(String msg, dynamic extra) async {
       msg,
       success: false,
     onAction: () {
-        if (OneContext.hasContext) {
+        if (hasContext()) {
           OneContext().showDialog(
               builder: (BuildContext context) =>
                   SimpleDialog(
@@ -280,17 +281,20 @@ class BarcodeScanHandler extends BarcodeHandler {
         success: false,
         onAction: () {
 
-          OneContext().showDialog(
-              builder: (BuildContext context) => SimpleDialog(
-                title: Text(L10().unknownResponse),
-                children: <Widget>[
-                  ListTile(
-                    title: Text(L10().responseData),
-                    subtitle: Text(data.toString()),
-                  )
-                ],
-              )
-          );
+          if (hasContext()) {
+            OneContext().showDialog(
+                builder: (BuildContext context) =>
+                    SimpleDialog(
+                      title: Text(L10().unknownResponse),
+                      children: <Widget>[
+                        ListTile(
+                          title: Text(L10().responseData),
+                          subtitle: Text(data.toString()),
+                        )
+                      ],
+                    )
+            );
+          }
         }
     );
   }

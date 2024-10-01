@@ -1393,7 +1393,7 @@ class InvenTreeAPI {
   // Find the current locale code for the running app
   String get currentLocale {
 
-    if (!isTesting() && OneContext.hasContext) {
+    if (!hasContext()) {
       // Try to get app context
       BuildContext? context = OneContext().context;
 

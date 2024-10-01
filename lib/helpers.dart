@@ -51,6 +51,14 @@ bool isTesting() {
   return Platform.environment.containsKey("FLUTTER_TEST");
 }
 
+bool hasContext() {
+  try {
+    return !isTesting() && OneContext.hasContext;
+  } catch (error) {
+    return false;
+  }
+}
+
 
 /*
  * Display a debug message if we are in testing mode, or running in debug mode

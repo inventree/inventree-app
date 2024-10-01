@@ -10,19 +10,17 @@ import "package:inventree/helpers.dart";
 I18N L10()
 {
   // Testing mode - ignore context
-  if (isTesting()) {
+  if (!hasContext()) {
     return I18NEn();
   }
 
-  if (OneContext.hasContext) {
-    BuildContext? _ctx = OneContext().context;
+  BuildContext? _ctx = OneContext().context;
 
-    if (_ctx != null) {
-      I18N? i18n = I18N.of(_ctx);
+  if (_ctx != null) {
+    I18N? i18n = I18N.of(_ctx);
 
-      if (i18n != null) {
-        return i18n;
-      }
+    if (i18n != null) {
+      return i18n;
     }
   }
 
