@@ -39,7 +39,12 @@ bool debugContains(String msg, {bool raiseAssert = true}) {
     }
   }
 
+  if (!result) {
+    print("Debug does not contain expected string: '${msg}'");
+  }
+
   if (raiseAssert) {
+
     assert(result);
   }
 

@@ -86,10 +86,9 @@ class _WedgeBarcodeControllerState extends InvenTreeBarcodeControllerState {
 
     if (event.character == "\n") {
       if (_scannedCharacters.isNotEmpty) {
-        handleBarcodeData(_scannedCharacters.join());
-
         // Debug output required for unit testing
         debug("scanned: ${_scannedCharacters.join()}");
+        handleBarcodeData(_scannedCharacters.join());
       }
 
       _scannedCharacters.clear();

@@ -44,7 +44,7 @@ class InvenTreeBarcodeControllerState extends State<InvenTreeBarcodeController> 
    * Barcode data should be passed as a string
    */
   Future<void> handleBarcodeData(String? data) async {
-    
+
     // Check that the data is valid, and this view is still mounted
     if (!mounted || data == null || data.isEmpty) {
       return;
@@ -58,10 +58,6 @@ class InvenTreeBarcodeControllerState extends State<InvenTreeBarcodeController> 
     setState(() {
       processingBarcode = true;
     });
-
-    if (!hasContext()) {
-      return;
-    }
 
     BuildContext? context;
 
