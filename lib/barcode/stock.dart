@@ -42,7 +42,7 @@ class BarcodeScanStockLocationHandler extends BarcodeHandler {
 
         final bool result = await onLocationScanned(_loc);
 
-        if (result && OneContext.hasContext) {
+        if (result && hasContext()) {
           OneContext().pop();
         }
         return;
