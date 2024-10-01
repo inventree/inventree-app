@@ -46,6 +46,12 @@ bool debugContains(String msg, {bool raiseAssert = true}) {
   return result;
 }
 
+
+bool isTesting() {
+  return Platform.environment.containsKey("FLUTTER_TEST");
+}
+
+
 /*
  * Display a debug message if we are in testing mode, or running in debug mode
  */

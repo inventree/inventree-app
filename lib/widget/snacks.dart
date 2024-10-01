@@ -13,7 +13,7 @@ void showSnackIcon(String text, {IconData? icon, Function()? onAction, bool? suc
   debug("showSnackIcon: '${text}'");
 
   // Escape quickly if we do not have context
-  if (!OneContext.hasContext) {
+  if (isTesting() || !OneContext.hasContext) {
     // Debug message for unit testing
     return;
   }
