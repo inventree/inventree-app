@@ -6,7 +6,9 @@ import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/barcode/controller.dart";
 import "package:inventree/barcode/handler.dart";
+
 import "package:inventree/l10.dart";
+import "package:inventree/helpers.dart";
 
 /*
  * Barcode controller which acts as a keyboard wedge,
@@ -59,7 +61,7 @@ class _WedgeBarcodeControllerState extends InvenTreeBarcodeControllerState {
   // Callback for a single key press / scan
   void handleKeyEvent(KeyEvent event) {
 
-    if (!canScan || !scanning) {
+    if (!scanning) {
       return;
     }
 
@@ -85,6 +87,9 @@ class _WedgeBarcodeControllerState extends InvenTreeBarcodeControllerState {
     if (event.character == "\n") {
       if (_scannedCharacters.isNotEmpty) {
         handleBarcodeData(_scannedCharacters.join());
+
+        // Debug output required for unit testing
+        debug("scanned: ${_scannedCharacters.join()}");
       }
 
       _scannedCharacters.clear();

@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:inventree/helpers.dart";
 import "package:one_context/one_context.dart";
 
 import "package:inventree/preferences.dart";
@@ -57,6 +58,10 @@ class InvenTreeBarcodeControllerState extends State<InvenTreeBarcodeController> 
     setState(() {
       processingBarcode = true;
     });
+
+    if (!hasContext()) {
+      return;
+    }
 
     BuildContext? context = OneContext.hasContext ? OneContext().context : null;
 
