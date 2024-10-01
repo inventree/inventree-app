@@ -1,11 +1,12 @@
 
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/app_colors.dart";
 import "package:inventree/barcode/controller.dart";
 import "package:inventree/barcode/handler.dart";
-import "package:inventree/barcode/flutter_barcode_listener.dart";
+
 import "package:inventree/l10.dart";
 import "package:inventree/helpers.dart";
 
@@ -31,6 +32,12 @@ class _WedgeBarcodeControllerState extends InvenTreeBarcodeControllerState {
 
   bool get scanning => mounted && canScan;
 
+  final FocusNode _focusNode = FocusNode();
+
+  List<String> _scannedCharacters = [];
+
+  DateTime? _lastScanTime;
+
   @override
   Future<void> pauseScan() async {
 
@@ -51,6 +58,45 @@ class _WedgeBarcodeControllerState extends InvenTreeBarcodeControllerState {
     }
   }
 
+  // Callback for a single key press / scan
+  void handleKeyEvent(KeyEvent event) {
+
+    if (!scanning) {
+      return;
+    }
+
+    // Look only for key-down events
+    if (event is! KeyDownEvent) {
+      return;
+    }
+
+    // Ignore events without a character code
+    if (event.character == null) {
+      return;
+    }
+
+    DateTime now = DateTime.now();
+
+    // Throw away old characters
+    if (_lastScanTime == null || _lastScanTime!.isBefore(now.subtract(Duration(milliseconds: 250)))) {
+      _scannedCharacters.clear();
+    }
+
+    _lastScanTime = now;
+
+    if (event.character == "\n") {
+      if (_scannedCharacters.isNotEmpty) {
+        // Debug output required for unit testing
+        debug("scanned: ${_scannedCharacters.join()}");
+        handleBarcodeData(_scannedCharacters.join());
+      }
+
+      _scannedCharacters.clear();
+    } else {
+      _scannedCharacters.add(event.character!);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -66,8 +112,9 @@ class _WedgeBarcodeControllerState extends InvenTreeBarcodeControllerState {
             Spacer(flex: 5),
             Icon(TablerIcons.barcode, size: 64),
             Spacer(flex: 5),
-            BarcodeKeyboardListener(
-              useKeyDownEvent: true,
+            KeyboardListener(
+              autofocus: true,
+              focusNode: _focusNode,
               child: SizedBox(
                 child: CircularProgressIndicator(
                   color: scanning ? COLOR_ACTION : COLOR_PROGRESS
@@ -75,13 +122,16 @@ class _WedgeBarcodeControllerState extends InvenTreeBarcodeControllerState {
                 width: 64,
                 height: 64,
               ),
-              onBarcodeScanned: (String barcode) {
-                debug("scanned: ${barcode}");
-                if (scanning) {
-                  // Process the barcode data
-                  handleBarcodeData(barcode);
-                }
+              onKeyEvent: (event) {
+                handleKeyEvent(event);
               },
+              // onBarcodeScanned: (String barcode) {
+              //   debug("scanned: ${barcode}");
+              //   if (scanning) {
+              //     // Process the barcode data
+              //     handleBarcodeData(barcode);
+              //   }
+              // },
             ),
             Spacer(flex: 5),
             Padding(

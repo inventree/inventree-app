@@ -31,6 +31,10 @@ Future<void> choiceDialog(String title, List<Widget> items, {Function? onSelecte
     );
   }
 
+  if (!hasContext()) {
+    return;
+  }
+
   OneContext().showDialog(
     builder: (BuildContext context) {
       return AlertDialog(
@@ -62,6 +66,10 @@ Future<void> confirmationDialog(String title, String text, {Color? color, IconDa
 
   String _accept = acceptText ?? L10().ok;
   String _reject = rejectText ?? L10().cancel;
+
+  if (!hasContext()) {
+    return;
+  }
 
   OneContext().showDialog(
     builder: (BuildContext context) {
@@ -176,6 +184,10 @@ Future<void> showErrorDialog(String title, {String description = "", APIResponse
     }
   }
 
+  if (!hasContext()) {
+    return;
+  }
+
   OneContext().showDialog(
     builder: (context) => SimpleDialog(
       title: ListTile(
@@ -196,7 +208,7 @@ Future<void> showErrorDialog(String title, {String description = "", APIResponse
  */
 Future<void> showServerError(String url, String title, String description) async {
 
-  if (!OneContext.hasContext) {
+  if (!hasContext()) {
     return;
   }
 

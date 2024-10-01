@@ -4,18 +4,23 @@ import "package:flutter_gen/gen_l10n/app_localizations_en.dart";
 import "package:one_context/one_context.dart";
 import "package:flutter/material.dart";
 
+import "package:inventree/helpers.dart";
+
 // Shortcut function to reduce boilerplate!
 I18N L10()
 {
-  if (OneContext.hasContext) {
-    BuildContext? _ctx = OneContext().context;
+  // Testing mode - ignore context
+  if (!hasContext()) {
+    return I18NEn();
+  }
 
-    if (_ctx != null) {
-      I18N? i18n = I18N.of(_ctx);
+  BuildContext? _ctx = OneContext().context;
 
-      if (i18n != null) {
-        return i18n;
-      }
+  if (_ctx != null) {
+    I18N? i18n = I18N.of(_ctx);
+
+    if (i18n != null) {
+      return i18n;
     }
   }
 

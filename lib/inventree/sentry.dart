@@ -1,6 +1,7 @@
 import "dart:io";
 
 import "package:device_info_plus/device_info_plus.dart";
+import "package:inventree/helpers.dart";
 import "package:one_context/one_context.dart";
 import "package:package_info_plus/package_info_plus.dart";
 import "package:sentry_flutter/sentry_flutter.dart";
@@ -129,16 +130,16 @@ Future<bool> sentryReportMessage(String message, {Map<String, String>? context})
   }
 
   Sentry.configureScope((scope) {
-    scope.setExtra("server", server_info);
-    scope.setExtra("app", app_info);
-    scope.setExtra("device", device_info);
+    scope.setContexts("server", server_info);
+    scope.setContexts("app", app_info);
+    scope.setContexts("device", device_info);
 
     if (context != null) {
-      scope.setExtra("context", context);
+      scope.setContexts("context", context);
     }
 
     // Catch stacktrace data if possible
-    scope.setExtra("stacktrace", StackTrace.current.toString());
+    scope.setContexts("stacktrace", StackTrace.current.toString());
   });
 
   try {
@@ -203,7 +204,7 @@ Future<void> sentryReportError(String source, dynamic error, StackTrace? stackTr
   // Ensure we pass the 'source' of the error
   context["source"] = source;
 
-  if (OneContext.hasContext) {
+  if (hasContext()) {
     final ctx = OneContext().context;
 
     if (ctx != null) {
@@ -213,10 +214,10 @@ Future<void> sentryReportError(String source, dynamic error, StackTrace? stackTr
   }
 
   Sentry.configureScope((scope) {
-    scope.setExtra("server", server_info);
-    scope.setExtra("app", app_info);
-    scope.setExtra("device", device_info);
-    scope.setExtra("context", context);
+    scope.setContexts("server", server_info);
+    scope.setContexts("app", app_info);
+    scope.setContexts("device", device_info);
+    scope.setContexts("context", context);
   });
 
   Sentry.captureException(error, stackTrace: stackTrace).catchError((error) {

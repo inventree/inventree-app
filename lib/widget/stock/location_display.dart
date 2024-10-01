@@ -301,12 +301,16 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     // Serial number field is not required here
     fields.remove("serial");
 
+    Map<String, dynamic> data = {};
+
+    if (location != null) {
+      data["location"] = location!.pk;
+    }
+
     InvenTreeStockItem().createForm(
         context,
         L10().stockItemCreate,
-        data: {
-          "location": location != null ? location!.pk : null,
-        },
+        data: data,
         fields: fields,
         onSuccess: (result) async {
           Map<String, dynamic> data = result as Map<String, dynamic>;

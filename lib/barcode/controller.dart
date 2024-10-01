@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:inventree/helpers.dart";
 import "package:one_context/one_context.dart";
 
 import "package:inventree/preferences.dart";
@@ -43,7 +44,7 @@ class InvenTreeBarcodeControllerState extends State<InvenTreeBarcodeController> 
    * Barcode data should be passed as a string
    */
   Future<void> handleBarcodeData(String? data) async {
-    
+
     // Check that the data is valid, and this view is still mounted
     if (!mounted || data == null || data.isEmpty) {
       return;
@@ -58,7 +59,11 @@ class InvenTreeBarcodeControllerState extends State<InvenTreeBarcodeController> 
       processingBarcode = true;
     });
 
-    BuildContext? context = OneContext.hasContext ? OneContext().context : null;
+    BuildContext? context;
+
+    if (hasContext()) {
+      context = OneContext.hasContext ? OneContext().context : null;
+    }
 
     showLoadingOverlay(context);
     await pauseScan();

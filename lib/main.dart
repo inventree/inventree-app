@@ -162,13 +162,13 @@ class InvenTreeAppState extends State<StatefulWidget> {
     return AdaptiveTheme(
       light: ThemeData(
         brightness: Brightness.light,
-        primarySwatch: Colors.lightBlue,
-        secondaryHeaderColor: Colors.blueGrey
+        colorSchemeSeed: Colors.lightBlueAccent,
+        useMaterial3: true,
       ),
       dark: ThemeData(
         brightness: Brightness.dark,
-        primarySwatch: Colors.lightBlue,
-        secondaryHeaderColor: Colors.blueGrey,
+        colorSchemeSeed: Colors.blue,
+        useMaterial3: true,
       ),
       initial: savedThemeMode ?? AdaptiveThemeMode.light,
       builder: (light, dark) =>  MaterialApp(

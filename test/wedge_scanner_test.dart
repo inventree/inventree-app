@@ -21,7 +21,7 @@ void main() {
     await simulateKeyDownEvent(LogicalKeyboardKey.keyA);
     await simulateKeyDownEvent(LogicalKeyboardKey.keyB);
     await simulateKeyDownEvent(LogicalKeyboardKey.keyC);
-    await simulateKeyDownEvent(LogicalKeyboardKey.enter);
+    await simulateKeyDownEvent(LogicalKeyboardKey.enter, character: "\n");
 
     // Check debug output
     debugContains("scanned: abc");

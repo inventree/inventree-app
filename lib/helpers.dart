@@ -39,12 +39,31 @@ bool debugContains(String msg, {bool raiseAssert = true}) {
     }
   }
 
+  if (!result) {
+    print("Debug does not contain expected string: '${msg}'");
+  }
+
   if (raiseAssert) {
+
     assert(result);
   }
 
   return result;
 }
+
+
+bool isTesting() {
+  return Platform.environment.containsKey("FLUTTER_TEST");
+}
+
+bool hasContext() {
+  try {
+    return !isTesting() && OneContext.hasContext;
+  } catch (error) {
+    return false;
+  }
+}
+
 
 /*
  * Display a debug message if we are in testing mode, or running in debug mode
@@ -83,7 +102,7 @@ Future<void> playAudioFile(String path) async {
   // Debug message for unit testing
   debug("Playing audio file: '${path}'");
 
-  if (!OneContext.hasContext) {
+  if (!hasContext()) {
     return;
   }
 
@@ -117,20 +136,12 @@ String renderCurrency(double? amount, String currency, {int decimals = 2}) {
 
   if (currency.isEmpty) return "-";
 
-  CurrencyFormatterSettings backupSettings = CurrencyFormatterSettings(
-    symbol: "\$",
-    symbolSide: SymbolSide.left,
-  );
+  CurrencyFormat fmt = CurrencyFormat.fromCode(currency.toLowerCase()) ?? CurrencyFormat.usd;
 
   String value = CurrencyFormatter.format(
     amount,
-    CurrencyFormatter.majors[currency.toLowerCase()] ?? backupSettings
+    fmt
   );
-
-  // If we were not able to determine the currency
-  if (!CurrencyFormatter.majors.containsKey(currency.toLowerCase())) {
-    value += " ${currency}";
-  }
 
   return value;
 }
