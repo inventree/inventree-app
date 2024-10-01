@@ -1,10 +1,11 @@
 import "package:adaptive_theme/adaptive_theme.dart";
 import "package:flutter/material.dart";
+import "package:inventree/helpers.dart";
 import "package:one_context/one_context.dart";
 
 bool isDarkMode() {
 
-  if (!OneContext.hasContext) {
+  if (!hasContext()) {
     return false;
   }
 

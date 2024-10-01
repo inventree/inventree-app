@@ -1,6 +1,7 @@
 import "dart:io";
 
 import "package:device_info_plus/device_info_plus.dart";
+import "package:inventree/helpers.dart";
 import "package:one_context/one_context.dart";
 import "package:package_info_plus/package_info_plus.dart";
 import "package:sentry_flutter/sentry_flutter.dart";
@@ -203,7 +204,7 @@ Future<void> sentryReportError(String source, dynamic error, StackTrace? stackTr
   // Ensure we pass the 'source' of the error
   context["source"] = source;
 
-  if (OneContext.hasContext) {
+  if (hasContext()) {
     final ctx = OneContext().context;
 
     if (ctx != null) {

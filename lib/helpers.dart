@@ -97,7 +97,7 @@ Future<void> playAudioFile(String path) async {
   // Debug message for unit testing
   debug("Playing audio file: '${path}'");
 
-  if (!OneContext.hasContext) {
+  if (!hasContext()) {
     return;
   }
 
