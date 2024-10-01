@@ -63,7 +63,11 @@ class InvenTreeBarcodeControllerState extends State<InvenTreeBarcodeController> 
       return;
     }
 
-    BuildContext? context = OneContext.hasContext ? OneContext().context : null;
+    BuildContext? context;
+
+    if (hasContext()) {
+      context = OneContext.hasContext ? OneContext().context : null;
+    }
 
     showLoadingOverlay(context);
     await pauseScan();
