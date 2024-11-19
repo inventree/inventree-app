@@ -213,7 +213,7 @@
   "@documentation": {},
   "downloading": "Downloading File",
   "@downloading": {},
-  "downloadError": "Download Error",
+  "downloadError": "خطای بارگیری",
   "@downloadError": {},
   "edit": "Edit",
   "@edit": {
@@ -223,9 +223,9 @@
   "@editCategory": {},
   "editLocation": "Edit Location",
   "@editLocation": {},
-  "editNotes": "Edit Notes",
+  "editNotes": "ویرایش یادداشت‌ها",
   "@editNotes": {},
-  "editParameter": "Edit Parameter",
+  "editParameter": "ویرایش پارامتر",
   "@editParameter": {},
   "editPart": "Edit Part",
   "@editPart": {
