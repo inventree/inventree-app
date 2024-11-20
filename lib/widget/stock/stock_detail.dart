@@ -17,6 +17,7 @@ import "package:inventree/preferences.dart";
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/inventree/part.dart";
+import "package:inventree/widget/company/company_detail.dart";
 
 import "package:inventree/widget/company/supplier_part_detail.dart";
 import "package:inventree/widget/dialogs.dart";
@@ -690,6 +691,22 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
               builder: (context) => SalesOrderDetailWidget(salesOrder!)
             ));
           }
+        )
+      );
+    }
+
+    if (widget.item.hasCustomer && customer != null) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().customer),
+          subtitle: Text(customer?.description ?? ""),
+          leading: Icon(TablerIcons.building_store, color: COLOR_ACTION),
+          trailing: Text(customer?.name ?? ""),
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(
+              builder: (context) => CompanyDetailWidget(customer!)
+            ));
+          },
         )
       );
     }
