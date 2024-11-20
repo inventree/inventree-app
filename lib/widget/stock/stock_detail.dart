@@ -7,6 +7,7 @@ import "package:inventree/app_colors.dart";
 import "package:inventree/barcode/barcode.dart";
 import "package:inventree/barcode/stock.dart";
 import "package:inventree/helpers.dart";
+import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/api.dart";
 import "package:inventree/api_form.dart";
@@ -20,6 +21,7 @@ import "package:inventree/inventree/part.dart";
 import "package:inventree/widget/company/supplier_part_detail.dart";
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/attachment_widget.dart";
+import "package:inventree/widget/order/sales_order_detail.dart";
 import "package:inventree/widget/stock/location_display.dart";
 import "package:inventree/widget/part/part_detail.dart";
 import "package:inventree/widget/progress.dart";
@@ -50,6 +52,11 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
   bool stockShowHistory = false;
   bool stockShowTests = true;
+
+  // Linked data fields
+  InvenTreePart? part;
+  InvenTreeSalesOrder? salesOrder;
+  InvenTreeCompany? customer;
 
   @override
   List<Widget> appBarActions(BuildContext context) {
@@ -199,9 +206,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   // This will be determined when the widget is loaded
   List<Map<String, dynamic>> labels = [];
 
-  // Part object
-  InvenTreePart? part;
-
   int attachmentCount = 0;
 
   @override
@@ -251,6 +255,40 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         });
       }
     });
+
+    // Request SalesOrder information
+    if (widget.item.hasSalesOrder) {
+      InvenTreeSalesOrder().get(widget.item.salesOrderId).then((instance) => {
+        if (mounted) {
+            setState(() {
+              salesOrder = instance as InvenTreeSalesOrder?;
+            })
+        }
+      });
+    } else {
+      if (mounted) {
+        setState(() {
+          salesOrder = null;
+        });
+      }
+    }
+
+    // Request Customer information
+    if (widget.item.hasCustomer) {
+      InvenTreeCompany().get(widget.item.customerId).then((instance) => {
+        if (mounted) {
+          setState(() {
+            customer = instance as InvenTreeCompany?;
+          })
+        }
+      });
+    } else {
+      if (mounted) {
+        setState(() {
+          customer = null;
+        });
+      }
+    }
 
     List<Map<String, dynamic>> _labels = [];
     bool allowLabelPrinting = await InvenTreeSettingsManager().getBool(INV_ENABLE_LABEL_PRINTING, true);
@@ -455,18 +493,32 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   }
 
   Widget headerTile() {
-    return Card(
-      child: ListTile(
-        title: Text("${widget.item.partName}"),
-        subtitle: Text("${widget.item.partDescription}"),
-        leading: InvenTreeAPI().getThumbnail(widget.item.partImage),
-        trailing: widget.item.isSerialized() ? null : Text(
+
+    Widget? trailing = null;
+
+    if (!widget.item.isInStock) {
+      trailing = Text(
+        L10().unavailable,
+        style: TextStyle(
+          color: COLOR_DANGER
+        )
+      );
+    } else if (!widget.item.isSerialized()) {
+      trailing = Text(
           widget.item.quantityString(),
           style: TextStyle(
             fontSize: 20,
             color: api.StockStatus.color(widget.item.status),
           )
-        ),
+      );
+    }
+
+    return Card(
+      child: ListTile(
+        title: Text("${widget.item.partName}"),
+        subtitle: Text("${widget.item.partDescription}"),
+        leading: InvenTreeAPI().getThumbnail(widget.item.partImage),
+        trailing: trailing,
         onTap: () async {
           if (widget.item.partId > 0) {
 
@@ -544,13 +596,34 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
             subtitle: Text("${widget.item.serialNumber}"),
           )
       );
-    } else {
+    } else if (widget.item.isInStock) {
       tiles.add(
           ListTile(
             title: widget.item.allocated > 0 ? Text(L10().quantityAvailable) : Text(L10().quantity),
             leading: Icon(TablerIcons.packages),
             trailing: Text("${widget.item.quantityString()}"),
           )
+      );
+    }
+
+    if (!widget.item.isInStock) {
+      tiles.add(
+        ListTile(
+          leading: Icon(TablerIcons.box_off),
+          title: Text(
+            L10().unavailable,
+            style: TextStyle(
+              color: COLOR_DANGER,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          subtitle: Text(
+            L10().unavailableDetail,
+            style: TextStyle(
+              color: COLOR_DANGER
+            )
+          )
+        )
       );
     }
 
@@ -601,6 +674,22 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           onTap: () {
             // TODO: Click through to the "build order"
           },
+        )
+      );
+    }
+
+    if (widget.item.hasSalesOrder && salesOrder != null) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().salesOrder),
+          subtitle: Text(salesOrder?.description ?? ""),
+          leading: Icon(TablerIcons.truck_delivery, color: COLOR_ACTION),
+          trailing: Text(salesOrder?.reference ?? ""),
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(
+              builder: (context) => SalesOrderDetailWidget(salesOrder!)
+            ));
+          }
         )
       );
     }
