@@ -495,7 +495,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
   Widget headerTile() {
 
-    Widget? trailing = null;
+    Widget? trailing;
 
     if (!widget.item.isInStock) {
       trailing = Text(
