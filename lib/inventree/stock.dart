@@ -291,7 +291,9 @@ class InvenTreeStockItem extends InvenTreeModel {
   }
 
   int get status => getInt("status");
-  
+
+  bool get isInStock => getBool("in_stock", backup: true);
+
   String get packaging => getString("packaging");
 
   String get batch => getString("batch");
@@ -321,26 +323,34 @@ class InvenTreeStockItem extends InvenTreeModel {
   
   bool get isBuilding => getBool("is_building");
 
-    // Date of last update
-    DateTime? get updatedDate {
-      if (jsondata.containsKey("updated")) {
-        return DateTime.tryParse((jsondata["updated"] ?? "") as String);
-      } else {
-        return null;
-      }
+  int get salesOrderId => getInt("sales_order");
+
+  bool get hasSalesOrder => salesOrderId > 0;
+
+  int get customerId => getInt("customer");
+
+  bool get hasCustomer => customerId > 0;
+
+  // Date of last update
+  DateTime? get updatedDate {
+    if (jsondata.containsKey("updated")) {
+      return DateTime.tryParse((jsondata["updated"] ?? "") as String);
+    } else {
+      return null;
+    }
+  }
+
+  String get updatedDateString {
+    var _updated = updatedDate;
+
+    if (_updated == null) {
+      return "";
     }
 
-    String get updatedDateString {
-      var _updated = updatedDate;
+    final DateFormat _format = DateFormat("yyyy-MM-dd");
 
-      if (_updated == null) {
-        return "";
-      }
-
-      final DateFormat _format = DateFormat("yyyy-MM-dd");
-
-      return _format.format(_updated);
-    }
+    return _format.format(_updated);
+  }
 
     DateTime? get stocktakeDate {
       if (jsondata.containsKey("stocktake_date")) {
