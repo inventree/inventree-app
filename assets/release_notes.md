@@ -1,3 +1,8 @@
+### 0.17.0 - November 2024
+---
+
+- Clearly indicate if a StockItem is unavailable
+
 ### 0.16.5 - September 2024
 ---
 
