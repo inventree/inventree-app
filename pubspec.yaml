@@ -34,7 +34,7 @@ dependencies:
   mobile_scanner: ^6.0.2                  # Barcode scanning via device camera
   one_context: ^4.0.0                     # Dialogs without requiring context
   open_filex: ^4.5.0                      # Open local files
-  package_info_plus: ^8.0.2               # App information introspection
+  package_info_plus: ^8.1.1               # App information introspection
   path: ^1.9.0
   path_provider: ^2.1.3                   # Local file storage
   sembast: ^3.6.0                         # NoSQL data storage
