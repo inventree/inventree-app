@@ -1,15 +1,70 @@
+import "dart:async";
 import "dart:io";
+
 import "package:flutter/material.dart";
+import "package:mobile_scanner/mobile_scanner.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
+
 import "package:inventree/app_colors.dart";
-import "package:inventree/preferences.dart";
-
-import "package:qr_code_scanner/qr_code_scanner.dart";
-
 import "package:inventree/l10.dart";
+import "package:inventree/preferences.dart";
 
 import "package:inventree/barcode/handler.dart";
 import "package:inventree/barcode/controller.dart";
+
+class ScannerErrorWidget extends StatelessWidget {
+  const ScannerErrorWidget({super.key, required this.error});
+
+  final MobileScannerException error;
+
+  @override
+  Widget build(BuildContext context) {
+    String errorMessage;
+
+    switch (error.errorCode) {
+      case MobileScannerErrorCode.controllerUninitialized:
+        // TODO: Translated message
+        errorMessage = 'Controller not ready.';
+        break;
+      case MobileScannerErrorCode.permissionDenied:
+        // TODO: Translated message
+        errorMessage = 'Permission denied';
+        break;
+      case MobileScannerErrorCode.unsupported:
+        // TODO: Translated message
+        errorMessage = 'Scanning is unsupported on this device';
+        break;
+      default:
+        // TODO: Translated message
+        errorMessage = 'Generic Error';
+        break;
+    }
+
+    return ColoredBox(
+      color: Colors.black,
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(bottom: 16),
+              child: Icon(Icons.error, color: Colors.white),
+            ),
+            Text(
+              errorMessage,
+              style: const TextStyle(color: Colors.white),
+            ),
+            Text(
+              error.errorDetails?.message ?? '',
+              style: const TextStyle(color: Colors.white),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 
 /*
  * Barcode controller which uses the device's camera to scan barcodes.
@@ -23,15 +78,48 @@ class CameraBarcodeController extends InvenTreeBarcodeController {
   State<StatefulWidget> createState() => _CameraBarcodeControllerState();
 }
 
-class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
+class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState with WidgetsBindingObserver {
   _CameraBarcodeControllerState() : super();
 
-  QRViewController? _controller;
+  final MobileScannerController controller = MobileScannerController();
+  StreamSubscription<Object?>? _subscription;
 
   bool flash_status = false;
-
   bool single_scanning = false;
   bool scanning_paused = false;
+
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // If the controller is not ready, do not try to start or stop it.
+    // Permission dialogs can trigger lifecycle changes before the controller is ready.
+    if (!controller.value.hasCameraPermission) {
+      return;
+    }
+
+    switch (state) {
+      case AppLifecycleState.detached:
+        return;
+      case AppLifecycleState.hidden:
+        return;
+      case AppLifecycleState.paused:
+        return;
+      case AppLifecycleState.resumed:
+      // Restart the scanner when the app is resumed.
+      // Don't forget to resume listening to the barcode events.
+        _subscription = controller.barcodes.listen(_handleBarcode);
+
+        unawaited(controller.start());
+        break;
+      case AppLifecycleState.inactive:
+      // Stop the scanner when the app is paused.
+      // Also stop the barcode events subscription.
+        unawaited(_subscription?.cancel());
+        _subscription = null;
+        unawaited(controller.stop());
+        break;
+    }
+  }
 
   Future<void> _loadSettings() async {
     bool _single = await InvenTreeSettingsManager()
@@ -45,25 +133,35 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
     }
   }
 
-  /* Callback function when the Barcode scanner view is initially created */
-  void _onViewCreated(BuildContext context, QRViewController controller) {
-    _controller = controller;
+  void _handleBarcode(BarcodeCapture barcodes) {
+    // TODO: Pass barcode data back to handler
+    print("barcode: ${barcodes.barcodes.firstOrNull}");
+  }
 
-    controller.scannedDataStream.listen((barcode) {
-      if (!scanning_paused) {
-        handleBarcodeData(barcode.code).then((value) => {
-              // If in single-scanning mode, pause after successful scan
-              if (single_scanning && mounted)
-                {
-                  setState(() {
-                    scanning_paused = true;
-                  })
-                }
-            });
-      }
-    });
+  @override
+  void initState() {
+    super.initState();
+    // Start listening to lifecycle changes.
+    WidgetsBinding.instance.addObserver(this);
 
-    _loadSettings();
+    // Start listening to the barcode events.
+    _subscription = controller.barcodes.listen(_handleBarcode);
+
+    // Finally, start the scanner itself.
+    unawaited(controller.start());
+  }
+
+  @override
+  Future<void> dispose() async {
+    // Stop listening to lifecycle changes.
+    WidgetsBinding.instance.removeObserver(this);
+    // Stop listening to the barcode events.
+    unawaited(_subscription?.cancel());
+    _subscription = null;
+    // Dispose the widget itself.
+    super.dispose();
+    // Finally, dispose of the controller.
+    await controller.dispose();
   }
 
   // In order to get hot reload to work we need to pause the camera if the platform
@@ -74,24 +172,21 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
 
     if (mounted) {
       if (Platform.isAndroid) {
-        _controller!.pauseCamera();
+        controller.stop();
       }
 
-      _controller!.resumeCamera();
+      controller.start();
     }
   }
 
-  @override
-  void dispose() {
-    _controller?.dispose();
-    super.dispose();
-  }
+
 
   @override
   Future<void> pauseScan() async {
+
     try {
-      await _controller?.pauseCamera();
-    } on CameraException {
+      await controller.stop();
+    } on Exception {
       // do nothing
     }
   }
@@ -104,19 +199,18 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
     }
 
     try {
-      await _controller?.resumeCamera();
-    } on CameraException {
+      await controller.start();
+    } on Exception {
       // do nothing
     }
   }
 
   // Toggle the status of the camera flash
   Future<void> updateFlashStatus() async {
-    final bool? status = await _controller?.getFlashStatus();
 
     if (mounted) {
       setState(() {
-        flash_status = status != null && status;
+        flash_status = controller.torchEnabled;
       });
     }
   }
@@ -140,12 +234,12 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
             IconButton(
                 icon: Icon(Icons.flip_camera_android),
                 onPressed: () {
-                  _controller?.flipCamera();
+                  // TODO: Flip camera
                 }),
             IconButton(
               icon: flash_status ? Icon(Icons.flash_off) : Icon(Icons.flash_on),
               onPressed: () {
-                _controller?.toggleFlash();
+                // TODO: Toggle flash
                 updateFlashStatus();
               },
             )
@@ -168,20 +262,22 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
               children: <Widget>[
                 Column(children: [
                   Expanded(
-                      child: QRView(
-                    key: barcodeControllerKey,
-                    onQRViewCreated: (QRViewController controller) {
-                      _onViewCreated(context, controller);
-                    },
-                    overlay: QrScannerOverlayShape(
-                      borderColor:
-                          scanning_paused ? COLOR_WARNING : COLOR_ACTION,
-                      borderRadius: 10,
-                      borderLength: 30,
-                      borderWidth: 10,
-                      cutOutSize: 300,
+                    child: MobileScanner(
+                      controller: controller,
+                      errorBuilder: (context, error, child) {
+                        return ScannerErrorWidget(error: error);
+                      },
+                      fit: BoxFit.contain,
+                      ),
                     ),
-                  ))
+                    // overlay: QrScannerOverlayShape(
+                    //   borderColor:
+                    //       scanning_paused ? COLOR_WARNING : COLOR_ACTION,
+                    //   borderRadius: 10,
+                    //   borderLength: 30,
+                    //   borderWidth: 10,
+                    //   cutOutSize: 300,
+                    // ),
                 ]),
                 Center(
                     child: Column(children: [
