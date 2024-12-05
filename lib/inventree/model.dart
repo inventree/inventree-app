@@ -12,7 +12,9 @@ import "package:inventree/api_form.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/inventree/sentry.dart";
+
 import "package:inventree/widget/dialogs.dart";
+import "package:inventree/widget/fields.dart";
 
 
 // Paginated response object
@@ -993,7 +995,7 @@ class InvenTreeAttachment extends InvenTreeModel {
     return count(filters: filters);
   }
 
-  Future<bool> uploadAttachment(File attachment, String modelType, int modelId, {String comment = "", Map<String, String> fields = const {}}) async {
+  Future<bool> uploadAttachment(File attachment, int modelId, {String comment = "", Map<String, String> fields = const {}}) async {
 
     // Ensure that the correct reference field is set
     Map<String, String> data = Map<String, String>.from(fields);
@@ -1002,14 +1004,9 @@ class InvenTreeAttachment extends InvenTreeModel {
 
     if (InvenTreeAPI().supportsModernAttachments) {
 
-      if (modelType.isEmpty) {
-        sentryReportMessage("uploadAttachment called with empty 'modelType'");
-        return false;
-      }
-
       url = "attachment/";
       data["model_id"] = modelId.toString();
-      data["model_type"] = modelType;
+      data["model_type"] = REF_MODEL_TYPE;
 
     } else {
 
@@ -1031,6 +1028,41 @@ class InvenTreeAttachment extends InvenTreeModel {
 
     return response.successful();
   }
+
+
+  Future<bool> uploadImage(int modelId, {String prefix = "InvenTree"}) async {
+
+    bool result = false;
+
+    await FilePickerDialog.pickImageFromCamera().then((File? file) {
+      if (file != null) {
+
+        String dir = path.dirname(file.path);
+        String ext = path.extension(file.path);
+        String now = DateTime.now().toIso8601String().replaceAll(":", "-");
+
+        // Rename the file with a unique name
+        String filename = "${dir}/${prefix}_image_${now}${ext}";
+
+        try {
+          file.rename(filename).then((File renamed) {
+            uploadAttachment(renamed, modelId).then((success) {
+              result = success;
+              showSnackIcon(
+                  result ? L10().imageUploadSuccess : L10().imageUploadFailure,
+                  success: result);
+            });
+          });
+        } catch (error, stackTrace) {
+          sentryReportError("uploadImage", error, stackTrace);
+          showSnackIcon(L10().imageUploadFailure, success: false);
+        }
+      }
+    });
+
+    return result;
+  }
+
 
   /*
    * Download this attachment file

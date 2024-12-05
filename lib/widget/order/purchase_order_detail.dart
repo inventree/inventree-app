@@ -19,6 +19,7 @@ import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/stock/stock_list.dart";
+import "package:inventree/preferences.dart";
 
 
 /*
@@ -45,6 +46,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
   int attachmentCount = 0;
 
+  bool showCameraShortcut = true;
   bool supportProjectCodes = false;
 
   @override
@@ -72,6 +74,18 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
   @override
   List<SpeedDialChild> actionButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
+
+    if (showCameraShortcut && widget.order.canEdit) {
+      actions.add(
+          SpeedDialChild(
+              child: Icon(TablerIcons.camera, color: Colors.blue),
+              label: L10().takePicture,
+              onTap: () async {
+                _uploadImage(context);
+              }
+          )
+      );
+    }
 
     if (widget.order.canCreate) {
       if (widget.order.isPending) {
@@ -135,6 +149,15 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
         showSnackIcon(L10().lineItemUpdated, success: true);
       }
     );
+  }
+
+  /// Upload an image against the current PurchaseOrder
+  Future<void> _uploadImage(BuildContext context) async {
+
+    InvenTreePurchaseOrderAttachment().uploadImage(
+        widget.order.pk,
+        prefix: widget.order.reference,
+    ).then((result) => refresh(context));
   }
 
   /// Issue this order
@@ -217,6 +240,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
     lines = await widget.order.getLineItems();
 
+    showCameraShortcut = await InvenTreeSettingsManager().getBool(INV_PO_SHOW_CAMERA, true);
     supportProjectCodes = api.supportsProjectCodes && await api.getGlobalBooleanSetting("PROJECT_CODES_ENABLED");
 
     completedLines = 0;
@@ -389,6 +413,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
                 builder: (context) => AttachmentWidget(
                     InvenTreePurchaseOrderAttachment(),
                     widget.order.pk,
+                    widget.order.reference,
                     widget.order.canEdit
                 )
               )

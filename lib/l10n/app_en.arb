@@ -897,6 +897,18 @@
   "projectCode": "Project Code",
   "@projectCode": {},
 
+   "purchaseOrderEnable": "Enable Purchase Orders",
+   "@purchaseOrderEnable": {},
+
+   "purchaseOrderEnableDetail": "Enable purchase order functionality",
+    "@purchaseOrderEnableDetail": {},
+
+    "purchaseOrderShowCamera": "Camera Shortcut",
+    "@purchaseOrderShowCamera": {},
+
+    "purchaseOrderShowCameraDetail": "Enable image upload shortcut on purchase order screen",
+    "@purchaseOrderShowCameraDetail": {},
+
   "purchaseOrder": "Purchase Order",
   "@purchaseOrder": {},
 
@@ -905,6 +917,9 @@
 
   "purchaseOrderEdit": "Edit Purchase Order",
   "@purchaseOrderEdit": {},
+
+   "purchaseOrderSettings": "Purchase order settings",
+    "@purchaseOrderSettings": {},
 
   "purchaseOrders": "Purchase Orders",
   "@purchaseOrders": {},
@@ -1059,6 +1074,21 @@
 
   "salesOrders": "Sales Orders",
   "@salesOrders": {},
+
+   "salesOrderEnable": "Enable Sales Orders",
+   "@salesOrderEnable": {},
+
+   "salesOrderEnableDetail": "Enable sales order functionality",
+    "@salesOrderEnableDetail": {},
+
+    "salesOrderShowCamera": "Camera Shortcut",
+    "@salesOrderShowCamera": {},
+
+    "salesOrderShowCameraDetail": "Enable image upload shortcut on sales order screen",
+    "@salesOrderShowCameraDetail": {},
+
+  "salesOrderSettings": "Sales order settings",
+    "@salesOrderSettings": {},
 
   "salesOrderCreate": "New Sales Order",
   "@saleOrderCreate": {},
