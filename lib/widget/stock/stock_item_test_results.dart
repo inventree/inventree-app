@@ -179,9 +179,7 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
       int _templateId = 0;
       bool _result = false;
       String _value = "";
-      String _notes = "";
       String _date = "";
-      String _user = "";
 
       Widget _icon = Icon(TablerIcons.help_circle, color: Colors.lightBlue);
       bool _valueRequired = false;
@@ -195,19 +193,15 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
         _value = item.latestResult()?.value ?? L10().noResults;
         _valueRequired = item.requiresValue;
         _attachmentRequired = item.requiresAttachment;
-        _notes = item.latestResult()?.notes ?? item.description;
         _date = item.latestResult()?.date ?? "";
-        _user = item.latestResult()?.username ?? "";
         _hasResult = item.latestResult() != null;
       } else if (item is InvenTreeStockItemTestResult) {
         _result = item.result;
         _test = item.testName;
         _templateId = item.templateId;
         _date = item.date;
-        _user = item.username;
         _required = false;
         _value = item.value;
-        _notes = item.notes;
         _hasResult = true;
       }
 
