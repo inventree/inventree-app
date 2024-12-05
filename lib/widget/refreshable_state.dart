@@ -60,6 +60,7 @@ mixin BaseWidgetProperties {
       centerTitle: false,
       bottom: tabs.isEmpty ? null : TabBar(tabs: tabs),
       title: Text(getAppBarTitle()),
+      backgroundColor: COLOR_APP_BAR,
       actions: appBarActions(context),
       leading: backButton(context, key),
     );

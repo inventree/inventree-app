@@ -42,6 +42,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text(L10().settings),
+        backgroundColor: COLOR_APP_BAR,
       ),
       body: Center(
         child: ListView(

@@ -27,6 +27,11 @@ Color get COLOR_ACTION {
   }
 }
 
+// Return an "app bar" color based on the current theme
+Color get COLOR_APP_BAR {
+  return Colors.blueGrey;
+}
+
 const Color COLOR_WARNING = Color.fromRGBO(250, 150, 50, 1);
 const Color COLOR_DANGER = Color.fromRGBO(200, 50, 75, 1);
 const Color COLOR_SUCCESS = Color.fromRGBO(100, 200, 75, 1);

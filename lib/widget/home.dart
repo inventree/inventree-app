@@ -397,6 +397,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
       key: homeKey,
       appBar: AppBar(
         title: Text(L10().appTitle),
+        backgroundColor: COLOR_APP_BAR,
         actions: [
           IconButton(
             icon: Icon(

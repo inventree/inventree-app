@@ -108,6 +108,7 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
     return Scaffold(
       appBar: AppBar(
         title: Text(L10().login),
+        backgroundColor: COLOR_APP_BAR,
         actions: [
           IconButton(
             icon: Icon(TablerIcons.transition_right, color: COLOR_SUCCESS),

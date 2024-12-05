@@ -1498,6 +1498,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        backgroundColor: COLOR_APP_BAR,
         actions: [
           IconButton(
             icon: Icon(widget.icon),
