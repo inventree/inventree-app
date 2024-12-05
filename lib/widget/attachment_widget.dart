@@ -78,7 +78,6 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
 
     final bool result = await widget.attachmentClass.uploadAttachment(
         file,
-        widget.attachmentClass.REF_MODEL_TYPE,
         widget.modelId
     );
 

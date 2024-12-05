@@ -73,6 +73,18 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
   List<SpeedDialChild> actionButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
+    if (widget.order.canEdit) {
+      actions.add(
+          SpeedDialChild(
+              child: Icon(TablerIcons.camera, color: Colors.blue),
+              label: L10().takePicture,
+              onTap: () async {
+                _uploadImage(context);
+              }
+          )
+      );
+    }
+
     if (widget.order.canCreate) {
       if (widget.order.isPending) {
 
@@ -135,6 +147,14 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
         showSnackIcon(L10().lineItemUpdated, success: true);
       }
     );
+  }
+
+  /// Upload an image against the current PurchaseOrder
+  Future<void> _uploadImage(BuildContext context) async {
+
+    InvenTreePurchaseOrderAttachment().uploadImage(widget.order.pk).then((result) => {
+      refresh(context)
+    });
   }
 
   /// Issue this order
