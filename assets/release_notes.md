@@ -1,6 +1,7 @@
 ### 0.17.0 - November 2024
 ---
 
+- Enhanced home-screen display using grid-view
 - Improvements for image uploading
 - Provide "upload image" shortcut on Purchase Order detail view
 - Provide "upload image" shortcut on Sales Order detail view
