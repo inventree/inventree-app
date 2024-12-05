@@ -657,7 +657,13 @@ class APIFormField {
           ) : null,
           leading: extended ? InvenTreeAPI().getThumbnail(part.thumbnail) : null,
         );
+      case "parttesttemplate":
+          var template = InvenTreePartTestTemplate.fromJson(data);
 
+          return ListTile(
+            title: Text(template.testName),
+            subtitle: Text(template.description),
+          );
       case "supplierpart":
         var part = InvenTreeSupplierPart.fromJson(data);
 

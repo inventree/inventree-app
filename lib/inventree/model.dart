@@ -97,7 +97,6 @@ class InvenTreeModel {
     if (data.containsKey(key)) {
       return data[key];
     } else {
-      debug("JSON data does not contain key '$key' (subKey '${subKey}')");
       return backup;
     }
   }
@@ -427,13 +426,17 @@ class InvenTreeModel {
     }
 }
 
-  Map<String, String> defaultListFilters() {
+  Map<String, String> defaultFilters() {
     return {};
+  }
+
+  Map<String, String> defaultListFilters() {
+    return defaultFilters();
   }
 
   // A map of "default" headers to use when performing a GET request
   Map<String, String> defaultGetFilters() {
-    return {};
+    return defaultFilters();
   }
 
   /*
