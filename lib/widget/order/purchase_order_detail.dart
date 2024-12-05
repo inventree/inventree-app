@@ -152,7 +152,10 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
   /// Upload an image against the current PurchaseOrder
   Future<void> _uploadImage(BuildContext context) async {
 
-    InvenTreePurchaseOrderAttachment().uploadImage(widget.order.pk).then((result) => {
+    InvenTreePurchaseOrderAttachment().uploadImage(
+        widget.order.pk,
+        prefix: widget.order.reference,
+    ).then((result) => {
       refresh(context)
     });
   }
@@ -409,6 +412,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
                 builder: (context) => AttachmentWidget(
                     InvenTreePurchaseOrderAttachment(),
                     widget.order.pk,
+                    widget.order.reference,
                     widget.order.canEdit
                 )
               )

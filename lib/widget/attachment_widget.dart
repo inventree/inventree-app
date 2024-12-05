@@ -26,11 +26,12 @@ import "package:inventree/widget/refreshable_state.dart";
  */
 class AttachmentWidget extends StatefulWidget {
 
-  const AttachmentWidget(this.attachmentClass, this.modelId, this.hasUploadPermission) : super();
+  const AttachmentWidget(this.attachmentClass, this.modelId, this.imagePrefix, this.hasUploadPermission) : super();
 
   final InvenTreeAttachment attachmentClass;
   final int modelId;
   final bool hasUploadPermission;
+  final String imagePrefix;
 
   @override
   _AttachmentWidgetState createState() => _AttachmentWidgetState();
@@ -54,6 +55,10 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
       IconButton(
         icon: Icon(TablerIcons.camera),
         onPressed: () async {
+          widget.attachmentClass.uploadImage(
+            widget.modelId,
+            prefix: widget.imagePrefix,
+          );
           FilePickerDialog.pickImageFromCamera().then((File? file) {
             upload(context, file);
           });

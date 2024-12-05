@@ -844,6 +844,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
                 builder: (context) => AttachmentWidget(
                   InvenTreeStockItemAttachment(),
                   widget.item.pk,
+                  L10().stockItem,
                   widget.item.canEdit,
                 )
               )

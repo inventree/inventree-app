@@ -404,6 +404,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
             builder: (context) => AttachmentWidget(
               InvenTreeCompanyAttachment(),
               widget.company.pk,
+              widget.company.name,
               InvenTreeCompany().canEdit
             )
           )

@@ -378,6 +378,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
             builder: (context) => AttachmentWidget(
             InvenTreeSalesOrderAttachment(),
             widget.order.pk,
+            widget.order.reference,
             widget.order.canEdit
             )
           )

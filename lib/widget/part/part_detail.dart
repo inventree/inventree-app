@@ -588,6 +588,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
               builder: (context) => AttachmentWidget(
                   InvenTreePartAttachment(),
                   part.pk,
+                  L10().part,
                   part.canEdit
                 )
             )
