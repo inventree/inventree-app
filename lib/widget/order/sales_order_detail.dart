@@ -362,6 +362,19 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
       trailing: Text("${widget.order.completedLineItemCount} / ${widget.order.lineItemCount}", style: TextStyle(color: lineColor)),
     ));
 
+    // Shipment progress
+    if (widget.order.shipmentCount > 0) {
+      tiles.add(ListTile(
+        title: Text(L10().shipments),
+        subtitle: ProgressBar(
+          widget.order.completedShipmentCount.toDouble(),
+          maximum: widget.order.shipmentCount.toDouble()
+        ),
+        leading: Icon(TablerIcons.truck_delivery),
+        trailing: Text("${widget.order.completedShipmentCount} / ${widget.order.shipmentCount}", style: TextStyle(color: lineColor)),
+      ));
+    }
+
     // TODO: total price
 
     if (widget.order.targetDate.isNotEmpty) {
