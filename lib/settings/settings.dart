@@ -11,7 +11,8 @@ import "package:inventree/settings/barcode_settings.dart";
 import "package:inventree/settings/home_settings.dart";
 import "package:inventree/settings/select_server.dart";
 import "package:inventree/settings/part_settings.dart";
-
+import "package:inventree/settings/purchase_order_settings.dart";
+import "package:inventree/settings/sales_order_settings.dart";
 
 // InvenTree settings view
 class InvenTreeSettingsWidget extends StatefulWidget {
@@ -85,6 +86,22 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreePartSettingsWidget()));
                 }
+              ),
+              ListTile(
+                title: Text(L10().purchaseOrder),
+                subtitle: Text(L10().purchaseOrderSettings),
+                leading: Icon(TablerIcons.shopping_cart, color: COLOR_ACTION),
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreePurchaseOrderSettingsWidget()));
+                },
+              ),
+              ListTile(
+                title: Text(L10().salesOrder),
+                subtitle: Text(L10().salesOrderSettings),
+                leading: Icon(TablerIcons.truck, color: COLOR_ACTION),
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeSalesOrderSettingsWidget()));
+                },
               ),
               Divider(),
               ListTile(

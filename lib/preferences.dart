@@ -36,6 +36,14 @@ const String INV_STOCK_SHOW_HISTORY = "stockShowHistory";
 const String INV_STOCK_SHOW_TESTS = "stockShowTests";
 const String INV_STOCK_CONFIRM_SCAN = "stockConfirmScan";
 
+// Purchase order settings
+const String INV_PO_ENABLE = "poEnable";
+const String INV_PO_SHOW_CAMERA = "poShowCamera";
+
+// Sales order settings
+const String INV_SO_ENABLE = "soEnable";
+const String INV_SO_SHOW_CAMERA = "soShowCamera";
+
 const String INV_REPORT_ERRORS = "reportErrors";
 const String INV_STRICT_HTTPS = "strictHttps";
 
