@@ -60,6 +60,7 @@ class BarcodeHandler {
   Future<void> processBarcode(String barcode,
       {String url = "barcode/",
       Map<String, dynamic> extra_data = const {}}) async {
+
     debug("Scanned barcode data: '${barcode}'");
 
     barcode = barcode.trim();

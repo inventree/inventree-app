@@ -61,6 +61,24 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
     }
   }
 
+  @override
+  Future<void> pauseScan() async {
+    if (mounted) {
+      setState(() {
+        scanning_paused = true;
+      });
+    }
+  }
+
+  @override
+  Future<void> resumeScan() async {
+    if (mounted) {
+      setState(() {
+        scanning_paused = false;
+      });
+    }
+  }
+
   /*
    * Callback function when a barcode is scanned
    */
