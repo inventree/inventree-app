@@ -1,6 +1,9 @@
 ### 0.17.0 - November 2024
 ---
 
+- Improvements for image uploading
+- Provide "upload image" shortcut on Purchase Order detail view
+- Provide "upload image" shortcut on Sales Order detail view
 - Clearly indicate if a StockItem is unavailable
 
 ### 0.16.5 - September 2024
