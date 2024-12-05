@@ -274,6 +274,12 @@
   "damaged": "Damaged",
   "@damaged": {},
 
+  "colorScheme": "Color Scheme",
+  "@colorScheme": {},
+
+  "colorSchemeDetail": "Select color scheme",
+  "@colorSchemeDetail": {},
+
   "darkMode": "Dark Mode",
   "@darkMode": {},
 
