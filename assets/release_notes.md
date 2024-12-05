@@ -1,6 +1,7 @@
-### 0.17.0 - November 2024
+### 0.17.0 - December 2024
 ---
 
+- Improved barcode scanning with new scanning library
 - Enhanced home-screen display using grid-view
 - Improvements for image uploading
 - Provide "upload image" shortcut on Purchase Order detail view
