@@ -1,4 +1,5 @@
 import "dart:async";
+import "dart:math";
 
 import "package:flutter/material.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
@@ -187,15 +188,24 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
 
     return GestureDetector(
       child: Card(
-        margin: EdgeInsets.symmetric(
-          vertical: 5,
-          horizontal: 12
-        ),
-        child: ListTile(
-          leading: Icon(icon, color: connected && allowed ? COLOR_ACTION : Colors.grey),
-          title: Text(label),
-          trailing: trailing,
-        ),
+        margin: EdgeInsets.all(5),
+        child: Align(
+          child: ListTile(
+            leading: Icon(
+                icon,
+                size: 32,
+                color: connected && allowed ? COLOR_ACTION : Colors.grey
+            ),
+            title: Text(
+              label,
+              style: TextStyle(
+                fontSize: 20
+              ),
+            ),
+            trailing: trailing,
+          ),
+          alignment: Alignment.center,
+        )
       ),
       onTap: () {
         if (!allowed) {
@@ -219,9 +229,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
    */
   List<Widget> getListTiles(BuildContext context) {
 
-    List<Widget> tiles = [
-      Divider(height: 5)
-    ];
+    List<Widget> tiles = [];
 
     // Parts
     if (InvenTreePart().canView) {
@@ -381,10 +389,35 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
       return _connectionStatusWidget(context);
     }
 
-    return ListView(
-        scrollDirection: Axis.vertical,
+    double w = MediaQuery.of(context).size.width;
+    double h = MediaQuery.of(context).size.height;
+
+    bool smallScreen = max(w, h) < 1000;
+
+    int vTiles = smallScreen ? 2 : 3;
+    int hTiles = smallScreen ? 1 : 2;
+    double aspect = smallScreen ? 5 : 3;
+    double padding = smallScreen ? 2 : 10;
+
+    if (false && smallScreen) {
+      return ListView(
         children: getListTiles(context),
+        scrollDirection: Axis.vertical,
+        primary: false,
+        padding: EdgeInsets.all(2),
+      );
+    }
+
+    return GridView.count(
+      crossAxisCount: w > h ? vTiles : hTiles,
+      children: getListTiles(context),
+      childAspectRatio: aspect,
+      primary: false,
+      crossAxisSpacing: padding,
+      mainAxisSpacing: padding,
+      padding: EdgeInsets.all(padding),
     );
+
   }
 
   @override

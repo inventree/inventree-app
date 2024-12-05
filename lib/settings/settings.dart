@@ -56,6 +56,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeSelectServerWidget()));
                   },
               ),
+              Divider(),
               ListTile(
                   title: Text(L10().appSettings),
                   subtitle: Text(L10().appSettingsDetails),
