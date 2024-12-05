@@ -1030,16 +1030,33 @@ class InvenTreeAttachment extends InvenTreeModel {
   }
 
 
-  Future<bool> uploadImage(int modelId) async {
+  Future<bool> uploadImage(int modelId, {String prefix = "InvenTree"}) async {
 
     bool result = false;
 
     await FilePickerDialog.pickImageFromCamera().then((File? file) {
       if (file != null) {
-        uploadAttachment(file, modelId).then((success) {
-          result = success;
-          showSnackIcon(result ? L10().imageUploadSuccess :L10().imageUploadFailure, success: result);
-        });
+
+        String dir = path.dirname(file.path);
+        String ext = path.extension(file.path);
+        String now = DateTime.now().toIso8601String().replaceAll(":", "-");
+
+        // Rename the file with a unique name
+        String filename = "${dir}/${prefix}_image_${now}${ext}";
+
+        try {
+          file.rename(filename).then((File renamed) {
+            uploadAttachment(renamed, modelId).then((success) {
+              result = success;
+              showSnackIcon(
+                  result ? L10().imageUploadSuccess : L10().imageUploadFailure,
+                  success: result);
+            });
+          });
+        } catch (error, stackTrace) {
+          sentryReportError("uploadImage", error, stackTrace);
+          showSnackIcon(L10().imageUploadFailure, success: false);
+        }
       }
     });
 
