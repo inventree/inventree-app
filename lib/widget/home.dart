@@ -398,16 +398,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
     int hTiles = smallScreen ? 1 : 2;
     double aspect = smallScreen ? 5 : 3;
     double padding = smallScreen ? 2 : 10;
-
-    if (false && smallScreen) {
-      return ListView(
-        children: getListTiles(context),
-        scrollDirection: Axis.vertical,
-        primary: false,
-        padding: EdgeInsets.all(2),
-      );
-    }
-
+    
     return GridView.count(
       crossAxisCount: w > h ? vTiles : hTiles,
       children: getListTiles(context),
