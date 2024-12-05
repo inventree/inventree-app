@@ -100,6 +100,14 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
     );
   }
 
+  /// Upload an image for this order
+  Future<void> _uploadImage(BuildContext context) async {
+    InvenTreeSalesOrderAttachment().uploadImage(
+      widget.order.pk,
+      prefix: widget.order.reference,
+    ).then((result) => refresh(context));
+  }
+
   /// Issue this order
   Future<void> _issueOrder(BuildContext context) async {
 
@@ -135,6 +143,18 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
   @override
   List<SpeedDialChild> actionButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
+
+    if (widget.order.canEdit) {
+      actions.add(
+          SpeedDialChild(
+            child: Icon(TablerIcons.camera, color: Colors.blue),
+            label: L10().takePicture,
+            onTap: () async {
+              _uploadImage(context);
+            }
+        )
+      );
+    }
 
     if (widget.order.isPending) {
       actions.add(

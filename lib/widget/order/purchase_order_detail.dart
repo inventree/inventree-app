@@ -155,9 +155,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
     InvenTreePurchaseOrderAttachment().uploadImage(
         widget.order.pk,
         prefix: widget.order.reference,
-    ).then((result) => {
-      refresh(context)
-    });
+    ).then((result) => refresh(context));
   }
 
   /// Issue this order
