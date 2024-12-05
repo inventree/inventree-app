@@ -174,7 +174,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
             ListTile(
               title: Text(L10().darkMode),
               subtitle: Text(L10().darkModeEnable),
-              leading: Icon(TablerIcons.moon),
+              leading: Icon(TablerIcons.sun_moon),
               trailing: Switch(
                 value: darkMode,
                 onChanged: (bool value) {

@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/l10.dart";
+import "package:inventree/app_colors.dart";
 import "package:inventree/preferences.dart";
 
 
@@ -39,7 +40,10 @@ class _InvenTreeSalesOrderSettingsState extends State<InvenTreeSalesOrderSetting
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(L10().salesOrderSettings)),
+        appBar: AppBar(
+          title: Text(L10().salesOrderSettings),
+          backgroundColor: COLOR_APP_BAR,
+        ),
         body: Container(
             child: ListView(
                 children: [

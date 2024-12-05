@@ -208,11 +208,8 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
 
     if (tiles.isEmpty) {
       tiles.add(ListTile(
+        leading: Icon(TablerIcons.file_x, color: COLOR_WARNING),
         title: Text(L10().attachmentNone),
-        subtitle: Text(
-          L10().attachmentNoneDetail,
-          style: TextStyle(fontStyle: FontStyle.italic),
-        ),
       ));
     }
 

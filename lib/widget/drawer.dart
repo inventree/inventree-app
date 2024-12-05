@@ -1,3 +1,4 @@
+import "package:adaptive_theme/adaptive_theme.dart";
 import "package:flutter/material.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
@@ -182,6 +183,28 @@ class InvenTreeDrawer extends StatelessWidget {
         trailing: notification_count > 0 ? Text(notification_count.toString()) : null,
         title: Text(L10().notifications),
         onTap: _notifications,
+      )
+    );
+
+    tiles.add(Divider());
+
+    bool darkMode = AdaptiveTheme.of(context).mode.isDark;
+
+    tiles.add(
+      ListTile(
+        onTap: () {
+          AdaptiveTheme.of(context).toggleThemeMode();
+          _closeDrawer();
+        },
+        title: Text(L10().colorScheme),
+        subtitle: Text(L10().colorSchemeDetail),
+        leading: Icon(
+          TablerIcons.sun_moon,
+          color: COLOR_ACTION
+        ),
+        trailing: Icon(
+          darkMode ? TablerIcons.moon : TablerIcons.sun,
+        )
       )
     );
 

@@ -266,6 +266,7 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
       key: _loginKey,
       appBar: AppBar(
         title: Text(L10().profileSelect),
+        backgroundColor: COLOR_APP_BAR,
         actions: [
           IconButton(
             icon: Icon(TablerIcons.circle_plus),

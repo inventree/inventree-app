@@ -31,41 +31,4 @@ User documentation for the InvenTree mobile app can be found [within the InvenTr
 
 ## Developer Documentation
 
-For developers looking to contribute to the project, we use Flutter for app development. The project has been tested in Android Studio (on both Windows and Mac) and also VSCode.
-
-### Invoke Tasks
-
-We use the [invoke](https://www.pyinvoke.org) to run some core tasks - you will need python and invoke installed on your local system.
-
-### Getting Started
-
-Initial project setup (after you have installed all required dev tools) is as follows:
-
-Generate initial translation files:
-
-```
-invoke translate
-```
-
-Install required flutter packages:
-```
-flutter pub get
-```
-
-You should now be ready to debug on a connected or emulated device!
-
-### Building Release Versions
-
-Building release versions for target platforms (either android or iOS) is simplified using invoke:
-
-Build Android release:
-
-```
-invoke android
-```
-
-Build iOS release:
-
-```
-invoke ios
-```
+Refer to the [build instructions](BUILDING.md) for information on how to build the app from source.
