@@ -98,10 +98,11 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
 
         // Check against templates
         if (outputs[ii] is InvenTreePartTestTemplate) {
-          var t = outputs[ii] as InvenTreePartTestTemplate;
+          var template = outputs[ii] as InvenTreePartTestTemplate;
 
-          if (result.key == t.key) {
-            t.results.add(result);
+          // Match the result to a template
+          if (result.templateId == template.pk || result.key == template.key) {
+            template.results.add(result);
             match = true;
             break;
           }

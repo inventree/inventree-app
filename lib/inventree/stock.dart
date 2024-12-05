@@ -39,7 +39,9 @@ class InvenTreeStockItemTestResult extends InvenTreeModel {
   }
 
   String get key => getString("key");
-  
+
+  int get templateId => getInt("template");
+
   String get testName => getString("test");
 
   bool get result => getBool("result");
@@ -256,6 +258,7 @@ class InvenTreeStockItem extends InvenTreeModel {
     await InvenTreePartTestTemplate().list(
       filters: {
         "part": "${partId}",
+        "enabled": "true",
       },
     ).then((var templates) {
       testTemplates.clear();
