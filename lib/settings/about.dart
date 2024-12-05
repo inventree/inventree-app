@@ -225,6 +225,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(L10().appAbout),
+        backgroundColor: COLOR_APP_BAR,
       ),
       body: ListView(
         children: ListTile.divideTiles(

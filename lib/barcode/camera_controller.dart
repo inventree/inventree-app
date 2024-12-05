@@ -135,6 +135,7 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
 
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: COLOR_APP_BAR,
           title: Text(L10().scanBarcode),
           actions: [
             IconButton(

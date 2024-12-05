@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_markdown/flutter_markdown.dart";
+import "package:inventree/app_colors.dart";
 import "package:url_launcher/url_launcher.dart";
 
 import "package:inventree/l10.dart";
@@ -16,7 +17,8 @@ class ReleaseNotesWidget extends StatelessWidget {
   Widget build (BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(L10().releaseNotes)
+        title: Text(L10().releaseNotes),
+        backgroundColor: COLOR_APP_BAR,
       ),
       body: Markdown(
         selectable: false,
@@ -54,6 +56,7 @@ class CreditsWidget extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(L10().credits),
+        backgroundColor: COLOR_APP_BAR,
       ),
       body: Markdown(
         selectable: false,

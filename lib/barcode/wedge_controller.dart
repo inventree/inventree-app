@@ -102,6 +102,7 @@ class _WedgeBarcodeControllerState extends InvenTreeBarcodeControllerState {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: COLOR_APP_BAR,
         title: Text(L10().scanBarcode),
       ),
       backgroundColor: Colors.black.withOpacity(0.9),
