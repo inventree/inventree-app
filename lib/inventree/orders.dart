@@ -28,6 +28,10 @@ class InvenTreeOrder extends InvenTreeModel {
 
   int get completedLineItemCount => getInt("completed_lines", backup: 0);
 
+  int get shipmentCount => getInt("shipments_count", backup: 0);
+
+  int get completedShipmentCount => getInt("completed_shipments_count", backup: 0);
+
   bool get complete => completedLineItemCount >= lineItemCount;
 
   bool get overdue => getBool("overdue");
