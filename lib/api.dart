@@ -316,6 +316,10 @@ class InvenTreeAPI {
   // Does the server support allocating stock to sales order using barcodes?
   bool get supportsBarcodeSOAllocateEndpoint => isConnected() && apiVersion >= 160;
 
+  // Does the server support the "modern" test results API
+  // Ref: https://github.com/inventree/InvenTree/pull/6430/
+  bool get supportsModernTestResults => isConnected() && apiVersion >= 169;
+
   // Does the server support "null" top-level filtering for PartCategory and StockLocation endpoints?
   bool get supportsNullTopLevelFiltering => isConnected() && apiVersion < 174;
 

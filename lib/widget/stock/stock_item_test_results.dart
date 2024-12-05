@@ -62,12 +62,19 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
 
   final InvenTreeStockItem item;
 
-  Future <void> addTestResult(BuildContext context, {String name = "", bool nameIsEditable = true, bool result = false, String value = "", bool valueRequired = false, bool attachmentRequired = false}) async  {
+  Future <void> addTestResult(BuildContext context, {int templateId = 0, String name = "", bool nameIsEditable = true, bool result = false, String value = "", bool valueRequired = false, bool attachmentRequired = false}) async  {
+
+    Map<String, Map<String, dynamic>> fields = InvenTreeStockItemTestResult().formFields();
+
+    // Add additional filters
+    fields["template"]?["filters"]?["part"] = "${item.partId}";
 
     InvenTreeStockItemTestResult().createForm(
       context,
       L10().testResultAdd,
+      fields: fields,
       data: {
+        "template": "${templateId}",
         "stock_item": "${item.pk}",
         "test": "${name}",
       },
@@ -169,9 +176,12 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
       bool _hasResult = false;
       bool _required = false;
       String _test = "";
+      int _templateId = 0;
       bool _result = false;
       String _value = "";
       String _notes = "";
+      String _date = "";
+      String _user = "";
 
       Widget _icon = Icon(TablerIcons.help_circle, color: Colors.lightBlue);
       bool _valueRequired = false;
@@ -180,15 +190,21 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
       if (item is InvenTreePartTestTemplate) {
         _result = item.passFailStatus();
         _test = item.testName;
+        _templateId = item.pk;
         _required = item.required;
         _value = item.latestResult()?.value ?? L10().noResults;
         _valueRequired = item.requiresValue;
         _attachmentRequired = item.requiresAttachment;
         _notes = item.latestResult()?.notes ?? item.description;
+        _date = item.latestResult()?.date ?? "";
+        _user = item.latestResult()?.username ?? "";
         _hasResult = item.latestResult() != null;
       } else if (item is InvenTreeStockItemTestResult) {
         _result = item.result;
         _test = item.testName;
+        _templateId = item.templateId;
+        _date = item.date;
+        _user = item.username;
         _required = false;
         _value = item.value;
         _notes = item.notes;
@@ -208,17 +224,20 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
           fontWeight: _required ? FontWeight.bold : FontWeight.normal,
           fontStyle: _hasResult ? FontStyle.normal : FontStyle.italic
         )),
-        subtitle: Text(_notes),
-        trailing: Text(_value),
+        subtitle: Text(_value),
+        trailing: Text(_date),
         leading: _icon,
         onTap: () {
-          addTestResult(
-              context,
-              name: _test,
-              nameIsEditable: !_required,
-              valueRequired: _valueRequired,
-              attachmentRequired: _attachmentRequired
-          );
+          if (InvenTreeStockItemTestResult().canCreate) {
+            addTestResult(
+                context,
+                name: _test,
+                templateId: _templateId,
+                nameIsEditable: !_required,
+                valueRequired: _valueRequired,
+                attachmentRequired: _attachmentRequired
+            );
+          }
         }
       ));
     }

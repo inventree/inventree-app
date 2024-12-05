@@ -27,15 +27,37 @@ class InvenTreeStockItemTestResult extends InvenTreeModel {
   List<String> get rolesRequired => ["stock"];
 
   @override
-  Map<String, Map<String, dynamic>> formFields() {
+  Map<String, String> defaultFilters() {
     return {
+      "user_detail": "true",
+      "template_detail": "true",
+    };
+  }
+
+  @override
+  Map<String, Map<String, dynamic>> formFields() {
+
+    Map<String, Map<String, dynamic>> fields = {
       "stock_item": {"hidden": true},
       "test": {},
+      "template": {
+        "filters": {
+          "enabled": "true",
+        }
+      },
       "result": {},
       "value": {},
       "notes": {},
       "attachment": {},
     };
+
+    if (InvenTreeAPI().supportsModernTestResults) {
+      fields.remove("test");
+    } else {
+      fields.remove("template");
+    }
+
+    return fields;
   }
 
   String get key => getString("key");
@@ -49,7 +71,9 @@ class InvenTreeStockItemTestResult extends InvenTreeModel {
   String get value => getString("value");
   
   String get attachment => getString("attachment");
-  
+
+  String get username => getString("username", subKey: "user_detail");
+
   String get date => getString("date");
   
   @override
