@@ -181,7 +181,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     });
 
     // Request the number of parameters for this part
-    showParameters = await InvenTreeSettingsManager().getValue(INV_PART_SHOW_PARAMETERS, true) as bool;
+    showParameters = await InvenTreeSettingsManager().getBool(INV_PART_SHOW_PARAMETERS, true);
 
     // Request the number of attachments
     InvenTreePartAttachment().countAttachments(part.pk).then((int value) {
@@ -192,7 +192,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       }
     });
 
-    showBom = await InvenTreeSettingsManager().getValue(INV_PART_SHOW_BOM, true) as bool;
+    showBom = await InvenTreeSettingsManager().getBool(INV_PART_SHOW_BOM, true);
 
     // Request the number of BOM items
     InvenTreePart().count(

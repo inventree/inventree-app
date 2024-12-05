@@ -6,6 +6,7 @@ import "package:inventree/barcode/barcode.dart";
 import "package:inventree/barcode/sales_order.dart";
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/sales_order.dart";
+import "package:inventree/preferences.dart";
 import "package:inventree/widget/order/so_line_list.dart";
 import "package:inventree/widget/order/so_shipment_list.dart";
 import "package:inventree/widget/refreshable_state.dart";
@@ -40,6 +41,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
 
   List<InvenTreeSOLineItem> lines = [];
 
+  bool showCameraShortcut = true;
   bool supportsProjectCodes = false;
   int attachmentCount = 0;
 
@@ -144,7 +146,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
   List<SpeedDialChild> actionButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
-    if (widget.order.canEdit) {
+    if (showCameraShortcut && widget.order.canEdit) {
       actions.add(
           SpeedDialChild(
             child: Icon(TablerIcons.camera, color: Colors.blue),
@@ -251,6 +253,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
     await api.SalesOrderStatus.load();
 
     supportsProjectCodes = api.supportsProjectCodes && await api.getGlobalBooleanSetting("PROJECT_CODES_ENABLED");
+    showCameraShortcut = await InvenTreeSettingsManager().getBool(INV_SO_SHOW_CAMERA, true);
 
     InvenTreeSalesOrderAttachment().countAttachments(widget.order.pk).then((int value) {
       if (mounted) {

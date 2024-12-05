@@ -39,7 +39,7 @@ class _InvenTreePurchaseOrderSettingsState extends State<InvenTreePurchaseOrderS
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(L10().partSettings)),
+        appBar: AppBar(title: Text(L10().purchaseOrderSettings)),
         body: Container(
             child: ListView(
                 children: [

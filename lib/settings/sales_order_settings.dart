@@ -39,7 +39,7 @@ class _InvenTreeSalesOrderSettingsState extends State<InvenTreeSalesOrderSetting
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(L10().partSettings)),
+        appBar: AppBar(title: Text(L10().salesOrderSettings)),
         body: Container(
             child: ListView(
                 children: [
@@ -50,7 +50,7 @@ class _InvenTreeSalesOrderSettingsState extends State<InvenTreeSalesOrderSetting
                     trailing: Switch(
                       value: soEnable,
                       onChanged: (bool value) {
-                        InvenTreeSettingsManager().setValue(INV_PO_ENABLE, value);
+                        InvenTreeSettingsManager().setValue(INV_SO_ENABLE, value);
                         setState(() {
                           soEnable = value;
                         });
@@ -64,7 +64,7 @@ class _InvenTreeSalesOrderSettingsState extends State<InvenTreeSalesOrderSetting
                     trailing: Switch(
                       value: soShowCamera,
                       onChanged: (bool value) {
-                        InvenTreeSettingsManager().setValue(INV_PO_SHOW_CAMERA, value);
+                        InvenTreeSettingsManager().setValue(INV_SO_SHOW_CAMERA, value);
                         setState(() {
                           soShowCamera = value;
                         });
