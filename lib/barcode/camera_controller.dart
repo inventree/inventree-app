@@ -134,21 +134,82 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
       scannerOverlay: BarcodeOverlay(context),
       actionButtonsBackgroundColor: Colors.black.withOpacity(0.7),
     );
+  }
 
+  Widget topCenterOverlay() {
+    return SafeArea(
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: Padding(
+          padding: EdgeInsets.all(10),
+          child: Text(
+            widget.handler.getOverlayText(context),
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.bold
+            )
+          )
+        )
+      )
+    );
+  }
+
+  Widget bottomCenterOverlay() {
+
+    String info_text = scanning_paused ? L10().barcodeScanPaused : L10().barcodeScanPause;
+
+    return SafeArea(
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        child: Padding(
+          padding: EdgeInsets.all(10),
+          child: Text(
+              scanned_code.isNotEmpty ? scanned_code : info_text,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold
+              )
+          ),
+        )
+      )
+    );
+  }
+
+
+  /*
+   *  Display an overlay at the bottom right of the screen
+   */
+  Widget bottomRightOverlay() {
+    return SafeArea(
+        child: Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+                padding: EdgeInsets.all(10),
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(40),
+                    child: ColoredBox(
+                        color: Colors.black45,
+                        child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: scanning_paused ? [] : [
+                              CircularProgressIndicator(
+                                  value: null
+                              )
+                              // actionIcon,
+                            ]
+                        )
+                    )
+                )
+            )
+        )
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget actionIcon =
-    Icon(TablerIcons.player_pause, color: COLOR_WARNING, size: 64);
-
-    if (scanning_paused) {
-      actionIcon =
-          Icon(TablerIcons.player_play, color: COLOR_ACTION, size: 64);
-    }
-
-    String info_text = scanning_paused ? L10().barcodeScanPaused : L10()
-        .barcodeScanPause;
 
     return Scaffold(
       appBar: AppBar(
@@ -170,61 +231,9 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
                 ),
               ],
             ),
-            Center(
-              child: Column(
-                children: <Widget> [
-                  Padding(
-                    child: Text(
-                      widget.handler.getOverlayText(context),
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white
-                      ),
-                    ),
-                    padding: EdgeInsets.all(25)
-                  ),
-                  Padding(
-                    child: CircularProgressIndicator(
-                      value: scanning_paused ? 0 : null
-                    ),
-                    padding: EdgeInsets.all(40)
-                  ),
-                  Padding(
-                    child: Text(
-                      scanned_code,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white
-                      )
-                    ),
-                    padding: EdgeInsets.all(25)
-                  ),
-                  Spacer(),
-                  SizedBox(
-                    child: Center(
-                      child: actionIcon
-                    ),
-                    width: 100,
-                    height: 50
-                  ),
-                  Padding(
-                    child: Text(
-                      info_text,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white
-                      )
-                    ),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 25,
-                      vertical: 75
-                    )
-                  )
-                ]
-              )
-            )
+            topCenterOverlay(),
+            bottomCenterOverlay(),
+            bottomRightOverlay(),
           ],
         ),
       ),
