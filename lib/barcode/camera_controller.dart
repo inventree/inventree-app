@@ -3,7 +3,7 @@ import "package:flutter/material.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/preferences.dart";
-
+import "package:wakelock_plus/wakelock_plus.dart";
 import "package:flutter_zxing/flutter_zxing.dart";
 
 import "package:inventree/l10.dart";
@@ -38,6 +38,13 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
   void initState() {
     super.initState();
     _loadSettings();
+    WakelockPlus.enable();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    WakelockPlus.disable();
   }
 
   /*
