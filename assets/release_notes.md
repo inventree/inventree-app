@@ -9,6 +9,8 @@
 - Provide "upload image" shortcut on Purchase Order detail view
 - Provide "upload image" shortcut on Sales Order detail view
 - Clearly indicate if a StockItem is unavailable
+- Improved list filtering management
+- Updated translations
 
 ### 0.16.5 - September 2024
 ---

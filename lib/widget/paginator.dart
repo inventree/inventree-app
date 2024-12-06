@@ -50,7 +50,9 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
     key = "${prefix}filter_${key}";
 
     Map<String, dynamic> opts = filterOptions[key] ?? {};
-    dynamic backup = opts["default"];
+
+    bool tristate = (opts["tristate"] ?? true) as bool;
+    dynamic backup = tristate ? null : opts["default"];
     final result = await InvenTreeSettingsManager().getValue(key, backup);
 
     return result;
@@ -59,7 +61,12 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
   // Set the boolean value of a particular boolean filter
   Future<void> setFilterValue(String key, dynamic value) async {
     key = "${prefix}filter_${key}";
-    await InvenTreeSettingsManager().setValue(key, value);
+
+    if (value == null) {
+      await InvenTreeSettingsManager().removeValue(key);
+    } else {
+      await InvenTreeSettingsManager().setValue(key, value);
+    }
   }
 
   // Construct the boolean filter options for this list
