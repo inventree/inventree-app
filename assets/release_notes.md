@@ -2,6 +2,8 @@
 ---
 
 - Improved barcode scanning with new scanning library
+- Prevent screen turning off when scanning barcodes
+- Improved support for Stock Item test results
 - Enhanced home-screen display using grid-view
 - Improvements for image uploading
 - Provide "upload image" shortcut on Purchase Order detail view
