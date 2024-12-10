@@ -1,3 +1,9 @@
+### 0.17.1 - January 2025
+---
+
+- Adds "assigned to me" filter for Purchase Order list
+- Adds "assigned to me" filter for Sales Order list
+
 ### 0.17.0 - December 2024
 ---
 
