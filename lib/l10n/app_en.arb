@@ -62,6 +62,12 @@
   "appSettingsDetails": "Configure InvenTree app settings",
   "@appSettingsDetails": {},
 
+  "assignedToMe": "Assigned to Me",
+  "@assignedToMe": {},
+
+  "assignedToMeDetail": "Show orders which are assigned to me",
+  "@assignedToMeDetail": {},
+
   "attachments": "Attachments",
   "@attachments": {},
 
