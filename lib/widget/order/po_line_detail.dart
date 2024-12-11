@@ -133,6 +133,13 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
     // Launch a form to 'receive' this line item
   Future<void> receiveLineItem(BuildContext context) async {
 
+    // Pre-fill the "destination" to receive into
+    int destination = widget.item.destinationId;
+
+    if (destination < 0) {
+      destination = (widget.item.orderDetail["destination"] ?? -1) as int;
+    }
+
     // Construct fields to receive
     Map<String, dynamic> fields = {
       "line_item": {
@@ -163,6 +170,10 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
         "required": false,
       }
     };
+
+    if (destination > 0) {
+      fields["location"]?["value"] = destination;
+    }
 
     showLoadingOverlay(context);
     var order = await InvenTreePurchaseOrder().get(widget.item.orderId);

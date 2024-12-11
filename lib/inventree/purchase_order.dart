@@ -178,16 +178,10 @@ class InvenTreePOLineItem extends InvenTreeOrderLine {
   }
 
   @override
-  Map<String, String> defaultGetFilters() {
+  Map<String, String> defaultFilters() {
     return {
       "part_detail": "true",
-    };
-  }
-
-  @override
-  Map<String, String> defaultListFilters() {
-    return {
-      "part_detail": "true",
+      "order_detail": "true",
     };
   }
 
@@ -227,6 +221,8 @@ class InvenTreePOLineItem extends InvenTreeOrderLine {
   String get purchasePriceCurrency => getString("purchase_price_currency");
 
   int get destinationId => getInt("destination");
+
+  Map<String, dynamic> get orderDetail => getMap("order_detail");
 
   Map<String, dynamic> get destinationDetail => getMap("destination_detail");
 }
