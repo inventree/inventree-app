@@ -396,7 +396,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => LocationDisplayWidget(destination!)
+              builder: (context) => LocationDisplayWidget(destination)
             )
           )
         }

@@ -239,7 +239,7 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => LocationDisplayWidget(destination!)
+                    builder: (context) => LocationDisplayWidget(destination)
                 )
             )
           }
