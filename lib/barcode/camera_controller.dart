@@ -1,4 +1,6 @@
 import "dart:math";
+import "dart:typed_data";
+
 import "package:flutter/material.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/app_colors.dart";
@@ -93,17 +95,36 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
       return;
     }
 
-    String barcode_data = code?.text ?? "";
+    Uint8List raw_data = code?.rawBytes ?? Uint8List(0);
+
+    // Reconstruct barcode from raw data
+    String barcode;
+
+    if (raw_data.isNotEmpty) {
+      barcode = "";
+
+      final buffer = StringBuffer();
+
+      for (int i = 0; i < raw_data.length; i++) {
+        buffer.writeCharCode(raw_data[i]);
+      }
+
+      barcode = buffer.toString();
+
+    } else {
+      barcode = code?.text ?? "";
+    }
 
     if (mounted) {
       setState(() {
-        scanned_code = barcode_data;
-        scanning_paused = barcode_data.isNotEmpty;
+        scanned_code = barcode;
+        scanning_paused = barcode.isNotEmpty;
       });
     }
 
-    if (barcode_data.isNotEmpty) {
-      handleBarcodeData(barcode_data).then((_) {
+    if (barcode.isNotEmpty) {
+
+      handleBarcodeData(barcode).then((_) {
         if (!single_scanning && mounted) {
           // Resume next scan
           setState(() {
@@ -182,13 +203,19 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
 
     String info_text = scanning_paused ? L10().barcodeScanPaused : L10().barcodeScanPause;
 
+    String text = scanned_code.isNotEmpty ? scanned_code : info_text;
+
+    if (text.length > 50) {
+      text = text.substring(0, 50) + "...";
+    }
+
     return SafeArea(
       child: Align(
         alignment: Alignment.bottomCenter,
         child: Padding(
           padding: EdgeInsets.all(10),
           child: Text(
-              scanned_code.isNotEmpty ? scanned_code : info_text,
+              text,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white,
