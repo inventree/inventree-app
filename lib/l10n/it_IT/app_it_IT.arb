@@ -138,6 +138,8 @@
   "@build": {},
   "building": "In Costruzione",
   "@building": {},
+  "cameraCreationError": "Could not open camera controller",
+  "@cameraCreationError": {},
   "cameraInternal": "Fotocamera interna",
   "@cameraInternal": {},
   "cameraInternalDetail": "Utilizza la fotocamera interna per leggere i codici a barre",
