@@ -4,6 +4,7 @@ import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/inventree/sales_order.dart";
+import "package:inventree/inventree/sentry.dart";
 import "package:inventree/preferences.dart";
 import "package:inventree/widget/order/sales_order_detail.dart";
 import "package:one_context/one_context.dart";
@@ -232,12 +233,16 @@ class BarcodeScanHandler extends BarcodeHandler {
 
     for (var key in validModels) {
       if (data.containsKey(key)) {
-        pk = (data[key]?["pk"] ?? -1) as int;
+        try {
+          pk = (data[key]?["pk"] ?? -1) as int;
 
-        // Break on the first valid match found
-        if (pk > 0) {
-          model = key;
-          break;
+          // Break on the first valid match found
+          if (pk > 0) {
+            model = key;
+            break;
+          }
+        } catch (error, stackTrace) {
+          sentryReportError("onBarcodeMatched", error, stackTrace);
         }
       }
     }
