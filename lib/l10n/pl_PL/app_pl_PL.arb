@@ -138,6 +138,8 @@
   "@build": {},
   "building": "Budowanie",
   "@building": {},
+  "cameraCreationError": "Could not open camera controller",
+  "@cameraCreationError": {},
   "cameraInternal": "Kamera wewnętrzna",
   "@cameraInternal": {},
   "cameraInternalDetail": "Użyj wewnętrznej kamery do odczytu kodów kreskowych",
