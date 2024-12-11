@@ -211,6 +211,8 @@
   "@deleteSuccess": {},
   "description": "説明",
   "@description": {},
+  "destination": "Destination",
+  "@destination": {},
   "destroyed": "破壊",
   "@destroyed": {},
   "details": "詳細",
