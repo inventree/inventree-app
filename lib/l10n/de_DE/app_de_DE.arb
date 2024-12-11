@@ -138,6 +138,8 @@
   "@build": {},
   "building": "Gebäude",
   "@building": {},
+  "cameraCreationError": "Could not open camera controller",
+  "@cameraCreationError": {},
   "cameraInternal": "Integrierte Kamera",
   "@cameraInternal": {},
   "cameraInternalDetail": "Integrierte Kamera zum Lesen von Barcodes verwenden",
