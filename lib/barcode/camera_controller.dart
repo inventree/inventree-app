@@ -203,13 +203,19 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
 
     String info_text = scanning_paused ? L10().barcodeScanPaused : L10().barcodeScanPause;
 
+    String text = scanned_code.isNotEmpty ? scanned_code : info_text;
+
+    if (text.length > 50) {
+      text = text.substring(0, 50) + "...";
+    }
+
     return SafeArea(
       child: Align(
         alignment: Alignment.bottomCenter,
         child: Padding(
           padding: EdgeInsets.all(10),
           child: Text(
-              scanned_code.isNotEmpty ? scanned_code : info_text,
+              text,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white,
