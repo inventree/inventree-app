@@ -211,6 +211,8 @@
   "@deleteSuccess": {},
   "description": "Açıklama",
   "@description": {},
+  "destination": "Destination",
+  "@destination": {},
   "destroyed": "Yok edildi",
   "@destroyed": {},
   "details": "Detaylar",
