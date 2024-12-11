@@ -59,12 +59,6 @@ class InvenTreeBarcodeControllerState extends State<InvenTreeBarcodeController> 
       processingBarcode = true;
     });
 
-    BuildContext? context;
-
-    if (hasContext()) {
-      context = OneContext.hasContext ? OneContext().context : null;
-    }
-
     showLoadingOverlay();
     await pauseScan();
 

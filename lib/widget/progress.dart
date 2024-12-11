@@ -45,7 +45,7 @@ Widget progressIndicator() {
 
 void showLoadingOverlay() {
 
-  BuildContext? context = OneContext().context;
+  BuildContext? context = OneContext.hasContext ? OneContext().context : null;
 
   if (context == null) {
     return;
