@@ -138,6 +138,8 @@
   "@build": {},
   "building": "Bangunan",
   "@building": {},
+  "cameraCreationError": "Could not open camera controller",
+  "@cameraCreationError": {},
   "cameraInternal": "Kamera Internal",
   "@cameraInternal": {},
   "cameraInternalDetail": "Gunakan internal kamera untuk membaca barcode",
