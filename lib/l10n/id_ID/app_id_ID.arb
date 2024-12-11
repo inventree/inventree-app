@@ -211,6 +211,8 @@
   "@deleteSuccess": {},
   "description": "Deskripsi",
   "@description": {},
+  "destination": "Destination",
+  "@destination": {},
   "destroyed": "Hancur",
   "@destroyed": {},
   "details": "Detail",

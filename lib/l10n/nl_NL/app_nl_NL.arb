@@ -211,6 +211,8 @@
   "@deleteSuccess": {},
   "description": "Omschrijving",
   "@description": {},
+  "destination": "Destination",
+  "@destination": {},
   "destroyed": "Vernietigd",
   "@destroyed": {},
   "details": "Details",

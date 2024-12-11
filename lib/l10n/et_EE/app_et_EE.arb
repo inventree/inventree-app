@@ -211,6 +211,8 @@
   "@deleteSuccess": {},
   "description": "Kirjeldus",
   "@description": {},
+  "destination": "Destination",
+  "@destination": {},
   "destroyed": "Destroyed",
   "@destroyed": {},
   "details": "Üksikasjad",

@@ -211,6 +211,8 @@
   "@deleteSuccess": {},
   "description": "描述",
   "@description": {},
+  "destination": "Destination",
+  "@destination": {},
   "destroyed": "销毁",
   "@destroyed": {},
   "details": "详细信息",
