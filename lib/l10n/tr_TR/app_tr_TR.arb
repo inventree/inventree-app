@@ -138,6 +138,8 @@
   "@build": {},
   "building": "Oluşturma",
   "@building": {},
+  "cameraCreationError": "Could not open camera controller",
+  "@cameraCreationError": {},
   "cameraInternal": "Dahili Kamera",
   "@cameraInternal": {},
   "cameraInternalDetail": "Barkodları okumak için dahili kamera kullan",
