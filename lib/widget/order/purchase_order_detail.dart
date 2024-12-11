@@ -1,8 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
-import "package:inventree/widget/dialogs.dart";
-import "package:inventree/widget/order/po_line_list.dart";
 
 import "package:inventree/app_colors.dart";
 import "package:inventree/barcode/barcode.dart";
@@ -10,8 +8,16 @@ import "package:inventree/barcode/purchase_order.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/l10.dart";
 
+import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/company.dart";
+import "package:inventree/inventree/stock.dart";
 import "package:inventree/inventree/purchase_order.dart";
+
+import "package:inventree/widget/dialogs.dart";
+import "package:inventree/widget/stock/location_display.dart";
+import "package:inventree/widget/order/po_line_list.dart";
+
+
 import "package:inventree/widget/attachment_widget.dart";
 import "package:inventree/widget/company/company_detail.dart";
 import "package:inventree/widget/notes_widget.dart";
@@ -42,6 +48,8 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
   
   List<InvenTreePOLineItem> lines = [];
 
+  InvenTreeStockLocation? destination;
+
   int completedLines = 0;
 
   int attachmentCount = 0;
@@ -50,7 +58,15 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
   bool supportProjectCodes = false;
 
   @override
-  String getAppBarTitle() => L10().purchaseOrder;
+  String getAppBarTitle() {
+    String title = L10().purchaseOrder;
+
+    if (widget.order.reference.isNotEmpty) {
+      title += " - ${widget.order.reference}";
+    }
+
+    return title;
+  }
 
   @override
   List<Widget> appBarActions(BuildContext context) {
@@ -258,6 +274,28 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
         });
       }
     });
+
+    if (api.supportsPurchaseOrderDestination && widget.order.destinationId > 0) {
+      InvenTreeStockLocation().get(widget.order.destinationId).then((InvenTreeModel? loc) {
+        if (mounted) {
+          if (loc != null && loc is InvenTreeStockLocation) {
+            setState(() {
+              destination = loc;
+            });
+          } else {
+            setState(() {
+              destination = null;
+            });
+          }
+        }
+      });
+    } else {
+      if (mounted) {
+        setState(() {
+          destination = null;
+        });
+      }
+    }
   }
 
   // Edit the currently displayed PurchaseOrder
@@ -345,6 +383,23 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
         title: Text(L10().supplierReference),
         subtitle: Text(widget.order.supplierReference),
         leading: Icon(TablerIcons.hash),
+      ));
+    }
+
+    // Order destination
+    if (destination != null) {
+      tiles.add(ListTile(
+        title: Text(L10().destination),
+        subtitle: Text(destination!.name),
+        leading: Icon(TablerIcons.map_pin, color: COLOR_ACTION),
+        onTap: () => {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => LocationDisplayWidget(destination)
+            )
+          )
+        }
       ));
     }
 
@@ -444,5 +499,4 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       PaginatedStockItemList({"purchase_order": widget.order.pk.toString()}),
     ];
   }
-
 }

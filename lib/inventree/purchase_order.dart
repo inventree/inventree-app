@@ -40,6 +40,7 @@ class InvenTreePurchaseOrder extends InvenTreeOrder {
       "supplier_reference": {},
       "description": {},
       "project_code": {},
+      "destination": {},
       "target_date": {},
       "link": {},
       "responsible": {},
@@ -52,6 +53,10 @@ class InvenTreePurchaseOrder extends InvenTreeOrder {
 
     if (!InvenTreeAPI().supportsProjectCodes) {
       fields.remove("project_code");
+    }
+
+    if (!InvenTreeAPI().supportsPurchaseOrderDestination) {
+      fields.remove("destination");
     }
 
     return fields;
@@ -86,6 +91,8 @@ class InvenTreePurchaseOrder extends InvenTreeOrder {
   }
 
   String get supplierReference => getString("supplier_reference");
+
+  int get destinationId => getInt("destination");
 
   bool get isOpen => api.PurchaseOrderStatus.isNameIn(status, ["PENDING", "PLACED", "ON_HOLD"]);
 
@@ -219,7 +226,7 @@ class InvenTreePOLineItem extends InvenTreeOrderLine {
   
   String get purchasePriceCurrency => getString("purchase_price_currency");
 
-  int get destination => getInt("destination");
+  int get destinationId => getInt("destination");
 
   Map<String, dynamic> get destinationDetail => getMap("destination_detail");
 }

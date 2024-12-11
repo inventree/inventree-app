@@ -2,6 +2,7 @@
 ---
 
 - Fixes barcode scanning bug which prevents scanning of DataMatrix codes
+- Display "destination" information in PurchaseOrder detail view
 - Adds "assigned to me" filter for Purchase Order list
 - Adds "assigned to me" filter for Sales Order list
 

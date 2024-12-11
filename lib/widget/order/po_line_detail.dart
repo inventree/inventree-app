@@ -5,14 +5,18 @@ import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/api_form.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/helpers.dart";
+import "package:inventree/inventree/model.dart";
 import "package:inventree/l10.dart";
-import "package:inventree/widget/progress.dart";
-import "package:inventree/widget/part/part_detail.dart";
 
-import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/purchase_order.dart";
+import "package:inventree/inventree/stock.dart";
+
+import "package:inventree/widget/progress.dart";
+import "package:inventree/widget/part/part_detail.dart";
+import "package:inventree/widget/stock/location_display.dart";
+import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/company/supplier_part_detail.dart";
 
@@ -37,6 +41,8 @@ class POLineDetailWidget extends StatefulWidget {
 class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
 
   _POLineDetailWidgetState();
+
+  InvenTreeStockLocation? destination;
 
   @override
   String getAppBarTitle() => L10().lineItem;
@@ -84,6 +90,29 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
   @override
   Future<void> request(BuildContext context) async {
     await widget.item.reload();
+
+    if (widget.item.destinationId > 0) {
+      InvenTreeStockLocation().get(widget.item.destinationId).then((InvenTreeModel? loc) {
+        if (mounted) {
+          if (loc != null && loc is InvenTreeStockLocation) {
+            setState(() {
+              destination = loc;
+            });
+          } else {
+            setState(() {
+              destination = null;
+            });
+          }
+        }
+      });
+    } else {
+      if (mounted) {
+        setState(() {
+          destination = null;
+        });
+      }
+    }
+
   }
 
   // Callback to edit this line item
@@ -198,6 +227,24 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
         },
       )
     );
+
+    // Destination
+    if (destination != null) {
+      tiles.add(ListTile(
+          title: Text(L10().destination),
+          subtitle: Text(destination!.name),
+          leading: Icon(TablerIcons.map_pin, color: COLOR_ACTION),
+          onTap: () =>
+          {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => LocationDisplayWidget(destination)
+                )
+            )
+          }
+      ));
+    }
 
     // Received quantity
     tiles.add(
