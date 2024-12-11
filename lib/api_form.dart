@@ -977,7 +977,7 @@ Future<void> launchApiForm(
       IconData icon = TablerIcons.device_floppy
     }) async {
 
-  showLoadingOverlay(context);
+  showLoadingOverlay();
 
   // List of fields defined by the server
   Map<String, dynamic> serverFields = {};
@@ -1229,7 +1229,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
 
     if (widget.method == "POST") {
 
-      showLoadingOverlay(context);
+      showLoadingOverlay();
       final response =  await InvenTreeAPI().post(
         widget.url,
         body: data,
@@ -1240,7 +1240,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
       return response;
 
     } else {
-      showLoadingOverlay(context);
+      showLoadingOverlay();
       final response = await InvenTreeAPI().patch(
         widget.url,
         body: data,

@@ -175,7 +175,7 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
       fields["location"]?["value"] = destination;
     }
 
-    showLoadingOverlay(context);
+    showLoadingOverlay();
     var order = await InvenTreePurchaseOrder().get(widget.item.orderId);
     hideLoadingOverlay();
 
@@ -210,7 +210,7 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
         leading: Icon(TablerIcons.box, color: COLOR_ACTION),
         trailing: api.getThumbnail(widget.item.partImage),
         onTap: () async {
-          showLoadingOverlay(context);
+          showLoadingOverlay();
           var part = await InvenTreePart().get(widget.item.partId);
           hideLoadingOverlay();
 
@@ -228,7 +228,7 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
         subtitle: Text(widget.item.SKU),
         leading: Icon(TablerIcons.building, color: COLOR_ACTION),
         onTap: () async {
-          showLoadingOverlay(context);
+          showLoadingOverlay();
           var part = await InvenTreeSupplierPart().get(widget.item.supplierPartId);
           hideLoadingOverlay();
 

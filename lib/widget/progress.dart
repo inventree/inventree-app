@@ -3,6 +3,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_overlay_loader/flutter_overlay_loader.dart";
 import "package:inventree/app_colors.dart";
+import "package:one_context/one_context.dart";
 
 
 /*
@@ -42,7 +43,9 @@ Widget progressIndicator() {
 }
 
 
-void showLoadingOverlay(BuildContext? context) {
+void showLoadingOverlay() {
+
+  BuildContext? context = OneContext().context;
 
   if (context == null) {
     return;

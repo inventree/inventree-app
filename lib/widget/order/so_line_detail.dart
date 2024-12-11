@@ -187,7 +187,7 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
         leading: Icon(TablerIcons.box, color: COLOR_ACTION),
         trailing: api.getThumbnail(widget.item.partImage),
         onTap: () async {
-          showLoadingOverlay(context);
+          showLoadingOverlay();
           var part = await InvenTreePart().get(widget.item.partId);
           hideLoadingOverlay();
 

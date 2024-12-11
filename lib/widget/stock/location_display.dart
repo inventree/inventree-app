@@ -362,7 +362,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
                   Navigator.push(context, MaterialPageRoute(
                       builder: (context) => LocationDisplayWidget(null)));
                 } else {
-                  showLoadingOverlay(context);
+                  showLoadingOverlay();
                   var loc = await InvenTreeStockLocation().get(parentId);
                   hideLoadingOverlay();
 

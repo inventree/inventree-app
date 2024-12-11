@@ -154,7 +154,7 @@ class _PaginatedBomListState extends PaginatedSearchState<PaginatedBomList> {
       leading: InvenTreeAPI().getThumbnail(subPart?.thumbnail ?? ""),
       onTap: subPart == null ? null : () async {
 
-        showLoadingOverlay(context);
+        showLoadingOverlay();
         var part = await InvenTreePart().get(subPart.pk);
         hideLoadingOverlay();
 

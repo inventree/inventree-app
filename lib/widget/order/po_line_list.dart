@@ -77,7 +77,7 @@ class _PaginatedPOLineListState extends PaginatedSearchState<PaginatedPOLineList
         trailing: Text(item.progressString, style: TextStyle(color: item.isComplete ? COLOR_SUCCESS : COLOR_WARNING)),
         leading: InvenTreeAPI().getThumbnail(supplierPart.partImage),
         onTap: () async {
-          showLoadingOverlay(context);
+          showLoadingOverlay();
           await item.reload();
           hideLoadingOverlay();
           Navigator.push(context, MaterialPageRoute(builder: (context) => POLineDetailWidget(item)));

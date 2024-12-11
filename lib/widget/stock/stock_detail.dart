@@ -523,7 +523,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         onTap: () async {
           if (widget.item.partId > 0) {
 
-            showLoadingOverlay(context);
+            showLoadingOverlay();
             var part = await InvenTreePart().get(widget.item.partId);
             hideLoadingOverlay();
 
@@ -566,7 +566,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           onTap: () async {
             if (widget.item.locationId > 0) {
 
-              showLoadingOverlay(context);
+              showLoadingOverlay();
               var loc = await InvenTreeStockLocation().get(widget.item.locationId);
               hideLoadingOverlay();
 
@@ -651,7 +651,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           leading: Icon(TablerIcons.building, color: COLOR_ACTION),
           trailing: InvenTreeAPI().getThumbnail(widget.item.supplierImage, hideIfNull: true),
           onTap: () async {
-            showLoadingOverlay(context);
+            showLoadingOverlay();
             var sp = await InvenTreeSupplierPart().get(
                 widget.item.supplierPartId);
             hideLoadingOverlay();

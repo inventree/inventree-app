@@ -119,7 +119,7 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
           leading: Icon(TablerIcons.box, color: COLOR_ACTION),
           trailing: InvenTreeAPI().getThumbnail(widget.supplierPart.partImage),
           onTap: () async {
-            showLoadingOverlay(context);
+            showLoadingOverlay();
             final part = await InvenTreePart().get(widget.supplierPart.partId);
             hideLoadingOverlay();
 
@@ -162,7 +162,7 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
         leading: Icon(TablerIcons.building, color: COLOR_ACTION),
         trailing: InvenTreeAPI().getThumbnail(widget.supplierPart.supplierImage),
         onTap: () async {
-          showLoadingOverlay(context);
+          showLoadingOverlay();
           var supplier = await InvenTreeCompany().get(widget.supplierPart.supplierId);
           hideLoadingOverlay();
 
@@ -193,7 +193,7 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
           leading: Icon(TablerIcons.building_factory_2, color: COLOR_ACTION),
           trailing: InvenTreeAPI().getThumbnail(widget.supplierPart.manufacturerImage),
           onTap: () async {
-            showLoadingOverlay(context);
+            showLoadingOverlay();
             var supplier = await InvenTreeCompany().get(widget.supplierPart.manufacturerId);
             hideLoadingOverlay();
 
