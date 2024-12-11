@@ -1,11 +1,7 @@
 import "package:flutter/material.dart";
-import "package:inventree/helpers.dart";
-import "package:one_context/one_context.dart";
 
 import "package:inventree/preferences.dart";
-
 import "package:inventree/barcode/handler.dart";
-
 import "package:inventree/widget/progress.dart";
 
 /*
