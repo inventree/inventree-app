@@ -138,6 +138,8 @@
   "@build": {},
   "building": "Building",
   "@building": {},
+  "cameraCreationError": "Could not open camera controller",
+  "@cameraCreationError": {},
   "cameraInternal": "מצלמה פנימית",
   "@cameraInternal": {},
   "cameraInternalDetail": "השתמש במצלמה פנימית לקריאת ברקודים",
