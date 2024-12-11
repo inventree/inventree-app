@@ -138,6 +138,8 @@
   "@build": {},
   "building": "Produserer",
   "@building": {},
+  "cameraCreationError": "Could not open camera controller",
+  "@cameraCreationError": {},
   "cameraInternal": "Internt kamera",
   "@cameraInternal": {},
   "cameraInternalDetail": "Bruk internt kamera til å lese strekkoder",
