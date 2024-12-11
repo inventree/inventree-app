@@ -211,6 +211,8 @@
   "@deleteSuccess": {},
   "description": "Popis",
   "@description": {},
+  "destination": "Destination",
+  "@destination": {},
   "destroyed": "Zničeno",
   "@destroyed": {},
   "details": "Detaily",

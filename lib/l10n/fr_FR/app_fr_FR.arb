@@ -211,6 +211,8 @@
   "@deleteSuccess": {},
   "description": "Description",
   "@description": {},
+  "destination": "Destination",
+  "@destination": {},
   "destroyed": "Détruit",
   "@destroyed": {},
   "details": "Détails",

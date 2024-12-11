@@ -211,6 +211,8 @@
   "@deleteSuccess": {},
   "description": "Mô tả",
   "@description": {},
+  "destination": "Destination",
+  "@destination": {},
   "destroyed": "Đã hủy",
   "@destroyed": {},
   "details": "Chi tiết",

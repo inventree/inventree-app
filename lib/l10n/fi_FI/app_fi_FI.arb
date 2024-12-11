@@ -211,6 +211,8 @@
   "@deleteSuccess": {},
   "description": "Kuvaus",
   "@description": {},
+  "destination": "Destination",
+  "@destination": {},
   "destroyed": "Tuhottu",
   "@destroyed": {},
   "details": "Yksityiskohdat",
