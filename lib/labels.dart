@@ -98,7 +98,7 @@ Future<void> selectAndPrintLabel(
 
       if (labelId != -1 && pluginKey != null) {
 
-        showLoadingOverlay(context);
+        showLoadingOverlay();
 
         if (InvenTreeAPI().supportsModernLabelPrinting) {
 

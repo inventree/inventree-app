@@ -366,7 +366,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
             onTap: () async {
               if (part.categoryId > 0) {
 
-                showLoadingOverlay(context);
+                showLoadingOverlay();
                 var cat = await InvenTreePartCategory().get(part.categoryId);
                 hideLoadingOverlay();
 
@@ -646,7 +646,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
     if (part.isTrackable) {
       // read the next available serial number
-      showLoadingOverlay(context);
+      showLoadingOverlay();
       var response = await api.get("/api/part/${part.pk}/serial-numbers/", expectedStatusCode: null);
       hideLoadingOverlay();
 

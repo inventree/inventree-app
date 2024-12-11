@@ -1,11 +1,7 @@
 import "package:flutter/material.dart";
-import "package:inventree/helpers.dart";
-import "package:one_context/one_context.dart";
 
 import "package:inventree/preferences.dart";
-
 import "package:inventree/barcode/handler.dart";
-
 import "package:inventree/widget/progress.dart";
 
 /*
@@ -59,13 +55,7 @@ class InvenTreeBarcodeControllerState extends State<InvenTreeBarcodeController> 
       processingBarcode = true;
     });
 
-    BuildContext? context;
-
-    if (hasContext()) {
-      context = OneContext.hasContext ? OneContext().context : null;
-    }
-
-    showLoadingOverlay(context);
+    showLoadingOverlay();
     await pauseScan();
 
     await widget.handler.processBarcode(data);

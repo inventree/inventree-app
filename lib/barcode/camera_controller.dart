@@ -1,10 +1,14 @@
 import "dart:math";
 import "dart:typed_data";
 
+import "package:camera/camera.dart";
 import "package:flutter/material.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/app_colors.dart";
+import "package:inventree/inventree/sentry.dart";
 import "package:inventree/preferences.dart";
+import "package:inventree/widget/snacks.dart";
+import "package:one_context/one_context.dart";
 import "package:wakelock_plus/wakelock_plus.dart";
 import "package:flutter_zxing/flutter_zxing.dart";
 
@@ -133,7 +137,28 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
         }
       });
     }
+  }
 
+  void onControllerCreated(CameraController? controller, Exception? error) {
+    if (error != null) {
+      sentryReportError(
+        "CameraBarcodeController.onControllerCreated",
+        error,
+        null
+      );
+    }
+
+    if (controller == null) {
+      showSnackIcon(
+        L10().cameraCreationError,
+        icon: TablerIcons.camera_x,
+        success: false
+      );
+
+      if (OneContext.hasContext) {
+        Navigator.pop(OneContext().context!);
+      }
+    }
   }
 
   /*
@@ -167,6 +192,7 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
       tryInverted: true,
       tryRotate: true,
       showGallery: false,
+      onControllerCreated: onControllerCreated,
       scanDelay: Duration(milliseconds: scan_delay),
       resolution: ResolutionPreset.high,
       lensDirection: CameraLensDirection.back,
@@ -185,7 +211,12 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
       child: Align(
         alignment: Alignment.topCenter,
         child: Padding(
-          padding: EdgeInsets.all(10),
+          padding: EdgeInsets.only(
+            left: 10,
+            right: 10,
+            top: 75,
+            bottom: 10
+          ),
           child: Text(
             widget.handler.getOverlayText(context),
             style: TextStyle(
@@ -213,7 +244,12 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
       child: Align(
         alignment: Alignment.bottomCenter,
         child: Padding(
-          padding: EdgeInsets.all(10),
+          padding: EdgeInsets.only(
+            left: 10,
+            right: 10,
+            top: 10,
+            bottom: 75
+          ),
           child: Text(
               text,
               textAlign: TextAlign.center,

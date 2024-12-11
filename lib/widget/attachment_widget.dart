@@ -79,7 +79,7 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
 
     if (file == null) return;
 
-    showLoadingOverlay(context);
+    showLoadingOverlay();
 
     final bool result = await widget.attachmentClass.uploadAttachment(
         file,
@@ -178,7 +178,7 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
           subtitle: Text(attachment.comment),
           leading: Icon(attachment.icon, color: COLOR_ACTION),
           onTap: () async {
-            showLoadingOverlay(context);
+            showLoadingOverlay();
             await attachment.downloadAttachment();
             hideLoadingOverlay();
           },

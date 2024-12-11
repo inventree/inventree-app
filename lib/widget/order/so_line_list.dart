@@ -65,7 +65,7 @@ class _PaginatedSOLineListState extends PaginatedSearchState<PaginatedSOLineList
         leading: InvenTreeAPI().getThumbnail(part.thumbnail),
         trailing: Text(item.progressString, style: TextStyle(color: item.isComplete ? COLOR_SUCCESS : COLOR_WARNING)),
         onTap: () async {
-          showLoadingOverlay(context);
+          showLoadingOverlay();
           await item.reload();
           hideLoadingOverlay();
           Navigator.push(

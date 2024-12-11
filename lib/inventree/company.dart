@@ -155,7 +155,8 @@ class InvenTreeSupplierPart extends InvenTreeModel {
     return fields;
   }
 
-  Map<String, String> _filters() {
+  @override
+  Map<String, String> defaultFilters() {
     return {
       "manufacturer_detail": "true",
       "supplier_detail": "true",
@@ -163,15 +164,6 @@ class InvenTreeSupplierPart extends InvenTreeModel {
     };
   }
 
-  @override
-  Map<String, String> defaultListFilters() {
-    return _filters();
-  }
-
-  @override
-  Map<String, String> defaultGetFilters() {
-    return _filters();
-  }
 
   int get manufacturerId => getInt("pk", subKey: "manufacturer_detail");
   
@@ -197,8 +189,10 @@ class InvenTreeSupplierPart extends InvenTreeModel {
   
   String get partImage => (jsondata["part_detail"]?["thumbnail"] ?? InvenTreeAPI.staticThumb) as String;
 
-  String get partName => getString("full_name", subKey: "part_detail");
-  
+  String get partName => getString("name", subKey: "part_detail");
+
+  Map<String, dynamic> get partDetail => getMap("part_detail");
+
   String get partDescription => getString("description", subKey: "part_detail");
   
   String get note => getString("note");

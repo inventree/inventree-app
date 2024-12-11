@@ -3,6 +3,7 @@ import "package:inventree/helpers.dart";
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/orders.dart";
+import "package:inventree/widget/progress.dart";
 
 
 /*
@@ -64,14 +65,7 @@ class InvenTreePurchaseOrder extends InvenTreeOrder {
   }
 
   @override
-  Map<String, String> defaultGetFilters() {
-    return {
-      "supplier_detail": "true",
-    };
-  }
-
-  @override
-  Map<String, String> defaultListFilters() {
+  Map<String, String> defaultFilters() {
     return {
       "supplier_detail": "true",
     };
@@ -128,7 +122,9 @@ class InvenTreePurchaseOrder extends InvenTreeOrder {
       return;
     }
 
+    showLoadingOverlay();
     await api.post("${url}issue/", expectedStatusCode: 201);
+    hideLoadingOverlay();
   }
 
   /// Mark this order as "cancelled"
@@ -137,7 +133,9 @@ class InvenTreePurchaseOrder extends InvenTreeOrder {
       return;
     }
 
+    showLoadingOverlay();
     await api.post("${url}cancel/", expectedStatusCode: 201);
+    hideLoadingOverlay();
   }
 }
 
@@ -178,16 +176,10 @@ class InvenTreePOLineItem extends InvenTreeOrderLine {
   }
 
   @override
-  Map<String, String> defaultGetFilters() {
+  Map<String, String> defaultFilters() {
     return {
       "part_detail": "true",
-    };
-  }
-
-  @override
-  Map<String, String> defaultListFilters() {
-    return {
-      "part_detail": "true",
+      "order_detail": "true",
     };
   }
 
@@ -227,6 +219,8 @@ class InvenTreePOLineItem extends InvenTreeOrderLine {
   String get purchasePriceCurrency => getString("purchase_price_currency");
 
   int get destinationId => getInt("destination");
+
+  Map<String, dynamic> get orderDetail => getMap("order_detail");
 
   Map<String, dynamic> get destinationDetail => getMap("destination_detail");
 }

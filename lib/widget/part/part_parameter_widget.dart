@@ -127,7 +127,7 @@ class _PaginatedParameterState extends PaginatedSearchState<PaginatedParameterLi
           value: parameter.as_bool,
           onChanged: (bool value) {
             if (parameter.canEdit) {
-              showLoadingOverlay(context);
+              showLoadingOverlay();
               parameter.update(
                 values: {
                   "data": value.toString()

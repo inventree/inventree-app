@@ -185,7 +185,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       color: Colors.blue,
       acceptText: L10().issue,
       onAccept: () async {
-        await widget.order.issueOrder().then((dynamic) {
+        widget.order.issueOrder().then((dynamic) {
           refresh(context);
         });
       }
@@ -201,7 +201,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       color: Colors.red,
       acceptText: L10().cancel,
       onAccept: () async {
-        await widget.order.cancelOrder().then((dynamic) {
+        widget.order.cancelOrder().then((dynamic) {
           refresh(context);
         });
       }

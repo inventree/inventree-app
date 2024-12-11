@@ -50,7 +50,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
 
   Future <void> loadSettings(BuildContext context) async {
 
-    showLoadingOverlay(context);
+    showLoadingOverlay();
 
     barcodeSounds = await InvenTreeSettingsManager().getValue(INV_SOUNDS_BARCODE, true) as bool;
     serverSounds = await InvenTreeSettingsManager().getValue(INV_SOUNDS_SERVER, true) as bool;

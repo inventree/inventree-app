@@ -50,7 +50,7 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
         currentFocus.unfocus();
       }
 
-      showLoadingOverlay(context);
+      showLoadingOverlay();
 
       // Attempt login
       final response = await InvenTreeAPI().fetchToken(widget.profile, username, password);

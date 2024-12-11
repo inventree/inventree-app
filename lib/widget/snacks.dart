@@ -72,7 +72,7 @@ void showSnackIcon(String text, {IconData? icon, Function()? onAction, bool? suc
         onAction();
       }
     ),
-    duration: Duration(seconds: onAction == null ? 1 : 2),
+    duration: Duration(seconds: onAction == null ? 5 : 10),
     )
   );
 

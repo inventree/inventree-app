@@ -127,7 +127,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
         color: Colors.blue,
         acceptText: L10().issue,
         onAccept: () async {
-          await widget.order.issueOrder().then((dynamic) {
+          widget.order.issueOrder().then((dynamic) {
             refresh(context);
           });
         }

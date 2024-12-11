@@ -159,7 +159,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));
                 } else {
 
-                  showLoadingOverlay(context);
+                  showLoadingOverlay();
                   var cat = await InvenTreePartCategory().get(parentId);
                   hideLoadingOverlay();
 
