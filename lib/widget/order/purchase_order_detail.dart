@@ -58,7 +58,15 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
   bool supportProjectCodes = false;
 
   @override
-  String getAppBarTitle() => L10().purchaseOrder;
+  String getAppBarTitle() {
+    String title = L10().purchaseOrder;
+
+    if (widget.order.reference.isNotEmpty) {
+      title += " - ${widget.order.reference}";
+    }
+
+    return title;
+  }
 
   @override
   List<Widget> appBarActions(BuildContext context) {

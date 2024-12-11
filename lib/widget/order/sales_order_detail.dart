@@ -46,7 +46,15 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
   int attachmentCount = 0;
 
   @override
-  String getAppBarTitle() => L10().salesOrder;
+  String getAppBarTitle() {
+    String title = L10().salesOrder;
+
+    if (widget.order.reference.isNotEmpty) {
+      title += " - ${widget.order.reference}";
+    }
+
+    return title;
+  }
 
   @override
   List<Widget> appBarActions(BuildContext context) {
