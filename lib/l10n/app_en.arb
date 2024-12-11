@@ -310,6 +310,9 @@
   "description": "Description",
   "@description": {},
 
+  "destination": "Destination",
+  "@destination": {},
+
   "destroyed": "Destroyed",
   "@destroyed": {},
 

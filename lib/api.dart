@@ -333,6 +333,10 @@ class InvenTreeAPI {
   // Ref: https://github.com/inventree/InvenTree/pull/7420
   bool get supportsModernAttachments => isConnected() && apiVersion >= 207;
 
+  // Does the server support the "destination" field on the PurchaseOrder model?
+  // Ref: https://github.com/inventree/InvenTree/pull/8403
+  bool get supportsPurchaseOrderDestination => isConnected() && apiVersion >= 276;
+
   // Cached list of plugins (refreshed when we connect to the server)
   List<InvenTreePlugin> _plugins = [];
 
