@@ -185,7 +185,12 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
       child: Align(
         alignment: Alignment.topCenter,
         child: Padding(
-          padding: EdgeInsets.all(10),
+          padding: EdgeInsets.only(
+            left: 10,
+            right: 10,
+            top: 75,
+            bottom: 10
+          ),
           child: Text(
             widget.handler.getOverlayText(context),
             style: TextStyle(
@@ -213,7 +218,12 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
       child: Align(
         alignment: Alignment.bottomCenter,
         child: Padding(
-          padding: EdgeInsets.all(10),
+          padding: EdgeInsets.only(
+            left: 10,
+            right: 10,
+            top: 10,
+            bottom: 75
+          ),
           child: Text(
               text,
               textAlign: TextAlign.center,
