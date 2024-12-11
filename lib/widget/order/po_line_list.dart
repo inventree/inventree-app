@@ -71,9 +71,10 @@ class _PaginatedPOLineListState extends PaginatedSearchState<PaginatedPOLineList
     InvenTreeSupplierPart? supplierPart = item.supplierPart;
 
     if (supplierPart != null) {
+
       return ListTile(
         title: Text(supplierPart.SKU),
-        subtitle: Text(supplierPart.partName),
+        subtitle: Text(item.partName),
         trailing: Text(item.progressString, style: TextStyle(color: item.isComplete ? COLOR_SUCCESS : COLOR_WARNING)),
         leading: InvenTreeAPI().getThumbnail(supplierPart.partImage),
         onTap: () async {

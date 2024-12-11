@@ -189,8 +189,10 @@ class InvenTreeSupplierPart extends InvenTreeModel {
   
   String get partImage => (jsondata["part_detail"]?["thumbnail"] ?? InvenTreeAPI.staticThumb) as String;
 
-  String get partName => getString("full_name", subKey: "part_detail");
-  
+  String get partName => getString("name", subKey: "part_detail");
+
+  Map<String, dynamic> get partDetail => getMap("part_detail");
+
   String get partDescription => getString("description", subKey: "part_detail");
   
   String get note => getString("note");
