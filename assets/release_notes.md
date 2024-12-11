@@ -4,6 +4,7 @@
 - Fixes barcode scanning bug which prevents scanning of DataMatrix codes
 - Display "destination" information in PurchaseOrder detail view
 - Pre-fill "location" field when receiving items against PurchaseOrder
+- Fix display of part name in PurchaseOrderLineItem list
 - Adds "assigned to me" filter for Purchase Order list
 - Adds "assigned to me" filter for Sales Order list
 
