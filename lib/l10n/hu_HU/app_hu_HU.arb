@@ -138,6 +138,8 @@
   "@build": {},
   "building": "Gyártásban",
   "@building": {},
+  "cameraCreationError": "Could not open camera controller",
+  "@cameraCreationError": {},
   "cameraInternal": "Belső kamera",
   "@cameraInternal": {},
   "cameraInternalDetail": "Beépített kamera használata vonalkódolvasásra",

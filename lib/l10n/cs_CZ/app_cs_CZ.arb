@@ -138,6 +138,8 @@
   "@build": {},
   "building": "Sestavení",
   "@building": {},
+  "cameraCreationError": "Could not open camera controller",
+  "@cameraCreationError": {},
   "cameraInternal": "Interní kamera",
   "@cameraInternal": {},
   "cameraInternalDetail": "Použít interní kameru pro čtení čárových kódů",

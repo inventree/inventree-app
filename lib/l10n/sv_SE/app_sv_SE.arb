@@ -138,6 +138,8 @@
   "@build": {},
   "building": "Bygger",
   "@building": {},
+  "cameraCreationError": "Could not open camera controller",
+  "@cameraCreationError": {},
   "cameraInternal": "Intern kamera",
   "@cameraInternal": {},
   "cameraInternalDetail": "Använd intern kamera för att läsa streckkoder",

@@ -138,6 +138,8 @@
   "@build": {},
   "building": "Asamblează",
   "@building": {},
+  "cameraCreationError": "Could not open camera controller",
+  "@cameraCreationError": {},
   "cameraInternal": "Cameră internă",
   "@cameraInternal": {},
   "cameraInternalDetail": "Folosește camera internă pentru a citi codurile de bare",

@@ -138,6 +138,8 @@
   "@build": {},
   "building": "正在构建",
   "@building": {},
+  "cameraCreationError": "Could not open camera controller",
+  "@cameraCreationError": {},
   "cameraInternal": "内置相机",
   "@cameraInternal": {},
   "cameraInternalDetail": "使用内置相机读取条形码",

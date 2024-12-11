@@ -138,6 +138,8 @@
   "@build": {},
   "building": "Tòa nhà",
   "@building": {},
+  "cameraCreationError": "Could not open camera controller",
+  "@cameraCreationError": {},
   "cameraInternal": "Camera nội bộ",
   "@cameraInternal": {},
   "cameraInternalDetail": "Sử dụng camera nội bộ để đọc mã vạch",

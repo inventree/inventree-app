@@ -138,6 +138,8 @@
   "@build": {},
   "building": "Построение",
   "@building": {},
+  "cameraCreationError": "Could not open camera controller",
+  "@cameraCreationError": {},
   "cameraInternal": "Внутренняя камера",
   "@cameraInternal": {},
   "cameraInternalDetail": "Использовать внутреннюю камеру для чтения штрих-кодов",

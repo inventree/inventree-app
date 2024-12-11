@@ -138,6 +138,8 @@
   "@build": {},
   "building": "Building",
   "@building": {},
+  "cameraCreationError": "Could not open camera controller",
+  "@cameraCreationError": {},
   "cameraInternal": "Internal Camera",
   "@cameraInternal": {},
   "cameraInternalDetail": "Use internal camera to read barcodes",
