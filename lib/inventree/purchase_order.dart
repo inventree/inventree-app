@@ -226,7 +226,7 @@ class InvenTreePOLineItem extends InvenTreeOrderLine {
   
   String get purchasePriceCurrency => getString("purchase_price_currency");
 
-  int get destination => getInt("destination");
+  int get destinationId => getInt("destination");
 
   Map<String, dynamic> get destinationDetail => getMap("destination_detail");
 }
