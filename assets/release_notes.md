@@ -1,6 +1,7 @@
-### 0.17.1 - January 2025
+### 0.17.1 - December 2024
 ---
 
+- Fixes barcode scanning bug which prevents scanning of DataMatrix codes
 - Adds "assigned to me" filter for Purchase Order list
 - Adds "assigned to me" filter for Sales Order list
 
