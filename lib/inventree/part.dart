@@ -227,16 +227,9 @@ class InvenTreePart extends InvenTreeModel {
   }
 
   @override
-  Map<String, String> defaultListFilters() {
+  Map<String, String> defaultFilters() {
     return {
-      "location_detail": "true",
-    };
-  }
-
-  @override
-  Map<String, String> defaultGetFilters() {
-    return {
-      "category_detail": "true",   // Include category detail information
+      "category_detail": "true",
     };
   }
 

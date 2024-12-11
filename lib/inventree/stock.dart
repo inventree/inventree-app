@@ -253,23 +253,13 @@ class InvenTreeStockItem extends InvenTreeModel {
   }
 
   @override
-  Map<String, String> defaultGetFilters() {
+  Map<String, String> defaultFilters() {
 
     return {
       "part_detail": "true",
       "location_detail": "true",
       "supplier_detail": "true",
       "cascade": "false"
-    };
-  }
-
-  @override
-  Map<String, String> defaultListFilters() {
-
-    return {
-      "part_detail": "true",
-      "location_detail": "true",
-      "supplier_detail": "true",
     };
   }
 

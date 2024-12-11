@@ -65,14 +65,7 @@ class InvenTreeSalesOrder extends InvenTreeOrder {
   }
 
   @override
-  Map<String, String> defaultGetFilters() {
-    return {
-      "customer_detail": "true",
-    };
-  }
-
-  @override
-  Map<String, String> defaultListFilters() {
+  Map<String, String> defaultFilters() {
     return {
       "customer_detail": "true",
     };
@@ -180,14 +173,7 @@ class InvenTreeSOLineItem extends InvenTreeOrderLine {
   }
 
   @override
-  Map<String, String> defaultGetFilters() {
-    return {
-      "part_detail": "true",
-    };
-  }
-
-  @override
-  Map<String, String> defaultListFilters() {
+  Map<String, String> defaultFilters() {
     return {
       "part_detail": "true",
     };

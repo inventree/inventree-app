@@ -64,14 +64,7 @@ class InvenTreePurchaseOrder extends InvenTreeOrder {
   }
 
   @override
-  Map<String, String> defaultGetFilters() {
-    return {
-      "supplier_detail": "true",
-    };
-  }
-
-  @override
-  Map<String, String> defaultListFilters() {
+  Map<String, String> defaultFilters() {
     return {
       "supplier_detail": "true",
     };

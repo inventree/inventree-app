@@ -18,18 +18,11 @@ class InvenTreeBomItem extends InvenTreeModel {
   String get URL => "bom/";
 
   @override
-  Map<String, String> defaultListFilters() {
+  Map<String, String> defaultFilters() {
     return {
       "sub_part_detail": "true",
       "part_detail": "true",
       "show_pricing": "false",
-    };
-  }
-
-  @override
-  Map<String, String> defaultGetFilters() {
-    return {
-      "sub_part_detail": "true",
     };
   }
 
