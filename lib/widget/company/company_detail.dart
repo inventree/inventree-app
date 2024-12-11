@@ -48,7 +48,15 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
   int attachmentCount = 0;
 
   @override
-  String getAppBarTitle() => L10().company;
+  String getAppBarTitle() {
+    String title = L10().company;
+
+    if (widget.company.name.isNotEmpty) {
+      title += " -  ${widget.company.name}";
+    }
+
+    return title;
+  }
 
   @override
   List<Widget> appBarActions(BuildContext context) {
