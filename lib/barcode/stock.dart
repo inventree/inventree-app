@@ -33,7 +33,7 @@ class BarcodeScanStockLocationHandler extends BarcodeHandler {
 
     // We expect that the barcode points to a 'stocklocation'
     if (data.containsKey("stocklocation")) {
-      int _loc = (data["stocklocation"]["pk"] ?? -1) as int;
+      int _loc = (data["stocklocation"]?["pk"] ?? -1) as int;
 
       // A valid stock location!
       if (_loc > 0) {
@@ -83,7 +83,7 @@ class BarcodeScanStockItemHandler extends BarcodeHandler {
   Future<void> onBarcodeMatched(Map<String, dynamic> data) async {
     // We expect that the barcode points to a 'stockitem'
     if (data.containsKey("stockitem")) {
-      int _item = (data["stockitem"]["pk"] ?? -1) as int;
+      int _item = (data["stockitem"]?["pk"] ?? -1) as int;
 
       // A valid stock location!
       if (_item > 0) {

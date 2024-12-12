@@ -210,7 +210,18 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
         ListTile(
           title: Text(L10().manufacturerPartNumber),
           subtitle: Text(widget.supplierPart.MPN),
-          leading: Icon(TablerIcons.barcode),
+          leading: Icon(TablerIcons.hash, color: COLOR_ACTION),
+          onTap: () async {
+            showLoadingOverlay();
+            var manufacturerPart = await InvenTreeManufacturerPart().get(widget.supplierPart.manufacturerPartId);
+            hideLoadingOverlay();
+
+            if (manufacturerPart is InvenTreeManufacturerPart) {
+              Navigator.push(context, MaterialPageRoute(
+                builder: (context) => ManufacturerPartDetailWidget(manufacturerPart)
+              ));
+            }
+          },
         )
       );
     }

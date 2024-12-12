@@ -6,6 +6,7 @@ import "package:inventree/helpers.dart";
 import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/inventree/sentry.dart";
 import "package:inventree/preferences.dart";
+import "package:inventree/widget/company/manufacturer_part_detail.dart";
 import "package:inventree/widget/order/sales_order_detail.dart";
 import "package:one_context/one_context.dart";
 
@@ -177,15 +178,27 @@ class BarcodeScanHandler extends BarcodeHandler {
    */
   Future<void> handleSupplierPart(int pk) async {
 
-    var supplierpart = await InvenTreeSupplierPart().get(pk);
+    var supplierPart = await InvenTreeSupplierPart().get(pk);
 
-    if (supplierpart is InvenTreeSupplierPart) {
+    if (supplierPart is InvenTreeSupplierPart) {
       OneContext().pop();
       OneContext().push(MaterialPageRoute(
-          builder: (context) => SupplierPartDetailWidget(supplierpart)));
+          builder: (context) => SupplierPartDetailWidget(supplierPart)));
     }
   }
 
+  /*
+    * Response when a "ManufacturerPart" instance is scanned
+   */
+  Future<void> handleManufacturerPart(int pk) async {
+    var manufacturerPart = await InvenTreeManufacturerPart().get(pk);
+
+    if (manufacturerPart is InvenTreeManufacturerPart) {
+      OneContext().pop();
+      OneContext().push(MaterialPageRoute(
+          builder: (context) => ManufacturerPartDetailWidget(manufacturerPart)));
+    }
+  }
 
   /*
    * Response when a "PurchaseOrder" instance is scanned
@@ -223,6 +236,7 @@ class BarcodeScanHandler extends BarcodeHandler {
       "stockitem",
       "stocklocation",
       "supplierpart",
+      "manufacturerpart",
     ];
 
 
@@ -271,7 +285,9 @@ class BarcodeScanHandler extends BarcodeHandler {
         case "salesorder":
           await handleSalesOrder(pk);
           return;
-          // TODO: Handle manufacturer part
+        case "manufacturerpart":
+          await handleManufacturerPart(pk);
+          return;
         default:
           // Fall through to failure state
           break;
