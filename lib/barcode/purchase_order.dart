@@ -48,11 +48,13 @@ class POReceiveBarcodeHandler extends BarcodeHandler {
 
   @override
   Future<void> onBarcodeMatched(Map<String, dynamic> data) async {
-    if (!data.containsKey("lineitem")) {
+
+    if (data.containsKey("lineitem") || data.containsKey("success")) {
+      barcodeSuccess(L10().receivedItem);
+      return;
+    } else {
       return onBarcodeUnknown(data);
     }
-
-    barcodeSuccess(L10().receivedItem);
   }
 
   @override
