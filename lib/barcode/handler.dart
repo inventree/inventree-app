@@ -79,14 +79,27 @@ class BarcodeHandler {
       return;
     }
 
-    var response = await InvenTreeAPI().post(
+    APIResponse? response;
+
+    try {
+      response = await InvenTreeAPI().post(
         url,
         body: {
           "barcode": barcode,
           ...extra_data,
         },
-        expectedStatusCode: null,  // Do not show an error on "unexpected code"
-    );
+        expectedStatusCode: null, // Do not show an error on "unexpected code"
+      );
+    } catch (error, stackTrace) {
+      sentryReportError("Barcode.processBarcode", error, stackTrace);
+      response = null;
+    }
+
+    if (response == null) {
+      barcodeFailureTone();
+      showSnackIcon(L10().barcodeError, success: false);
+      return;
+    }
 
     debug("Barcode scan response" + response.data.toString());
 
