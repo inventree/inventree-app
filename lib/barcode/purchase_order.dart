@@ -21,10 +21,11 @@ import "package:inventree/widget/snacks.dart";
  */
 class POReceiveBarcodeHandler extends BarcodeHandler {
 
-  POReceiveBarcodeHandler({this.purchaseOrder, this.location});
+  POReceiveBarcodeHandler({this.purchaseOrder, this.location, this.lineItem});
 
   InvenTreePurchaseOrder? purchaseOrder;
   InvenTreeStockLocation? location;
+  InvenTreePOLineItem? lineItem;
 
   @override
   String getOverlayText(BuildContext context) => L10().barcodeReceivePart;
@@ -39,6 +40,7 @@ class POReceiveBarcodeHandler extends BarcodeHandler {
     final po_extra_data = {
       "purchase_order": purchaseOrder?.pk,
       "location": location?.pk,
+      "line_item": lineItem?.pk,
       "auto_allocate": !confirm,
       ...extra_data,
     };

@@ -2,11 +2,13 @@ import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
-import "package:inventree/api_form.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/l10.dart";
+
+import "package:inventree/barcode/barcode.dart";
+import "package:inventree/barcode/purchase_order.dart";
 
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/part.dart";
@@ -140,7 +142,7 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
       }
     );
   }
-
+  
   @override
   List<Widget> getTiles(BuildContext context) {
     List<Widget> tiles = [];
