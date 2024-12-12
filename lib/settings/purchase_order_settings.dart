@@ -19,6 +19,7 @@ class _InvenTreePurchaseOrderSettingsState extends State<InvenTreePurchaseOrderS
 
   bool poEnable = true;
   bool poShowCamera = true;
+  bool poConfirmScan = true;
 
   @override
   void initState() {
@@ -30,6 +31,7 @@ class _InvenTreePurchaseOrderSettingsState extends State<InvenTreePurchaseOrderS
   Future<void> loadSettings() async {
     poEnable = await InvenTreeSettingsManager().getBool(INV_PO_ENABLE, true);
     poShowCamera = await InvenTreeSettingsManager().getBool(INV_PO_SHOW_CAMERA, true);
+    poConfirmScan = await InvenTreeSettingsManager().getBool(INV_PO_CONFIRM_SCAN, true);
 
     if (mounted) {
       setState(() {
@@ -75,6 +77,20 @@ class _InvenTreePurchaseOrderSettingsState extends State<InvenTreePurchaseOrderS
                       },
                     ),
                   ),
+                  ListTile(
+                    title: Text(L10().purchaseOrderConfirmScan),
+                    subtitle: Text(L10().purchaseOrderConfirmScanDetail),
+                    leading: Icon(TablerIcons.barcode),
+                    trailing: Switch (
+                      value: poConfirmScan,
+                      onChanged: (bool value) {
+                        InvenTreeSettingsManager().setValue(INV_PO_CONFIRM_SCAN, value);
+                        setState(() {
+                          poConfirmScan = value;
+                        });
+                      },
+                    ),
+                  )
                 ]
             )
         )

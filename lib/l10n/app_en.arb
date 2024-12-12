@@ -924,6 +924,12 @@
   "projectCode": "Project Code",
   "@projectCode": {},
 
+    "purchaseOrderConfirmScan": "Confirm Scan Data",
+    "@purchaseOrderConfirmScan": {},
+
+    "purchaseOrderConfirmScanDetail": "Confirm details when scanning in items",
+    "@purchaseOrderConfirmScanDetail": {},
+
    "purchaseOrderEnable": "Enable Purchase Orders",
    "@purchaseOrderEnable": {},
 

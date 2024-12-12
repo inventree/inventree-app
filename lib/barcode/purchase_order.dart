@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:inventree/preferences.dart";
 import "package:one_context/one_context.dart";
 import "package:inventree/l10.dart";
 
@@ -31,11 +32,14 @@ class POReceiveBarcodeHandler extends BarcodeHandler {
   @override
   Future<void> processBarcode(String barcode,
       {String url = "barcode/po-receive/",
-        Map<String, dynamic> extra_data = const {}}) {
+        Map<String, dynamic> extra_data = const {}}) async {
+
+    final bool confirm = await InvenTreeSettingsManager().getBool(INV_PO_CONFIRM_SCAN, true);
 
     final po_extra_data = {
       "purchase_order": purchaseOrder?.pk,
       "location": location?.pk,
+      "auto_allocate": !confirm,
       ...extra_data,
     };
 
