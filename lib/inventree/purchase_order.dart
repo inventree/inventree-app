@@ -1,9 +1,14 @@
+import "package:flutter/cupertino.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/api.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/orders.dart";
 import "package:inventree/widget/progress.dart";
+
+import "package:inventree/api_form.dart";
+import "package:inventree/l10.dart";
 
 
 /*
@@ -212,6 +217,16 @@ class InvenTreePOLineItem extends InvenTreeOrderLine {
     }
   }
 
+  InvenTreePurchaseOrder? get purchaseOrder {
+    dynamic detail = jsondata["order_detail"];
+
+    if (detail == null) {
+      return null;
+    } else {
+      return InvenTreePurchaseOrder.fromJson(detail as Map<String, dynamic>);
+    }
+  }
+
   String get SKU => getString("SKU", subKey: "supplier_part_detail");
 
   double get purchasePrice => getDouble("purchase_price");
@@ -223,6 +238,72 @@ class InvenTreePOLineItem extends InvenTreeOrderLine {
   Map<String, dynamic> get orderDetail => getMap("order_detail");
 
   Map<String, dynamic> get destinationDetail => getMap("destination_detail");
+
+  // Receive this line item into stock
+  Future<void> receive(BuildContext context, {int? destination, double? quantity, String? barcode, Function? onSuccess}) async {
+    // Infer the destination location from the line item if not provided
+    if (destinationId > 0) {
+      destination = destinationId;
+    }
+
+    destination ??= (orderDetail["destination"]) as int?;
+
+    quantity ??= outstanding;
+
+    // Construct form fields
+    Map<String, dynamic> fields = {
+      "line_item": {
+        "parent": "items",
+        "nested": true,
+        "hidden": true,
+        "value": pk,
+      },
+      "quantity": {
+        "parent": "items",
+        "nested": true,
+        "value": quantity,
+      },
+      "location": {},
+      "status": {
+        "parent": "items",
+        "nested": true,
+      },
+      "batch_code": {
+        "parent": "items",
+        "nested": true,
+      },
+      "barcode": {
+        "parent": "items",
+        "nested": true,
+        "type": "barcode",
+        "label": L10().barcodeAssign,
+        "value": barcode,
+        "required": false,
+      }
+    };
+
+    if (destination != null && destination > 0) {
+      fields["location"]?["value"] = destination;
+    }
+
+    InvenTreePurchaseOrder? order = purchaseOrder;
+
+    if (order != null) {
+      await launchApiForm(
+          context,
+          L10().receiveItem,
+          order.receive_url,
+          fields,
+          method: "POST",
+          icon: TablerIcons.transition_right,
+          onSuccess: (data) {
+            if (onSuccess != null) {
+              onSuccess();
+            }
+          }
+      );
+    }
+  }
 }
 
 /*

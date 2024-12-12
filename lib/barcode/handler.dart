@@ -107,7 +107,7 @@ class BarcodeHandler {
 
     // Handle strange response from the server
     if (!response.isValid() || !response.isMap()) {
-      onBarcodeUnknown({});
+      await onBarcodeUnknown({});
 
       showSnackIcon(L10().serverError, success: false);
 

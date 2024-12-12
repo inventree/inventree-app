@@ -1,9 +1,6 @@
 import "package:flutter/material.dart";
-import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:one_context/one_context.dart";
-
 import "package:inventree/l10.dart";
-import "package:inventree/api_form.dart";
 
 import "package:inventree/barcode/barcode.dart";
 import "package:inventree/barcode/handler.dart";
@@ -66,51 +63,41 @@ class POReceiveBarcodeHandler extends BarcodeHandler {
       showSnackIcon(L10().missingData, success: false);
     }
 
-    double quantity = double.tryParse((lineItemData["quantity"] ?? "0").toString()) ?? 0;
+    // At minimum, we need the line item ID value
+    final int? lineItemId = lineItemData["pk"] as int?;
 
-    // Construct fields to receive
-    Map<String, dynamic> fields = {
-      "line_item": {
-        "parent": "items",
-        "nested": true,
-        "hidden": true,
-        "value": lineItemData["pk"] as int,
-      },
-      "quantity": {
-        "parent": "items",
-        "nested": true,
-        "value": quantity,
-      },
-      "status": {
-        "parent": "items",
-        "nested": true,
-      },
-      "location": {
-        "value": lineItemData["location"] as int?,
-      },
-      "barcode": {
-        "parent": "items",
-        "nested": true,
-        "hidden": true,
-        "type": "barcode",
-        "value": data["barcode_data"] as String,
+    if (lineItemId == null) {
+      barcodeFailureTone();
+      return;
+    }
+
+    InvenTreePOLineItem? lineItem = await InvenTreePOLineItem().get(lineItemId) as InvenTreePOLineItem?;
+
+    if (lineItem == null) {
+      barcodeFailureTone();
+      return;
+    }
+
+    // Next, extract the "optional" fields
+
+    // Extract information from the returned server response
+    double? quantity = double.tryParse((lineItemData["quantity"] ?? "0").toString());
+    int? destination = lineItemData["location"] as int?;
+    String? barcode = data["barcode_data"] as String?;
+
+    // Discard the barcode scanner at this stage
+    if (OneContext.hasContext) {
+      OneContext().pop();
+    }
+
+    await lineItem.receive(
+      OneContext().context!,
+      destination: destination,
+      quantity: quantity,
+      barcode: barcode,
+      onSuccess: () {
+        showSnackIcon(L10().receivedItem, success: true);
       }
-    };
-
-    final context = OneContext().context!;
-    final purchase_order_pk = lineItemData["purchase_order"];
-    final receive_url = "${InvenTreePurchaseOrder().URL}${purchase_order_pk}/receive/";
-
-    launchApiForm(
-        context,
-        L10().receiveItem,
-        receive_url,
-        fields,
-        method: "POST",
-        icon: TablerIcons.transition_right,
-        onSuccess: (data) async {
-          showSnackIcon(L10().receivedItem, success: true);
-        }
     );
   }
 
