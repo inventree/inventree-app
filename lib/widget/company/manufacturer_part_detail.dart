@@ -124,7 +124,7 @@ class _ManufacturerPartDisplayState extends RefreshableState<ManufacturerPartDet
     // Manufacturer details
     tiles.add(
         ListTile(
-            title: Text(L10().supplier),
+            title: Text(L10().manufacturer),
             subtitle: Text(widget.manufacturerPart.manufacturerName),
             leading: Icon(TablerIcons.building_factory_2, color: COLOR_ACTION),
             trailing: InvenTreeAPI().getThumbnail(widget.manufacturerPart.manufacturerImage),
