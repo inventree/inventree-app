@@ -66,6 +66,8 @@ class POReceiveBarcodeHandler extends BarcodeHandler {
       showSnackIcon(L10().missingData, success: false);
     }
 
+    double quantity = double.tryParse((lineItemData["quantity"] ?? "0").toString()) ?? 0;
+
     // Construct fields to receive
     Map<String, dynamic> fields = {
       "line_item": {
@@ -77,7 +79,7 @@ class POReceiveBarcodeHandler extends BarcodeHandler {
       "quantity": {
         "parent": "items",
         "nested": true,
-        "value": lineItemData["quantity"] as double?,
+        "value": quantity,
       },
       "status": {
         "parent": "items",
