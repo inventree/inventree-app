@@ -219,13 +219,17 @@ class InvenTreeManufacturerPart extends InvenTreeModel {
   InvenTreeManufacturerPart.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
   @override
-  String url = "company/part/manufacturer/";
+  String URL = "company/part/manufacturer/";
+
+  @override
+  List<String> get rolesRequired => ["part"];
 
   @override
   Map<String, Map<String, dynamic>> formFields() {
     Map<String, Map<String, dynamic>> fields = {
       "manufacturer": {},
       "MPN": {},
+      "link": {},
     };
 
     return fields;

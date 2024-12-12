@@ -151,6 +151,17 @@ class _ManufacturerPartDisplayState extends RefreshableState<ManufacturerPartDet
         )
     );
 
+    // Description
+    if (widget.manufacturerPart.description.isNotEmpty) {
+      tiles.add(
+          ListTile(
+            title: Text(L10().description),
+            subtitle: Text(widget.manufacturerPart.description),
+            leading: Icon(TablerIcons.info_circle),
+          )
+      );
+    }
+
     if (widget.manufacturerPart.link.isNotEmpty) {
       tiles.add(
           ListTile(
