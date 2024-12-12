@@ -93,7 +93,7 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
   /*
    * Callback function when a barcode is scanned
    */
-  void _onScanSuccess(Code? code) async {
+  Future<void> onScanSuccess(Code? code) async {
 
     if (scanning_paused) {
       return;
@@ -184,7 +184,7 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
   Widget BarcodeReader(BuildContext context) {
 
     return ReaderWidget(
-      onScan: _onScanSuccess,
+      onScan: onScanSuccess,
       isMultiScan: false,
       tryHarder: true,
       tryInverted: true,
