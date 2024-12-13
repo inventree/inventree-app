@@ -345,21 +345,6 @@ class UniqueBarcodeHandler extends BarcodeHandler {
 
   @override
   Future<void> onBarcodeMatched(Map<String, dynamic> data) async {
-
-    barcodeFailureTone();
-
-    // If the barcode is known, we can"t assign it to the stock item!
-    showSnackIcon(
-        L10().barcodeInUse,
-        icon: Icons.qr_code,
-        success: false
-    );
-  }
-
-  @override
-  Future<void> onBarcodeUnknown(Map<String, dynamic> data) async {
-    // If the barcode is unknown, we *can* assign it to the stock item!
-
     if (!data.containsKey("hash") && !data.containsKey("barcode_hash")) {
       showServerError(
         "barcode/",
@@ -391,6 +376,12 @@ class UniqueBarcodeHandler extends BarcodeHandler {
       }
     }
   }
+
+  @override
+  Future<void> onBarcodeUnknown(Map<String, dynamic> data) async {
+    await onBarcodeMatched(data);
+  }
+  
 }
 
 
