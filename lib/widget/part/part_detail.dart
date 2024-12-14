@@ -703,12 +703,10 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   @override
   List<Widget> getTabs(BuildContext context) {
     List<Widget> tabs = [
-      Center(
-        child: ListView(
-          children: ListTile.divideTiles(
-          context: context,
-          tiles: partTiles()
-          ).toList()
+      SingleChildScrollView(
+        physics: AlwaysScrollableScrollPhysics(),
+        child: Column(
+          children: partTiles(),
         )
       ),
       PaginatedStockItemList({"part": part.pk.toString()})

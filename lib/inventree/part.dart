@@ -1,4 +1,5 @@
 import "dart:io";
+import "dart:math";
 
 import "package:flutter/material.dart";
 
@@ -311,19 +312,29 @@ class InvenTreePart extends InvenTreeModel {
 
   String get onOrderString => simpleNumberString(onOrder);
 
-  double get inStock => getDouble("in_stock");
+  double get inStock {
+    if (jsondata.containsKey("total_in_stock")) {
+      return getDouble("total_in_stock");
+    } else {
+      return getDouble("in_stock");
+    }
+  }
 
   String get inStockString => simpleNumberString(inStock);
 
   // Get the 'available stock' for this Part
   double get unallocatedStock {
 
+    double unallocated = 0;
+
     // Note that the 'available_stock' was not added until API v35
     if (jsondata.containsKey("unallocated_stock")) {
-      return double.tryParse(jsondata["unallocated_stock"].toString()) ?? 0;
+      unallocated = double.tryParse(jsondata["unallocated_stock"].toString()) ?? 0;
     } else {
-      return inStock;
+      unallocated = inStock;
     }
+
+    return max(0, unallocated);
   }
 
     String get unallocatedStockString => simpleNumberString(unallocatedStock);

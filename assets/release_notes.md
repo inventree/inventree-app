@@ -3,6 +3,7 @@
 
 - Add support for ManufacturerPart model
 - Support barcode scanning for ManufacturerPart
+- Fix bugs in global search view
 - Fixes barcode scanning bug which prevents scanning of DataMatrix codes
 - Display "destination" information in PurchaseOrder detail view
 - Pre-fill "location" field when receiving items against PurchaseOrder
