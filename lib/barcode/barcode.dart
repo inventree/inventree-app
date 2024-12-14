@@ -282,17 +282,17 @@ class BarcodeScanHandler extends BarcodeHandler {
         case "stockitem":
           await handleStockItem(pk);
           return;
-        case "stocklocation":
-          await handleStockLocation(pk);
-          return;
-        case "supplierpart":
-          await handleSupplierPart(pk);
-          return;
         case "purchaseorder":
           await handlePurchaseOrder(pk);
           return;
         case "salesorder":
           await handleSalesOrder(pk);
+          return;
+        case "stocklocation":
+          await handleStockLocation(pk);
+          return;
+        case "supplierpart":
+          await handleSupplierPart(pk);
           return;
         case "manufacturerpart":
           await handleManufacturerPart(pk);
