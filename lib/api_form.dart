@@ -11,14 +11,16 @@ import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/barcode/barcode.dart";
 import "package:inventree/helpers.dart";
-import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/l10.dart";
 
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/project_code.dart";
-import "package:inventree/inventree/sentry.dart";
+import "package:inventree/inventree/purchase_order.dart";
+import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/inventree/stock.dart";
+
+import "package:inventree/inventree/sentry.dart";
 
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/fields.dart";
@@ -564,6 +566,12 @@ class APIFormField {
         switch (model) {
           case InvenTreePart.MODEL_TYPE:
             return InvenTreePart.fromJson(data).fullname;
+          case InvenTreeCompany.MODEL_TYPE:
+            return InvenTreeCompany.fromJson(data).name;
+          case InvenTreePurchaseOrder.MODEL_TYPE:
+            return InvenTreePurchaseOrder.fromJson(data).reference;
+          case InvenTreeSalesOrder.MODEL_TYPE:
+            return InvenTreeSalesOrder.fromJson(data).reference;
           case InvenTreePartCategory.MODEL_TYPE:
             return InvenTreePartCategory.fromJson(data).pathstring;
           case InvenTreeStockLocation.MODEL_TYPE:

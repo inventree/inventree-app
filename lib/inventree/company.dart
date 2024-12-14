@@ -18,7 +18,6 @@ class InvenTreeCompany extends InvenTreeModel {
   @override
   String get URL => "company/";
 
-  @override
   static const String MODEL_TYPE = "company";
 
   @override
@@ -131,7 +130,6 @@ class InvenTreeSupplierPart extends InvenTreeModel {
   @override
   String get URL => "company/part/";
 
-  @override
   static const String MODEL_TYPE = "supplierpart";
 
   @override
@@ -227,7 +225,6 @@ class InvenTreeManufacturerPart extends InvenTreeModel {
   @override
   String URL = "company/part/manufacturer/";
 
-  @override
   static const String MODEL_TYPE = "manufacturerpart";
 
   @override

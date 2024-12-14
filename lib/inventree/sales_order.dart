@@ -24,7 +24,6 @@ class InvenTreeSalesOrder extends InvenTreeOrder {
   @override
   String get URL => "order/so/";
 
-  @override
   static const String MODEL_TYPE = "salesorder";
 
   @override
@@ -250,7 +249,6 @@ class InvenTreeSalesOrderShipment extends InvenTreeModel {
   @override
   String get URL => "/order/so/shipment/";
 
-  @override
   static const String MODEL_TYPE = "salesordershipment";
 
   @override

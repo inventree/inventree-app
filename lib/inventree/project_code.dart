@@ -16,7 +16,6 @@ class InvenTreeProjectCode extends InvenTreeModel {
   @override
   String get URL => "project-code/";
 
-  @override
   static const String MODEL_TYPE = "projectcode";
 
   @override

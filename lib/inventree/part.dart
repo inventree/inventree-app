@@ -23,7 +23,6 @@ class InvenTreePartCategory extends InvenTreeModel {
   @override
   String get URL => "part/category/";
 
-  @override
   static const String MODEL_TYPE = "partcategory";
 
   @override
@@ -82,7 +81,6 @@ class InvenTreePartTestTemplate extends InvenTreeModel {
   @override
   String get URL => "part/test-template/";
 
-  @override
   static const String MODEL_TYPE = "parttesttemplate";
 
   String get key => getString("key");
@@ -198,7 +196,6 @@ class InvenTreePart extends InvenTreeModel {
   @override
   String get URL => "part/";
 
-  @override
   static const String MODEL_TYPE = "part";
 
   @override
