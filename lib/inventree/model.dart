@@ -301,13 +301,7 @@ class InvenTreeModel {
 
   /*
    * Attempt to extract a custom icon for this model.
-   * If icon data is provided, attempt to convert to a FontAwesome icon
-   *
-   * Icon data *should* be presented something like "fas fa-boxes" / "fab fa-github" (etc):
-   *
-   * - First part specifies the *style*
-   * - Second part specifies the icon
-   *
+   * If icon data is provided, attempt to convert to a TablerIcon icon
    */
   IconData? get customIcon {
     String icon = (jsondata["icon"] ?? "").toString().trim();

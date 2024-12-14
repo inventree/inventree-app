@@ -15,7 +15,7 @@ Thanks to the following contributors, for their work building this app!
 
 The InvenTree App makes use of the following third party assets
 
-- Icons are provided by [fontawesome](https://fontawesome.com)
+- Icons are provided by [tabler.io](https://tabler.io/icons)
 - Sound files have been sourced from [zapsplat](https://www.zapsplat.com)
 
 --------
