@@ -8,16 +8,21 @@ import "package:inventree/app_colors.dart";
 import "package:inventree/l10.dart";
 
 import "package:inventree/inventree/part.dart";
+import "package:inventree/inventree/company.dart";
+import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/inventree/stock.dart";
+import "package:inventree/preferences.dart";
 
 import "package:inventree/widget/part/part_list.dart";
 import "package:inventree/widget/order/purchase_order_list.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/stock/stock_list.dart";
 import "package:inventree/widget/part/category_list.dart";
-import "package:inventree/widget/company/company_list.dart";
 import "package:inventree/widget/stock/location_list.dart";
+import "package:inventree/widget/order/sales_order_list.dart";
+import "package:inventree/widget/company/company_list.dart";
+import "package:inventree/widget/company/supplier_part_list.dart";
 
 
 // Widget for performing database-wide search
@@ -86,12 +91,35 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
 
   // Individual search result count (for legacy search API)
   int nPendingSearches = 0;
+
   int nPartResults = 0;
   int nCategoryResults = 0;
   int nStockResults = 0;
   int nLocationResults = 0;
-  int nSupplierResults = 0;
   int nPurchaseOrderResults = 0;
+  int nSalesOrderResults = 0;
+  int nCompanyResults = 0;
+  int nSupplierPartResults = 0;
+  int nManufacturerPartResults = 0;
+
+  void resetSearchResults() {
+    if (mounted) {
+      setState(() {
+
+        nPendingSearches = 0;
+
+        nPartResults = 0;
+        nCategoryResults = 0;
+        nStockResults = 0;
+        nLocationResults = 0;
+        nPurchaseOrderResults = 0;
+        nSalesOrderResults = 0;
+        nCompanyResults = 0;
+        nSupplierPartResults = 0;
+        nManufacturerPartResults = 0;
+      });
+    }
+  }
 
   // Callback when the text is being edited
   // Incorporates a debounce timer to restrict search frequency
@@ -104,7 +132,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
     if (immediate) {
       search(text);
     } else {
-      debounceTimer = Timer(Duration(milliseconds: 250), () {
+      debounceTimer = Timer(Duration(milliseconds: 300), () {
         search(text);
       });
     }
@@ -144,22 +172,26 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
       expectedStatusCode: 200).then((APIResponse response) {
         decrementPendingSearches();
 
-
         Map<String, dynamic> results = {};
 
-        if (response.data is Map<String, dynamic>) {
+        if (response.isValid() && response.data is Map<String, dynamic>) {
           results = response.data as Map<String, dynamic>;
-        }
 
-        if (mounted) {
-          setState(() {
-            nPartResults = getSearchResultCount(results, "part");
-            nCategoryResults = getSearchResultCount(results, "partcategory");
-            nStockResults = getSearchResultCount(results, "stockitem");
-            nLocationResults = getSearchResultCount(results, "stocklocation");
-            nSupplierResults = 0; //getSearchResultCount(results, "")
-            nPurchaseOrderResults = getSearchResultCount(results, "purchaseorder");
-          });
+          if (mounted) {
+            setState(() {
+              nPartResults = getSearchResultCount(results, InvenTreePart.MODEL_TYPE);
+              nCategoryResults = getSearchResultCount(results, InvenTreePartCategory.MODEL_TYPE);
+              nStockResults = getSearchResultCount(results, InvenTreeStockItem.MODEL_TYPE);
+              nLocationResults = getSearchResultCount(results, InvenTreeStockLocation.MODEL_TYPE);
+              nPurchaseOrderResults = getSearchResultCount(results, InvenTreePurchaseOrder.MODEL_TYPE);
+              nSalesOrderResults = getSearchResultCount(results, InvenTreeSalesOrder.MODEL_TYPE);
+              nCompanyResults = getSearchResultCount(results, InvenTreeCompany.MODEL_TYPE);
+              nSupplierPartResults = getSearchResultCount(results, InvenTreeSupplierPart.MODEL_TYPE);
+              nManufacturerPartResults = getSearchResultCount(results, InvenTreeManufacturerPart.MODEL_TYPE);
+            });
+          }
+        } else {
+          resetSearchResults();
         }
     });
   }
@@ -174,17 +206,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
       return;
     }
 
-    setState(() {
-      // Do not search on an empty string
-      nPartResults = 0;
-      nCategoryResults = 0;
-      nStockResults = 0;
-      nLocationResults = 0;
-      nSupplierResults = 0;
-      nPurchaseOrderResults = 0;
-
-      nPendingSearches = 0;
-    });
+    resetSearchResults();
 
     // Cancel the previous search query (if in progress)
     if (_search_query != null) {
@@ -201,46 +223,34 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
 
     // Consolidated search allows us to perform *all* searches in a single query
     if (api.supportsConsolidatedSearch) {
+
       Map<String, dynamic> body = {
         "limit": 1,
         "search": term,
+
+        InvenTreePart.MODEL_TYPE: {},
+        InvenTreePartCategory.MODEL_TYPE: {},
+        InvenTreeStockItem.MODEL_TYPE: {},
+        InvenTreeStockLocation.MODEL_TYPE: {},
+        InvenTreePurchaseOrder.MODEL_TYPE: {},
+        InvenTreeSalesOrder.MODEL_TYPE: {},
+        InvenTreeCompany.MODEL_TYPE: {},
+        InvenTreeSupplierPart.MODEL_TYPE: {},
+        InvenTreeManufacturerPart.MODEL_TYPE: {},
       };
 
-      // Part search
-      if (InvenTreePart().canView) {
-        body["part"] = {};
-      }
-
-      // PartCategory search
-      if (InvenTreePartCategory().canView) {
-        body["partcategory"] = {};
-      }
-
-      // StockItem search
-      if (InvenTreeStockItem().canView) {
-        body["stockitem"] = {
-          "in_stock": true,
-        };
-      }
-
-      // StockLocation search
-      if (InvenTreeStockLocation().canView) {
-        body["stocklocation"] = {};
-      }
-
-      // PurchaseOrder search
-      if (InvenTreePurchaseOrder().canView) {
-        body["purchaseorder"] = {
-          "outstanding": true
-        };
-      }
-
       if (body.isNotEmpty) {
-        nPendingSearches++;
 
-        _search_query = CancelableOperation.fromFuture(
-          _perform_search(body),
-        );
+        if (mounted) {
+          setState(() {
+            nPendingSearches = 1;
+          });
+
+          _search_query = CancelableOperation.fromFuture(
+            _perform_search(body),
+          );
+        }
+
       }
     } else {
       legacySearch(term);
@@ -466,31 +476,6 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
       );
     }
 
-    // Suppliers
-    if (nSupplierResults > 0) {
-      results.add(
-        ListTile(
-          title: Text(L10().suppliers),
-          leading: Icon(TablerIcons.building),
-          trailing: Text("${nSupplierResults}"),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => CompanyListWidget(
-                  L10().suppliers,
-                  {
-                    "is_supplier": "true",
-                    "original_search": query
-                  }
-                )
-              )
-            );
-          },
-        )
-      );
-    }
-
     // Purchase orders
     if (nPurchaseOrderResults > 0) {
       results.add(
@@ -504,6 +489,76 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
               MaterialPageRoute(
                 builder: (context) => PurchaseOrderListWidget(
                   filters: {
+                    "original_search": query
+                  }
+                )
+              )
+            );
+          },
+        )
+      );
+    }
+
+    // Sales orders
+    if (nSalesOrderResults > 0) {
+      results.add(
+        ListTile(
+          title: Text(L10().salesOrders),
+          leading: Icon(TablerIcons.shopping_cart),
+          trailing: Text("${nSalesOrderResults}"),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SalesOrderListWidget(
+                  filters: {
+                    "original_search": query
+                  }
+                )
+              )
+            );
+          },
+        )
+      );
+    }
+
+    // Company results
+    if (nCompanyResults > 0) {
+      results.add(
+        ListTile(
+          title: Text(L10().companies),
+          leading: Icon(TablerIcons.building),
+          trailing: Text("${nCompanyResults}"),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CompanyListWidget(
+                  L10().companies,
+                  {
+                    "original_search": query
+                  }
+                )
+              )
+            );
+          },
+        )
+      );
+    }
+
+    // Supplier part results
+    if (nSupplierPartResults > 0) {
+      results.add(
+        ListTile(
+          title: Text(L10().supplierParts),
+          leading: Icon(TablerIcons.box),
+          trailing: Text("${nSupplierPartResults}"),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SupplierPartList(
+                  {
                     "original_search": query
                   }
                 )
