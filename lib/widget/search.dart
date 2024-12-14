@@ -12,7 +12,6 @@ import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/inventree/stock.dart";
-import "package:inventree/preferences.dart";
 
 import "package:inventree/widget/part/part_list.dart";
 import "package:inventree/widget/order/purchase_order_list.dart";
@@ -105,7 +104,6 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
   void resetSearchResults() {
     if (mounted) {
       setState(() {
-
         nPendingSearches = 0;
 
         nPartResults = 0;

@@ -7,7 +7,8 @@ Thanks to the following contributors, for their work building this app!
 - [GoryMoon](https://github.com/GoryMoon)
 - [simonkuehling](https://github.com/simonkuehling)
 - [Bobbe](https://github.com/30350n)
-
+- [awnz](https://github.com/awnz)
+- [joaomnuno](https://github.com/joaomnuno)
 --------
 
 ## Assets
