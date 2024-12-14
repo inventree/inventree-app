@@ -66,7 +66,7 @@ class InvenTreeModel {
   String get WEB_URL => "";
 
   // Return the "model type" of this model
-  String get MODEL_TYPE => "";
+  static const String MODEL_TYPE = "";
 
   // Helper function to set a value in the JSON data
   void setValue(String key, dynamic value) {

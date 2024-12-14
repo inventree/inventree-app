@@ -169,7 +169,7 @@ class InvenTreeStockItem extends InvenTreeModel {
   String get URL => "stock/";
 
   @override
-  String get MODEL_TYPE => "stockitem";
+  static const String MODEL_TYPE = "stockitem";
 
   @override
   List<String> get rolesRequired => ["stock"];
@@ -682,7 +682,7 @@ class InvenTreeStockLocation extends InvenTreeModel {
   String get URL => "stock/location/";
 
   @override
-  String get MODEL_TYPE => "stocklocation";
+  static const String MODEL_TYPE = "stocklocation";
 
   @override
   List<String> get rolesRequired => ["stock_location"];

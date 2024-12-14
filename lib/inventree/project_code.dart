@@ -17,6 +17,9 @@ class InvenTreeProjectCode extends InvenTreeModel {
   String get URL => "project-code/";
 
   @override
+  static const String MODEL_TYPE = "projectcode";
+
+  @override
   Map<String, Map<String, dynamic>> formFields() {
     return {
       "code": {},

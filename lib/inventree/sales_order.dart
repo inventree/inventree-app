@@ -25,7 +25,7 @@ class InvenTreeSalesOrder extends InvenTreeOrder {
   String get URL => "order/so/";
 
   @override
-  String get MODEL_TYPE => "salesorder";
+  static const String MODEL_TYPE = "salesorder";
 
   @override
   List<String> get rolesRequired => ["sales_order"];
@@ -249,6 +249,9 @@ class InvenTreeSalesOrderShipment extends InvenTreeModel {
 
   @override
   String get URL => "/order/so/shipment/";
+
+  @override
+  static const String MODEL_TYPE = "salesordershipment";
 
   @override
   Map<String, Map<String, dynamic>> formFields() {

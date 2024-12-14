@@ -243,18 +243,18 @@ class BarcodeScanHandler extends BarcodeHandler {
 
     // The following model types can be matched with barcodes
     List<String> validModels = [
-      "part",
-      "company",
-      "stockitem",
-      "stocklocation",
-      "supplierpart",
-      "manufacturerpart",
+      InvenTreePart.MODEL_TYPE,
+      InvenTreeCompany.MODEL_TYPE,
+      InvenTreeStockItem.MODEL_TYPE,
+      InvenTreeStockLocation.MODEL_TYPE,
+      InvenTreeSupplierPart.MODEL_TYPE,
+      InvenTreeManufacturerPart.MODEL_TYPE,
     ];
 
 
     if (InvenTreeAPI().supportsOrderBarcodes) {
-      validModels.add("purchaseorder");
-      validModels.add("salesorder");
+      validModels.add(InvenTreePurchaseOrder.MODEL_TYPE);
+      validModels.add(InvenTreeSalesOrder.MODEL_TYPE);
     }
 
     for (var key in validModels) {
@@ -279,28 +279,28 @@ class BarcodeScanHandler extends BarcodeHandler {
       barcodeSuccessTone();
 
       switch (model) {
-        case "stockitem":
+        case InvenTreeStockItem.MODEL_TYPE:
           await handleStockItem(pk);
           return;
-        case "purchaseorder":
+        case InvenTreePurchaseOrder.MODEL_TYPE:
           await handlePurchaseOrder(pk);
           return;
-        case "salesorder":
+        case InvenTreeSalesOrder.MODEL_TYPE:
           await handleSalesOrder(pk);
           return;
-        case "stocklocation":
+        case InvenTreeStockLocation.MODEL_TYPE:
           await handleStockLocation(pk);
           return;
-        case "supplierpart":
+        case InvenTreeSupplierPart.MODEL_TYPE:
           await handleSupplierPart(pk);
           return;
-        case "manufacturerpart":
+        case InvenTreeManufacturerPart.MODEL_TYPE:
           await handleManufacturerPart(pk);
           return;
-        case "part":
+        case InvenTreePart.MODEL_TYPE:
           await handlePart(pk);
           return;
-        case "company":
+        case InvenTreeCompany.MODEL_TYPE:
           await handleCompany(pk);
           return;
         default:

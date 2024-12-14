@@ -27,7 +27,7 @@ class InvenTreePurchaseOrder extends InvenTreeOrder {
   String get URL => "order/po/";
 
   @override
-  String get MODEL_TYPE => "purchaseorder";
+  static const String MODEL_TYPE = "purchaseorder";
 
   @override
   List<String> get rolesRequired => ["purchase_order"];

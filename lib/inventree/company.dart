@@ -19,6 +19,9 @@ class InvenTreeCompany extends InvenTreeModel {
   String get URL => "company/";
 
   @override
+  static const String MODEL_TYPE = "company";
+
+  @override
   List<String> get rolesRequired => ["purchase_order", "sales_order", "return_order"];
 
   @override
@@ -129,6 +132,9 @@ class InvenTreeSupplierPart extends InvenTreeModel {
   String get URL => "company/part/";
 
   @override
+  static const String MODEL_TYPE = "supplierpart";
+
+  @override
   List<String> get rolesRequired => ["part", "purchase_order"];
 
   @override
@@ -220,6 +226,9 @@ class InvenTreeManufacturerPart extends InvenTreeModel {
 
   @override
   String URL = "company/part/manufacturer/";
+
+  @override
+  static const String MODEL_TYPE = "manufacturerpart";
 
   @override
   List<String> get rolesRequired => ["part"];
