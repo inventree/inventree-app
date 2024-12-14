@@ -32,6 +32,7 @@ import "package:inventree/widget/order/purchase_order_detail.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/stock/stock_detail.dart";
+import "package:inventree/widget/company/company_detail.dart";
 import "package:inventree/widget/company/supplier_part_detail.dart";
 
 
@@ -200,6 +201,16 @@ class BarcodeScanHandler extends BarcodeHandler {
     }
   }
 
+  Future<void> handleCompany(int pk) async {
+    var company = await InvenTreeCompany().get(pk);
+
+    if (company is InvenTreeCompany) {
+      OneContext().pop();
+      OneContext().push(MaterialPageRoute(
+          builder: (context) => CompanyDetailWidget(company)));
+    }
+  }
+
   /*
    * Response when a "PurchaseOrder" instance is scanned
    */
@@ -267,9 +278,6 @@ class BarcodeScanHandler extends BarcodeHandler {
       barcodeSuccessTone();
 
       switch (model) {
-        case "part":
-          await handlePart(pk);
-          return;
         case "stockitem":
           await handleStockItem(pk);
           return;
@@ -287,6 +295,12 @@ class BarcodeScanHandler extends BarcodeHandler {
           return;
         case "manufacturerpart":
           await handleManufacturerPart(pk);
+          return;
+        case "part":
+          await handlePart(pk);
+          return;
+        case "company":
+          await handleCompany(pk);
           return;
         default:
           // Fall through to failure state
