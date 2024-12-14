@@ -1,21 +1,23 @@
 import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
+import "package:url_launcher/url_launcher.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
-import "package:inventree/barcode/barcode.dart";
 import "package:inventree/l10.dart";
+
+import "package:inventree/barcode/barcode.dart";
 
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/company.dart";
 
-import "package:inventree/widget/company/company_detail.dart";
-import "package:inventree/widget/part/part_detail.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
-import "package:url_launcher/url_launcher.dart";
+import "package:inventree/widget/company/company_detail.dart";
+import "package:inventree/widget/company/manufacturer_part_detail.dart";
+import "package:inventree/widget/part/part_detail.dart";
 
 
 /*
@@ -180,7 +182,7 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
         ListTile(
           title: Text(L10().supplierPartNumber),
           subtitle: Text(widget.supplierPart.SKU),
-          leading: Icon(TablerIcons.barcode),
+          leading: Icon(TablerIcons.hash),
         )
     );
 
@@ -210,7 +212,18 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
         ListTile(
           title: Text(L10().manufacturerPartNumber),
           subtitle: Text(widget.supplierPart.MPN),
-          leading: Icon(TablerIcons.barcode),
+          leading: Icon(TablerIcons.hash, color: COLOR_ACTION),
+          onTap: () async {
+            showLoadingOverlay();
+            var manufacturerPart = await InvenTreeManufacturerPart().get(widget.supplierPart.manufacturerPartId);
+            hideLoadingOverlay();
+
+            if (manufacturerPart is InvenTreeManufacturerPart) {
+              Navigator.push(context, MaterialPageRoute(
+                builder: (context) => ManufacturerPartDetailWidget(manufacturerPart)
+              ));
+            }
+          },
         )
       );
     }

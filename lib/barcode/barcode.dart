@@ -4,7 +4,9 @@ import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/inventree/sales_order.dart";
+import "package:inventree/inventree/sentry.dart";
 import "package:inventree/preferences.dart";
+import "package:inventree/widget/company/manufacturer_part_detail.dart";
 import "package:inventree/widget/order/sales_order_detail.dart";
 import "package:one_context/one_context.dart";
 
@@ -30,6 +32,7 @@ import "package:inventree/widget/order/purchase_order_detail.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/stock/stock_detail.dart";
+import "package:inventree/widget/company/company_detail.dart";
 import "package:inventree/widget/company/supplier_part_detail.dart";
 
 
@@ -176,15 +179,37 @@ class BarcodeScanHandler extends BarcodeHandler {
    */
   Future<void> handleSupplierPart(int pk) async {
 
-    var supplierpart = await InvenTreeSupplierPart().get(pk);
+    var supplierPart = await InvenTreeSupplierPart().get(pk);
 
-    if (supplierpart is InvenTreeSupplierPart) {
+    if (supplierPart is InvenTreeSupplierPart) {
       OneContext().pop();
       OneContext().push(MaterialPageRoute(
-          builder: (context) => SupplierPartDetailWidget(supplierpart)));
+          builder: (context) => SupplierPartDetailWidget(supplierPart)));
     }
   }
 
+  /*
+    * Response when a "ManufacturerPart" instance is scanned
+   */
+  Future<void> handleManufacturerPart(int pk) async {
+    var manufacturerPart = await InvenTreeManufacturerPart().get(pk);
+
+    if (manufacturerPart is InvenTreeManufacturerPart) {
+      OneContext().pop();
+      OneContext().push(MaterialPageRoute(
+          builder: (context) => ManufacturerPartDetailWidget(manufacturerPart)));
+    }
+  }
+
+  Future<void> handleCompany(int pk) async {
+    var company = await InvenTreeCompany().get(pk);
+
+    if (company is InvenTreeCompany) {
+      OneContext().pop();
+      OneContext().push(MaterialPageRoute(
+          builder: (context) => CompanyDetailWidget(company)));
+    }
+  }
 
   /*
    * Response when a "PurchaseOrder" instance is scanned
@@ -218,26 +243,32 @@ class BarcodeScanHandler extends BarcodeHandler {
 
     // The following model types can be matched with barcodes
     List<String> validModels = [
-      "part",
-      "stockitem",
-      "stocklocation",
-      "supplierpart",
+      InvenTreePart.MODEL_TYPE,
+      InvenTreeCompany.MODEL_TYPE,
+      InvenTreeStockItem.MODEL_TYPE,
+      InvenTreeStockLocation.MODEL_TYPE,
+      InvenTreeSupplierPart.MODEL_TYPE,
+      InvenTreeManufacturerPart.MODEL_TYPE,
     ];
 
 
     if (InvenTreeAPI().supportsOrderBarcodes) {
-      validModels.add("purchaseorder");
-      validModels.add("salesorder");
+      validModels.add(InvenTreePurchaseOrder.MODEL_TYPE);
+      validModels.add(InvenTreeSalesOrder.MODEL_TYPE);
     }
 
     for (var key in validModels) {
       if (data.containsKey(key)) {
-        pk = (data[key]?["pk"] ?? -1) as int;
+        try {
+          pk = (data[key]?["pk"] ?? -1) as int;
 
-        // Break on the first valid match found
-        if (pk > 0) {
-          model = key;
-          break;
+          // Break on the first valid match found
+          if (pk > 0) {
+            model = key;
+            break;
+          }
+        } catch (error, stackTrace) {
+          sentryReportError("onBarcodeMatched", error, stackTrace);
         }
       }
     }
@@ -248,25 +279,30 @@ class BarcodeScanHandler extends BarcodeHandler {
       barcodeSuccessTone();
 
       switch (model) {
-        case "part":
-          await handlePart(pk);
-          return;
-        case "stockitem":
+        case InvenTreeStockItem.MODEL_TYPE:
           await handleStockItem(pk);
           return;
-        case "stocklocation":
-          await handleStockLocation(pk);
-          return;
-        case "supplierpart":
-          await handleSupplierPart(pk);
-          return;
-        case "purchaseorder":
+        case InvenTreePurchaseOrder.MODEL_TYPE:
           await handlePurchaseOrder(pk);
           return;
-        case "salesorder":
+        case InvenTreeSalesOrder.MODEL_TYPE:
           await handleSalesOrder(pk);
           return;
-          // TODO: Handle manufacturer part
+        case InvenTreeStockLocation.MODEL_TYPE:
+          await handleStockLocation(pk);
+          return;
+        case InvenTreeSupplierPart.MODEL_TYPE:
+          await handleSupplierPart(pk);
+          return;
+        case InvenTreeManufacturerPart.MODEL_TYPE:
+          await handleManufacturerPart(pk);
+          return;
+        case InvenTreePart.MODEL_TYPE:
+          await handlePart(pk);
+          return;
+        case InvenTreeCompany.MODEL_TYPE:
+          await handleCompany(pk);
+          return;
         default:
           // Fall through to failure state
           break;
@@ -324,21 +360,6 @@ class UniqueBarcodeHandler extends BarcodeHandler {
 
   @override
   Future<void> onBarcodeMatched(Map<String, dynamic> data) async {
-
-    barcodeFailureTone();
-
-    // If the barcode is known, we can"t assign it to the stock item!
-    showSnackIcon(
-        L10().barcodeInUse,
-        icon: Icons.qr_code,
-        success: false
-    );
-  }
-
-  @override
-  Future<void> onBarcodeUnknown(Map<String, dynamic> data) async {
-    // If the barcode is unknown, we *can* assign it to the stock item!
-
     if (!data.containsKey("hash") && !data.containsKey("barcode_hash")) {
       showServerError(
         "barcode/",
@@ -370,6 +391,12 @@ class UniqueBarcodeHandler extends BarcodeHandler {
       }
     }
   }
+
+  @override
+  Future<void> onBarcodeUnknown(Map<String, dynamic> data) async {
+    await onBarcodeMatched(data);
+  }
+  
 }
 
 

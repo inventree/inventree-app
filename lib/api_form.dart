@@ -11,14 +11,16 @@ import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/barcode/barcode.dart";
 import "package:inventree/helpers.dart";
-import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/l10.dart";
 
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/project_code.dart";
-import "package:inventree/inventree/sentry.dart";
+import "package:inventree/inventree/purchase_order.dart";
+import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/inventree/stock.dart";
+
+import "package:inventree/inventree/sentry.dart";
 
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/fields.dart";
@@ -562,11 +564,17 @@ class APIFormField {
         Map<String, dynamic> data = item as Map<String, dynamic>;
 
         switch (model) {
-          case "part":
+          case InvenTreePart.MODEL_TYPE:
             return InvenTreePart.fromJson(data).fullname;
-          case "partcategory":
+          case InvenTreeCompany.MODEL_TYPE:
+            return InvenTreeCompany.fromJson(data).name;
+          case InvenTreePurchaseOrder.MODEL_TYPE:
+            return InvenTreePurchaseOrder.fromJson(data).reference;
+          case InvenTreeSalesOrder.MODEL_TYPE:
+            return InvenTreeSalesOrder.fromJson(data).reference;
+          case InvenTreePartCategory.MODEL_TYPE:
             return InvenTreePartCategory.fromJson(data).pathstring;
-          case "stocklocation":
+          case InvenTreeStockLocation.MODEL_TYPE:
             return InvenTreeStockLocation.fromJson(data).pathstring;
           default:
             return "itemAsString not implemented for '${model}'";
@@ -606,10 +614,12 @@ class APIFormField {
   Map<String, String> _relatedFieldFilters() {
 
     switch (model) {
-      case "supplierpart":
+      case InvenTreeSupplierPart.MODEL_TYPE:
         return InvenTreeSupplierPart().defaultListFilters();
-      case "stockitem":
+      case InvenTreeStockItem.MODEL_TYPE:
         return InvenTreeStockItem().defaultListFilters();
+      default:
+        break;
     }
 
     return {};
@@ -643,7 +653,7 @@ class APIFormField {
     }
 
     switch (model) {
-      case "part":
+      case InvenTreePart.MODEL_TYPE:
         var part = InvenTreePart.fromJson(data);
 
         return ListTile(
@@ -657,14 +667,14 @@ class APIFormField {
           ) : null,
           leading: extended ? InvenTreeAPI().getThumbnail(part.thumbnail) : null,
         );
-      case "parttesttemplate":
+      case InvenTreePartTestTemplate.MODEL_TYPE:
           var template = InvenTreePartTestTemplate.fromJson(data);
 
           return ListTile(
             title: Text(template.testName),
             subtitle: Text(template.description),
           );
-      case "supplierpart":
+      case InvenTreeSupplierPart.MODEL_TYPE:
         var part = InvenTreeSupplierPart.fromJson(data);
 
         return ListTile(
@@ -673,7 +683,7 @@ class APIFormField {
           leading: extended ? InvenTreeAPI().getThumbnail(part.partImage) : null,
           trailing: extended && part.supplierImage.isNotEmpty ? InvenTreeAPI().getThumbnail(part.supplierImage) : null,
         );
-      case "partcategory":
+      case InvenTreePartCategory.MODEL_TYPE:
 
         var cat = InvenTreePartCategory.fromJson(data);
 
@@ -687,7 +697,7 @@ class APIFormField {
             style: TextStyle(fontWeight: selected ? FontWeight.bold : FontWeight.normal),
           ) : null,
         );
-      case "stockitem":
+      case InvenTreeStockItem.MODEL_TYPE:
         var item = InvenTreeStockItem.fromJson(data);
 
         return ListTile(
@@ -697,8 +707,7 @@ class APIFormField {
           leading: InvenTreeAPI().getThumbnail(item.partThumbnail),
           trailing: Text(item.quantityString()),
         );
-      case "stocklocation":
-
+      case InvenTreeStockLocation.MODEL_TYPE:
         var loc = InvenTreeStockLocation.fromJson(data);
 
         return ListTile(
@@ -711,7 +720,7 @@ class APIFormField {
             style: TextStyle(fontWeight: selected ? FontWeight.bold : FontWeight.normal),
           ) : null,
         );
-      case "salesordershipment":
+      case InvenTreeSalesOrderShipment.MODEL_TYPE:
         var shipment = InvenTreeSalesOrderShipment.fromJson(data);
 
         return ListTile(
@@ -733,14 +742,14 @@ class APIFormField {
           title: Text(name),
           subtitle: Text(role),
         );
-      case "company":
+      case InvenTreeCompany.MODEL_TYPE:
         var company = InvenTreeCompany.fromJson(data);
         return ListTile(
             title: Text(company.name),
             subtitle: extended ? Text(company.description) : null,
             leading: InvenTreeAPI().getThumbnail(company.thumbnail)
         );
-      case "projectcode":
+      case InvenTreeProjectCode.MODEL_TYPE:
         var project_code = InvenTreeProjectCode.fromJson(data);
         return ListTile(
             title: Text(project_code.code),

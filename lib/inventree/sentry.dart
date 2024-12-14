@@ -158,6 +158,11 @@ Future<bool> sentryReportMessage(String message, {Map<String, String>? context})
  */
 Future<void> sentryReportError(String source, dynamic error, StackTrace? stackTrace, {Map<String, String> context = const {}}) async {
 
+  if (sentryIgnoreError(error)) {
+    // No action on this error
+    return;
+  }
+
   print("----- Sentry Intercepted error: $error -----");
   print(stackTrace);
 
@@ -227,4 +232,19 @@ Future<void> sentryReportError(String source, dynamic error, StackTrace? stackTr
   }).then((response) {
     print("Uploaded information to Sentry.io : ${response.toString()}");
   });
+}
+
+
+/*
+ * Test if a certain error should be ignored by Sentry
+ */
+bool sentryIgnoreError(dynamic error) {
+  // Ignore 404 errors for media files
+  if (error is HttpException) {
+    if (error.uri.toString().contains("/media/") && error.message.contains("404")) {
+      return true;
+    }
+  }
+
+  return false;
 }

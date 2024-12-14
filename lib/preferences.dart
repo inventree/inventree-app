@@ -39,6 +39,7 @@ const String INV_STOCK_CONFIRM_SCAN = "stockConfirmScan";
 // Purchase order settings
 const String INV_PO_ENABLE = "poEnable";
 const String INV_PO_SHOW_CAMERA = "poShowCamera";
+const String INV_PO_CONFIRM_SCAN = "poConfirmScan";
 
 // Sales order settings
 const String INV_SO_ENABLE = "soEnable";

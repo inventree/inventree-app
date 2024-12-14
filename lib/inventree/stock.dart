@@ -98,7 +98,7 @@ class InvenTreeStockItemHistory extends InvenTreeModel {
   String get URL => "stock/track/";
 
   @override
-  Map<String, String> defaultListFilters() {
+  Map<String, String> defaultFilters() {
 
     // By default, order by decreasing date
     return {
@@ -168,8 +168,7 @@ class InvenTreeStockItem extends InvenTreeModel {
   @override
   String get URL => "stock/";
 
-  @override
-  String get MODEL_TYPE => "stockitem";
+  static const String MODEL_TYPE = "stockitem";
 
   @override
   List<String> get rolesRequired => ["stock"];
@@ -206,7 +205,7 @@ class InvenTreeStockItem extends InvenTreeModel {
 
     if (isSerialized()) {
       // Prevent editing of 'quantity' field if the item is serialized
-      fields["quantity"]["hidden"] = true;
+      fields["quantity"]?["hidden"] = true;
     }
 
     // Old API does not support these fields
@@ -395,7 +394,7 @@ class InvenTreeStockItem extends InvenTreeModel {
 
       // Use the detailed part information as priority
       if (jsondata.containsKey("part_detail")) {
-        nm = (jsondata["part_detail"]["full_name"] ?? "") as String;
+        nm = (jsondata["part_detail"]?["full_name"] ?? "") as String;
       }
 
       // Backup if first value fails
@@ -411,7 +410,7 @@ class InvenTreeStockItem extends InvenTreeModel {
 
       // Use the detailed part description as priority
       if (jsondata.containsKey("part_detail")) {
-        desc = (jsondata["part_detail"]["description"] ?? "") as String;
+        desc = (jsondata["part_detail"]?["description"] ?? "") as String;
       }
 
       if (desc.isEmpty) {
@@ -425,7 +424,7 @@ class InvenTreeStockItem extends InvenTreeModel {
       String img = "";
 
       if (jsondata.containsKey("part_detail")) {
-        img = (jsondata["part_detail"]["thumbnail"] ?? "") as String;
+        img = (jsondata["part_detail"]?["thumbnail"] ?? "") as String;
       }
 
       if (img.isEmpty) {
@@ -468,7 +467,7 @@ class InvenTreeStockItem extends InvenTreeModel {
       if (jsondata.containsKey("supplier_part_detail")) {
         thumb = (jsondata["supplier_part_detail"]?["supplier_detail"]?["image"] ?? "") as String;
       } else if (jsondata.containsKey("supplier_detail")) {
-        thumb = (jsondata["supplier_detail"]["image"] ?? "") as String;
+        thumb = (jsondata["supplier_detail"]?["image"] ?? "") as String;
       }
 
       return thumb;
@@ -681,8 +680,7 @@ class InvenTreeStockLocation extends InvenTreeModel {
   @override
   String get URL => "stock/location/";
 
-  @override
-  String get MODEL_TYPE => "stocklocation";
+  static const String MODEL_TYPE = "stocklocation";
 
   @override
   List<String> get rolesRequired => ["stock_location"];

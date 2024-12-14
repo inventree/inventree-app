@@ -2,7 +2,6 @@ import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
-import "package:inventree/api_form.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/inventree/model.dart";
@@ -132,72 +131,15 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
 
     // Launch a form to 'receive' this line item
   Future<void> receiveLineItem(BuildContext context) async {
-
-    // Pre-fill the "destination" to receive into
-    int destination = widget.item.destinationId;
-
-    if (destination < 0) {
-      destination = (widget.item.orderDetail["destination"] ?? -1) as int;
-    }
-
-    // Construct fields to receive
-    Map<String, dynamic> fields = {
-      "line_item": {
-        "parent": "items",
-        "nested": true,
-        "hidden": true,
-        "value": widget.item.pk,
-      },
-      "quantity": {
-        "parent": "items",
-        "nested": true,
-        "value": widget.item.outstanding,
-      },
-      "status": {
-        "parent": "items",
-        "nested": true,
-      },
-      "location": {},
-      "batch_code": {
-        "parent": "items",
-        "nested": true,
-      },
-      "barcode": {
-        "parent": "items",
-        "nested": true,
-        "type": "barcode",
-        "label": L10().barcodeAssign,
-        "required": false,
-      }
-    };
-
-    if (destination > 0) {
-      fields["location"]?["value"] = destination;
-    }
-
-    showLoadingOverlay();
-    var order = await InvenTreePurchaseOrder().get(widget.item.orderId);
-    hideLoadingOverlay();
-
-    if (order is InvenTreePurchaseOrder) {
-    launchApiForm(
+    widget.item.receive(
       context,
-      L10().receiveItem,
-      order.receive_url,
-      fields,
-      method: "POST",
-      icon: TablerIcons.transition_right,
-      onSuccess: (data) async {
-        showSnackIcon(L10().receivedItem, success: true);
-        refresh(context);
+      onSuccess: () => {
+        showSnackIcon(L10().receivedItem, success: true),
+        refresh(context)
       }
     );
-    } else {
-      showSnackIcon(L10().error);
-      return;
-    }
   }
-
+  
   @override
   List<Widget> getTiles(BuildContext context) {
     List<Widget> tiles = [];

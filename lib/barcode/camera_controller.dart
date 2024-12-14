@@ -93,7 +93,7 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
   /*
    * Callback function when a barcode is scanned
    */
-  void _onScanSuccess(Code? code) {
+  Future<void> onScanSuccess(Code? code) async {
 
     if (scanning_paused) {
       return;
@@ -122,18 +122,16 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
     if (mounted) {
       setState(() {
         scanned_code = barcode;
-        scanning_paused = barcode.isNotEmpty;
       });
     }
 
     if (barcode.isNotEmpty) {
 
-      handleBarcodeData(barcode).then((_) {
+      pauseScan();
+
+      await handleBarcodeData(barcode).then((_) {
         if (!single_scanning && mounted) {
-          // Resume next scan
-          setState(() {
-            scanning_paused = false;
-          });
+          resumeScan();
         }
       });
     }
@@ -186,7 +184,7 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
   Widget BarcodeReader(BuildContext context) {
 
     return ReaderWidget(
-      onScan: _onScanSuccess,
+      onScan: onScanSuccess,
       isMultiScan: false,
       tryHarder: true,
       tryInverted: true,

@@ -608,6 +608,9 @@
   "itemDeleted": "Item has been removed",
   "@itemDeleted": {},
 
+  "itemUpdated": "Item updated",
+  "@itemUpdated": {},
+
   "keywords": "Keywords",
   "@keywords": {},
 
@@ -683,6 +686,12 @@
 
   "lost": "Lost",
   "@lost": {},
+
+  "manufacturerPart": "Manufacturer Part",
+  "@manufacturerPart": {},
+
+  "manufacturerPartEdit": "Edit Manufacturer Part",
+  "@manufacturerPartEdit": {},
 
   "manufacturerPartNumber": "Manufacturer Part Number",
   "@manufacturerPartNumber": {},
@@ -914,6 +923,12 @@
 
   "projectCode": "Project Code",
   "@projectCode": {},
+
+    "purchaseOrderConfirmScan": "Confirm Scan Data",
+    "@purchaseOrderConfirmScan": {},
+
+    "purchaseOrderConfirmScanDetail": "Confirm details when scanning in items",
+    "@purchaseOrderConfirmScanDetail": {},
 
    "purchaseOrderEnable": "Enable Purchase Orders",
    "@purchaseOrderEnable": {},
