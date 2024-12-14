@@ -244,6 +244,7 @@ class BarcodeScanHandler extends BarcodeHandler {
     // The following model types can be matched with barcodes
     List<String> validModels = [
       "part",
+      "company",
       "stockitem",
       "stocklocation",
       "supplierpart",
