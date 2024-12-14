@@ -312,7 +312,13 @@ class InvenTreePart extends InvenTreeModel {
 
   String get onOrderString => simpleNumberString(onOrder);
 
-  double get inStock => getDouble("in_stock");
+  double get inStock {
+    if (jsondata.containsKey("total_in_stock")) {
+      return getDouble("total_in_stock");
+    } else {
+      return getDouble("in_stock");
+    }
+  }
 
   String get inStockString => simpleNumberString(inStock);
 
