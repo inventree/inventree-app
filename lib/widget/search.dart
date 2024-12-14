@@ -168,14 +168,19 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
       "search/",
       body: body,
       expectedStatusCode: 200).then((APIResponse response) {
-        decrementPendingSearches();
 
-        Map<String, dynamic> results = {};
+        String searchTerm = (body["search"] ?? "").toString();
 
-        if (response.isValid() && response.data is Map<String, dynamic>) {
-          results = response.data as Map<String, dynamic>;
+        // Only update if the results correspond to the current search term
+        if (searchTerm == searchController.text && mounted) {
 
-          if (mounted) {
+          decrementPendingSearches();
+
+          Map<String, dynamic> results = {};
+
+          if (response.isValid() && response.data is Map<String, dynamic>) {
+            results = response.data as Map<String, dynamic>;
+
             setState(() {
               nPartResults = getSearchResultCount(results, InvenTreePart.MODEL_TYPE);
               nCategoryResults = getSearchResultCount(results, InvenTreePartCategory.MODEL_TYPE);
@@ -187,9 +192,9 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
               nSupplierPartResults = getSearchResultCount(results, InvenTreeSupplierPart.MODEL_TYPE);
               nManufacturerPartResults = getSearchResultCount(results, InvenTreeManufacturerPart.MODEL_TYPE);
             });
+          } else {
+            resetSearchResults();
           }
-        } else {
-          resetSearchResults();
         }
     });
   }
