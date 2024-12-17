@@ -107,6 +107,17 @@ Future<void> playAudioFile(String path) async {
   }
 
   final player = AudioPlayer();
+
+  // Specify context options for the audio player
+  // Ref: https://github.com/inventree/inventree-app/issues/582
+  player.setAudioContext(AudioContext(
+    android: AudioContextAndroid(
+      usageType: AndroidUsageType.notification,
+      audioFocus: AndroidAudioFocus.none,
+    ),
+    iOS: AudioContextIOS()
+  ));
+
   player.play(AssetSource(path));
 }
 
