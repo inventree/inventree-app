@@ -1,3 +1,8 @@
+### 0.17.2 - December 2024
+---
+
+- Prevent notification sounds from pause media playback
+
 ### 0.17.1 - December 2024
 ---
 
