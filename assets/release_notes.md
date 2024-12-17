@@ -2,6 +2,7 @@
 ---
 
 - Prevent notification sounds from pause media playback
+- Updated translations
 
 ### 0.17.1 - December 2024
 ---
