@@ -94,6 +94,28 @@ Future<void> selectAndPrintLabel(
     "",
     fields,
     icon: TablerIcons.printer,
+    validate: (Map<String, dynamic> data) {
+      final template = data["label"];
+      final plugin = data["plugin"];
+
+      if (template == null) {
+        showSnackIcon(
+          L10().labelSelectTemplate,
+          success: false,
+        );
+        return false;
+      }
+
+      if (plugin == null) {
+        showSnackIcon(
+          L10().labelSelectPrinter,
+          success: false,
+        );
+        return false;
+      }
+
+      return true;
+    },
     onSuccess: (Map<String, dynamic> data) async {
       int labelId = (data["label"] ?? -1) as int;
       var pluginKey = data["plugin"];

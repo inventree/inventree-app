@@ -623,6 +623,12 @@
   "labelTemplate": "Label Template",
   "@labelTemplate": {},
 
+  "labelSelectTemplate": "Select Label Template",
+  "@labelSelectTemplate": {},
+
+  "labelSelectPrinter": "Select Label Printer",
+  "@labelSelectPrinter": {},
+
   "language": "Language",
   "@language": {},
 
