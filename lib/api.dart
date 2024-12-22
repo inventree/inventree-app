@@ -1543,7 +1543,7 @@ class InvenTreeAPI {
       return setting.value;
     }
 
-    final response = await InvenTreeGlobalSetting().getModel(key);
+    final response = await InvenTreeUserSetting().getModel(key);
 
     if (response is InvenTreeUserSetting) {
       response.lastReload = DateTime.now();

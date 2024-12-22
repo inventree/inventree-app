@@ -63,7 +63,11 @@ Future<void> selectAndPrintLabel(
     });
   }
 
-  if (plugin_options.length == 1) {
+  String selectedPlugin = await InvenTreeAPI().getUserSetting("LABEL_DEFAULT_PRINTER");
+
+  if (selectedPlugin.isNotEmpty) {
+    initial_plugin = selectedPlugin;
+  } else if (plugin_options.length == 1) {
     initial_plugin = plugin_options.first["value"];
   }
 
