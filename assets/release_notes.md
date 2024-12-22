@@ -1,6 +1,7 @@
 ### 0.17.2 - December 2024
 ---
 
+- Fixed error message when printing a label to a remote machine
 - Prevent notification sounds from pause media playback
 - Updated translations
 

@@ -66,5 +66,7 @@ void showLoadingOverlay() {
 
 
 void hideLoadingOverlay() {
-  Loader.hide();
+  if (Loader.isShown) {
+    Loader.hide();
+  }
 }

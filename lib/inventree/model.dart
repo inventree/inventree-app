@@ -904,7 +904,7 @@ class InvenTreeUserSetting extends InvenTreeGlobalSetting {
 
   @override
   InvenTreeGlobalSetting createFromJson(Map<String, dynamic> json) {
-    return InvenTreeGlobalSetting.fromJson(json);
+    return InvenTreeUserSetting.fromJson(json);
   }
 
   @override
