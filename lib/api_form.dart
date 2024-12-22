@@ -982,6 +982,7 @@ Future<void> launchApiForm(
       Map<String, dynamic> modelData = const {},
       String method = "PATCH",
       Function(Map<String, dynamic>)? onSuccess,
+      bool Function(Map<String, dynamic>)? validate,
       Function? onCancel,
       IconData icon = TablerIcons.device_floppy
     }) async {
@@ -1071,6 +1072,7 @@ Future<void> launchApiForm(
       formFields,
       method,
       onSuccess: onSuccess,
+      validate: validate,
       fileField: fileField,
       icon: icon,
     ))
@@ -1088,6 +1090,7 @@ class APIFormWidget extends StatefulWidget {
       {
         Key? key,
         this.onSuccess,
+        this.validate,
         this.fileField = "",
         this.icon = TablerIcons.device_floppy,
       }
@@ -1110,6 +1113,8 @@ class APIFormWidget extends StatefulWidget {
   final List<APIFormField> fields;
 
   final Function(Map<String, dynamic>)? onSuccess;
+
+  final bool Function(Map<String, dynamic>)? validate;
 
   @override
   _APIFormWidgetState createState() => _APIFormWidgetState();
@@ -1400,6 +1405,12 @@ class _APIFormWidgetState extends State<APIFormWidget> {
           data[field.parent] = parent;
         }
       }
+    }
+    
+    final bool isValid = widget.validate?.call(data) ?? true;
+
+    if (!isValid) {
+      return;
     }
 
     // Run custom onSuccess function
