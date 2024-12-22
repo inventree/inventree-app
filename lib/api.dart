@@ -817,6 +817,11 @@ class InvenTreeAPI {
    */
   Future<void> downloadFile(String url, {bool openOnDownload = true}) async {
 
+    if (url.isEmpty) {
+      // No URL provided for download
+      return;
+    }
+
     // Find the local downlods directory
     final Directory dir = await getTemporaryDirectory();
 
