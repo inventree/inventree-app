@@ -111,27 +111,29 @@ Future<void> selectAndPrintLabel(
               "items": [instanceId]
             }
           ).then((APIResponse response) {
-            hideLoadingOverlay();
 
             if (response.isValid() && response.statusCode >= 200 &&
                 response.statusCode <= 201) {
               var data = response.asMap();
 
               if (data.containsKey("output")) {
-                var label_file = (data["output"] ?? "") as String;
+                String? label_file = (data["output"]) as String?;
 
-                // Attempt to open generated file
-                InvenTreeAPI().downloadFile(label_file);
+                if (label_file != null && label_file.isNotEmpty) {
+                  // Attempt to open generated file
+                  InvenTreeAPI().downloadFile(label_file);
+                }
+
                 result = true;
               }
             }
         });
-      } else {
+
+        } else {
           // Legacy label printing API
           // Uses a GET request to a specially formed URL which depends on the parameters
           String url = "/label/${labelType}/${labelId}/print/?${labelQuery}&plugin=${pluginKey}";
           await InvenTreeAPI().get(url).then((APIResponse response) {
-            hideLoadingOverlay();
             if (response.isValid() && response.statusCode == 200) {
               var data = response.asMap();
               if (data.containsKey("file")) {
@@ -144,6 +146,8 @@ Future<void> selectAndPrintLabel(
             }
           });
       }
+
+      hideLoadingOverlay();
 
       if (result) {
         showSnackIcon(
