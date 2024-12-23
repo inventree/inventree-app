@@ -1,7 +1,5 @@
 import "dart:async";
 
-import "package:intl/intl.dart";
-
 import "package:inventree/api.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/l10.dart";
