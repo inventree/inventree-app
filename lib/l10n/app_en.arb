@@ -399,6 +399,15 @@
   "errorReportUploadDetails": "Upload anonymous error reports and crash logs",
   "@errorReportUploadDetails": {},
 
+  "expiryDate": "Expiry Date",
+  "@expiryDate": {},
+
+  "expiryExpired": "Expired",
+  "@expiryExpired": {},
+
+  "expiryStale": "Stale",
+  "@expiryStale": {},
+
   "feedback": "Feedback",
   "@feedback": {},
 

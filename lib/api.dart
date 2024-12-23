@@ -1532,7 +1532,7 @@ class InvenTreeAPI {
   // Return a boolean global setting value
   Future<bool> getGlobalBooleanSetting(String key) async {
     String value = await getGlobalSetting(key);
-    return value.toLowerCase() == "true";
+    return value.toLowerCase().trim() == "true";
   }
 
   Future<String> getUserSetting(String key) async {
@@ -1557,7 +1557,7 @@ class InvenTreeAPI {
   // Return a boolean user setting value
   Future<bool> getUserBooleanSetting(String key) async {
     String value = await getUserSetting(key);
-    return value.toLowerCase() == "true";
+    return value.toLowerCase().trim() == "true";
   }
 
   /*
