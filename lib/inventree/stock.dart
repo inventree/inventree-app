@@ -107,6 +107,18 @@ class InvenTreeStockItemHistory extends InvenTreeModel {
     };
   }
 
+  bool get state => getBool("stale");
+
+  bool get expired => getBool("expired");
+
+  DateTime? get expiryDate {
+    if (jsondata.containsKey("expiry_date")) {
+      return DateTime.tryParse((jsondata["expiry_date"] ?? "") as String);
+    } else {
+      return null;
+    }
+  }
+
   DateTime? get date {
     if (jsondata.containsKey("date")) {
       return DateTime.tryParse((jsondata["date"] ?? "") as String);
