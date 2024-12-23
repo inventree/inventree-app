@@ -107,35 +107,9 @@ class InvenTreeStockItemHistory extends InvenTreeModel {
     };
   }
 
-  bool get state => getBool("stale");
+  DateTime? get date => getDate("date");
 
-  bool get expired => getBool("expired");
-
-  DateTime? get expiryDate {
-    if (jsondata.containsKey("expiry_date")) {
-      return DateTime.tryParse((jsondata["expiry_date"] ?? "") as String);
-    } else {
-      return null;
-    }
-  }
-
-  DateTime? get date {
-    if (jsondata.containsKey("date")) {
-      return DateTime.tryParse((jsondata["date"] ?? "") as String);
-    } else {
-      return null;
-    }
-  }
-
-  String get dateString {
-    var d = date;
-
-    if (d == null) {
-      return "";
-    }
-
-    return DateFormat("yyyy-MM-dd").format(d);
-  }
+  String get dateString => getDateString("date");
 
   String get label => getString("label");
   
@@ -270,6 +244,7 @@ class InvenTreeStockItem extends InvenTreeModel {
       "part_detail": "true",
       "location_detail": "true",
       "supplier_detail": "true",
+      "supplier_part_detail": "true",
       "cascade": "false"
     };
   }
@@ -359,46 +334,22 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   bool get hasCustomer => customerId > 0;
 
+  bool get stale => getBool("stale");
+
+  bool get expired => getBool("expired");
+
+  DateTime? get expiryDate => getDate("expiry_date");
+
+  String get expiryDateString => getDateString("expiry_date");
+
   // Date of last update
-  DateTime? get updatedDate {
-    if (jsondata.containsKey("updated")) {
-      return DateTime.tryParse((jsondata["updated"] ?? "") as String);
-    } else {
-      return null;
-    }
-  }
+  DateTime? get updatedDate => getDate("updated");
 
-  String get updatedDateString {
-    var _updated = updatedDate;
+  String get updatedDateString => getDateString("updated");
 
-    if (_updated == null) {
-      return "";
-    }
+  DateTime? get stocktakeDate => getDate("stocktake_date");
 
-    final DateFormat _format = DateFormat("yyyy-MM-dd");
-
-    return _format.format(_updated);
-  }
-
-    DateTime? get stocktakeDate {
-      if (jsondata.containsKey("stocktake_date")) {
-        return DateTime.tryParse((jsondata["stocktake_date"] ?? "") as String);
-      } else {
-        return null;
-      }
-    }
-
-    String get stocktakeDateString {
-      var _stocktake = stocktakeDate;
-
-      if (_stocktake == null) {
-        return "";
-      }
-
-      final DateFormat _format = DateFormat("yyyy-MM-dd");
-
-      return _format.format(_stocktake);
-    }
+  String get stocktakeDateString => getDateString("stocktake_date");
 
     String get partName {
 
