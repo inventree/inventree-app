@@ -53,6 +53,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
   bool stockShowHistory = false;
   bool stockShowTests = true;
+  bool expiryEnabled = false;
 
   // Linked data fields
   InvenTreePart? part;
@@ -230,6 +231,8 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     if (!result) {
       Navigator.of(context).pop();
     }
+
+    expiryEnabled = await api.getGlobalBooleanSetting("STOCK_ENABLE_EXPIRY");
 
     // Request part information
     part = await InvenTreePart().get(widget.item.partId) as InvenTreePart?;
@@ -728,6 +731,26 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           subtitle: Text(widget.item.packaging),
           leading: Icon(TablerIcons.package),
         )
+      );
+    }
+
+    if (expiryEnabled && widget.item.expiryDate != null) {
+
+      Widget? _expiryIcon;
+
+      if (widget.item.stale) {
+        _expiryIcon = Text(L10().expiryStale, style: TextStyle(color: COLOR_WARNING));
+      } else if (widget.item.expired) {
+        _expiryIcon = Text(L10().expiryExpired, style: TextStyle(color: COLOR_DANGER));
+      }
+
+      tiles.add(
+          ListTile(
+            title: Text(L10().expiryDate),
+            subtitle: Text(widget.item.expiryDateString),
+            leading: Icon(TablerIcons.calendar_x),
+            trailing: _expiryIcon,
+          )
       );
     }
 

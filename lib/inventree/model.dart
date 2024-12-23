@@ -3,6 +3,7 @@ import "dart:io";
 
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:flutter/material.dart";
+import "package:intl/intl.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:url_launcher/url_launcher.dart";
 import "package:path/path.dart" as path;
@@ -154,6 +155,30 @@ class InvenTreeModel {
     }
 
     return value.toString().toLowerCase() == "true";
+  }
+
+  // Helper function to get date value from json data
+  DateTime? getDate(String key, {DateTime? backup, String subKey = ""}) {
+    dynamic value = getValue(key, backup: backup, subKey: subKey);
+
+    if (value == null) {
+      return backup;
+    }
+
+    return DateTime.tryParse(value as String);
+  }
+
+  // Helper function to get date as a string
+  String getDateString(String key, {DateTime? backup, String subKey = ""}) {
+    DateTime? dt = getDate(key, backup: backup, subKey: subKey);
+
+    if (dt == null) {
+      return "";
+    }
+
+    final DateFormat fmt = DateFormat("yyyy-MM-dd");
+
+    return fmt.format(dt);
   }
 
   // Return the InvenTree web server URL for this object
