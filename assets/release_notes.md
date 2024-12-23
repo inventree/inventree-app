@@ -3,6 +3,7 @@
 
 - Fixed error message when printing a label to a remote machine
 - Prevent notification sounds from pause media playback
+- Display stock expiry information
 - Updated translations
 
 ### 0.17.1 - December 2024
