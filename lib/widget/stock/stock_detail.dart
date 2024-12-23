@@ -738,19 +738,19 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
       Widget? _expiryIcon;
 
-      if (widget.item.stale) {
-        _expiryIcon = Text(L10().expiryStale, style: TextStyle(color: COLOR_WARNING));
-      } else if (widget.item.expired) {
+      if (widget.item.expired) {
         _expiryIcon = Text(L10().expiryExpired, style: TextStyle(color: COLOR_DANGER));
+      } else if (widget.item.stale) {
+        _expiryIcon = Text(L10().expiryStale, style: TextStyle(color: COLOR_WARNING));
       }
 
       tiles.add(
-          ListTile(
-            title: Text(L10().expiryDate),
-            subtitle: Text(widget.item.expiryDateString),
-            leading: Icon(TablerIcons.calendar_x),
-            trailing: _expiryIcon,
-          )
+        ListTile(
+          title: Text(L10().expiryDate),
+          subtitle: Text(widget.item.expiryDateString),
+          leading: Icon(TablerIcons.calendar_x),
+          trailing: _expiryIcon,
+        )
       );
     }
 
