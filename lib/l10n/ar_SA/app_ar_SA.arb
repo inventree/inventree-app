@@ -4,25 +4,25 @@
   "@appTitle": {
     "description": "InvenTree application title string"
   },
-  "ok": "OK",
+  "ok": "حسناً",
   "@ok": {
     "description": "OK"
   },
-  "about": "About",
+  "about": "نبذة عنا",
   "@about": {},
-  "accountDetails": "Account Details",
+  "accountDetails": "تفاصيل الحساب",
   "@accountDetails": {},
-  "actions": "Actions",
+  "actions": "الإجراءات",
   "@actions": {
     "description": ""
   },
-  "actionsNone": "No actions available",
+  "actionsNone": "لا توجد إجراءات متوفرة",
   "@actionsNone": {},
-  "add": "Add",
+  "add": "إضافة",
   "@add": {
     "description": "add"
   },
-  "addStock": "Add Stock",
+  "addStock": "إضافة مخزون",
   "@addStock": {
     "description": "add stock"
   },
@@ -30,9 +30,9 @@
   "@address": {},
   "appAbout": "About InvenTree",
   "@appAbout": {},
-  "appCredits": "Additional app credits",
+  "appCredits": "العنوان",
   "@appCredits": {},
-  "appDetails": "App Details",
+  "appDetails": "",
   "@appDetails": {},
   "allocated": "Allocated",
   "@allocated": {},
