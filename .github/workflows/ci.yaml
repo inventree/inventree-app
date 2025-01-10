@@ -10,6 +10,7 @@ on:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  INVENTREE_SITE_URL: http://localhost:8000
   INVENTREE_DB_ENGINE: django.db.backends.sqlite3
   INVENTREE_DB_NAME: ../inventree_unit_test_db.sqlite3
   INVENTREE_MEDIA_ROOT: ../test_inventree_media
