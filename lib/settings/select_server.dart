@@ -319,7 +319,7 @@ class _ProfileEditState extends State<ProfileEditWidget> {
         title: Text(widget.profile == null ? L10().profileAdd : L10().profileEdit),
         actions: [
           IconButton(
-            icon: Icon(TablerIcons.circle_check),`
+            icon: Icon(TablerIcons.circle_check),
             onPressed: () async {
               if (formKey.currentState!.validate()) {
                 formKey.currentState!.save();
