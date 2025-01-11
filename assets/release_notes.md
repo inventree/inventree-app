@@ -1,3 +1,8 @@
+### 0.17.3 - December 2025
+---
+
+- Fixes bug which prevent dialog boxes from being dismissed correctly
+
 ### 0.17.2 - December 2024
 ---
 
