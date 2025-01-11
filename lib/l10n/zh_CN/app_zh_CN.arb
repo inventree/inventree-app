@@ -231,6 +231,8 @@
   "@edit": {
     "description": "edit"
   },
+  "editAttachment": "Edit Attachment",
+  "@editAttachment": {},
   "editCategory": "编辑类别",
   "@editCategory": {},
   "editLocation": "编辑位置",
