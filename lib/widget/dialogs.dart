@@ -22,7 +22,7 @@ Future<void> choiceDialog(String title, List<Widget> items, {Function? onSelecte
       GestureDetector(
         child: items[idx],
         onTap: () {
-          Navigator.pop(OneContext().context!);
+          OneContext().popDialog();
           if (onSelected != null) {
             onSelected(idx);
           }
@@ -48,7 +48,7 @@ Future<void> choiceDialog(String title, List<Widget> items, {Function? onSelecte
           TextButton(
             child: Text(L10().cancel),
             onPressed: () {
-              Navigator.pop(OneContext().context!);
+              Navigator.pop(context);
             },
           )
         ],
