@@ -231,6 +231,8 @@
   "@edit": {
     "description": "edit"
   },
+  "editAttachment": "Edit Attachment",
+  "@editAttachment": {},
   "editCategory": "Modifier la catégorie",
   "@editCategory": {},
   "editLocation": "Modifier l’emplacement",
