@@ -97,6 +97,14 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
     refresh(context);
   }
 
+
+  Future<void> editAttachment(BuildContext context, InvenTreeAttachment attachment) async
+  {
+     attachment.editForm(context, L10().editAttachment).then((result) => {
+       refresh(context)
+     });
+  }
+
   /*
    * Delete the specified attachment
    */
@@ -117,6 +125,7 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
    * Display an option context menu for the selected attachment
    */
   Future<void> showOptionsMenu(BuildContext context, InvenTreeAttachment attachment) async {
+
     OneContext().showDialog(
       builder: (BuildContext ctx) {
         return SimpleDialog(
@@ -125,12 +134,22 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
             Divider(),
             SimpleDialogOption(
               onPressed: () async {
-                Navigator.of(ctx).pop();
+                OneContext().popDialog();
+                editAttachment(context, attachment);
+              },
+              child: ListTile(
+                title: Text(L10().edit),
+                leading: Icon(TablerIcons.edit),
+              )
+            ),
+            SimpleDialogOption(
+              onPressed: () async {
+                OneContext().popDialog();
                 deleteAttachment(context, attachment);
               },
               child: ListTile(
                 title: Text(L10().delete),
-                leading: Icon(TablerIcons.trash),
+                leading: Icon(TablerIcons.trash, color: COLOR_DANGER),
               )
             )
           ]
@@ -161,6 +180,9 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
           attachments.add(result);
         }
       }
+    });
+
+    setState(() {
     });
   }
 

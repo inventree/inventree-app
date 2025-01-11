@@ -43,7 +43,12 @@ mixin BaseWidgetProperties {
     return SingleChildScrollView(
       physics: AlwaysScrollableScrollPhysics(),
       child: Column(
-        children: getTiles(context)
+        children: [
+          ListView(
+            children: getTiles(context),
+            shrinkWrap: true,
+          )
+        ],
       )
     );
   }

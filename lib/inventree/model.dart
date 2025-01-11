@@ -324,6 +324,8 @@ class InvenTreeModel {
   // Legacy API provided external link as "URL", while newer API uses "link"
   String get link => (jsondata["link"] ?? jsondata["URL"] ?? "") as String;
 
+  bool get hasLink => link.isNotEmpty;
+
   /*
    * Attempt to extract a custom icon for this model.
    * If icon data is provided, attempt to convert to a TablerIcon icon
@@ -946,6 +948,20 @@ class InvenTreeAttachment extends InvenTreeModel {
   @override
   String get URL => "attachment/";
 
+  @override
+  Map<String, Map<String, dynamic>> formFields() {
+    Map<String, Map<String, dynamic>> fields = {
+      "link": {},
+      "comment": {}
+    };
+
+    if (!hasLink) {
+      fields.remove("link");
+    }
+
+    return fields;
+  }
+
   // Override this reference field for any subclasses
   // Note: This is used for the *legacy* attachment API
   String get REFERENCE_FIELD => "";
@@ -955,7 +971,11 @@ class InvenTreeAttachment extends InvenTreeModel {
   String get REF_MODEL_TYPE => "";
 
   String get attachment => getString("attachment");
-  
+
+  bool get hasAttachment => attachment.isNotEmpty;
+
+  bool get hasLink => link.isNotEmpty;
+
   // Return the filename of the attachment
   String get filename {
     return attachment.split("/").last;
@@ -1023,6 +1043,10 @@ class InvenTreeAttachment extends InvenTreeModel {
     Map<String, String> data = Map<String, String>.from(fields);
 
     String url = URL;
+
+    if (comment.isNotEmpty) {
+      data["comment"] = comment;
+    }
 
     if (InvenTreeAPI().supportsModernAttachments) {
 
