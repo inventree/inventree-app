@@ -315,10 +315,11 @@ class _ProfileEditState extends State<ProfileEditWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: COLOR_APP_BAR,
         title: Text(widget.profile == null ? L10().profileAdd : L10().profileEdit),
         actions: [
           IconButton(
-            icon: Icon(TablerIcons.device_floppy),
+            icon: Icon(TablerIcons.circle_check),`
             onPressed: () async {
               if (formKey.currentState!.validate()) {
                 formKey.currentState!.save();
