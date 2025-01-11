@@ -338,6 +338,9 @@
     "description": "edit"
   },
 
+  "editAttachment": "Edit Attachment",
+  "@editAttachment": {},
+
   "editCategory": "Edit Category",
   "@editCategory": {},
 
