@@ -231,6 +231,8 @@
   "@edit": {
     "description": "edit"
   },
+  "editAttachment": "Edit Attachment",
+  "@editAttachment": {},
   "editCategory": "カテゴリの編集",
   "@editCategory": {},
   "editLocation": "在庫場所を編集",
