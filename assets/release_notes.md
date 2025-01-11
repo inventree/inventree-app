@@ -2,6 +2,8 @@
 ---
 
 - Fixes bug which prevent dialog boxes from being dismissed correctly
+- Enable editing of attachment comments
+- Updated translations
 
 ### 0.17.2 - December 2024
 ---
