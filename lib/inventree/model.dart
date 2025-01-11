@@ -974,8 +974,6 @@ class InvenTreeAttachment extends InvenTreeModel {
 
   bool get hasAttachment => attachment.isNotEmpty;
 
-  bool get hasLink => link.isNotEmpty;
-
   // Return the filename of the attachment
   String get filename {
     return attachment.split("/").last;
