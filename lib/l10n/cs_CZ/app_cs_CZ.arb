@@ -231,6 +231,8 @@
   "@edit": {
     "description": "edit"
   },
+  "editAttachment": "Edit Attachment",
+  "@editAttachment": {},
   "editCategory": "Upravit kategorii",
   "@editCategory": {},
   "editLocation": "Upravit umístění",

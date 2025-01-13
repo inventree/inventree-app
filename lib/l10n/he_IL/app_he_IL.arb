@@ -231,6 +231,8 @@
   "@edit": {
     "description": "edit"
   },
+  "editAttachment": "Edit Attachment",
+  "@editAttachment": {},
   "editCategory": "ערוך קטגוריה",
   "@editCategory": {},
   "editLocation": "ערוך מיקום",

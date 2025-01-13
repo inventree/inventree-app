@@ -231,6 +231,8 @@
   "@edit": {
     "description": "edit"
   },
+  "editAttachment": "Edit Attachment",
+  "@editAttachment": {},
   "editCategory": "Kategoriyi düzenle",
   "@editCategory": {},
   "editLocation": "Konumu Düzenle",

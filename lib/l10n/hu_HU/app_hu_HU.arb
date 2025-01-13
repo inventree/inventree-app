@@ -231,6 +231,8 @@
   "@edit": {
     "description": "edit"
   },
+  "editAttachment": "Edit Attachment",
+  "@editAttachment": {},
   "editCategory": "Kategória szerkesztése",
   "@editCategory": {},
   "editLocation": "Hely szerkesztése",

@@ -231,6 +231,8 @@
   "@edit": {
     "description": "edit"
   },
+  "editAttachment": "Edit Attachment",
+  "@editAttachment": {},
   "editCategory": "Sunting Kategori",
   "@editCategory": {},
   "editLocation": "Ubah Lokasi",
