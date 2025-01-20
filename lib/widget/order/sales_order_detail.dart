@@ -260,7 +260,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
     await widget.order.reload();
     await api.SalesOrderStatus.load();
 
-    supportsProjectCodes = api.supportsProjectCodes && await api.getGlobalBooleanSetting("PROJECT_CODES_ENABLED");
+    supportsProjectCodes = api.supportsProjectCodes && await api.getGlobalBooleanSetting("PROJECT_CODES_ENABLED", backup: true);
     showCameraShortcut = await InvenTreeSettingsManager().getBool(INV_SO_SHOW_CAMERA, true);
 
     InvenTreeSalesOrderAttachment().countAttachments(widget.order.pk).then((int value) {

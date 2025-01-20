@@ -1047,6 +1047,9 @@
   "reportBugDescription": "Submit bug report (requires GitHub account)",
   "@reportBugDescription": {},
 
+  "responsible": "Responsible",
+  "@responsible": {},
+
   "results": "Results",
   "@results": {},
 

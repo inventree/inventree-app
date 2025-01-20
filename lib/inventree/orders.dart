@@ -40,6 +40,10 @@ class InvenTreeOrder extends InvenTreeModel {
 
   int get responsibleId => getInt("responsible");
 
+  String get responsibleName => getString("name", subKey: "responsible_detail");
+
+  String get responsibleLabel => getString("label", subKey: "responsible_detail");
+
   // Project code information
   int get projectCodeId => getInt("project_code");
 
