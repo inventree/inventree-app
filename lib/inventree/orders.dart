@@ -18,11 +18,13 @@ class InvenTreeOrder extends InvenTreeModel {
 
   String get issueDate => getString("issue_date");
 
-  String get completeDate => getString("complete_date");
+  String get completionDate => getDateString("complete_date");
 
-  String get creationDate => getString("creation_date");
+  String get creationDate => getDateString("creation_date");
 
-  String get targetDate => getString("target_date");
+  String get shipmentDate => getDateString("shipment_date");
+
+  String get targetDate => getDateString("target_date");
 
   int get lineItemCount => getInt("line_items", backup: 0);
 

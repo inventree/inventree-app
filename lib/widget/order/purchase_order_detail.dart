@@ -439,6 +439,14 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       ));
     }
 
+    if (widget.order.completionDate.isNotEmpty) {
+      tiles.add(ListTile(
+        title: Text(L10().completionDate),
+        trailing: Text(widget.order.completionDate),
+        leading: Icon(TablerIcons.calendar),
+      ));
+    }
+
     // Responsible "owner"
     if (widget.order.responsibleName.isNotEmpty && widget.order.responsibleLabel.isNotEmpty) {
       tiles.add(ListTile(

@@ -246,6 +246,9 @@
   "companies": "Companies",
   "@companies": {},
 
+  "completionDate": "Completion Date",
+  "@completionDate": {},
+
   "configureServer": "Configure server settings",
   "@configureServer": {},
 

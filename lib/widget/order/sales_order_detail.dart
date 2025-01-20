@@ -393,6 +393,14 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
       ));
     }
 
+    if (widget.order.shipmentDate.isNotEmpty) {
+      tiles.add(ListTile(
+        title: Text(L10().completionDate),
+        trailing: Text(widget.order.shipmentDate),
+        leading: Icon(TablerIcons.calendar),
+      ));
+    }
+
     // Responsible "owner"
     if (widget.order.responsibleName.isNotEmpty && widget.order.responsibleLabel.isNotEmpty) {
       tiles.add(ListTile(
