@@ -260,7 +260,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
     await widget.order.reload();
     await api.SalesOrderStatus.load();
 
-    supportsProjectCodes = api.supportsProjectCodes && await api.getGlobalBooleanSetting("PROJECT_CODES_ENABLED");
+    supportsProjectCodes = api.supportsProjectCodes && await api.getGlobalBooleanSetting("PROJECT_CODES_ENABLED", backup: true);
     showCameraShortcut = await InvenTreeSettingsManager().getBool(INV_SO_SHOW_CAMERA, true);
 
     InvenTreeSalesOrderAttachment().countAttachments(widget.order.pk).then((int value) {
@@ -353,7 +353,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
     if (widget.order.customerReference.isNotEmpty) {
       tiles.add(ListTile(
         title: Text(L10().customerReference),
-        subtitle: Text(widget.order.customerReference),
+        trailing: Text(widget.order.customerReference),
         leading: Icon(TablerIcons.hash),
       ));
     }
@@ -388,8 +388,25 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
     if (widget.order.targetDate.isNotEmpty) {
       tiles.add(ListTile(
         title: Text(L10().targetDate),
-        subtitle: Text(widget.order.targetDate),
+        trailing: Text(widget.order.targetDate),
         leading: Icon(TablerIcons.calendar),
+      ));
+    }
+
+    if (widget.order.shipmentDate.isNotEmpty) {
+      tiles.add(ListTile(
+        title: Text(L10().completionDate),
+        trailing: Text(widget.order.shipmentDate),
+        leading: Icon(TablerIcons.calendar),
+      ));
+    }
+
+    // Responsible "owner"
+    if (widget.order.responsibleName.isNotEmpty && widget.order.responsibleLabel.isNotEmpty) {
+      tiles.add(ListTile(
+          title: Text(L10().responsible),
+          leading: Icon(widget.order.responsibleLabel == "group" ? TablerIcons.users : TablerIcons.user),
+          trailing: Text(widget.order.responsibleName)
       ));
     }
 

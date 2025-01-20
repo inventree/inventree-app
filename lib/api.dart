@@ -1530,8 +1530,13 @@ class InvenTreeAPI {
   }
 
   // Return a boolean global setting value
-  Future<bool> getGlobalBooleanSetting(String key) async {
+  Future<bool> getGlobalBooleanSetting(String key, { bool backup = false }) async {
     String value = await getGlobalSetting(key);
+
+    if (value.isEmpty) {
+      return backup;
+    }
+
     return value.toLowerCase().trim() == "true";
   }
 

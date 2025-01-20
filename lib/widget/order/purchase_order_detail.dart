@@ -257,7 +257,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
     lines = await widget.order.getLineItems();
 
     showCameraShortcut = await InvenTreeSettingsManager().getBool(INV_PO_SHOW_CAMERA, true);
-    supportProjectCodes = api.supportsProjectCodes && await api.getGlobalBooleanSetting("PROJECT_CODES_ENABLED");
+    supportProjectCodes = api.supportsProjectCodes && await api.getGlobalBooleanSetting("PROJECT_CODES_ENABLED", backup: true);
 
     completedLines = 0;
 
@@ -426,7 +426,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
     if (widget.order.issueDate.isNotEmpty) {
       tiles.add(ListTile(
         title: Text(L10().issueDate),
-        subtitle: Text(widget.order.issueDate),
+        trailing: Text(widget.order.issueDate),
         leading: Icon(TablerIcons.calendar),
       ));
     }
@@ -434,8 +434,25 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
     if (widget.order.targetDate.isNotEmpty) {
       tiles.add(ListTile(
         title: Text(L10().targetDate),
-        subtitle: Text(widget.order.targetDate),
+        trailing: Text(widget.order.targetDate),
         leading: Icon(TablerIcons.calendar),
+      ));
+    }
+
+    if (widget.order.completionDate.isNotEmpty) {
+      tiles.add(ListTile(
+        title: Text(L10().completionDate),
+        trailing: Text(widget.order.completionDate),
+        leading: Icon(TablerIcons.calendar),
+      ));
+    }
+
+    // Responsible "owner"
+    if (widget.order.responsibleName.isNotEmpty && widget.order.responsibleLabel.isNotEmpty) {
+      tiles.add(ListTile(
+        title: Text(L10().responsible),
+        leading: Icon(widget.order.responsibleLabel == "group" ? TablerIcons.users : TablerIcons.user),
+        trailing: Text(widget.order.responsibleName)
       ));
     }
 

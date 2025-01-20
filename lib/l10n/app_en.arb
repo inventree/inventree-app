@@ -246,6 +246,9 @@
   "companies": "Companies",
   "@companies": {},
 
+  "completionDate": "Completion Date",
+  "@completionDate": {},
+
   "configureServer": "Configure server settings",
   "@configureServer": {},
 
@@ -1046,6 +1049,9 @@
 
   "reportBugDescription": "Submit bug report (requires GitHub account)",
   "@reportBugDescription": {},
+
+  "responsible": "Responsible",
+  "@responsible": {},
 
   "results": "Results",
   "@results": {},

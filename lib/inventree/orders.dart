@@ -18,11 +18,13 @@ class InvenTreeOrder extends InvenTreeModel {
 
   String get issueDate => getString("issue_date");
 
-  String get completeDate => getString("complete_date");
+  String get completionDate => getDateString("complete_date");
 
-  String get creationDate => getString("creation_date");
+  String get creationDate => getDateString("creation_date");
 
-  String get targetDate => getString("target_date");
+  String get shipmentDate => getDateString("shipment_date");
+
+  String get targetDate => getDateString("target_date");
 
   int get lineItemCount => getInt("line_items", backup: 0);
 
@@ -39,6 +41,10 @@ class InvenTreeOrder extends InvenTreeModel {
   String get reference => getString("reference");
 
   int get responsibleId => getInt("responsible");
+
+  String get responsibleName => getString("name", subKey: "responsible_detail");
+
+  String get responsibleLabel => getString("label", subKey: "responsible_detail");
 
   // Project code information
   int get projectCodeId => getInt("project_code");
@@ -110,6 +116,5 @@ class InvenTreeOrderLine extends InvenTreeModel {
 
   String get partImage => getString("thumbnail", subKey: "part_detail");
 
-  // TODO: Perhaps parse this as an actual date?
-  String get targetDate => getString("target_date");
+  String get targetDate => getDateString("target_date");
 }

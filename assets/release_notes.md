@@ -1,3 +1,9 @@
+### 0.17.4 - January 2025
+---
+- Display responsible owner for orders
+- Display completion date for orders
+- Updated translations
+
 ### 0.17.3 - January 2025
 ---
 
