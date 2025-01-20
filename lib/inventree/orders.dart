@@ -110,6 +110,5 @@ class InvenTreeOrderLine extends InvenTreeModel {
 
   String get partImage => getString("thumbnail", subKey: "part_detail");
 
-  // TODO: Perhaps parse this as an actual date?
-  String get targetDate => getString("target_date");
+  String get targetDate => getDateString("target_date");
 }
