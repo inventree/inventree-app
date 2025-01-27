@@ -26,7 +26,7 @@
   "@addStock": {
     "description": "add stock"
   },
-  "address": "Address",
+  "address": "العنوان",
   "@address": {},
   "appAbout": "About InvenTree",
   "@appAbout": {},
@@ -247,11 +247,11 @@
   "@editPart": {
     "description": "edit part"
   },
-  "editItem": "Edit Stock Item",
+  "editItem": "",
   "@editItem": {},
-  "editLineItem": "Edit Line Item",
+  "editLineItem": "",
   "@editLineItem": {},
-  "enterPassword": "Enter password",
+  "enterPassword": "أدخل كلمة المرور",
   "@enterPassword": {},
   "enterUsername": "Enter username",
   "@enterUsername": {},
@@ -261,7 +261,7 @@
   },
   "errorCreate": "Error creating database entry",
   "@errorCreate": {},
-  "errorDelete": "Error deleting database entry",
+  "errorDelete": "",
   "@errorDelete": {},
   "errorDetails": "Error Details",
   "@errorDetails": {},
