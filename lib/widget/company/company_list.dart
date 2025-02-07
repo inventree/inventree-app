@@ -42,7 +42,7 @@ class _CompanyListWidgetState extends RefreshableState<CompanyListWidget> {
     InvenTreeCompany().createForm(
       context,
       L10().companyAdd,
-      data: widget.filters ?? {},
+      data: widget.filters,
       onSuccess: (result) async {
         Map<String, dynamic> data = result as Map<String, dynamic>;
 

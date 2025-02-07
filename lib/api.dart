@@ -717,8 +717,8 @@ class InvenTreeAPI {
       return false;
     }
 
-    roles = data["roles"] as Map<String, dynamic> ?? {};
-    permissions = data["permissions"] as Map<String, dynamic> ?? {};
+    roles = (data["roles"] ?? {}) as Map<String, dynamic>;
+    permissions = (data["permissions"] ?? {}) as Map<String, dynamic> ?? {};
 
     return true;
   }
