@@ -212,7 +212,7 @@ class InvenTreeModel {
   // Test if the user can "edit" this model
   bool get canEdit {
     for (String role in rolesRequired) {
-      if (InvenTreeAPI().checkPermission(role, "change")) {
+      if (InvenTreeAPI().checkRole(role, "change")) {
         return true;
       }
     }
@@ -224,7 +224,7 @@ class InvenTreeModel {
   // Test if the user can "create" this model
   bool get canCreate {
     for (String role in rolesRequired) {
-      if (InvenTreeAPI().checkPermission(role, "add")) {
+      if (InvenTreeAPI().checkRole(role, "add")) {
         return true;
       }
     }
@@ -236,7 +236,7 @@ class InvenTreeModel {
   // Test if the user can "delete" this model
   bool get canDelete {
     for (String role in rolesRequired) {
-      if (InvenTreeAPI().checkPermission(role, "delete")) {
+      if (InvenTreeAPI().checkRole(role, "delete")) {
         return true;
       }
     }
@@ -248,7 +248,7 @@ class InvenTreeModel {
   // Test if the user can "view" this model
   bool get canView {
     for (String role in rolesRequired) {
-      if (InvenTreeAPI().checkPermission(role, "view")) {
+      if (InvenTreeAPI().checkRole(role, "view")) {
         return true;
       }
     }
