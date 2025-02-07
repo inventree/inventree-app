@@ -1,5 +1,7 @@
 
 import "package:flutter/material.dart";
+import "package:flutter_speed_dial/flutter_speed_dial.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/l10.dart";
@@ -34,6 +36,48 @@ class _CompanyListWidgetState extends RefreshableState<CompanyListWidget> {
 
   @override
   String getAppBarTitle() => widget.title;
+
+  Future<void> _addCompany(BuildContext context) async {
+
+    InvenTreeCompany().createForm(
+      context,
+      L10().companyAdd,
+      data: widget.filters ?? {},
+      onSuccess: (result) async {
+        Map<String, dynamic> data = result as Map<String, dynamic>;
+
+        if (data.containsKey("pk")) {
+          var company = InvenTreeCompany.fromJson(data);
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CompanyDetailWidget(company)
+            )
+          );
+        }
+      }
+    );
+  }
+
+  @override
+  List<SpeedDialChild> actionButtons(BuildContext context) {
+    List<SpeedDialChild> actions = [];
+
+    if (InvenTreeAPI().checkPermission("company", "add")) {
+      actions.add(
+          SpeedDialChild(
+              child: Icon(TablerIcons.circle_plus, color: Colors.green),
+              label: L10().companyAdd,
+              onTap: () {
+                _addCompany(context);
+              }
+          )
+      );
+    }
+
+    return actions;
+  }
 
   @override
   Widget getBody(BuildContext context) {
