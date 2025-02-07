@@ -117,10 +117,10 @@ void main() {
       assert(api.roles.isNotEmpty);
 
       // Check available permissions
-      assert(api.checkPermission("part", "change"));
-      assert(api.checkPermission("stock_location", "delete"));
-      assert(!api.checkPermission("part", "weirdpermission"));
-      assert(api.checkPermission("blah", "bloo"));
+      assert(api.checkRole("part", "change"));
+      assert(api.checkRole("stock_location", "delete"));
+      assert(!api.checkRole("part", "weirdpermission"));
+      assert(api.checkRole("blah", "bloo"));
 
       debugContains("Received token from server");
       debugContains("showSnackIcon: 'Connected to Server'");

@@ -183,7 +183,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
     bool allowed = true;
 
     if (role.isNotEmpty || permission.isNotEmpty) {
-      allowed = InvenTreeAPI().checkPermission(role, permission);
+      allowed = InvenTreeAPI().checkRole(role, permission);
     }
 
     return GestureDetector(

@@ -237,8 +237,11 @@ class InvenTreeAPI {
 
   UserProfile? profile;
 
-  // Available user roles (permissions) are loaded when connecting to the server
+  // Available user roles are loaded when connecting to the server
   Map<String, dynamic> roles = {};
+
+  // Available user permissions are loaded when connecting to the server
+  Map<String, dynamic> permissions = {};
 
   // Profile authentication token
   String get token => profile?.token ?? "";
@@ -701,12 +704,11 @@ class InvenTreeAPI {
 
     var data = response.asMap();
 
-    if (data.containsKey("roles")) {
-      // Save a local copy of the user roles
-      roles = (response.data["roles"] ?? {}) as Map<String, dynamic>;
+    if (!data.containsKey("roles")) {
 
-      return true;
-    } else {
+      roles = {};
+      permissions = {};
+
       showServerError(
         apiUrl,
         L10().serverError,
@@ -714,6 +716,11 @@ class InvenTreeAPI {
       );
       return false;
     }
+
+    roles = (data["roles"] ?? {}) as Map<String, dynamic>;
+    permissions = (data["permissions"] ?? {}) as Map<String, dynamic>;
+
+    return true;
   }
 
   // Request plugin information from the server
@@ -740,9 +747,9 @@ class InvenTreeAPI {
 
   /*
    * Check if the user has the given role.permission assigned
-   * e.g. "part", "change"
+   * e.g. "sales_order", "change"
    */
-  bool checkPermission(String role, String permission) {
+  bool checkRole(String role, String permission) {
 
     if (!_connected) {
       return false;
@@ -750,17 +757,17 @@ class InvenTreeAPI {
 
     // If we do not have enough information, assume permission is allowed
     if (roles.isEmpty) {
-      debug("checkPermission - no roles defined!");
+      debug("checkRole - no roles defined!");
       return true;
     }
 
     if (!roles.containsKey(role)) {
-      debug("checkPermission - role '$role' not found!");
+      debug("checkRole - role '$role' not found!");
       return true;
     }
 
     if (roles[role] == null) {
-      debug("checkPermission - role '$role' is null!");
+      debug("checkRole - role '$role' is null!");
       return false;
     }
 
@@ -773,13 +780,61 @@ class InvenTreeAPI {
       } else {
         // Unknown error - report it!
         sentryReportError(
-          "api.checkPermission",
+          "api.checkRole",
           error, stackTrace,
           context: {
             "role": role,
             "permission": permission,
             "error": error.toString(),
          }
+        );
+      }
+
+      // Unable to determine permission - assume true?
+      return true;
+    }
+  }
+
+  /*
+   * Check if the user has the particular model permission assigned
+   * e.g. "company", "add"
+   */
+  bool checkPermission(String model, String permission) {
+    if (!_connected) {
+      return false;
+    }
+
+    if (permissions.isEmpty) {
+      // Not enough information available - default to True
+      return true;
+    }
+
+    if (!permissions.containsKey(model)) {
+      debug("checkPermission - model '$model' not found!");
+      return false;
+    }
+
+    if (permissions[model] == null) {
+      debug("checkPermission - model '$model' is null!");
+      return false;
+    }
+
+    try {
+      List<String> perms = List.from(permissions[model] as List<dynamic>);
+      return perms.contains(permission);
+    } catch (error, stackTrace) {
+      if (error is TypeError) {
+        // Ignore TypeError
+      } else {
+        // Unknown error - report it!
+        sentryReportError(
+            "api.checkPermission",
+            error, stackTrace,
+            context: {
+              "model": model,
+              "permission": permission,
+              "error": error.toString(),
+            }
         );
       }
 

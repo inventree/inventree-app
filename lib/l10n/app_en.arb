@@ -234,6 +234,9 @@
   "company": "Company",
   "@company": {},
 
+  "companyAdd": "Add Company",
+  "@companyAdd": {},
+
   "companyEdit": "Edit Company",
   "@companyEdit": {},
 

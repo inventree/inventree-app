@@ -1,3 +1,8 @@
+### 0.18.0 - February 2025
+---
+- Adds ability to create new companies from the app
+- Updated translations
+
 ### 0.17.4 - January 2025
 ---
 - Display responsible owner for orders
