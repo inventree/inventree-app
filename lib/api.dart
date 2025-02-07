@@ -747,7 +747,7 @@ class InvenTreeAPI {
 
   /*
    * Check if the user has the given role.permission assigned
-   * e.g. "part", "change"
+   * e.g. "sales_order", "change"
    */
   bool checkRole(String role, String permission) {
 
@@ -787,6 +787,54 @@ class InvenTreeAPI {
             "permission": permission,
             "error": error.toString(),
          }
+        );
+      }
+
+      // Unable to determine permission - assume true?
+      return true;
+    }
+  }
+
+  /*
+   * Check if the user has the particular model permission assigned
+   * e.g. "company", "add"
+   */
+  bool checkPermission(String model, String permission) {
+    if (!_connected) {
+      return false;
+    }
+
+    if (permissions.isEmpty) {
+      // Not enough information available - default to True
+      return true;
+    }
+
+    if (!permissions.containsKey(model)) {
+      debug("checkPermission - model '$model' not found!");
+      return false;
+    }
+
+    if (permissions[model] == null) {
+      debug("checkPermission - model '$model' is null!");
+      return false;
+    }
+
+    try {
+      List<String> perms = List.from(permissions[model] as List<dynamic>);
+      return perms.contains(permission);
+    } catch (error, stackTrace) {
+      if (error is TypeError) {
+        // Ignore TypeError
+      } else {
+        // Unknown error - report it!
+        sentryReportError(
+            "api.checkPermission",
+            error, stackTrace,
+            context: {
+              "model": model,
+              "permission": permission,
+              "error": error.toString(),
+            }
         );
       }
 
