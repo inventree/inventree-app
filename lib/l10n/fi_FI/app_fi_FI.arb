@@ -160,6 +160,8 @@
   "@categoryUpdated": {},
   "company": "Yritys",
   "@company": {},
+  "companyAdd": "Add Company",
+  "@companyAdd": {},
   "companyEdit": "Muokkaa yritystä",
   "@companyEdit": {},
   "companyNoResults": "No companies matching query",
