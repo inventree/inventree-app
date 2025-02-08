@@ -160,6 +160,8 @@
   "@categoryUpdated": {},
   "company": "Bedrijf",
   "@company": {},
+  "companyAdd": "Add Company",
+  "@companyAdd": {},
   "companyEdit": "Bedrijf bewerken",
   "@companyEdit": {},
   "companyNoResults": "Geen enkel bedrijf voldoet aan de zoekopdracht",
