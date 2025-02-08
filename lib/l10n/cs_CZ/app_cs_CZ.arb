@@ -160,6 +160,8 @@
   "@categoryUpdated": {},
   "company": "Společnost",
   "@company": {},
+  "companyAdd": "Add Company",
+  "@companyAdd": {},
   "companyEdit": "Editovat společnost",
   "@companyEdit": {},
   "companyNoResults": "Žádné společnosti neodpovídají dotazu",
