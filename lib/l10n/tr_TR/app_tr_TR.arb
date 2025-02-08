@@ -160,6 +160,8 @@
   "@categoryUpdated": {},
   "company": "Şirket",
   "@company": {},
+  "companyAdd": "Add Company",
+  "@companyAdd": {},
   "companyEdit": "Şirketi Düzenle",
   "@companyEdit": {},
   "companyNoResults": "Sorguyla eşleşen şirket yok",
