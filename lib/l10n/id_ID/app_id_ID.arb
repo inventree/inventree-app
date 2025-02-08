@@ -160,6 +160,8 @@
   "@categoryUpdated": {},
   "company": "Perusahaan",
   "@company": {},
+  "companyAdd": "Add Company",
+  "@companyAdd": {},
   "companyEdit": "Rubah Perusahaan",
   "@companyEdit": {},
   "companyNoResults": "Tidak ada perusahaan yang cocok dengan query",
