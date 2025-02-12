@@ -160,6 +160,8 @@
   "@categoryUpdated": {},
   "company": "Firma",
   "@company": {},
+  "companyAdd": "Add Company",
+  "@companyAdd": {},
   "companyEdit": "Rediger Firma",
   "@companyEdit": {},
   "companyNoResults": "Ingen firma samsvarer med søket",

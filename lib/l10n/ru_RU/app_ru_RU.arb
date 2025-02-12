@@ -160,6 +160,8 @@
   "@categoryUpdated": {},
   "company": "Компания",
   "@company": {},
+  "companyAdd": "Add Company",
+  "@companyAdd": {},
   "companyEdit": "Редактировать компанию",
   "@companyEdit": {},
   "companyNoResults": "Нет организаций, соответствующих запросу",

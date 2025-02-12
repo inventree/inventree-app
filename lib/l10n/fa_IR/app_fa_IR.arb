@@ -160,6 +160,8 @@
   "@categoryUpdated": {},
   "company": "شرکت",
   "@company": {},
+  "companyAdd": "Add Company",
+  "@companyAdd": {},
   "companyEdit": "ویرایش شرکت",
   "@companyEdit": {},
   "companyNoResults": "شرکت پیدا نشد",

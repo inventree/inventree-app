@@ -160,6 +160,8 @@
   "@categoryUpdated": {},
   "company": "Kompanija",
   "@company": {},
+  "companyAdd": "Add Company",
+  "@companyAdd": {},
   "companyEdit": "Izmeni kompaniju",
   "@companyEdit": {},
   "companyNoResults": "Nema kompanije koje odgovaraju upitu",

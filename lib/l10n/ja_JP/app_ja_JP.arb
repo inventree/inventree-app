@@ -160,6 +160,8 @@
   "@categoryUpdated": {},
   "company": "会社",
   "@company": {},
+  "companyAdd": "Add Company",
+  "@companyAdd": {},
   "companyEdit": "会社を編集",
   "@companyEdit": {},
   "companyNoResults": "検索条件に一致する会社はありません",

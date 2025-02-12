@@ -160,6 +160,8 @@
   "@categoryUpdated": {},
   "company": "Empresa",
   "@company": {},
+  "companyAdd": "Add Company",
+  "@companyAdd": {},
   "companyEdit": "Editar empresa",
   "@companyEdit": {},
   "companyNoResults": "Nenhuma empresa corresponde a consulta",

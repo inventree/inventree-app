@@ -160,6 +160,8 @@
   "@categoryUpdated": {},
   "company": "Företag",
   "@company": {},
+  "companyAdd": "Add Company",
+  "@companyAdd": {},
   "companyEdit": "Redigera företag",
   "@companyEdit": {},
   "companyNoResults": "Inga företag som matchar frågan",

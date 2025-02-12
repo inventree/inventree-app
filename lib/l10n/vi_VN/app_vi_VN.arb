@@ -160,6 +160,8 @@
   "@categoryUpdated": {},
   "company": "Công ty",
   "@company": {},
+  "companyAdd": "Add Company",
+  "@companyAdd": {},
   "companyEdit": "Edit Company",
   "@companyEdit": {},
   "companyNoResults": "Không có công ty phù hợp",

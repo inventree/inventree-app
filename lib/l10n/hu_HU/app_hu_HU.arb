@@ -160,6 +160,8 @@
   "@categoryUpdated": {},
   "company": "Cég",
   "@company": {},
+  "companyAdd": "Add Company",
+  "@companyAdd": {},
   "companyEdit": "Cég szerkesztése",
   "@companyEdit": {},
   "companyNoResults": "Nincs a lekérdezésnek megfelelő cég",

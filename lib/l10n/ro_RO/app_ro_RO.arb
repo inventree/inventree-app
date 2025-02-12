@@ -160,6 +160,8 @@
   "@categoryUpdated": {},
   "company": "Companie",
   "@company": {},
+  "companyAdd": "Add Company",
+  "@companyAdd": {},
   "companyEdit": "Editare companie",
   "@companyEdit": {},
   "companyNoResults": "Nu există companii ce corespund",

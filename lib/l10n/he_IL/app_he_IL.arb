@@ -160,6 +160,8 @@
   "@categoryUpdated": {},
   "company": "חברה",
   "@company": {},
+  "companyAdd": "Add Company",
+  "@companyAdd": {},
   "companyEdit": "ערוך חברה",
   "@companyEdit": {},
   "companyNoResults": "אין חברות שתואמות לשאילתה",
