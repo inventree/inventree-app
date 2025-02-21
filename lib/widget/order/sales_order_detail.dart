@@ -191,7 +191,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
     }
 
     // Add line item
-    if (widget.order.isInProgress && InvenTreeSOLineItem().canCreate) {
+    if ((widget.order.isPending || widget.order.isInProgress) && InvenTreeSOLineItem().canCreate) {
       actions.add(
         SpeedDialChild(
           child: Icon(TablerIcons.circle_plus, color: Colors.green),
@@ -220,7 +220,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
   List<SpeedDialChild> barcodeButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
-    if (widget.order.isInProgress && InvenTreeSOLineItem().canCreate) {
+    if ((widget.order.isInProgress || widget.order.isPending) && InvenTreeSOLineItem().canCreate) {
       actions.add(
         SpeedDialChild(
           child: Icon(Icons.barcode_reader),
