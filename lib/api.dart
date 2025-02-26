@@ -340,6 +340,9 @@ class InvenTreeAPI {
   // Ref: https://github.com/inventree/InvenTree/pull/8403
   bool get supportsPurchaseOrderDestination => isConnected() && apiVersion >= 276;
 
+  // Supports separate search against "supplier" / "customer" / "manufacturer"
+  bool get supportsSplitCompanySearch => isConnected() && apiVersion >= 315;
+
   // Cached list of plugins (refreshed when we connect to the server)
   List<InvenTreePlugin> _plugins = [];
 

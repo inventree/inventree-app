@@ -97,9 +97,12 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
   int nLocationResults = 0;
   int nPurchaseOrderResults = 0;
   int nSalesOrderResults = 0;
-  int nCompanyResults = 0;
   int nSupplierPartResults = 0;
   int nManufacturerPartResults = 0;
+  int nCompanyResults = 0;
+  int nCustomerResults = 0;
+  int nManufacturerResults = 0;
+  int nSupplierResults = 0;
 
   void resetSearchResults() {
     if (mounted) {
@@ -112,9 +115,12 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
         nLocationResults = 0;
         nPurchaseOrderResults = 0;
         nSalesOrderResults = 0;
-        nCompanyResults = 0;
         nSupplierPartResults = 0;
         nManufacturerPartResults = 0;
+        nCompanyResults = 0;
+        nCustomerResults = 0;
+        nManufacturerResults = 0;
+        nSupplierResults = 0;
       });
     }
   }
@@ -188,9 +194,14 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
               nLocationResults = getSearchResultCount(results, InvenTreeStockLocation.MODEL_TYPE);
               nPurchaseOrderResults = getSearchResultCount(results, InvenTreePurchaseOrder.MODEL_TYPE);
               nSalesOrderResults = getSearchResultCount(results, InvenTreeSalesOrder.MODEL_TYPE);
-              nCompanyResults = getSearchResultCount(results, InvenTreeCompany.MODEL_TYPE);
               nSupplierPartResults = getSearchResultCount(results, InvenTreeSupplierPart.MODEL_TYPE);
               nManufacturerPartResults = getSearchResultCount(results, InvenTreeManufacturerPart.MODEL_TYPE);
+              nCompanyResults = getSearchResultCount(results, InvenTreeCompany.MODEL_TYPE);
+
+              // Special case for company search results
+              nCustomerResults = getSearchResultCount(results, "customer");
+              nManufacturerResults = getSearchResultCount(results, "manufacturer");
+              nSupplierResults = getSearchResultCount(results, "supplier");
             });
           } else {
             resetSearchResults();
@@ -237,10 +248,18 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
         InvenTreeStockLocation.MODEL_TYPE: {},
         InvenTreePurchaseOrder.MODEL_TYPE: {},
         InvenTreeSalesOrder.MODEL_TYPE: {},
-        InvenTreeCompany.MODEL_TYPE: {},
         InvenTreeSupplierPart.MODEL_TYPE: {},
         InvenTreeManufacturerPart.MODEL_TYPE: {},
       };
+
+      if (api.supportsSplitCompanySearch) {
+        body["supplier"] = {};
+        body["manufacturer"] = {};
+        body["customer"] = {};
+      } else {
+        // All "company" results are returned in a single query
+        body[InvenTreeCompany.MODEL_TYPE] = {};
+      }
 
       if (body.isNotEmpty) {
 
@@ -540,6 +559,81 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
                   L10().companies,
                   {
                     "original_search": query
+                  }
+                )
+              )
+            );
+          },
+        )
+      );
+    }
+
+    // Customer results
+    if (nCustomerResults > 0) {
+      results.add(
+        ListTile(
+          title: Text(L10().customers),
+          leading: Icon(TablerIcons.building_store),
+          trailing: Text("${nCustomerResults}"),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CompanyListWidget(
+                  L10().customers,
+                  {
+                    "original_search": query,
+                    "is_customer": "true"
+                  }
+                )
+              )
+            );
+          },
+        )
+      );
+    }
+
+    // Manufacturer results
+    if (nManufacturerResults > 0) {
+      results.add(
+        ListTile(
+          title: Text(L10().manufacturers),
+          leading: Icon(TablerIcons.building_factory_2),
+          trailing: Text("${nManufacturerResults}"),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CompanyListWidget(
+                  L10().manufacturers,
+                  {
+                    "original_search": query,
+                    "is_manufacturer": "true"
+                  }
+                )
+              )
+            );
+          },
+        )
+      );
+    }
+
+    // Supplier results
+    if (nSupplierResults > 0) {
+      results.add(
+        ListTile(
+          title: Text(L10().suppliers),
+          leading: Icon(TablerIcons.building_store),
+          trailing: Text("${nSupplierResults}"),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CompanyListWidget(
+                  L10().suppliers,
+                  {
+                    "original_search": query,
+                    "is_supplier": "true"
                   }
                 )
               )
