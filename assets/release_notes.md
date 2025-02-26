@@ -2,6 +2,7 @@
 ---
 - Adds ability to create new companies from the app
 - Allow creation of line items against pending sales orders
+- Updated search functionality
 - Updated translations
 
 ### 0.17.4 - January 2025
