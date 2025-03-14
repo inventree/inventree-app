@@ -774,7 +774,7 @@
   "@salesOrderEnableDetail": {},
   "salesOrderShowCamera": "Kamera Verknüpfung",
   "@salesOrderShowCamera": {},
-  "salesOrderShowCameraDetail": "Enable image upload shortcut on sales order screen",
+  "salesOrderShowCameraDetail": "Bild-Upload-Verknüpfung auf Auftragsbildschirm aktivieren",
   "@salesOrderShowCameraDetail": {},
   "salesOrderSettings": "Auftrags-Einstellungen",
   "@salesOrderSettings": {},
