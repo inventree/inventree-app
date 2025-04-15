@@ -60,7 +60,9 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
             prefix: widget.imagePrefix,
           );
           FilePickerDialog.pickImageFromCamera().then((File? file) {
-            upload(context, file);
+            upload(context, file).then((_) {
+              refresh(context);
+            });
           });
         }
       ),
@@ -68,7 +70,9 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
         icon: Icon(TablerIcons.file_upload),
         onPressed: () async {
           FilePickerDialog.pickFileFromDevice().then((File? file) {
-            upload(context, file);
+            upload(context, file).then((_) {
+              refresh(context);
+            });
           });
         }
       )
