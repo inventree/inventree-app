@@ -1,4 +1,4 @@
-### 0.18.0 - February 2025
+### 0.18.0 - April 2025
 ---
 - Adds ability to create new companies from the app
 - Allow creation of line items against pending sales orders
