@@ -118,7 +118,7 @@ void main() {
 
       // Check available permissions
       assert(api.checkRole("part", "change"));
-      assert(api.checkRole("stock_location", "delete"));
+      assert(api.checkRole("stock", "delete"));
       assert(!api.checkRole("part", "weirdpermission"));
       assert(api.checkRole("blah", "bloo"));
 

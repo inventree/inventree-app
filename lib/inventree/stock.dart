@@ -644,7 +644,7 @@ class InvenTreeStockLocation extends InvenTreeModel {
   static const String MODEL_TYPE = "stocklocation";
 
   @override
-  List<String> get rolesRequired => ["stock_location"];
+  List<String> get rolesRequired => ["stock"];
 
   String get pathstring => getString("pathstring");
 
