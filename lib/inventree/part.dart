@@ -27,7 +27,7 @@ class InvenTreePartCategory extends InvenTreeModel {
   static const String MODEL_TYPE = "partcategory";
 
   @override
-  List<String> get rolesRequired => ["part_category"];
+  List<String> get rolesRequired => ["part"];
 
   @override
   Map<String, Map<String, dynamic>> formFields() {
