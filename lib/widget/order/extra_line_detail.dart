@@ -3,23 +3,24 @@ import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/helpers.dart";
 
 import "package:inventree/l10.dart";
-import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 
+import "package:inventree/inventree/orders.dart";
 
-class POExtraLineDetailWidget extends StatefulWidget {
-  const POExtraLineDetailWidget(this.item, {Key? key}) : super(key: key);
 
-  final InvenTreePOExtraLineItem item;
+class ExtraLineDetailWidget extends StatefulWidget {
+  const ExtraLineDetailWidget(this.item, {Key? key}) : super(key: key);
+
+  final InvenTreeExtraLineItem item;
 
   @override
-  _POExtraLineDetailWidgetState createState() => _POExtraLineDetailWidgetState();
+  _ExtraLineDetailWidgetState createState() => _ExtraLineDetailWidgetState();
 }
 
-class _POExtraLineDetailWidgetState extends RefreshableState<POExtraLineDetailWidget> {
+class _ExtraLineDetailWidgetState extends RefreshableState<ExtraLineDetailWidget> {
 
-  _POExtraLineDetailWidgetState();
+  _ExtraLineDetailWidgetState();
 
   @override
   String getAppBarTitle() => L10().extraLineItem;

@@ -10,6 +10,7 @@ import "package:inventree/inventree/orders.dart";
 import "package:inventree/api.dart";
 import "package:inventree/widget/progress.dart";
 
+import "../widget/order/extra_line_detail.dart";
 import "../widget/order/sales_order_detail.dart";
 
 
@@ -266,6 +267,16 @@ class InvenTreeSOExtraLineItem extends InvenTreeExtraLineItem {
 
   @override
   List<String> get rolesRequired => ["sales_order"];
+
+  @override
+  Future<Object?> goToDetailPage(BuildContext context) async {
+    return Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ExtraLineDetailWidget(this)
+        )
+    );
+  }
 }
 
 /*

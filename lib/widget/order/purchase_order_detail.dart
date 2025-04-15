@@ -20,7 +20,6 @@ import "package:inventree/widget/order/po_line_list.dart";
 
 
 import "package:inventree/widget/attachment_widget.dart";
-import "package:inventree/widget/company/company_detail.dart";
 import "package:inventree/widget/notes_widget.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";

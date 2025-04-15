@@ -6,7 +6,7 @@ import "package:inventree/helpers.dart";
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/orders.dart";
-import "package:inventree/widget/order/po_extra_line_detail.dart";
+import "package:inventree/widget/order/extra_line_detail.dart";
 import "package:inventree/widget/order/purchase_order_detail.dart";
 import "package:inventree/widget/progress.dart";
 
@@ -344,7 +344,7 @@ class InvenTreePOExtraLineItem extends InvenTreeExtraLineItem {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => POExtraLineDetailWidget(this)
+        builder: (context) => ExtraLineDetailWidget(this)
       )
     );
   }
