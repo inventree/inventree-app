@@ -46,6 +46,7 @@ class InvenTreePurchaseOrder extends InvenTreeOrder {
       "description": {},
       "project_code": {},
       "destination": {},
+      "start_date": {},
       "target_date": {},
       "link": {},
       "responsible": {},
@@ -62,6 +63,10 @@ class InvenTreePurchaseOrder extends InvenTreeOrder {
 
     if (!InvenTreeAPI().supportsPurchaseOrderDestination) {
       fields.remove("destination");
+    }
+
+    if (!InvenTreeAPI().supportsStartDate) {
+      fields.remove("start_date");
     }
 
     return fields;

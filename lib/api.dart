@@ -287,61 +287,65 @@ class InvenTreeAPI {
   int get apiVersion => (serverInfo["apiVersion"] ?? 1) as int;
 
   // Consolidated search request API v102 or newer
-  bool get supportsConsolidatedSearch => isConnected() && apiVersion >= 102;
+  bool get supportsConsolidatedSearch =>apiVersion >= 102;
 
   // ReturnOrder supports API v104 or newer
-  bool get supportsReturnOrders => isConnected() && apiVersion >= 104;
+  bool get supportsReturnOrders =>apiVersion >= 104;
 
   // "Contact" model exposed to API
-  bool get supportsContactModel => isConnected() && apiVersion >= 104;
+  bool get supportsContactModel =>apiVersion >= 104;
 
   // Status label endpoints API v105 or newer
-  bool get supportsStatusLabelEndpoints => isConnected() && apiVersion >= 105;
+  bool get supportsStatusLabelEndpoints =>apiVersion >= 105;
 
   // Regex search API v106 or newer
-  bool get supportsRegexSearch => isConnected() && apiVersion >= 106;
+  bool get supportsRegexSearch =>apiVersion >= 106;
 
   // Order barcodes API v107 or newer
-  bool get supportsOrderBarcodes => isConnected() && apiVersion >= 107;
+  bool get supportsOrderBarcodes =>apiVersion >= 107;
 
   // Project codes require v109 or newer
-  bool get supportsProjectCodes => isConnected() && apiVersion >= 109;
+  bool get supportsProjectCodes =>apiVersion >= 109;
 
   // Does the server support extra fields on stock adjustment actions?
-  bool get supportsStockAdjustExtraFields => isConnected() && apiVersion >= 133;
+  bool get supportsStockAdjustExtraFields =>apiVersion >= 133;
 
   // Does the server support receiving items against a PO using barcodes?
-  bool get supportsBarcodePOReceiveEndpoint => isConnected() && apiVersion >= 139;
+  bool get supportsBarcodePOReceiveEndpoint =>apiVersion >= 139;
 
   // Does the server support adding line items to a PO using barcodes?
-  bool get supportsBarcodePOAddLineEndpoint => isConnected() && apiVersion >= 153;
+  bool get supportsBarcodePOAddLineEndpoint =>apiVersion >= 153;
 
   // Does the server support allocating stock to sales order using barcodes?
-  bool get supportsBarcodeSOAllocateEndpoint => isConnected() && apiVersion >= 160;
+  bool get supportsBarcodeSOAllocateEndpoint =>apiVersion >= 160;
 
   // Does the server support the "modern" test results API
   // Ref: https://github.com/inventree/InvenTree/pull/6430/
-  bool get supportsModernTestResults => isConnected() && apiVersion >= 169;
+  bool get supportsModernTestResults =>apiVersion >= 169;
 
   // Does the server support "null" top-level filtering for PartCategory and StockLocation endpoints?
-  bool get supportsNullTopLevelFiltering => isConnected() && apiVersion < 174;
+  bool get supportsNullTopLevelFiltering =>apiVersion < 174;
 
   // Does the server support "active" status on Company and SupplierPart API endpoints?
-  bool get supportsCompanyActiveStatus => isConnected() && apiVersion >= 189;
+  bool get supportsCompanyActiveStatus =>apiVersion >= 189;
 
   // Does the server support the "modern" (consolidated) label printing API?
-  bool get supportsModernLabelPrinting => isConnected() && apiVersion >= 201;
+  bool get supportsModernLabelPrinting =>apiVersion >= 201;
 
   // Does the server support the "modern" (consolidated) attachment API?
   // Ref: https://github.com/inventree/InvenTree/pull/7420
-  bool get supportsModernAttachments => isConnected() && apiVersion >= 207;
+  bool get supportsModernAttachments =>apiVersion >= 207;
 
   // Does the server support the "destination" field on the PurchaseOrder model?
   // Ref: https://github.com/inventree/InvenTree/pull/8403
-  bool get supportsPurchaseOrderDestination => isConnected() && apiVersion >= 276;
+  bool get supportsPurchaseOrderDestination =>apiVersion >= 276;
+
+  // Does the server support the "start_date" field for orders?
+  // Ref: https://github.com/inventree/InvenTree/pull/8966
+  bool get supportsStartDate =>apiVersion >= 306;
 
   // Supports separate search against "supplier" / "customer" / "manufacturer"
-  bool get supportsSplitCompanySearch => isConnected() && apiVersion >= 315;
+  bool get supportsSplitCompanySearch =>apiVersion >= 315;
 
   // Cached list of plugins (refreshed when we connect to the server)
   List<InvenTreePlugin> _plugins = [];
