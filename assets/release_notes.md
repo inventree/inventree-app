@@ -2,6 +2,8 @@
 ---
 - Adds ability to create new companies from the app
 - Allow creation of line items against pending sales orders
+- Support "extra line items" for purchase orders
+- Support "extra line items" for sales orders
 - Display start date for purchase orders
 - Display start date for sales orders
 - Updated search functionality
