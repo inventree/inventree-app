@@ -15,7 +15,6 @@ import "package:inventree/widget/stock/location_list.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
-import "package:inventree/widget/stock/stock_detail.dart";
 import "package:inventree/widget/stock/stock_list.dart";
 import "package:inventree/labels.dart";
 

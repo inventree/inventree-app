@@ -23,7 +23,6 @@ import "package:inventree/widget/part/category_display.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/part/part_image_widget.dart";
 import "package:inventree/widget/snacks.dart";
-import "package:inventree/widget/stock/stock_detail.dart";
 import "package:inventree/widget/stock/stock_list.dart";
 import "package:inventree/widget/company/supplier_part_list.dart";
 

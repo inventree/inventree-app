@@ -1,17 +1,15 @@
 
 
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
+import "package:inventree/api.dart";
 import "package:inventree/helpers.dart";
+
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/orders.dart";
-
-import "package:inventree/api.dart";
 import "package:inventree/widget/progress.dart";
-
-import "../widget/order/extra_line_detail.dart";
-import "../widget/order/sales_order_detail.dart";
+import "package:inventree/widget/order/extra_line_detail.dart";
+import "package:inventree/widget/order/sales_order_detail.dart";
 
 
 /*

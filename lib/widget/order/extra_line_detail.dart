@@ -44,6 +44,7 @@ class _ExtraLineDetailWidgetState extends RefreshableState<ExtraLineDetailWidget
   }
 
   // Function to request data for this page
+  @override
   Future<void> request(BuildContext context) async {
     await widget.item.reload();
   }

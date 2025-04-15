@@ -5,7 +5,6 @@ import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/l10.dart";
 
 import "package:inventree/inventree/model.dart";
-import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/inventree/sales_order.dart";
 
 import "package:inventree/widget/paginator.dart";
