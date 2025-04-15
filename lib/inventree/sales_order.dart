@@ -239,6 +239,21 @@ class InvenTreeSOLineItem extends InvenTreeOrderLine {
 }
 
 
+class InvenTreeSOExtraLineItem extends InvenTreeExtraLineItem {
+  InvenTreeSOExtraLineItem() : super();
+
+  InvenTreeSOExtraLineItem.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+
+  @override
+  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreeSOExtraLineItem.fromJson(json);
+
+  @override
+  String get URL => "order/so-extra-line/";
+
+  @override
+  List<String> get rolesRequired => ["sales_order"];
+}
+
 /*
  * Class representing a sales order shipment
  */

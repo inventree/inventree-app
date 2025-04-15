@@ -310,6 +310,25 @@ class InvenTreePOLineItem extends InvenTreeOrderLine {
   }
 }
 
+
+class InvenTreePOExtraLineItem extends InvenTreeExtraLineItem {
+
+  InvenTreePOExtraLineItem() : super();
+
+  InvenTreePOExtraLineItem.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+
+  @override
+  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreePOExtraLineItem.fromJson(json);
+
+  @override
+  String get URL => "order/po-extra-line/";
+
+  @override
+  List<String> get rolesRequired => ["purchase_order"];
+
+}
+
+
 /*
  * Class representing an attachment file against a PurchaseOrder object
  */
