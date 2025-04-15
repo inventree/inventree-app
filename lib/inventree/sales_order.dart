@@ -43,6 +43,7 @@ class InvenTreeSalesOrder extends InvenTreeOrder {
       "customer_reference": {},
       "description": {},
       "project_code": {},
+      "start_date": {},
       "target_date": {},
       "link": {},
       "responsible": {},
@@ -59,6 +60,10 @@ class InvenTreeSalesOrder extends InvenTreeOrder {
 
     if (!InvenTreeAPI().supportsContactModel) {
       fields.remove("contact");
+    }
+
+    if (!InvenTreeAPI().supportsStartDate) {
+      fields.remove("start_date");
     }
 
     return fields;
