@@ -39,20 +39,13 @@ mixin BaseWidgetProperties {
   // Function to construct a body
   Widget getBody(BuildContext context) {
 
-    // Default body calls getTiles()
-    return SingleChildScrollView(
+    // Default implementation is to return a ListView
+    // Override getTiles to replace the internal context
+    return ListView(
       physics: AlwaysScrollableScrollPhysics(),
-      child: Column(
-        children: [
-          ListView(
-            children: getTiles(context),
-            shrinkWrap: true,
-          )
-        ],
-      )
+      children: getTiles(context),
     );
   }
-
 
   /*
    * Construct the top AppBar for this view
@@ -274,14 +267,6 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> with 
 
     Widget body = tabs.isEmpty ? getBody(context) : TabBarView(children: getTabs(context));
 
-    // predicateDepth needs to be different based on the child type
-    // hack, determined experimentally
-    int predicateDepth = 0;
-
-    if (tabs.isNotEmpty) {
-      predicateDepth = 1;
-    }
-
     Scaffold view = Scaffold(
       key: scaffoldKey,
       appBar: buildAppBar(context, scaffoldKey),
@@ -291,8 +276,9 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> with 
       body: RefreshIndicator(
         key: refreshKey,
         notificationPredicate: (ScrollNotification notification) {
-          return notification.depth == predicateDepth;
+          return true;
         },
+
         onRefresh: () async {
           refresh(context);
         },

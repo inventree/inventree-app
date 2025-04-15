@@ -1,3 +1,5 @@
+import "dart:async";
+
 import "package:flutter/material.dart";
 
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
@@ -254,6 +256,9 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
   // Text controller
   final TextEditingController searchController = TextEditingController();
 
+  // Debounce timer
+  Timer? _debounceTimer;
+
   // Pagination controller
   final PagingController<int, InvenTreeModel> _pagingController = PagingController(firstPageKey: 0);
 
@@ -307,6 +312,9 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
         }
 
         params["search"] = "${_search}";
+      } else {
+        // Remove search term if it is empty
+        params.remove("search");
       }
 
       // Use custom query ordering if available
@@ -368,11 +376,34 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
 
   // Callback function when the search term is updated
   void updateSearchTerm() {
-    searchTerm = searchController.text;
-    _pagingController.refresh();
 
-    if (mounted) {
-      setState(() {});
+    if (searchTerm == searchController.text) {
+      // No change
+      return;
+    }
+
+    // Debounce the search term
+    if (_debounceTimer?.isActive ?? false) {
+      _debounceTimer?.cancel();
+    }
+
+    if (searchController.text.isEmpty) {
+      // An empty search term evaluates immediately
+      searchTerm = "";
+      _pagingController.refresh();
+
+      if (mounted) {
+        setState(() {});
+      }
+    } else {
+      _debounceTimer = Timer(const Duration(milliseconds: 500), () {
+        searchTerm = searchController.text;
+        _pagingController.refresh();
+
+        if (mounted) {
+          setState(() {});
+        }
+      });
     }
   }
 
@@ -465,12 +496,12 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
         icon: Icon(showSearchWidget ? Icons.zoom_out : Icons.search, size: icon_size)
     ));
 
-    _icons.add(IconButton(
-      onPressed: () async {
-        updateSearchTerm();
-      },
-      icon: Icon(Icons.refresh, size: icon_size),
-    ));
+    // _icons.add(IconButton(
+    //   onPressed: () async {
+    //     updateSearchTerm();
+    //   },
+    //   icon: Icon(Icons.refresh, size: icon_size),
+    // ));
 
     return ListTile(
       title: Text(

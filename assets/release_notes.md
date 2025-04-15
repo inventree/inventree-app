@@ -6,6 +6,7 @@
 - Support "extra line items" for sales orders
 - Display start date for purchase orders
 - Display start date for sales orders
+- Fix scrolling behaviour for some widgets
 - Updated search functionality
 - Updated translations
 
