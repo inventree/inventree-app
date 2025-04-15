@@ -3,7 +3,6 @@ import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/inventree/sales_order.dart";
-import "package:inventree/widget/order/sales_order_detail.dart";
 import "package:inventree/widget/paginator.dart";
 
 import "package:inventree/widget/refreshable_state.dart";
@@ -67,13 +66,7 @@ class _SalesOrderListWidgetState extends RefreshableState<SalesOrderListWidget> 
 
           if (data.containsKey("pk")) {
             var order = InvenTreeSalesOrder.fromJson(data);
-
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => SalesOrderDetailWidget(order)
-              )
-            );
+            order.goToDetailPage(context);
           }
         }
     );
@@ -167,12 +160,7 @@ class _PaginatedSalesOrderListState extends PaginatedSearchState<PaginatedSalesO
         )
       ),
       onTap: () async {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SalesOrderDetailWidget(order)
-          )
-        );
+        order.goToDetailPage(context);
       }
     );
 

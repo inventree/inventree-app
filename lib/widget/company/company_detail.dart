@@ -6,19 +6,15 @@ import "package:inventree/l10.dart";
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/helpers.dart";
-
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/inventree/sales_order.dart";
-
 import "package:inventree/widget/attachment_widget.dart";
 import "package:inventree/widget/order/purchase_order_list.dart";
 import "package:inventree/widget/order/sales_order_list.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/company/supplier_part_list.dart";
-import "package:inventree/widget/order/sales_order_detail.dart";
-import "package:inventree/widget/order/purchase_order_detail.dart";
 
 
 /*
@@ -121,13 +117,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
 
           if (data.containsKey("pk")) {
             var order = InvenTreeSalesOrder.fromJson(data);
-
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => SalesOrderDetailWidget(order)
-                )
-            );
+            order.goToDetailPage(context);
           }
         }
     );
@@ -150,13 +140,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
 
           if (data.containsKey("pk")) {
             var order = InvenTreePurchaseOrder.fromJson(data);
-
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => PurchaseOrderDetailWidget(order)
-                )
-            );
+            order.goToDetailPage(context);
           }
         }
     );

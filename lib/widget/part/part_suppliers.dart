@@ -7,7 +7,6 @@ import "package:inventree/api.dart";
 import "package:flutter/material.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/company.dart";
-import "package:inventree/widget/company/company_detail.dart";
 import "package:inventree/widget/refreshable_state.dart";
 
 class PartSupplierWidget extends StatefulWidget {
@@ -58,12 +57,7 @@ class _PartSupplierState extends RefreshableState<PartSupplierWidget> {
         var company = await InvenTreeCompany().get(_part.supplierId);
 
         if (company != null && company is InvenTreeCompany) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => CompanyDetailWidget(company)
-              )
-          );
+          company.goToDetailPage(context);
         }
       },
     );

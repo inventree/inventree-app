@@ -1,12 +1,14 @@
 import "dart:async";
 
+import "package:flutter/material.dart";
 import "package:inventree/api.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/purchase_order.dart";
+import "package:inventree/widget/company/company_detail.dart";
 
 
 /*
- * The InvenTreeCompany class repreents the Company model in the InvenTree database.
+ * The InvenTreeCompany class represents the Company model in the InvenTree database.
  */
 
 class InvenTreeCompany extends InvenTreeModel {
@@ -19,6 +21,16 @@ class InvenTreeCompany extends InvenTreeModel {
   String get URL => "company/";
 
   static const String MODEL_TYPE = "company";
+
+  @override
+  Future<Object?> goToDetailPage(BuildContext context) async {
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CompanyDetailWidget(this)
+      )
+    );
+  }
 
   @override
   List<String> get rolesRequired => ["purchase_order", "sales_order", "return_order"];

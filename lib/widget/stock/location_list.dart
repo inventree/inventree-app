@@ -2,7 +2,6 @@ import "package:flutter/material.dart";
 
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/stock.dart";
-import "package:inventree/widget/stock/location_display.dart";
 import "package:inventree/widget/paginator.dart";
 
 import "package:inventree/widget/refreshable_state.dart";
@@ -87,12 +86,7 @@ class _PaginatedStockLocationListState extends PaginatedSearchState<PaginatedSto
       trailing: Text("${location.itemcount}"),
       leading: location.customIcon == null ? null : Icon(location.customIcon),
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => LocationDisplayWidget(location)
-          )
-        );
+        location.goToDetailPage(context);
       },
     );
   }

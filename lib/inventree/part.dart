@@ -10,6 +10,8 @@ import "package:inventree/l10.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/model.dart";
+import "package:inventree/widget/part/category_display.dart";
+import "package:inventree/widget/part/part_detail.dart";
 
 
 /*
@@ -28,6 +30,18 @@ class InvenTreePartCategory extends InvenTreeModel {
 
   @override
   List<String> get rolesRequired => ["part"];
+
+  // Navigate to a detail page for this item
+  @override
+  Future<Object?> goToDetailPage(BuildContext context) async {
+    // Default implementation does not do anything...
+    return Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => CategoryDisplayWidget(this)
+        )
+    );
+  }
 
   @override
   Map<String, Map<String, dynamic>> formFields() {
@@ -201,6 +215,18 @@ class InvenTreePart extends InvenTreeModel {
 
   @override
   List<String> get rolesRequired => ["part"];
+
+  // Navigate to a detail page for this item
+  @override
+  Future<Object?> goToDetailPage(BuildContext context) async {
+    // Default implementation does not do anything...
+    return Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => PartDetailWidget(this)
+        )
+    );
+  }
 
   @override
   Map<String, Map<String, dynamic>> formFields() {

@@ -7,6 +7,7 @@ import "package:inventree/barcode/sales_order.dart";
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/preferences.dart";
+import "package:inventree/widget/order/so_extra_line_list.dart";
 import "package:inventree/widget/order/so_line_list.dart";
 import "package:inventree/widget/order/so_shipment_list.dart";
 import "package:inventree/widget/refreshable_state.dart";
@@ -18,7 +19,6 @@ import "package:inventree/widget/attachment_widget.dart";
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/notes_widget.dart";
 import "package:inventree/widget/snacks.dart";
-import "package:inventree/widget/company/company_detail.dart";
 import "package:inventree/widget/progress.dart";
 
 /*
@@ -40,6 +40,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
   _SalesOrderDetailState();
 
   List<InvenTreeSOLineItem> lines = [];
+  int extraLineCount = 0;
 
   bool showCameraShortcut = true;
   bool supportsProjectCodes = false;
@@ -270,6 +271,15 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
         });
       }
     });
+
+    // Count number of "extra line items" against this order
+    InvenTreeSOExtraLineItem().count(filters: {"order": widget.order.pk.toString() }).then((int value) {
+      if (mounted) {
+        setState(() {
+          extraLineCount = value;
+        });
+      }
+    });
   }
 
   // Edit the current SalesOrder instance
@@ -340,12 +350,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
         subtitle: Text(customer.name),
         leading: Icon(TablerIcons.user, color: COLOR_ACTION),
         onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => CompanyDetailWidget(customer)
-              )
-          );
+          customer.goToDetailPage(context);
         }
       ));
     }
@@ -368,6 +373,21 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
       ),
       leading: Icon(TablerIcons.clipboard_check),
       trailing: Text("${widget.order.completedLineItemCount} / ${widget.order.lineItemCount}", style: TextStyle(color: lineColor)),
+    ));
+
+    // Extra line items
+    tiles.add(ListTile(
+      title: Text(L10().extraLineItems),
+      leading: Icon(TablerIcons.clipboard_list, color: COLOR_ACTION),
+      trailing: Text(extraLineCount.toString()),
+      onTap: () => {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SOExtraLineListWidget(widget.order, filters: {"order": widget.order.pk.toString()})
+            )
+        )
+      },
     ));
 
     // Shipment progress

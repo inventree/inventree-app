@@ -13,9 +13,6 @@ import "package:inventree/inventree/part.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/progress.dart";
-
-import "package:inventree/widget/part/part_detail.dart";
-import "package:inventree/widget/company/company_detail.dart";
 import "package:url_launcher/url_launcher.dart";
 
 /*
@@ -114,8 +111,7 @@ class _ManufacturerPartDisplayState extends RefreshableState<ManufacturerPartDet
             hideLoadingOverlay();
 
             if (part is InvenTreePart) {
-              Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => PartDetailWidget(part)));
+              part.goToDetailPage(context);
             }
           },
         )
@@ -134,9 +130,7 @@ class _ManufacturerPartDisplayState extends RefreshableState<ManufacturerPartDet
               hideLoadingOverlay();
 
               if (supplier is InvenTreeCompany) {
-                Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => CompanyDetailWidget(supplier)
-                ));
+                supplier.goToDetailPage(context);
               }
             }
         )

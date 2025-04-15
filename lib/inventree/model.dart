@@ -48,6 +48,12 @@ class InvenTreeModel {
   // Construct an InvenTreeModel from a JSON data object
   InvenTreeModel.fromJson(this.jsondata);
 
+  // Navigate to a detail page for this item
+  Future<Object?> goToDetailPage(BuildContext context) async {
+    // Default implementation does not do anything...
+    return null;
+  }
+
   // Update whenever the model is loaded from the server
   DateTime? lastReload;
 
@@ -311,6 +317,8 @@ class InvenTreeModel {
   InvenTreeAPI get api => InvenTreeAPI();
 
   int get pk => getInt("pk");
+
+  String get pkString => pk.toString();
   
   // Some common accessors
   String get name => getString("name");

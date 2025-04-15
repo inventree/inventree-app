@@ -14,12 +14,12 @@ import "package:inventree/inventree/stock.dart";
 import "package:inventree/inventree/purchase_order.dart";
 
 import "package:inventree/widget/dialogs.dart";
+import "package:inventree/widget/order/po_extra_line_list.dart";
 import "package:inventree/widget/stock/location_display.dart";
 import "package:inventree/widget/order/po_line_list.dart";
 
 
 import "package:inventree/widget/attachment_widget.dart";
-import "package:inventree/widget/company/company_detail.dart";
 import "package:inventree/widget/notes_widget.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
@@ -47,11 +47,11 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
   _PurchaseOrderDetailState();
   
   List<InvenTreePOLineItem> lines = [];
+  int extraLineCount = 0;
 
   InvenTreeStockLocation? destination;
 
   int completedLines = 0;
-
   int attachmentCount = 0;
 
   bool showCameraShortcut = true;
@@ -296,6 +296,15 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
         });
       }
     }
+
+    // Count number of "extra line items" against this order
+    InvenTreePOExtraLineItem().count(filters: {"order": widget.order.pk.toString() }).then((int value) {
+      if (mounted) {
+        setState(() {
+          extraLineCount = value;
+        });
+      }
+    });
   }
 
   // Edit the currently displayed PurchaseOrder
@@ -368,12 +377,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
         subtitle: Text(supplier.name),
         leading: Icon(TablerIcons.building, color: COLOR_ACTION),
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CompanyDetailWidget(supplier)
-            )
-          );
+          supplier.goToDetailPage(context);
         },
       ));
     }
@@ -413,6 +417,21 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       ),
       leading: Icon(TablerIcons.clipboard_check),
       trailing: Text("${completedLines} /  ${widget.order.lineItemCount}", style: TextStyle(color: lineColor)),
+    ));
+
+    // Extra line items
+    tiles.add(ListTile(
+      title: Text(L10().extraLineItems),
+      leading: Icon(TablerIcons.clipboard_list, color: COLOR_ACTION),
+      trailing: Text(extraLineCount.toString()),
+      onTap: () => {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => POExtraLineListWidget(widget.order, filters: {"order": widget.order.pk.toString()})
+          )
+        )
+      },
     ));
 
     tiles.add(ListTile(

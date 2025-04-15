@@ -5,7 +5,6 @@ import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/widget/paginator.dart";
-import "package:inventree/widget/order/purchase_order_detail.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/api.dart";
@@ -69,13 +68,7 @@ class _PurchaseOrderListWidgetState extends RefreshableState<PurchaseOrderListWi
 
         if (data.containsKey("pk")) {
           var order = InvenTreePurchaseOrder.fromJson(data);
-
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => PurchaseOrderDetailWidget(order)
-            )
-          );
+          order.goToDetailPage(context);
         }
       }
     );
@@ -184,12 +177,7 @@ class _PaginatedPurchaseOrderListState extends PaginatedSearchState<PaginatedPur
         ),
       ),
       onTap: () async {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PurchaseOrderDetailWidget(order)
-          )
-        );
+        order.goToDetailPage(context);
       },
     );
   }

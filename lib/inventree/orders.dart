@@ -120,3 +120,42 @@ class InvenTreeOrderLine extends InvenTreeModel {
 
   String get targetDate => getDateString("target_date");
 }
+
+
+/*
+ * Generic class representing an "ExtraLineItem"
+ */
+class InvenTreeExtraLineItem extends InvenTreeModel {
+
+  InvenTreeExtraLineItem() : super();
+
+  InvenTreeExtraLineItem.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+
+  int get orderId => getInt("order");
+
+  double get quantity => getDouble("quantity");
+
+  String get reference => getString("reference");
+
+  double get price => getDouble("price");
+
+  String get priceCurrency => getString("price_currency");
+
+  @override
+  Map<String, Map<String, dynamic>> formFields() {
+    return {
+      "order": {
+        // The order cannot be edited
+        "hidden": true,
+      },
+      "reference": {},
+      "description": {},
+      "quantity": {},
+      "price": {},
+      "price_currency": {},
+      "link": {},
+      "notes": {},
+    };
+  }
+
+}

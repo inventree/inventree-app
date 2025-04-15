@@ -417,6 +417,12 @@
   "expiryStale": "Stale",
   "@expiryStale": {},
 
+  "extraLineItem": "Extra Line Item",
+  "@extraLineItem": {},
+
+  "extraLineItems": "Extra Line Items",
+  "@extraLineItems": {},
+
   "feedback": "Feedback",
   "@feedback": {},
 

@@ -11,7 +11,6 @@ import "package:inventree/inventree/model.dart";
 
 import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/refreshable_state.dart";
-import "package:inventree/widget/company/company_detail.dart";
 
 
 /*
@@ -48,13 +47,7 @@ class _CompanyListWidgetState extends RefreshableState<CompanyListWidget> {
 
         if (data.containsKey("pk")) {
           var company = InvenTreeCompany.fromJson(data);
-
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CompanyDetailWidget(company)
-            )
-          );
+          company.goToDetailPage(context);
         }
       }
     );
@@ -137,7 +130,7 @@ class _CompanyListState extends PaginatedSearchState<PaginatedCompanyList> {
       subtitle: Text(company.description),
       leading: InvenTreeAPI().getThumbnail(company.image),
       onTap: () async {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyDetailWidget(company)));
+        company.goToDetailPage(context);
       },
     );
   }

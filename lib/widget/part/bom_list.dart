@@ -11,7 +11,6 @@ import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/part.dart";
 
 import "package:inventree/widget/paginator.dart";
-import "package:inventree/widget/part/part_detail.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
 
@@ -159,7 +158,7 @@ class _PaginatedBomListState extends PaginatedSearchState<PaginatedBomList> {
         hideLoadingOverlay();
 
         if (part is InvenTreePart) {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
+          part.goToDetailPage(context);
         }
       },
     );

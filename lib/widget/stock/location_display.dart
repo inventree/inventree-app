@@ -15,7 +15,6 @@ import "package:inventree/widget/stock/location_list.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
-import "package:inventree/widget/stock/stock_detail.dart";
 import "package:inventree/widget/stock/stock_list.dart";
 import "package:inventree/labels.dart";
 
@@ -279,13 +278,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
           if (data.containsKey("pk")) {
             var loc = InvenTreeStockLocation.fromJson(data);
-
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => LocationDisplayWidget(loc)
-                )
-            );
+            loc.goToDetailPage(context);
           }
         }
     );
@@ -317,13 +310,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
           if (data.containsKey("pk")) {
             var item = InvenTreeStockItem.fromJson(data);
-
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => StockDetailWidget(item)
-                )
-            );
+            item.goToDetailPage(context);
           }
         }
     );
@@ -367,8 +354,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
                   hideLoadingOverlay();
 
                   if (loc is InvenTreeStockLocation) {
-                    Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => LocationDisplayWidget(loc)));
+                    loc.goToDetailPage(context);
                   }
                 }
               },

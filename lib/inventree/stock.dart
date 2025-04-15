@@ -1,11 +1,14 @@
 import "dart:async";
 
+import "package:flutter/material.dart";
 import "package:inventree/api.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/l10.dart";
 
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/model.dart";
+import "package:inventree/widget/stock/location_display.dart";
+import "package:inventree/widget/stock/stock_detail.dart";
 
 
 
@@ -156,6 +159,16 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   @override
   List<String> get rolesRequired => ["stock"];
+
+  @override
+  Future<Object?> goToDetailPage(BuildContext context) async {
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => StockDetailWidget(this)
+      )
+    );
+  }
 
   // Return a set of fields to transfer this stock item via dialog
   Map<String, dynamic> transferFields() {
@@ -647,6 +660,16 @@ class InvenTreeStockLocation extends InvenTreeModel {
   List<String> get rolesRequired => ["stock"];
 
   String get pathstring => getString("pathstring");
+
+  @override
+  Future<Object?> goToDetailPage(BuildContext context) async {
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LocationDisplayWidget(this)
+      )
+    );
+  }
 
   @override
   Map<String, Map<String, dynamic>> formFields() {
