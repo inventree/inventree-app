@@ -69,13 +69,7 @@ class _PurchaseOrderListWidgetState extends RefreshableState<PurchaseOrderListWi
 
         if (data.containsKey("pk")) {
           var order = InvenTreePurchaseOrder.fromJson(data);
-
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => PurchaseOrderDetailWidget(order)
-            )
-          );
+          order.goToDetailPage(context);
         }
       }
     );
@@ -184,12 +178,7 @@ class _PaginatedPurchaseOrderListState extends PaginatedSearchState<PaginatedPur
         ),
       ),
       onTap: () async {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PurchaseOrderDetailWidget(order)
-          )
-        );
+        order.goToDetailPage(context);
       },
     );
   }

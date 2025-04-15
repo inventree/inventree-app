@@ -17,14 +17,10 @@ import "package:inventree/preferences.dart";
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/inventree/part.dart";
-import "package:inventree/widget/company/company_detail.dart";
 
 import "package:inventree/widget/company/supplier_part_detail.dart";
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/attachment_widget.dart";
-import "package:inventree/widget/order/sales_order_detail.dart";
-import "package:inventree/widget/stock/location_display.dart";
-import "package:inventree/widget/part/part_detail.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
@@ -531,7 +527,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
             hideLoadingOverlay();
 
             if (part is InvenTreePart) {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
+              part.goToDetailPage(context);
             }
           }
         },
@@ -574,8 +570,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
               hideLoadingOverlay();
 
               if (loc is InvenTreeStockLocation) {
-                Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => LocationDisplayWidget(loc)));
+                loc.goToDetailPage(context);
               }
             }
           },
@@ -690,9 +685,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           leading: Icon(TablerIcons.truck_delivery, color: COLOR_ACTION),
           trailing: Text(salesOrder?.reference ?? ""),
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(
-              builder: (context) => SalesOrderDetailWidget(salesOrder!)
-            ));
+            salesOrder?.goToDetailPage(context);
           }
         )
       );
@@ -706,9 +699,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           leading: Icon(TablerIcons.building_store, color: COLOR_ACTION),
           trailing: Text(customer?.name ?? ""),
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(
-              builder: (context) => CompanyDetailWidget(customer!)
-            ));
+            customer?.goToDetailPage(context);
           },
         )
       );

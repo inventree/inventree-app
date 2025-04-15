@@ -13,8 +13,6 @@ import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/inventree/stock.dart";
 
 import "package:inventree/widget/progress.dart";
-import "package:inventree/widget/part/part_detail.dart";
-import "package:inventree/widget/stock/location_display.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/company/supplier_part_detail.dart";
@@ -157,7 +155,7 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
           hideLoadingOverlay();
 
           if (part is InvenTreePart) {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
+            part.goToDetailPage(context);
           }
         },
       )
@@ -187,14 +185,8 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
           title: Text(L10().destination),
           subtitle: Text(destination!.name),
           leading: Icon(TablerIcons.map_pin, color: COLOR_ACTION),
-          onTap: () =>
-          {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => LocationDisplayWidget(destination)
-                )
-            )
+          onTap: () => {
+            destination!.goToDetailPage(context)
           }
       ));
     }

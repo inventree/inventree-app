@@ -164,7 +164,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
                   hideLoadingOverlay();
 
                   if (cat is InvenTreePartCategory) {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(cat)));
+                    cat.goToDetailPage(context);
                   }
                 }
               },
@@ -255,13 +255,9 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
         if (data.containsKey("pk")) {
           var cat = InvenTreePartCategory.fromJson(data);
-
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CategoryDisplayWidget(cat)
-            )
-          );
+          cat.goToDetailPage(context).then((_) {
+            refresh(context);
+          });
         } else {
           refresh(context);
         }
@@ -285,13 +281,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
         if (data.containsKey("pk")) {
           var part = InvenTreePart.fromJson(data);
-
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => PartDetailWidget(part)
-            )
-          );
+          part.goToDetailPage(context);
         }
       }
     );

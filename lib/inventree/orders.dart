@@ -137,6 +137,10 @@ class InvenTreeExtraLineItem extends InvenTreeModel {
 
   String get reference => getString("reference");
 
+  double get price => getDouble("price");
+
+  String get priceCurrency => getString("price_currency");
+
   @override
   Map<String, Map<String, dynamic>> formFields() {
     return {

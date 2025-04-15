@@ -132,7 +132,7 @@ class _PaginatedPartListState extends PaginatedSearchState<PaginatedPartList> {
       ),
       leading: InvenTreeAPI().getThumbnail(part.thumbnail),
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
+        part.goToDetailPage(context);
       },
     );
   }

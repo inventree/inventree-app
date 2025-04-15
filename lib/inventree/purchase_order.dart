@@ -1,10 +1,13 @@
 import "package:flutter/cupertino.dart";
+import "package:flutter/material.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/api.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/orders.dart";
+import "package:inventree/widget/order/po_extra_line_detail.dart";
+import "package:inventree/widget/order/purchase_order_detail.dart";
 import "package:inventree/widget/progress.dart";
 
 import "package:inventree/api_form.dart";
@@ -25,6 +28,16 @@ class InvenTreePurchaseOrder extends InvenTreeOrder {
 
   @override
   String get URL => "order/po/";
+
+  @override
+  Future<Object?> goToDetailPage(BuildContext context) async {
+    return Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => PurchaseOrderDetailWidget(this)
+        )
+    );
+  }
 
   static const String MODEL_TYPE = "purchaseorder";
 
@@ -325,6 +338,16 @@ class InvenTreePOExtraLineItem extends InvenTreeExtraLineItem {
 
   @override
   List<String> get rolesRequired => ["purchase_order"];
+
+  @override
+  Future<Object?> goToDetailPage(BuildContext context) async {
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => POExtraLineDetailWidget(this)
+      )
+    );
+  }
 
 }
 

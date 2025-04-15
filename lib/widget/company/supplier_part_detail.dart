@@ -126,8 +126,7 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
             hideLoadingOverlay();
 
             if (part is InvenTreePart) {
-              Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => PartDetailWidget(part)));
+              part.goToDetailPage(context);
             }
           },
         )
@@ -169,9 +168,7 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
           hideLoadingOverlay();
 
           if (supplier is InvenTreeCompany) {
-            Navigator.push(context, MaterialPageRoute(
-              builder: (context) => CompanyDetailWidget(supplier)
-            ));
+            supplier.goToDetailPage(context);
           }
         }
       )
@@ -200,9 +197,7 @@ class _SupplierPartDisplayState extends RefreshableState<SupplierPartDetailWidge
             hideLoadingOverlay();
 
             if (supplier is InvenTreeCompany) {
-              Navigator.push(context, MaterialPageRoute(
-                builder: (context) => CompanyDetailWidget(supplier)
-              ));
+              supplier.goToDetailPage(context);
             }
           }
         )

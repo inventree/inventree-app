@@ -100,12 +100,7 @@ class _PaginatedPartCategoryListState extends PaginatedSearchState<PaginatedPart
       trailing: Text("${category.partcount}"),
       leading: category.customIcon == null ? null : Icon(category.customIcon),
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => CategoryDisplayWidget(category)
-          )
-        );
+        category.goToDetailPage(context);
       },
     );
   }

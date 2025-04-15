@@ -1463,7 +1463,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
         // Form submission / validation error
         showSnackIcon(
           L10().formError,
-          success: false
+          success: false,
         );
 
         // Update field errors

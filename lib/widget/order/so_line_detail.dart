@@ -15,7 +15,6 @@ import "package:inventree/inventree/sales_order.dart";
 
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/progress.dart";
-import "package:inventree/widget/part/part_detail.dart";
 import "package:inventree/widget/snacks.dart";
 
 import "package:inventree/app_colors.dart";
@@ -192,7 +191,7 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
           hideLoadingOverlay();
 
           if (part is InvenTreePart) {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => PartDetailWidget(part)));
+            part.goToDetailPage(context);
           }
         }
       )

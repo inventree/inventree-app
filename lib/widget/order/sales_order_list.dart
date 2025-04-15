@@ -67,13 +67,7 @@ class _SalesOrderListWidgetState extends RefreshableState<SalesOrderListWidget> 
 
           if (data.containsKey("pk")) {
             var order = InvenTreeSalesOrder.fromJson(data);
-
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => SalesOrderDetailWidget(order)
-              )
-            );
+            order.goToDetailPage(context);
           }
         }
     );
@@ -167,12 +161,7 @@ class _PaginatedSalesOrderListState extends PaginatedSearchState<PaginatedSalesO
         )
       ),
       onTap: () async {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SalesOrderDetailWidget(order)
-          )
-        );
+        order.goToDetailPage(context);
       }
     );
 

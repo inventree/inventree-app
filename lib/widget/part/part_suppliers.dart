@@ -58,12 +58,7 @@ class _PartSupplierState extends RefreshableState<PartSupplierWidget> {
         var company = await InvenTreeCompany().get(_part.supplierId);
 
         if (company != null && company is InvenTreeCompany) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => CompanyDetailWidget(company)
-              )
-          );
+          company.goToDetailPage(context);
         }
       },
     );

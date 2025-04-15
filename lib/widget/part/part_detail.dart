@@ -347,10 +347,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
             height: 32,
           ),
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => PartDetailWidget(parentPart!))
-            );
+            parentPart?.goToDetailPage(context);
           }
         )
       );
@@ -371,8 +368,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
                 hideLoadingOverlay();
 
                 if (cat is InvenTreePartCategory) {
-                  Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => CategoryDisplayWidget(cat)));
+                  cat.goToDetailPage(context);
                 }
               }
             },
@@ -674,13 +670,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
           if (data.containsKey("pk")) {
             var item = InvenTreeStockItem.fromJson(data);
-
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => StockDetailWidget(item)
-                )
-            );
+            item.goToDetailPage(context);
           }
         }
     );

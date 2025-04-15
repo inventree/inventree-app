@@ -340,12 +340,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
         subtitle: Text(customer.name),
         leading: Icon(TablerIcons.user, color: COLOR_ACTION),
         onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => CompanyDetailWidget(customer)
-              )
-          );
+          customer.goToDetailPage(context);
         }
       ));
     }

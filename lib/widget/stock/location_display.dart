@@ -279,13 +279,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
           if (data.containsKey("pk")) {
             var loc = InvenTreeStockLocation.fromJson(data);
-
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => LocationDisplayWidget(loc)
-                )
-            );
+            loc.goToDetailPage(context);
           }
         }
     );
@@ -317,13 +311,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
           if (data.containsKey("pk")) {
             var item = InvenTreeStockItem.fromJson(data);
-
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => StockDetailWidget(item)
-                )
-            );
+            item.goToDetailPage(context);
           }
         }
     );
@@ -367,8 +355,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
                   hideLoadingOverlay();
 
                   if (loc is InvenTreeStockLocation) {
-                    Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => LocationDisplayWidget(loc)));
+                    loc.goToDetailPage(context);
                   }
                 }
               },

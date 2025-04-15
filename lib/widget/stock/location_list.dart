@@ -87,12 +87,7 @@ class _PaginatedStockLocationListState extends PaginatedSearchState<PaginatedSto
       trailing: Text("${location.itemcount}"),
       leading: location.customIcon == null ? null : Icon(location.customIcon),
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => LocationDisplayWidget(location)
-          )
-        );
+        location.goToDetailPage(context);
       },
     );
   }

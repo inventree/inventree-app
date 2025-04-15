@@ -257,6 +257,10 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
   // Pagination controller
   final PagingController<int, InvenTreeModel> _pagingController = PagingController(firstPageKey: 0);
 
+  void refresh() {
+    _pagingController.refresh();
+  }
+
   @override
   void initState() {
     _pagingController.addPageRequestListener((pageKey) {

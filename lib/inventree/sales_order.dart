@@ -1,5 +1,7 @@
 
 
+import "package:flutter/cupertino.dart";
+import "package:flutter/material.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/model.dart";
@@ -7,6 +9,8 @@ import "package:inventree/inventree/orders.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/widget/progress.dart";
+
+import "../widget/order/sales_order_detail.dart";
 
 
 /*
@@ -30,6 +34,16 @@ class InvenTreeSalesOrder extends InvenTreeOrder {
   List<String> get rolesRequired => ["sales_order"];
 
   String get allocate_url => "${url}allocate/";
+
+  @override
+  Future<Object?> goToDetailPage(BuildContext context) async {
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => SalesOrderDetailWidget(this)
+      )
+    );
+  }
 
   @override
   Map<String, Map<String, dynamic>> formFields() {
