@@ -1308,6 +1308,9 @@
   "soundOnServerError": "Play audible tone on server error",
   "@soundOnServerError": {},
 
+  "startDate": "Start Date",
+  "@startDate": {},
+
   "status": "Status",
   "@status": {},
 

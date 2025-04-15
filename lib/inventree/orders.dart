@@ -18,6 +18,8 @@ class InvenTreeOrder extends InvenTreeModel {
 
   String get issueDate => getString("issue_date");
 
+  String get startDate => getString("start_date");
+
   String get completionDate => getDateString("complete_date");
 
   String get creationDate => getDateString("creation_date");

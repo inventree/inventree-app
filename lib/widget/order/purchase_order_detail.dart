@@ -431,6 +431,14 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       ));
     }
 
+    if (widget.order.startDate.isNotEmpty) {
+      tiles.add(ListTile(
+        title: Text(L10().startDate),
+        trailing: Text(widget.order.startDate),
+        leading: Icon(TablerIcons.calendar),
+      ));
+    }
+
     if (widget.order.targetDate.isNotEmpty) {
       tiles.add(ListTile(
         title: Text(L10().targetDate),
