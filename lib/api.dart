@@ -1205,7 +1205,7 @@ class InvenTreeAPI {
       showServerError(
           url,
           L10().invalidHost,
-          L10().invalidHostDetails + "\n(Empty URL)"
+          L10().invalidHostDetails
       );
       return null;
     }
@@ -1227,11 +1227,10 @@ class InvenTreeAPI {
     Uri? _uri = Uri.tryParse(_url);
 
     if (_uri == null || _uri.host.isEmpty) {
-      print("=== RETURN B");
       showServerError(
-          url,
+          _url,
           L10().invalidHost,
-          L10().invalidHostDetails + ":\n${url}"
+          L10().invalidHostDetails
       );
       return null;
     }

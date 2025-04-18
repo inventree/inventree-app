@@ -228,13 +228,15 @@ Future<void> showServerError(String url, String title, String description) async
     playAudioFile("sounds/server_error.mp3");
   }
 
+  description += "\nURL: $url";
+
   showSnackIcon(
     title,
     success: false,
     actionText: L10().details,
     onAction: () {
       showErrorDialog(
-          L10().serverError,
+          title,
           description: description,
           icon: TablerIcons.server
       );
