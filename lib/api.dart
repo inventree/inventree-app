@@ -725,7 +725,12 @@ class InvenTreeAPI {
     }
 
     roles = (data["roles"] ?? {}) as Map<String, dynamic>;
-    permissions = (data["permissions"] ?? {}) as Map<String, dynamic>;
+
+    if (data.containsKey("permissions")) {
+      permissions = (data["permissions"] ?? {}) as Map<String, dynamic>;
+    } else {
+      permissions = {};
+    }
 
     return true;
   }
