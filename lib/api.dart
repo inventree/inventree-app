@@ -336,6 +336,8 @@ class InvenTreeAPI {
   // Ref: https://github.com/inventree/InvenTree/pull/7420
   bool get supportsModernAttachments => apiVersion >= 207;
 
+  bool get supportsUserPermissions => apiVersion >= 207;
+
   // Does the server support the "destination" field on the PurchaseOrder model?
   // Ref: https://github.com/inventree/InvenTree/pull/8403
   bool get supportsPurchaseOrderDestination => apiVersion >= 276;
@@ -726,7 +728,7 @@ class InvenTreeAPI {
 
     roles = (data["roles"] ?? {}) as Map<String, dynamic>;
 
-    if (data.containsKey("permissions")) {
+    if (supportsUserPermissions && data.containsKey("permissions")) {
       permissions = (data["permissions"] ?? {}) as Map<String, dynamic>;
     } else {
       permissions = {};
