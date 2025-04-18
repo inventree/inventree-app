@@ -1199,6 +1199,15 @@ class InvenTreeAPI {
 
     var _url = makeApiUrl(url);
 
+    if (_url.isEmpty) {
+      showServerError(
+          url,
+          L10().invalidHost,
+          L10().invalidHostDetails + "\n(Empty URL)"
+      );
+      return null;
+    }
+
     // Add any required query parameters to the URL using ?key=value notation
     if (urlParams.isNotEmpty) {
       String query = "?";
@@ -1215,13 +1224,13 @@ class InvenTreeAPI {
 
     Uri? _uri = Uri.tryParse(_url);
 
-    if (_uri == null) {
-      showServerError(url, L10().invalidHost, L10().invalidHostDetails);
-      return null;
-    }
-
-    if (_uri.host.isEmpty) {
-      showServerError(url, L10().invalidHost, L10().invalidHostDetails);
+    if (_uri == null || _uri.host.isEmpty) {
+      print("=== RETURN B");
+      showServerError(
+          url,
+          L10().invalidHost,
+          L10().invalidHostDetails + ":\n${url}"
+      );
       return null;
     }
 
