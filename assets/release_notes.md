@@ -1,3 +1,7 @@
+### 0.18.1 - April 2025
+---
+- Fix bug associated with handling invalid URLs
+
 ### 0.18.0 - April 2025
 ---
 - Adds ability to create new companies from the app
