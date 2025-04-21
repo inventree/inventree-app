@@ -888,7 +888,7 @@
   "@soundOnBarcodeAction": {},
   "soundOnServerError": "Sunucu hatasında sesli ton çal",
   "@soundOnServerError": {},
-  "startDate": "Start Date",
+  "startDate": "Başlangıç Tarihi",
   "@startDate": {},
   "status": "Durum",
   "@status": {},
