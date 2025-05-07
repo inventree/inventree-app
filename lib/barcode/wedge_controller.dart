@@ -105,7 +105,7 @@ class _WedgeBarcodeControllerState extends InvenTreeBarcodeControllerState {
         backgroundColor: COLOR_APP_BAR,
         title: Text(L10().scanBarcode),
       ),
-      backgroundColor: Colors.black.withOpacity(0.9),
+      backgroundColor: Colors.black.withValues(alpha: 0.9),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

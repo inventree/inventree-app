@@ -362,7 +362,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
           Spacer(),
           Image.asset(
             "assets/image/logo_transparent.png",
-            color: Colors.white.withOpacity(0.05),
+            color: Colors.white.withValues(alpha: 0.05),
             colorBlendMode: BlendMode.modulate,
             scale: 0.5,
           ),
