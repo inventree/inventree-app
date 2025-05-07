@@ -14,9 +14,9 @@ dependencies:
   cupertino_icons: ^1.0.8
   currency_formatter: ^2.2.1              # Currency formatting
   datetime_picker_formfield: ^2.0.1       # Date / time picker
-  device_info_plus: ^10.1.2               # Information about the device
+  device_info_plus: ^11.4.0               # Information about the device
   dropdown_search: ^5.0.6                 # Dropdown autocomplete form fields
-  file_picker: ^8.1.2                     # Select files from the device
+  file_picker: ^10.1.4                    # Select files from the device
   flutter:
     sdk: flutter
   flutter_cache_manager: ^3.3.0
