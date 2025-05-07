@@ -15,25 +15,39 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
+
     - name: Setup Java
       uses: actions/setup-java@v3
       with:
         distribution: 'temurin'
         java-version: '17'
-    - name: Setup Flutter
-      uses: subosito/flutter-action@v2
+
+    - name: Setup FVM
+      id: fvm-config-action
+      uses: kuhnroyal/flutter-fvm-config-action@v2
+
+    - uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.32.2'
-        channel: 'stable'
+        flutter-version: ${{ steps.fvm-config-action.outputs.FLUTTER_VERSION }}
+        channel: ${{ steps.fvm-config-action.outputs.FLUTTER_CHANNEL }}
+        cache: true
+        cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
+        cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
+        pub-cache-key: "flutter-pub:os:-:channel:-:version:-:arch:-:hash:"
+        pub-cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
+
     - run: flutter --version
+
     - name: Setup Gradle
       uses: gradle/gradle-build-action@v2.4.2
       with:
         gradle-version: 8.7
+
     - name: Collect Translation Files
       run: |
         cd lib/l10n
         python3 collect_translations.py
+
     - name: Build for Android
       run: |
         flutter pub get
