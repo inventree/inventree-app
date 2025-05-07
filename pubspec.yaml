@@ -1,7 +1,7 @@
 name: inventree
 description: InvenTree stock management
 
-version: 0.18.1+98
+version: 0.18.2
 
 environment:
   sdk: ">=2.19.5 <3.13.0"
@@ -13,6 +13,7 @@ dependencies:
   camera: ^0.10.3                         # Camera
   cupertino_icons: ^1.0.8
   currency_formatter: ^2.2.1              # Currency formatting
+  custom_image_crop: ^0.1.1               # Crop selected images
   datetime_picker_formfield: ^2.0.1       # Date / time picker
   device_info_plus: ^10.1.2               # Information about the device
   dropdown_search: ^5.0.6                 # Dropdown autocomplete form fields
