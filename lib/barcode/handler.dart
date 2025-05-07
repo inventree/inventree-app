@@ -1,4 +1,3 @@
-
 import "package:flutter/material.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
@@ -13,7 +12,6 @@ import "package:inventree/inventree/sentry.dart";
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/snacks.dart";
 
-
 /* Generic class which "handles" a barcode, by communicating with the InvenTree server,
  * and handling match / unknown / error cases.
  *
@@ -21,7 +19,6 @@ import "package:inventree/widget/snacks.dart";
  * based on the response returned from the InvenTree server
  */
 class BarcodeHandler {
-
   BarcodeHandler();
 
   // Return the text to display on the barcode overlay
@@ -57,23 +54,23 @@ class BarcodeHandler {
     *
     * Returns true only if the barcode scanner should remain open
     */
-  Future<void> processBarcode(String barcode,
-      {String url = "barcode/",
-      Map<String, dynamic> extra_data = const {}}) async {
-
+  Future<void> processBarcode(
+    String barcode, {
+    String url = "barcode/",
+    Map<String, dynamic> extra_data = const {},
+  }) async {
     debug("Scanned barcode data: '${barcode}'");
 
     barcode = barcode.trim();
 
     // Empty barcode is invalid
     if (barcode.isEmpty) {
-
       barcodeFailureTone();
 
       showSnackIcon(
         L10().barcodeError,
         icon: TablerIcons.exclamation_circle,
-        success: false
+        success: false,
       );
 
       return;
@@ -84,10 +81,7 @@ class BarcodeHandler {
     try {
       response = await InvenTreeAPI().post(
         url,
-        body: {
-          "barcode": barcode,
-          ...extra_data,
-        },
+        body: {"barcode": barcode, ...extra_data},
         expectedStatusCode: null, // Do not show an error on "unexpected code"
       );
     } catch (error, stackTrace) {
@@ -113,17 +107,17 @@ class BarcodeHandler {
 
       // We want to know about this one!
       await sentryReportMessage(
-          "BarcodeHandler.processBarcode returned unexpected value",
-          context: {
-            "data": response.data?.toString() ?? "null",
-            "barcode": barcode,
-            "url": url,
-            "statusCode": response.statusCode.toString(),
-            "valid": response.isValid().toString(),
-            "error": response.error,
-            "errorDetail": response.errorDetail,
-            "className": "${this}",
-          }
+        "BarcodeHandler.processBarcode returned unexpected value",
+        context: {
+          "data": response.data?.toString() ?? "null",
+          "barcode": barcode,
+          "url": url,
+          "statusCode": response.statusCode.toString(),
+          "valid": response.isValid().toString(),
+          "error": response.error,
+          "errorDetail": response.errorDetail,
+          "className": "${this}",
+        },
       );
     } else if (data.containsKey("success")) {
       await onBarcodeMatched(data);

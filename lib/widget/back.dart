@@ -6,7 +6,6 @@ import "package:flutter/material.dart";
  * Long-pressing on this will return the user to the home screen
  */
 Widget backButton(BuildContext context, GlobalKey<ScaffoldState> key) {
-
   return GestureDetector(
     onLongPress: () {
       // Display the menu

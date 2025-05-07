@@ -1,4 +1,3 @@
-
 import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
@@ -19,19 +18,18 @@ import "package:url_launcher/url_launcher.dart";
  * Detail widget for viewing a single ManufacturerPart instance
  */
 class ManufacturerPartDetailWidget extends StatefulWidget {
-
   const ManufacturerPartDetailWidget(this.manufacturerPart, {Key? key})
-      : super(key: key);
+    : super(key: key);
 
   final InvenTreeManufacturerPart manufacturerPart;
 
   @override
-  _ManufacturerPartDisplayState createState() => _ManufacturerPartDisplayState();
+  _ManufacturerPartDisplayState createState() =>
+      _ManufacturerPartDisplayState();
 }
 
-
-class _ManufacturerPartDisplayState extends RefreshableState<ManufacturerPartDetailWidget> {
-
+class _ManufacturerPartDisplayState
+    extends RefreshableState<ManufacturerPartDetailWidget> {
   _ManufacturerPartDisplayState();
 
   @override
@@ -39,7 +37,8 @@ class _ManufacturerPartDisplayState extends RefreshableState<ManufacturerPartDet
 
   @override
   Future<void> request(BuildContext context) async {
-    final bool result = widget.manufacturerPart.pk > 0 &&
+    final bool result =
+        widget.manufacturerPart.pk > 0 &&
         await widget.manufacturerPart.reload();
 
     if (!result) {
@@ -49,12 +48,12 @@ class _ManufacturerPartDisplayState extends RefreshableState<ManufacturerPartDet
 
   Future<void> editManufacturerPart(BuildContext context) async {
     widget.manufacturerPart.editForm(
-        context,
-        L10().manufacturerPartEdit,
-        onSuccess: (data) async {
-          refresh(context);
-          showSnackIcon(L10().itemUpdated, success: true);
-        }
+      context,
+      L10().manufacturerPartEdit,
+      onSuccess: (data) async {
+        refresh(context);
+        showSnackIcon(L10().itemUpdated, success: true);
+      },
     );
   }
 
@@ -73,13 +72,13 @@ class _ManufacturerPartDisplayState extends RefreshableState<ManufacturerPartDet
 
     if (widget.manufacturerPart.canEdit) {
       actions.add(
-          IconButton(
-              icon: Icon(TablerIcons.edit),
-              tooltip: L10().edit,
-              onPressed: () {
-                editManufacturerPart(context);
-              }
-          )
+        IconButton(
+          icon: Icon(TablerIcons.edit),
+          tooltip: L10().edit,
+          onPressed: () {
+            editManufacturerPart(context);
+          },
+        ),
       );
     }
 
@@ -100,78 +99,85 @@ class _ManufacturerPartDisplayState extends RefreshableState<ManufacturerPartDet
 
     // Internal Part
     tiles.add(
-        ListTile(
-          title: Text(L10().internalPart),
-          subtitle: Text(widget.manufacturerPart.partName),
-          leading: Icon(TablerIcons.box, color: COLOR_ACTION),
-          trailing: InvenTreeAPI().getThumbnail(widget.manufacturerPart.partImage),
-          onTap: () async {
-            showLoadingOverlay();
-            final part = await InvenTreePart().get(widget.manufacturerPart.partId);
-            hideLoadingOverlay();
+      ListTile(
+        title: Text(L10().internalPart),
+        subtitle: Text(widget.manufacturerPart.partName),
+        leading: Icon(TablerIcons.box, color: COLOR_ACTION),
+        trailing: InvenTreeAPI().getThumbnail(
+          widget.manufacturerPart.partImage,
+        ),
+        onTap: () async {
+          showLoadingOverlay();
+          final part = await InvenTreePart().get(
+            widget.manufacturerPart.partId,
+          );
+          hideLoadingOverlay();
 
-            if (part is InvenTreePart) {
-              part.goToDetailPage(context);
-            }
-          },
-        )
+          if (part is InvenTreePart) {
+            part.goToDetailPage(context);
+          }
+        },
+      ),
     );
 
     // Manufacturer details
     tiles.add(
-        ListTile(
-            title: Text(L10().manufacturer),
-            subtitle: Text(widget.manufacturerPart.manufacturerName),
-            leading: Icon(TablerIcons.building_factory_2, color: COLOR_ACTION),
-            trailing: InvenTreeAPI().getThumbnail(widget.manufacturerPart.manufacturerImage),
-            onTap: () async {
-              showLoadingOverlay();
-              var supplier = await InvenTreeCompany().get(widget.manufacturerPart.manufacturerId);
-              hideLoadingOverlay();
+      ListTile(
+        title: Text(L10().manufacturer),
+        subtitle: Text(widget.manufacturerPart.manufacturerName),
+        leading: Icon(TablerIcons.building_factory_2, color: COLOR_ACTION),
+        trailing: InvenTreeAPI().getThumbnail(
+          widget.manufacturerPart.manufacturerImage,
+        ),
+        onTap: () async {
+          showLoadingOverlay();
+          var supplier = await InvenTreeCompany().get(
+            widget.manufacturerPart.manufacturerId,
+          );
+          hideLoadingOverlay();
 
-              if (supplier is InvenTreeCompany) {
-                supplier.goToDetailPage(context);
-              }
-            }
-        )
+          if (supplier is InvenTreeCompany) {
+            supplier.goToDetailPage(context);
+          }
+        },
+      ),
     );
 
     // MPN (part number)
     tiles.add(
-        ListTile(
-          title: Text(L10().manufacturerPartNumber),
-          subtitle: Text(widget.manufacturerPart.MPN),
-          leading: Icon(TablerIcons.hash),
-        )
+      ListTile(
+        title: Text(L10().manufacturerPartNumber),
+        subtitle: Text(widget.manufacturerPart.MPN),
+        leading: Icon(TablerIcons.hash),
+      ),
     );
 
     // Description
     if (widget.manufacturerPart.description.isNotEmpty) {
       tiles.add(
-          ListTile(
-            title: Text(L10().description),
-            subtitle: Text(widget.manufacturerPart.description),
-            leading: Icon(TablerIcons.info_circle),
-          )
+        ListTile(
+          title: Text(L10().description),
+          subtitle: Text(widget.manufacturerPart.description),
+          leading: Icon(TablerIcons.info_circle),
+        ),
       );
     }
 
     if (widget.manufacturerPart.link.isNotEmpty) {
       tiles.add(
-          ListTile(
-            title: Text(widget.manufacturerPart.link),
-            leading: Icon(TablerIcons.link, color: COLOR_ACTION),
-            onTap: () async {
-              var uri = Uri.tryParse(widget.manufacturerPart.link);
-              if (uri != null && await canLaunchUrl(uri)) {
-                await launchUrl(uri);
-              }
-            },
-          )
+        ListTile(
+          title: Text(widget.manufacturerPart.link),
+          leading: Icon(TablerIcons.link, color: COLOR_ACTION),
+          onTap: () async {
+            var uri = Uri.tryParse(widget.manufacturerPart.link);
+            if (uri != null && await canLaunchUrl(uri)) {
+              await launchUrl(uri);
+            }
+          },
+        ),
       );
     }
 
     return tiles;
   }
-
 }

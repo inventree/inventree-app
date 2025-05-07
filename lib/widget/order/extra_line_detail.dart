@@ -8,7 +8,6 @@ import "package:inventree/widget/snacks.dart";
 
 import "package:inventree/inventree/orders.dart";
 
-
 class ExtraLineDetailWidget extends StatefulWidget {
   const ExtraLineDetailWidget(this.item, {Key? key}) : super(key: key);
 
@@ -18,8 +17,8 @@ class ExtraLineDetailWidget extends StatefulWidget {
   _ExtraLineDetailWidgetState createState() => _ExtraLineDetailWidgetState();
 }
 
-class _ExtraLineDetailWidgetState extends RefreshableState<ExtraLineDetailWidget> {
-
+class _ExtraLineDetailWidgetState
+    extends RefreshableState<ExtraLineDetailWidget> {
   _ExtraLineDetailWidgetState();
 
   @override
@@ -35,8 +34,8 @@ class _ExtraLineDetailWidgetState extends RefreshableState<ExtraLineDetailWidget
           icon: Icon(TablerIcons.edit),
           onPressed: () {
             _editLineItem(context);
-          }
-        )
+          },
+        ),
       );
     }
 
@@ -54,13 +53,13 @@ class _ExtraLineDetailWidgetState extends RefreshableState<ExtraLineDetailWidget
     var fields = widget.item.formFields();
 
     widget.item.editForm(
-        context,
-        L10().editLineItem,
-        fields: fields,
-        onSuccess: (data) async {
-          refresh(context);
-          showSnackIcon(L10().lineItemUpdated, success: true);
-        }
+      context,
+      L10().editLineItem,
+      fields: fields,
+      onSuccess: (data) async {
+        refresh(context);
+        showSnackIcon(L10().lineItemUpdated, success: true);
+      },
     );
   }
 
@@ -69,41 +68,38 @@ class _ExtraLineDetailWidgetState extends RefreshableState<ExtraLineDetailWidget
     List<Widget> tiles = [];
 
     tiles.add(
-        ListTile(
-          title: Text(L10().reference),
-          trailing: Text(widget.item.reference),
-        )
+      ListTile(
+        title: Text(L10().reference),
+        trailing: Text(widget.item.reference),
+      ),
     );
 
     tiles.add(
-        ListTile(
-          title: Text(L10().description),
-          trailing: Text(widget.item.description),
-        )
+      ListTile(
+        title: Text(L10().description),
+        trailing: Text(widget.item.description),
+      ),
     );
 
     tiles.add(
       ListTile(
         title: Text(L10().quantity),
         trailing: Text(widget.item.quantity.toString()),
-      )
+      ),
     );
 
     tiles.add(
       ListTile(
         title: Text(L10().unitPrice),
         trailing: Text(
-          renderCurrency(widget.item.price, widget.item.priceCurrency)
-        )
-      )
+          renderCurrency(widget.item.price, widget.item.priceCurrency),
+        ),
+      ),
     );
 
     if (widget.item.notes.isNotEmpty) {
       tiles.add(
-        ListTile(
-          title: Text(L10().notes),
-          subtitle: Text(widget.item.notes),
-        )
+        ListTile(title: Text(L10().notes), subtitle: Text(widget.item.notes)),
       );
     }
 

@@ -11,61 +11,59 @@ import "package:inventree/l10.dart";
 import "package:url_launcher/url_launcher.dart";
 
 class InvenTreeAboutWidget extends StatelessWidget {
-
   const InvenTreeAboutWidget(this.info) : super();
 
   final PackageInfo info;
 
-  Future <void> _releaseNotes(BuildContext context) async {
-
+  Future<void> _releaseNotes(BuildContext context) async {
     // Load release notes from external file
     String notes = await rootBundle.loadString("assets/release_notes.md");
 
     Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => ReleaseNotesWidget(notes))
+      context,
+      MaterialPageRoute(builder: (context) => ReleaseNotesWidget(notes)),
     );
   }
 
-  Future <void> _credits(BuildContext context) async {
-
+  Future<void> _credits(BuildContext context) async {
     String notes = await rootBundle.loadString("assets/credits.md");
 
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => CreditsWidget(notes))
+      MaterialPageRoute(builder: (context) => CreditsWidget(notes)),
     );
   }
 
-  Future <void> _openDocs() async {
-
+  Future<void> _openDocs() async {
     var docsUrl = Uri(
-        scheme: "https",
-        host: "docs.inventree.org",
-        path: "en/latest/app/app/");
+      scheme: "https",
+      host: "docs.inventree.org",
+      path: "en/latest/app/app/",
+    );
 
     if (await canLaunchUrl(docsUrl)) {
       await launchUrl(docsUrl);
     }
   }
 
-  Future <void> _reportBug(BuildContext context) async {
-
+  Future<void> _reportBug(BuildContext context) async {
     var url = Uri(
-        scheme: "https",
-        host: "github.com",
-        path: "inventree/inventree-app/issues/new?title=Enter+bug+description");
+      scheme: "https",
+      host: "github.com",
+      path: "inventree/inventree-app/issues/new?title=Enter+bug+description",
+    );
 
     if (await canLaunchUrl(url)) {
       await launchUrl(url);
     }
   }
 
-  Future <void> _translate() async {
+  Future<void> _translate() async {
     var url = Uri(
-        scheme: "https",
-        host: "crowdin.com",
-        path: "/project/inventree");
+      scheme: "https",
+      host: "crowdin.com",
+      path: "/project/inventree",
+    );
 
     if (await canLaunchUrl(url)) {
       await launchUrl(url);
@@ -74,7 +72,6 @@ class InvenTreeAboutWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     List<Widget> tiles = [];
 
     tiles.add(
@@ -83,41 +80,59 @@ class InvenTreeAboutWidget extends StatelessWidget {
           L10().serverDetails,
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-      )
+      ),
     );
 
     if (InvenTreeAPI().isConnected()) {
       tiles.add(
-          ListTile(
-            title: Text(L10().address),
-            subtitle: Text(InvenTreeAPI().baseUrl.isNotEmpty ? InvenTreeAPI().baseUrl : L10().notConnected),
-            leading: Icon(TablerIcons.globe),
-            trailing: InvenTreeAPI().isConnected() ? Icon(TablerIcons.circle_check, color: COLOR_SUCCESS) : Icon(TablerIcons.circle_x, color: COLOR_DANGER),
-          )
+        ListTile(
+          title: Text(L10().address),
+          subtitle: Text(
+            InvenTreeAPI().baseUrl.isNotEmpty
+                ? InvenTreeAPI().baseUrl
+                : L10().notConnected,
+          ),
+          leading: Icon(TablerIcons.globe),
+          trailing:
+              InvenTreeAPI().isConnected()
+                  ? Icon(TablerIcons.circle_check, color: COLOR_SUCCESS)
+                  : Icon(TablerIcons.circle_x, color: COLOR_DANGER),
+        ),
       );
 
       tiles.add(
         ListTile(
           title: Text(L10().username),
           subtitle: Text(InvenTreeAPI().username),
-          leading: InvenTreeAPI().username.isNotEmpty ? Icon(TablerIcons.user) : Icon(TablerIcons.user_cancel, color: COLOR_DANGER),
-        )
+          leading:
+              InvenTreeAPI().username.isNotEmpty
+                  ? Icon(TablerIcons.user)
+                  : Icon(TablerIcons.user_cancel, color: COLOR_DANGER),
+        ),
       );
 
       tiles.add(
         ListTile(
           title: Text(L10().version),
-          subtitle: Text(InvenTreeAPI().serverVersion.isNotEmpty ? InvenTreeAPI().serverVersion : L10().notConnected),
+          subtitle: Text(
+            InvenTreeAPI().serverVersion.isNotEmpty
+                ? InvenTreeAPI().serverVersion
+                : L10().notConnected,
+          ),
           leading: Icon(TablerIcons.info_circle),
-        )
+        ),
       );
 
       tiles.add(
         ListTile(
           title: Text(L10().serverInstance),
-          subtitle: Text(InvenTreeAPI().serverInstance.isNotEmpty ? InvenTreeAPI().serverInstance : L10().notConnected),
+          subtitle: Text(
+            InvenTreeAPI().serverInstance.isNotEmpty
+                ? InvenTreeAPI().serverInstance
+                : L10().notConnected,
+          ),
           leading: Icon(TablerIcons.server),
-        )
+        ),
       );
 
       // Display extra tile if the server supports plugins
@@ -126,9 +141,8 @@ class InvenTreeAboutWidget extends StatelessWidget {
           title: Text(L10().pluginSupport),
           subtitle: Text(L10().pluginSupportDetail),
           leading: Icon(TablerIcons.plug),
-        )
+        ),
       );
-
     } else {
       tiles.add(
         ListTile(
@@ -137,8 +151,8 @@ class InvenTreeAboutWidget extends StatelessWidget {
             L10().serverNotConnected,
             style: TextStyle(fontStyle: FontStyle.italic),
           ),
-          leading: Icon(TablerIcons.exclamation_circle)
-        )
+          leading: Icon(TablerIcons.exclamation_circle),
+        ),
       );
     }
 
@@ -148,23 +162,23 @@ class InvenTreeAboutWidget extends StatelessWidget {
           L10().appDetails,
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-      )
+      ),
     );
 
     tiles.add(
       ListTile(
         title: Text(L10().packageName),
         subtitle: Text("${info.packageName}"),
-        leading: Icon(TablerIcons.box)
-      )
+        leading: Icon(TablerIcons.box),
+      ),
     );
 
     tiles.add(
       ListTile(
         title: Text(L10().version),
         subtitle: Text("${info.version} - Build ${info.buildNumber}"),
-        leading: Icon(TablerIcons.info_circle)
-      )
+        leading: Icon(TablerIcons.info_circle),
+      ),
     );
 
     tiles.add(
@@ -175,7 +189,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
         onTap: () {
           _releaseNotes(context);
         },
-      )
+      ),
     );
 
     tiles.add(
@@ -185,8 +199,8 @@ class InvenTreeAboutWidget extends StatelessWidget {
         leading: Icon(TablerIcons.balloon, color: COLOR_ACTION),
         onTap: () {
           _credits(context);
-        }
-      )
+        },
+      ),
     );
 
     tiles.add(
@@ -197,7 +211,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
         onTap: () {
           _openDocs();
         },
-      )
+      ),
     );
 
     tiles.add(
@@ -207,8 +221,8 @@ class InvenTreeAboutWidget extends StatelessWidget {
         leading: Icon(TablerIcons.language, color: COLOR_ACTION),
         onTap: () {
           _translate();
-        }
-      )
+        },
+      ),
     );
 
     tiles.add(
@@ -217,9 +231,9 @@ class InvenTreeAboutWidget extends StatelessWidget {
         subtitle: Text(L10().reportBugDescription),
         leading: Icon(TablerIcons.bug, color: COLOR_ACTION),
         onTap: () {
-        _reportBug(context);
+          _reportBug(context);
         },
-      )
+      ),
     );
 
     return Scaffold(
@@ -228,11 +242,8 @@ class InvenTreeAboutWidget extends StatelessWidget {
         backgroundColor: COLOR_APP_BAR,
       ),
       body: ListView(
-        children: ListTile.divideTiles(
-          context: context,
-          tiles: tiles,
-        ).toList(),
-      )
+        children: ListTile.divideTiles(context: context, tiles: tiles).toList(),
+      ),
     );
   }
 }

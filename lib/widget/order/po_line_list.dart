@@ -16,22 +16,21 @@ import "package:inventree/widget/progress.dart";
  * Paginated widget class for displaying a list of purchase order line items
  */
 class PaginatedPOLineList extends PaginatedSearchWidget {
-
-  const PaginatedPOLineList(Map<String, String> filters) : super(filters: filters);
+  const PaginatedPOLineList(Map<String, String> filters)
+    : super(filters: filters);
 
   @override
   String get searchTitle => L10().lineItems;
 
   @override
   _PaginatedPOLineListState createState() => _PaginatedPOLineListState();
-
 }
 
 /*
  * State class for PaginatedPOLineList
 */
-class _PaginatedPOLineListState extends PaginatedSearchState<PaginatedPOLineList> {
-
+class _PaginatedPOLineListState
+    extends PaginatedSearchState<PaginatedPOLineList> {
   _PaginatedPOLineListState() : super();
 
   @override
@@ -55,13 +54,20 @@ class _PaginatedPOLineListState extends PaginatedSearchState<PaginatedPOLineList
       "label": L10().received,
       "help_text": L10().receivedFilterDetail,
       "tristate": true,
-    }
+    },
   };
 
   @override
-  Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
-    
-    final page = await InvenTreePOLineItem().listPaginated(limit, offset, filters: params);
+  Future<InvenTreePageResponse?> requestPage(
+    int limit,
+    int offset,
+    Map<String, String> params,
+  ) async {
+    final page = await InvenTreePOLineItem().listPaginated(
+      limit,
+      offset,
+      filters: params,
+    );
     return page;
   }
 
@@ -71,24 +77,34 @@ class _PaginatedPOLineListState extends PaginatedSearchState<PaginatedPOLineList
     InvenTreeSupplierPart? supplierPart = item.supplierPart;
 
     if (supplierPart != null) {
-
       return ListTile(
         title: Text(supplierPart.SKU),
         subtitle: Text(item.partName),
-        trailing: Text(item.progressString, style: TextStyle(color: item.isComplete ? COLOR_SUCCESS : COLOR_WARNING)),
+        trailing: Text(
+          item.progressString,
+          style: TextStyle(
+            color: item.isComplete ? COLOR_SUCCESS : COLOR_WARNING,
+          ),
+        ),
         leading: InvenTreeAPI().getThumbnail(supplierPart.partImage),
         onTap: () async {
           showLoadingOverlay();
           await item.reload();
           hideLoadingOverlay();
-          Navigator.push(context, MaterialPageRoute(builder: (context) => POLineDetailWidget(item)));
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => POLineDetailWidget(item)),
+          );
         },
       );
     } else {
       // Return an error tile
       return ListTile(
         title: Text(L10().error),
-        subtitle: Text("supplier part not defined", style: TextStyle(color: COLOR_DANGER)),
+        subtitle: Text(
+          "supplier part not defined",
+          style: TextStyle(color: COLOR_DANGER),
+        ),
       );
     }
   }
