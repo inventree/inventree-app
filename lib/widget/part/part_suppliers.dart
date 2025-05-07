@@ -68,7 +68,7 @@ class _PartSupplierState extends RefreshableState<PartSupplierWidget> {
     return ListView.separated(
       shrinkWrap: true,
       physics: ClampingScrollPhysics(),
-      separatorBuilder: (_, __) => const Divider(height: 3),
+      separatorBuilder: (_, _) => const Divider(height: 3),
       itemCount: _supplierParts.length,
       itemBuilder: _supplierPartTile,
     );

@@ -163,7 +163,6 @@ Future<void> showErrorDialog(String title, {String description = "", APIResponse
             )
           );
         }
-        break;
       default:
         // Unhandled server response
         children.add(
@@ -180,7 +179,6 @@ Future<void> showErrorDialog(String title, {String description = "", APIResponse
           )
         );
 
-        break;
     }
   }
 

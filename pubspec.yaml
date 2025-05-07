@@ -4,10 +4,11 @@ description: InvenTree stock management
 version: 0.18.1+98
 
 environment:
-  sdk: ">=2.19.5 <3.32.2"
+  sdk: ^3.7.2
 
 dependencies:
   adaptive_theme: ^3.3.0                  # Theme management (e.g. dark mode)
+  async: any
   audioplayers: ^6.1.0                    # Play audio files
   cached_network_image: ^3.3.1            # Download and cache remote images
   camera: ^0.11.1                         # Camera

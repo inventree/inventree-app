@@ -1171,7 +1171,6 @@ class _APIFormWidgetState extends State<APIFormWidget> {
           case "related field":
           case "choice":
             widgets.add(Divider(height: 15));
-            break;
           default:
             break;
         }
@@ -1202,10 +1201,8 @@ class _APIFormWidgetState extends State<APIFormWidget> {
         case "choice":
           widgets.add(Divider(height: 15));
           spacerRequired = false;
-          break;
         default:
           spacerRequired = true;
-          break;
       }
     }
 
@@ -1344,7 +1341,6 @@ class _APIFormWidgetState extends State<APIFormWidget> {
             }
           }
 
-          break;
       }
 
       if (!match) {
@@ -1473,43 +1469,36 @@ class _APIFormWidgetState extends State<APIFormWidget> {
 
         extractNonFieldErrors(response);
         checkInvalidErrors(response);
-        break;
       case 401:
         showSnackIcon(
           "401: " + L10().response401,
           success: false
         );
-        break;
       case 403:
         showSnackIcon(
           "403: " + L10().response403,
           success: false,
         );
-        break;
       case 404:
         showSnackIcon(
           "404: " + L10().response404,
           success: false,
         );
-        break;
       case 405:
         showSnackIcon(
           "405: " + L10().response405,
           success: false,
         );
-        break;
       case 500:
         showSnackIcon(
           "500: " + L10().response500,
           success: false,
         );
-        break;
       default:
         showSnackIcon(
           "${response.statusCode}: " + L10().responseInvalid,
           success: false,
         );
-        break;
     }
 
     setState(() {
