@@ -579,7 +579,6 @@ class InvenTreeModel {
             L10().itemDeleted,
             success: false,
           );
-          break;
         default:
           String detail = L10().errorFetch;
           detail += "\n${L10().statusCode}: ${response.statusCode}";
@@ -589,7 +588,6 @@ class InvenTreeModel {
               L10().serverError,
               detail
           );
-          break;
       }
 
       return false;
