@@ -20,7 +20,7 @@ Some versions of Android Studio ship with a built-in version of the Java JDK. Ho
 If you see any errors related to JDK version mismatch, download and install the correct version of the JDK (from the link above) and update your Android Studio settings to point to the correct JDK location:
 
 ```bash
-flutter config --jdk-dir /path/to/jdk
+fvm flutter config --jdk-dir /path/to/jdk
 ```
 
 ## Invoke Tasks
@@ -47,7 +47,7 @@ invoke translate
 
 Install required flutter packages:
 ```
-flutter pub get
+fvm flutter pub get
 ```
 
 You should now be ready to debug on a connected or emulated device!
