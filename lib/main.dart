@@ -166,7 +166,7 @@ class InvenTreeAppState extends State<StatefulWidget> {
         colorSchemeSeed: Colors.blue,
         useMaterial3: true,
       ),
-      initial: savedThemeMode ?? AdaptiveThemeMode.light,
+      initial: savedThemeMode ?? AdaptiveThemeMode.system,
       builder: (light, dark) => MaterialApp(
         theme: light,
         darkTheme: dark,
