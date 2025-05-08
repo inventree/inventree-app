@@ -26,10 +26,8 @@ Color get COLOR_ACTION {
   }
 }
 
-// Return an "app bar" color based on the current theme
-Color get COLOR_APP_BAR {
-  return Color.fromRGBO(55, 150, 175, 1);
-}
+// Set to null to use the system default
+Color? COLOR_APP_BAR;
 
 const Color COLOR_WARNING = Color.fromRGBO(250, 150, 50, 1);
 const Color COLOR_DANGER = Color.fromRGBO(200, 50, 75, 1);
