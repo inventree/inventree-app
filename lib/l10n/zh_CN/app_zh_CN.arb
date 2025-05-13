@@ -283,7 +283,7 @@
   "@expiryDate": {},
   "expiryExpired": "已过期",
   "@expiryExpired": {},
-  "expiryStale": "过期",
+  "expiryStale": "临期",
   "@expiryStale": {},
   "extraLineItem": "额外行项目",
   "@extraLineItem": {},
