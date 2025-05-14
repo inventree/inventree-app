@@ -850,6 +850,9 @@
   "partNoResults": "No parts matching query",
   "@partNoResults": {},
 
+  "partPricing": "Part Pricing",
+  "@partPricing": {},
+
   "partSettings": "Part Settings",
   "@partSettings": {},
 
@@ -1586,5 +1589,38 @@
   "@viewSupplierPart": {},
 
   "website": "Website",
-  "@website": {}
+  "@website": {},
+
+  "price": "Price",
+  "@price": {},
+
+  "salePrice": "Sale Price",
+  "@salePrice": {},
+
+  "saleHistory": "Sale History",
+  "@saleHistory": {},
+
+  "supplierPricing": "Supplier Pricing",
+  "@supplierPricing": {},
+
+  "bomCost": "BOM Cost",
+  "@bomCost": {},
+
+  "internalCost": "Internal Cost",
+  "@internalCost": {},
+
+  "variantCost": "Variant Cost",
+  "@variantCost": {},
+
+  "overallPricing": "Overall Pricing",
+  "@overallPricing": {},
+
+  "pricingOverrides": "Pricing Overrides",
+  "@pricingOverrides": {},
+
+  "currency": "Currency",
+  "@currency": {},
+
+  "priceBreaks": "Price Breaks",
+  "@priceBreaks": {}
 }
