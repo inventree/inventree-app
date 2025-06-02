@@ -891,7 +891,7 @@ class InvenTreeAPI {
       return;
     }
 
-    // Find the local downlods directory
+    // Find the local downloads directory
     final Directory dir = await getTemporaryDirectory();
 
     String filename = url.split("/").last;
