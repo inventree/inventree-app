@@ -7,8 +7,7 @@ import "package:flutter/material.dart";
 import "package:inventree/helpers.dart";
 
 // Shortcut function to reduce boilerplate!
-I18N L10()
-{
+I18N L10() {
   // Testing mode - ignore context
   if (!hasContext()) {
     return I18NEn();

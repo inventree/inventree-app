@@ -20,7 +20,6 @@ import "package:inventree/widget/snacks.dart";
  * - If location or quantity information wasn't provided, show a form to fill it in
  */
 class POReceiveBarcodeHandler extends BarcodeHandler {
-
   POReceiveBarcodeHandler({this.purchaseOrder, this.location, this.lineItem});
 
   InvenTreePurchaseOrder? purchaseOrder;
@@ -31,11 +30,15 @@ class POReceiveBarcodeHandler extends BarcodeHandler {
   String getOverlayText(BuildContext context) => L10().barcodeReceivePart;
 
   @override
-  Future<void> processBarcode(String barcode,
-      {String url = "barcode/po-receive/",
-        Map<String, dynamic> extra_data = const {}}) async {
-
-    final bool confirm = await InvenTreeSettingsManager().getBool(INV_PO_CONFIRM_SCAN, true);
+  Future<void> processBarcode(
+    String barcode, {
+    String url = "barcode/po-receive/",
+    Map<String, dynamic> extra_data = const {},
+  }) async {
+    final bool confirm = await InvenTreeSettingsManager().getBool(
+      INV_PO_CONFIRM_SCAN,
+      true,
+    );
 
     final po_extra_data = {
       "purchase_order": purchaseOrder?.pk,
@@ -50,7 +53,6 @@ class POReceiveBarcodeHandler extends BarcodeHandler {
 
   @override
   Future<void> onBarcodeMatched(Map<String, dynamic> data) async {
-
     if (data.containsKey("lineitem") || data.containsKey("success")) {
       barcodeSuccess(L10().receivedItem);
       return;
@@ -66,7 +68,8 @@ class POReceiveBarcodeHandler extends BarcodeHandler {
     }
 
     final lineItemData = data["lineitem"] as Map<String, dynamic>;
-    if (!lineItemData.containsKey("pk") || !lineItemData.containsKey("purchase_order")) {
+    if (!lineItemData.containsKey("pk") ||
+        !lineItemData.containsKey("purchase_order")) {
       barcodeFailureTone();
       showSnackIcon(L10().missingData, success: false);
     }
@@ -79,7 +82,8 @@ class POReceiveBarcodeHandler extends BarcodeHandler {
       return;
     }
 
-    InvenTreePOLineItem? lineItem = await InvenTreePOLineItem().get(lineItemId) as InvenTreePOLineItem?;
+    InvenTreePOLineItem? lineItem =
+        await InvenTreePOLineItem().get(lineItemId) as InvenTreePOLineItem?;
 
     if (lineItem == null) {
       barcodeFailureTone();
@@ -89,7 +93,9 @@ class POReceiveBarcodeHandler extends BarcodeHandler {
     // Next, extract the "optional" fields
 
     // Extract information from the returned server response
-    double? quantity = double.tryParse((lineItemData["quantity"] ?? "0").toString());
+    double? quantity = double.tryParse(
+      (lineItemData["quantity"] ?? "0").toString(),
+    );
     int? destination = lineItemData["location"] as int?;
     String? barcode = data["barcode_data"] as String?;
 
@@ -105,7 +111,7 @@ class POReceiveBarcodeHandler extends BarcodeHandler {
       barcode: barcode,
       onSuccess: () {
         showSnackIcon(L10().receivedItem, success: true);
-      }
+      },
     );
   }
 
@@ -113,18 +119,16 @@ class POReceiveBarcodeHandler extends BarcodeHandler {
   Future<void> onBarcodeUnknown(Map<String, dynamic> data) async {
     barcodeFailureTone();
     showSnackIcon(
-        data["error"] as String? ?? L10().barcodeError,
-        success: false
+      data["error"] as String? ?? L10().barcodeError,
+      success: false,
     );
   }
 }
-
 
 /*
  * Barcode handler to add a line item to a purchase order
  */
 class POAllocateBarcodeHandler extends BarcodeHandler {
-
   POAllocateBarcodeHandler({this.purchaseOrder});
 
   InvenTreePurchaseOrder? purchaseOrder;
@@ -133,21 +137,14 @@ class POAllocateBarcodeHandler extends BarcodeHandler {
   String getOverlayText(BuildContext context) => L10().scanSupplierPart;
 
   @override
-  Future<void> processBarcode(String barcode, {
+  Future<void> processBarcode(
+    String barcode, {
     String url = "barcode/po-allocate/",
-    Map<String, dynamic> extra_data = const {}}
-  ) {
+    Map<String, dynamic> extra_data = const {},
+  }) {
+    final po_extra_data = {"purchase_order": purchaseOrder?.pk, ...extra_data};
 
-    final po_extra_data = {
-      "purchase_order": purchaseOrder?.pk,
-      ...extra_data,
-    };
-
-    return super.processBarcode(
-      barcode,
-      url: url,
-      extra_data: po_extra_data,
-    );
+    return super.processBarcode(barcode, url: url, extra_data: po_extra_data);
   }
 
   @override
@@ -189,7 +186,6 @@ class POAllocateBarcodeHandler extends BarcodeHandler {
 
   @override
   Future<void> onBarcodeUnhandled(Map<String, dynamic> data) async {
-
     print("onBarcodeUnhandled:");
     print(data.toString());
 
