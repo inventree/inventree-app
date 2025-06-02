@@ -9,9 +9,7 @@ import "package:inventree/inventree/part.dart";
 import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/refreshable_state.dart";
 
-
 class PartList extends StatefulWidget {
-
   const PartList(this.filters, {this.title = ""});
 
   final String title;
@@ -22,9 +20,7 @@ class PartList extends StatefulWidget {
   _PartListState createState() => _PartListState(filters, title);
 }
 
-
 class _PartListState extends RefreshableState<PartList> {
-
   _PartListState(this.filters, this.title);
 
   final String title;
@@ -40,13 +36,11 @@ class _PartListState extends RefreshableState<PartList> {
   Widget getBody(BuildContext context) {
     return PaginatedPartList(filters);
   }
-
 }
 
-
 class PaginatedPartList extends PaginatedSearchWidget {
-
-  const PaginatedPartList(Map<String, String> filters) : super(filters: filters);
+  const PaginatedPartList(Map<String, String> filters)
+    : super(filters: filters);
 
   @override
   String get searchTitle => L10().parts;
@@ -55,9 +49,7 @@ class PaginatedPartList extends PaginatedSearchWidget {
   _PaginatedPartListState createState() => _PaginatedPartListState();
 }
 
-
 class _PaginatedPartListState extends PaginatedSearchState<PaginatedPartList> {
-
   _PaginatedPartListState() : super();
 
   @override
@@ -84,7 +76,7 @@ class _PaginatedPartListState extends PaginatedSearchState<PaginatedPartList> {
     },
     "assembly": {
       "label": L10().filterAssembly,
-      "help_text": L10().filterAssemblyDetail
+      "help_text": L10().filterAssemblyDetail,
     },
     "component": {
       "label": L10().filterComponent,
@@ -92,7 +84,7 @@ class _PaginatedPartListState extends PaginatedSearchState<PaginatedPartList> {
     },
     "is_template": {
       "label": L10().filterTemplate,
-      "help_text": L10().filterTemplateDetail
+      "help_text": L10().filterTemplateDetail,
     },
     "trackable": {
       "label": L10().filterTrackable,
@@ -105,18 +97,25 @@ class _PaginatedPartListState extends PaginatedSearchState<PaginatedPartList> {
     "has_stock": {
       "label": L10().filterInStock,
       "help_text": L10().filterInStockDetail,
-    }
+    },
   };
 
   @override
-  Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
-    final page = await InvenTreePart().listPaginated(limit, offset, filters: params);
+  Future<InvenTreePageResponse?> requestPage(
+    int limit,
+    int offset,
+    Map<String, String> params,
+  ) async {
+    final page = await InvenTreePart().listPaginated(
+      limit,
+      offset,
+      filters: params,
+    );
     return page;
   }
 
   @override
   Widget buildItem(BuildContext context, InvenTreeModel model) {
-
     InvenTreePart part = model as InvenTreePart;
 
     return ListTile(
@@ -124,10 +123,7 @@ class _PaginatedPartListState extends PaginatedSearchState<PaginatedPartList> {
       subtitle: Text(part.description),
       trailing: Text(
         part.stockString(),
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold
-        )
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
       ),
       leading: InvenTreeAPI().getThumbnail(part.thumbnail),
       onTap: () {

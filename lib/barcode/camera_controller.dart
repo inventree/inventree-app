@@ -23,7 +23,7 @@ import "package:inventree/barcode/controller.dart";
  */
 class CameraBarcodeController extends InvenTreeBarcodeController {
   const CameraBarcodeController(BarcodeHandler handler, {Key? key})
-      : super(handler, key: key);
+    : super(handler, key: key);
 
   @override
   State<StatefulWidget> createState() => _CameraBarcodeControllerState();
@@ -57,11 +57,14 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
    * Load the barcode scanning settings
    */
   Future<void> _loadSettings() async {
-    bool _single = await InvenTreeSettingsManager()
-        .getBool(INV_BARCODE_SCAN_SINGLE, false);
+    bool _single = await InvenTreeSettingsManager().getBool(
+      INV_BARCODE_SCAN_SINGLE,
+      false,
+    );
 
-    int _delay = await InvenTreeSettingsManager()
-        .getValue(INV_BARCODE_SCAN_DELAY, 500) as int;
+    int _delay =
+        await InvenTreeSettingsManager().getValue(INV_BARCODE_SCAN_DELAY, 500)
+            as int;
 
     if (mounted) {
       setState(() {
@@ -94,7 +97,6 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
    * Callback function when a barcode is scanned
    */
   Future<void> onScanSuccess(Code? code) async {
-
     if (scanning_paused) {
       return;
     }
@@ -114,7 +116,6 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
       }
 
       barcode = buffer.toString();
-
     } else {
       barcode = code?.text ?? "";
     }
@@ -126,7 +127,6 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
     }
 
     if (barcode.isNotEmpty) {
-
       pauseScan();
 
       await handleBarcodeData(barcode).then((_) {
@@ -142,7 +142,7 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
       sentryReportError(
         "CameraBarcodeController.onControllerCreated",
         error,
-        null
+        null,
       );
     }
 
@@ -150,7 +150,7 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
       showSnackIcon(
         L10().cameraCreationError,
         icon: TablerIcons.camera_x,
-        success: false
+        success: false,
       );
 
       if (OneContext.hasContext) {
@@ -163,7 +163,6 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
    * Build the barcode scanner overlay
    */
   FixedScannerOverlay BarcodeOverlay(BuildContext context) {
-
     // Note: Copied from reader_widget.dart:ReaderWidget.build
     final Size size = MediaQuery.of(context).size;
     final double cropSize = min(size.width, size.height) * 0.5;
@@ -182,7 +181,6 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
    * Build the barcode reader widget
    */
   Widget BarcodeReader(BuildContext context) {
-
     return ReaderWidget(
       onScan: onScanSuccess,
       isMultiScan: false,
@@ -197,10 +195,9 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
       flashOnIcon: const Icon(Icons.flash_on),
       flashOffIcon: const Icon(Icons.flash_off),
       toggleCameraIcon: const Icon(TablerIcons.camera_rotate),
-      actionButtonsBackgroundBorderRadius:
-      BorderRadius.circular(40),
+      actionButtonsBackgroundBorderRadius: BorderRadius.circular(40),
       scannerOverlay: BarcodeOverlay(context),
-      actionButtonsBackgroundColor: Colors.black.withOpacity(0.7),
+      actionButtonsBackgroundColor: Colors.black.withValues(alpha: 0.7),
     );
   }
 
@@ -209,28 +206,23 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
       child: Align(
         alignment: Alignment.topCenter,
         child: Padding(
-          padding: EdgeInsets.only(
-            left: 10,
-            right: 10,
-            top: 75,
-            bottom: 10
-          ),
+          padding: EdgeInsets.only(left: 10, right: 10, top: 75, bottom: 10),
           child: Text(
             widget.handler.getOverlayText(context),
             style: TextStyle(
               color: Colors.white,
               fontSize: 16,
-              fontWeight: FontWeight.bold
-            )
-          )
-        )
-      )
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
     );
   }
 
   Widget bottomCenterOverlay() {
-
-    String info_text = scanning_paused ? L10().barcodeScanPaused : L10().barcodeScanPause;
+    String info_text =
+        scanning_paused ? L10().barcodeScanPaused : L10().barcodeScanPause;
 
     String text = scanned_code.isNotEmpty ? scanned_code : info_text;
 
@@ -242,59 +234,53 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
       child: Align(
         alignment: Alignment.bottomCenter,
         child: Padding(
-          padding: EdgeInsets.only(
-            left: 10,
-            right: 10,
-            top: 10,
-            bottom: 75
-          ),
+          padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 75),
           child: Text(
-              text,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.bold
-              )
+            text,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        )
-      )
+        ),
+      ),
     );
   }
-
 
   /*
    *  Display an overlay at the bottom right of the screen
    */
   Widget bottomRightOverlay() {
     return SafeArea(
-        child: Align(
-            alignment: Alignment.bottomRight,
-            child: Padding(
-                padding: EdgeInsets.all(10),
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(40),
-                    child: ColoredBox(
-                        color: Colors.black45,
-                        child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: scanning_paused ? [] : [
-                              CircularProgressIndicator(
-                                  value: null
-                              )
-                              // actionIcon,
-                            ]
-                        )
-                    )
-                )
-            )
-        )
+      child: Align(
+        alignment: Alignment.bottomRight,
+        child: Padding(
+          padding: EdgeInsets.all(10),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(40),
+            child: ColoredBox(
+              color: Colors.black45,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children:
+                    scanning_paused
+                        ? []
+                        : [
+                          CircularProgressIndicator(value: null),
+                          // actionIcon,
+                        ],
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: COLOR_APP_BAR,
@@ -308,13 +294,7 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
         },
         child: Stack(
           children: <Widget>[
-            Column(
-              children: [
-                Expanded(
-                    child: BarcodeReader(context)
-                ),
-              ],
-            ),
+            Column(children: [Expanded(child: BarcodeReader(context))]),
             topCenterOverlay(),
             bottomCenterOverlay(),
             bottomRightOverlay(),
@@ -323,5 +303,4 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
       ),
     );
   }
-
 }
