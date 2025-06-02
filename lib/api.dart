@@ -593,10 +593,8 @@ class InvenTreeAPI {
             L10().serverAuthenticationError,
             L10().invalidUsernamePassword,
           );
-          break;
         default:
           showStatusCodeError(apiUrl, response.statusCode);
-          break;
       }
 
       debug("Token request failed: STATUS ${response.statusCode}");
@@ -1342,7 +1340,6 @@ class InvenTreeAPI {
                   "responseData": response.data.toString(),
                 }
             );
-            break;
         }
       } else {
 
@@ -1414,7 +1411,6 @@ class InvenTreeAPI {
                 "endpoint": url,
               }
           );
-          break;
       }
 
       showServerError(
