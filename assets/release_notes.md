@@ -1,3 +1,8 @@
+
+### 0.18.2 - May 2025
+---
+- Add image cropping support
+
 ### 0.18.1 - April 2025
 ---
 - Fix bug associated with handling invalid URLs
