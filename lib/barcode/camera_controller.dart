@@ -311,34 +311,25 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
     );
   }
 
+  List<Widget> appBarActions(BuildContext context) {
 
-  /*
-   *  Display an overlay at the bottom right of the screen
-   */
-  Widget bottomRightOverlay() {
-    return SafeArea(
-        child: Align(
-            alignment: Alignment.bottomRight,
-            child: Padding(
-                padding: EdgeInsets.all(10),
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(40),
-                    child: ColoredBox(
-                        color: Colors.black45,
-                        child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: scanning_paused ? [] : [
-                              CircularProgressIndicator(
-                                  value: null
-                              )
-                              // actionIcon,
-                            ]
-                        )
-                    )
-                )
-            )
-        )
-    );
+    return [
+      IconButton(
+        icon: flash_status ? Icon(TablerIcons.bulb_off) : Icon(TablerIcons.bulb),
+        onPressed: () {
+          controller.toggleTorch();
+          setState(() {
+            flash_status = !flash_status;
+          });
+        },
+      ),
+      IconButton(
+        icon: Icon(TablerIcons.camera),
+        onPressed: () {
+          controller.switchCamera();
+        },
+      )
+    ];
   }
 
   @override
@@ -348,6 +339,7 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
       appBar: AppBar(
         backgroundColor: COLOR_APP_BAR,
         title: Text(L10().scanBarcode),
+        actions: appBarActions(context),
       ),
       body: GestureDetector(
         onTap: () async {
@@ -368,8 +360,7 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
               ],
             ),
             topCenterOverlay(),
-            bottomCenterOverlay(),
-            bottomRightOverlay(),
+            bottomCenterOverlay()
           ],
         ),
       ),
