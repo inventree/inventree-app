@@ -1,3 +1,7 @@
+### 0.19.0 - June 2025
+---
+- Replace barcode scanning library for better performance
+
 ### 0.18.1 - April 2025
 ---
 - Fix bug associated with handling invalid URLs
