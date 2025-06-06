@@ -35,7 +35,7 @@ dependencies:
   one_context: ^4.0.0                     # Dialogs without requiring context
   open_filex: ^4.7.0                      # Open local files
   package_info_plus: ^8.1.1               # App information introspection
-  path: ^1.9.1
+  path: ^1.9.0
   path_provider: ^2.1.5                   # Local file storage
   sembast: ^3.6.0                         # NoSQL data storage
   sentry_flutter: 8.14.2                   # Error reporting
