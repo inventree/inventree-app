@@ -978,6 +978,8 @@
   "@suppliers": {},
   "supplierReference": "Lieferanten-Referenz",
   "@supplierReference": {},
+  "switchCamera": "Switch Camera",
+  "@switchCamera": {},
   "takePicture": "Foto aufnehmen",
   "@takePicture": {},
   "targetDate": "Zieldatum",
@@ -1010,6 +1012,8 @@
   "@timeout": {
     "description": ""
   },
+  "toggleTorch": "Toggle Torch",
+  "@toggleTorch": {},
   "tokenError": "Token-Fehler",
   "@tokenError": {},
   "tokenMissing": "Token fehlt",

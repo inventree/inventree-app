@@ -978,6 +978,8 @@
   "@suppliers": {},
   "supplierReference": "供應商參考",
   "@supplierReference": {},
+  "switchCamera": "Switch Camera",
+  "@switchCamera": {},
   "takePicture": "拍照",
   "@takePicture": {},
   "targetDate": "預計日期",
@@ -1010,6 +1012,8 @@
   "@timeout": {
     "description": ""
   },
+  "toggleTorch": "Toggle Torch",
+  "@toggleTorch": {},
   "tokenError": "令牌錯誤",
   "@tokenError": {},
   "tokenMissing": "缺少令牌",

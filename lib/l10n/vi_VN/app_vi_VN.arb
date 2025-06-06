@@ -978,6 +978,8 @@
   "@suppliers": {},
   "supplierReference": "Tham khảo nhà cung cấp",
   "@supplierReference": {},
+  "switchCamera": "Switch Camera",
+  "@switchCamera": {},
   "takePicture": "Chụp ảnh",
   "@takePicture": {},
   "targetDate": "Ngày",
@@ -1010,6 +1012,8 @@
   "@timeout": {
     "description": ""
   },
+  "toggleTorch": "Toggle Torch",
+  "@toggleTorch": {},
   "tokenError": "Lỗi Token",
   "@tokenError": {},
   "tokenMissing": "Thiếu mã thông báo",

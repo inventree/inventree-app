@@ -978,6 +978,8 @@
   "@suppliers": {},
   "supplierReference": "Référence du fournisseur",
   "@supplierReference": {},
+  "switchCamera": "Switch Camera",
+  "@switchCamera": {},
   "takePicture": "Prendre une photo",
   "@takePicture": {},
   "targetDate": "Date Cible",
@@ -1010,6 +1012,8 @@
   "@timeout": {
     "description": ""
   },
+  "toggleTorch": "Toggle Torch",
+  "@toggleTorch": {},
   "tokenError": "Erreur du jeton",
   "@tokenError": {},
   "tokenMissing": "Jeton manquant",

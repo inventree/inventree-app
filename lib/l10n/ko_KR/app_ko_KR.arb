@@ -978,6 +978,8 @@
   "@suppliers": {},
   "supplierReference": "Supplier Reference",
   "@supplierReference": {},
+  "switchCamera": "Switch Camera",
+  "@switchCamera": {},
   "takePicture": "Take Picture",
   "@takePicture": {},
   "targetDate": "목표 날짜",
@@ -1010,6 +1012,8 @@
   "@timeout": {
     "description": ""
   },
+  "toggleTorch": "Toggle Torch",
+  "@toggleTorch": {},
   "tokenError": "토큰 오류",
   "@tokenError": {},
   "tokenMissing": "Missing Token",

@@ -978,6 +978,8 @@
   "@suppliers": {},
   "supplierReference": "Tedarikçi Referansı",
   "@supplierReference": {},
+  "switchCamera": "Switch Camera",
+  "@switchCamera": {},
   "takePicture": "Resim Çek",
   "@takePicture": {},
   "targetDate": "Hedeflenen Tarih",
@@ -1010,6 +1012,8 @@
   "@timeout": {
     "description": ""
   },
+  "toggleTorch": "Toggle Torch",
+  "@toggleTorch": {},
   "tokenError": "Token Hatası",
   "@tokenError": {},
   "tokenMissing": "Eksik Token",

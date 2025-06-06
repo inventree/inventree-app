@@ -978,6 +978,8 @@
   "@suppliers": {},
   "supplierReference": "Leverantörens referens",
   "@supplierReference": {},
+  "switchCamera": "Switch Camera",
+  "@switchCamera": {},
   "takePicture": "Ta bild",
   "@takePicture": {},
   "targetDate": "Måldatum",
@@ -1010,6 +1012,8 @@
   "@timeout": {
     "description": ""
   },
+  "toggleTorch": "Toggle Torch",
+  "@toggleTorch": {},
   "tokenError": "Token fel",
   "@tokenError": {},
   "tokenMissing": "Token saknas",

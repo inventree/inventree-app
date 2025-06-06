@@ -978,6 +978,8 @@
   "@suppliers": {},
   "supplierReference": "Kód dodavatele",
   "@supplierReference": {},
+  "switchCamera": "Switch Camera",
+  "@switchCamera": {},
   "takePicture": "Pořídit snímek",
   "@takePicture": {},
   "targetDate": "Cílové datum",
@@ -1010,6 +1012,8 @@
   "@timeout": {
     "description": ""
   },
+  "toggleTorch": "Toggle Torch",
+  "@toggleTorch": {},
   "tokenError": "Chyba tokenu",
   "@tokenError": {},
   "tokenMissing": "Chybějící token",
