@@ -18,6 +18,7 @@ import "package:inventree/widget/part/bom_list.dart";
 import "package:inventree/widget/part/part_list.dart";
 import "package:inventree/widget/notes_widget.dart";
 import "package:inventree/widget/part/part_parameter_widget.dart";
+import "package:inventree/widget/part/part_pricing.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/part/category_display.dart";
 import "package:inventree/widget/refreshable_state.dart";
@@ -422,6 +423,21 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
             fontWeight: FontWeight.bold,
           ),
         ),
+      ),
+    );
+
+    tiles.add(
+      ListTile(
+        title: Text(L10().partPricing),
+        leading: Icon(TablerIcons.currency_dollar, color: COLOR_ACTION),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PartPricingWidget(part: part),
+            ),
+          );
+        },
       ),
     );
 
