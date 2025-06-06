@@ -3,6 +3,7 @@ import "dart:typed_data";
 
 import "package:camera/camera.dart";
 import "package:flutter/material.dart";
+import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/inventree/sentry.dart";
@@ -137,6 +138,8 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
       }
 
       barcode = buffer.toString();
+
+      print(barcode);
     } else {
       // Fall back to text value
       barcode = result.barcodes.first.rawValue ?? "";
@@ -158,6 +161,8 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
         resumeScan();
       }
     });
+
+    resumeScan();
 
     if (mounted) {
       setState(() {
@@ -311,25 +316,34 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
     );
   }
 
-  List<Widget> appBarActions(BuildContext context) {
+  Widget? buildActions(BuildContext context) {
 
-    return [
-      IconButton(
-        icon: flash_status ? Icon(TablerIcons.bulb_off) : Icon(TablerIcons.bulb),
-        onPressed: () {
+    List<SpeedDialChild> actions = [
+      SpeedDialChild(
+        child: Icon(flash_status ? TablerIcons.bulb_off : TablerIcons.bulb),
+        label: L10().toggleTorch,
+        onTap: () async {
           controller.toggleTorch();
-          setState(() {
-            flash_status = !flash_status;
-          });
-        },
+          if (mounted) {
+            setState(() {
+              flash_status = !flash_status;
+            });
+          }
+        }
       ),
-      IconButton(
-        icon: Icon(TablerIcons.camera),
-        onPressed: () {
+      SpeedDialChild(
+        child: Icon(TablerIcons.camera),
+        label: L10().switchCamera,
+        onTap: () async {
           controller.switchCamera();
-        },
+        }
       )
     ];
+
+    return SpeedDial(
+      icon: Icons.more_horiz,
+      children: actions,
+    );
   }
 
   @override
@@ -339,8 +353,8 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
       appBar: AppBar(
         backgroundColor: COLOR_APP_BAR,
         title: Text(L10().scanBarcode),
-        actions: appBarActions(context),
       ),
+      floatingActionButton: buildActions(context),
       body: GestureDetector(
         onTap: () async {
           if (mounted) {

@@ -1446,6 +1446,9 @@
   "supplierReference": "Supplier Reference",
   "@supplierReference": {},
 
+  "switchCamera": "Switch Camera",
+  "@switchCamera": {},
+
   "takePicture": "Take Picture",
   "@takePicture": {},
 
@@ -1491,6 +1494,9 @@
   "@timeout": {
     "description": ""
   },
+
+  "toggleTorch": "Toggle Torch",
+  "@toggleTorch": {},
 
   "tokenError": "Token Error",
   "@tokenError": {},
