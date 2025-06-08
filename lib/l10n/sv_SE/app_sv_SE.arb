@@ -978,7 +978,7 @@
   "@suppliers": {},
   "supplierReference": "Leverantörens referens",
   "@supplierReference": {},
-  "switchCamera": "Switch Camera",
+  "switchCamera": "Byt Kamera",
   "@switchCamera": {},
   "takePicture": "Ta bild",
   "@takePicture": {},
@@ -1012,7 +1012,7 @@
   "@timeout": {
     "description": ""
   },
-  "toggleTorch": "Toggle Torch",
+  "toggleTorch": "Aktivera lampa",
   "@toggleTorch": {},
   "tokenError": "Token fel",
   "@tokenError": {},
