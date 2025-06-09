@@ -4,17 +4,17 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 
 import "package:adaptive_theme/adaptive_theme.dart";
-import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:flutter_localizations/flutter_localizations.dart";
 import "package:flutter_localized_locales/flutter_localized_locales.dart";
 import "package:one_context/one_context.dart";
 import "package:package_info_plus/package_info_plus.dart";
 import "package:sentry_flutter/sentry_flutter.dart";
-
 import "package:inventree/dsn.dart";
+
 import "package:inventree/preferences.dart";
 import "package:inventree/inventree/sentry.dart";
 import "package:inventree/l10n/supported_locales.dart";
+import "package:inventree/l10n/collected/app_localizations.dart";
 import "package:inventree/settings/release.dart";
 import "package:inventree/widget/home.dart";
 

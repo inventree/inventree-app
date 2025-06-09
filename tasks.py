@@ -1,4 +1,4 @@
-"""Invoke tasks for building the app"""
+"""Invoke tasks for building the InvenTree mobile app."""
 
 import os
 import sys
@@ -7,13 +7,17 @@ from invoke import task
 
 @task
 def clean(c):
-    """Clean flutter build"""
+    """Clean flutter build."""
     c.run("flutter clean")
 
+@task
+def update(c):
+    """Update flutter dependencies."""
+    c.run("flutter pub get")
 
 @task
 def translate(c):
-    """Update translation files"""
+    """Update translation files."""
 
     here = os.path.dirname(__file__)
     l10_dir = os.path.join(here, 'lib', 'l10n')
@@ -23,13 +27,13 @@ def translate(c):
     c.run(f"cd {l10_dir} && {python} collect_translations.py")
 
 
-@task(pre=[clean, translate])
+@task(pre=[clean, update, translate])
 def ios(c):
-    """Build iOS app"""
+    """Build iOS app in release configuration."""
     c.run("flutter build ipa --release --no-tree-shake-icons")
 
 
-@task(pre=[clean, translate])
+@task(pre=[clean, update, translate])
 def android(c):
-    """Build Android app"""
+    """Build Android app in release configuration."""
     c.run("flutter build appbundle --release --no-tree-shake-icons")

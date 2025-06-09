@@ -3,14 +3,15 @@ import "dart:typed_data";
 
 import "package:camera/camera.dart";
 import "package:flutter/material.dart";
+import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/inventree/sentry.dart";
 import "package:inventree/preferences.dart";
 import "package:inventree/widget/snacks.dart";
+import "package:mobile_scanner/mobile_scanner.dart";
 import "package:one_context/one_context.dart";
 import "package:wakelock_plus/wakelock_plus.dart";
-import "package:flutter_zxing/flutter_zxing.dart";
 
 import "package:inventree/l10.dart";
 
@@ -37,8 +38,13 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
   int scan_delay = 500;
   bool single_scanning = false;
   bool scanning_paused = false;
+  bool multiple_barcodes = false;
 
   String scanned_code = "";
+
+  final MobileScannerController controller = MobileScannerController(
+    autoZoom: true
+  );
 
   @override
   void initState() {
@@ -74,6 +80,7 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
 
   @override
   Future<void> pauseScan() async {
+
     if (mounted) {
       setState(() {
         scanning_paused = true;
@@ -83,6 +90,9 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
 
   @override
   Future<void> resumeScan() async {
+
+    controller.start();
+
     if (mounted) {
       setState(() {
         scanning_paused = false;
@@ -93,46 +103,71 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
   /*
    * Callback function when a barcode is scanned
    */
-  Future<void> onScanSuccess(Code? code) async {
-
-    if (scanning_paused) {
+  Future<void> onScanSuccess(BarcodeCapture result) async {
+    if (!mounted || scanning_paused) {
       return;
     }
 
-    Uint8List raw_data = code?.rawBytes ?? Uint8List(0);
+    // TODO: Display outline of barcodes on the screen?
 
-    // Reconstruct barcode from raw data
+    if (result.barcodes.isEmpty) {
+      setState(() {
+        multiple_barcodes = false;
+      });
+    }
+    else if (result.barcodes.length > 1) {
+      setState(() {
+        multiple_barcodes = true;
+      });
+      return;
+    } else {
+      setState(() {
+        multiple_barcodes = false;
+      });
+    }
+
+    Uint8List rawData = result.barcodes.first.rawBytes ?? Uint8List(0);
+
     String barcode;
 
-    if (raw_data.isNotEmpty) {
-      barcode = "";
-
+    if (rawData.isNotEmpty) {
       final buffer = StringBuffer();
 
-      for (int i = 0; i < raw_data.length; i++) {
-        buffer.writeCharCode(raw_data[i]);
+      for (int ii = 0; ii < rawData.length; ii++) {
+        buffer.writeCharCode(rawData[ii]);
       }
 
       barcode = buffer.toString();
 
+      print(barcode);
     } else {
-      barcode = code?.text ?? "";
+      // Fall back to text value
+      barcode = result.barcodes.first.rawValue ?? "";
     }
+
+    if (barcode.isEmpty) {
+      // TODO: Error message "empty barcode"
+      return;
+    }
+
+    setState(() {
+      scanned_code = barcode;
+    });
+
+    pauseScan();
+
+    await handleBarcodeData(barcode).then((_) {
+      if (!single_scanning && mounted) {
+        resumeScan();
+      }
+    });
+
+    resumeScan();
 
     if (mounted) {
       setState(() {
-        scanned_code = barcode;
-      });
-    }
-
-    if (barcode.isNotEmpty) {
-
-      pauseScan();
-
-      await handleBarcodeData(barcode).then((_) {
-        if (!single_scanning && mounted) {
-          resumeScan();
-        }
+        scanned_code = "";
+        multiple_barcodes = false;
       });
     }
   }
@@ -159,22 +194,40 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
     }
   }
 
-  /*
-   * Build the barcode scanner overlay
-   */
-  FixedScannerOverlay BarcodeOverlay(BuildContext context) {
+  Widget BarcodeOverlay(BuildContext context) {
 
-    // Note: Copied from reader_widget.dart:ReaderWidget.build
-    final Size size = MediaQuery.of(context).size;
-    final double cropSize = min(size.width, size.height) * 0.5;
+    final Size screenSize = MediaQuery.of(context).size;
+    final double width = screenSize.width;
+    final double height = screenSize.height;
 
-    return FixedScannerOverlay(
-      borderColor: scanning_paused ? COLOR_WARNING : COLOR_ACTION,
-      overlayColor: Colors.black45,
-      borderRadius: 1,
-      borderLength: 15,
-      borderWidth: 8,
-      cutOutSize: cropSize,
+    final double D = min(width, height) * 0.8;
+
+    // Color for the barcode scan?
+    Color overlayColor = COLOR_ACTION;
+
+    if (multiple_barcodes) {
+      overlayColor = COLOR_DANGER;
+    } else if (scanned_code.isNotEmpty) {
+      overlayColor = COLOR_SUCCESS;
+    } else if (scanning_paused) {
+      overlayColor = COLOR_WARNING;
+    }
+
+    return Stack(
+      children: [
+        Center(
+          child: Container(
+            width: D,
+            height: D,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: overlayColor,
+                width: 4,
+              ),
+            ),
+          )
+        )
+      ]
     );
   }
 
@@ -183,24 +236,25 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
    */
   Widget BarcodeReader(BuildContext context) {
 
-    return ReaderWidget(
-      onScan: onScanSuccess,
-      isMultiScan: false,
-      tryHarder: true,
-      tryInverted: true,
-      tryRotate: true,
-      showGallery: false,
-      onControllerCreated: onControllerCreated,
-      scanDelay: Duration(milliseconds: scan_delay),
-      resolution: ResolutionPreset.high,
-      lensDirection: CameraLensDirection.back,
-      flashOnIcon: const Icon(Icons.flash_on),
-      flashOffIcon: const Icon(Icons.flash_off),
-      toggleCameraIcon: const Icon(TablerIcons.camera_rotate),
-      actionButtonsBackgroundBorderRadius:
-      BorderRadius.circular(40),
-      scannerOverlay: BarcodeOverlay(context),
-      actionButtonsBackgroundColor: Colors.black.withOpacity(0.7),
+    final Size screenSize = MediaQuery.of(context).size;
+    final double width = screenSize.width;
+    final double height = screenSize.height;
+
+    final double D = min(width, height) * 0.8;
+
+    return MobileScanner(
+      controller: controller,
+      overlayBuilder: (context, constraints) {
+        return BarcodeOverlay(context);
+      },
+      scanWindow: Rect.fromCenter(
+        center: Offset(width / 2, height / 2),
+        width: D,
+        height: D
+      ),
+      onDetect: (result) {
+        onScanSuccess(result);
+      },
     );
   }
 
@@ -262,33 +316,33 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
     );
   }
 
+  Widget? buildActions(BuildContext context) {
 
-  /*
-   *  Display an overlay at the bottom right of the screen
-   */
-  Widget bottomRightOverlay() {
-    return SafeArea(
-        child: Align(
-            alignment: Alignment.bottomRight,
-            child: Padding(
-                padding: EdgeInsets.all(10),
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(40),
-                    child: ColoredBox(
-                        color: Colors.black45,
-                        child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: scanning_paused ? [] : [
-                              CircularProgressIndicator(
-                                  value: null
-                              )
-                              // actionIcon,
-                            ]
-                        )
-                    )
-                )
-            )
-        )
+    List<SpeedDialChild> actions = [
+      SpeedDialChild(
+        child: Icon(flash_status ? TablerIcons.bulb_off : TablerIcons.bulb),
+        label: L10().toggleTorch,
+        onTap: () async {
+          controller.toggleTorch();
+          if (mounted) {
+            setState(() {
+              flash_status = !flash_status;
+            });
+          }
+        }
+      ),
+      SpeedDialChild(
+        child: Icon(TablerIcons.camera),
+        label: L10().switchCamera,
+        onTap: () async {
+          controller.switchCamera();
+        }
+      )
+    ];
+
+    return SpeedDial(
+      icon: Icons.more_horiz,
+      children: actions,
     );
   }
 
@@ -300,11 +354,15 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
         backgroundColor: COLOR_APP_BAR,
         title: Text(L10().scanBarcode),
       ),
+      floatingActionButton: buildActions(context),
       body: GestureDetector(
         onTap: () async {
-          setState(() {
-            scanning_paused = !scanning_paused;
-          });
+          if (mounted) {
+            setState(() {
+              // Toggle the 'scan paused' state
+              scanning_paused = !scanning_paused;
+            });
+          }
         },
         child: Stack(
           children: <Widget>[
@@ -316,8 +374,7 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
               ],
             ),
             topCenterOverlay(),
-            bottomCenterOverlay(),
-            bottomRightOverlay(),
+            bottomCenterOverlay()
           ],
         ),
       ),
