@@ -30,6 +30,7 @@ const String INV_ENABLE_LABEL_PRINTING = "enableLabelPrinting";
 // Part settings
 const String INV_PART_SHOW_PARAMETERS = "partShowParameters";
 const String INV_PART_SHOW_BOM = "partShowBom";
+const String INV_PART_SHOW_PRICING = "partShowPricing";
 
 // Stock settings
 const String INV_STOCK_SHOW_HISTORY = "stockShowHistory";

@@ -853,6 +853,9 @@
   "partPricing": "Part Pricing",
   "@partPricing": {},
 
+  "pricingSettingDetail": "Display part pricing",
+  "@pricingSettingDetail": {},
+
   "partSettings": "Part Settings",
   "@partSettings": {},
 
@@ -1622,5 +1625,11 @@
   "@currency": {},
 
   "priceBreaks": "Price Breaks",
-  "@priceBreaks": {}
+  "@priceBreaks": {},
+
+  "noPricingAvailable": "No pricing available",
+  "@noPricingAvailable": {},
+
+  "noPricingDataFound": "No pricing data found for this part",
+  "@noPricingDataFound": {}
 }

@@ -19,6 +19,7 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
 
   bool partShowParameters = true;
   bool partShowBom = true;
+  bool partShowPricing = true;
   bool stockShowHistory = false;
   bool stockShowTests = false;
   bool stockConfirmScan = false;
@@ -33,6 +34,7 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
   Future<void> loadSettings() async {
     partShowParameters = await InvenTreeSettingsManager().getBool(INV_PART_SHOW_PARAMETERS, true);
     partShowBom = await InvenTreeSettingsManager().getBool(INV_PART_SHOW_BOM, true);
+    partShowPricing = await InvenTreeSettingsManager().getBool(INV_PART_SHOW_PRICING, true);
     stockShowHistory = await InvenTreeSettingsManager().getBool(INV_STOCK_SHOW_HISTORY, false);
     stockShowTests = await InvenTreeSettingsManager().getBool(INV_STOCK_SHOW_TESTS, true);
     stockConfirmScan = await InvenTreeSettingsManager().getBool(INV_STOCK_CONFIRM_SCAN, false);
@@ -77,6 +79,20 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
                   InvenTreeSettingsManager().setValue(INV_PART_SHOW_BOM, value);
                   setState(() {
                     partShowBom = value;
+                  });
+                },
+              ),
+            ),
+            ListTile(
+              title: Text(L10().partPricing),
+              subtitle: Text(L10().pricingSettingDetail),
+              leading: Icon(TablerIcons.currency_dollar),
+              trailing: Switch(
+                value: partShowPricing,
+                onChanged: (bool value) {
+                  InvenTreeSettingsManager().setValue(INV_PART_SHOW_PRICING, value);
+                  setState(() {
+                    partShowPricing = value;
                   });
                 },
               ),
