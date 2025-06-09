@@ -978,7 +978,7 @@
   "@suppliers": {},
   "supplierReference": "مرجع تامین‌ کننده",
   "@supplierReference": {},
-  "switchCamera": "Switch Camera",
+  "switchCamera": "تعویض دوربین",
   "@switchCamera": {},
   "takePicture": "گرفتن عکس",
   "@takePicture": {},
@@ -1012,7 +1012,7 @@
   "@timeout": {
     "description": ""
   },
-  "toggleTorch": "Toggle Torch",
+  "toggleTorch": "روشن خاموش کردن چراغ قوه",
   "@toggleTorch": {},
   "tokenError": "خطای توکن",
   "@tokenError": {},
