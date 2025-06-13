@@ -157,3 +157,34 @@ String renderCurrency(double? amount, String currency, {int decimals = 2}) {
   return value;
 }
 
+/*
+ * Helper function to format prices
+ */
+String formatPrice(String? value, [String? currency]) {
+  if (value == "null") return "N/A";
+  return "${currency ?? ''} $value";
+}
+
+/*
+ * Helper function to format price ranges
+ */
+String? formatPriceRange(String? min, String? max) {
+  if ((min == "null") && (max == "null")) {
+    return null;
+  }
+
+  if (min == "null") {
+    return max;
+  }
+
+  if (max == "null") {
+    return min;
+  }
+
+  if (min == max) {
+    return min;
+  }
+
+  return "$min - $max";
+}
+

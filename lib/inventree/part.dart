@@ -287,6 +287,79 @@ class InvenTreePart extends InvenTreeModel {
     });
   }
 
+  String? currency;
+  String? bomCostMin;
+  String? bomCostMax;
+  String? purchaseCostMin;
+  String? purchaseCostMax;
+  String? internalCostMin;
+  String? internalCostMax;
+  String? supplierPriceMin;
+  String? supplierPriceMax;
+  String? variantCostMin;
+  String? variantCostMax;
+  String? salePriceMin;
+  String? salePriceMax;
+  String? saleHistoryMin;
+  String? saleHistoryMax;
+  String? overallMin;
+  String? overallMax;
+  String? overrideMin;
+  String? overrideMinCurrency;
+  String? overrideMax;
+  String? overrideMaxCurrency;
+  List<String> priceBreaks = [];
+  bool isLoading = true;
+
+  // Request pricing data for this part
+  Future<void> getPricing() async {
+    try {
+      final response = await InvenTreeAPI().get("/api/part/${pk}/pricing/");
+      final salePriceResponse = await InvenTreeAPI().get("/api/part/sale-price/?part=${pk}");
+
+      if (response.isValid()) {
+        final pricingData = response.data;
+
+        currency = pricingData["currency"].toString();
+        bomCostMin = pricingData["bom_cost_min"].toString();
+        bomCostMax = pricingData["bom_cost_max"].toString();
+        purchaseCostMin = pricingData["purchase_cost_min"].toString();
+        purchaseCostMax = pricingData["purchase_cost_max"].toString();
+        internalCostMin = pricingData["internal_cost_min"].toString();
+        internalCostMax = pricingData["internal_cost_max"].toString();
+        supplierPriceMin = pricingData["supplier_price_min"].toString();
+        supplierPriceMax = pricingData["supplier_price_max"].toString();
+        variantCostMin = pricingData["variant_cost_min"].toString();
+        variantCostMax = pricingData["variant_cost_max"].toString();
+        salePriceMin = pricingData["sale_price_min"].toString();
+        salePriceMax = pricingData["sale_price_max"].toString();
+        saleHistoryMin = pricingData["sale_history_min"].toString();
+        saleHistoryMax = pricingData["sale_history_max"].toString();
+        overallMin = pricingData["overall_min"].toString();
+        overallMax = pricingData["overall_max"].toString();
+        overrideMin = pricingData["override_min"].toString();
+        overrideMinCurrency = pricingData["override_min_currency"].toString();
+        overrideMax = pricingData["override_max"].toString();
+        overrideMaxCurrency = pricingData["override_max_currency"].toString();
+      } else {
+        print("Failed to fetch pricing data for part $pk. Error: ${response.error}");
+      }
+
+      // Fetch sale price breaks
+      if (salePriceResponse.isValid()) {
+        final priceBreakData = salePriceResponse.data;
+
+        priceBreaks = (priceBreakData as List<dynamic>)
+            .map<String>((item) => "${L10().quantity}: ${item["quantity"]} ${L10().price}: ${item["price_currency"]} ${item["price"]}")
+            .toList();
+      } else {
+        print("Failed to fetch sale price breaks for part $pk. Error: ${salePriceResponse.error}");
+      }
+    } catch (e) {
+      print("Exception while fetching pricing data for part $pk: $e");
+    }
+  }
+
   int get supplierCount => getInt("suppliers", backup: 0);
   
   // Request supplier parts for this part

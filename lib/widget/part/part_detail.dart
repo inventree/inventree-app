@@ -18,6 +18,7 @@ import "package:inventree/widget/part/bom_list.dart";
 import "package:inventree/widget/part/part_list.dart";
 import "package:inventree/widget/notes_widget.dart";
 import "package:inventree/widget/part/part_parameter_widget.dart";
+import "package:inventree/widget/part/part_pricing.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/part/category_display.dart";
 import "package:inventree/widget/refreshable_state.dart";
@@ -54,6 +55,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   bool showParameters = false;
   bool showBom = false;
+  bool showPricing = false;
 
   int attachmentCount = 0;
   int bomCount = 0;
@@ -231,6 +233,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         });
       }
     });
+
+    showPricing = await InvenTreeSettingsManager().getBool(INV_PART_SHOW_PRICING, true);
 
     List<Map<String, dynamic>> _labels = [];
     bool allowLabelPrinting = await InvenTreeSettingsManager().getBool(INV_ENABLE_LABEL_PRINTING, true);
@@ -424,6 +428,32 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         ),
       ),
     );
+
+    if (showPricing) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().partPricing),
+          leading: Icon(TablerIcons.currency_dollar, color: COLOR_ACTION),
+          trailing: Text(
+            formatPriceRange(
+                formatPrice(widget.part.overallMin?.toString(), widget.part.currency),
+                formatPrice(widget.part.overallMax?.toString(), widget.part.currency)
+            ) ?? L10().noPricingAvailable,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PartPricingWidget(part: part),
+              ),
+            );
+          },
+        ),
+      );
+    }
 
     // Tiles for "purchaseable" parts
     if (part.isPurchaseable) {
