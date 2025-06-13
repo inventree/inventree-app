@@ -978,6 +978,8 @@
   "@suppliers": {},
   "supplierReference": "مرجع تامین‌ کننده",
   "@supplierReference": {},
+  "switchCamera": "تعویض دوربین",
+  "@switchCamera": {},
   "takePicture": "گرفتن عکس",
   "@takePicture": {},
   "targetDate": "تاریخ هدف",
@@ -1010,6 +1012,8 @@
   "@timeout": {
     "description": ""
   },
+  "toggleTorch": "روشن خاموش کردن چراغ قوه",
+  "@toggleTorch": {},
   "tokenError": "خطای توکن",
   "@tokenError": {},
   "tokenMissing": "توکن گمشده",

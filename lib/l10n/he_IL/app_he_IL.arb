@@ -978,6 +978,8 @@
   "@suppliers": {},
   "supplierReference": "הפנייה לספק",
   "@supplierReference": {},
+  "switchCamera": "Switch Camera",
+  "@switchCamera": {},
   "takePicture": "צלם תמונה",
   "@takePicture": {},
   "targetDate": "תאריך יעד",
@@ -1010,6 +1012,8 @@
   "@timeout": {
     "description": ""
   },
+  "toggleTorch": "Toggle Torch",
+  "@toggleTorch": {},
   "tokenError": "שגיאת טוקן",
   "@tokenError": {},
   "tokenMissing": "טוקן חסר",

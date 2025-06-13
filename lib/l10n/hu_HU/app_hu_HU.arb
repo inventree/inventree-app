@@ -978,6 +978,8 @@
   "@suppliers": {},
   "supplierReference": "Beszállítói azonosító",
   "@supplierReference": {},
+  "switchCamera": "Switch Camera",
+  "@switchCamera": {},
   "takePicture": "Fotó készítése",
   "@takePicture": {},
   "targetDate": "Cél dátum",
@@ -1010,6 +1012,8 @@
   "@timeout": {
     "description": ""
   },
+  "toggleTorch": "Toggle Torch",
+  "@toggleTorch": {},
   "tokenError": "Token hiba",
   "@tokenError": {},
   "tokenMissing": "Hiányzó token",

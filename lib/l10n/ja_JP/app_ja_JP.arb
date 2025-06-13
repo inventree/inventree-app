@@ -978,6 +978,8 @@
   "@suppliers": {},
   "supplierReference": "サプライヤーを参照",
   "@supplierReference": {},
+  "switchCamera": "Switch Camera",
+  "@switchCamera": {},
   "takePicture": "画像を撮影",
   "@takePicture": {},
   "targetDate": "目標日",
@@ -1010,6 +1012,8 @@
   "@timeout": {
     "description": ""
   },
+  "toggleTorch": "Toggle Torch",
+  "@toggleTorch": {},
   "tokenError": "トークンエラー",
   "@tokenError": {},
   "tokenMissing": "トークンがありません",

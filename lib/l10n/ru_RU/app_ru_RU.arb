@@ -978,6 +978,8 @@
   "@suppliers": {},
   "supplierReference": "Ссылка на поставщика",
   "@supplierReference": {},
+  "switchCamera": "Switch Camera",
+  "@switchCamera": {},
   "takePicture": "Сделать снимок",
   "@takePicture": {},
   "targetDate": "Целевая дата",
@@ -1010,6 +1012,8 @@
   "@timeout": {
     "description": ""
   },
+  "toggleTorch": "Toggle Torch",
+  "@toggleTorch": {},
   "tokenError": "Ошибка токена",
   "@tokenError": {},
   "tokenMissing": "Отсутствует токен",
