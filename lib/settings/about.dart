@@ -10,6 +10,8 @@ import "package:package_info_plus/package_info_plus.dart";
 import "package:inventree/l10.dart";
 import "package:url_launcher/url_launcher.dart";
 
+const String DOCS_URL = "https://docs.inventree.org/app";
+
 class InvenTreeAboutWidget extends StatelessWidget {
 
   const InvenTreeAboutWidget(this.info) : super();
@@ -39,10 +41,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
 
   Future <void> _openDocs() async {
 
-    var docsUrl = Uri(
-        scheme: "https",
-        host: "docs.inventree.org",
-        path: "en/latest/app/app/");
+    var docsUrl = Uri.parse(DOCS_URL);
 
     if (await canLaunchUrl(docsUrl)) {
       await launchUrl(docsUrl);
@@ -192,7 +191,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
     tiles.add(
       ListTile(
         title: Text(L10().documentation),
-        subtitle: Text("https://docs.inventree.org/app"),
+        subtitle: Text(DOCS_URL),
         leading: Icon(TablerIcons.book, color: COLOR_ACTION),
         onTap: () {
           _openDocs();
