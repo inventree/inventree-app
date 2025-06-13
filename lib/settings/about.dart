@@ -10,7 +10,7 @@ import "package:package_info_plus/package_info_plus.dart";
 import "package:inventree/l10.dart";
 import "package:url_launcher/url_launcher.dart";
 
-final String DOCS_URL = "https://docs.inventree.org/app";
+const String DOCS_URL = "https://docs.inventree.org/app";
 
 class InvenTreeAboutWidget extends StatelessWidget {
 
