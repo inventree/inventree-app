@@ -8,6 +8,7 @@
  */
 
 import "dart:io";
+import "dart:math";
 import "package:currency_formatter/currency_formatter.dart";
 
 import "package:one_context/one_context.dart";
@@ -140,8 +141,7 @@ Future<void> openLink(String url) async {
  */
 String renderCurrency(double? amount, String currency, {int decimals = 2}) {
 
-  if (amount == null) return "-";
-  if (amount.isInfinite || amount.isNaN) return "-";
+  if (amount == null || amount.isInfinite || amount.isNaN) return "-";
 
   currency = currency.trim();
 
@@ -157,34 +157,35 @@ String renderCurrency(double? amount, String currency, {int decimals = 2}) {
   return value;
 }
 
-/*
- * Helper function to format prices
- */
-String formatPrice(String? value, [String? currency]) {
-  if (value == "null") return "N/A";
-  return "${currency ?? ''} $value";
+bool isValidNumber(double? value) {
+  return value != null && !value.isNaN && !value.isInfinite;
 }
 
 /*
- * Helper function to format price ranges
+ * Render a "range" of prices between two values.
  */
-String? formatPriceRange(String? min, String? max) {
-  if ((min == "null") && (max == "null")) {
-    return null;
+String formatPriceRange(double? minPrice, double? maxPrice, { String? currency }) {
+
+  // Account for empty or null values
+  if (!isValidNumber(minPrice) && !isValidNumber(maxPrice)) {
+    return "";
   }
 
-  if (min == "null") {
-    return max;
+  if (isValidNumber(minPrice) && isValidNumber(maxPrice)) {
+
+    // Two values are effectively equal
+    if ((minPrice! - maxPrice!).abs() <= double.minPositive) {
+      return renderCurrency(minPrice, currency ?? "USD");
+    } else {
+      return "${renderCurrency(min(minPrice, maxPrice), currency ?? "USD")} - ${renderCurrency(max(minPrice!, maxPrice!), currency ?? "USD")}";
+    }
   }
 
-  if (max == "null") {
-    return min;
+  if (isValidNumber(minPrice)) {
+    return renderCurrency(minPrice, currency ?? "USD");
+  } else if (isValidNumber(maxPrice)) {
+    return renderCurrency(maxPrice, currency ?? "USD");
+  } else {
+    return "";
   }
-
-  if (min == max) {
-    return min;
-  }
-
-  return "$min - $max";
 }
-
