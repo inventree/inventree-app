@@ -85,7 +85,7 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
             ),
             ListTile(
               title: Text(L10().partPricing),
-              subtitle: Text(L10().pricingSettingDetail),
+              subtitle: Text(L10().partPricingSettingDetail),
               leading: Icon(TablerIcons.currency_dollar),
               trailing: Switch(
                 value: partShowPricing,

@@ -853,7 +853,7 @@
   "partPricing": "Part Pricing",
   "@partPricing": {},
 
-  "pricingSettingDetail": "Display part pricing",
+  "partPricingSettingDetail": "Display part pricing information",
   "@pricingSettingDetail": {},
 
   "partSettings": "Part Settings",

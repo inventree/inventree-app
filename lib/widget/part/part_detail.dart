@@ -53,6 +53,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   int parameterCount = 0;
 
+  bool allowLabelPrinting = false;
   bool showParameters = false;
   bool showBom = false;
   bool showPricing = false;
@@ -153,6 +154,12 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
     final bool result = await part.reload();
 
+    // Load page settings from local storage
+    showPricing = await InvenTreeSettingsManager().getBool(INV_PART_SHOW_PRICING, true);
+    showParameters = await InvenTreeSettingsManager().getBool(INV_PART_SHOW_PARAMETERS, true);
+    showBom = await InvenTreeSettingsManager().getBool(INV_PART_SHOW_BOM, true);
+    allowLabelPrinting = await InvenTreeSettingsManager().getBool(INV_ENABLE_LABEL_PRINTING, true);
+
     if (!result || part.pk == -1) {
       // Part could not be loaded, for some reason
       Navigator.of(context).pop();
@@ -181,9 +188,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       }
     });
 
-    // Request the number of parameters for this part
-    showParameters = await InvenTreeSettingsManager().getBool(INV_PART_SHOW_PARAMETERS, true);
-
     // Request the number of attachments
     InvenTreePartAttachment().countAttachments(part.pk).then((int value) {
       if (mounted) {
@@ -192,8 +196,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         });
       }
     });
-
-    showBom = await InvenTreeSettingsManager().getBool(INV_PART_SHOW_BOM, true);
 
     // Request the number of BOM items
     InvenTreePart().count(
@@ -234,10 +236,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       }
     });
 
-    showPricing = await InvenTreeSettingsManager().getBool(INV_PART_SHOW_PRICING, true);
-
     List<Map<String, dynamic>> _labels = [];
-    bool allowLabelPrinting = await InvenTreeSettingsManager().getBool(INV_ENABLE_LABEL_PRINTING, true);
     allowLabelPrinting &= api.supportsMixin("labels");
 
     if (allowLabelPrinting) {
