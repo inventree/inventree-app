@@ -28,6 +28,9 @@ linter:
 
     avoid_redundant_argument_values: false
 
+    # TODO: Enable this rule once the code is cleaned up a bit more
+    unnecessary_breaks: false
+
     unnecessary_brace_in_string_interps: false
 
     unnecessary_string_interpolations: false
