@@ -5,6 +5,7 @@ import "package:flutter/material.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/helpers.dart";
+import "package:inventree/inventree/sentry.dart";
 import "package:inventree/l10.dart";
 
 import "package:inventree/inventree/stock.dart";
@@ -287,6 +288,28 @@ class InvenTreePart extends InvenTreeModel {
     });
   }
 
+  // Request pricing data for this part
+  Future<InvenTreePartPricing?> getPricing() async {
+
+    print("REQUEST PRICING FOR: ${pk}");
+
+    try {
+      final response = await InvenTreeAPI().get("/api/part/${pk}/pricing/");
+      if (response.isValid()) {
+        final pricingData = response.data;
+
+        if (pricingData is Map<String, dynamic>) {
+          return InvenTreePartPricing.fromJson(pricingData);
+        }
+      }
+    } catch (e, stackTrace) {
+      print("Exception while fetching pricing data for part $pk: $e");
+      sentryReportError("getPricing", e, stackTrace);
+    }
+
+    return null;
+  }
+
   int get supplierCount => getInt("suppliers", backup: 0);
   
   // Request supplier parts for this part
@@ -402,6 +425,8 @@ class InvenTreePart extends InvenTreeModel {
 
     bool get isVirtual => getBool("virtual");
 
+    bool get isTemplate => getBool("is_template");
+
     bool get isTrackable => getBool("trackable");
 
     // Get the IPN (internal part number) for the Part instance
@@ -490,6 +515,54 @@ class InvenTreePart extends InvenTreeModel {
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreePart.fromJson(json);
 }
+
+
+class InvenTreePartPricing extends InvenTreeModel {
+
+  InvenTreePartPricing() : super();
+
+  InvenTreePartPricing.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+
+  @override
+  List<String> get rolesRequired => ["part"];
+
+  @override
+  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreePartPricing.fromJson(json);
+
+  // Price data accessors
+  String get currency => getString("currency", backup: "USD");
+
+  double? get overallMin => getDoubleOrNull("overall_min");
+  double? get overallMax => getDoubleOrNull("overall_max");
+
+  double? get overrideMin => getDoubleOrNull("override_min");
+  double? get overrideMax => getDoubleOrNull("override_max");
+
+  String get overrideMinCurrency => getString("override_min_currency", backup: currency);
+  String get overrideMaxCurrency => getString("override_max_currency", backup: currency);
+
+  double? get bomCostMin => getDoubleOrNull("bom_cost_min");
+  double? get bomCostMax => getDoubleOrNull("bom_cost_max");
+
+  double? get purchaseCostMin => getDoubleOrNull("purchase_cost_min");
+  double? get purchaseCostMax => getDoubleOrNull("purchase_cost_max");
+
+  double? get internalCostMin => getDoubleOrNull("internal_cost_min");
+  double? get internalCostMax => getDoubleOrNull("internal_cost_max");
+
+  double? get supplierPriceMin => getDoubleOrNull("supplier_price_min");
+  double? get supplierPriceMax => getDoubleOrNull("supplier_price_max");
+
+  double? get variantCostMin => getDoubleOrNull("variant_cost_min");
+  double? get variantCostMax => getDoubleOrNull("variant_cost_max");
+
+  double? get salePriceMin => getDoubleOrNull("sale_price_min");
+  double? get salePriceMax => getDoubleOrNull("sale_price_max");
+
+  double? get saleHistoryMin => getDoubleOrNull("sale_history_min");
+  double? get saleHistoryMax => getDoubleOrNull("sale_history_max");
+}
+
 
 /*
  * Class representing an attachment file against a Part object

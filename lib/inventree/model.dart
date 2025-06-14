@@ -142,7 +142,7 @@ class InvenTreeModel {
   }
 
   // Helper function to get double value from JSON data
-  double getDouble(String key, {double backup = 0.0, String subKey = ""}) {
+  double? getDoubleOrNull(String key, {double? backup, String subKey = ""}) {
     dynamic value = getValue(key, backup: backup, subKey: subKey);
 
     if (value == null) {
@@ -150,6 +150,11 @@ class InvenTreeModel {
     }
 
     return double.tryParse(value.toString()) ?? backup;
+  }
+
+  double getDouble(String key, {double backup = 0.0, String subkey = "" }) {
+    double? value = getDoubleOrNull(key, backup: backup, subKey: subkey);
+    return value ?? backup;
   }
 
   // Helper function to get boolean value from json data

@@ -140,8 +140,7 @@ Future<void> openLink(String url) async {
  */
 String renderCurrency(double? amount, String currency, {int decimals = 2}) {
 
-  if (amount == null) return "-";
-  if (amount.isInfinite || amount.isNaN) return "-";
+  if (amount == null || amount.isInfinite || amount.isNaN) return "-";
 
   currency = currency.trim();
 
@@ -157,3 +156,34 @@ String renderCurrency(double? amount, String currency, {int decimals = 2}) {
   return value;
 }
 
+bool isValidNumber(double? value) {
+  return value != null && !value.isNaN && !value.isInfinite;
+}
+
+/*
+ * Render a "range" of prices between two values.
+ */
+String formatPriceRange(double? minPrice, double? maxPrice, { String? currency }) {
+
+  // Account for empty or null values
+  if (!isValidNumber(minPrice) && !isValidNumber(maxPrice)) {
+    return "-";
+  }
+
+  if (isValidNumber(minPrice) && isValidNumber(maxPrice)) {
+    // Two values are equal
+    if (minPrice == maxPrice) {
+      return renderCurrency(minPrice, currency ?? "USD");
+    } else {
+      return "${renderCurrency(minPrice, currency ?? "USD")} - ${renderCurrency(maxPrice, currency ?? "USD")}";
+    }
+  }
+
+  if (isValidNumber(minPrice)) {
+    return renderCurrency(minPrice, currency ?? "USD");
+  } else if (isValidNumber(maxPrice)) {
+    return renderCurrency(maxPrice, currency ?? "USD");
+  } else {
+    return "-";
+  }
+}

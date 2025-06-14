@@ -18,6 +18,7 @@ import "package:inventree/widget/part/bom_list.dart";
 import "package:inventree/widget/part/part_list.dart";
 import "package:inventree/widget/notes_widget.dart";
 import "package:inventree/widget/part/part_parameter_widget.dart";
+import "package:inventree/widget/part/part_pricing.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/part/category_display.dart";
 import "package:inventree/widget/refreshable_state.dart";
@@ -52,13 +53,17 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   int parameterCount = 0;
 
+  bool allowLabelPrinting = false;
   bool showParameters = false;
   bool showBom = false;
+  bool showPricing = false;
 
   int attachmentCount = 0;
   int bomCount = 0;
   int usedInCount = 0;
   int variantCount = 0;
+
+  InvenTreePartPricing? partPricing;
 
   List<Map<String, dynamic>> labels = [];
 
@@ -151,6 +156,12 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
     final bool result = await part.reload();
 
+    // Load page settings from local storage
+    showPricing = await InvenTreeSettingsManager().getBool(INV_PART_SHOW_PRICING, true);
+    showParameters = await InvenTreeSettingsManager().getBool(INV_PART_SHOW_PARAMETERS, true);
+    showBom = await InvenTreeSettingsManager().getBool(INV_PART_SHOW_BOM, true);
+    allowLabelPrinting = await InvenTreeSettingsManager().getBool(INV_ENABLE_LABEL_PRINTING, true);
+
     if (!result || part.pk == -1) {
       // Part could not be loaded, for some reason
       Navigator.of(context).pop();
@@ -179,9 +190,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       }
     });
 
-    // Request the number of parameters for this part
-    showParameters = await InvenTreeSettingsManager().getBool(INV_PART_SHOW_PARAMETERS, true);
-
     // Request the number of attachments
     InvenTreePartAttachment().countAttachments(part.pk).then((int value) {
       if (mounted) {
@@ -191,7 +199,16 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       }
     });
 
-    showBom = await InvenTreeSettingsManager().getBool(INV_PART_SHOW_BOM, true);
+    // If show pricing information?
+    if (showPricing) {
+      part.getPricing().then((InvenTreePartPricing? pricing) {
+        if (mounted) {
+          setState(() {
+            partPricing = pricing;
+          });
+        }
+      });
+    }
 
     // Request the number of BOM items
     InvenTreePart().count(
@@ -233,7 +250,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     });
 
     List<Map<String, dynamic>> _labels = [];
-    bool allowLabelPrinting = await InvenTreeSettingsManager().getBool(INV_ENABLE_LABEL_PRINTING, true);
     allowLabelPrinting &= api.supportsMixin("labels");
 
     if (allowLabelPrinting) {
@@ -271,8 +287,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   Widget headerTile() {
     return Card(
         child: ListTile(
-          title: Text("${part.fullname}"),
-          subtitle: Text("${part.description}"),
+          title: Text(part.fullname),
+          subtitle: Text(part.description),
           trailing: Text(
             part.stockString(),
             style: TextStyle(
@@ -424,6 +440,36 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         ),
       ),
     );
+
+    if (showPricing && partPricing != null) {
+
+      String pricing = formatPriceRange(
+        partPricing?.overallMin,
+        partPricing?.overallMax,
+        currency: partPricing?.currency
+      );
+
+      tiles.add(
+        ListTile(
+          title: Text(L10().partPricing),
+          leading: Icon(TablerIcons.currency_dollar, color: COLOR_ACTION),
+          trailing: Text(
+            pricing.isNotEmpty ? pricing : L10().noPricingAvailable,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PartPricingWidget(part: part, partPricing: partPricing),
+              ),
+            );
+          },
+        ),
+      );
+    }
 
     // Tiles for "purchaseable" parts
     if (part.isPurchaseable) {
