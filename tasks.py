@@ -37,3 +37,8 @@ def ios(c):
 def android(c):
     """Build Android app in release configuration."""
     c.run("flutter build appbundle --release --no-tree-shake-icons")
+
+@task
+def format(c):
+    """Format Dart code."""
+    c.run("dart format --output=none")
