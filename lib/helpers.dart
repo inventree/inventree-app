@@ -8,7 +8,6 @@
  */
 
 import "dart:io";
-import "dart:math";
 import "package:currency_formatter/currency_formatter.dart";
 
 import "package:one_context/one_context.dart";
@@ -176,7 +175,7 @@ String formatPriceRange(double? minPrice, double? maxPrice, { String? currency }
     if (minPrice == maxPrice) {
       return renderCurrency(minPrice, currency ?? "USD");
     } else {
-      return "${renderCurrency(min(minPrice!, maxPrice!), currency ?? "USD")} - ${renderCurrency(max(minPrice!, maxPrice!), currency ?? "USD")}";
+      return "${renderCurrency(minPrice, currency ?? "USD")} - ${renderCurrency(maxPrice, currency ?? "USD")}";
     }
   }
 
