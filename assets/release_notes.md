@@ -1,6 +1,8 @@
 ### 0.19.0 - June 2025
 ---
 - Replace barcode scanning library for better performance
+- Fix broken documentation link
+- Updated translations
 
 ### 0.18.1 - April 2025
 ---
