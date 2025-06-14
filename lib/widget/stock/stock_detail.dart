@@ -515,8 +515,8 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     return Card(
       child: ListTile(
-        title: Text("${widget.item.partName}"),
-        subtitle: Text("${widget.item.partDescription}"),
+        title: Text(widget.item.partName),
+        subtitle: Text(widget.item.partDescription),
         leading: InvenTreeAPI().getThumbnail(widget.item.partImage),
         trailing: trailing,
         onTap: () async {
