@@ -2,16 +2,13 @@
  * Base model for various "orders" which share common properties
  */
 
-
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/part.dart";
-
 
 /*
  * Generic class representing an "order"
  */
 class InvenTreeOrder extends InvenTreeModel {
-
   InvenTreeOrder() : super();
 
   InvenTreeOrder.fromJson(Map<String, dynamic> json) : super.fromJson(json);
@@ -34,7 +31,8 @@ class InvenTreeOrder extends InvenTreeModel {
 
   int get shipmentCount => getInt("shipments_count", backup: 0);
 
-  int get completedShipmentCount => getInt("completed_shipments_count", backup: 0);
+  int get completedShipmentCount =>
+      getInt("completed_shipments_count", backup: 0);
 
   bool get complete => completedLineItemCount >= lineItemCount;
 
@@ -46,14 +44,16 @@ class InvenTreeOrder extends InvenTreeModel {
 
   String get responsibleName => getString("name", subKey: "responsible_detail");
 
-  String get responsibleLabel => getString("label", subKey: "responsible_detail");
+  String get responsibleLabel =>
+      getString("label", subKey: "responsible_detail");
 
   // Project code information
   int get projectCodeId => getInt("project_code");
 
   String get projectCode => getString("code", subKey: "project_code_detail");
 
-  String get projectCodeDescription => getString("description", subKey: "project_code_detail");
+  String get projectCodeDescription =>
+      getString("description", subKey: "project_code_detail");
 
   bool get hasProjectCode => projectCode.isNotEmpty;
 
@@ -84,12 +84,10 @@ class InvenTreeOrder extends InvenTreeModel {
   }
 }
 
-
 /*
  * Generic class representing an "order line"
  */
 class InvenTreeOrderLine extends InvenTreeModel {
-
   InvenTreeOrderLine() : super();
 
   InvenTreeOrderLine.fromJson(Map<String, dynamic> json) : super.fromJson(json);
@@ -121,15 +119,14 @@ class InvenTreeOrderLine extends InvenTreeModel {
   String get targetDate => getDateString("target_date");
 }
 
-
 /*
  * Generic class representing an "ExtraLineItem"
  */
 class InvenTreeExtraLineItem extends InvenTreeModel {
-
   InvenTreeExtraLineItem() : super();
 
-  InvenTreeExtraLineItem.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+  InvenTreeExtraLineItem.fromJson(Map<String, dynamic> json)
+      : super.fromJson(json);
 
   int get orderId => getInt("order");
 
@@ -157,5 +154,4 @@ class InvenTreeExtraLineItem extends InvenTreeModel {
       "notes": {},
     };
   }
-
 }

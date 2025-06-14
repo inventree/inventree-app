@@ -1,5 +1,3 @@
-
-
 /*
  * Widget for displaying detail view of a single SalesOrderLineItem
  */
@@ -22,21 +20,16 @@ import "package:inventree/l10.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/api_form.dart";
 
-
 class SoLineDetailWidget extends StatefulWidget {
-
   const SoLineDetailWidget(this.item, {Key? key}) : super(key: key);
 
   final InvenTreeSOLineItem item;
 
   @override
   _SOLineDetailWidgetState createState() => _SOLineDetailWidgetState();
-
 }
 
-
 class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
-
   _SOLineDetailWidgetState();
 
   InvenTreeSalesOrder? order;
@@ -62,7 +55,6 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
   }
 
   Future<void> _allocateStock(BuildContext context) async {
-
     if (order == null) {
       return;
     }
@@ -76,22 +68,13 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
       "part": widget.item.partId.toString()
     };
     fields["quantity"]?["value"] = widget.item.unallocatedQuantity.toString();
-    fields["shipment"]?["filters"] = {
-      "order": order!.pk.toString()
-    };
+    fields["shipment"]?["filters"] = {"order": order!.pk.toString()};
 
-    launchApiForm(
-      context,
-      L10().allocateStock,
-      order!.allocate_url,
-      fields,
-      method: "POST",
-      icon: TablerIcons.transition_right,
-      onSuccess: (data) async {
-        refresh(context);
-      }
-    );
-
+    launchApiForm(context, L10().allocateStock, order!.allocate_url, fields,
+        method: "POST",
+        icon: TablerIcons.transition_right, onSuccess: (data) async {
+      refresh(context);
+    });
   }
 
   Future<void> _editLineItem(BuildContext context) async {
@@ -102,32 +85,24 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
       fields["part"]?["hidden"] = true;
     }
 
-    widget.item.editForm(
-      context,
-      L10().editLineItem,
-      fields: fields,
-      onSuccess: (data) async {
-        refresh(context);
-        showSnackIcon(L10().lineItemUpdated, success: true);
-      }
-    );
+    widget.item.editForm(context, L10().editLineItem, fields: fields,
+        onSuccess: (data) async {
+      refresh(context);
+      showSnackIcon(L10().lineItemUpdated, success: true);
+    });
   }
 
   @override
   List<SpeedDialChild> actionButtons(BuildContext context) {
-
     List<SpeedDialChild> buttons = [];
 
     if (order != null && order!.isOpen) {
-      buttons.add(
-        SpeedDialChild(
+      buttons.add(SpeedDialChild(
           child: Icon(TablerIcons.transition_right, color: Colors.blue),
           label: L10().allocateStock,
           onTap: () async {
             _allocateStock(context);
-          }
-        )
-      );
+          }));
     }
 
     return buttons;
@@ -138,23 +113,15 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
     List<SpeedDialChild> actions = [];
 
     if (order != null && order!.isOpen && InvenTreeSOLineItem().canCreate) {
-
       if (api.supportsBarcodeSOAllocateEndpoint) {
-        actions.add(
-            SpeedDialChild(
-              child: Icon(TablerIcons.transition_right),
-              label: L10().allocateStock,
-              onTap: () async {
-                scanBarcode(
-                  context,
+        actions.add(SpeedDialChild(
+            child: Icon(TablerIcons.transition_right),
+            label: L10().allocateStock,
+            onTap: () async {
+              scanBarcode(context,
                   handler: SOAllocateStockHandler(
-                    salesOrder: order,
-                    lineItem: widget.item
-                  )
-                );
-              }
-            )
-        );
+                      salesOrder: order, lineItem: widget.item));
+            }));
       }
     }
 
@@ -179,8 +146,7 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
     List<Widget> tiles = [];
 
     // Reference to the part
-    tiles.add(
-      ListTile(
+    tiles.add(ListTile(
         title: Text(L10().part),
         subtitle: Text(widget.item.partName),
         leading: Icon(TablerIcons.box, color: COLOR_ACTION),
@@ -193,83 +159,62 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
           if (part is InvenTreePart) {
             part.goToDetailPage(context);
           }
-        }
-      )
-    );
+        }));
 
     // Available quantity
-    tiles.add(
-      ListTile(
+    tiles.add(ListTile(
         title: Text(L10().availableStock),
         leading: Icon(TablerIcons.packages),
-        trailing: Text(simpleNumberString(widget.item.availableStock))
-      )
-    );
+        trailing: Text(simpleNumberString(widget.item.availableStock))));
 
     // Allocated quantity
-    tiles.add(
-      ListTile(
+    tiles.add(ListTile(
         leading: Icon(TablerIcons.clipboard_check),
         title: Text(L10().allocated),
         subtitle: ProgressBar(widget.item.allocatedRatio),
-        trailing: Text(
-          widget.item.allocatedString,
-          style: TextStyle(
-            color: widget.item.isAllocated ? COLOR_SUCCESS : COLOR_WARNING
-          )
-        )
-      )
-    );
+        trailing: Text(widget.item.allocatedString,
+            style: TextStyle(
+                color:
+                    widget.item.isAllocated ? COLOR_SUCCESS : COLOR_WARNING))));
 
     // Shipped quantity
-    tiles.add(
-      ListTile(
+    tiles.add(ListTile(
         title: Text(L10().shipped),
         subtitle: ProgressBar(widget.item.progressRatio),
         trailing: Text(
           widget.item.progressString,
           style: TextStyle(
-            color: widget.item.isComplete ? COLOR_SUCCESS : COLOR_WARNING
-          ),
+              color: widget.item.isComplete ? COLOR_SUCCESS : COLOR_WARNING),
         ),
-        leading: Icon(TablerIcons.truck)
-      )
-    );
+        leading: Icon(TablerIcons.truck)));
 
     // Reference
     if (widget.item.reference.isNotEmpty) {
-      tiles.add(
-        ListTile(
+      tiles.add(ListTile(
           title: Text(L10().reference),
           subtitle: Text(widget.item.reference),
-          leading: Icon(TablerIcons.hash)
-        )
-      );
+          leading: Icon(TablerIcons.hash)));
     }
 
     // Note
     if (widget.item.notes.isNotEmpty) {
-      tiles.add(
-          ListTile(
-            title: Text(L10().notes),
-            subtitle: Text(widget.item.notes),
-            leading: Icon(TablerIcons.note),
-          )
-      );
+      tiles.add(ListTile(
+        title: Text(L10().notes),
+        subtitle: Text(widget.item.notes),
+        leading: Icon(TablerIcons.note),
+      ));
     }
 
     // External link
     if (widget.item.link.isNotEmpty) {
-      tiles.add(
-          ListTile(
-            title: Text(L10().link),
-            subtitle: Text(widget.item.link),
-            leading: Icon(TablerIcons.link, color: COLOR_ACTION),
-            onTap: () async {
-              await openLink(widget.item.link);
-            },
-          )
-      );
+      tiles.add(ListTile(
+        title: Text(L10().link),
+        subtitle: Text(widget.item.link),
+        leading: Icon(TablerIcons.link, color: COLOR_ACTION),
+        onTap: () async {
+          await openLink(widget.item.link);
+        },
+      ));
     }
 
     return tiles;

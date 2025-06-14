@@ -10,7 +10,6 @@ import "package:inventree/inventree/part.dart";
 
 import "setup.dart";
 
-
 void main() {
   setupTestEnv();
 
@@ -35,18 +34,15 @@ void main() {
       }
 
       // Filter by parent category
-      results = await InvenTreePartCategory().list(
-        filters: {
-          "parent": "1",
-        }
-      );
+      results = await InvenTreePartCategory().list(filters: {
+        "parent": "1",
+      });
 
       assert(results.length == 3);
     });
   });
 
   group("Part Tests:", () {
-
     test("Basics", () async {
       assert(InvenTreePart().URL == "part/");
     });
@@ -68,11 +64,9 @@ void main() {
       }
 
       // Filter by category
-      results = await InvenTreePart().list(
-        filters: {
-          "category": "2",
-        }
-      );
+      results = await InvenTreePart().list(filters: {
+        "category": "2",
+      });
 
       assert(results.length == 2);
     });
@@ -99,7 +93,6 @@ void main() {
         assert(part.unallocatedStockString == "9000");
         assert(part.inStockString == "9000");
       }
-
     });
 
     test("Part Adjust", () async {
@@ -117,11 +110,9 @@ void main() {
 
         // Change the name to something else
 
-        response = await part.update(
-          values: {
-            "name": "Woogle",
-          }
-        );
+        response = await part.update(values: {
+          "name": "Woogle",
+        });
 
         assert(response.isValid());
         assert(response.statusCode == 200);
@@ -130,11 +121,7 @@ void main() {
         assert(part.name == "Woogle");
 
         // And change it back again
-        response = await part.update(
-          values: {
-            "name": "M2x4 LPHS"
-          }
-        );
+        response = await part.update(values: {"name": "M2x4 LPHS"});
 
         assert(response.isValid());
         assert(response.statusCode == 200);
@@ -144,5 +131,4 @@ void main() {
       }
     });
   });
-
 }

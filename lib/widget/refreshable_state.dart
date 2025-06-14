@@ -10,12 +10,10 @@ import "package:inventree/widget/back.dart";
 import "package:inventree/widget/drawer.dart";
 import "package:inventree/widget/search.dart";
 
-
 /*
  * Simple mixin class which defines simple methods for defining widget properties
  */
 mixin BaseWidgetProperties {
-
   /*
    * Return a list of appBar actions
    * By default, no appBar actions are available
@@ -23,7 +21,9 @@ mixin BaseWidgetProperties {
   List<Widget> appBarActions(BuildContext context) => [];
 
   // Return a title for the appBar (placeholder)
-  String getAppBarTitle() { return "--- app bar ---"; }
+  String getAppBarTitle() {
+    return "--- app bar ---";
+  }
 
   // Function to construct a drawer (override if needed)
   Widget getDrawer(BuildContext context) {
@@ -38,7 +38,6 @@ mixin BaseWidgetProperties {
 
   // Function to construct a body
   Widget getBody(BuildContext context) {
-
     // Default implementation is to return a ListView
     // Override getTiles to replace the internal context
     return ListView(
@@ -51,7 +50,6 @@ mixin BaseWidgetProperties {
    * Construct the top AppBar for this view
    */
   AppBar? buildAppBar(BuildContext context, GlobalKey<ScaffoldState> key) {
-
     List<Widget> tabs = getTabIcons(context);
 
     return AppBar(
@@ -70,8 +68,8 @@ mixin BaseWidgetProperties {
    * - Button to access global search
    * - Button to access barcode scan
    */
-  BottomAppBar? buildBottomAppBar(BuildContext context, GlobalKey<ScaffoldState> key) {
-
+  BottomAppBar? buildBottomAppBar(
+      BuildContext context, GlobalKey<ScaffoldState> key) {
     const double iconSize = 40;
 
     List<Widget> icons = [
@@ -89,12 +87,8 @@ mixin BaseWidgetProperties {
         iconSize: iconSize,
         onPressed: () {
           if (InvenTreeAPI().checkConnection()) {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => SearchWidget(true)
-                )
-            );
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => SearchWidget(true)));
           }
         },
       ),
@@ -125,9 +119,7 @@ mixin BaseWidgetProperties {
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
               children: icons,
-            )
-        )
-    );
+            )));
   }
 
   /*
@@ -146,7 +138,6 @@ mixin BaseWidgetProperties {
    * Build out action buttons for a given widget
    */
   Widget? buildSpeedDial(BuildContext context) {
-
     final actions = actionButtons(context);
     final barcodeActions = barcodeButtons(context);
 
@@ -157,29 +148,25 @@ mixin BaseWidgetProperties {
     List<Widget> children = [];
 
     if (barcodeActions.isNotEmpty) {
-      children.add(
-        SpeedDial(
-          icon: Icons.qr_code_scanner,
-          activeIcon: Icons.close,
-          children: barcodeActions,
-          spacing: 14,
-          childPadding: const EdgeInsets.all(5),
-          spaceBetweenChildren: 15,
-        )
-      );
+      children.add(SpeedDial(
+        icon: Icons.qr_code_scanner,
+        activeIcon: Icons.close,
+        children: barcodeActions,
+        spacing: 14,
+        childPadding: const EdgeInsets.all(5),
+        spaceBetweenChildren: 15,
+      ));
     }
 
     if (actions.isNotEmpty) {
-      children.add(
-          SpeedDial(
-            icon: Icons.more_horiz,
-            activeIcon: Icons.close,
-            children: actions,
-            spacing: 14,
-            childPadding: const EdgeInsets.all(5),
-            spaceBetweenChildren: 15,
-          )
-      );
+      children.add(SpeedDial(
+        icon: Icons.more_horiz,
+        activeIcon: Icons.close,
+        children: actions,
+        spacing: 14,
+        childPadding: const EdgeInsets.all(5),
+        spaceBetweenChildren: 15,
+      ));
     }
 
     return Wrap(
@@ -191,9 +178,7 @@ mixin BaseWidgetProperties {
 
   // Return list of "tabs" for this widget
   List<Widget> getTabIcons(BuildContext context) => [];
-
 }
-
 
 /*
  * Abstract base class which provides generic "refresh" functionality.
@@ -201,8 +186,8 @@ mixin BaseWidgetProperties {
  * - Drag down and release to 'refresh' the widget
  * - Define some method which runs to 'refresh' the widget state
  */
-abstract class RefreshableState<T extends StatefulWidget> extends State<T> with BaseWidgetProperties {
-
+abstract class RefreshableState<T extends StatefulWidget> extends State<T>
+    with BaseWidgetProperties {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
 
@@ -235,7 +220,6 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> with 
 
   // Refresh the widget - handler for custom request() method
   Future<void> refresh(BuildContext context) async {
-
     // Escape if the widget is no longer loaded
     if (!mounted) {
       return;
@@ -259,13 +243,14 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> with 
 
   @override
   Widget build(BuildContext context) {
-
     // Save the context for future use
     _context = context;
 
     List<Widget> tabs = getTabIcons(context);
 
-    Widget body = tabs.isEmpty ? getBody(context) : TabBarView(children: getTabs(context));
+    Widget body = tabs.isEmpty
+        ? getBody(context)
+        : TabBarView(children: getTabs(context));
 
     Scaffold view = Scaffold(
       key: scaffoldKey,
@@ -274,24 +259,22 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T> with 
       floatingActionButton: buildSpeedDial(context),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
       body: RefreshIndicator(
-        key: refreshKey,
-        notificationPredicate: (ScrollNotification notification) {
-          return true;
-        },
-
-        onRefresh: () async {
-          refresh(context);
-        },
-        child: body
-      ),
+          key: refreshKey,
+          notificationPredicate: (ScrollNotification notification) {
+            return true;
+          },
+          onRefresh: () async {
+            refresh(context);
+          },
+          child: body),
       bottomNavigationBar: buildBottomAppBar(context, scaffoldKey),
     );
 
     // Default implementation is *not* tabbed
     if (tabs.isNotEmpty) {
       return DefaultTabController(
-          length: tabs.length,
-          child: view,
+        length: tabs.length,
+        child: view,
       );
     } else {
       return view;

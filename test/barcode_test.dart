@@ -18,7 +18,6 @@ import "package:inventree/inventree/stock.dart";
 
 import "setup.dart";
 
-
 void main() {
   setupTestEnv();
 
@@ -64,14 +63,12 @@ void main() {
       debugContains("showSnackIcon: 'No match for barcode'");
       assert(debugMessageCount() == 3);
     });
-
   });
 
   group("Test StockItemScanIntoLocationHandler:", () {
     // Tests for scanning a stock item into a location
 
     test("Scan Into Location", () async {
-
       final item = await InvenTreeStockItem().get(1) as InvenTreeStockItem?;
       assert(item != null);
 
@@ -90,7 +87,6 @@ void main() {
       await handler.processBarcode('{"stocklocation": 1}');
       await item.reload();
       assert(item.locationId == 1);
-
     });
   });
 
@@ -98,7 +94,8 @@ void main() {
     // Tests for scanning items into a stock location
 
     test("Scan In Items", () async {
-      final location = await InvenTreeStockLocation().get(1) as InvenTreeStockLocation?;
+      final location =
+          await InvenTreeStockLocation().get(1) as InvenTreeStockLocation?;
 
       assert(location != null);
       assert(location!.pk == 1);
@@ -115,7 +112,6 @@ void main() {
         assert(item!.pk == id);
         assert(item!.locationId == 1);
       }
-
     });
   });
 
@@ -123,7 +119,8 @@ void main() {
     // Tests for scanning a location into a parent location
 
     test("Scan Parent", () async {
-      final location = await InvenTreeStockLocation().get(7) as InvenTreeStockLocation?;
+      final location =
+          await InvenTreeStockLocation().get(7) as InvenTreeStockLocation?;
 
       assert(location != null);
       assert(location!.pk == 7);
@@ -146,14 +143,10 @@ void main() {
   });
 
   group("Test PartBarcodes:", () {
-
     // Assign a custom barcode to a Part instance
     test("Assign Barcode", () async {
-
       // Unlink barcode first
-      await InvenTreeAPI().unlinkBarcode({
-        "part": "2"
-      });
+      await InvenTreeAPI().unlinkBarcode({"part": "2"});
 
       final part = await InvenTreePart().get(2) as InvenTreePart?;
 
@@ -164,19 +157,14 @@ void main() {
       assert(part!.customBarcode.isEmpty);
 
       // Assign custom barcode data to the part
-      await InvenTreeAPI().linkBarcode({
-        "part": "2",
-        "barcode": "xyz-123"
-      });
+      await InvenTreeAPI().linkBarcode({"part": "2", "barcode": "xyz-123"});
 
       await part!.reload();
       assert(part.customBarcode.isNotEmpty);
 
       // Check we can de-register a barcode also
       // Unlink barcode first
-      await InvenTreeAPI().unlinkBarcode({
-        "part": "2"
-      });
+      await InvenTreeAPI().unlinkBarcode({"part": "2"});
 
       await part.reload();
       assert(part.customBarcode.isEmpty);

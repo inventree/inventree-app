@@ -4,7 +4,7 @@ description: InvenTree stock management
 version: 0.18.1+98
 
 environment:
-  sdk: ">=2.19.5 <3.32.2"
+  sdk: ^3.8.1
 
 dependencies:
   adaptive_theme: ^3.3.0                  # Theme management (e.g. dark mode)

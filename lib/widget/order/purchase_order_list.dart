@@ -16,18 +16,18 @@ import "package:inventree/inventree/purchase_order.dart";
  * Widget class for displaying a list of Purchase Orders
  */
 class PurchaseOrderListWidget extends StatefulWidget {
-
-  const PurchaseOrderListWidget({this.filters = const {}, Key? key}) : super(key: key);
+  const PurchaseOrderListWidget({this.filters = const {}, Key? key})
+      : super(key: key);
 
   final Map<String, String> filters;
 
   @override
-  _PurchaseOrderListWidgetState createState() => _PurchaseOrderListWidgetState();
+  _PurchaseOrderListWidgetState createState() =>
+      _PurchaseOrderListWidgetState();
 }
 
-
-class _PurchaseOrderListWidgetState extends RefreshableState<PurchaseOrderListWidget> {
-
+class _PurchaseOrderListWidgetState
+    extends RefreshableState<PurchaseOrderListWidget> {
   _PurchaseOrderListWidgetState();
 
   @override
@@ -38,15 +38,12 @@ class _PurchaseOrderListWidgetState extends RefreshableState<PurchaseOrderListWi
     List<SpeedDialChild> actions = [];
 
     if (InvenTreePurchaseOrder().canCreate) {
-      actions.add(
-        SpeedDialChild(
+      actions.add(SpeedDialChild(
           child: Icon(TablerIcons.circle_plus),
           label: L10().purchaseOrderCreate,
           onTap: () {
             _createPurchaseOrder(context);
-          }
-        )
-      );
+          }));
     }
 
     return actions;
@@ -59,19 +56,15 @@ class _PurchaseOrderListWidgetState extends RefreshableState<PurchaseOrderListWi
     // Cannot set contact until company is locked in
     fields.remove("contact");
 
-    InvenTreePurchaseOrder().createForm(
-      context,
-      L10().purchaseOrderCreate,
-      fields: fields,
-      onSuccess: (result) async {
-        Map<String, dynamic> data = result as Map<String, dynamic>;
+    InvenTreePurchaseOrder().createForm(context, L10().purchaseOrderCreate,
+        fields: fields, onSuccess: (result) async {
+      Map<String, dynamic> data = result as Map<String, dynamic>;
 
-        if (data.containsKey("pk")) {
-          var order = InvenTreePurchaseOrder.fromJson(data);
-          order.goToDetailPage(context);
-        }
+      if (data.containsKey("pk")) {
+        var order = InvenTreePurchaseOrder.fromJson(data);
+        order.goToDetailPage(context);
       }
-    );
+    });
   }
 
   @override
@@ -79,18 +72,16 @@ class _PurchaseOrderListWidgetState extends RefreshableState<PurchaseOrderListWi
     List<SpeedDialChild> actions = [];
 
     if (api.supportsBarcodePOReceiveEndpoint) {
-      actions.add(
-        SpeedDialChild(
-          child: Icon(Icons.barcode_reader),
-          label: L10().scanReceivedParts,
-          onTap:() async {
-            scanBarcode(
-              context,
-              handler: POReceiveBarcodeHandler(),
-            );
-          },
-        )
-      );
+      actions.add(SpeedDialChild(
+        child: Icon(Icons.barcode_reader),
+        label: L10().scanReceivedParts,
+        onTap: () async {
+          scanBarcode(
+            context,
+            handler: POReceiveBarcodeHandler(),
+          );
+        },
+      ));
     }
 
     return actions;
@@ -102,22 +93,20 @@ class _PurchaseOrderListWidgetState extends RefreshableState<PurchaseOrderListWi
   }
 }
 
-
 class PaginatedPurchaseOrderList extends PaginatedSearchWidget {
-
-  const PaginatedPurchaseOrderList(Map<String, String> filters) : super(filters: filters);
+  const PaginatedPurchaseOrderList(Map<String, String> filters)
+      : super(filters: filters);
 
   @override
   String get searchTitle => L10().purchaseOrders;
 
   @override
-  _PaginatedPurchaseOrderListState createState() => _PaginatedPurchaseOrderListState();
-
+  _PaginatedPurchaseOrderListState createState() =>
+      _PaginatedPurchaseOrderListState();
 }
 
-
-class _PaginatedPurchaseOrderListState extends PaginatedSearchState<PaginatedPurchaseOrderList> {
-
+class _PaginatedPurchaseOrderListState
+    extends PaginatedSearchState<PaginatedPurchaseOrderList> {
   _PaginatedPurchaseOrderListState() : super();
 
   @override
@@ -125,51 +114,53 @@ class _PaginatedPurchaseOrderListState extends PaginatedSearchState<PaginatedPur
 
   @override
   Map<String, String> get orderingOptions => {
-    "reference": L10().reference,
-    "supplier__name": L10().supplier,
-    "status": L10().status,
-    "target_date": L10().targetDate,
-  };
+        "reference": L10().reference,
+        "supplier__name": L10().supplier,
+        "status": L10().status,
+        "target_date": L10().targetDate,
+      };
 
   @override
   Map<String, Map<String, dynamic>> get filterOptions => {
-    "outstanding": {
-      "label": L10().outstanding,
-      "help_text": L10().outstandingOrderDetail,
-      "tristate": true,
-    },
-    "overdue": {
-      "label": L10().overdue,
-      "help_text": L10().overdueDetail,
-      "tristate": true,
-    },
-    "assigned_to_me": {
-      "label": L10().assignedToMe,
-      "help_text": L10().assignedToMeDetail,
-      "tristate": true,
-    }
-  };
+        "outstanding": {
+          "label": L10().outstanding,
+          "help_text": L10().outstandingOrderDetail,
+          "tristate": true,
+        },
+        "overdue": {
+          "label": L10().overdue,
+          "help_text": L10().overdueDetail,
+          "tristate": true,
+        },
+        "assigned_to_me": {
+          "label": L10().assignedToMe,
+          "help_text": L10().assignedToMeDetail,
+          "tristate": true,
+        }
+      };
 
   @override
-  Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
-
+  Future<InvenTreePageResponse?> requestPage(
+      int limit, int offset, Map<String, String> params) async {
     await InvenTreeAPI().PurchaseOrderStatus.load();
-    final page = await InvenTreePurchaseOrder().listPaginated(limit, offset, filters: params);
+    final page = await InvenTreePurchaseOrder()
+        .listPaginated(limit, offset, filters: params);
 
     return page;
   }
 
   @override
   Widget buildItem(BuildContext context, InvenTreeModel model) {
-
     InvenTreePurchaseOrder order = model as InvenTreePurchaseOrder;
 
     InvenTreeCompany? supplier = order.supplier;
-    
+
     return ListTile(
       title: Text(order.reference),
       subtitle: Text(order.description),
-      leading: supplier == null ? null : InvenTreeAPI().getThumbnail(supplier.thumbnail),
+      leading: supplier == null
+          ? null
+          : InvenTreeAPI().getThumbnail(supplier.thumbnail),
       trailing: Text(
         InvenTreeAPI().PurchaseOrderStatus.label(order.status),
         style: TextStyle(

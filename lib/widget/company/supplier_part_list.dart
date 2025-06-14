@@ -10,12 +10,10 @@ import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/company/supplier_part_detail.dart";
 
-
 /*
  * Widget for displaying a list of Supplier Part instances
  */
 class SupplierPartList extends StatefulWidget {
-
   const SupplierPartList(this.filters);
 
   final Map<String, String> filters;
@@ -24,9 +22,7 @@ class SupplierPartList extends StatefulWidget {
   _SupplierPartListState createState() => _SupplierPartListState();
 }
 
-
 class _SupplierPartListState extends RefreshableState<SupplierPartList> {
-
   @override
   String getAppBarTitle() => L10().supplierParts;
 
@@ -34,25 +30,22 @@ class _SupplierPartListState extends RefreshableState<SupplierPartList> {
   Widget getBody(BuildContext context) {
     return PaginatedSupplierPartList(widget.filters);
   }
-
 }
 
-
 class PaginatedSupplierPartList extends PaginatedSearchWidget {
-
-  const PaginatedSupplierPartList(Map<String, String> filters) : super(filters: filters);
+  const PaginatedSupplierPartList(Map<String, String> filters)
+      : super(filters: filters);
 
   @override
   String get searchTitle => L10().supplierParts;
 
   @override
-  _PaginatedSupplierPartListState createState() => _PaginatedSupplierPartListState();
-
+  _PaginatedSupplierPartListState createState() =>
+      _PaginatedSupplierPartListState();
 }
 
-
-class _PaginatedSupplierPartListState extends PaginatedSearchState<PaginatedSupplierPartList> {
-
+class _PaginatedSupplierPartListState
+    extends PaginatedSearchState<PaginatedSupplierPartList> {
   _PaginatedSupplierPartListState() : super();
 
   @override
@@ -63,7 +56,6 @@ class _PaginatedSupplierPartListState extends PaginatedSearchState<PaginatedSupp
 
   @override
   Map<String, Map<String, dynamic>> get filterOptions {
-
     Map<String, Map<String, dynamic>> filters = {};
 
     if (InvenTreeAPI().supportsCompanyActiveStatus) {
@@ -78,8 +70,10 @@ class _PaginatedSupplierPartListState extends PaginatedSearchState<PaginatedSupp
   }
 
   @override
-  Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
-    final page = await InvenTreeSupplierPart().listPaginated(limit, offset, filters: params);
+  Future<InvenTreePageResponse?> requestPage(
+      int limit, int offset, Map<String, String> params) async {
+    final page = await InvenTreeSupplierPart()
+        .listPaginated(limit, offset, filters: params);
     return page;
   }
 
@@ -94,11 +88,9 @@ class _PaginatedSupplierPartListState extends PaginatedSearchState<PaginatedSupp
       trailing: InvenTreeAPI().getThumbnail(supplierPart.partImage),
       onTap: () {
         Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SupplierPartDetailWidget(supplierPart)
-          )
-        );
+            context,
+            MaterialPageRoute(
+                builder: (context) => SupplierPartDetailWidget(supplierPart)));
       },
     );
   }

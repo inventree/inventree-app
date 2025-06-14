@@ -1,4 +1,3 @@
-
 import "package:flutter/material.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
@@ -9,21 +8,16 @@ import "package:inventree/api.dart";
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/progress.dart";
 
-
 class InvenTreeLoginWidget extends StatefulWidget {
-
   const InvenTreeLoginWidget(this.profile) : super();
 
   final UserProfile profile;
 
   @override
   _InvenTreeLoginState createState() => _InvenTreeLoginState();
-
 }
 
-
 class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
-
   final formKey = GlobalKey<FormState>();
 
   String username = "";
@@ -35,14 +29,12 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
 
   // Attempt login
   Future<void> _doLogin(BuildContext context) async {
-
     // Save form
     formKey.currentState?.save();
 
     bool valid = formKey.currentState?.validate() ?? false;
 
     if (valid) {
-
       // Dismiss the keyboard
       FocusScopeNode currentFocus = FocusScope.of(context);
 
@@ -53,7 +45,8 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
       showLoadingOverlay();
 
       // Attempt login
-      final response = await InvenTreeAPI().fetchToken(widget.profile, username, password);
+      final response =
+          await InvenTreeAPI().fetchToken(widget.profile, username, password);
 
       hideLoadingOverlay();
 
@@ -75,12 +68,10 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
         });
       }
     }
-
   }
 
   @override
   Widget build(BuildContext context) {
-
     List<Widget> before = [
       ListTile(
         title: Text(L10().loginEnter),
@@ -106,82 +97,77 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
       ));
     }
     return Scaffold(
-      appBar: AppBar(
-        title: Text(L10().login),
-        backgroundColor: COLOR_APP_BAR,
-        actions: [
-          IconButton(
-            icon: Icon(TablerIcons.transition_right, color: COLOR_SUCCESS),
-            onPressed: () async {
-              _doLogin(context);
-            },
-          )
-        ]
-      ),
-      body: Form(
-        key: formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ...before,
-              TextFormField(
-                decoration: InputDecoration(
-                    labelText: L10().username,
-                    labelStyle: TextStyle(fontWeight: FontWeight.bold),
-                    hintText: L10().enterUsername
-                ),
-                initialValue: "",
-                keyboardType: TextInputType.text,
-                onSaved: (value) {
-                  username = value?.trim() ?? "";
+        appBar: AppBar(
+            title: Text(L10().login),
+            backgroundColor: COLOR_APP_BAR,
+            actions: [
+              IconButton(
+                icon: Icon(TablerIcons.transition_right, color: COLOR_SUCCESS),
+                onPressed: () async {
+                  _doLogin(context);
                 },
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return L10().usernameEmpty;
-                  }
+              )
+            ]),
+        body: Form(
+            key: formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ...before,
+                  TextFormField(
+                    decoration: InputDecoration(
+                        labelText: L10().username,
+                        labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                        hintText: L10().enterUsername),
+                    initialValue: "",
+                    keyboardType: TextInputType.text,
+                    onSaved: (value) {
+                      username = value?.trim() ?? "";
+                    },
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return L10().usernameEmpty;
+                      }
 
-                  return null;
-                },
-              ),
-              TextFormField(
-                  decoration: InputDecoration(
-                    labelText: L10().password,
-                    labelStyle: TextStyle(fontWeight: FontWeight.bold),
-                    hintText: L10().enterPassword,
-                    suffixIcon: IconButton(
-                      icon: _obscured ? Icon(TablerIcons.eye) : Icon(TablerIcons.eye_off),
-                      onPressed: () {
-                        setState(() {
-                          _obscured = !_obscured;
-                        });
-                      },
-                    ),
+                      return null;
+                    },
                   ),
-                  initialValue: "",
-                  keyboardType: TextInputType.visiblePassword,
-                  obscureText: _obscured,
-                  onSaved: (value) {
-                    password = value?.trim() ?? "";
-                  },
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return L10().passwordEmpty;
-                    }
+                  TextFormField(
+                      decoration: InputDecoration(
+                        labelText: L10().password,
+                        labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                        hintText: L10().enterPassword,
+                        suffixIcon: IconButton(
+                          icon: _obscured
+                              ? Icon(TablerIcons.eye)
+                              : Icon(TablerIcons.eye_off),
+                          onPressed: () {
+                            setState(() {
+                              _obscured = !_obscured;
+                            });
+                          },
+                        ),
+                      ),
+                      initialValue: "",
+                      keyboardType: TextInputType.visiblePassword,
+                      obscureText: _obscured,
+                      onSaved: (value) {
+                        password = value?.trim() ?? "";
+                      },
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return L10().passwordEmpty;
+                        }
 
-                    return null;
-                  }
+                        return null;
+                      }),
+                  ...after,
+                ],
               ),
-              ...after,
-            ],
-          ),
-          padding: EdgeInsets.all(16),
-        )
-      )
-    );
-
+              padding: EdgeInsets.all(16),
+            )));
   }
-
 }

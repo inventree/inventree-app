@@ -1,4 +1,3 @@
-
 import "package:flutter/material.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
@@ -13,7 +12,6 @@ import "package:inventree/inventree/sentry.dart";
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/snacks.dart";
 
-
 /* Generic class which "handles" a barcode, by communicating with the InvenTree server,
  * and handling match / unknown / error cases.
  *
@@ -21,7 +19,6 @@ import "package:inventree/widget/snacks.dart";
  * based on the response returned from the InvenTree server
  */
 class BarcodeHandler {
-
   BarcodeHandler();
 
   // Return the text to display on the barcode overlay
@@ -60,21 +57,16 @@ class BarcodeHandler {
   Future<void> processBarcode(String barcode,
       {String url = "barcode/",
       Map<String, dynamic> extra_data = const {}}) async {
-
     debug("Scanned barcode data: '${barcode}'");
 
     barcode = barcode.trim();
 
     // Empty barcode is invalid
     if (barcode.isEmpty) {
-
       barcodeFailureTone();
 
-      showSnackIcon(
-        L10().barcodeError,
-        icon: TablerIcons.exclamation_circle,
-        success: false
-      );
+      showSnackIcon(L10().barcodeError,
+          icon: TablerIcons.exclamation_circle, success: false);
 
       return;
     }
@@ -123,8 +115,7 @@ class BarcodeHandler {
             "error": response.error,
             "errorDetail": response.errorDetail,
             "className": "${this}",
-          }
-      );
+          });
     } else if (data.containsKey("success")) {
       await onBarcodeMatched(data);
     } else if ((response.statusCode >= 400) || data.containsKey("error")) {

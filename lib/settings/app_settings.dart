@@ -16,17 +16,16 @@ import "package:inventree/preferences.dart";
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/progress.dart";
 
-
 class InvenTreeAppSettingsWidget extends StatefulWidget {
   @override
   _InvenTreeAppSettingsState createState() => _InvenTreeAppSettingsState();
 }
 
 class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
-
   _InvenTreeAppSettingsState();
 
-  final GlobalKey<_InvenTreeAppSettingsState> _settingsKey = GlobalKey<_InvenTreeAppSettingsState>();
+  final GlobalKey<_InvenTreeAppSettingsState> _settingsKey =
+      GlobalKey<_InvenTreeAppSettingsState>();
 
   // Sound settings
   bool barcodeSounds = true;
@@ -48,16 +47,21 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
     loadSettings(OneContext().context!);
   }
 
-  Future <void> loadSettings(BuildContext context) async {
-
+  Future<void> loadSettings(BuildContext context) async {
     showLoadingOverlay();
 
-    barcodeSounds = await InvenTreeSettingsManager().getValue(INV_SOUNDS_BARCODE, true) as bool;
-    serverSounds = await InvenTreeSettingsManager().getValue(INV_SOUNDS_SERVER, true) as bool;
-    reportErrors = await InvenTreeSettingsManager().getValue(INV_REPORT_ERRORS, true) as bool;
-    strictHttps = await InvenTreeSettingsManager().getValue(INV_STRICT_HTTPS, false) as bool;
-    screenOrientation = await InvenTreeSettingsManager().getValue(INV_SCREEN_ORIENTATION, SCREEN_ORIENTATION_SYSTEM) as int;
-    enableLabelPrinting = await InvenTreeSettingsManager().getValue(INV_ENABLE_LABEL_PRINTING, true) as bool;
+    barcodeSounds = await InvenTreeSettingsManager()
+        .getValue(INV_SOUNDS_BARCODE, true) as bool;
+    serverSounds = await InvenTreeSettingsManager()
+        .getValue(INV_SOUNDS_SERVER, true) as bool;
+    reportErrors = await InvenTreeSettingsManager()
+        .getValue(INV_REPORT_ERRORS, true) as bool;
+    strictHttps = await InvenTreeSettingsManager()
+        .getValue(INV_STRICT_HTTPS, false) as bool;
+    screenOrientation = await InvenTreeSettingsManager()
+        .getValue(INV_SCREEN_ORIENTATION, SCREEN_ORIENTATION_SYSTEM) as int;
+    enableLabelPrinting = await InvenTreeSettingsManager()
+        .getValue(INV_ENABLE_LABEL_PRINTING, true) as bool;
 
     darkMode = AdaptiveTheme.of(context).mode.isDark;
 
@@ -71,7 +75,6 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
   }
 
   Future<void> _selectLocale(BuildContext context) async {
-
     List<Map<String, dynamic>> options = [
       {
         "display_name": L10().languageDefault,
@@ -96,46 +99,39 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
       }
     };
 
-    launchApiForm(
-      context,
-      L10().languageSelect,
-      "",
-      fields,
-      icon: TablerIcons.circle_check,
-      onSuccess: (Map<String, dynamic> data) async {
+    launchApiForm(context, L10().languageSelect, "", fields,
+        icon: TablerIcons.circle_check,
+        onSuccess: (Map<String, dynamic> data) async {
+      String locale_name = (data["locale"] ?? "") as String;
+      Locale? selected_locale;
 
-        String locale_name = (data["locale"] ?? "") as String;
-        Locale? selected_locale;
-
-        for (var locale in supported_locales) {
-          if (locale.toString() == locale_name) {
-            selected_locale = locale;
-          }
+      for (var locale in supported_locales) {
+        if (locale.toString() == locale_name) {
+          selected_locale = locale;
         }
-
-        await InvenTreeSettingsManager().setSelectedLocale(selected_locale);
-
-        setState(() {
-          locale = selected_locale;
-        });
-
-        // Refresh the entire app locale
-        InvenTreeApp.of(context)?.setLocale(locale);
-
-        // Clear the cached status label information
-        InvenTreeAPI().clearStatusCodeData();
       }
-    );
-  }
 
+      await InvenTreeSettingsManager().setSelectedLocale(selected_locale);
+
+      setState(() {
+        locale = selected_locale;
+      });
+
+      // Refresh the entire app locale
+      InvenTreeApp.of(context)?.setLocale(locale);
+
+      // Clear the cached status label information
+      InvenTreeAPI().clearStatusCodeData();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-
     String languageName = L10().languageDefault;
 
     if (locale != null) {
-      languageName = LocaleNames.of(context)!.nameOf(locale.toString()) ?? L10().languageDefault;
+      languageName = LocaleNames.of(context)!.nameOf(locale.toString()) ??
+          L10().languageDefault;
     }
 
     IconData orientationIcon = Icons.screen_rotation;
@@ -154,166 +150,163 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
     }
 
     return Scaffold(
-      key: _settingsKey,
-      appBar: AppBar(
-        title: Text(L10().appSettings),
-        backgroundColor: COLOR_APP_BAR
-      ),
-      body: Container(
-        child: ListView(
-          children: [
-            /* Sound Settings */
-            Divider(height: 3),
-            ListTile(
-              title: Text(
-                L10().appSettings,
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              leading: Icon(TablerIcons.device_mobile),
+        key: _settingsKey,
+        appBar: AppBar(
+            title: Text(L10().appSettings), backgroundColor: COLOR_APP_BAR),
+        body: Container(
+            child: ListView(children: [
+          /* Sound Settings */
+          Divider(height: 3),
+          ListTile(
+            title: Text(
+              L10().appSettings,
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            ListTile(
+            leading: Icon(TablerIcons.device_mobile),
+          ),
+          ListTile(
               title: Text(L10().darkMode),
               subtitle: Text(L10().darkModeEnable),
               leading: Icon(TablerIcons.sun_moon),
               trailing: Switch(
-                value: darkMode,
-                onChanged: (bool value) {
-                  if (value) {
-                    AdaptiveTheme.of(context).setDark();
-                  } else {
-                    AdaptiveTheme.of(context).setLight();
-                  }
-                  setState(() {
-                    darkMode = value;
-                  });
-                }
-              )
-            ),
-            GestureDetector(
-              child: ListTile(
-                title: Text(L10().orientation),
-                subtitle: Text(L10().orientationDetail),
-                leading: Icon(Icons.screen_rotation_alt),
-                trailing: Icon(orientationIcon),
-              ),
-              onTap: () async {
-                choiceDialog(
-                  L10().orientation,
-                  [
-                    ListTile(
-                      leading: Icon(Icons.screen_rotation, color: screenOrientation == SCREEN_ORIENTATION_SYSTEM ? COLOR_ACTION : null),
-                      title: Text(L10().orientationSystem),
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.screen_lock_portrait, color: screenOrientation == SCREEN_ORIENTATION_PORTRAIT ? COLOR_ACTION : null),
-                      title: Text(L10().orientationPortrait),
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.screen_lock_landscape, color: screenOrientation == SCREEN_ORIENTATION_LANDSCAPE ? COLOR_ACTION : null),
-                      title: Text(L10().orientationLandscape),
-                    )
-                  ],
-                  onSelected: (idx) async {
-                    screenOrientation = idx as int;
-
-                    InvenTreeSettingsManager().setValue(INV_SCREEN_ORIENTATION, screenOrientation);
-
+                  value: darkMode,
+                  onChanged: (bool value) {
+                    if (value) {
+                      AdaptiveTheme.of(context).setDark();
+                    } else {
+                      AdaptiveTheme.of(context).setLight();
+                    }
                     setState(() {
+                      darkMode = value;
                     });
-                  }
-                );
-              },
+                  })),
+          GestureDetector(
+            child: ListTile(
+              title: Text(L10().orientation),
+              subtitle: Text(L10().orientationDetail),
+              leading: Icon(Icons.screen_rotation_alt),
+              trailing: Icon(orientationIcon),
             ),
-            ListTile(
-              title: Text(L10().labelPrinting),
-              subtitle: Text(L10().labelPrintingDetail),
-              leading: Icon(TablerIcons.printer),
-              trailing: Switch(
+            onTap: () async {
+              choiceDialog(L10().orientation, [
+                ListTile(
+                  leading: Icon(Icons.screen_rotation,
+                      color: screenOrientation == SCREEN_ORIENTATION_SYSTEM
+                          ? COLOR_ACTION
+                          : null),
+                  title: Text(L10().orientationSystem),
+                ),
+                ListTile(
+                  leading: Icon(Icons.screen_lock_portrait,
+                      color: screenOrientation == SCREEN_ORIENTATION_PORTRAIT
+                          ? COLOR_ACTION
+                          : null),
+                  title: Text(L10().orientationPortrait),
+                ),
+                ListTile(
+                  leading: Icon(Icons.screen_lock_landscape,
+                      color: screenOrientation == SCREEN_ORIENTATION_LANDSCAPE
+                          ? COLOR_ACTION
+                          : null),
+                  title: Text(L10().orientationLandscape),
+                )
+              ], onSelected: (idx) async {
+                screenOrientation = idx as int;
+
+                InvenTreeSettingsManager()
+                    .setValue(INV_SCREEN_ORIENTATION, screenOrientation);
+
+                setState(() {});
+              });
+            },
+          ),
+          ListTile(
+            title: Text(L10().labelPrinting),
+            subtitle: Text(L10().labelPrintingDetail),
+            leading: Icon(TablerIcons.printer),
+            trailing: Switch(
                 value: enableLabelPrinting,
                 onChanged: (bool value) {
-                  InvenTreeSettingsManager().setValue(INV_ENABLE_LABEL_PRINTING, value);
+                  InvenTreeSettingsManager()
+                      .setValue(INV_ENABLE_LABEL_PRINTING, value);
                   setState(() {
                     enableLabelPrinting = value;
                   });
-                }
-              ),
-            ),
-            ListTile(
-              title: Text(L10().strictHttps),
-              subtitle: Text(L10().strictHttpsDetails),
-              leading: Icon(TablerIcons.lock),
-              trailing: Switch(
-                value: strictHttps,
-                onChanged: (bool value) {
-                  InvenTreeSettingsManager().setValue(INV_STRICT_HTTPS, value);
-                  setState(() {
-                    strictHttps = value;
-                  });
-                },
-              ),
-            ),
-            ListTile(
-              title: Text(L10().language),
-              subtitle: Text(languageName),
-              leading: Icon(TablerIcons.language),
-              onTap: () async {
-                _selectLocale(context);
+                }),
+          ),
+          ListTile(
+            title: Text(L10().strictHttps),
+            subtitle: Text(L10().strictHttpsDetails),
+            leading: Icon(TablerIcons.lock),
+            trailing: Switch(
+              value: strictHttps,
+              onChanged: (bool value) {
+                InvenTreeSettingsManager().setValue(INV_STRICT_HTTPS, value);
+                setState(() {
+                  strictHttps = value;
+                });
               },
             ),
-            ListTile(
-              title: Text(L10().errorReportUpload),
-              subtitle: Text(L10().errorReportUploadDetails),
-              leading: Icon(TablerIcons.bug),
-              trailing: Switch(
-                value: reportErrors,
-                onChanged: (bool value) {
-                  InvenTreeSettingsManager().setValue(INV_REPORT_ERRORS, value);
-                  setState(() {
-                    reportErrors = value;
-                  });
-                },
-              ),
+          ),
+          ListTile(
+            title: Text(L10().language),
+            subtitle: Text(languageName),
+            leading: Icon(TablerIcons.language),
+            onTap: () async {
+              _selectLocale(context);
+            },
+          ),
+          ListTile(
+            title: Text(L10().errorReportUpload),
+            subtitle: Text(L10().errorReportUploadDetails),
+            leading: Icon(TablerIcons.bug),
+            trailing: Switch(
+              value: reportErrors,
+              onChanged: (bool value) {
+                InvenTreeSettingsManager().setValue(INV_REPORT_ERRORS, value);
+                setState(() {
+                  reportErrors = value;
+                });
+              },
             ),
-                        ListTile(
-              title: Text(
-                L10().sounds,
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              leading: Icon(TablerIcons.volume),
+          ),
+          ListTile(
+            title: Text(
+              L10().sounds,
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            Divider(),
-            ListTile(
-              title: Text(L10().serverError),
-              subtitle: Text(L10().soundOnServerError),
-              leading: Icon(TablerIcons.server),
-              trailing: Switch(
-                value: serverSounds,
-                onChanged: (bool value) {
-                  InvenTreeSettingsManager().setValue(INV_SOUNDS_SERVER, value);
-                  setState(() {
-                    serverSounds = value;
-                  });
-                },
-              ),
+            leading: Icon(TablerIcons.volume),
+          ),
+          Divider(),
+          ListTile(
+            title: Text(L10().serverError),
+            subtitle: Text(L10().soundOnServerError),
+            leading: Icon(TablerIcons.server),
+            trailing: Switch(
+              value: serverSounds,
+              onChanged: (bool value) {
+                InvenTreeSettingsManager().setValue(INV_SOUNDS_SERVER, value);
+                setState(() {
+                  serverSounds = value;
+                });
+              },
             ),
-            ListTile(
-              title: Text(L10().barcodeTones),
-              subtitle: Text(L10().soundOnBarcodeAction),
-              leading: Icon(TablerIcons.qrcode),
-              trailing: Switch(
-                value: barcodeSounds,
-                onChanged: (bool value) {
-                  InvenTreeSettingsManager().setValue(INV_SOUNDS_BARCODE, value);
-                  setState(() {
-                    barcodeSounds = value;
-                  });
-                },
-              ),
+          ),
+          ListTile(
+            title: Text(L10().barcodeTones),
+            subtitle: Text(L10().soundOnBarcodeAction),
+            leading: Icon(TablerIcons.qrcode),
+            trailing: Switch(
+              value: barcodeSounds,
+              onChanged: (bool value) {
+                InvenTreeSettingsManager().setValue(INV_SOUNDS_BARCODE, value);
+                setState(() {
+                  barcodeSounds = value;
+                });
+              },
             ),
-            Divider(height: 1),
-          ]
-        )
-      )
-    );
+          ),
+          Divider(height: 1),
+        ])));
   }
 }

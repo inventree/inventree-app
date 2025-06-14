@@ -1,5 +1,3 @@
-
-
 import "dart:io";
 
 import "package:flutter/material.dart";
@@ -7,17 +5,11 @@ import "package:flutter_overlay_loader/flutter_overlay_loader.dart";
 import "package:inventree/app_colors.dart";
 import "package:one_context/one_context.dart";
 
-
 /*
  * A simplified linear progress bar widget,
  * with standardized color depiction
  */
-Widget ProgressBar(
-  double value,
-{
-  double maximum = 1.0
-}) {
-
+Widget ProgressBar(double value, {double maximum = 1.0}) {
   double v = 0;
 
   if (value <= 0 || maximum <= 0) {
@@ -33,20 +25,14 @@ Widget ProgressBar(
   );
 }
 
-
 /*
  * Construct a circular progress indicator
  */
 Widget progressIndicator() {
-
-  return Center(
-    child: CircularProgressIndicator()
-  );
+  return Center(child: CircularProgressIndicator());
 }
 
-
 void showLoadingOverlay() {
-
   // Do not show overlay if running unit tests
   if (Platform.environment.containsKey("FLUTTER_TEST")) {
     return;
@@ -58,12 +44,10 @@ void showLoadingOverlay() {
     return;
   }
 
-  Loader.show(
-    context,
-    themeData: Theme.of(context).copyWith(colorScheme: ColorScheme.fromSwatch())
-  );
+  Loader.show(context,
+      themeData:
+          Theme.of(context).copyWith(colorScheme: ColorScheme.fromSwatch()));
 }
-
 
 void hideLoadingOverlay() {
   if (Loader.isShown) {

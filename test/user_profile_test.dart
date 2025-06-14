@@ -56,21 +56,16 @@ void main() {
 
   // Run a set of tests for user profile functionality
   group("Profile Tests:", () {
-
     test("Add Invalid Profiles", () async {
       // Add a profile with missing data
-      bool result = await UserProfileDBManager().addProfile(
-        UserProfile()
-      );
+      bool result = await UserProfileDBManager().addProfile(UserProfile());
 
       expect(result, equals(false));
 
       // Add a profile with a new name
-      result = await UserProfileDBManager().addProfile(
-        UserProfile(
-          name: "Another Test Profile",
-        )
-      );
+      result = await UserProfileDBManager().addProfile(UserProfile(
+        name: "Another Test Profile",
+      ));
 
       expect(result, equals(true));
 
@@ -81,7 +76,8 @@ void main() {
     });
 
     test("Profile Name Check", () async {
-      bool result = await UserProfileDBManager().profileNameExists("doesnotexist");
+      bool result =
+          await UserProfileDBManager().profileNameExists("doesnotexist");
       expect(result, equals(false));
 
       result = await UserProfileDBManager().profileNameExists("Test Server");
@@ -100,7 +96,8 @@ void main() {
         expect(p.name, equals(testServerName));
         expect(p.server, equals(testServerAddress));
 
-        expect(p.toString(), equals("<${p.key}> Test Server : http://localhost:8000/"));
+        expect(p.toString(),
+            equals("<${p.key}> Test Server : http://localhost:8000/"));
 
         // Test that we can update the profile
         p.name = "different name";
@@ -110,5 +107,4 @@ void main() {
       }
     });
   });
-
 }

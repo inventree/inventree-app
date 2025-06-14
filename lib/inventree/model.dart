@@ -17,10 +17,8 @@ import "package:inventree/inventree/sentry.dart";
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/fields.dart";
 
-
 // Paginated response object
 class InvenTreePageResponse {
-
   InvenTreePageResponse() {
     results = [];
   }
@@ -31,7 +29,7 @@ class InvenTreePageResponse {
 
   // Total number of results in the dataset
   int count = 0;
-  
+
   int get length => results.length;
 
   List<InvenTreeModel> results = [];
@@ -42,7 +40,6 @@ class InvenTreePageResponse {
  * for interacting with InvenTree data.
  */
 class InvenTreeModel {
-
   InvenTreeModel();
 
   // Construct an InvenTreeModel from a JSON data object
@@ -87,7 +84,6 @@ class InvenTreeModel {
 
     // If a subKey is specified, we need to dig deeper into the JSON data
     if (subKey.isNotEmpty) {
-
       if (!data.containsKey(subKey)) {
         debug("JSON data does not contain subKey '$subKey' for key '$key'");
         return backup;
@@ -98,7 +94,6 @@ class InvenTreeModel {
       if (sub_data is Map<String, dynamic>) {
         data = (data[subKey] ?? {}) as Map<String, dynamic>;
       }
-
     }
 
     if (data.containsKey(key)) {
@@ -109,7 +104,8 @@ class InvenTreeModel {
   }
 
   // Helper function to get sub-map from JSON data
-  Map<String, dynamic> getMap(String key, {Map<String, dynamic> backup = const {}, String subKey = ""}) {
+  Map<String, dynamic> getMap(String key,
+      {Map<String, dynamic> backup = const {}, String subKey = ""}) {
     dynamic value = getValue(key, backup: backup, subKey: subKey);
 
     if (value == null) {
@@ -152,7 +148,7 @@ class InvenTreeModel {
     return double.tryParse(value.toString()) ?? backup;
   }
 
-  double getDouble(String key, {double backup = 0.0, String subkey = "" }) {
+  double getDouble(String key, {double backup = 0.0, String subkey = ""}) {
     double? value = getDoubleOrNull(key, backup: backup, subKey: subkey);
     return value ?? backup;
   }
@@ -194,7 +190,6 @@ class InvenTreeModel {
 
   // Return the InvenTree web server URL for this object
   String get webUrl {
-
     if (api.isConnected()) {
       String web = InvenTreeAPI().baseUrl;
 
@@ -205,7 +200,6 @@ class InvenTreeModel {
       web = web.replaceAll("//", "/");
 
       return web;
-
     } else {
       return "";
     }
@@ -216,7 +210,8 @@ class InvenTreeModel {
    */
   List<String> get rolesRequired {
     // Default implementation should not be called
-    debug("rolesRequired() not implemented for model ${URL} - returning empty list");
+    debug(
+        "rolesRequired() not implemented for model ${URL} - returning empty list");
     return [];
   }
 
@@ -271,12 +266,14 @@ class InvenTreeModel {
   // Fields for editing / creating this model
   // Override per-model
   Map<String, Map<String, dynamic>> formFields() {
-
     return {};
   }
 
-  Future<void> createForm(BuildContext context, String title, {String fileField = "", Map<String, dynamic> fields=const{}, Map<String, dynamic> data=const {}, Function(dynamic)? onSuccess}) async {
-
+  Future<void> createForm(BuildContext context, String title,
+      {String fileField = "",
+      Map<String, dynamic> fields = const {},
+      Map<String, dynamic> data = const {},
+      Function(dynamic)? onSuccess}) async {
     if (fields.isEmpty) {
       fields = formFields();
     }
@@ -291,28 +288,20 @@ class InvenTreeModel {
       method: "POST",
       fileField: fileField,
     );
-
   }
 
   /*
    * Launch a modal form to edit the fields available to this model instance.
    */
-  Future<void> editForm(BuildContext context, String title, {Map<String, dynamic> fields=const {}, Function(dynamic)? onSuccess}) async {
-
+  Future<void> editForm(BuildContext context, String title,
+      {Map<String, dynamic> fields = const {},
+      Function(dynamic)? onSuccess}) async {
     if (fields.isEmpty) {
       fields = formFields();
     }
 
-    launchApiForm(
-      context,
-      title,
-      url,
-      fields,
-      modelData: jsondata,
-      onSuccess: onSuccess,
-      method: "PATCH"
-    );
-
+    launchApiForm(context, title, url, fields,
+        modelData: jsondata, onSuccess: onSuccess, method: "PATCH");
   }
 
   // JSON data which defines this object
@@ -324,12 +313,12 @@ class InvenTreeModel {
   int get pk => getInt("pk");
 
   String get pkString => pk.toString();
-  
+
   // Some common accessors
   String get name => getString("name");
 
   String get description => getString("description");
-  
+
   String get notes => getString("notes");
 
   int get parentId => getInt("parent");
@@ -387,8 +376,7 @@ class InvenTreeModel {
     return "";
   }
 
-  Future <void> goToInvenTreePage() async {
-
+  Future<void> goToInvenTreePage() async {
     var uri = Uri.tryParse(webUrl);
     if (uri != null && await canLaunchUrl(uri)) {
       await launchUrl(uri);
@@ -397,8 +385,7 @@ class InvenTreeModel {
     }
   }
 
-  Future <void> openLink() async {
-
+  Future<void> openLink() async {
     if (link.isNotEmpty) {
       var uri = Uri.tryParse(link);
       if (uri != null && await canLaunchUrl(uri)) {
@@ -408,16 +395,19 @@ class InvenTreeModel {
   }
 
   String get keywords => getString("keywords");
-  
+
   // Create a new object from JSON data (not a constructor!)
-  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreeModel.fromJson(json);
+  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
+      InvenTreeModel.fromJson(json);
 
   // Return the API detail endpoint for this Model object
   String get url => "${URL}/${pk}/".replaceAll("//", "/");
 
   // Search this Model type in the database
-  Future<List<InvenTreeModel>> search(String searchTerm, {Map<String, String> filters = const {}, int offset = 0, int limit = 25}) async {
-
+  Future<List<InvenTreeModel>> search(String searchTerm,
+      {Map<String, String> filters = const {},
+      int offset = 0,
+      int limit = 25}) async {
     Map<String, String> searchFilters = {};
 
     for (String key in filters.keys) {
@@ -431,12 +421,11 @@ class InvenTreeModel {
     final results = list(filters: searchFilters);
 
     return results;
-
   }
 
   // Return the number of results that would meet a particular "query"
-  Future<int> count({Map<String, String> filters = const {}, String searchQuery = ""} ) async {
-
+  Future<int> count(
+      {Map<String, String> filters = const {}, String searchQuery = ""}) async {
     var params = defaultListFilters();
 
     filters.forEach((String key, String value) {
@@ -458,7 +447,7 @@ class InvenTreeModel {
     } else {
       return 0;
     }
-}
+  }
 
   Map<String, String> defaultFilters() {
     return {};
@@ -476,8 +465,8 @@ class InvenTreeModel {
   /*
    * Report error information to sentry, when a model operation fails.
    */
-  Future<void> reportModelError(String title, APIResponse response, {Map<String, String> context = const {}}) async {
-
+  Future<void> reportModelError(String title, APIResponse response,
+      {Map<String, String> context = const {}}) async {
     String dataString = response.data?.toString() ?? "null";
 
     // If the response has "errorDetail" set, then the error has already been handled, and there is no need to continue
@@ -515,7 +504,6 @@ class InvenTreeModel {
   /// Delete the instance on the remote server
   /// Returns true if the operation was successful, else false
   Future<bool> delete() async {
-
     // Return if we do not have a valid pk
     if (pk < 0) {
       return false;
@@ -523,8 +511,9 @@ class InvenTreeModel {
 
     var response = await api.delete(url);
 
-    if (!response.isValid() || response.data == null || (response.data is! Map)) {
-
+    if (!response.isValid() ||
+        response.data == null ||
+        (response.data is! Map)) {
       reportModelError(
         "InvenTreeModel.delete() returned invalid response",
         response,
@@ -547,26 +536,23 @@ class InvenTreeModel {
    * Reload this object, by requesting data from the server
    */
   Future<bool> reload() async {
-
     // If we do not have a valid pk (for some reason), exit immediately
     if (pk < 0) {
       return false;
     }
 
-    var response = await api.get(url, params: defaultGetFilters(), expectedStatusCode: 200);
+    var response = await api.get(url,
+        params: defaultGetFilters(), expectedStatusCode: 200);
 
     // A valid response has been returned
     if (response.isValid() && response.statusCode == 200) {
-
       // Returned data was not a valid JSON object
       if (response.data == null || response.data is! Map) {
         reportModelError(
-            "InvenTreeModel.reload() returned invalid response",
-            response,
+            "InvenTreeModel.reload() returned invalid response", response,
             context: {
               "pk": pk.toString(),
-            }
-        );
+            });
 
         showServerError(
           url,
@@ -577,7 +563,6 @@ class InvenTreeModel {
         return false;
       }
     } else {
-
       switch (response.statusCode) {
         case 404: // Object has been deleted
           showSnackIcon(
@@ -589,11 +574,7 @@ class InvenTreeModel {
           String detail = L10().errorFetch;
           detail += "\n${L10().statusCode}: ${response.statusCode}";
 
-          showServerError(
-              url,
-              L10().serverError,
-              detail
-          );
+          showServerError(url, L10().serverError, detail);
           break;
       }
 
@@ -608,8 +589,9 @@ class InvenTreeModel {
   }
 
   // POST data to update the model
-  Future<APIResponse> update({Map<String, String> values = const {}, int? expectedStatusCode = 200}) async {
-
+  Future<APIResponse> update(
+      {Map<String, String> values = const {},
+      int? expectedStatusCode = 200}) async {
     var url = path.join(URL, pk.toString());
 
     // Return if we do not have a valid pk
@@ -633,8 +615,8 @@ class InvenTreeModel {
   }
 
   // Return the detail view for the associated pk
-  Future<InvenTreeModel?> getModel(String pk, {Map<String, String> filters = const {}}) async {
-
+  Future<InvenTreeModel?> getModel(String pk,
+      {Map<String, String> filters = const {}}) async {
     var url = path.join(URL, pk.toString());
 
     if (!url.endsWith("/")) {
@@ -651,17 +633,14 @@ class InvenTreeModel {
     var response = await api.get(url, params: params);
 
     if (!response.isValid() || response.data == null || response.data is! Map) {
-
       if (response.statusCode != -1) {
         // Report error
         reportModelError(
-            "InvenTreeModel.getModel() returned invalid response",
-            response,
+            "InvenTreeModel.getModel() returned invalid response", response,
             context: {
               "filters": filters.toString(),
               "pk": pk,
-            }
-        );
+            });
       }
 
       showServerError(
@@ -671,7 +650,6 @@ class InvenTreeModel {
       );
 
       return null;
-
     }
 
     lastReload = DateTime.now();
@@ -679,8 +657,8 @@ class InvenTreeModel {
     return createFromJson(response.asMap());
   }
 
-  Future<InvenTreeModel?> get(int pk, {Map<String, String> filters = const {}}) async {
-
+  Future<InvenTreeModel?> get(int pk,
+      {Map<String, String> filters = const {}}) async {
     if (pk < 0) {
       return null;
     }
@@ -689,7 +667,6 @@ class InvenTreeModel {
   }
 
   Future<InvenTreeModel?> create(Map<String, dynamic> data) async {
-
     if (data.containsKey("pk")) {
       data.remove("pk");
     }
@@ -702,14 +679,11 @@ class InvenTreeModel {
 
     // Invalid response returned from server
     if (!response.isValid() || response.data == null || response.data is! Map) {
-
       reportModelError(
-          "InvenTreeModel.create() returned invalid response",
-          response,
+          "InvenTreeModel.create() returned invalid response", response,
           context: {
             "pk": pk.toString(),
-          }
-      );
+          });
 
       showServerError(
         URL,
@@ -723,7 +697,8 @@ class InvenTreeModel {
     return createFromJson(response.asMap());
   }
 
-  Future<InvenTreePageResponse?> listPaginated(int limit, int offset, {Map<String, String> filters = const {}}) async {
+  Future<InvenTreePageResponse?> listPaginated(int limit, int offset,
+      {Map<String, String> filters = const {}}) async {
     var params = defaultListFilters();
 
     for (String key in filters.keys) {
@@ -739,7 +714,6 @@ class InvenTreeModel {
      * - In such a case, we want to concatenate them together
      */
     if (params.containsKey("original_search")) {
-
       String search = params["search"] ?? "";
       String original = params["original_search"] ?? "";
 
@@ -761,18 +735,20 @@ class InvenTreeModel {
 
     // First attempt is to look for paginated data, returned as a map
 
-    if (dataMap.isNotEmpty && dataMap.containsKey("count") && dataMap.containsKey("results")) {
+    if (dataMap.isNotEmpty &&
+        dataMap.containsKey("count") &&
+        dataMap.containsKey("results")) {
       page.count = (dataMap["count"] ?? 0) as int;
 
-       page.results = [];
+      page.results = [];
 
-       List<dynamic> results = dataMap["results"] as List<dynamic>;
+      List<dynamic> results = dataMap["results"] as List<dynamic>;
 
-       for (dynamic result in results) {
-         page.addResult(createFromJson(result as Map<String, dynamic>));
-       }
+      for (dynamic result in results) {
+        page.addResult(createFromJson(result as Map<String, dynamic>));
+      }
 
-       return page;
+      return page;
     }
 
     // Second attempt is to look for a list of data (not paginated)
@@ -784,7 +760,7 @@ class InvenTreeModel {
 
       for (var result in dataList) {
         page.addResult(createFromJson(result as Map<String, dynamic>));
-    }
+      }
 
       return page;
     }
@@ -794,7 +770,8 @@ class InvenTreeModel {
   }
 
   // Return list of objects from the database, with optional filters
-  Future<List<InvenTreeModel>> list({Map<String, String> filters = const {}}) async {
+  Future<List<InvenTreeModel>> list(
+      {Map<String, String> filters = const {}}) async {
     var params = defaultListFilters();
 
     for (String key in filters.keys) {
@@ -823,7 +800,6 @@ class InvenTreeModel {
     }
 
     for (var d in data) {
-
       // Create a new object (of the current class type
       InvenTreeModel obj = createFromJson(d as Map<String, dynamic>);
 
@@ -849,7 +825,6 @@ class InvenTreeModel {
   // Each filter must be matched
   // Used for (e.g.) filtering returned results
   bool filter(String filterString) {
-
     List<String> filters = filterString.trim().toLowerCase().split(" ");
 
     for (var f in filters) {
@@ -862,22 +837,20 @@ class InvenTreeModel {
   }
 }
 
-
 /*
  * Class representing a single plugin instance
  */
 class InvenTreePlugin extends InvenTreeModel {
-
   InvenTreePlugin() : super();
 
   InvenTreePlugin.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreePlugin.fromJson(json);
+  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
+      InvenTreePlugin.fromJson(json);
 
   @override
   String get URL {
-
     /* Note: The plugin API endpoint changed at API version 90,
      * <  90 = 'plugin'
      * >= 90 = 'plugins'
@@ -891,22 +864,23 @@ class InvenTreePlugin extends InvenTreeModel {
   }
 
   String get key => getString("key");
-  
+
   bool get active => getBool("active");
-  
+
   // Return the metadata struct for this plugin
-  Map<String, dynamic> get _meta => (jsondata["meta"] ?? {}) as Map<String, dynamic>;
+  Map<String, dynamic> get _meta =>
+      (jsondata["meta"] ?? {}) as Map<String, dynamic>;
 
   String get humanName => (_meta["human_name"] ?? "") as String;
 
   // Return the mixins struct for this plugin
-  Map<String, dynamic> get _mixins => (jsondata["mixins"] ?? {}) as Map<String, dynamic>;
+  Map<String, dynamic> get _mixins =>
+      (jsondata["mixins"] ?? {}) as Map<String, dynamic>;
 
   bool supportsMixin(String mixin) {
     return _mixins.containsKey(mixin);
   }
 }
-
 
 /*
  * Class representing a 'setting' object on the InvenTree server.
@@ -915,10 +889,10 @@ class InvenTreePlugin extends InvenTreeModel {
  * - UserSetting (applicable only to the current user)
  */
 class InvenTreeGlobalSetting extends InvenTreeModel {
-
   InvenTreeGlobalSetting() : super();
 
-  InvenTreeGlobalSetting.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+  InvenTreeGlobalSetting.fromJson(Map<String, dynamic> json)
+      : super.fromJson(json);
 
   @override
   InvenTreeGlobalSetting createFromJson(Map<String, dynamic> json) {
@@ -929,18 +903,17 @@ class InvenTreeGlobalSetting extends InvenTreeModel {
   String get URL => "settings/global/";
 
   String get key => getString("key");
-  
-  String get value => getString("value");
-  
-  String get type => getString("type");
 
+  String get value => getString("value");
+
+  String get type => getString("type");
 }
 
 class InvenTreeUserSetting extends InvenTreeGlobalSetting {
-
   InvenTreeUserSetting() : super();
 
-  InvenTreeUserSetting.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+  InvenTreeUserSetting.fromJson(Map<String, dynamic> json)
+      : super.fromJson(json);
 
   @override
   InvenTreeGlobalSetting createFromJson(Map<String, dynamic> json) {
@@ -951,22 +924,19 @@ class InvenTreeUserSetting extends InvenTreeGlobalSetting {
   String get URL => "settings/user/";
 }
 
-
 class InvenTreeAttachment extends InvenTreeModel {
   // Class representing an "attachment" file
   InvenTreeAttachment() : super();
 
-  InvenTreeAttachment.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+  InvenTreeAttachment.fromJson(Map<String, dynamic> json)
+      : super.fromJson(json);
 
   @override
   String get URL => "attachment/";
 
   @override
   Map<String, Map<String, dynamic>> formFields() {
-    Map<String, Map<String, dynamic>> fields = {
-      "link": {},
-      "comment": {}
-    };
+    Map<String, Map<String, dynamic>> fields = {"link": {}, "comment": {}};
 
     if (!hasLink) {
       fields.remove("link");
@@ -1024,7 +994,7 @@ class InvenTreeAttachment extends InvenTreeModel {
   }
 
   String get comment => getString("comment");
-  
+
   DateTime? get uploadDate {
     if (jsondata.containsKey("upload_date")) {
       return DateTime.tryParse((jsondata["upload_date"] ?? "") as String);
@@ -1035,7 +1005,6 @@ class InvenTreeAttachment extends InvenTreeModel {
 
   // Return a count of how many attachments exist against the specified model ID
   Future<int> countAttachments(int modelId) {
-
     Map<String, String> filters = {};
 
     if (InvenTreeAPI().supportsModernAttachments) {
@@ -1048,8 +1017,8 @@ class InvenTreeAttachment extends InvenTreeModel {
     return count(filters: filters);
   }
 
-  Future<bool> uploadAttachment(File attachment, int modelId, {String comment = "", Map<String, String> fields = const {}}) async {
-
+  Future<bool> uploadAttachment(File attachment, int modelId,
+      {String comment = "", Map<String, String> fields = const {}}) async {
     // Ensure that the correct reference field is set
     Map<String, String> data = Map<String, String>.from(fields);
 
@@ -1060,15 +1029,13 @@ class InvenTreeAttachment extends InvenTreeModel {
     }
 
     if (InvenTreeAPI().supportsModernAttachments) {
-
       url = "attachment/";
       data["model_id"] = modelId.toString();
       data["model_type"] = REF_MODEL_TYPE;
-
     } else {
-
       if (REFERENCE_FIELD.isEmpty) {
-        sentryReportMessage("uploadAttachment called with empty 'REFERENCE_FIELD'");
+        sentryReportMessage(
+            "uploadAttachment called with empty 'REFERENCE_FIELD'");
         return false;
       }
 
@@ -1076,24 +1043,17 @@ class InvenTreeAttachment extends InvenTreeModel {
     }
 
     final APIResponse response = await InvenTreeAPI().uploadFile(
-        url,
-        attachment,
-        method: "POST",
-        name: "attachment",
-        fields: data
-    );
+        url, attachment,
+        method: "POST", name: "attachment", fields: data);
 
     return response.successful();
   }
 
-
   Future<bool> uploadImage(int modelId, {String prefix = "InvenTree"}) async {
-
     bool result = false;
 
     await FilePickerDialog.pickImageFromCamera().then((File? file) {
       if (file != null) {
-
         String dir = path.dirname(file.path);
         String ext = path.extension(file.path);
         String now = DateTime.now().toIso8601String().replaceAll(":", "-");
@@ -1120,14 +1080,10 @@ class InvenTreeAttachment extends InvenTreeModel {
     return result;
   }
 
-
   /*
    * Download this attachment file
    */
   Future<void> downloadAttachment() async {
     await InvenTreeAPI().downloadFile(attachment);
   }
-
 }
-
-

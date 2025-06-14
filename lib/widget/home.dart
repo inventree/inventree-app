@@ -26,18 +26,15 @@ import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/spinner.dart";
 import "package:inventree/widget/company/company_list.dart";
 
-
 class InvenTreeHomePage extends StatefulWidget {
-
   const InvenTreeHomePage({Key? key}) : super(key: key);
 
   @override
   _InvenTreeHomePageState createState() => _InvenTreeHomePageState();
 }
 
-
-class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetProperties {
-
+class _InvenTreeHomePageState extends State<InvenTreeHomePage>
+    with BaseWidgetProperties {
   _InvenTreeHomePageState() : super() {
     // Load display settings
     _loadSettings();
@@ -46,7 +43,6 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
     _loadProfile();
 
     InvenTreeAPI().registerCallback(() {
-
       if (mounted) {
         setState(() {
           // Reload the widget
@@ -70,37 +66,31 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
   void _showParts(BuildContext context) {
     if (!InvenTreeAPI().checkConnection()) return;
 
-    Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)));
   }
 
   void _showStarredParts(BuildContext context) {
     if (!InvenTreeAPI().checkConnection()) return;
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PartList({
-          "starred": "true"
-        })
-      )
-    );
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => PartList({"starred": "true"})));
   }
 
   void _showStock(BuildContext context) {
     if (!InvenTreeAPI().checkConnection()) return;
 
-    Navigator.push(context, MaterialPageRoute(builder: (context) => LocationDisplayWidget(null)));
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => LocationDisplayWidget(null)));
   }
 
   void _showPurchaseOrders(BuildContext context) {
     if (!InvenTreeAPI().checkConnection()) return;
 
     Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PurchaseOrderListWidget(filters: {})
-      )
-    );
+        context,
+        MaterialPageRoute(
+            builder: (context) => PurchaseOrderListWidget(filters: {})));
   }
 
   void _showSalesOrders(BuildContext context) {
@@ -109,15 +99,17 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => SalesOrderListWidget(filters: {})
-        )
-    );
+            builder: (context) => SalesOrderListWidget(filters: {})));
   }
 
   void _showSuppliers(BuildContext context) {
     if (!InvenTreeAPI().checkConnection()) return;
 
-    Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyListWidget(L10().suppliers, {"is_supplier": "true"})));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                CompanyListWidget(L10().suppliers, {"is_supplier": "true"})));
   }
 
   /*
@@ -131,39 +123,47 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
   void _showCustomers(BuildContext context) {
     if (!InvenTreeAPI().checkConnection()) return;
 
-    Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyListWidget(L10().customers, {"is_customer": "true"})));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                CompanyListWidget(L10().customers, {"is_customer": "true"})));
   }
 
   void _selectProfile() {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => InvenTreeSelectServerWidget())
-    ).then((context) {
+            context,
+            MaterialPageRoute(
+                builder: (context) => InvenTreeSelectServerWidget()))
+        .then((context) {
       // Once we return
       _loadProfile();
     });
   }
 
-  Future <void> _loadSettings() async {
+  Future<void> _loadSettings() async {
+    homeShowSubscribed = await InvenTreeSettingsManager()
+        .getValue(INV_HOME_SHOW_SUBSCRIBED, true) as bool;
+    homeShowPo = await InvenTreeSettingsManager()
+        .getValue(INV_HOME_SHOW_PO, true) as bool;
+    homeShowSo = await InvenTreeSettingsManager()
+        .getValue(INV_HOME_SHOW_SO, true) as bool;
+    homeShowManufacturers = await InvenTreeSettingsManager()
+        .getValue(INV_HOME_SHOW_MANUFACTURERS, true) as bool;
+    homeShowCustomers = await InvenTreeSettingsManager()
+        .getValue(INV_HOME_SHOW_CUSTOMERS, true) as bool;
+    homeShowSuppliers = await InvenTreeSettingsManager()
+        .getValue(INV_HOME_SHOW_SUPPLIERS, true) as bool;
 
-    homeShowSubscribed = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_SUBSCRIBED, true) as bool;
-    homeShowPo = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_PO, true) as bool;
-    homeShowSo = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_SO, true) as bool;
-    homeShowManufacturers = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_MANUFACTURERS, true) as bool;
-    homeShowCustomers = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_CUSTOMERS, true) as bool;
-    homeShowSuppliers = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_SUPPLIERS, true) as bool;
-
-    setState(() {
-    });
+    setState(() {});
   }
 
-  Future <void> _loadProfile() async {
-
+  Future<void> _loadProfile() async {
     _profile = await UserProfileDBManager().getSelectedProfile();
 
     // A valid profile was loaded!
     if (_profile != null) {
       if (!InvenTreeAPI().isConnected() && !InvenTreeAPI().isConnecting()) {
-
         // Attempt server connection
         InvenTreeAPI().connectToServer(_profile!).then((result) {
           if (mounted) {
@@ -176,8 +176,11 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
     setState(() {});
   }
 
-  Widget _listTile(BuildContext context, String label, IconData icon, {Function()? callback, String role = "", String permission = "", Widget? trailing}) {
-
+  Widget _listTile(BuildContext context, String label, IconData icon,
+      {Function()? callback,
+      String role = "",
+      String permission = "",
+      Widget? trailing}) {
     bool connected = InvenTreeAPI().isConnected();
 
     bool allowed = true;
@@ -188,25 +191,20 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
 
     return GestureDetector(
       child: Card(
-        margin: EdgeInsets.all(5),
-        child: Align(
-          child: ListTile(
-            leading: Icon(
-                icon,
-                size: 32,
-                color: connected && allowed ? COLOR_ACTION : Colors.grey
-            ),
-            title: Text(
-              label,
-              style: TextStyle(
-                fontSize: 20
+          margin: EdgeInsets.all(5),
+          child: Align(
+            child: ListTile(
+              leading: Icon(icon,
+                  size: 32,
+                  color: connected && allowed ? COLOR_ACTION : Colors.grey),
+              title: Text(
+                label,
+                style: TextStyle(fontSize: 20),
               ),
+              trailing: trailing,
             ),
-            trailing: trailing,
-          ),
-          alignment: Alignment.center,
-        )
-      ),
+            alignment: Alignment.center,
+          )),
       onTap: () {
         if (!allowed) {
           showSnackIcon(
@@ -228,7 +226,6 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
    * Constructs a list of tiles for the main screen
    */
   List<Widget> getListTiles(BuildContext context) {
-
     List<Widget> tiles = [];
 
     // Parts
@@ -245,61 +242,42 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
 
     // Starred parts
     if (homeShowSubscribed && InvenTreePart().canView) {
-      tiles.add(_listTile(
-        context,
-        L10().partsStarred,
-        TablerIcons.bell,
-        callback: () {
-          _showStarredParts(context);
-        }
-      ));
+      tiles.add(_listTile(context, L10().partsStarred, TablerIcons.bell,
+          callback: () {
+        _showStarredParts(context);
+      }));
     }
 
     // Stock button
     if (InvenTreeStockItem().canView) {
-      tiles.add(_listTile(
-          context,
-          L10().stock,
-          TablerIcons.package,
-          callback: () {
-            _showStock(context);
-          }
-      ));
+      tiles.add(
+          _listTile(context, L10().stock, TablerIcons.package, callback: () {
+        _showStock(context);
+      }));
     }
 
     // Purchase orders
     if (homeShowPo && InvenTreePurchaseOrder().canView) {
-      tiles.add(_listTile(
-          context,
-          L10().purchaseOrders,
-          TablerIcons.shopping_cart,
-          callback: () {
-            _showPurchaseOrders(context);
-          }
-      ));
+      tiles.add(
+          _listTile(context, L10().purchaseOrders, TablerIcons.shopping_cart,
+              callback: () {
+        _showPurchaseOrders(context);
+      }));
     }
 
     if (homeShowSo && InvenTreeSalesOrder().canView) {
       tiles.add(_listTile(
-        context,
-        L10().salesOrders,
-        TablerIcons.truck_delivery,
-        callback: () {
-          _showSalesOrders(context);
-        }
-      ));
+          context, L10().salesOrders, TablerIcons.truck_delivery, callback: () {
+        _showSalesOrders(context);
+      }));
     }
 
     // Suppliers
     if (homeShowSuppliers && InvenTreePurchaseOrder().canView) {
-      tiles.add(_listTile(
-          context,
-          L10().suppliers,
-          TablerIcons.building,
+      tiles.add(_listTile(context, L10().suppliers, TablerIcons.building,
           callback: () {
-            _showSuppliers(context);
-          }
-      ));
+        _showSuppliers(context);
+      }));
     }
 
     // TODO: Add these tiles back in once the features are fleshed out
@@ -320,14 +298,10 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
     */
     // Customers
     if (homeShowCustomers) {
-      tiles.add(_listTile(
-          context,
-          L10().customers,
-          TablerIcons.building_store,
+      tiles.add(_listTile(context, L10().customers, TablerIcons.building_store,
           callback: () {
-            _showCustomers(context);
-          }
-      ));
+        _showCustomers(context);
+      }));
     }
 
     return tiles;
@@ -338,10 +312,10 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
    * display a connection status widget
    */
   Widget _connectionStatusWidget(BuildContext context) {
-
     String? serverAddress = InvenTreeAPI().serverAddress;
     bool validAddress = serverAddress != null;
-    bool connecting = !InvenTreeAPI().isConnected() && InvenTreeAPI().isConnecting();
+    bool connecting =
+        !InvenTreeAPI().isConnected() && InvenTreeAPI().isConnecting();
 
     Widget leading = Icon(TablerIcons.exclamation_circle, color: COLOR_DANGER);
     Widget trailing = Icon(TablerIcons.server, color: COLOR_ACTION);
@@ -357,25 +331,23 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
     }
 
     return Center(
-      child: Column(
-        children: [
-          Spacer(),
-          Image.asset(
-            "assets/image/logo_transparent.png",
-            color: Colors.white.withValues(alpha: 0.05),
-            colorBlendMode: BlendMode.modulate,
-            scale: 0.5,
-          ),
-          Spacer(),
-          ListTile(
-            title: Text(title),
-            subtitle: Text(subtitle),
-            trailing: trailing,
-            leading: leading,
-            onTap: _selectProfile,
-          )
-        ]
-      ),
+      child: Column(children: [
+        Spacer(),
+        Image.asset(
+          "assets/image/logo_transparent.png",
+          color: Colors.white.withValues(alpha: 0.05),
+          colorBlendMode: BlendMode.modulate,
+          scale: 0.5,
+        ),
+        Spacer(),
+        ListTile(
+          title: Text(title),
+          subtitle: Text(subtitle),
+          trailing: trailing,
+          leading: leading,
+          onTap: _selectProfile,
+        )
+      ]),
     );
   }
 
@@ -384,7 +356,6 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
    */
   @override
   Widget getBody(BuildContext context) {
-
     if (!InvenTreeAPI().isConnected()) {
       return _connectionStatusWidget(context);
     }
@@ -398,7 +369,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
     int hTiles = smallScreen ? 1 : 2;
     double aspect = smallScreen ? 5 : 3;
     double padding = smallScreen ? 2 : 10;
-    
+
     return GridView.count(
       crossAxisCount: w > h ? vTiles : hTiles,
       children: getListTiles(context),
@@ -408,12 +379,10 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
       mainAxisSpacing: padding,
       padding: EdgeInsets.all(padding),
     );
-
   }
 
   @override
   Widget build(BuildContext context) {
-
     var connected = InvenTreeAPI().isConnected();
     var connecting = !connected && InvenTreeAPI().isConnecting();
 
@@ -426,7 +395,9 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
           IconButton(
             icon: Icon(
               TablerIcons.server,
-              color: connected ? COLOR_SUCCESS : (connecting ? COLOR_PROGRESS: COLOR_DANGER),
+              color: connected
+                  ? COLOR_SUCCESS
+                  : (connecting ? COLOR_PROGRESS : COLOR_DANGER),
             ),
             onPressed: _selectProfile,
           )
@@ -434,7 +405,9 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage> with BaseWidgetPr
       ),
       drawer: InvenTreeDrawer(context),
       body: getBody(context),
-      bottomNavigationBar: InvenTreeAPI().isConnected() ? buildBottomAppBar(context, homeKey) : null,
+      bottomNavigationBar: InvenTreeAPI().isConnected()
+          ? buildBottomAppBar(context, homeKey)
+          : null,
     );
   }
 }

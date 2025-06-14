@@ -5,10 +5,10 @@ import "package:inventree/inventree/model.dart";
  */
 
 class InvenTreeNotification extends InvenTreeModel {
-
   InvenTreeNotification() : super();
 
-  InvenTreeNotification.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+  InvenTreeNotification.fromJson(Map<String, dynamic> json)
+      : super.fromJson(json);
 
   @override
   InvenTreeNotification createFromJson(Map<String, dynamic> json) {
@@ -20,7 +20,6 @@ class InvenTreeNotification extends InvenTreeModel {
 
   @override
   Map<String, String> defaultListFilters() {
-
     // By default, only return 'unread' notifications
     return {
       "read": "false",
@@ -28,7 +27,7 @@ class InvenTreeNotification extends InvenTreeModel {
   }
 
   String get message => getString("message");
-  
+
   DateTime? get creationDate {
     if (jsondata.containsKey("creation")) {
       return DateTime.tryParse((jsondata["creation"] ?? "") as String);
@@ -41,7 +40,6 @@ class InvenTreeNotification extends InvenTreeModel {
    * Dismiss this notification (mark as read)
    */
   Future<void> dismiss() async {
-
     if (api.apiVersion >= 82) {
       // "Modern" API endpoint operates a little differently
       await update(values: {"read": "true"});
@@ -49,5 +47,4 @@ class InvenTreeNotification extends InvenTreeModel {
       await api.post("${url}read/");
     }
   }
-
 }

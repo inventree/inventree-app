@@ -1,11 +1,9 @@
-
 import "package:sembast/sembast.dart";
 
 import "package:inventree/helpers.dart";
 import "package:inventree/preferences.dart";
 
 class UserProfile {
-
   UserProfile({
     this.key,
     this.name = "",
@@ -14,13 +12,15 @@ class UserProfile {
     this.selected = false,
   });
 
-  factory UserProfile.fromJson(int key, Map<String, dynamic> json, bool isSelected) => UserProfile(
-    key: key,
-    name: (json["name"] ?? "") as String,
-    server: (json["server"] ?? "") as String,
-    token: (json["token"] ?? "") as String,
-    selected: isSelected,
-  );
+  factory UserProfile.fromJson(
+          int key, Map<String, dynamic> json, bool isSelected) =>
+      UserProfile(
+        key: key,
+        name: (json["name"] ?? "") as String,
+        server: (json["server"] ?? "") as String,
+        token: (json["token"] ?? "") as String,
+        selected: isSelected,
+      );
 
   // Return true if this profile has a token
   bool get hasToken => token.isNotEmpty;
@@ -43,10 +43,10 @@ class UserProfile {
   int user_id = -1;
 
   Map<String, dynamic> toJson() => {
-    "name": name,
-    "server": server,
-    "token": token,
-  };
+        "name": name,
+        "server": server,
+        "token": token,
+      };
 
   @override
   String toString() {
@@ -58,7 +58,6 @@ class UserProfile {
  * Class for storing and managing user (server) profiles
  */
 class UserProfileDBManager {
-
   final store = StoreRef("profiles");
 
   Future<Database> get _db async => InvenTreePreferencesDB.instance.database;
@@ -67,7 +66,6 @@ class UserProfileDBManager {
    * Check if a profile with the specified name exists in the database
    */
   Future<bool> profileNameExists(String name) async {
-
     final profiles = await getAllProfiles();
 
     for (var prf in profiles) {
@@ -84,9 +82,9 @@ class UserProfileDBManager {
    * Add a new UserProfile to the profiles database.
    */
   Future<bool> addProfile(UserProfile profile) async {
-
     if (profile.name.isEmpty) {
-      debug("addProfile() : Profile missing required values - not adding to database");
+      debug(
+          "addProfile() : Profile missing required values - not adding to database");
       return false;
     }
 
@@ -113,7 +111,6 @@ class UserProfileDBManager {
    * The unique integer <key> is used to determine if the profile already exists.
    */
   Future<bool> updateProfile(UserProfile profile) async {
-
     // Prevent invalid profile data from being updated
     if (profile.name.isEmpty) {
       debug("updateProfile() : Profile missing required values - not updating");
@@ -144,15 +141,14 @@ class UserProfileDBManager {
    * The key of the UserProfile should match the "selected" property
    */
   Future<UserProfile?> getSelectedProfile() async {
-
     final selected = await store.record("selected").get(await _db);
 
     final profiles = await store.find(await _db);
 
-    debug("getSelectedProfile() : ${profiles.length} profiles available - selected = ${selected}");
+    debug(
+        "getSelectedProfile() : ${profiles.length} profiles available - selected = ${selected}");
 
     for (int idx = 0; idx < profiles.length; idx++) {
-
       if (profiles[idx].key is int && profiles[idx].key == selected) {
         return UserProfile.fromJson(
           profiles[idx].key! as int,
@@ -169,7 +165,6 @@ class UserProfileDBManager {
    * Return all user profile objects
    */
   Future<List<UserProfile>> getAllProfiles() async {
-
     final selected = await store.record("selected").get(await _db);
 
     final profiles = await store.find(await _db);
@@ -177,25 +172,22 @@ class UserProfileDBManager {
     List<UserProfile> profileList = [];
 
     for (int idx = 0; idx < profiles.length; idx++) {
-
       if (profiles[idx].key is int) {
-        profileList.add(
-          UserProfile.fromJson(
-            profiles[idx].key! as int,
-            profiles[idx].value! as Map<String, dynamic>,
-            profiles[idx].key == selected,
-          )
-        );
+        profileList.add(UserProfile.fromJson(
+          profiles[idx].key! as int,
+          profiles[idx].value! as Map<String, dynamic>,
+          profiles[idx].key == selected,
+        ));
       }
     }
 
     // If there are no available profiles, create a demo profile
     if (profileList.isEmpty) {
-      bool added = await InvenTreeSettingsManager().getBool("demo_profile_added", false);
+      bool added =
+          await InvenTreeSettingsManager().getBool("demo_profile_added", false);
 
       // Don't add a new profile if we have added it previously
       if (!added) {
-
         await InvenTreeSettingsManager().setValue("demo_profile_added", true);
 
         UserProfile demoProfile = UserProfile(
@@ -211,7 +203,6 @@ class UserProfileDBManager {
 
     return profileList;
   }
-
 
   /*
    * Retrieve a profile by key (or null if no match exists)
@@ -230,7 +221,6 @@ class UserProfileDBManager {
 
     return prf;
   }
-
 
   /*
    * Retrieve a profile by name (or null if no match exists)

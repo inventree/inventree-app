@@ -23,21 +23,17 @@ import "package:inventree/widget/order/sales_order_list.dart";
 import "package:inventree/widget/company/company_list.dart";
 import "package:inventree/widget/company/supplier_part_list.dart";
 
-
 // Widget for performing database-wide search
 class SearchWidget extends StatefulWidget {
-
   const SearchWidget(this.hasAppbar);
 
   final bool hasAppbar;
 
   @override
   _SearchDisplayState createState() => _SearchDisplayState(hasAppbar);
-
 }
 
 class _SearchDisplayState extends RefreshableState<SearchWidget> {
-
   _SearchDisplayState(this.hasAppBar) : super();
 
   final _formKey = GlobalKey<FormState>();
@@ -80,7 +76,6 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
    * Determine if the search is still running
    */
   bool isSearching() {
-
     if (searchController.text.isEmpty) {
       return false;
     }
@@ -128,7 +123,6 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
   // Callback when the text is being edited
   // Incorporates a debounce timer to restrict search frequency
   void onSearchTextChanged(String text, {bool immediate = false}) {
-
     if (debounceTimer?.isActive ?? false) {
       debounceTimer!.cancel();
     }
@@ -151,8 +145,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
    *     }
    * }
    */
-  int getSearchResultCount(Map <String, dynamic> results, String key) {
-
+  int getSearchResultCount(Map<String, dynamic> results, String key) {
     dynamic result = results[key];
 
     if (result == null || result is! Map) {
@@ -170,43 +163,50 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
 
   // Actually perform the search query
   Future<void> _perform_search(Map<String, dynamic> body) async {
-    InvenTreeAPI().post(
-      "search/",
-      body: body,
-      expectedStatusCode: 200).then((APIResponse response) {
+    InvenTreeAPI()
+        .post("search/", body: body, expectedStatusCode: 200)
+        .then((APIResponse response) {
+      String searchTerm = (body["search"] ?? "").toString();
 
-        String searchTerm = (body["search"] ?? "").toString();
+      // Only update if the results correspond to the current search term
+      if (searchTerm == searchController.text && mounted) {
+        decrementPendingSearches();
 
-        // Only update if the results correspond to the current search term
-        if (searchTerm == searchController.text && mounted) {
+        Map<String, dynamic> results = {};
 
-          decrementPendingSearches();
+        if (response.isValid() && response.data is Map<String, dynamic>) {
+          results = response.data as Map<String, dynamic>;
 
-          Map<String, dynamic> results = {};
+          setState(() {
+            nPartResults =
+                getSearchResultCount(results, InvenTreePart.MODEL_TYPE);
+            nCategoryResults =
+                getSearchResultCount(results, InvenTreePartCategory.MODEL_TYPE);
+            nStockResults =
+                getSearchResultCount(results, InvenTreeStockItem.MODEL_TYPE);
+            nLocationResults = getSearchResultCount(
+                results, InvenTreeStockLocation.MODEL_TYPE);
+            nPurchaseOrderResults = getSearchResultCount(
+                results, InvenTreePurchaseOrder.MODEL_TYPE);
+            nSalesOrderResults =
+                getSearchResultCount(results, InvenTreeSalesOrder.MODEL_TYPE);
+            nSupplierPartResults =
+                getSearchResultCount(results, InvenTreeSupplierPart.MODEL_TYPE);
+            nManufacturerPartResults = getSearchResultCount(
+                results, InvenTreeManufacturerPart.MODEL_TYPE);
+            nCompanyResults =
+                getSearchResultCount(results, InvenTreeCompany.MODEL_TYPE);
 
-          if (response.isValid() && response.data is Map<String, dynamic>) {
-            results = response.data as Map<String, dynamic>;
-
-            setState(() {
-              nPartResults = getSearchResultCount(results, InvenTreePart.MODEL_TYPE);
-              nCategoryResults = getSearchResultCount(results, InvenTreePartCategory.MODEL_TYPE);
-              nStockResults = getSearchResultCount(results, InvenTreeStockItem.MODEL_TYPE);
-              nLocationResults = getSearchResultCount(results, InvenTreeStockLocation.MODEL_TYPE);
-              nPurchaseOrderResults = getSearchResultCount(results, InvenTreePurchaseOrder.MODEL_TYPE);
-              nSalesOrderResults = getSearchResultCount(results, InvenTreeSalesOrder.MODEL_TYPE);
-              nSupplierPartResults = getSearchResultCount(results, InvenTreeSupplierPart.MODEL_TYPE);
-              nManufacturerPartResults = getSearchResultCount(results, InvenTreeManufacturerPart.MODEL_TYPE);
-              nCompanyResults = getSearchResultCount(results, InvenTreeCompany.MODEL_TYPE);
-
-              // Special case for company search results
-              nCustomerResults = getSearchResultCount(results, "customer");
-              nManufacturerResults = getSearchResultCount(results, "manufacturer");
-              nSupplierResults = getSearchResultCount(results, "supplier");
-            });
-          } else {
-            resetSearchResults();
-          }
+            // Special case for company search results
+            nCustomerResults = getSearchResultCount(results, "customer");
+            nManufacturerResults =
+                getSearchResultCount(results, "manufacturer");
+            nSupplierResults = getSearchResultCount(results, "supplier");
+          });
+        } else {
+          resetSearchResults();
         }
+      }
     });
   }
 
@@ -237,11 +237,9 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
 
     // Consolidated search allows us to perform *all* searches in a single query
     if (api.supportsConsolidatedSearch) {
-
       Map<String, dynamic> body = {
         "limit": 1,
         "search": term,
-
         InvenTreePart.MODEL_TYPE: {},
         InvenTreePartCategory.MODEL_TYPE: {},
         InvenTreeStockItem.MODEL_TYPE: {},
@@ -262,7 +260,6 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
       }
 
       if (body.isNotEmpty) {
-
         if (mounted) {
           setState(() {
             nPendingSearches = 1;
@@ -272,7 +269,6 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
             _perform_search(body),
           );
         }
-
       }
     } else {
       legacySearch(term);
@@ -283,7 +279,6 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
    * Perform "legacy" search (without consolidated search API endpoint
    */
   Future<void> legacySearch(String term) async {
-
     // Search parts
     if (InvenTreePart().canView) {
       nPendingSearches++;
@@ -302,7 +297,11 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
     // Search part categories
     if (InvenTreePartCategory().canView) {
       nPendingSearches++;
-      InvenTreePartCategory().count(searchQuery: term,).then((int n) {
+      InvenTreePartCategory()
+          .count(
+        searchQuery: term,
+      )
+          .then((int n) {
         if (term == searchController.text) {
           if (mounted) {
             decrementPendingSearches();
@@ -346,13 +345,9 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
 
     // Search purchase orders
     if (InvenTreePurchaseOrder().canView) {
-     nPendingSearches++;
+      nPendingSearches++;
       InvenTreePurchaseOrder().count(
-          searchQuery: term,
-          filters: {
-            "outstanding": "true"
-          }
-      ).then((int n) {
+          searchQuery: term, filters: {"outstanding": "true"}).then((int n) {
         if (term == searchController.text) {
           if (mounted) {
             decrementPendingSearches();
@@ -367,40 +362,37 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
 
   @override
   List<Widget> getTiles(BuildContext context) {
-
     List<Widget> tiles = [];
 
     // Search input
-    tiles.add(
-      ListTile(
-        title: TextFormField(
-          decoration: InputDecoration(
-            hintText: L10().queryEmpty,
-          ),
-          key: _formKey,
-          readOnly: false,
-          autofocus: true,
-          autocorrect: false,
-          controller: searchController,
-          onChanged: (String text) {
-            onSearchTextChanged(text);
-          },
-          onFieldSubmitted: (String text) {
-          },
+    tiles.add(ListTile(
+      title: TextFormField(
+        decoration: InputDecoration(
+          hintText: L10().queryEmpty,
         ),
-        trailing: GestureDetector(
-          child: Icon(
-            searchController.text.isEmpty ? TablerIcons.search : TablerIcons.backspace,
-            color: searchController.text.isEmpty ? COLOR_ACTION : COLOR_DANGER,
-          ),
-          onTap: () {
-            searchController.clear();
-            onSearchTextChanged("", immediate: true);
-          },
+        key: _formKey,
+        readOnly: false,
+        autofocus: true,
+        autocorrect: false,
+        controller: searchController,
+        onChanged: (String text) {
+          onSearchTextChanged(text);
+        },
+        onFieldSubmitted: (String text) {},
+      ),
+      trailing: GestureDetector(
+        child: Icon(
+          searchController.text.isEmpty
+              ? TablerIcons.search
+              : TablerIcons.backspace,
+          color: searchController.text.isEmpty ? COLOR_ACTION : COLOR_DANGER,
         ),
-      )
-
-    );
+        onTap: () {
+          searchController.clear();
+          onSearchTextChanged("", immediate: true);
+        },
+      ),
+    ));
 
     String query = searchController.text;
 
@@ -408,8 +400,7 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
 
     // Part Results
     if (nPartResults > 0) {
-      results.add(
-        ListTile(
+      results.add(ListTile(
           title: Text(L10().parts),
           leading: Icon(TablerIcons.box),
           trailing: Text("${nPartResults}"),
@@ -417,275 +408,188 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => PartList(
-                        {
-                          "original_search": query
-                        }
-                    )
-                )
-            );
-          }
-        )
-      );
+                    builder: (context) =>
+                        PartList({"original_search": query})));
+          }));
     }
 
     // Part Category Results
     if (nCategoryResults > 0) {
-      results.add(
-        ListTile(
-          title: Text(L10().partCategories),
-          leading: Icon(TablerIcons.sitemap),
-          trailing: Text("${nCategoryResults}"),
-          onTap: () {
-            Navigator.push(
+      results.add(ListTile(
+        title: Text(L10().partCategories),
+        leading: Icon(TablerIcons.sitemap),
+        trailing: Text("${nCategoryResults}"),
+        onTap: () {
+          Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => PartCategoryList(
-                  {
-                    "original_search": query
-                  }
-                )
-              )
-            );
-          },
-        )
-      );
+                  builder: (context) =>
+                      PartCategoryList({"original_search": query})));
+        },
+      ));
     }
 
     // Stock Item Results
     if (nStockResults > 0) {
-      results.add(
-        ListTile(
-          title: Text(L10().stockItems),
-          leading: Icon(TablerIcons.package),
-          trailing: Text("${nStockResults}"),
-          onTap: () {
-            Navigator.push(
+      results.add(ListTile(
+        title: Text(L10().stockItems),
+        leading: Icon(TablerIcons.package),
+        trailing: Text("${nStockResults}"),
+        onTap: () {
+          Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => StockItemList(
-                  {
-                    "original_search": query,
-                  }
-                )
-              )
-            );
-          },
-        )
-      );
+                  builder: (context) => StockItemList({
+                        "original_search": query,
+                      })));
+        },
+      ));
     }
 
     // Stock location results
     if (nLocationResults > 0) {
-      results.add(
-        ListTile(
-          title: Text(L10().stockLocations),
-          leading: Icon(TablerIcons.location),
-          trailing: Text("${nLocationResults}"),
-          onTap: () {
-            Navigator.push(
+      results.add(ListTile(
+        title: Text(L10().stockLocations),
+        leading: Icon(TablerIcons.location),
+        trailing: Text("${nLocationResults}"),
+        onTap: () {
+          Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => StockLocationList(
-                  {
-                    "original_search": query
-                  }
-                )
-              )
-            );
-          },
-        )
-      );
+                  builder: (context) =>
+                      StockLocationList({"original_search": query})));
+        },
+      ));
     }
 
     // Purchase orders
     if (nPurchaseOrderResults > 0) {
-      results.add(
-        ListTile(
-          title: Text(L10().purchaseOrders),
-          leading: Icon(TablerIcons.shopping_cart),
-          trailing: Text("${nPurchaseOrderResults}"),
-          onTap: () {
-            Navigator.push(
+      results.add(ListTile(
+        title: Text(L10().purchaseOrders),
+        leading: Icon(TablerIcons.shopping_cart),
+        trailing: Text("${nPurchaseOrderResults}"),
+        onTap: () {
+          Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => PurchaseOrderListWidget(
-                  filters: {
-                    "original_search": query
-                  }
-                )
-              )
-            );
-          },
-        )
-      );
+                  builder: (context) => PurchaseOrderListWidget(
+                      filters: {"original_search": query})));
+        },
+      ));
     }
 
     // Sales orders
     if (nSalesOrderResults > 0) {
-      results.add(
-        ListTile(
-          title: Text(L10().salesOrders),
-          leading: Icon(TablerIcons.shopping_cart),
-          trailing: Text("${nSalesOrderResults}"),
-          onTap: () {
-            Navigator.push(
+      results.add(ListTile(
+        title: Text(L10().salesOrders),
+        leading: Icon(TablerIcons.shopping_cart),
+        trailing: Text("${nSalesOrderResults}"),
+        onTap: () {
+          Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => SalesOrderListWidget(
-                  filters: {
-                    "original_search": query
-                  }
-                )
-              )
-            );
-          },
-        )
-      );
+                  builder: (context) => SalesOrderListWidget(
+                      filters: {"original_search": query})));
+        },
+      ));
     }
 
     // Company results
     if (nCompanyResults > 0) {
-      results.add(
-        ListTile(
-          title: Text(L10().companies),
-          leading: Icon(TablerIcons.building),
-          trailing: Text("${nCompanyResults}"),
-          onTap: () {
-            Navigator.push(
+      results.add(ListTile(
+        title: Text(L10().companies),
+        leading: Icon(TablerIcons.building),
+        trailing: Text("${nCompanyResults}"),
+        onTap: () {
+          Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => CompanyListWidget(
-                  L10().companies,
-                  {
-                    "original_search": query
-                  }
-                )
-              )
-            );
-          },
-        )
-      );
+                  builder: (context) => CompanyListWidget(
+                      L10().companies, {"original_search": query})));
+        },
+      ));
     }
 
     // Customer results
     if (nCustomerResults > 0) {
-      results.add(
-        ListTile(
-          title: Text(L10().customers),
-          leading: Icon(TablerIcons.building_store),
-          trailing: Text("${nCustomerResults}"),
-          onTap: () {
-            Navigator.push(
+      results.add(ListTile(
+        title: Text(L10().customers),
+        leading: Icon(TablerIcons.building_store),
+        trailing: Text("${nCustomerResults}"),
+        onTap: () {
+          Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => CompanyListWidget(
-                  L10().customers,
-                  {
-                    "original_search": query,
-                    "is_customer": "true"
-                  }
-                )
-              )
-            );
-          },
-        )
-      );
+                  builder: (context) => CompanyListWidget(L10().customers,
+                      {"original_search": query, "is_customer": "true"})));
+        },
+      ));
     }
 
     // Manufacturer results
     if (nManufacturerResults > 0) {
-      results.add(
-        ListTile(
-          title: Text(L10().manufacturers),
-          leading: Icon(TablerIcons.building_factory_2),
-          trailing: Text("${nManufacturerResults}"),
-          onTap: () {
-            Navigator.push(
+      results.add(ListTile(
+        title: Text(L10().manufacturers),
+        leading: Icon(TablerIcons.building_factory_2),
+        trailing: Text("${nManufacturerResults}"),
+        onTap: () {
+          Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => CompanyListWidget(
-                  L10().manufacturers,
-                  {
-                    "original_search": query,
-                    "is_manufacturer": "true"
-                  }
-                )
-              )
-            );
-          },
-        )
-      );
+                  builder: (context) => CompanyListWidget(L10().manufacturers,
+                      {"original_search": query, "is_manufacturer": "true"})));
+        },
+      ));
     }
 
     // Supplier results
     if (nSupplierResults > 0) {
-      results.add(
-        ListTile(
-          title: Text(L10().suppliers),
-          leading: Icon(TablerIcons.building_store),
-          trailing: Text("${nSupplierResults}"),
-          onTap: () {
-            Navigator.push(
+      results.add(ListTile(
+        title: Text(L10().suppliers),
+        leading: Icon(TablerIcons.building_store),
+        trailing: Text("${nSupplierResults}"),
+        onTap: () {
+          Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => CompanyListWidget(
-                  L10().suppliers,
-                  {
-                    "original_search": query,
-                    "is_supplier": "true"
-                  }
-                )
-              )
-            );
-          },
-        )
-      );
+                  builder: (context) => CompanyListWidget(L10().suppliers,
+                      {"original_search": query, "is_supplier": "true"})));
+        },
+      ));
     }
 
     // Supplier part results
     if (nSupplierPartResults > 0) {
-      results.add(
-        ListTile(
-          title: Text(L10().supplierParts),
-          leading: Icon(TablerIcons.box),
-          trailing: Text("${nSupplierPartResults}"),
-          onTap: () {
-            Navigator.push(
+      results.add(ListTile(
+        title: Text(L10().supplierParts),
+        leading: Icon(TablerIcons.box),
+        trailing: Text("${nSupplierPartResults}"),
+        onTap: () {
+          Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => SupplierPartList(
-                  {
-                    "original_search": query
-                  }
-                )
-              )
-            );
-          },
-        )
-      );
+                  builder: (context) =>
+                      SupplierPartList({"original_search": query})));
+        },
+      ));
     }
 
     if (isSearching()) {
-      tiles.add(
-        ListTile(
-          title: Text(L10().searching),
-          leading: Icon(TablerIcons.search),
-          trailing: CircularProgressIndicator(),
-        )
-      );
+      tiles.add(ListTile(
+        title: Text(L10().searching),
+        leading: Icon(TablerIcons.search),
+        trailing: CircularProgressIndicator(),
+      ));
     }
 
     if (!isSearching() && results.isEmpty && searchController.text.isNotEmpty) {
-      tiles.add(
-        ListTile(
-          title: Text(
-            L10().queryNoResults,
-            style: TextStyle(fontStyle: FontStyle.italic),
-          ),
-          leading: Icon(TablerIcons.zoom_cancel),
-        )
-      );
+      tiles.add(ListTile(
+        title: Text(
+          L10().queryNoResults,
+          style: TextStyle(fontStyle: FontStyle.italic),
+        ),
+        leading: Icon(TablerIcons.zoom_cancel),
+      ));
     } else {
       for (Widget result in results) {
         tiles.add(result);
@@ -694,5 +598,4 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
 
     return tiles;
   }
-
 }

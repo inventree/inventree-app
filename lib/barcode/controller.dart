@@ -11,7 +11,6 @@ import "package:inventree/widget/progress.dart";
  * which is used to process the scanned barcode.
  */
 class InvenTreeBarcodeController extends StatefulWidget {
-
   const InvenTreeBarcodeController(this.handler, {Key? key}) : super(key: key);
 
   final BarcodeHandler handler;
@@ -20,16 +19,16 @@ class InvenTreeBarcodeController extends StatefulWidget {
   State<StatefulWidget> createState() => InvenTreeBarcodeControllerState();
 }
 
-
 /*
  * Base state widget for the barcode controller.
  * This defines the basic interface for the barcode controller.
  */
-class InvenTreeBarcodeControllerState extends State<InvenTreeBarcodeController> {
-
+class InvenTreeBarcodeControllerState
+    extends State<InvenTreeBarcodeController> {
   InvenTreeBarcodeControllerState() : super();
 
-  final GlobalKey barcodeControllerKey = GlobalKey(debugLabel: "barcodeController");
+  final GlobalKey barcodeControllerKey =
+      GlobalKey(debugLabel: "barcodeController");
 
   // Internal state flag to test if we are currently processing a barcode
   bool processingBarcode = false;
@@ -40,7 +39,6 @@ class InvenTreeBarcodeControllerState extends State<InvenTreeBarcodeController> 
    * Barcode data should be passed as a string
    */
   Future<void> handleBarcodeData(String? data) async {
-
     // Check that the data is valid, and this view is still mounted
     if (!mounted || data == null || data.isEmpty) {
       return;
@@ -66,7 +64,8 @@ class InvenTreeBarcodeControllerState extends State<InvenTreeBarcodeController> 
       return;
     }
 
-    int delay = await InvenTreeSettingsManager().getValue(INV_BARCODE_SCAN_DELAY, 500) as int;
+    int delay = await InvenTreeSettingsManager()
+        .getValue(INV_BARCODE_SCAN_DELAY, 500) as int;
 
     Future.delayed(Duration(milliseconds: delay), () {
       hideLoadingOverlay();
@@ -99,5 +98,4 @@ class InvenTreeBarcodeControllerState extends State<InvenTreeBarcodeController> 
   Widget build(BuildContext context) {
     return Container();
   }
-
 }

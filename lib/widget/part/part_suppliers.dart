@@ -10,19 +10,15 @@ import "package:inventree/inventree/company.dart";
 import "package:inventree/widget/refreshable_state.dart";
 
 class PartSupplierWidget extends StatefulWidget {
-
   const PartSupplierWidget(this.part, {Key? key}) : super(key: key);
 
   final InvenTreePart part;
 
   @override
   _PartSupplierState createState() => _PartSupplierState(part);
-
 }
 
-
 class _PartSupplierState extends RefreshableState<PartSupplierWidget> {
-
   _PartSupplierState(this.part);
 
   final InvenTreePart part;
@@ -46,7 +42,6 @@ class _PartSupplierState extends RefreshableState<PartSupplierWidget> {
   }
 
   Widget _supplierPartTile(BuildContext context, int index) {
-
     InvenTreeSupplierPart _part = _supplierParts[index];
 
     return ListTile(
@@ -73,5 +68,4 @@ class _PartSupplierState extends RefreshableState<PartSupplierWidget> {
       itemBuilder: _supplierPartTile,
     );
   }
-
 }
