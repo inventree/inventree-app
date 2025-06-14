@@ -63,6 +63,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   int usedInCount = 0;
   int variantCount = 0;
 
+  InvenTreePartPricing? partPricing;
+
   List<Map<String, dynamic>> labels = [];
 
   @override
@@ -197,6 +199,17 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       }
     });
 
+    // If show pricing information?
+    if (showPricing) {
+      part.getPricing().then((InvenTreePartPricing? pricing) {
+        if (mounted) {
+          setState(() {
+            partPricing = pricing;
+          });
+        }
+      });
+    }
+
     // Request the number of BOM items
     InvenTreePart().count(
       filters: {
@@ -274,8 +287,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   Widget headerTile() {
     return Card(
         child: ListTile(
-          title: Text("${part.fullname}"),
-          subtitle: Text("${part.description}"),
+          title: Text(part.fullname),
+          subtitle: Text(part.description),
           trailing: Text(
             part.stockString(),
             style: TextStyle(
@@ -428,16 +441,20 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       ),
     );
 
-    if (showPricing) {
+    if (showPricing && partPricing != null) {
+
+      String pricing = formatPriceRange(
+        partPricing?.overallMin,
+        partPricing?.overallMax,
+        currency: partPricing?.currency
+      );
+
       tiles.add(
         ListTile(
           title: Text(L10().partPricing),
           leading: Icon(TablerIcons.currency_dollar, color: COLOR_ACTION),
           trailing: Text(
-            formatPriceRange(
-                formatPrice(widget.part.overallMin?.toString(), widget.part.currency),
-                formatPrice(widget.part.overallMax?.toString(), widget.part.currency)
-            ) ?? L10().noPricingAvailable,
+            pricing.isNotEmpty ? pricing : L10().noPricingAvailable,
             style: TextStyle(
               fontWeight: FontWeight.bold,
             ),
@@ -446,7 +463,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => PartPricingWidget(part: part),
+                builder: (context) => PartPricingWidget(part: part, partPricing: partPricing),
               ),
             );
           },

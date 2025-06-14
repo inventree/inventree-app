@@ -5,6 +5,7 @@ import "package:flutter/material.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/helpers.dart";
+import "package:inventree/inventree/sentry.dart";
 import "package:inventree/l10.dart";
 
 import "package:inventree/inventree/stock.dart";
@@ -287,77 +288,26 @@ class InvenTreePart extends InvenTreeModel {
     });
   }
 
-  String? currency;
-  String? bomCostMin;
-  String? bomCostMax;
-  String? purchaseCostMin;
-  String? purchaseCostMax;
-  String? internalCostMin;
-  String? internalCostMax;
-  String? supplierPriceMin;
-  String? supplierPriceMax;
-  String? variantCostMin;
-  String? variantCostMax;
-  String? salePriceMin;
-  String? salePriceMax;
-  String? saleHistoryMin;
-  String? saleHistoryMax;
-  String? overallMin;
-  String? overallMax;
-  String? overrideMin;
-  String? overrideMinCurrency;
-  String? overrideMax;
-  String? overrideMaxCurrency;
-  List<String> priceBreaks = [];
-  bool isLoading = true;
-
   // Request pricing data for this part
-  Future<void> getPricing() async {
+  Future<InvenTreePartPricing?> getPricing() async {
+
+    print("REQUEST PRICING FOR: ${pk}");
+
     try {
       final response = await InvenTreeAPI().get("/api/part/${pk}/pricing/");
-      final salePriceResponse = await InvenTreeAPI().get("/api/part/sale-price/?part=${pk}");
-
       if (response.isValid()) {
         final pricingData = response.data;
 
-        currency = pricingData["currency"].toString();
-        bomCostMin = pricingData["bom_cost_min"].toString();
-        bomCostMax = pricingData["bom_cost_max"].toString();
-        purchaseCostMin = pricingData["purchase_cost_min"].toString();
-        purchaseCostMax = pricingData["purchase_cost_max"].toString();
-        internalCostMin = pricingData["internal_cost_min"].toString();
-        internalCostMax = pricingData["internal_cost_max"].toString();
-        supplierPriceMin = pricingData["supplier_price_min"].toString();
-        supplierPriceMax = pricingData["supplier_price_max"].toString();
-        variantCostMin = pricingData["variant_cost_min"].toString();
-        variantCostMax = pricingData["variant_cost_max"].toString();
-        salePriceMin = pricingData["sale_price_min"].toString();
-        salePriceMax = pricingData["sale_price_max"].toString();
-        saleHistoryMin = pricingData["sale_history_min"].toString();
-        saleHistoryMax = pricingData["sale_history_max"].toString();
-        overallMin = pricingData["overall_min"].toString();
-        overallMax = pricingData["overall_max"].toString();
-        overrideMin = pricingData["override_min"].toString();
-        overrideMinCurrency = pricingData["override_min_currency"].toString();
-        overrideMax = pricingData["override_max"].toString();
-        overrideMaxCurrency = pricingData["override_max_currency"].toString();
-      } else {
-        print("Failed to fetch pricing data for part $pk. Error: ${response.error}");
+        if (pricingData is Map<String, dynamic>) {
+          return InvenTreePartPricing.fromJson(pricingData);
+        }
       }
-
-      // Fetch sale price breaks
-      if (salePriceResponse.isValid()) {
-        final priceBreakData = salePriceResponse.data;
-
-        priceBreaks = (priceBreakData as List<dynamic>)
-            .map<String>((item) => "${L10().quantity}: ${item["quantity"]} ${L10().price}: ${item["price_currency"]} ${item["price"]}")
-            .toList();
-      } else {
-        print("Failed to fetch sale price breaks for part $pk. Error: ${salePriceResponse.error}");
-      }
-    } catch (e) {
+    } catch (e, stackTrace) {
       print("Exception while fetching pricing data for part $pk: $e");
+      sentryReportError("getPricing", e, stackTrace);
     }
+
+    return null;
   }
 
   int get supplierCount => getInt("suppliers", backup: 0);
@@ -475,6 +425,8 @@ class InvenTreePart extends InvenTreeModel {
 
     bool get isVirtual => getBool("virtual");
 
+    bool get isTemplate => getBool("is_template");
+
     bool get isTrackable => getBool("trackable");
 
     // Get the IPN (internal part number) for the Part instance
@@ -563,6 +515,54 @@ class InvenTreePart extends InvenTreeModel {
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreePart.fromJson(json);
 }
+
+
+class InvenTreePartPricing extends InvenTreeModel {
+
+  InvenTreePartPricing() : super();
+
+  InvenTreePartPricing.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+
+  @override
+  List<String> get rolesRequired => ["part"];
+
+  @override
+  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreePartPricing.fromJson(json);
+
+  // Price data accessors
+  String get currency => getString("currency", backup: "USD");
+
+  double? get overallMin => getDoubleOrNull("overall_min");
+  double? get overallMax => getDoubleOrNull("overall_max");
+
+  double? get overrideMin => getDoubleOrNull("override_min");
+  double? get overrideMax => getDoubleOrNull("override_max");
+
+  String get overrideMinCurrency => getString("override_min_currency", backup: currency);
+  String get overrideMaxCurrency => getString("override_max_currency", backup: currency);
+
+  double? get bomCostMin => getDoubleOrNull("bom_cost_min");
+  double? get bomCostMax => getDoubleOrNull("bom_cost_max");
+
+  double? get purchaseCostMin => getDoubleOrNull("purchase_cost_min");
+  double? get purchaseCostMax => getDoubleOrNull("purchase_cost_max");
+
+  double? get internalCostMin => getDoubleOrNull("internal_cost_min");
+  double? get internalCostMax => getDoubleOrNull("internal_cost_max");
+
+  double? get supplierPriceMin => getDoubleOrNull("supplier_price_min");
+  double? get supplierPriceMax => getDoubleOrNull("supplier_price_max");
+
+  double? get variantCostMin => getDoubleOrNull("variant_cost_min");
+  double? get variantCostMax => getDoubleOrNull("variant_cost_max");
+
+  double? get salePriceMin => getDoubleOrNull("sale_price_min");
+  double? get salePriceMax => getDoubleOrNull("sale_price_max");
+
+  double? get saleHistoryMin => getDoubleOrNull("sale_history_min");
+  double? get saleHistoryMax => getDoubleOrNull("sale_history_max");
+}
+
 
 /*
  * Class representing an attachment file against a Part object

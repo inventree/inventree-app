@@ -1603,6 +1603,15 @@
   "price": "Price",
   "@price": {},
 
+  "priceRange": "Price Range",
+  "@priceRange": {},
+
+  "priceOverrideMin": "Minimum Price Override",
+  "@priceOverrideMin": {},
+
+  "priceOverrideMax": "Maximum Price Override",
+  "@priceOverrideMax": {},
+
   "salePrice": "Sale Price",
   "@salePrice": {},
 

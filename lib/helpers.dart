@@ -168,7 +168,7 @@ String formatPriceRange(double? minPrice, double? maxPrice, { String? currency }
 
   // Account for empty or null values
   if (!isValidNumber(minPrice) && !isValidNumber(maxPrice)) {
-    return "";
+    return "-";
   }
 
   if (isValidNumber(minPrice) && isValidNumber(maxPrice)) {
@@ -186,6 +186,6 @@ String formatPriceRange(double? minPrice, double? maxPrice, { String? currency }
   } else if (isValidNumber(maxPrice)) {
     return renderCurrency(maxPrice, currency ?? "USD");
   } else {
-    return "";
+    return "-";
   }
 }
