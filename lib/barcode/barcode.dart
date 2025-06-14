@@ -88,7 +88,6 @@ Future<Object?> scanBarcode(BuildContext context, {BarcodeHandler? handler}) asy
   switch (barcodeControllerType) {
     case BARCODE_CONTROLLER_WEDGE:
       controller = WedgeBarcodeController(handler);
-      break;
     case BARCODE_CONTROLLER_CAMERA:
     default:
       // Already set as default option
@@ -97,7 +96,7 @@ Future<Object?> scanBarcode(BuildContext context, {BarcodeHandler? handler}) asy
 
   return Navigator.of(context).push(
     PageRouteBuilder(
-      pageBuilder: (context, _, __) => controller,
+      pageBuilder: (context, _, _) => controller,
       opaque: false,
     )
   );
