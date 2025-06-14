@@ -80,3 +80,5 @@ linter:
 
     use_super_parameters: false
 
+    # TODO: Enable this rule once the code is cleaned up
+    unnecessary_async: false

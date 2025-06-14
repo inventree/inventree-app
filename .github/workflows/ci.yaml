@@ -47,6 +47,7 @@ jobs:
           python3 find_dart_files.py
           flutter pub get
           flutter analyze
+          flutter format --output=none --set-exit-if-changed .
 
       - name: Install Python
         uses: actions/setup-python@v4
