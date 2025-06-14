@@ -1,4 +1,3 @@
-
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
@@ -15,17 +14,14 @@ import "package:inventree/helpers.dart";
  * intercepting barcode data which is entered as rapid keyboard presses
  */
 class WedgeBarcodeController extends InvenTreeBarcodeController {
-
-  const WedgeBarcodeController(BarcodeHandler handler, {Key? key}) : super(handler, key: key);
+  const WedgeBarcodeController(BarcodeHandler handler, {Key? key})
+      : super(handler, key: key);
 
   @override
   State<StatefulWidget> createState() => _WedgeBarcodeControllerState();
-
 }
 
-
 class _WedgeBarcodeControllerState extends InvenTreeBarcodeControllerState {
-
   _WedgeBarcodeControllerState() : super();
 
   bool canScan = true;
@@ -40,7 +36,6 @@ class _WedgeBarcodeControllerState extends InvenTreeBarcodeControllerState {
 
   @override
   Future<void> pauseScan() async {
-
     if (mounted) {
       setState(() {
         canScan = false;
@@ -50,7 +45,6 @@ class _WedgeBarcodeControllerState extends InvenTreeBarcodeControllerState {
 
   @override
   Future<void> resumeScan() async {
-
     if (mounted) {
       setState(() {
         canScan = true;
@@ -60,7 +54,6 @@ class _WedgeBarcodeControllerState extends InvenTreeBarcodeControllerState {
 
   // Callback for a single key press / scan
   void handleKeyEvent(KeyEvent event) {
-
     if (!scanning) {
       return;
     }
@@ -78,7 +71,8 @@ class _WedgeBarcodeControllerState extends InvenTreeBarcodeControllerState {
     DateTime now = DateTime.now();
 
     // Throw away old characters
-    if (_lastScanTime == null || _lastScanTime!.isBefore(now.subtract(Duration(milliseconds: 250)))) {
+    if (_lastScanTime == null ||
+        _lastScanTime!.isBefore(now.subtract(Duration(milliseconds: 250)))) {
       _scannedCharacters.clear();
     }
 
@@ -99,15 +93,14 @@ class _WedgeBarcodeControllerState extends InvenTreeBarcodeControllerState {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: COLOR_APP_BAR,
-        title: Text(L10().scanBarcode),
-      ),
-      backgroundColor: Colors.black.withValues(alpha: 0.9),
-      body: Center(
-        child: Column(
+        appBar: AppBar(
+          backgroundColor: COLOR_APP_BAR,
+          title: Text(L10().scanBarcode),
+        ),
+        backgroundColor: Colors.black.withValues(alpha: 0.9),
+        body: Center(
+            child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Spacer(flex: 5),
@@ -118,8 +111,7 @@ class _WedgeBarcodeControllerState extends InvenTreeBarcodeControllerState {
               focusNode: _focusNode,
               child: SizedBox(
                 child: CircularProgressIndicator(
-                  color: scanning ? COLOR_ACTION : COLOR_PROGRESS
-                ),
+                    color: scanning ? COLOR_ACTION : COLOR_PROGRESS),
                 width: 64,
                 height: 64,
               ),
@@ -136,18 +128,12 @@ class _WedgeBarcodeControllerState extends InvenTreeBarcodeControllerState {
             ),
             Spacer(flex: 5),
             Padding(
-              child: Text(
-                widget.handler.getOverlayText(context),
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white)
-              ),
+              child: Text(widget.handler.getOverlayText(context),
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.white)),
               padding: EdgeInsets.all(20),
             )
           ],
-        )
-      )
-    );
+        )));
   }
-
 }

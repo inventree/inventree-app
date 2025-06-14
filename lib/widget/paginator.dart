@@ -15,12 +15,10 @@ import "package:inventree/preferences.dart";
 
 import "package:inventree/widget/refreshable_state.dart";
 
-
 /*
  * Abstract base widget class for rendering a PaginatedSearchState
  */
 abstract class PaginatedSearchWidget extends StatefulWidget {
-
   const PaginatedSearchWidget({this.filters = const {}, this.title = ""});
 
   final String title;
@@ -30,12 +28,11 @@ abstract class PaginatedSearchWidget extends StatefulWidget {
   final Map<String, String> filters;
 }
 
-
 /*
  * Generic stateful widget for displaying paginated data retrieved via the API
  */
-abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends State<T> with BaseWidgetProperties {
-
+abstract class PaginatedSearchState<T extends PaginatedSearchWidget>
+    extends State<T> with BaseWidgetProperties {
   static const _pageSize = 25;
 
   bool showSearchWidget = false;
@@ -73,7 +70,6 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
 
   // Construct the boolean filter options for this list
   Future<Map<String, String>> constructFilters() async {
-
     Map<String, String> f = {};
 
     for (String k in filterOptions.keys) {
@@ -95,7 +91,8 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
 
   // Return the selected ordering "field" for this list widget
   Future<String> orderingField() async {
-    dynamic field = await InvenTreeSettingsManager().getValue("${prefix}ordering_field", null);
+    dynamic field = await InvenTreeSettingsManager()
+        .getValue("${prefix}ordering_field", null);
 
     if (field != null && orderingOptions.containsKey(field.toString())) {
       // A valid ordering field has been found
@@ -110,7 +107,8 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
 
   // Return the selected ordering "order" ("+" or "-") for this list widget
   Future<String> orderingOrder() async {
-    dynamic order = await InvenTreeSettingsManager().getValue("${prefix}ordering_order", "+");
+    dynamic order = await InvenTreeSettingsManager()
+        .getValue("${prefix}ordering_order", "+");
 
     return order == "+" ? "+" : "-";
   }
@@ -137,10 +135,8 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
     // Construct the 'ordering' options
     List<Map<String, dynamic>> _opts = [];
 
-    orderingOptions.forEach((k, v) => _opts.add({
-      "value": k.toString(),
-      "display_name": v.toString()
-    }));
+    orderingOptions.forEach((k, v) =>
+        _opts.add({"value": k.toString(), "display_name": v.toString()}));
 
     if (_field == null && _opts.isNotEmpty) {
       _field = _opts.first["value"];
@@ -161,12 +157,12 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
         "value": _order,
         "choices": [
           {
-          "value": "+",
-          "display_name": "Ascending",
+            "value": "+",
+            "display_name": "Ascending",
           },
           {
-          "value": "-",
-          "display_name": "Descending",
+            "value": "-",
+            "display_name": "Descending",
           }
         ]
       }
@@ -212,31 +208,25 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
     }
 
     // Launch an interactive form for the user to select options
-    launchApiForm(
-      context,
-      L10().filteringOptions,
-      "",
-      fields,
-      icon: TablerIcons.circle_check,
-      onSuccess: (Map<String, dynamic> data) async {
+    launchApiForm(context, L10().filteringOptions, "", fields,
+        icon: TablerIcons.circle_check,
+        onSuccess: (Map<String, dynamic> data) async {
+      // Extract data from the processed form
+      String f = (data["ordering_field"] ?? _field) as String;
+      String o = (data["ordering_order"] ?? _order) as String;
 
-        // Extract data from the processed form
-        String f = (data["ordering_field"] ?? _field) as String;
-        String o = (data["ordering_order"] ?? _order) as String;
+      // Save values to settings
+      await InvenTreeSettingsManager().setValue("${prefix}ordering_field", f);
+      await InvenTreeSettingsManager().setValue("${prefix}ordering_order", o);
 
-        // Save values to settings
-        await InvenTreeSettingsManager().setValue("${prefix}ordering_field", f);
-        await InvenTreeSettingsManager().setValue("${prefix}ordering_order", o);
-
-        // Save boolean fields
-        for (String key in filterOptions.keys) {
-          await setFilterValue(key, data[key]);
-        }
-
-        // Refresh data from the server
-        _pagingController.refresh();
+      // Save boolean fields
+      for (String key in filterOptions.keys) {
+        await setFilterValue(key, data[key]);
       }
-    );
+
+      // Refresh data from the server
+      _pagingController.refresh();
+    });
   }
 
   // Search query term
@@ -245,7 +235,6 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
   int resultCount = 0;
 
   String resultsString() {
-
     if (resultCount <= 0) {
       return noResultsText;
     } else {
@@ -260,7 +249,8 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
   Timer? _debounceTimer;
 
   // Pagination controller
-  final PagingController<int, InvenTreeModel> _pagingController = PagingController(firstPageKey: 0);
+  final PagingController<int, InvenTreeModel> _pagingController =
+      PagingController(firstPageKey: 0);
 
   void refresh() {
     _pagingController.refresh();
@@ -286,8 +276,8 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
    * Each implementing class must override this function,
    * and return an InvenTreePageResponse object with the correct data format
    */
-  Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
-
+  Future<InvenTreePageResponse?> requestPage(
+      int limit, int offset, Map<String, String> params) async {
     // Default implementation returns null - must be overridden
     return null;
   }
@@ -301,7 +291,6 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
 
       // Include user search term
       if (searchTerm.isNotEmpty) {
-
         String _search = searchTerm;
 
         // Include original search in search test
@@ -329,11 +318,7 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
         params.addAll(f);
       }
 
-      final page = await requestPage(
-        _pageSize,
-        pageKey,
-        params
-      );
+      final page = await requestPage(_pageSize, pageKey, params);
 
       // We may have disposed of the widget while the request was in progress
       // If this is the case, abort
@@ -350,7 +335,7 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
 
       if (page != null) {
         for (var result in page.results) {
-            items.add(result);
+          items.add(result);
         }
       }
 
@@ -369,14 +354,14 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
 
       sentryReportError(
         "paginator.fetchPage",
-        error, stackTrace,
+        error,
+        stackTrace,
       );
     }
   }
 
   // Callback function when the search term is updated
   void updateSearchTerm() {
-
     if (searchTerm == searchController.text) {
       // No change
       return;
@@ -410,7 +395,6 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
   // Function to construct a single paginated item
   // Must be overridden in an implementing subclass
   Widget buildItem(BuildContext context, InvenTreeModel item) {
-
     // This method must be overridden by the child class
     return ListTile(
       title: Text("*** UNIMPLEMENTED ***"),
@@ -423,8 +407,7 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
   String get noResultsText => L10().noResults;
 
   @override
-  Widget build (BuildContext context) {
-
+  Widget build(BuildContext context) {
     List<Widget> children = [
       buildTitleWidget(context),
       Divider(),
@@ -434,29 +417,23 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
       children.add(buildSearchInput(context));
     }
 
-    children.add(
-      Expanded(
-          child: CustomScrollView(
-              shrinkWrap: true,
-              physics: AlwaysScrollableScrollPhysics(),
-              scrollDirection: Axis.vertical,
-              slivers: <Widget>[
-                PagedSliverList.separated(
-                  pagingController: _pagingController,
-                  builderDelegate: PagedChildBuilderDelegate<InvenTreeModel>(
-                      itemBuilder: (ctx, item, index) {
-                        return buildItem(ctx, item);
-                      },
-                      noItemsFoundIndicatorBuilder: (context) {
-                        return NoResultsWidget(noResultsText);
-                      }
-                  ),
-                  separatorBuilder: (context, item) => const Divider(height: 1),
-                )
-              ]
+    children.add(Expanded(
+        child: CustomScrollView(
+            shrinkWrap: true,
+            physics: AlwaysScrollableScrollPhysics(),
+            scrollDirection: Axis.vertical,
+            slivers: <Widget>[
+          PagedSliverList.separated(
+            pagingController: _pagingController,
+            builderDelegate: PagedChildBuilderDelegate<InvenTreeModel>(
+                itemBuilder: (ctx, item, index) {
+              return buildItem(ctx, item);
+            }, noItemsFoundIndicatorBuilder: (context) {
+              return NoResultsWidget(noResultsText);
+            }),
+            separatorBuilder: (context, item) => const Divider(height: 1),
           )
-        )
-    );
+        ])));
 
     return RefreshIndicator(
       child: Column(
@@ -473,18 +450,16 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
    * Build the title widget for this list
    */
   Widget buildTitleWidget(BuildContext context) {
-
     const double icon_size = 32;
 
     List<Widget> _icons = [];
 
     if (filterOptions.isNotEmpty || orderingOptions.isNotEmpty) {
       _icons.add(IconButton(
-        onPressed: () async {
-          _setOrderingOptions(context);
-        },
-        icon: Icon(Icons.filter_alt, size: icon_size)
-      ));
+          onPressed: () async {
+            _setOrderingOptions(context);
+          },
+          icon: Icon(Icons.filter_alt, size: icon_size)));
     }
 
     _icons.add(IconButton(
@@ -493,8 +468,8 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
             showSearchWidget = !showSearchWidget;
           });
         },
-        icon: Icon(showSearchWidget ? Icons.zoom_out : Icons.search, size: icon_size)
-    ));
+        icon: Icon(showSearchWidget ? Icons.zoom_out : Icons.search,
+            size: icon_size)));
 
     // _icons.add(IconButton(
     //   onPressed: () async {
@@ -512,9 +487,7 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
       ),
       subtitle: Text(
         "${L10().results}: ${resultCount}",
-        style: TextStyle(
-          fontStyle: FontStyle.italic
-        ),
+        style: TextStyle(fontStyle: FontStyle.italic),
       ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
@@ -528,41 +501,40 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget> extends Sta
    */
   Widget buildSearchInput(BuildContext context) {
     return ListTile(
-      trailing: GestureDetector(
-        child: Icon(
-          searchController.text.isEmpty ? TablerIcons.search : TablerIcons.backspace,
-          color: searchController.text.isNotEmpty ? COLOR_DANGER : COLOR_ACTION,
+        trailing: GestureDetector(
+          child: Icon(
+            searchController.text.isEmpty
+                ? TablerIcons.search
+                : TablerIcons.backspace,
+            color:
+                searchController.text.isNotEmpty ? COLOR_DANGER : COLOR_ACTION,
+          ),
+          onTap: () {
+            if (searchController.text.isNotEmpty) {
+              searchController.clear();
+            }
+            updateSearchTerm();
+          },
         ),
-        onTap: () {
-          if (searchController.text.isNotEmpty) {
-            searchController.clear();
-          }
-          updateSearchTerm();
-        },
-      ),
-      title: TextFormField(
-        controller: searchController,
-        onChanged: (value) {
-          updateSearchTerm();
-        },
-        decoration: InputDecoration(
-          hintText: L10().search,
-        ),
-      )
-    );
+        title: TextFormField(
+          controller: searchController,
+          onChanged: (value) {
+            updateSearchTerm();
+          },
+          decoration: InputDecoration(
+            hintText: L10().search,
+          ),
+        ));
   }
 }
 
-
 class NoResultsWidget extends StatelessWidget {
-
   const NoResultsWidget(this.description);
 
   final String description;
 
   @override
   Widget build(BuildContext context) {
-
     return ListTile(
       title: Text(
         description,
@@ -571,5 +543,4 @@ class NoResultsWidget extends StatelessWidget {
       leading: Icon(TablerIcons.exclamation_circle, color: COLOR_WARNING),
     );
   }
-
 }

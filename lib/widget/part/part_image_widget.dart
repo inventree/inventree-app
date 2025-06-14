@@ -11,19 +11,15 @@ import "package:inventree/widget/snacks.dart";
 import "package:inventree/l10.dart";
 
 class PartImageWidget extends StatefulWidget {
-
   const PartImageWidget(this.part, {Key? key}) : super(key: key);
 
   final InvenTreePart part;
 
   @override
   _PartImageState createState() => _PartImageState(part);
-
 }
 
-
 class _PartImageState extends RefreshableState<PartImageWidget> {
-
   _PartImageState(this.part);
 
   final InvenTreePart part;
@@ -38,32 +34,24 @@ class _PartImageState extends RefreshableState<PartImageWidget> {
 
   @override
   List<Widget> appBarActions(BuildContext context) {
-
     List<Widget> actions = [];
 
     if (part.canEdit) {
-
       // File upload
-      actions.add(
-        IconButton(
-          icon: Icon(TablerIcons.file_upload),
-          onPressed: () async {
+      actions.add(IconButton(
+        icon: Icon(TablerIcons.file_upload),
+        onPressed: () async {
+          FilePickerDialog.pickFile(onPicked: (File file) async {
+            final result = await part.uploadImage(file);
 
-            FilePickerDialog.pickFile(
-              onPicked: (File file) async {
-                final result = await part.uploadImage(file);
+            if (!result) {
+              showSnackIcon(L10().uploadFailed, success: false);
+            }
 
-                if (!result) {
-                  showSnackIcon(L10().uploadFailed, success: false);
-                }
-
-                refresh(context);
-              }
-            );
-
-          },
-        )
-      );
+            refresh(context);
+          });
+        },
+      ));
     }
 
     return actions;
@@ -73,5 +61,4 @@ class _PartImageState extends RefreshableState<PartImageWidget> {
   Widget getBody(BuildContext context) {
     return InvenTreeAPI().getImage(part.image);
   }
-
 }

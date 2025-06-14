@@ -11,12 +11,10 @@ import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/helpers.dart";
 
-
 /*
  * Base class definition for a "status code" definition.
  */
 class InvenTreeStatusCode {
-
   InvenTreeStatusCode(this.URL);
 
   final String URL;
@@ -34,10 +32,7 @@ class InvenTreeStatusCode {
       dynamic _entry = data[key];
 
       if (_entry is Map<String, dynamic>) {
-        _choices.add({
-          "value": _entry["key"],
-          "display_name": _entry["label"]
-        });
+        _choices.add({"value": _entry["key"], "display_name": _entry["label"]});
       }
     }
 
@@ -46,7 +41,6 @@ class InvenTreeStatusCode {
 
   // Load status code information from the server
   Future<void> load({bool forceReload = false}) async {
-
     // Return internally cached data
     if (data.isNotEmpty && !forceReload) {
       return;

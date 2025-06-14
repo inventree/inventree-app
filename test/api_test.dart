@@ -10,23 +10,19 @@ import "package:inventree/user_profile.dart";
 
 import "setup.dart";
 
-
-
 void main() {
   setupTestEnv();
 
   setUp(() async {
-
     await setupServerProfile(select: true);
 
     // Ensure the profile is selected
-    assert(! await UserProfileDBManager().selectProfileByName("Missing Profile"));
+    assert(
+        !await UserProfileDBManager().selectProfileByName("Missing Profile"));
     assert(await UserProfileDBManager().selectProfileByName(testServerName));
-
   });
 
   group("Login Tests:", () {
-
     test("Disconnected", () async {
       // Test that calling disconnect() does the right thing
       var api = InvenTreeAPI();
@@ -37,7 +33,6 @@ void main() {
       expect(api.isConnected(), equals(false));
       expect(api.isConnecting(), equals(false));
       expect(api.hasToken, equals(false));
-
     });
 
     test("Login Failure", () async {
@@ -66,7 +61,6 @@ void main() {
 
       debugContains("Token request failed: STATUS 401");
       debugContains("showSnackIcon: 'Not Connected'");
-
     });
 
     test("Bad Token", () async {
@@ -125,6 +119,5 @@ void main() {
       debugContains("Received token from server");
       debugContains("showSnackIcon: 'Connected to Server'");
     });
-
   });
 }

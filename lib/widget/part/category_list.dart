@@ -9,19 +9,15 @@ import "package:inventree/api.dart";
 import "package:inventree/l10.dart";
 
 class PartCategoryList extends StatefulWidget {
-
   const PartCategoryList(this.filters);
 
   final Map<String, String> filters;
 
   @override
   _PartCategoryListState createState() => _PartCategoryListState();
-
 }
 
-
 class _PartCategoryListState extends RefreshableState<PartCategoryList> {
-
   _PartCategoryListState();
 
   @override
@@ -34,19 +30,20 @@ class _PartCategoryListState extends RefreshableState<PartCategoryList> {
 }
 
 class PaginatedPartCategoryList extends PaginatedSearchWidget {
-
-  const PaginatedPartCategoryList(Map<String, String> filters, {String title = ""}) : super(filters: filters, title: title);
+  const PaginatedPartCategoryList(Map<String, String> filters,
+      {String title = ""})
+      : super(filters: filters, title: title);
 
   @override
   String get searchTitle => title.isNotEmpty ? title : L10().partCategories;
 
   @override
-  _PaginatedPartCategoryListState createState() => _PaginatedPartCategoryListState();
+  _PaginatedPartCategoryListState createState() =>
+      _PaginatedPartCategoryListState();
 }
 
-
-class _PaginatedPartCategoryListState extends PaginatedSearchState<PaginatedPartCategoryList> {
-
+class _PaginatedPartCategoryListState
+    extends PaginatedSearchState<PaginatedPartCategoryList> {
   // _PaginatedPartCategoryListState(Map<String, String> filters, bool searchEnabled) : super(filters, searchEnabled);
 
   @override
@@ -54,17 +51,16 @@ class _PaginatedPartCategoryListState extends PaginatedSearchState<PaginatedPart
 
   @override
   Map<String, Map<String, dynamic>> get filterOptions => {
-    "cascade": {
-      "default": false,
-      "label": L10().includeSubcategories,
-      "help_text": L10().includeSubcategoriesDetail,
-      "tristate": false,
-    }
-  };
+        "cascade": {
+          "default": false,
+          "label": L10().includeSubcategories,
+          "help_text": L10().includeSubcategoriesDetail,
+          "tristate": false,
+        }
+      };
 
   @override
   Map<String, String> get orderingOptions {
-
     Map<String, String> options = {
       "name": L10().name,
       "level": L10().level,
@@ -81,16 +77,16 @@ class _PaginatedPartCategoryListState extends PaginatedSearchState<PaginatedPart
   }
 
   @override
-  Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
-
-    final page = await InvenTreePartCategory().listPaginated(limit, offset, filters: params);
+  Future<InvenTreePageResponse?> requestPage(
+      int limit, int offset, Map<String, String> params) async {
+    final page = await InvenTreePartCategory()
+        .listPaginated(limit, offset, filters: params);
 
     return page;
   }
 
   @override
   Widget buildItem(BuildContext context, InvenTreeModel model) {
-
     InvenTreePartCategory category = model as InvenTreePartCategory;
 
     return ListTile(

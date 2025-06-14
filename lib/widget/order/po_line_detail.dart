@@ -21,22 +21,18 @@ import "package:inventree/widget/company/supplier_part_detail.dart";
  * Widget for displaying detail view of a single PurchaseOrderLineItem
 */
 class POLineDetailWidget extends StatefulWidget {
-
   const POLineDetailWidget(this.item, {Key? key}) : super(key: key);
 
   final InvenTreePOLineItem item;
 
   @override
   _POLineDetailWidgetState createState() => _POLineDetailWidgetState();
-
 }
-
 
 /*
  * State for the POLineDetailWidget
  */
 class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
-
   _POLineDetailWidgetState();
 
   InvenTreeStockLocation? destination;
@@ -49,14 +45,12 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
     List<Widget> actions = [];
 
     if (widget.item.canEdit) {
-      actions.add(
-        IconButton(
-          icon: Icon(TablerIcons.edit),
-          onPressed: () {
-            _editLineItem(context);
-          },
-        )
-      );
+      actions.add(IconButton(
+        icon: Icon(TablerIcons.edit),
+        onPressed: () {
+          _editLineItem(context);
+        },
+      ));
     }
 
     return actions;
@@ -69,15 +63,12 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
     if (widget.item.canCreate) {
       // Receive items
       if (!widget.item.isComplete) {
-        buttons.add(
-          SpeedDialChild(
+        buttons.add(SpeedDialChild(
             child: Icon(TablerIcons.transition_right, color: Colors.blue),
             label: L10().receiveItem,
             onTap: () async {
               receiveLineItem(context);
-            }
-          )
-        );
+            }));
       }
     }
 
@@ -89,7 +80,9 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
     await widget.item.reload();
 
     if (widget.item.destinationId > 0) {
-      InvenTreeStockLocation().get(widget.item.destinationId).then((InvenTreeModel? loc) {
+      InvenTreeStockLocation()
+          .get(widget.item.destinationId)
+          .then((InvenTreeModel? loc) {
         if (mounted) {
           if (loc != null && loc is InvenTreeStockLocation) {
             setState(() {
@@ -109,75 +102,68 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
         });
       }
     }
-
   }
 
   // Callback to edit this line item
   Future<void> _editLineItem(BuildContext context) async {
     var fields = widget.item.formFields();
 
-    widget.item.editForm(
-      context,
-      L10().editLineItem,
-      fields: fields,
-      onSuccess: (data) async {
-        refresh(context);
-        showSnackIcon(L10().lineItemUpdated, success: true);
-      }
-    );
+    widget.item.editForm(context, L10().editLineItem, fields: fields,
+        onSuccess: (data) async {
+      refresh(context);
+      showSnackIcon(L10().lineItemUpdated, success: true);
+    });
   }
 
-    // Launch a form to 'receive' this line item
+  // Launch a form to 'receive' this line item
   Future<void> receiveLineItem(BuildContext context) async {
-    widget.item.receive(
-      context,
-      onSuccess: () => {
-        showSnackIcon(L10().receivedItem, success: true),
-        refresh(context)
-      }
-    );
+    widget.item.receive(context,
+        onSuccess: () => {
+              showSnackIcon(L10().receivedItem, success: true),
+              refresh(context)
+            });
   }
-  
+
   @override
   List<Widget> getTiles(BuildContext context) {
     List<Widget> tiles = [];
 
     // Reference to the part
-    tiles.add(
-      ListTile(
-        title: Text(L10().internalPart),
-        subtitle: Text(widget.item.partName),
-        leading: Icon(TablerIcons.box, color: COLOR_ACTION),
-        trailing: api.getThumbnail(widget.item.partImage),
-        onTap: () async {
-          showLoadingOverlay();
-          var part = await InvenTreePart().get(widget.item.partId);
-          hideLoadingOverlay();
+    tiles.add(ListTile(
+      title: Text(L10().internalPart),
+      subtitle: Text(widget.item.partName),
+      leading: Icon(TablerIcons.box, color: COLOR_ACTION),
+      trailing: api.getThumbnail(widget.item.partImage),
+      onTap: () async {
+        showLoadingOverlay();
+        var part = await InvenTreePart().get(widget.item.partId);
+        hideLoadingOverlay();
 
-          if (part is InvenTreePart) {
-            part.goToDetailPage(context);
-          }
-        },
-      )
-    );
+        if (part is InvenTreePart) {
+          part.goToDetailPage(context);
+        }
+      },
+    ));
 
     // Reference to the supplier part
-    tiles.add(
-      ListTile(
-        title: Text(L10().supplierPart),
-        subtitle: Text(widget.item.SKU),
-        leading: Icon(TablerIcons.building, color: COLOR_ACTION),
-        onTap: () async {
-          showLoadingOverlay();
-          var part = await InvenTreeSupplierPart().get(widget.item.supplierPartId);
-          hideLoadingOverlay();
+    tiles.add(ListTile(
+      title: Text(L10().supplierPart),
+      subtitle: Text(widget.item.SKU),
+      leading: Icon(TablerIcons.building, color: COLOR_ACTION),
+      onTap: () async {
+        showLoadingOverlay();
+        var part =
+            await InvenTreeSupplierPart().get(widget.item.supplierPartId);
+        hideLoadingOverlay();
 
-          if (part is InvenTreeSupplierPart) {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => SupplierPartDetailWidget(part)));
-          }
-        },
-      )
-    );
+        if (part is InvenTreeSupplierPart) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => SupplierPartDetailWidget(part)));
+        }
+      },
+    ));
 
     // Destination
     if (destination != null) {
@@ -185,75 +171,57 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
           title: Text(L10().destination),
           subtitle: Text(destination!.name),
           leading: Icon(TablerIcons.map_pin, color: COLOR_ACTION),
-          onTap: () => {
-            destination!.goToDetailPage(context)
-          }
-      ));
+          onTap: () => {destination!.goToDetailPage(context)}));
     }
 
     // Received quantity
-    tiles.add(
-      ListTile(
-        title: Text(L10().received),
-        subtitle: ProgressBar(widget.item.progressRatio),
-        trailing: Text(
-            widget.item.progressString,
-            style: TextStyle(
-                color: widget.item.isComplete ? COLOR_SUCCESS: COLOR_WARNING
-            )
-        ),
-        leading: Icon(TablerIcons.progress),
-      )
-    );
+    tiles.add(ListTile(
+      title: Text(L10().received),
+      subtitle: ProgressBar(widget.item.progressRatio),
+      trailing: Text(widget.item.progressString,
+          style: TextStyle(
+              color: widget.item.isComplete ? COLOR_SUCCESS : COLOR_WARNING)),
+      leading: Icon(TablerIcons.progress),
+    ));
 
     // Reference
     if (widget.item.reference.isNotEmpty) {
-      tiles.add(
-          ListTile(
-            title: Text(L10().reference),
-            subtitle: Text(widget.item.reference),
-            leading: Icon(TablerIcons.hash),
-          )
-      );
+      tiles.add(ListTile(
+        title: Text(L10().reference),
+        subtitle: Text(widget.item.reference),
+        leading: Icon(TablerIcons.hash),
+      ));
     }
 
     // Pricing information
-    tiles.add(
-      ListTile(
-        title: Text(L10().unitPrice),
-        leading: Icon(TablerIcons.currency_dollar),
-        trailing: Text(
-          renderCurrency(widget.item.purchasePrice, widget.item.purchasePriceCurrency)
-        ),
-      )
-    );
+    tiles.add(ListTile(
+      title: Text(L10().unitPrice),
+      leading: Icon(TablerIcons.currency_dollar),
+      trailing: Text(renderCurrency(
+          widget.item.purchasePrice, widget.item.purchasePriceCurrency)),
+    ));
 
     // Note
     if (widget.item.notes.isNotEmpty) {
-      tiles.add(
-        ListTile(
-          title: Text(L10().notes),
-          subtitle: Text(widget.item.notes),
-          leading: Icon(TablerIcons.note),
-        )
-      );
+      tiles.add(ListTile(
+        title: Text(L10().notes),
+        subtitle: Text(widget.item.notes),
+        leading: Icon(TablerIcons.note),
+      ));
     }
 
     // External link
     if (widget.item.link.isNotEmpty) {
-      tiles.add(
-        ListTile(
-          title: Text(L10().link),
-          subtitle: Text(widget.item.link),
-          leading: Icon(TablerIcons.link, color: COLOR_ACTION),
-          onTap: () async {
-            await openLink(widget.item.link);
-          },
-        )
-      );
+      tiles.add(ListTile(
+        title: Text(L10().link),
+        subtitle: Text(widget.item.link),
+        leading: Icon(TablerIcons.link, color: COLOR_ACTION),
+        onTap: () async {
+          await openLink(widget.item.link);
+        },
+      ));
     }
 
     return tiles;
   }
-
 }

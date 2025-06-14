@@ -14,10 +14,12 @@ class StockItemHistoryWidget extends StatefulWidget {
   final InvenTreeStockItem item;
 
   @override
-  _StockItemHistoryDisplayState createState() => _StockItemHistoryDisplayState(item);
+  _StockItemHistoryDisplayState createState() =>
+      _StockItemHistoryDisplayState(item);
 }
 
-class _StockItemHistoryDisplayState extends RefreshableState<StockItemHistoryWidget> {
+class _StockItemHistoryDisplayState
+    extends RefreshableState<StockItemHistoryWidget> {
   _StockItemHistoryDisplayState(this.item);
 
   final InvenTreeStockItem item;
@@ -36,14 +38,14 @@ class _StockItemHistoryDisplayState extends RefreshableState<StockItemHistoryWid
 
     return PaginatedStockHistoryList(filters);
   }
-
 }
 
 /*
  * Widget which displays a paginated stock history list
  */
 class PaginatedStockHistoryList extends PaginatedSearchWidget {
-  const PaginatedStockHistoryList(Map<String, String> filters) : super(filters: filters);
+  const PaginatedStockHistoryList(Map<String, String> filters)
+      : super(filters: filters);
 
   @override
   String get searchTitle => L10().stockItemHistory;
@@ -75,7 +77,8 @@ class _PaginatedStockHistoryState
       int limit, int offset, Map<String, String> params) async {
     await InvenTreeAPI().StockHistoryStatus.load();
 
-    final page = await InvenTreeStockItemHistory().listPaginated(limit, offset, filters: params);
+    final page = await InvenTreeStockItemHistory()
+        .listPaginated(limit, offset, filters: params);
 
     return page;
   }

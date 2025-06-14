@@ -2,7 +2,6 @@ import "package:flutter/material.dart";
 import "package:inventree/app_colors.dart";
 
 class Spinner extends StatefulWidget {
-
   const Spinner({
     this.color = COLOR_GRAY_LIGHT,
     Key? key,
@@ -27,12 +26,8 @@ class _SpinnerState extends State<Spinner> with SingleTickerProviderStateMixin {
     _controller = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 2000),
-    )
-      ..repeat();
-    _child = Icon(
-      widget.icon,
-      color: widget.color
-    );
+    )..repeat();
+    _child = Icon(widget.icon, color: widget.color);
 
     super.initState();
   }

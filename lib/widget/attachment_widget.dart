@@ -1,4 +1,3 @@
-
 import "dart:io";
 
 import "package:flutter/material.dart";
@@ -17,7 +16,6 @@ import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/refreshable_state.dart";
 
-
 /*
  * A generic widget for displaying a list of attachments.
  *
@@ -25,8 +23,9 @@ import "package:inventree/widget/refreshable_state.dart";
  * we pass a subclassed instance of the InvenTreeAttachment model.
  */
 class AttachmentWidget extends StatefulWidget {
-
-  const AttachmentWidget(this.attachmentClass, this.modelId, this.imagePrefix, this.hasUploadPermission) : super();
+  const AttachmentWidget(this.attachmentClass, this.modelId, this.imagePrefix,
+      this.hasUploadPermission)
+      : super();
 
   final InvenTreeAttachment attachmentClass;
   final int modelId;
@@ -37,9 +36,7 @@ class AttachmentWidget extends StatefulWidget {
   _AttachmentWidgetState createState() => _AttachmentWidgetState();
 }
 
-
 class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
-
   _AttachmentWidgetState();
 
   List<InvenTreeAttachment> attachments = [];
@@ -53,42 +50,37 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
 
     return [
       IconButton(
-        icon: Icon(TablerIcons.camera),
-        onPressed: () async {
-          widget.attachmentClass.uploadImage(
-            widget.modelId,
-            prefix: widget.imagePrefix,
-          );
-          FilePickerDialog.pickImageFromCamera().then((File? file) {
-            upload(context, file).then((_) {
-              refresh(context);
+          icon: Icon(TablerIcons.camera),
+          onPressed: () async {
+            widget.attachmentClass.uploadImage(
+              widget.modelId,
+              prefix: widget.imagePrefix,
+            );
+            FilePickerDialog.pickImageFromCamera().then((File? file) {
+              upload(context, file).then((_) {
+                refresh(context);
+              });
             });
-          });
-        }
-      ),
+          }),
       IconButton(
-        icon: Icon(TablerIcons.file_upload),
-        onPressed: () async {
-          FilePickerDialog.pickFileFromDevice().then((File? file) {
-            upload(context, file).then((_) {
-              refresh(context);
+          icon: Icon(TablerIcons.file_upload),
+          onPressed: () async {
+            FilePickerDialog.pickFileFromDevice().then((File? file) {
+              upload(context, file).then((_) {
+                refresh(context);
+              });
             });
-          });
-        }
-      )
+          })
     ];
   }
 
   Future<void> upload(BuildContext context, File? file) async {
-
     if (file == null) return;
 
     showLoadingOverlay();
 
-    final bool result = await widget.attachmentClass.uploadAttachment(
-        file,
-        widget.modelId
-    );
+    final bool result =
+        await widget.attachmentClass.uploadAttachment(file, widget.modelId);
 
     hideLoadingOverlay();
 
@@ -101,82 +93,69 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
     refresh(context);
   }
 
-
-  Future<void> editAttachment(BuildContext context, InvenTreeAttachment attachment) async
-  {
-     attachment.editForm(context, L10().editAttachment).then((result) => {
-       refresh(context)
-     });
+  Future<void> editAttachment(
+      BuildContext context, InvenTreeAttachment attachment) async {
+    attachment
+        .editForm(context, L10().editAttachment)
+        .then((result) => {refresh(context)});
   }
 
   /*
    * Delete the specified attachment
    */
-  Future<void> deleteAttachment(BuildContext context, InvenTreeAttachment attachment) async {
-
+  Future<void> deleteAttachment(
+      BuildContext context, InvenTreeAttachment attachment) async {
     final bool result = await attachment.delete();
 
-    showSnackIcon(
-      result ? L10().deleteSuccess : L10().deleteFailed,
-      success: result
-    );
+    showSnackIcon(result ? L10().deleteSuccess : L10().deleteFailed,
+        success: result);
 
     refresh(context);
-
   }
 
   /*
    * Display an option context menu for the selected attachment
    */
-  Future<void> showOptionsMenu(BuildContext context, InvenTreeAttachment attachment) async {
-
-    OneContext().showDialog(
-      builder: (BuildContext ctx) {
-        return SimpleDialog(
-          title: Text(L10().attachments),
-          children: [
-            Divider(),
-            SimpleDialogOption(
-              onPressed: () async {
-                OneContext().popDialog();
-                editAttachment(context, attachment);
-              },
-              child: ListTile(
-                title: Text(L10().edit),
-                leading: Icon(TablerIcons.edit),
-              )
-            ),
-            SimpleDialogOption(
-              onPressed: () async {
-                OneContext().popDialog();
-                deleteAttachment(context, attachment);
-              },
-              child: ListTile(
-                title: Text(L10().delete),
-                leading: Icon(TablerIcons.trash, color: COLOR_DANGER),
-              )
-            )
-          ]
-        );
-      }
-    );
+  Future<void> showOptionsMenu(
+      BuildContext context, InvenTreeAttachment attachment) async {
+    OneContext().showDialog(builder: (BuildContext ctx) {
+      return SimpleDialog(title: Text(L10().attachments), children: [
+        Divider(),
+        SimpleDialogOption(
+            onPressed: () async {
+              OneContext().popDialog();
+              editAttachment(context, attachment);
+            },
+            child: ListTile(
+              title: Text(L10().edit),
+              leading: Icon(TablerIcons.edit),
+            )),
+        SimpleDialogOption(
+            onPressed: () async {
+              OneContext().popDialog();
+              deleteAttachment(context, attachment);
+            },
+            child: ListTile(
+              title: Text(L10().delete),
+              leading: Icon(TablerIcons.trash, color: COLOR_DANGER),
+            ))
+      ]);
+    });
   }
 
   @override
   Future<void> request(BuildContext context) async {
-
     Map<String, String> filters = {};
 
     if (InvenTreeAPI().supportsModernAttachments) {
       filters["model_type"] = widget.attachmentClass.REF_MODEL_TYPE;
       filters["model_id"] = widget.modelId.toString();
     } else {
-      filters[widget.attachmentClass.REFERENCE_FIELD] = widget.modelId.toString();
+      filters[widget.attachmentClass.REFERENCE_FIELD] =
+          widget.modelId.toString();
     }
 
-    await widget.attachmentClass.list(
-      filters: filters
-    ).then((var results) {
+    await widget.attachmentClass.list(filters: filters).then((var results) {
       attachments.clear();
 
       for (var result in results) {
@@ -186,18 +165,15 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
       }
     });
 
-    setState(() {
-    });
+    setState(() {});
   }
 
   @override
   List<Widget> getTiles(BuildContext context) {
-
     List<Widget> tiles = [];
 
     // An "attachment" can either be a file, or a URL
     for (var attachment in attachments) {
-
       if (attachment.filename.isNotEmpty) {
         tiles.add(ListTile(
           title: Text(attachment.filename),
@@ -208,13 +184,11 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
             await attachment.downloadAttachment();
             hideLoadingOverlay();
           },
-          onLongPress: ()  {
+          onLongPress: () {
             showOptionsMenu(context, attachment);
           },
         ));
-      }
-
-      else if (attachment.link.isNotEmpty) {
+      } else if (attachment.link.isNotEmpty) {
         tiles.add(ListTile(
           title: Text(attachment.link),
           subtitle: Text(attachment.comment),
@@ -225,7 +199,7 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
               await launchUrl(uri);
             }
           },
-          onLongPress: ()  {
+          onLongPress: () {
             showOptionsMenu(context, attachment);
           },
         ));

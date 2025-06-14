@@ -13,20 +13,18 @@ import "package:inventree/inventree/model.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
 
-
 class StockItemTestResultsWidget extends StatefulWidget {
-
   const StockItemTestResultsWidget(this.item, {Key? key}) : super(key: key);
 
   final InvenTreeStockItem item;
 
   @override
-  _StockItemTestResultDisplayState createState() => _StockItemTestResultDisplayState(item);
+  _StockItemTestResultDisplayState createState() =>
+      _StockItemTestResultDisplayState(item);
 }
 
-
-class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestResultsWidget> {
-
+class _StockItemTestResultDisplayState
+    extends RefreshableState<StockItemTestResultsWidget> {
   _StockItemTestResultDisplayState(this.item);
 
   @override
@@ -40,15 +38,12 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
     List<SpeedDialChild> actions = [];
 
     if (InvenTreeStockItemTestResult().canCreate) {
-      actions.add(
-        SpeedDialChild(
+      actions.add(SpeedDialChild(
           child: Icon(TablerIcons.circle_plus),
           label: L10().testResultAdd,
           onTap: () {
             addTestResult(context);
-          }
-        )
-      );
+          }));
     }
 
     return actions;
@@ -62,9 +57,16 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
 
   final InvenTreeStockItem item;
 
-  Future <void> addTestResult(BuildContext context, {int templateId = 0, String name = "", bool nameIsEditable = true, bool result = false, String value = "", bool valueRequired = false, bool attachmentRequired = false}) async  {
-
-    Map<String, Map<String, dynamic>> fields = InvenTreeStockItemTestResult().formFields();
+  Future<void> addTestResult(BuildContext context,
+      {int templateId = 0,
+      String name = "",
+      bool nameIsEditable = true,
+      bool result = false,
+      String value = "",
+      bool valueRequired = false,
+      bool attachmentRequired = false}) async {
+    Map<String, Map<String, dynamic>> fields =
+        InvenTreeStockItemTestResult().formFields();
 
     // Add additional filters
     fields["template"]?["filters"]?["part"] = "${item.partId}";
@@ -102,7 +104,6 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
       bool match = false;
 
       for (var ii = 0; ii < outputs.length; ii++) {
-
         // Check against templates
         if (outputs[ii] is InvenTreePartTestTemplate) {
           var template = outputs[ii] as InvenTreePartTestTemplate;
@@ -137,23 +138,16 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
   List<Widget> getTiles(BuildContext context) {
     List<Widget> tiles = [];
 
-    tiles.add(
-      Card(
+    tiles.add(Card(
         child: ListTile(
-          title: Text(item.partName),
-          subtitle: Text(item.partDescription),
-          leading: InvenTreeAPI().getThumbnail(item.partImage),
-        )
-      )
-    );
+      title: Text(item.partName),
+      subtitle: Text(item.partDescription),
+      leading: InvenTreeAPI().getThumbnail(item.partImage),
+    )));
 
-    tiles.add(
-      ListTile(
+    tiles.add(ListTile(
         title: Text(L10().testResults,
-          style: TextStyle(fontWeight: FontWeight.bold)
-        )
-      )
-    );
+            style: TextStyle(fontWeight: FontWeight.bold))));
 
     if (loading) {
       tiles.add(progressIndicator());
@@ -172,7 +166,6 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
     }
 
     for (var item in results) {
-
       bool _hasResult = false;
       bool _required = false;
       String _test = "";
@@ -214,26 +207,23 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
       }
 
       tiles.add(ListTile(
-        title: Text(_test, style: TextStyle(
-          fontWeight: _required ? FontWeight.bold : FontWeight.normal,
-          fontStyle: _hasResult ? FontStyle.normal : FontStyle.italic
-        )),
-        subtitle: Text(_value),
-        trailing: Text(_date),
-        leading: _icon,
-        onTap: () {
-          if (InvenTreeStockItemTestResult().canCreate) {
-            addTestResult(
-                context,
-                name: _test,
-                templateId: _templateId,
-                nameIsEditable: !_required,
-                valueRequired: _valueRequired,
-                attachmentRequired: _attachmentRequired
-            );
-          }
-        }
-      ));
+          title: Text(_test,
+              style: TextStyle(
+                  fontWeight: _required ? FontWeight.bold : FontWeight.normal,
+                  fontStyle: _hasResult ? FontStyle.normal : FontStyle.italic)),
+          subtitle: Text(_value),
+          trailing: Text(_date),
+          leading: _icon,
+          onTap: () {
+            if (InvenTreeStockItemTestResult().canCreate) {
+              addTestResult(context,
+                  name: _test,
+                  templateId: _templateId,
+                  nameIsEditable: !_required,
+                  valueRequired: _valueRequired,
+                  attachmentRequired: _attachmentRequired);
+            }
+          }));
     }
 
     if (tiles.isEmpty) {

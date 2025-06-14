@@ -41,7 +41,13 @@ def android(c):
 @task
 def format(c, analyze=False, dry_run=False):
     """Format Dart code."""
-    c.run(f"dart format .{" --output=none" if dry_run else ''}")
+
+    cmd = "dart format ."
+
+    if dry_run:
+        cmd += " --output=none"
+
+    c.run(cmd)
 
     if analyze:
         c.run("flutter analyze")

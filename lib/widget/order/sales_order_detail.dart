@@ -1,4 +1,3 @@
-
 import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
@@ -25,7 +24,6 @@ import "package:inventree/widget/progress.dart";
  * Widget for viewing a single SalesOrder instance
  */
 class SalesOrderDetailWidget extends StatefulWidget {
-
   const SalesOrderDetailWidget(this.order, {Key? key}) : super(key: key);
 
   final InvenTreeSalesOrder order;
@@ -34,9 +32,7 @@ class SalesOrderDetailWidget extends StatefulWidget {
   _SalesOrderDetailState createState() => _SalesOrderDetailState();
 }
 
-
 class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
-
   _SalesOrderDetailState();
 
   List<InvenTreeSOLineItem> lines = [];
@@ -62,14 +58,12 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
     List<Widget> actions = [];
 
     if (widget.order.canEdit) {
-      actions.add(
-        IconButton(
-          icon: Icon(TablerIcons.edit),
-          onPressed: () {
-            editOrder(context);
-          },
-        )
-      );
+      actions.add(IconButton(
+        icon: Icon(TablerIcons.edit),
+        onPressed: () {
+          editOrder(context);
+        },
+      ));
     }
 
     return actions;
@@ -77,21 +71,15 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
 
   // Add a new shipment against this sales order
   Future<void> _addShipment(BuildContext context) async {
-
     var fields = InvenTreeSalesOrderShipment().formFields();
 
     fields["order"]?["value"] = widget.order.pk;
     fields["order"]?["hidden"] = true;
 
-    InvenTreeSalesOrderShipment().createForm(
-      context,
-      L10().shipmentAdd,
-      fields: fields,
-      onSuccess: (result) async {
-        refresh(context);
-      }
-    );
-
+    InvenTreeSalesOrderShipment().createForm(context, L10().shipmentAdd,
+        fields: fields, onSuccess: (result) async {
+      refresh(context);
+    });
   }
 
   // Add a new line item to this sales order
@@ -101,54 +89,44 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
     fields["order"]?["value"] = widget.order.pk;
     fields["order"]?["hidden"] = true;
 
-    InvenTreeSOLineItem().createForm(
-        context,
-        L10().lineItemAdd,
-        fields: fields,
+    InvenTreeSOLineItem().createForm(context, L10().lineItemAdd, fields: fields,
         onSuccess: (result) async {
-          refresh(context);
-        }
-    );
+      refresh(context);
+    });
   }
 
   /// Upload an image for this order
   Future<void> _uploadImage(BuildContext context) async {
-    InvenTreeSalesOrderAttachment().uploadImage(
-      widget.order.pk,
-      prefix: widget.order.reference,
-    ).then((result) => refresh(context));
+    InvenTreeSalesOrderAttachment()
+        .uploadImage(
+          widget.order.pk,
+          prefix: widget.order.reference,
+        )
+        .then((result) => refresh(context));
   }
 
   /// Issue this order
   Future<void> _issueOrder(BuildContext context) async {
-
-    confirmationDialog(
-        L10().issueOrder, "",
+    confirmationDialog(L10().issueOrder, "",
         icon: TablerIcons.send,
         color: Colors.blue,
-        acceptText: L10().issue,
-        onAccept: () async {
-          widget.order.issueOrder().then((dynamic) {
-            refresh(context);
-          });
-        }
-    );
+        acceptText: L10().issue, onAccept: () async {
+      widget.order.issueOrder().then((dynamic) {
+        refresh(context);
+      });
+    });
   }
 
   /// Cancel this order
   Future<void> _cancelOrder(BuildContext context) async {
-
-    confirmationDialog(
-        L10().cancelOrder, "",
+    confirmationDialog(L10().cancelOrder, "",
         icon: TablerIcons.circle_x,
         color: Colors.red,
-        acceptText: L10().cancel,
-        onAccept: () async {
-          await widget.order.cancelOrder().then((dynamic) {
-            refresh(context);
-          });
-        }
-    );
+        acceptText: L10().cancel, onAccept: () async {
+      await widget.order.cancelOrder().then((dynamic) {
+        refresh(context);
+      });
+    });
   }
 
   @override
@@ -156,62 +134,48 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
     List<SpeedDialChild> actions = [];
 
     if (showCameraShortcut && widget.order.canEdit) {
-      actions.add(
-          SpeedDialChild(
-            child: Icon(TablerIcons.camera, color: Colors.blue),
-            label: L10().takePicture,
-            onTap: () async {
-              _uploadImage(context);
-            }
-        )
-      );
+      actions.add(SpeedDialChild(
+          child: Icon(TablerIcons.camera, color: Colors.blue),
+          label: L10().takePicture,
+          onTap: () async {
+            _uploadImage(context);
+          }));
     }
 
     if (widget.order.isPending) {
-      actions.add(
-          SpeedDialChild(
-              child: Icon(TablerIcons.send, color: Colors.blue),
-              label: L10().issueOrder,
-              onTap: () async {
-                _issueOrder(context);
-              }
-          )
-      );
+      actions.add(SpeedDialChild(
+          child: Icon(TablerIcons.send, color: Colors.blue),
+          label: L10().issueOrder,
+          onTap: () async {
+            _issueOrder(context);
+          }));
     }
 
     if (widget.order.isOpen) {
-      actions.add(
-          SpeedDialChild(
-              child: Icon(TablerIcons.circle_x, color: Colors.red),
-              label: L10().cancelOrder,
-              onTap: () async {
-                _cancelOrder(context);
-              }
-          )
-      );
+      actions.add(SpeedDialChild(
+          child: Icon(TablerIcons.circle_x, color: Colors.red),
+          label: L10().cancelOrder,
+          onTap: () async {
+            _cancelOrder(context);
+          }));
     }
 
     // Add line item
-    if ((widget.order.isPending || widget.order.isInProgress) && InvenTreeSOLineItem().canCreate) {
-      actions.add(
-        SpeedDialChild(
+    if ((widget.order.isPending || widget.order.isInProgress) &&
+        InvenTreeSOLineItem().canCreate) {
+      actions.add(SpeedDialChild(
           child: Icon(TablerIcons.circle_plus, color: Colors.green),
           label: L10().lineItemAdd,
           onTap: () async {
             _addLineItem(context);
-          }
-        )
-      );
+          }));
 
-      actions.add(
-        SpeedDialChild(
+      actions.add(SpeedDialChild(
           child: Icon(TablerIcons.circle_plus, color: Colors.green),
           label: L10().shipmentAdd,
           onTap: () async {
             _addShipment(context);
-          }
-        )
-      );
+          }));
     }
 
     return actions;
@@ -221,9 +185,9 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
   List<SpeedDialChild> barcodeButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
-    if ((widget.order.isInProgress || widget.order.isPending) && InvenTreeSOLineItem().canCreate) {
-      actions.add(
-        SpeedDialChild(
+    if ((widget.order.isInProgress || widget.order.isPending) &&
+        InvenTreeSOLineItem().canCreate) {
+      actions.add(SpeedDialChild(
           child: Icon(Icons.barcode_reader),
           label: L10().lineItemAdd,
           onTap: () async {
@@ -231,25 +195,18 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
               context,
               handler: SOAddItemBarcodeHandler(salesOrder: widget.order),
             );
-          }
-        )
-      );
+          }));
 
       if (api.supportsBarcodeSOAllocateEndpoint) {
-        actions.add(
-          SpeedDialChild(
+        actions.add(SpeedDialChild(
             child: Icon(TablerIcons.transition_right),
             label: L10().allocateStock,
             onTap: () async {
-              scanBarcode(
-                context,
-                handler: SOAllocateStockHandler(
-                  salesOrder: widget.order,
-                )
-              );
-            }
-          )
-        );
+              scanBarcode(context,
+                  handler: SOAllocateStockHandler(
+                    salesOrder: widget.order,
+                  ));
+            }));
       }
     }
 
@@ -261,10 +218,15 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
     await widget.order.reload();
     await api.SalesOrderStatus.load();
 
-    supportsProjectCodes = api.supportsProjectCodes && await api.getGlobalBooleanSetting("PROJECT_CODES_ENABLED", backup: true);
-    showCameraShortcut = await InvenTreeSettingsManager().getBool(INV_SO_SHOW_CAMERA, true);
+    supportsProjectCodes = api.supportsProjectCodes &&
+        await api.getGlobalBooleanSetting("PROJECT_CODES_ENABLED",
+            backup: true);
+    showCameraShortcut =
+        await InvenTreeSettingsManager().getBool(INV_SO_SHOW_CAMERA, true);
 
-    InvenTreeSalesOrderAttachment().countAttachments(widget.order.pk).then((int value) {
+    InvenTreeSalesOrderAttachment()
+        .countAttachments(widget.order.pk)
+        .then((int value) {
       if (mounted) {
         setState(() {
           attachmentCount = value;
@@ -273,7 +235,8 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
     });
 
     // Count number of "extra line items" against this order
-    InvenTreeSOExtraLineItem().count(filters: {"order": widget.order.pk.toString() }).then((int value) {
+    InvenTreeSOExtraLineItem().count(
+        filters: {"order": widget.order.pk.toString()}).then((int value) {
       if (mounted) {
         setState(() {
           extraLineCount = value;
@@ -298,15 +261,11 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
       fields.remove("project_code");
     }
 
-    widget.order.editForm(
-      context,
-      L10().salesOrderEdit,
-      fields: fields,
-      onSuccess: (data) async {
-        refresh(context);
-        showSnackIcon(L10().salesOrderUpdated, success: true);
-      }
-    );
+    widget.order.editForm(context, L10().salesOrderEdit, fields: fields,
+        onSuccess: (data) async {
+      refresh(context);
+      showSnackIcon(L10().salesOrderUpdated, success: true);
+    });
   }
 
   // Construct header tile
@@ -314,45 +273,40 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
     InvenTreeCompany? customer = widget.order.customer;
 
     return Card(
-      child: ListTile(
-        title: Text(widget.order.reference),
-        subtitle: Text(widget.order.description),
-        leading: customer == null ? null : api.getThumbnail(customer.thumbnail),
-        trailing: Text(
-          api.SalesOrderStatus.label(widget.order.status),
-          style: TextStyle(
-              color: api.SalesOrderStatus.color(widget.order.status)
-          ),
-        ),
-      )
-    );
+        child: ListTile(
+      title: Text(widget.order.reference),
+      subtitle: Text(widget.order.description),
+      leading: customer == null ? null : api.getThumbnail(customer.thumbnail),
+      trailing: Text(
+        api.SalesOrderStatus.label(widget.order.status),
+        style:
+            TextStyle(color: api.SalesOrderStatus.color(widget.order.status)),
+      ),
+    ));
   }
 
   List<Widget> orderTiles(BuildContext context) {
-
-    List<Widget> tiles = [
-      headerTile(context)
-    ];
+    List<Widget> tiles = [headerTile(context)];
 
     InvenTreeCompany? customer = widget.order.customer;
 
     if (supportsProjectCodes && widget.order.hasProjectCode) {
       tiles.add(ListTile(
         title: Text(L10().projectCode),
-        subtitle: Text("${widget.order.projectCode} - ${widget.order.projectCodeDescription}"),
+        subtitle: Text(
+            "${widget.order.projectCode} - ${widget.order.projectCodeDescription}"),
         leading: Icon(TablerIcons.list),
       ));
     }
 
     if (customer != null) {
       tiles.add(ListTile(
-        title: Text(L10().customer),
-        subtitle: Text(customer.name),
-        leading: Icon(TablerIcons.user, color: COLOR_ACTION),
-        onTap: () {
-          customer.goToDetailPage(context);
-        }
-      ));
+          title: Text(L10().customer),
+          subtitle: Text(customer.name),
+          leading: Icon(TablerIcons.user, color: COLOR_ACTION),
+          onTap: () {
+            customer.goToDetailPage(context);
+          }));
     }
 
     if (widget.order.customerReference.isNotEmpty) {
@@ -367,12 +321,12 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
 
     tiles.add(ListTile(
       title: Text(L10().lineItems),
-      subtitle: ProgressBar(
-        widget.order.completedLineItemCount.toDouble(),
-        maximum: widget.order.lineItemCount.toDouble()
-      ),
+      subtitle: ProgressBar(widget.order.completedLineItemCount.toDouble(),
+          maximum: widget.order.lineItemCount.toDouble()),
       leading: Icon(TablerIcons.clipboard_check),
-      trailing: Text("${widget.order.completedLineItemCount} / ${widget.order.lineItemCount}", style: TextStyle(color: lineColor)),
+      trailing: Text(
+          "${widget.order.completedLineItemCount} / ${widget.order.lineItemCount}",
+          style: TextStyle(color: lineColor)),
     ));
 
     // Extra line items
@@ -384,9 +338,8 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => SOExtraLineListWidget(widget.order, filters: {"order": widget.order.pk.toString()})
-            )
-        )
+                builder: (context) => SOExtraLineListWidget(widget.order,
+                    filters: {"order": widget.order.pk.toString()})))
       },
     ));
 
@@ -394,12 +347,12 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
     if (widget.order.shipmentCount > 0) {
       tiles.add(ListTile(
         title: Text(L10().shipments),
-        subtitle: ProgressBar(
-          widget.order.completedShipmentCount.toDouble(),
-          maximum: widget.order.shipmentCount.toDouble()
-        ),
+        subtitle: ProgressBar(widget.order.completedShipmentCount.toDouble(),
+            maximum: widget.order.shipmentCount.toDouble()),
         leading: Icon(TablerIcons.truck_delivery),
-        trailing: Text("${widget.order.completedShipmentCount} / ${widget.order.shipmentCount}", style: TextStyle(color: lineColor)),
+        trailing: Text(
+            "${widget.order.completedShipmentCount} / ${widget.order.shipmentCount}",
+            style: TextStyle(color: lineColor)),
       ));
     }
 
@@ -430,51 +383,42 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
     }
 
     // Responsible "owner"
-    if (widget.order.responsibleName.isNotEmpty && widget.order.responsibleLabel.isNotEmpty) {
+    if (widget.order.responsibleName.isNotEmpty &&
+        widget.order.responsibleLabel.isNotEmpty) {
       tiles.add(ListTile(
           title: Text(L10().responsible),
-          leading: Icon(widget.order.responsibleLabel == "group" ? TablerIcons.users : TablerIcons.user),
-          trailing: Text(widget.order.responsibleName)
-      ));
+          leading: Icon(widget.order.responsibleLabel == "group"
+              ? TablerIcons.users
+              : TablerIcons.user),
+          trailing: Text(widget.order.responsibleName)));
     }
 
     // Notes tile
-    tiles.add(
-      ListTile(
-        title: Text(L10().notes),
-        leading: Icon(TablerIcons.note, color: COLOR_ACTION),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-            builder: (context) => NotesWidget(widget.order)
-            )
-          );
-        },
-      )
-    );
+    tiles.add(ListTile(
+      title: Text(L10().notes),
+      leading: Icon(TablerIcons.note, color: COLOR_ACTION),
+      onTap: () {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => NotesWidget(widget.order)));
+      },
+    ));
 
     // Attachments
-    tiles.add(
-      ListTile(
-        title: Text(L10().attachments),
-        leading: Icon(TablerIcons.file, color: COLOR_ACTION),
-        trailing: attachmentCount > 0 ? Text(attachmentCount.toString()) : null,
-        onTap: () {
-          Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => AttachmentWidget(
-            InvenTreeSalesOrderAttachment(),
-            widget.order.pk,
-            widget.order.reference,
-            widget.order.canEdit
-            )
-          )
-        );
-        },
-      )
-    );
+    tiles.add(ListTile(
+      title: Text(L10().attachments),
+      leading: Icon(TablerIcons.file, color: COLOR_ACTION),
+      trailing: attachmentCount > 0 ? Text(attachmentCount.toString()) : null,
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => AttachmentWidget(
+                    InvenTreeSalesOrderAttachment(),
+                    widget.order.pk,
+                    widget.order.reference,
+                    widget.order.canEdit)));
+      },
+    ));
 
     return tiles;
   }
@@ -496,5 +440,4 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
       PaginatedSOShipmentList({"order": widget.order.pk.toString()}),
     ];
   }
-
 }

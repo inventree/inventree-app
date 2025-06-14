@@ -12,39 +12,35 @@ import "package:inventree/api.dart";
 import "package:inventree/user_profile.dart";
 
 class InvenTreeSelectServerWidget extends StatefulWidget {
-
   @override
   _InvenTreeSelectServerState createState() => _InvenTreeSelectServerState();
 }
 
-
 class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
-
   _InvenTreeSelectServerState() {
     _reload();
   }
 
-  final GlobalKey<_InvenTreeSelectServerState> _loginKey = GlobalKey<_InvenTreeSelectServerState>();
+  final GlobalKey<_InvenTreeSelectServerState> _loginKey =
+      GlobalKey<_InvenTreeSelectServerState>();
 
   List<UserProfile> profiles = [];
 
-  Future <void> _reload() async {
-
+  Future<void> _reload() async {
     profiles = await UserProfileDBManager().getAllProfiles();
 
     if (!mounted) {
       return;
     }
 
-    setState(() {
-    });
+    setState(() {});
   }
 
   /*
    * Logout the selected profile (delete the stored token)
    */
-  Future<void> _logoutProfile(BuildContext context, {UserProfile? userProfile}) async {
-
+  Future<void> _logoutProfile(BuildContext context,
+      {UserProfile? userProfile}) async {
     if (userProfile != null) {
       userProfile.token = "";
       await UserProfileDBManager().updateProfile(userProfile);
@@ -54,26 +50,23 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
 
     InvenTreeAPI().disconnectFromServer();
     _reload();
-
   }
 
   /*
    * Edit the selected profile
    */
-  void _editProfile(BuildContext context, {UserProfile? userProfile, bool createNew = false}) {
-
+  void _editProfile(BuildContext context,
+      {UserProfile? userProfile, bool createNew = false}) {
     Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ProfileEditWidget(userProfile)
-      )
-    ).then((context) {
+            context,
+            MaterialPageRoute(
+                builder: (context) => ProfileEditWidget(userProfile)))
+        .then((context) {
       _reload();
     });
   }
 
-  Future <void> _selectProfile(BuildContext context, UserProfile profile) async {
-
+  Future<void> _selectProfile(BuildContext context, UserProfile profile) async {
     // Disconnect InvenTree
     InvenTreeAPI().disconnectFromServer();
 
@@ -94,9 +87,11 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
     // First check if the profile has an associate token
     if (!prf.hasToken) {
       // Redirect user to login screen
-      Navigator.push(context,
-        MaterialPageRoute(builder: (context) => InvenTreeLoginWidget(profile))
-      ).then((value) async {
+      Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => InvenTreeLoginWidget(profile)))
+          .then((value) async {
         _reload();
         // Reload profile
         prf = await UserProfileDBManager().getProfileByKey(key);
@@ -125,8 +120,7 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
     _reload();
   }
 
-  Future <void> _deleteProfile(UserProfile profile) async {
-
+  Future<void> _deleteProfile(UserProfile profile) async {
     await UserProfileDBManager().deleteProfile(profile);
 
     if (!mounted) {
@@ -135,13 +129,13 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
 
     _reload();
 
-    if (InvenTreeAPI().isConnected() && profile.key == (InvenTreeAPI().profile?.key ?? "")) {
+    if (InvenTreeAPI().isConnected() &&
+        profile.key == (InvenTreeAPI().profile?.key ?? "")) {
       InvenTreeAPI().disconnectFromServer();
     }
   }
 
   Widget? _getProfileIcon(UserProfile profile) {
-
     // Not selected? No icon for you!
     if (!profile.selected) return null;
 
@@ -152,10 +146,7 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
 
     // Reflect the connection status of the server
     if (InvenTreeAPI().isConnected()) {
-      return Icon(
-        TablerIcons.circle_check,
-        color: COLOR_SUCCESS
-      );
+      return Icon(TablerIcons.circle_check, color: COLOR_SUCCESS);
     } else if (InvenTreeAPI().isConnecting()) {
       return Spinner(
         icon: TablerIcons.loader_2,
@@ -171,7 +162,6 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
 
   @override
   Widget build(BuildContext context) {
-
     List<Widget> children = [];
 
     if (profiles.isNotEmpty) {
@@ -182,84 +172,76 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
           title: Text(
             profile.name,
           ),
-          tileColor: profile.selected ? Theme.of(context).secondaryHeaderColor : null,
+          tileColor:
+              profile.selected ? Theme.of(context).secondaryHeaderColor : null,
           subtitle: Text("${profile.server}"),
-          leading: profile.hasToken ? Icon(TablerIcons.user_check, color: COLOR_SUCCESS) : Icon(TablerIcons.user_cancel, color: COLOR_WARNING),
+          leading: profile.hasToken
+              ? Icon(TablerIcons.user_check, color: COLOR_SUCCESS)
+              : Icon(TablerIcons.user_cancel, color: COLOR_WARNING),
           trailing: _getProfileIcon(profile),
           onTap: () {
             _selectProfile(context, profile);
           },
           onLongPress: () {
-            OneContext().showDialog(
-                builder: (BuildContext context) {
-                  return SimpleDialog(
-                    title: Text(profile.name),
-                    children: <Widget>[
-                      Divider(),
-                      SimpleDialogOption(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          _selectProfile(context, profile);
-                        },
-                        child: ListTile(
-                          title: Text(L10().profileConnect),
-                          leading: Icon(TablerIcons.server),
-                        )
-                      ),
-                      SimpleDialogOption(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          _editProfile(context, userProfile: profile);
-                        },
-                        child: ListTile(
+            OneContext().showDialog(builder: (BuildContext context) {
+              return SimpleDialog(
+                title: Text(profile.name),
+                children: <Widget>[
+                  Divider(),
+                  SimpleDialogOption(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        _selectProfile(context, profile);
+                      },
+                      child: ListTile(
+                        title: Text(L10().profileConnect),
+                        leading: Icon(TablerIcons.server),
+                      )),
+                  SimpleDialogOption(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        _editProfile(context, userProfile: profile);
+                      },
+                      child: ListTile(
                           title: Text(L10().profileEdit),
-                          leading: Icon(TablerIcons.edit)
-                        )
-                      ),
-                      SimpleDialogOption(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          _logoutProfile(context, userProfile: profile);
-                        },
-                        child: ListTile(
-                          title: Text(L10().profileLogout),
-                          leading: Icon(TablerIcons.logout),
-                        )
-                      ),
-                      Divider(),
-                      SimpleDialogOption(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          // Navigator.of(context, rootNavigator: true).pop();
-                          confirmationDialog(
-                            L10().delete,
-                            L10().profileDelete + "?",
+                          leading: Icon(TablerIcons.edit))),
+                  SimpleDialogOption(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        _logoutProfile(context, userProfile: profile);
+                      },
+                      child: ListTile(
+                        title: Text(L10().profileLogout),
+                        leading: Icon(TablerIcons.logout),
+                      )),
+                  Divider(),
+                  SimpleDialogOption(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        // Navigator.of(context, rootNavigator: true).pop();
+                        confirmationDialog(
+                            L10().delete, L10().profileDelete + "?",
                             color: Colors.red,
-                            icon: TablerIcons.trash,
-                            onAccept: () {
-                              _deleteProfile(profile);
-                            }
-                          );
-                        },
-                        child: ListTile(
-                          title: Text(L10().profileDelete, style: TextStyle(color: Colors.red)),
-                          leading: Icon(TablerIcons.trash, color: Colors.red),
-                        )
-                      )
-                    ],
-                  );
-                }
-            );
+                            icon: TablerIcons.trash, onAccept: () {
+                          _deleteProfile(profile);
+                        });
+                      },
+                      child: ListTile(
+                        title: Text(L10().profileDelete,
+                            style: TextStyle(color: Colors.red)),
+                        leading: Icon(TablerIcons.trash, color: Colors.red),
+                      ))
+                ],
+              );
+            });
           },
         ));
       }
     } else {
       // No profile available!
-      children.add(
-        ListTile(
-          title: Text(L10().profileNone),
-        )
-      );
+      children.add(ListTile(
+        title: Text(L10().profileNone),
+      ));
     }
 
     return Scaffold(
@@ -277,23 +259,18 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
         ],
       ),
       body: Container(
-        child: ListView(
-          children: ListTile.divideTiles(
-            context: context,
-            tiles: children
-          ).toList(),
-        )
-      ),
+          child: ListView(
+        children:
+            ListTile.divideTiles(context: context, tiles: children).toList(),
+      )),
     );
   }
 }
-
 
 /*
  * Widget for editing server details
  */
 class ProfileEditWidget extends StatefulWidget {
-
   const ProfileEditWidget(this.profile) : super();
 
   final UserProfile? profile;
@@ -303,7 +280,6 @@ class ProfileEditWidget extends StatefulWidget {
 }
 
 class _ProfileEditState extends State<ProfileEditWidget> {
-
   _ProfileEditState() : super();
 
   final formKey = GlobalKey<FormState>();
@@ -314,120 +290,117 @@ class _ProfileEditState extends State<ProfileEditWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: COLOR_APP_BAR,
-        title: Text(widget.profile == null ? L10().profileAdd : L10().profileEdit),
-        actions: [
-          IconButton(
-            icon: Icon(TablerIcons.circle_check),
-            onPressed: () async {
-              if (formKey.currentState!.validate()) {
-                formKey.currentState!.save();
+        appBar: AppBar(
+            backgroundColor: COLOR_APP_BAR,
+            title: Text(
+                widget.profile == null ? L10().profileAdd : L10().profileEdit),
+            actions: [
+              IconButton(
+                icon: Icon(TablerIcons.circle_check),
+                onPressed: () async {
+                  if (formKey.currentState!.validate()) {
+                    formKey.currentState!.save();
 
-                UserProfile? prf = widget.profile;
+                    UserProfile? prf = widget.profile;
 
-                if (prf == null) {
-                  UserProfile profile = UserProfile(
-                    name: name,
-                    server: server,
-                  );
+                    if (prf == null) {
+                      UserProfile profile = UserProfile(
+                        name: name,
+                        server: server,
+                      );
 
-                  await UserProfileDBManager().addProfile(profile);
-                } else {
-
-                  prf.name = name;
-                  prf.server = server;
-
-                  await UserProfileDBManager().updateProfile(prf);
-                }
-
-                // Close the window
-                Navigator.of(context).pop();
-              }
-            },
-          )
-        ]
-      ),
-      body: Form(
-        key: formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: L10().profileName,
-                  labelStyle: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                initialValue: widget.profile?.name ?? "",
-                maxLines: 1,
-                keyboardType: TextInputType.text,
-                onSaved: (value) {
-                  name = value?.trim() ?? "";
-                },
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return L10().valueCannotBeEmpty;
-                  }
-
-                  return null;
-                }
-              ),
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: L10().server,
-                  labelStyle: TextStyle(fontWeight: FontWeight.bold),
-                  hintText: "http[s]://<server>:<port>",
-                ),
-                initialValue: widget.profile?.server ?? "",
-                keyboardType: TextInputType.url,
-                onSaved: (value) {
-                  server = value?.trim() ?? "";
-                },
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return L10().serverEmpty;
-                  }
-
-                  value = value.trim();
-
-                  // Spaces are bad
-                  if (value.contains(" ")) {
-                    return L10().invalidHost;
-                  }
-
-                  if (!value.startsWith("http:") && !value.startsWith("https:")) {
-                    // return L10().serverStart;
-                  }
-
-                  Uri? _uri = Uri.tryParse(value);
-
-                  if (_uri == null || _uri.host.isEmpty) {
-                    return L10().invalidHost;
-                  } else {
-                    Uri uri = Uri.parse(value);
-
-                    if (uri.hasScheme) {
-                      if (!["http", "https"].contains(uri.scheme.toLowerCase())) {
-                        return L10().serverStart;
-                      }
+                      await UserProfileDBManager().addProfile(profile);
                     } else {
-                      return L10().invalidHost;
+                      prf.name = name;
+                      prf.server = server;
+
+                      await UserProfileDBManager().updateProfile(prf);
                     }
+
+                    // Close the window
+                    Navigator.of(context).pop();
                   }
-
-                  // Everything is OK
-                  return null;
                 },
-              ),
-            ]
-          ),
-          padding: EdgeInsets.all(16),
-        ),
-      )
-    );
-  }
+              )
+            ]),
+        body: Form(
+          key: formKey,
+          child: SingleChildScrollView(
+            child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextFormField(
+                      decoration: InputDecoration(
+                        labelText: L10().profileName,
+                        labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      initialValue: widget.profile?.name ?? "",
+                      maxLines: 1,
+                      keyboardType: TextInputType.text,
+                      onSaved: (value) {
+                        name = value?.trim() ?? "";
+                      },
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return L10().valueCannotBeEmpty;
+                        }
 
+                        return null;
+                      }),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      labelText: L10().server,
+                      labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                      hintText: "http[s]://<server>:<port>",
+                    ),
+                    initialValue: widget.profile?.server ?? "",
+                    keyboardType: TextInputType.url,
+                    onSaved: (value) {
+                      server = value?.trim() ?? "";
+                    },
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return L10().serverEmpty;
+                      }
+
+                      value = value.trim();
+
+                      // Spaces are bad
+                      if (value.contains(" ")) {
+                        return L10().invalidHost;
+                      }
+
+                      if (!value.startsWith("http:") &&
+                          !value.startsWith("https:")) {
+                        // return L10().serverStart;
+                      }
+
+                      Uri? _uri = Uri.tryParse(value);
+
+                      if (_uri == null || _uri.host.isEmpty) {
+                        return L10().invalidHost;
+                      } else {
+                        Uri uri = Uri.parse(value);
+
+                        if (uri.hasScheme) {
+                          if (!["http", "https"]
+                              .contains(uri.scheme.toLowerCase())) {
+                            return L10().serverStart;
+                          }
+                        } else {
+                          return L10().invalidHost;
+                        }
+                      }
+
+                      // Everything is OK
+                      return null;
+                    },
+                  ),
+                ]),
+            padding: EdgeInsets.all(16),
+          ),
+        ));
+  }
 }

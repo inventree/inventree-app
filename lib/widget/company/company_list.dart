@@ -1,4 +1,3 @@
-
 import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
@@ -12,13 +11,12 @@ import "package:inventree/inventree/model.dart";
 import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/refreshable_state.dart";
 
-
 /*
  * Widget for displaying a filterable list of Company instances
  */
 class CompanyListWidget extends StatefulWidget {
-
-  const CompanyListWidget(this.title, this.filters, {Key? key}) : super(key: key);
+  const CompanyListWidget(this.title, this.filters, {Key? key})
+      : super(key: key);
 
   final String title;
 
@@ -28,29 +26,22 @@ class CompanyListWidget extends StatefulWidget {
   _CompanyListWidgetState createState() => _CompanyListWidgetState();
 }
 
-
 class _CompanyListWidgetState extends RefreshableState<CompanyListWidget> {
-
   _CompanyListWidgetState();
 
   @override
   String getAppBarTitle() => widget.title;
 
   Future<void> _addCompany(BuildContext context) async {
+    InvenTreeCompany().createForm(context, L10().companyAdd,
+        data: widget.filters, onSuccess: (result) async {
+      Map<String, dynamic> data = result as Map<String, dynamic>;
 
-    InvenTreeCompany().createForm(
-      context,
-      L10().companyAdd,
-      data: widget.filters,
-      onSuccess: (result) async {
-        Map<String, dynamic> data = result as Map<String, dynamic>;
-
-        if (data.containsKey("pk")) {
-          var company = InvenTreeCompany.fromJson(data);
-          company.goToDetailPage(context);
-        }
+      if (data.containsKey("pk")) {
+        var company = InvenTreeCompany.fromJson(data);
+        company.goToDetailPage(context);
       }
-    );
+    });
   }
 
   @override
@@ -58,15 +49,12 @@ class _CompanyListWidgetState extends RefreshableState<CompanyListWidget> {
     List<SpeedDialChild> actions = [];
 
     if (InvenTreeAPI().checkPermission("company", "add")) {
-      actions.add(
-          SpeedDialChild(
-              child: Icon(TablerIcons.circle_plus, color: Colors.green),
-              label: L10().companyAdd,
-              onTap: () {
-                _addCompany(context);
-              }
-          )
-      );
+      actions.add(SpeedDialChild(
+          child: Icon(TablerIcons.circle_plus, color: Colors.green),
+          label: L10().companyAdd,
+          onTap: () {
+            _addCompany(context);
+          }));
     }
 
     return actions;
@@ -76,12 +64,11 @@ class _CompanyListWidgetState extends RefreshableState<CompanyListWidget> {
   Widget getBody(BuildContext context) {
     return PaginatedCompanyList(widget.title, widget.filters);
   }
-
 }
 
 class PaginatedCompanyList extends PaginatedSearchWidget {
-
-  const PaginatedCompanyList(this.companyTitle, Map<String, String> filters) : super(filters: filters);
+  const PaginatedCompanyList(this.companyTitle, Map<String, String> filters)
+      : super(filters: filters);
 
   final String companyTitle;
 
@@ -93,12 +80,10 @@ class PaginatedCompanyList extends PaginatedSearchWidget {
 }
 
 class _CompanyListState extends PaginatedSearchState<PaginatedCompanyList> {
-
   _CompanyListState() : super();
 
   @override
   Map<String, Map<String, dynamic>> get filterOptions {
-
     Map<String, Map<String, dynamic>> filters = {};
 
     if (InvenTreeAPI().supportsCompanyActiveStatus) {
@@ -113,16 +98,16 @@ class _CompanyListState extends PaginatedSearchState<PaginatedCompanyList> {
   }
 
   @override
-  Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
-
-    final page = await InvenTreeCompany().listPaginated(limit, offset, filters: params);
+  Future<InvenTreePageResponse?> requestPage(
+      int limit, int offset, Map<String, String> params) async {
+    final page =
+        await InvenTreeCompany().listPaginated(limit, offset, filters: params);
 
     return page;
   }
 
   @override
   Widget buildItem(BuildContext context, InvenTreeModel model) {
-
     InvenTreeCompany company = model as InvenTreeCompany;
 
     return ListTile(

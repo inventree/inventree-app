@@ -16,7 +16,6 @@ import "package:inventree/inventree/stock.dart";
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/snacks.dart";
 
-
 /*
  * Generic class for scanning a StockLocation.
  *
@@ -24,20 +23,17 @@ import "package:inventree/widget/snacks.dart";
  * - Runs a "callback" function if a valid StockLocation is found
  */
 class BarcodeScanStockLocationHandler extends BarcodeHandler {
-
   @override
   String getOverlayText(BuildContext context) => L10().barcodeScanLocation;
 
   @override
   Future<void> onBarcodeMatched(Map<String, dynamic> data) async {
-
     // We expect that the barcode points to a 'stocklocation'
     if (data.containsKey("stocklocation")) {
       int _loc = (data["stocklocation"]?["pk"] ?? -1) as int;
 
       // A valid stock location!
       if (_loc > 0) {
-
         debug("Scanned stock location ${_loc}");
 
         final bool result = await onLocationScanned(_loc);
@@ -64,9 +60,7 @@ class BarcodeScanStockLocationHandler extends BarcodeHandler {
     // Re-implement this for particular subclass
     return false;
   }
-
 }
-
 
 /*
  * Generic class for scanning a StockItem
@@ -75,7 +69,6 @@ class BarcodeScanStockLocationHandler extends BarcodeHandler {
  * - Runs a "callback" function if a valid StockItem is found
  */
 class BarcodeScanStockItemHandler extends BarcodeHandler {
-
   @override
   String getOverlayText(BuildContext context) => L10().barcodeScanItem;
 
@@ -87,7 +80,6 @@ class BarcodeScanStockItemHandler extends BarcodeHandler {
 
       // A valid stock location!
       if (_item > 0) {
-
         barcodeSuccessTone();
 
         bool result = await onItemScanned(_item);
@@ -115,7 +107,6 @@ class BarcodeScanStockItemHandler extends BarcodeHandler {
   }
 }
 
-
 /*
  * Barcode handler for scanning a provided StockItem into a scanned StockLocation.
  *
@@ -124,36 +115,28 @@ class BarcodeScanStockItemHandler extends BarcodeHandler {
  * - The StockItem is transferred into the scanned location
  */
 class StockItemScanIntoLocationHandler extends BarcodeScanStockLocationHandler {
-
   StockItemScanIntoLocationHandler(this.item);
 
   final InvenTreeStockItem item;
 
   @override
   Future<bool> onLocationScanned(int locationId) async {
-
-    final bool confirm = await InvenTreeSettingsManager().getBool(INV_STOCK_CONFIRM_SCAN, false);
+    final bool confirm =
+        await InvenTreeSettingsManager().getBool(INV_STOCK_CONFIRM_SCAN, false);
 
     bool result = false;
 
     if (confirm) {
-
       Map<String, dynamic> fields = item.transferFields();
 
       // Override location with scanned value
       fields["location"]?["value"] = locationId;
 
-      launchApiForm(
-        OneContext().context!,
-        L10().transferStock,
-        InvenTreeStockItem.transferStockUrl(),
-        fields,
-        method: "POST",
-        icon: TablerIcons.transfer,
-        onSuccess: (data) async {
-          showSnackIcon(L10().stockItemUpdated, success: true);
-        }
-      );
+      launchApiForm(OneContext().context!, L10().transferStock,
+          InvenTreeStockItem.transferStockUrl(), fields,
+          method: "POST", icon: TablerIcons.transfer, onSuccess: (data) async {
+        showSnackIcon(L10().stockItemUpdated, success: true);
+      });
 
       return true;
     } else {
@@ -171,7 +154,6 @@ class StockItemScanIntoLocationHandler extends BarcodeScanStockLocationHandler {
   }
 }
 
-
 /*
  * Barcode handler for scanning stock item(s) into the specified StockLocation.
  *
@@ -180,7 +162,6 @@ class StockItemScanIntoLocationHandler extends BarcodeScanStockLocationHandler {
  * - The scanned StockItem is transferred into the provided StockLocation
  */
 class StockLocationScanInItemsHandler extends BarcodeScanStockItemHandler {
-
   StockLocationScanInItemsHandler(this.location);
 
   final InvenTreeStockLocation location;
@@ -190,14 +171,14 @@ class StockLocationScanInItemsHandler extends BarcodeScanStockItemHandler {
 
   @override
   Future<bool> onItemScanned(int itemId) async {
-
-    final InvenTreeStockItem? item = await InvenTreeStockItem().get(itemId) as InvenTreeStockItem?;
-    final bool confirm = await InvenTreeSettingsManager().getBool(INV_STOCK_CONFIRM_SCAN, false);
+    final InvenTreeStockItem? item =
+        await InvenTreeStockItem().get(itemId) as InvenTreeStockItem?;
+    final bool confirm =
+        await InvenTreeSettingsManager().getBool(INV_STOCK_CONFIRM_SCAN, false);
 
     bool result = false;
 
     if (item != null) {
-
       // Item is already *in* the specified location
       if (item.locationId == location.pk) {
         barcodeFailureTone();
@@ -210,27 +191,22 @@ class StockLocationScanInItemsHandler extends BarcodeScanStockItemHandler {
           // Override location with provided location value
           fields["location"]?["value"] = location.pk;
 
-          launchApiForm(
-              OneContext().context!,
-              L10().transferStock,
-              InvenTreeStockItem.transferStockUrl(),
-              fields,
+          launchApiForm(OneContext().context!, L10().transferStock,
+              InvenTreeStockItem.transferStockUrl(), fields,
               method: "POST",
-              icon: TablerIcons.transfer,
-              onSuccess: (data) async {
-                showSnackIcon(L10().stockItemUpdated, success: true);
-              }
-          );
+              icon: TablerIcons.transfer, onSuccess: (data) async {
+            showSnackIcon(L10().stockItemUpdated, success: true);
+          });
 
           return true;
-
         } else {
           result = await item.transferStock(location.pk);
 
           showSnackIcon(
-              result ? L10().barcodeScanIntoLocationSuccess : L10().barcodeScanIntoLocationFailure,
-              success: result
-          );
+              result
+                  ? L10().barcodeScanIntoLocationSuccess
+                  : L10().barcodeScanIntoLocationFailure,
+              success: result);
         }
       }
     }
@@ -240,7 +216,6 @@ class StockLocationScanInItemsHandler extends BarcodeScanStockItemHandler {
   }
 }
 
-
 /*
  * Barcode handler class for scanning a StockLocation into another StockLocation
  *
@@ -249,14 +224,12 @@ class StockLocationScanInItemsHandler extends BarcodeScanStockItemHandler {
  * - The scanned StockLocation is set as the "parent" of the provided StockLocation
  */
 class ScanParentLocationHandler extends BarcodeScanStockLocationHandler {
-
   ScanParentLocationHandler(this.location);
 
   final InvenTreeStockLocation location;
 
   @override
   Future<bool> onLocationScanned(int locationId) async {
-
     final response = await location.update(
       values: {
         "parent": locationId.toString(),
@@ -269,23 +242,19 @@ class ScanParentLocationHandler extends BarcodeScanStockLocationHandler {
       case 201:
         barcodeSuccess(L10().barcodeScanIntoLocationSuccess);
         return true;
-      case 400:  // Invalid parent location chosen
+      case 400: // Invalid parent location chosen
         barcodeFailureTone();
         showSnackIcon(L10().invalidStockLocation, success: false);
         return false;
       default:
         barcodeFailureTone();
-        showSnackIcon(
-            L10().barcodeScanIntoLocationFailure,
-            success: false,
-            actionText: L10().details,
-            onAction: () {
-              showErrorDialog(
-                L10().barcodeError,
-                response: response,
-              );
-            }
-        );
+        showSnackIcon(L10().barcodeScanIntoLocationFailure,
+            success: false, actionText: L10().details, onAction: () {
+          showErrorDialog(
+            L10().barcodeError,
+            response: response,
+          );
+        });
         return false;
     }
   }
