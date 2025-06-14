@@ -39,6 +39,9 @@ def android(c):
     c.run("flutter build appbundle --release --no-tree-shake-icons")
 
 @task
-def format(c):
+def format(c, analyze=False, dry_run=False):
     """Format Dart code."""
-    c.run("dart format --output=none")
+    c.run(f"dart format .{" --output=none" if dry_run else ''}")
+
+    if analyze:
+        c.run("flutter analyze")
