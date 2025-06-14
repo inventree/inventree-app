@@ -199,8 +199,9 @@ class QuantityField extends TextFormField {
             double quantity = double.tryParse(value.toString()) ?? 0;
 
             if (quantity <= 0) return L10().quantityPositive;
-            if ((max != null) && (quantity > max))
+            if ((max != null) && (quantity > max)) {
               return "Quantity must not exceed ${max}";
+            }
 
             return null;
           },

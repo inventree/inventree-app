@@ -479,8 +479,9 @@ class InvenTreeStockItem extends InvenTreeModel {
   }
 
   String get locationName {
-    if (locationId == -1 || !jsondata.containsKey("location_detail"))
+    if (locationId == -1 || !jsondata.containsKey("location_detail")) {
       return "Unknown Location";
+    }
 
     String loc = getString("name", subKey: "location_detail");
 
@@ -493,8 +494,9 @@ class InvenTreeStockItem extends InvenTreeModel {
   }
 
   String get locationPathString {
-    if (locationId == -1 || !jsondata.containsKey("location_detail"))
+    if (locationId == -1 || !jsondata.containsKey("location_detail")) {
       return L10().locationNotSet;
+    }
 
     String _loc = getString("pathstring", subKey: "location_detail");
     if (_loc.isNotEmpty) {
