@@ -76,6 +76,7 @@ class _PartPricingWidgetState extends RefreshableState<PartPricingWidget> {
           trailing: Text(
             renderCurrency(pricing.overallMin, pricing.overrideMinCurrency)
           )
+        )
       );
     }
 

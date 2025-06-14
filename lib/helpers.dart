@@ -172,12 +172,11 @@ String formatPriceRange(double? minPrice, double? maxPrice, { String? currency }
   }
 
   if (isValidNumber(minPrice) && isValidNumber(maxPrice)) {
-
-    // Two values are effectively equal
-    if ((minPrice! - maxPrice!).abs() <= double.minPositive) {
+    // Two values are equal
+    if (minPrice == maxPrice) {
       return renderCurrency(minPrice, currency ?? "USD");
     } else {
-      return "${renderCurrency(min(minPrice, maxPrice), currency ?? "USD")} - ${renderCurrency(max(minPrice!, maxPrice!), currency ?? "USD")}";
+      return "${renderCurrency(min(minPrice!, maxPrice!), currency ?? "USD")} - ${renderCurrency(max(minPrice!, maxPrice!), currency ?? "USD")}";
     }
   }
 
