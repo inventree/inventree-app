@@ -24,7 +24,7 @@ import "package:inventree/barcode/controller.dart";
  */
 class CameraBarcodeController extends InvenTreeBarcodeController {
   const CameraBarcodeController(BarcodeHandler handler, {Key? key})
-      : super(handler, key: key);
+    : super(handler, key: key);
 
   @override
   State<StatefulWidget> createState() => _CameraBarcodeControllerState();
@@ -43,7 +43,7 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
   String scanned_code = "";
 
   final MobileScannerController controller = MobileScannerController(
-    autoZoom: true
+    autoZoom: true,
   );
 
   @override
@@ -63,11 +63,14 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
    * Load the barcode scanning settings
    */
   Future<void> _loadSettings() async {
-    bool _single = await InvenTreeSettingsManager()
-        .getBool(INV_BARCODE_SCAN_SINGLE, false);
+    bool _single = await InvenTreeSettingsManager().getBool(
+      INV_BARCODE_SCAN_SINGLE,
+      false,
+    );
 
-    int _delay = await InvenTreeSettingsManager()
-        .getValue(INV_BARCODE_SCAN_DELAY, 500) as int;
+    int _delay =
+        await InvenTreeSettingsManager().getValue(INV_BARCODE_SCAN_DELAY, 500)
+            as int;
 
     if (mounted) {
       setState(() {
@@ -80,7 +83,6 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
 
   @override
   Future<void> pauseScan() async {
-
     if (mounted) {
       setState(() {
         scanning_paused = true;
@@ -90,7 +92,6 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
 
   @override
   Future<void> resumeScan() async {
-
     controller.start();
 
     if (mounted) {
@@ -114,8 +115,7 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
       setState(() {
         multiple_barcodes = false;
       });
-    }
-    else if (result.barcodes.length > 1) {
+    } else if (result.barcodes.length > 1) {
       setState(() {
         multiple_barcodes = true;
       });
@@ -177,7 +177,7 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
       sentryReportError(
         "CameraBarcodeController.onControllerCreated",
         error,
-        null
+        null,
       );
     }
 
@@ -185,7 +185,7 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
       showSnackIcon(
         L10().cameraCreationError,
         icon: TablerIcons.camera_x,
-        success: false
+        success: false,
       );
 
       if (OneContext.hasContext) {
@@ -195,7 +195,6 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
   }
 
   Widget BarcodeOverlay(BuildContext context) {
-
     final Size screenSize = MediaQuery.of(context).size;
     final double width = screenSize.width;
     final double height = screenSize.height;
@@ -220,14 +219,11 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
             width: D,
             height: D,
             decoration: BoxDecoration(
-              border: Border.all(
-                color: overlayColor,
-                width: 4,
-              ),
+              border: Border.all(color: overlayColor, width: 4),
             ),
-          )
-        )
-      ]
+          ),
+        ),
+      ],
     );
   }
 
@@ -235,7 +231,6 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
    * Build the barcode reader widget
    */
   Widget BarcodeReader(BuildContext context) {
-
     final Size screenSize = MediaQuery.of(context).size;
     final double width = screenSize.width;
     final double height = screenSize.height;
@@ -250,7 +245,7 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
       scanWindow: Rect.fromCenter(
         center: Offset(width / 2, height / 2),
         width: D,
-        height: D
+        height: D,
       ),
       onDetect: (result) {
         onScanSuccess(result);
@@ -263,28 +258,23 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
       child: Align(
         alignment: Alignment.topCenter,
         child: Padding(
-          padding: EdgeInsets.only(
-            left: 10,
-            right: 10,
-            top: 75,
-            bottom: 10
-          ),
+          padding: EdgeInsets.only(left: 10, right: 10, top: 75, bottom: 10),
           child: Text(
             widget.handler.getOverlayText(context),
             style: TextStyle(
               color: Colors.white,
               fontSize: 16,
-              fontWeight: FontWeight.bold
-            )
-          )
-        )
-      )
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
     );
   }
 
   Widget bottomCenterOverlay() {
-
-    String info_text = scanning_paused ? L10().barcodeScanPaused : L10().barcodeScanPause;
+    String info_text =
+        scanning_paused ? L10().barcodeScanPaused : L10().barcodeScanPause;
 
     String text = scanned_code.isNotEmpty ? scanned_code : info_text;
 
@@ -296,28 +286,22 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
       child: Align(
         alignment: Alignment.bottomCenter,
         child: Padding(
-          padding: EdgeInsets.only(
-            left: 10,
-            right: 10,
-            top: 10,
-            bottom: 75
-          ),
+          padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 75),
           child: Text(
-              text,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.bold
-              )
+            text,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        )
-      )
+        ),
+      ),
     );
   }
 
   Widget? buildActions(BuildContext context) {
-
     List<SpeedDialChild> actions = [
       SpeedDialChild(
         child: Icon(flash_status ? TablerIcons.bulb_off : TablerIcons.bulb),
@@ -329,26 +313,22 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
               flash_status = !flash_status;
             });
           }
-        }
+        },
       ),
       SpeedDialChild(
         child: Icon(TablerIcons.camera),
         label: L10().switchCamera,
         onTap: () async {
           controller.switchCamera();
-        }
-      )
+        },
+      ),
     ];
 
-    return SpeedDial(
-      icon: Icons.more_horiz,
-      children: actions,
-    );
+    return SpeedDial(icon: Icons.more_horiz, children: actions);
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: COLOR_APP_BAR,
@@ -366,19 +346,12 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
         },
         child: Stack(
           children: <Widget>[
-            Column(
-              children: [
-                Expanded(
-                    child: BarcodeReader(context)
-                ),
-              ],
-            ),
+            Column(children: [Expanded(child: BarcodeReader(context))]),
             topCenterOverlay(),
-            bottomCenterOverlay()
+            bottomCenterOverlay(),
           ],
         ),
       ),
     );
   }
-
 }
