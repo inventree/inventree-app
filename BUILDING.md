@@ -6,7 +6,7 @@ For developers looking to contribute to the project, we use Flutter for app deve
 
 To build the app from source, you will need the following tools installed on your system:
 
-- Android Studio (with Flutter and Dart plugins)
+- Android Studio or Visual Studio Code (with Flutter and Dart plugins)
 - [Flutter Version Management (FVM)](https://fvm.app/) - We use FVM to manage Flutter versions
 
 ### iOS Development
@@ -35,6 +35,46 @@ For installation instructions, please refer to the [official FVM documentation](
 
 Once installed, FVM will automatically use the Flutter version specified in the `.fvmrc` file at the root of the project.
 
+### Visual Studio Code
+
+To set up Visual Studio Code, you will need to make sure the `.vscode` directory exists. Then run `fvm use` to ensure the correct Flutter version is used.
+
+```
+mkdir -p .vscode
+fvm use
+```
+
+#### What happens:
+- Downloads SDK if not cached
+- Creates `.fvm` directory with SDK symlink
+- Updates `.fvmrc` configuration
+- Configures IDE settings
+- Runs `flutter pub get`
+
+
+### Android Studio
+
+To set up Android Studio, run `fvm use` to ensure the correct Flutter version is used.
+
+```
+fvm use
+```
+
+#### What happens:
+- Downloads SDK if not cached
+- Creates `.fvm` directory with SDK symlink
+- Updates `.fvmrc` configuration
+- Runs `flutter pub get`
+
+Set Flutter SDK path in Android Studio:
+
+1. Open Android Studio
+2. Go to `File` -> `Settings` -> `Languages & Frameworks` -> `Flutter`
+3. Set `Flutter SDK path` to `.fvm/flutter_sdk`:
+
+![Setting Flutter SDK path in Android Studio](android_studio_fvm.png)
+
+
 ## Getting Started
 
 Initial project setup (after you have installed all required dev tools) is as follows:
@@ -51,6 +91,25 @@ fvm flutter pub get
 ```
 
 You should now be ready to debug on a connected or emulated device!
+
+## Troubleshooting
+
+### Flutter Doctor
+
+If you're experiencing issues with the development environment, run Flutter Doctor to diagnose problems:
+
+```bash
+fvm flutter doctor -v
+```
+
+This will check your Flutter installation and identify any issues with your setup. Common issues include:
+
+- Missing Android SDK components
+- iOS development tools not properly configured
+- Missing dependencies
+
+Fix any identified issues before proceeding with development.
+
 
 ## Building Release Versions
 
