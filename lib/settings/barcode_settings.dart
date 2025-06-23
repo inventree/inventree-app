@@ -104,11 +104,9 @@ class _InvenTreeBarcodeSettingsState extends State<InvenTreeBarcodeSettingsWidge
     switch (barcodeScanType) {
       case BARCODE_CONTROLLER_WEDGE:
         barcodeInputIcon = Icon(Icons.barcode_reader);
-        break;
       case BARCODE_CONTROLLER_CAMERA:
       default:
         barcodeInputIcon = Icon(TablerIcons.camera);
-        break;
     }
 
     return Scaffold(

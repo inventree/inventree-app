@@ -143,14 +143,11 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
     switch (screenOrientation) {
       case SCREEN_ORIENTATION_PORTRAIT:
         orientationIcon = Icons.screen_lock_portrait;
-        break;
       case SCREEN_ORIENTATION_LANDSCAPE:
         orientationIcon = Icons.screen_lock_landscape;
-        break;
       case SCREEN_ORIENTATION_SYSTEM:
       default:
         orientationIcon = Icons.screen_rotation;
-        break;
     }
 
     return Scaffold(

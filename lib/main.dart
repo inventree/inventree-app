@@ -66,15 +66,12 @@ Future<void> main() async {
     switch (orientation) {
       case SCREEN_ORIENTATION_PORTRAIT:
         orientations.add(DeviceOrientation.portraitUp);
-        break;
       case SCREEN_ORIENTATION_LANDSCAPE:
         orientations.add(DeviceOrientation.landscapeLeft);
-        break;
       default:
         orientations.add(DeviceOrientation.portraitUp);
         orientations.add(DeviceOrientation.landscapeLeft);
         orientations.add(DeviceOrientation.landscapeRight);
-        break;
     }
 
     SystemChrome.setPreferredOrientations(orientations).then((_) {

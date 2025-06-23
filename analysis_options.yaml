@@ -80,3 +80,6 @@ linter:
 
     use_super_parameters: false
 
+    # TODO: Enable unnecessary_async and unawaited_futures rules
+    unnecessary_async: false
+
