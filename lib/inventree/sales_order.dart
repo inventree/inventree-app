@@ -1,5 +1,3 @@
-
-
 import "package:flutter/material.dart";
 import "package:inventree/api.dart";
 import "package:inventree/helpers.dart";
@@ -11,18 +9,18 @@ import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/order/extra_line_detail.dart";
 import "package:inventree/widget/order/sales_order_detail.dart";
 
-
 /*
  * Class representing an individual SalesOrder
  */
 class InvenTreeSalesOrder extends InvenTreeOrder {
-
   InvenTreeSalesOrder() : super();
 
-  InvenTreeSalesOrder.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+  InvenTreeSalesOrder.fromJson(Map<String, dynamic> json)
+    : super.fromJson(json);
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreeSalesOrder.fromJson(json);
+  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
+      InvenTreeSalesOrder.fromJson(json);
 
   @override
   String get URL => "order/so/";
@@ -38,9 +36,7 @@ class InvenTreeSalesOrder extends InvenTreeOrder {
   Future<Object?> goToDetailPage(BuildContext context) async {
     return Navigator.push(
       context,
-      MaterialPageRoute(
-          builder: (context) => SalesOrderDetailWidget(this)
-      )
+      MaterialPageRoute(builder: (context) => SalesOrderDetailWidget(this)),
     );
   }
 
@@ -49,9 +45,7 @@ class InvenTreeSalesOrder extends InvenTreeOrder {
     Map<String, Map<String, dynamic>> fields = {
       "reference": {},
       "customer": {
-        "filters": {
-          "is_customer": true,
-        }
+        "filters": {"is_customer": true},
       },
       "customer_reference": {},
       "description": {},
@@ -61,10 +55,8 @@ class InvenTreeSalesOrder extends InvenTreeOrder {
       "link": {},
       "responsible": {},
       "contact": {
-        "filters": {
-          "company": customerId,
-        }
-      }
+        "filters": {"company": customerId},
+      },
     };
 
     if (!InvenTreeAPI().supportsProjectCodes) {
@@ -84,9 +76,7 @@ class InvenTreeSalesOrder extends InvenTreeOrder {
 
   @override
   Map<String, String> defaultFilters() {
-    return {
-      "customer_detail": "true",
-    };
+    return {"customer_detail": "true"};
   }
 
   Future<void> issueOrder() async {
@@ -124,28 +114,33 @@ class InvenTreeSalesOrder extends InvenTreeOrder {
 
   String get customerReference => getString("customer_reference");
 
-  bool get isOpen => api.SalesOrderStatus.isNameIn(status, ["PENDING", "IN_PROGRESS", "ON_HOLD"]);
+  bool get isOpen => api.SalesOrderStatus.isNameIn(status, [
+    "PENDING",
+    "IN_PROGRESS",
+    "ON_HOLD",
+  ]);
 
-  bool get isPending => api.SalesOrderStatus.isNameIn(status, ["PENDING", "ON_HOLD"]);
+  bool get isPending =>
+      api.SalesOrderStatus.isNameIn(status, ["PENDING", "ON_HOLD"]);
 
-  bool get isInProgress => api.SalesOrderStatus.isNameIn(status, ["IN_PROGRESS"]);
+  bool get isInProgress =>
+      api.SalesOrderStatus.isNameIn(status, ["IN_PROGRESS"]);
 
   bool get isComplete => api.SalesOrderStatus.isNameIn(status, ["SHIPPED"]);
-
 }
-
 
 /*
  * Class representing an individual line item in a SalesOrder
  */
 class InvenTreeSOLineItem extends InvenTreeOrderLine {
-
   InvenTreeSOLineItem() : super();
 
-  InvenTreeSOLineItem.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+  InvenTreeSOLineItem.fromJson(Map<String, dynamic> json)
+    : super.fromJson(json);
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreeSOLineItem.fromJson(json);
+  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
+      InvenTreeSOLineItem.fromJson(json);
 
   @override
   String get URL => "order/so-line/";
@@ -156,13 +151,9 @@ class InvenTreeSOLineItem extends InvenTreeOrderLine {
   @override
   Map<String, Map<String, dynamic>> formFields() {
     return {
-      "order": {
-        "hidden": true,
-      },
+      "order": {"hidden": true},
       "part": {
-        "filters": {
-          "salable": true,
-        }
+        "filters": {"salable": true},
       },
       "quantity": {},
       "reference": {},
@@ -172,33 +163,17 @@ class InvenTreeSOLineItem extends InvenTreeOrderLine {
   }
 
   Map<String, Map<String, dynamic>> allocateFormFields() {
-
     return {
-      "line_item": {
-        "parent": "items",
-        "nested": true,
-        "hidden": true,
-      },
-      "stock_item": {
-        "parent": "items",
-        "nested": true,
-        "filters": {},
-      },
-      "quantity": {
-        "parent": "items",
-        "nested": true,
-      },
-      "shipment": {
-        "filters": {}
-      }
+      "line_item": {"parent": "items", "nested": true, "hidden": true},
+      "stock_item": {"parent": "items", "nested": true, "filters": {}},
+      "quantity": {"parent": "items", "nested": true},
+      "shipment": {"filters": {}},
     };
   }
 
   @override
   Map<String, String> defaultFilters() {
-    return {
-      "part_detail": "true",
-    };
+    return {"part_detail": "true"};
   }
 
   double get allocated => getDouble("allocated");
@@ -223,7 +198,8 @@ class InvenTreeSOLineItem extends InvenTreeOrderLine {
     return unallocated;
   }
 
-  String get allocatedString => simpleNumberString(allocated) + " / " + simpleNumberString(quantity);
+  String get allocatedString =>
+      simpleNumberString(allocated) + " / " + simpleNumberString(quantity);
 
   double get shipped => getDouble("shipped");
 
@@ -239,26 +215,28 @@ class InvenTreeSOLineItem extends InvenTreeOrderLine {
     return shipped / quantity;
   }
 
-  String get progressString => simpleNumberString(shipped) + " / " + simpleNumberString(quantity);
+  String get progressString =>
+      simpleNumberString(shipped) + " / " + simpleNumberString(quantity);
 
   bool get isComplete => shipped >= quantity;
 
-  double get available => getDouble("available_stock") + getDouble("available_variant_stock");
+  double get available =>
+      getDouble("available_stock") + getDouble("available_variant_stock");
 
   double get salePrice => getDouble("sale_price");
 
   String get salePriceCurrency => getString("sale_price_currency");
-
 }
-
 
 class InvenTreeSOExtraLineItem extends InvenTreeExtraLineItem {
   InvenTreeSOExtraLineItem() : super();
 
-  InvenTreeSOExtraLineItem.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+  InvenTreeSOExtraLineItem.fromJson(Map<String, dynamic> json)
+    : super.fromJson(json);
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreeSOExtraLineItem.fromJson(json);
+  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
+      InvenTreeSOExtraLineItem.fromJson(json);
 
   @override
   String get URL => "order/so-extra-line/";
@@ -269,10 +247,8 @@ class InvenTreeSOExtraLineItem extends InvenTreeExtraLineItem {
   @override
   Future<Object?> goToDetailPage(BuildContext context) async {
     return Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => ExtraLineDetailWidget(this)
-        )
+      context,
+      MaterialPageRoute(builder: (context) => ExtraLineDetailWidget(this)),
     );
   }
 }
@@ -281,13 +257,14 @@ class InvenTreeSOExtraLineItem extends InvenTreeExtraLineItem {
  * Class representing a sales order shipment
  */
 class InvenTreeSalesOrderShipment extends InvenTreeModel {
-
   InvenTreeSalesOrderShipment() : super();
 
-  InvenTreeSalesOrderShipment.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+  InvenTreeSalesOrderShipment.fromJson(Map<String, dynamic> json)
+    : super.fromJson(json);
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreeSalesOrderShipment.fromJson(json);
+  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
+      InvenTreeSalesOrderShipment.fromJson(json);
 
   @override
   String get URL => "/order/so/shipment/";
@@ -318,19 +295,18 @@ class InvenTreeSalesOrderShipment extends InvenTreeModel {
   bool get shipped => shipment_date != null && shipment_date!.isNotEmpty;
 }
 
-
-
 /*
  * Class representing an attachment file against a SalesOrder object
  */
 class InvenTreeSalesOrderAttachment extends InvenTreeAttachment {
-
   InvenTreeSalesOrderAttachment() : super();
 
-  InvenTreeSalesOrderAttachment.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+  InvenTreeSalesOrderAttachment.fromJson(Map<String, dynamic> json)
+    : super.fromJson(json);
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreeSalesOrderAttachment.fromJson(json);
+  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
+      InvenTreeSalesOrderAttachment.fromJson(json);
 
   @override
   String get REFERENCE_FIELD => "order";
@@ -339,6 +315,7 @@ class InvenTreeSalesOrderAttachment extends InvenTreeAttachment {
   String get REF_MODEL_TYPE => "salesorder";
 
   @override
-  String get URL => InvenTreeAPI().supportsModernAttachments ? "attachment/" : "order/so/attachment/";
-
+  String get URL => InvenTreeAPI().supportsModernAttachments
+      ? "attachment/"
+      : "order/so/attachment/";
 }

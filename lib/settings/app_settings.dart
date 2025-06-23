@@ -16,17 +16,16 @@ import "package:inventree/preferences.dart";
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/progress.dart";
 
-
 class InvenTreeAppSettingsWidget extends StatefulWidget {
   @override
   _InvenTreeAppSettingsState createState() => _InvenTreeAppSettingsState();
 }
 
 class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
-
   _InvenTreeAppSettingsState();
 
-  final GlobalKey<_InvenTreeAppSettingsState> _settingsKey = GlobalKey<_InvenTreeAppSettingsState>();
+  final GlobalKey<_InvenTreeAppSettingsState> _settingsKey =
+      GlobalKey<_InvenTreeAppSettingsState>();
 
   // Sound settings
   bool barcodeSounds = true;
@@ -48,16 +47,33 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
     loadSettings(OneContext().context!);
   }
 
-  Future <void> loadSettings(BuildContext context) async {
-
+  Future<void> loadSettings(BuildContext context) async {
     showLoadingOverlay();
 
-    barcodeSounds = await InvenTreeSettingsManager().getValue(INV_SOUNDS_BARCODE, true) as bool;
-    serverSounds = await InvenTreeSettingsManager().getValue(INV_SOUNDS_SERVER, true) as bool;
-    reportErrors = await InvenTreeSettingsManager().getValue(INV_REPORT_ERRORS, true) as bool;
-    strictHttps = await InvenTreeSettingsManager().getValue(INV_STRICT_HTTPS, false) as bool;
-    screenOrientation = await InvenTreeSettingsManager().getValue(INV_SCREEN_ORIENTATION, SCREEN_ORIENTATION_SYSTEM) as int;
-    enableLabelPrinting = await InvenTreeSettingsManager().getValue(INV_ENABLE_LABEL_PRINTING, true) as bool;
+    barcodeSounds =
+        await InvenTreeSettingsManager().getValue(INV_SOUNDS_BARCODE, true)
+            as bool;
+    serverSounds =
+        await InvenTreeSettingsManager().getValue(INV_SOUNDS_SERVER, true)
+            as bool;
+    reportErrors =
+        await InvenTreeSettingsManager().getValue(INV_REPORT_ERRORS, true)
+            as bool;
+    strictHttps =
+        await InvenTreeSettingsManager().getValue(INV_STRICT_HTTPS, false)
+            as bool;
+    screenOrientation =
+        await InvenTreeSettingsManager().getValue(
+              INV_SCREEN_ORIENTATION,
+              SCREEN_ORIENTATION_SYSTEM,
+            )
+            as int;
+    enableLabelPrinting =
+        await InvenTreeSettingsManager().getValue(
+              INV_ENABLE_LABEL_PRINTING,
+              true,
+            )
+            as bool;
 
     darkMode = AdaptiveTheme.of(context).mode.isDark;
 
@@ -71,19 +87,15 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
   }
 
   Future<void> _selectLocale(BuildContext context) async {
-
     List<Map<String, dynamic>> options = [
-      {
-        "display_name": L10().languageDefault,
-        "value": null,
-      }
+      {"display_name": L10().languageDefault, "value": null},
     ];
 
     // Construct a list of available locales
     for (var locale in supported_locales) {
       options.add({
         "display_name": LocaleNames.of(context)!.nameOf(locale.toString()),
-        "value": locale.toString()
+        "value": locale.toString(),
       });
     }
 
@@ -93,7 +105,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
         "type": "choice",
         "choices": options,
         "value": locale?.toString(),
-      }
+      },
     };
 
     launchApiForm(
@@ -103,7 +115,6 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
       fields,
       icon: TablerIcons.circle_check,
       onSuccess: (Map<String, dynamic> data) async {
-
         String locale_name = (data["locale"] ?? "") as String;
         Locale? selected_locale;
 
@@ -124,18 +135,18 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
 
         // Clear the cached status label information
         InvenTreeAPI().clearStatusCodeData();
-      }
+      },
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
-
     String languageName = L10().languageDefault;
 
     if (locale != null) {
-      languageName = LocaleNames.of(context)!.nameOf(locale.toString()) ?? L10().languageDefault;
+      languageName =
+          LocaleNames.of(context)!.nameOf(locale.toString()) ??
+          L10().languageDefault;
     }
 
     IconData orientationIcon = Icons.screen_rotation;
@@ -154,7 +165,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
       key: _settingsKey,
       appBar: AppBar(
         title: Text(L10().appSettings),
-        backgroundColor: COLOR_APP_BAR
+        backgroundColor: COLOR_APP_BAR,
       ),
       body: Container(
         child: ListView(
@@ -183,8 +194,8 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
                   setState(() {
                     darkMode = value;
                   });
-                }
-              )
+                },
+              ),
             ),
             GestureDetector(
               child: ListTile(
@@ -198,26 +209,43 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
                   L10().orientation,
                   [
                     ListTile(
-                      leading: Icon(Icons.screen_rotation, color: screenOrientation == SCREEN_ORIENTATION_SYSTEM ? COLOR_ACTION : null),
+                      leading: Icon(
+                        Icons.screen_rotation,
+                        color: screenOrientation == SCREEN_ORIENTATION_SYSTEM
+                            ? COLOR_ACTION
+                            : null,
+                      ),
                       title: Text(L10().orientationSystem),
                     ),
                     ListTile(
-                      leading: Icon(Icons.screen_lock_portrait, color: screenOrientation == SCREEN_ORIENTATION_PORTRAIT ? COLOR_ACTION : null),
+                      leading: Icon(
+                        Icons.screen_lock_portrait,
+                        color: screenOrientation == SCREEN_ORIENTATION_PORTRAIT
+                            ? COLOR_ACTION
+                            : null,
+                      ),
                       title: Text(L10().orientationPortrait),
                     ),
                     ListTile(
-                      leading: Icon(Icons.screen_lock_landscape, color: screenOrientation == SCREEN_ORIENTATION_LANDSCAPE ? COLOR_ACTION : null),
+                      leading: Icon(
+                        Icons.screen_lock_landscape,
+                        color: screenOrientation == SCREEN_ORIENTATION_LANDSCAPE
+                            ? COLOR_ACTION
+                            : null,
+                      ),
                       title: Text(L10().orientationLandscape),
-                    )
+                    ),
                   ],
                   onSelected: (idx) async {
                     screenOrientation = idx as int;
 
-                    InvenTreeSettingsManager().setValue(INV_SCREEN_ORIENTATION, screenOrientation);
+                    InvenTreeSettingsManager().setValue(
+                      INV_SCREEN_ORIENTATION,
+                      screenOrientation,
+                    );
 
-                    setState(() {
-                    });
-                  }
+                    setState(() {});
+                  },
                 );
               },
             ),
@@ -228,11 +256,14 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
               trailing: Switch(
                 value: enableLabelPrinting,
                 onChanged: (bool value) {
-                  InvenTreeSettingsManager().setValue(INV_ENABLE_LABEL_PRINTING, value);
+                  InvenTreeSettingsManager().setValue(
+                    INV_ENABLE_LABEL_PRINTING,
+                    value,
+                  );
                   setState(() {
                     enableLabelPrinting = value;
                   });
-                }
+                },
               ),
             ),
             ListTile(
@@ -271,7 +302,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
                 },
               ),
             ),
-                        ListTile(
+            ListTile(
               title: Text(
                 L10().sounds,
                 style: TextStyle(fontWeight: FontWeight.bold),
@@ -300,7 +331,10 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
               trailing: Switch(
                 value: barcodeSounds,
                 onChanged: (bool value) {
-                  InvenTreeSettingsManager().setValue(INV_SOUNDS_BARCODE, value);
+                  InvenTreeSettingsManager().setValue(
+                    INV_SOUNDS_BARCODE,
+                    value,
+                  );
                   setState(() {
                     barcodeSounds = value;
                   });
@@ -308,9 +342,9 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
               ),
             ),
             Divider(height: 1),
-          ]
-        )
-      )
+          ],
+        ),
+      ),
     );
   }
 }

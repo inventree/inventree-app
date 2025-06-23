@@ -21,22 +21,18 @@ import "package:inventree/widget/company/supplier_part_detail.dart";
  * Widget for displaying detail view of a single PurchaseOrderLineItem
 */
 class POLineDetailWidget extends StatefulWidget {
-
   const POLineDetailWidget(this.item, {Key? key}) : super(key: key);
 
   final InvenTreePOLineItem item;
 
   @override
   _POLineDetailWidgetState createState() => _POLineDetailWidgetState();
-
 }
-
 
 /*
  * State for the POLineDetailWidget
  */
 class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
-
   _POLineDetailWidgetState();
 
   InvenTreeStockLocation? destination;
@@ -55,7 +51,7 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
           onPressed: () {
             _editLineItem(context);
           },
-        )
+        ),
       );
     }
 
@@ -75,8 +71,8 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
             label: L10().receiveItem,
             onTap: () async {
               receiveLineItem(context);
-            }
-          )
+            },
+          ),
         );
       }
     }
@@ -89,7 +85,9 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
     await widget.item.reload();
 
     if (widget.item.destinationId > 0) {
-      InvenTreeStockLocation().get(widget.item.destinationId).then((InvenTreeModel? loc) {
+      InvenTreeStockLocation().get(widget.item.destinationId).then((
+        InvenTreeModel? loc,
+      ) {
         if (mounted) {
           if (loc != null && loc is InvenTreeStockLocation) {
             setState(() {
@@ -109,7 +107,6 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
         });
       }
     }
-
   }
 
   // Callback to edit this line item
@@ -123,21 +120,21 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
       onSuccess: (data) async {
         refresh(context);
         showSnackIcon(L10().lineItemUpdated, success: true);
-      }
+      },
     );
   }
 
-    // Launch a form to 'receive' this line item
+  // Launch a form to 'receive' this line item
   Future<void> receiveLineItem(BuildContext context) async {
     widget.item.receive(
       context,
       onSuccess: () => {
         showSnackIcon(L10().receivedItem, success: true),
-        refresh(context)
-      }
+        refresh(context),
+      },
     );
   }
-  
+
   @override
   List<Widget> getTiles(BuildContext context) {
     List<Widget> tiles = [];
@@ -158,7 +155,7 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
             part.goToDetailPage(context);
           }
         },
-      )
+      ),
     );
 
     // Reference to the supplier part
@@ -169,26 +166,33 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
         leading: Icon(TablerIcons.building, color: COLOR_ACTION),
         onTap: () async {
           showLoadingOverlay();
-          var part = await InvenTreeSupplierPart().get(widget.item.supplierPartId);
+          var part = await InvenTreeSupplierPart().get(
+            widget.item.supplierPartId,
+          );
           hideLoadingOverlay();
 
           if (part is InvenTreeSupplierPart) {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => SupplierPartDetailWidget(part)));
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SupplierPartDetailWidget(part),
+              ),
+            );
           }
         },
-      )
+      ),
     );
 
     // Destination
     if (destination != null) {
-      tiles.add(ListTile(
+      tiles.add(
+        ListTile(
           title: Text(L10().destination),
           subtitle: Text(destination!.name),
           leading: Icon(TablerIcons.map_pin, color: COLOR_ACTION),
-          onTap: () => {
-            destination!.goToDetailPage(context)
-          }
-      ));
+          onTap: () => {destination!.goToDetailPage(context)},
+        ),
+      );
     }
 
     // Received quantity
@@ -197,23 +201,23 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
         title: Text(L10().received),
         subtitle: ProgressBar(widget.item.progressRatio),
         trailing: Text(
-            widget.item.progressString,
-            style: TextStyle(
-                color: widget.item.isComplete ? COLOR_SUCCESS: COLOR_WARNING
-            )
+          widget.item.progressString,
+          style: TextStyle(
+            color: widget.item.isComplete ? COLOR_SUCCESS : COLOR_WARNING,
+          ),
         ),
         leading: Icon(TablerIcons.progress),
-      )
+      ),
     );
 
     // Reference
     if (widget.item.reference.isNotEmpty) {
       tiles.add(
-          ListTile(
-            title: Text(L10().reference),
-            subtitle: Text(widget.item.reference),
-            leading: Icon(TablerIcons.hash),
-          )
+        ListTile(
+          title: Text(L10().reference),
+          subtitle: Text(widget.item.reference),
+          leading: Icon(TablerIcons.hash),
+        ),
       );
     }
 
@@ -223,9 +227,12 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
         title: Text(L10().unitPrice),
         leading: Icon(TablerIcons.currency_dollar),
         trailing: Text(
-          renderCurrency(widget.item.purchasePrice, widget.item.purchasePriceCurrency)
+          renderCurrency(
+            widget.item.purchasePrice,
+            widget.item.purchasePriceCurrency,
+          ),
         ),
-      )
+      ),
     );
 
     // Note
@@ -235,7 +242,7 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
           title: Text(L10().notes),
           subtitle: Text(widget.item.notes),
           leading: Icon(TablerIcons.note),
-        )
+        ),
       );
     }
 
@@ -249,11 +256,10 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
           onTap: () async {
             await openLink(widget.item.link);
           },
-        )
+        ),
       );
     }
 
     return tiles;
   }
-
 }

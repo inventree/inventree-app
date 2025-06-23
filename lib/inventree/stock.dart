@@ -10,16 +10,14 @@ import "package:inventree/inventree/model.dart";
 import "package:inventree/widget/stock/location_display.dart";
 import "package:inventree/widget/stock/stock_detail.dart";
 
-
-
 /*
  * Class representing a test result for a single stock item
  */
 class InvenTreeStockItemTestResult extends InvenTreeModel {
-
   InvenTreeStockItemTestResult() : super();
 
-  InvenTreeStockItemTestResult.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+  InvenTreeStockItemTestResult.fromJson(Map<String, dynamic> json)
+    : super.fromJson(json);
 
   @override
   String get URL => "stock/test/";
@@ -29,22 +27,16 @@ class InvenTreeStockItemTestResult extends InvenTreeModel {
 
   @override
   Map<String, String> defaultFilters() {
-    return {
-      "user_detail": "true",
-      "template_detail": "true",
-    };
+    return {"user_detail": "true", "template_detail": "true"};
   }
 
   @override
   Map<String, Map<String, dynamic>> formFields() {
-
     Map<String, Map<String, dynamic>> fields = {
       "stock_item": {"hidden": true},
       "test": {},
       "template": {
-        "filters": {
-          "enabled": "true",
-        }
+        "filters": {"enabled": "true"},
       },
       "result": {},
       "value": {},
@@ -68,44 +60,39 @@ class InvenTreeStockItemTestResult extends InvenTreeModel {
   String get testName => getString("test");
 
   bool get result => getBool("result");
-  
+
   String get value => getString("value");
-  
+
   String get attachment => getString("attachment");
 
   String get username => getString("username", subKey: "user_detail");
 
   String get date => getString("date");
-  
+
   @override
   InvenTreeStockItemTestResult createFromJson(Map<String, dynamic> json) {
     var result = InvenTreeStockItemTestResult.fromJson(json);
     return result;
   }
-
 }
 
-
 class InvenTreeStockItemHistory extends InvenTreeModel {
-
   InvenTreeStockItemHistory() : super();
 
-  InvenTreeStockItemHistory.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+  InvenTreeStockItemHistory.fromJson(Map<String, dynamic> json)
+    : super.fromJson(json);
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreeStockItemHistory.fromJson(json);
+  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
+      InvenTreeStockItemHistory.fromJson(json);
 
   @override
   String get URL => "stock/track/";
 
   @override
   Map<String, String> defaultFilters() {
-
     // By default, order by decreasing date
-    return {
-      "ordering": "-date",
-      "user_detail": "true",
-    };
+    return {"ordering": "-date", "user_detail": "true"};
   }
 
   DateTime? get date => getDate("date");
@@ -113,7 +100,7 @@ class InvenTreeStockItemHistory extends InvenTreeModel {
   String get dateString => getDateString("date");
 
   String get label => getString("label");
-  
+
   // Return the "deltas" associated with this historical object
   Map<String, dynamic> get deltas => getMap("deltas");
 
@@ -133,7 +120,6 @@ class InvenTreeStockItemHistory extends InvenTreeModel {
   int? get user => getValue("user") as int?;
 
   String get userString {
-
     if (user != null) {
       return getString("username", subKey: "user_detail");
     } else {
@@ -142,12 +128,10 @@ class InvenTreeStockItemHistory extends InvenTreeModel {
   }
 }
 
-
 /*
  * Class representing a StockItem database instance
  */
 class InvenTreeStockItem extends InvenTreeModel {
-
   InvenTreeStockItem() : super();
 
   InvenTreeStockItem.fromJson(Map<String, dynamic> json) : super.fromJson(json);
@@ -164,39 +148,18 @@ class InvenTreeStockItem extends InvenTreeModel {
   Future<Object?> goToDetailPage(BuildContext context) async {
     return Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => StockDetailWidget(this)
-      )
+      MaterialPageRoute(builder: (context) => StockDetailWidget(this)),
     );
   }
 
   // Return a set of fields to transfer this stock item via dialog
   Map<String, dynamic> transferFields() {
     Map<String, dynamic> fields = {
-      "pk": {
-        "parent": "items",
-        "nested": true,
-        "hidden": true,
-        "value": pk,
-      },
-      "quantity": {
-        "parent": "items",
-        "nested": true,
-        "value": quantity,
-      },
-      "location": {
-        "value": locationId,
-      },
-      "status": {
-        "parent": "items",
-        "nested": true,
-        "value": status,
-      },
-      "packaging": {
-        "parent": "items",
-        "nested": true,
-        "value": packaging,
-      },
+      "pk": {"parent": "items", "nested": true, "hidden": true, "value": pk},
+      "quantity": {"parent": "items", "nested": true, "value": quantity},
+      "location": {"value": locationId},
+      "status": {"parent": "items", "nested": true, "value": status},
+      "packaging": {"parent": "items", "nested": true, "value": packaging},
       "notes": {},
     };
 
@@ -233,10 +196,7 @@ class InvenTreeStockItem extends InvenTreeModel {
       "location": {},
       "quantity": {},
       "serial": {},
-      "serial_numbers": {
-        "label": L10().serialNumbers,
-        "type": "string",
-      },
+      "serial_numbers": {"label": L10().serialNumbers, "type": "string"},
       "status": {},
       "batch": {},
       "purchase_price": {},
@@ -250,13 +210,12 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   @override
   Map<String, String> defaultFilters() {
-
     return {
       "part_detail": "true",
       "location_detail": "true",
       "supplier_detail": "true",
       "supplier_part_detail": "true",
-      "cascade": "false"
+      "cascade": "false",
     };
   }
 
@@ -265,21 +224,18 @@ class InvenTreeStockItem extends InvenTreeModel {
   int get testTemplateCount => testTemplates.length;
 
   // Get all the test templates associated with this StockItem
-  Future<void> getTestTemplates({bool showDialog=false}) async {
-    await InvenTreePartTestTemplate().list(
-      filters: {
-        "part": "${partId}",
-        "enabled": "true",
-      },
-    ).then((var templates) {
-      testTemplates.clear();
+  Future<void> getTestTemplates({bool showDialog = false}) async {
+    await InvenTreePartTestTemplate()
+        .list(filters: {"part": "${partId}", "enabled": "true"})
+        .then((var templates) {
+          testTemplates.clear();
 
-      for (var t in templates) {
-        if (t is InvenTreePartTestTemplate) {
-          testTemplates.add(t);
-        }
-      }
-    });
+          for (var t in templates) {
+            if (t is InvenTreePartTestTemplate) {
+              testTemplates.add(t);
+            }
+          }
+        });
   }
 
   List<InvenTreeStockItemTestResult> testResults = [];
@@ -287,21 +243,17 @@ class InvenTreeStockItem extends InvenTreeModel {
   int get testResultCount => testResults.length;
 
   Future<void> getTestResults() async {
+    await InvenTreeStockItemTestResult()
+        .list(filters: {"stock_item": "${pk}", "user_detail": "true"})
+        .then((var results) {
+          testResults.clear();
 
-    await InvenTreeStockItemTestResult().list(
-      filters: {
-        "stock_item": "${pk}",
-        "user_detail": "true",
-      },
-    ).then((var results) {
-      testResults.clear();
-
-      for (var r in results) {
-        if (r is InvenTreeStockItemTestResult) {
-          testResults.add(r);
-        }
-      }
-    });
+          for (var r in results) {
+            if (r is InvenTreeStockItemTestResult) {
+              testResults.add(r);
+            }
+          }
+        });
   }
 
   int get status => getInt("status");
@@ -313,7 +265,7 @@ class InvenTreeStockItem extends InvenTreeModel {
   String get batch => getString("batch");
 
   int get partId => getInt("part");
-  
+
   double? get purchasePrice {
     String pp = getString("purchase_price");
 
@@ -334,7 +286,7 @@ class InvenTreeStockItem extends InvenTreeModel {
   int get purchaseOrderId => getInt("purchase_order");
 
   int get trackingItemCount => getInt("tracking_items", backup: 0);
-  
+
   bool get isBuilding => getBool("is_building");
 
   int get salesOrderId => getInt("sales_order");
@@ -362,274 +314,275 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   String get stocktakeDateString => getDateString("stocktake_date");
 
-    String get partName {
+  String get partName {
+    String nm = "";
 
-      String nm = "";
-
-      // Use the detailed part information as priority
-      if (jsondata.containsKey("part_detail")) {
-        nm = (jsondata["part_detail"]?["full_name"] ?? "") as String;
-      }
-
-      // Backup if first value fails
-      if (nm.isEmpty) {
-        nm = getString("part__name");
-      }
-
-      return nm;
+    // Use the detailed part information as priority
+    if (jsondata.containsKey("part_detail")) {
+      nm = (jsondata["part_detail"]?["full_name"] ?? "") as String;
     }
 
-    String get partDescription {
-      String desc = "";
-
-      // Use the detailed part description as priority
-      if (jsondata.containsKey("part_detail")) {
-        desc = (jsondata["part_detail"]?["description"] ?? "") as String;
-      }
-
-      if (desc.isEmpty) {
-        desc = getString("part__description");
-      }
-
-      return desc;
+    // Backup if first value fails
+    if (nm.isEmpty) {
+      nm = getString("part__name");
     }
 
-    String get partImage {
-      String img = "";
+    return nm;
+  }
 
-      if (jsondata.containsKey("part_detail")) {
-        img = (jsondata["part_detail"]?["thumbnail"] ?? "") as String;
-      }
+  String get partDescription {
+    String desc = "";
 
-      if (img.isEmpty) {
-        img = getString("part__thumbnail");
-      }
-
-      return img;
+    // Use the detailed part description as priority
+    if (jsondata.containsKey("part_detail")) {
+      desc = (jsondata["part_detail"]?["description"] ?? "") as String;
     }
 
-    /*
+    if (desc.isEmpty) {
+      desc = getString("part__description");
+    }
+
+    return desc;
+  }
+
+  String get partImage {
+    String img = "";
+
+    if (jsondata.containsKey("part_detail")) {
+      img = (jsondata["part_detail"]?["thumbnail"] ?? "") as String;
+    }
+
+    if (img.isEmpty) {
+      img = getString("part__thumbnail");
+    }
+
+    return img;
+  }
+
+  /*
    * Return the Part thumbnail for this stock item.
    */
-    String get partThumbnail {
+  String get partThumbnail {
+    String thumb = "";
 
-      String thumb = "";
+    thumb = (jsondata["part_detail"]?["thumbnail"] ?? "") as String;
 
-      thumb = (jsondata["part_detail"]?["thumbnail"] ?? "") as String;
-
-      // Use "image" as a backup
-      if (thumb.isEmpty) {
-        thumb = (jsondata["part_detail"]?["image"] ?? "") as String;
-      }
-
-      // Try a different approach
-      if (thumb.isEmpty) {
-        thumb = getString("part__thumbnail");
-      }
-
-      // Still no thumbnail? Use the "no image" image
-      if (thumb.isEmpty) thumb = InvenTreeAPI.staticThumb;
-
-      return thumb;
+    // Use "image" as a backup
+    if (thumb.isEmpty) {
+      thumb = (jsondata["part_detail"]?["image"] ?? "") as String;
     }
 
-    int get supplierPartId => getInt("supplier_part");
-
-    String get supplierImage {
-      String thumb = "";
-
-      if (jsondata.containsKey("supplier_part_detail")) {
-        thumb = (jsondata["supplier_part_detail"]?["supplier_detail"]?["image"] ?? "") as String;
-      } else if (jsondata.containsKey("supplier_detail")) {
-        thumb = (jsondata["supplier_detail"]?["image"] ?? "") as String;
-      }
-
-      return thumb;
+    // Try a different approach
+    if (thumb.isEmpty) {
+      thumb = getString("part__thumbnail");
     }
 
-    String get supplierName => getString("supplier_name", subKey: "supplier_detail");
+    // Still no thumbnail? Use the "no image" image
+    if (thumb.isEmpty) thumb = InvenTreeAPI.staticThumb;
 
-    String get units => getString("units", subKey: "part_detail");
+    return thumb;
+  }
 
-    String get supplierSKU => getString("SKU", subKey: "supplier_part_detail");
+  int get supplierPartId => getInt("supplier_part");
 
-    String get serialNumber => getString("serial");
+  String get supplierImage {
+    String thumb = "";
 
-    double get quantity => getDouble("quantity");
+    if (jsondata.containsKey("supplier_part_detail")) {
+      thumb =
+          (jsondata["supplier_part_detail"]?["supplier_detail"]?["image"] ?? "")
+              as String;
+    } else if (jsondata.containsKey("supplier_detail")) {
+      thumb = (jsondata["supplier_detail"]?["image"] ?? "") as String;
+    }
 
-    String quantityString({bool includeUnits = true}){
+    return thumb;
+  }
 
-      String q = "";
+  String get supplierName =>
+      getString("supplier_name", subKey: "supplier_detail");
 
-      if (allocated > 0) {
-        q += simpleNumberString(available);
-        q += " / ";
-      }
+  String get units => getString("units", subKey: "part_detail");
 
-      q += simpleNumberString(quantity);
+  String get supplierSKU => getString("SKU", subKey: "supplier_part_detail");
 
-      if (includeUnits && units.isNotEmpty) {
+  String get serialNumber => getString("serial");
+
+  double get quantity => getDouble("quantity");
+
+  String quantityString({bool includeUnits = true}) {
+    String q = "";
+
+    if (allocated > 0) {
+      q += simpleNumberString(available);
+      q += " / ";
+    }
+
+    q += simpleNumberString(quantity);
+
+    if (includeUnits && units.isNotEmpty) {
+      q += " ${units}";
+    }
+
+    return q;
+  }
+
+  double get allocated => getDouble("allocated");
+
+  double get available => quantity - allocated;
+
+  int get locationId => getInt("location");
+
+  bool isSerialized() => serialNumber.isNotEmpty && quantity.toInt() == 1;
+
+  String serialOrQuantityDisplay() {
+    if (isSerialized()) {
+      return "SN ${serialNumber}";
+    } else if (allocated > 0) {
+      return "${available} / ${quantity}";
+    } else {
+      return simpleNumberString(quantity);
+    }
+  }
+
+  String get locationName {
+    if (locationId == -1 || !jsondata.containsKey("location_detail")) {
+      return "Unknown Location";
+    }
+
+    String loc = getString("name", subKey: "location_detail");
+
+    // Old-style name
+    if (loc.isEmpty) {
+      loc = getString("location__name");
+    }
+
+    return loc;
+  }
+
+  String get locationPathString {
+    if (locationId == -1 || !jsondata.containsKey("location_detail")) {
+      return L10().locationNotSet;
+    }
+
+    String _loc = getString("pathstring", subKey: "location_detail");
+    if (_loc.isNotEmpty) {
+      return _loc;
+    } else {
+      return locationName;
+    }
+  }
+
+  String get displayQuantity {
+    // Display either quantity or serial number!
+
+    if (serialNumber.isNotEmpty) {
+      return "SN: $serialNumber";
+    } else {
+      String q = simpleNumberString(quantity);
+
+      if (units.isNotEmpty) {
         q += " ${units}";
       }
 
       return q;
     }
+  }
 
-    double get allocated => getDouble("allocated");
+  @override
+  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
+      InvenTreeStockItem.fromJson(json);
 
-    double get available => quantity - allocated;
-
-    int get locationId => getInt("location");
-
-    bool isSerialized() => serialNumber.isNotEmpty && quantity.toInt() == 1;
-
-    String serialOrQuantityDisplay() {
-      if (isSerialized()) {
-        return "SN ${serialNumber}";
-      } else if (allocated > 0) {
-        return "${available} / ${quantity}";
-      } else {
-        return simpleNumberString(quantity);
-      }
-    }
-
-    String get locationName {
-
-      if (locationId == -1 || !jsondata.containsKey("location_detail")) return "Unknown Location";
-
-      String loc = getString("name", subKey: "location_detail");
-
-      // Old-style name
-      if (loc.isEmpty) {
-        loc = getString("location__name");
-      }
-
-      return loc;
-    }
-
-    String get locationPathString {
-
-      if (locationId == -1 || !jsondata.containsKey("location_detail")) return L10().locationNotSet;
-
-      String _loc = getString("pathstring", subKey: "location_detail");
-      if (_loc.isNotEmpty) {
-        return _loc;
-      } else {
-        return locationName;
-      }
-    }
-
-    String get displayQuantity {
-      // Display either quantity or serial number!
-
-      if (serialNumber.isNotEmpty) {
-        return "SN: $serialNumber";
-      } else {
-        String q = simpleNumberString(quantity);
-
-        if (units.isNotEmpty) {
-          q += " ${units}";
-        }
-
-        return q;
-      }
-    }
-
-    @override
-    InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreeStockItem.fromJson(json);
-
-    /*
+  /*
    * Perform stocktake action:
    *
    * - Add
    * - Remove
    * - Count
    */
-    Future<bool> adjustStock(String endpoint, double q, {String? notes, int? location}) async {
-
-      // Serialized stock cannot be adjusted (unless it is a "transfer")
-      if (isSerialized() && location == null) {
-        return false;
-      }
-
-      // Cannot handle negative stock
-      if (q < 0) {
-        return false;
-      }
-
-      Map<String, dynamic> data = {};
-
-      data = {
-        "items": [
-          {
-            "pk": "${pk}",
-            "quantity": "${quantity}",
-          }
-        ],
-        "notes": notes ?? "",
-      };
-
-      if (location != null) {
-        data["location"] = location;
-      }
-
-      var response = await api.post(
-        endpoint,
-        body: data,
-      );
-
-      return response.isValid() && (response.statusCode == 200 || response.statusCode == 201);
+  Future<bool> adjustStock(
+    String endpoint,
+    double q, {
+    String? notes,
+    int? location,
+  }) async {
+    // Serialized stock cannot be adjusted (unless it is a "transfer")
+    if (isSerialized() && location == null) {
+      return false;
     }
 
-    Future<bool> countStock(double q, {String? notes}) async {
-
-      final bool result = await adjustStock("/stock/count/", q, notes: notes);
-
-      return result;
+    // Cannot handle negative stock
+    if (q < 0) {
+      return false;
     }
 
-    Future<bool> addStock(double q, {String? notes}) async {
+    Map<String, dynamic> data = {};
 
-      final bool result = await adjustStock("/stock/add/", q, notes: notes);
+    data = {
+      "items": [
+        {"pk": "${pk}", "quantity": "${quantity}"},
+      ],
+      "notes": notes ?? "",
+    };
 
-      return result;
+    if (location != null) {
+      data["location"] = location;
     }
 
-    Future<bool> removeStock(double q, {String? notes}) async {
+    var response = await api.post(endpoint, body: data);
 
-      final bool result = await adjustStock("/stock/remove/", q, notes: notes);
-
-      return result;
-    }
-
-    Future<bool> transferStock(int location, {double? quantity, String? notes}) async {
-
-      double q = this.quantity;
-
-      if (quantity != null) {
-        q = quantity;
-      }
-
-      final bool result = await adjustStock(
-        "/stock/transfer/",
-        q,
-        notes: notes,
-        location: location,
-      );
-
-      return result;
-    }
+    return response.isValid() &&
+        (response.statusCode == 200 || response.statusCode == 201);
   }
 
+  Future<bool> countStock(double q, {String? notes}) async {
+    final bool result = await adjustStock("/stock/count/", q, notes: notes);
+
+    return result;
+  }
+
+  Future<bool> addStock(double q, {String? notes}) async {
+    final bool result = await adjustStock("/stock/add/", q, notes: notes);
+
+    return result;
+  }
+
+  Future<bool> removeStock(double q, {String? notes}) async {
+    final bool result = await adjustStock("/stock/remove/", q, notes: notes);
+
+    return result;
+  }
+
+  Future<bool> transferStock(
+    int location, {
+    double? quantity,
+    String? notes,
+  }) async {
+    double q = this.quantity;
+
+    if (quantity != null) {
+      q = quantity;
+    }
+
+    final bool result = await adjustStock(
+      "/stock/transfer/",
+      q,
+      notes: notes,
+      location: location,
+    );
+
+    return result;
+  }
+}
 
 /*
  * Class representing an attachment file against a StockItem object
  */
 class InvenTreeStockItemAttachment extends InvenTreeAttachment {
-
   InvenTreeStockItemAttachment() : super();
 
-  InvenTreeStockItemAttachment.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+  InvenTreeStockItemAttachment.fromJson(Map<String, dynamic> json)
+    : super.fromJson(json);
 
   @override
   String get REFERENCE_FIELD => "stock_item";
@@ -638,18 +591,20 @@ class InvenTreeStockItemAttachment extends InvenTreeAttachment {
   String get REF_MODEL_TYPE => "stockitem";
 
   @override
-  String get URL => InvenTreeAPI().supportsModernAttachments ? "attachment/" : "stock/attachment/";
+  String get URL => InvenTreeAPI().supportsModernAttachments
+      ? "attachment/"
+      : "stock/attachment/";
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreeStockItemAttachment.fromJson(json);
+  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
+      InvenTreeStockItemAttachment.fromJson(json);
 }
 
-
 class InvenTreeStockLocation extends InvenTreeModel {
-
   InvenTreeStockLocation() : super();
 
-  InvenTreeStockLocation.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+  InvenTreeStockLocation.fromJson(Map<String, dynamic> json)
+    : super.fromJson(json);
 
   @override
   String get URL => "stock/location/";
@@ -665,9 +620,7 @@ class InvenTreeStockLocation extends InvenTreeModel {
   Future<Object?> goToDetailPage(BuildContext context) async {
     return Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => LocationDisplayWidget(this)
-      )
+      MaterialPageRoute(builder: (context) => LocationDisplayWidget(this)),
     );
   }
 
@@ -684,7 +637,6 @@ class InvenTreeStockLocation extends InvenTreeModel {
   }
 
   String get parentPathString {
-
     List<String> psplit = pathstring.split("/");
 
     if (psplit.isNotEmpty) {
@@ -703,6 +655,6 @@ class InvenTreeStockLocation extends InvenTreeModel {
   int get itemcount => (jsondata["items"] ?? 0) as int;
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreeStockLocation.fromJson(json);
-
+  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
+      InvenTreeStockLocation.fromJson(json);
 }

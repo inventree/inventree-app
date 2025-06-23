@@ -18,12 +18,10 @@ import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/stock/stock_list.dart";
 import "package:inventree/labels.dart";
 
-
 /*
  * Widget for displaying detail view for a single StockLocation instance
  */
 class LocationDisplayWidget extends StatefulWidget {
-
   LocationDisplayWidget(this.location, {Key? key}) : super(key: key);
 
   final InvenTreeStockLocation? location;
@@ -35,7 +33,6 @@ class LocationDisplayWidget extends StatefulWidget {
 }
 
 class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
-
   _LocationDisplayState(this.location);
 
   final InvenTreeStockLocation? location;
@@ -54,29 +51,28 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     // Add "locate" button
     if (location != null && api.supportsMixin("locate")) {
       actions.add(
-          IconButton(
-              icon: Icon(Icons.travel_explore),
-              tooltip: L10().locateLocation,
-              onPressed: () async {
-                api.locateItemOrLocation(context, location: location!.pk);
-              }
-          )
+        IconButton(
+          icon: Icon(Icons.travel_explore),
+          tooltip: L10().locateLocation,
+          onPressed: () async {
+            api.locateItemOrLocation(context, location: location!.pk);
+          },
+        ),
       );
     }
 
     // Add "edit" button
     if (location != null && InvenTreeStockLocation().canEdit) {
       actions.add(
-          IconButton(
-              icon: Icon(TablerIcons.edit),
-              tooltip: L10().editLocation,
-              onPressed: () {
-                _editLocationDialog(context);
-              }
-          )
+        IconButton(
+          icon: Icon(TablerIcons.edit),
+          tooltip: L10().editLocation,
+          onPressed: () {
+            _editLocationDialog(context);
+          },
+        ),
       );
     }
-
 
     return actions;
   }
@@ -89,18 +85,18 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       // Scan items into this location
       if (InvenTreeStockItem().canEdit) {
         actions.add(
-            SpeedDialChild(
-                child: Icon(TablerIcons.qrcode),
-                label: L10().barcodeScanItem,
-                onTap: () {
-                  scanBarcode(
-                    context,
-                    handler: StockLocationScanInItemsHandler(location!),
-                  ).then((value) {
-                    refresh(context);
-                  });
-                }
-            )
+          SpeedDialChild(
+            child: Icon(TablerIcons.qrcode),
+            label: L10().barcodeScanItem,
+            onTap: () {
+              scanBarcode(
+                context,
+                handler: StockLocationScanInItemsHandler(location!),
+              ).then((value) {
+                refresh(context);
+              });
+            },
+          ),
         );
       }
 
@@ -109,41 +105,43 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
           SpeedDialChild(
             child: Icon(Icons.barcode_reader),
             label: L10().scanReceivedParts,
-            onTap:() async {
+            onTap: () async {
               scanBarcode(
                 context,
                 handler: POReceiveBarcodeHandler(location: location),
               );
             },
-          )
+          ),
         );
       }
 
       // Scan this location into another one
       if (InvenTreeStockLocation().canEdit) {
         actions.add(
-            SpeedDialChild(
-                child: Icon(TablerIcons.qrcode),
-                label: L10().transferStockLocation,
-                onTap: () {
-                  scanBarcode(
-                    context,
-                    handler: ScanParentLocationHandler(location!),
-                  ).then((value) {
-                    refresh(context);
-                  });
-                }
-            )
+          SpeedDialChild(
+            child: Icon(TablerIcons.qrcode),
+            label: L10().transferStockLocation,
+            onTap: () {
+              scanBarcode(
+                context,
+                handler: ScanParentLocationHandler(location!),
+              ).then((value) {
+                refresh(context);
+              });
+            },
+          ),
         );
       }
 
       // Assign or un-assign barcodes
       actions.add(
-          customBarcodeAction(
-              context, this,
-              location!.customBarcode, "stocklocation",
-              location!.pk
-          )
+        customBarcodeAction(
+          context,
+          this,
+          location!.customBarcode,
+          "stocklocation",
+          location!.pk,
+        ),
       );
     }
 
@@ -157,44 +155,44 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     // Create new location
     if (InvenTreeStockLocation().canCreate) {
       actions.add(
-          SpeedDialChild(
-              child: Icon(TablerIcons.sitemap),
-              label: L10().locationCreate,
-              onTap: () async {
-                _newLocation(context);
-              }
-          )
+        SpeedDialChild(
+          child: Icon(TablerIcons.sitemap),
+          label: L10().locationCreate,
+          onTap: () async {
+            _newLocation(context);
+          },
+        ),
       );
     }
 
     // Create new item
     if (InvenTreeStockItem().canCreate) {
       actions.add(
-          SpeedDialChild(
-              child: Icon(TablerIcons.packages),
-              label: L10().stockItemCreate,
-              onTap: () async {
-                _newStockItem(context);
-              }
-          )
+        SpeedDialChild(
+          child: Icon(TablerIcons.packages),
+          label: L10().stockItemCreate,
+          onTap: () async {
+            _newStockItem(context);
+          },
+        ),
       );
     }
 
     if (widget.location != null && labels.isNotEmpty) {
       actions.add(
-          SpeedDialChild(
-              child: Icon(TablerIcons.printer),
-              label: L10().printLabel,
-              onTap: () async {
-                selectAndPrintLabel(
-                    context,
-                    labels,
-                    widget.location!.pk,
-                    "location",
-                    "location=${widget.location!.pk}"
-                );
-              }
-          )
+        SpeedDialChild(
+          child: Icon(TablerIcons.printer),
+          label: L10().printLabel,
+          onTap: () async {
+            selectAndPrintLabel(
+              context,
+              labels,
+              widget.location!.pk,
+              "location",
+              "location=${widget.location!.pk}",
+            );
+          },
+        ),
       );
     }
 
@@ -212,12 +210,12 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     }
 
     _loc.editForm(
-        context,
-        L10().editLocation,
-        onSuccess: (data) async {
-          refresh(context);
-          showSnackIcon(L10().locationUpdated, success: true);
-        }
+      context,
+      L10().editLocation,
+      onSuccess: (data) async {
+        refresh(context);
+        showSnackIcon(L10().locationUpdated, success: true);
+      },
     );
   }
 
@@ -238,22 +236,24 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     }
 
     List<Map<String, dynamic>> _labels = [];
-    bool allowLabelPrinting = await InvenTreeSettingsManager().getBool(INV_ENABLE_LABEL_PRINTING, true);
+    bool allowLabelPrinting = await InvenTreeSettingsManager().getBool(
+      INV_ENABLE_LABEL_PRINTING,
+      true,
+    );
     allowLabelPrinting &= api.supportsMixin("labels");
 
     if (allowLabelPrinting) {
-
       if (widget.location != null) {
+        String model_type = api.supportsModernLabelPrinting
+            ? InvenTreeStockLocation.MODEL_TYPE
+            : "location";
+        String item_key = api.supportsModernLabelPrinting
+            ? "items"
+            : "location";
 
-        String model_type = api.supportsModernLabelPrinting ? InvenTreeStockLocation.MODEL_TYPE : "location";
-        String item_key = api.supportsModernLabelPrinting ? "items" : "location";
-
-        _labels = await getLabelTemplates(
-          model_type,
-          {
-            item_key: widget.location!.pk.toString()
-          }
-        );
+        _labels = await getLabelTemplates(model_type, {
+          item_key: widget.location!.pk.toString(),
+        });
       }
     }
 
@@ -268,19 +268,17 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     int pk = location?.pk ?? -1;
 
     InvenTreeStockLocation().createForm(
-        context,
-        L10().locationCreate,
-        data: {
-          "parent": (pk > 0) ? pk : null,
-        },
-        onSuccess: (result) async {
-          Map<String, dynamic> data = result as Map<String, dynamic>;
+      context,
+      L10().locationCreate,
+      data: {"parent": (pk > 0) ? pk : null},
+      onSuccess: (result) async {
+        Map<String, dynamic> data = result as Map<String, dynamic>;
 
-          if (data.containsKey("pk")) {
-            var loc = InvenTreeStockLocation.fromJson(data);
-            loc.goToDetailPage(context);
-          }
+        if (data.containsKey("pk")) {
+          var loc = InvenTreeStockLocation.fromJson(data);
+          loc.goToDetailPage(context);
         }
+      },
     );
   }
 
@@ -288,7 +286,6 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
    * Launch a dialog form to create a new stock item
    */
   Future<void> _newStockItem(BuildContext context) async {
-
     var fields = InvenTreeStockItem().formFields();
 
     // Serial number field is not required here
@@ -301,94 +298,89 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     }
 
     InvenTreeStockItem().createForm(
-        context,
-        L10().stockItemCreate,
-        data: data,
-        fields: fields,
-        onSuccess: (result) async {
-          Map<String, dynamic> data = result as Map<String, dynamic>;
+      context,
+      L10().stockItemCreate,
+      data: data,
+      fields: fields,
+      onSuccess: (result) async {
+        Map<String, dynamic> data = result as Map<String, dynamic>;
 
-          if (data.containsKey("pk")) {
-            var item = InvenTreeStockItem.fromJson(data);
-            item.goToDetailPage(context);
-          }
+        if (data.containsKey("pk")) {
+          var item = InvenTreeStockItem.fromJson(data);
+          item.goToDetailPage(context);
         }
+      },
     );
   }
 
   Widget locationDescriptionCard({bool includeActions = true}) {
     if (location == null) {
       return Card(
-          child: ListTile(
-            title: Text(
-                L10().stockTopLevel,
-                style: TextStyle(fontStyle: FontStyle.italic)
-            ),
-            leading: Icon(TablerIcons.packages),
-          )
+        child: ListTile(
+          title: Text(
+            L10().stockTopLevel,
+            style: TextStyle(fontStyle: FontStyle.italic),
+          ),
+          leading: Icon(TablerIcons.packages),
+        ),
       );
     } else {
       List<Widget> children = [
         ListTile(
           title: Text("${location!.name}"),
           subtitle: Text("${location!.description}"),
-          leading: location!.customIcon == null ? Icon(TablerIcons.packages) : Icon(location!.customIcon)
+          leading: location!.customIcon == null
+              ? Icon(TablerIcons.packages)
+              : Icon(location!.customIcon),
         ),
       ];
 
       if (includeActions) {
         children.add(
-            ListTile(
-              title: Text(L10().parentLocation),
-              subtitle: Text("${location!.parentPathString}"),
-              leading: Icon(TablerIcons.arrow_move_up, color: COLOR_ACTION),
-              onTap: () async {
-                int parentId = location?.parentId ?? -1;
+          ListTile(
+            title: Text(L10().parentLocation),
+            subtitle: Text("${location!.parentPathString}"),
+            leading: Icon(TablerIcons.arrow_move_up, color: COLOR_ACTION),
+            onTap: () async {
+              int parentId = location?.parentId ?? -1;
 
-                if (parentId < 0) {
-                  Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => LocationDisplayWidget(null)));
-                } else {
-                  showLoadingOverlay();
-                  var loc = await InvenTreeStockLocation().get(parentId);
-                  hideLoadingOverlay();
+              if (parentId < 0) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => LocationDisplayWidget(null),
+                  ),
+                );
+              } else {
+                showLoadingOverlay();
+                var loc = await InvenTreeStockLocation().get(parentId);
+                hideLoadingOverlay();
 
-                  if (loc is InvenTreeStockLocation) {
-                    loc.goToDetailPage(context);
-                  }
+                if (loc is InvenTreeStockLocation) {
+                  loc.goToDetailPage(context);
                 }
-              },
-            )
+              }
+            },
+          ),
         );
       }
 
-      return Card(
-          child: Column(
-            children: children,
-          )
-      );
+      return Card(child: Column(children: children));
     }
   }
 
   @override
   List<Widget> getTabIcons(BuildContext context) {
-    return [
-      Tab(text: L10().details),
-      Tab(text: L10().stockItems),
-    ];
+    return [Tab(text: L10().details), Tab(text: L10().stockItems)];
   }
 
   @override
   List<Widget> getTabs(BuildContext context) {
-    return [
-      Column(children: detailTiles()),
-      Column(children: stockTiles()),
-    ];
+    return [Column(children: detailTiles()), Column(children: stockTiles())];
   }
 
   // Construct the "details" panel
   List<Widget> detailTiles() {
-
     Map<String, String> filters = {};
 
     int? parent = location?.pk;
@@ -402,12 +394,9 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     List<Widget> tiles = [
       locationDescriptionCard(),
       Expanded(
-        child: PaginatedStockLocationList(
-          filters,
-          title: L10().sublocations,
-        ),
+        child: PaginatedStockLocationList(filters, title: L10().sublocations),
         flex: 10,
-      )
+      ),
     ];
 
     return tiles;
@@ -419,11 +408,6 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       "location": location?.pk.toString() ?? "null",
     };
 
-    return [
-      Expanded(
-        child: PaginatedStockItemList(filters),
-        flex: 10,
-      )
-    ];
+    return [Expanded(child: PaginatedStockItemList(filters), flex: 10)];
   }
 }

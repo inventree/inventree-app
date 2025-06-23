@@ -6,7 +6,6 @@ import "package:path_provider/path_provider.dart";
 import "package:sembast/sembast_io.dart";
 import "package:path/path.dart";
 
-
 // Settings key values
 const String INV_HOME_SHOW_SUBSCRIBED = "homeShowSubscribed";
 const String INV_HOME_SHOW_PO = "homeShowPo";
@@ -62,7 +61,6 @@ const int BARCODE_CONTROLLER_WEDGE = 1;
  * Class for storing InvenTree preferences in a NoSql DB
  */
 class InvenTreePreferencesDB {
-
   InvenTreePreferencesDB._();
 
   static final InvenTreePreferencesDB _singleton = InvenTreePreferencesDB._();
@@ -74,7 +72,6 @@ class InvenTreePreferencesDB {
   bool isOpen = false;
 
   Future<Database> get database async {
-
     if (!isOpen) {
       // Calling _openDatabase will also complete the completer with database instance
       _openDatabase();
@@ -101,13 +98,11 @@ class InvenTreePreferencesDB {
   }
 }
 
-
 /*
  * InvenTree setings manager class.
  * Provides functions for loading and saving settings, with provision for default values
  */
 class InvenTreeSettingsManager {
-
   factory InvenTreeSettingsManager() {
     return _manager;
   }
@@ -144,7 +139,6 @@ class InvenTreeSettingsManager {
   }
 
   Future<dynamic> getValue(String key, dynamic backup) async {
-
     dynamic value = await store.record(key).get(await _db);
 
     // Retrieve value
@@ -174,7 +168,6 @@ class InvenTreeSettingsManager {
 
   // Store a key:value pair in the database
   Future<void> setValue(String key, dynamic value) async {
-
     // Encode null values as strings
     value ??= "__null__";
 
@@ -182,5 +175,6 @@ class InvenTreeSettingsManager {
   }
 
   // Ensure we only ever create a single instance of this class
-  static final InvenTreeSettingsManager _manager = InvenTreeSettingsManager._internal();
+  static final InvenTreeSettingsManager _manager =
+      InvenTreeSettingsManager._internal();
 }

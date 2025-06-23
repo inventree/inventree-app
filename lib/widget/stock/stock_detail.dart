@@ -28,9 +28,7 @@ import "package:inventree/widget/stock/stock_item_history.dart";
 import "package:inventree/widget/stock/stock_item_test_results.dart";
 import "package:inventree/widget/notes_widget.dart";
 
-
 class StockDetailWidget extends StatefulWidget {
-
   const StockDetailWidget(this.item, {Key? key}) : super(key: key);
 
   final InvenTreeStockItem item;
@@ -39,9 +37,7 @@ class StockDetailWidget extends StatefulWidget {
   _StockItemDisplayState createState() => _StockItemDisplayState();
 }
 
-
 class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
-
   _StockItemDisplayState();
 
   @override
@@ -62,25 +58,25 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     if (api.supportsMixin("locate")) {
       actions.add(
-          IconButton(
-            icon: Icon(Icons.travel_explore),
-            tooltip: L10().locateItem,
-            onPressed: () async {
-              api.locateItemOrLocation(context, item: widget.item.pk);
-            }
-          )
+        IconButton(
+          icon: Icon(Icons.travel_explore),
+          tooltip: L10().locateItem,
+          onPressed: () async {
+            api.locateItemOrLocation(context, item: widget.item.pk);
+          },
+        ),
       );
     }
 
     if (widget.item.canEdit) {
       actions.add(
-          IconButton(
-              icon: Icon(TablerIcons.edit),
-              tooltip: L10().editItem,
-              onPressed: () {
-                _editStockItem(context);
-              }
-          )
+        IconButton(
+          icon: Icon(TablerIcons.edit),
+          tooltip: L10().editItem,
+          onPressed: () {
+            _editStockItem(context);
+          },
+        ),
       );
     }
 
@@ -89,20 +85,17 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
   @override
   List<SpeedDialChild> actionButtons(BuildContext context) {
-
     List<SpeedDialChild> actions = [];
 
     if (widget.item.canEdit) {
-
       // Stock adjustment actions available if item is *not* serialized
       if (!widget.item.isSerialized()) {
-
         actions.add(
           SpeedDialChild(
             child: Icon(TablerIcons.circle_check, color: Colors.blue),
             label: L10().countStock,
             onTap: _countStockDialog,
-          )
+          ),
         );
 
         actions.add(
@@ -110,7 +103,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
             child: Icon(TablerIcons.circle_minus, color: Colors.red),
             label: L10().removeStock,
             onTap: _removeStockDialog,
-          )
+          ),
         );
 
         actions.add(
@@ -118,7 +111,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
             child: Icon(TablerIcons.circle_plus, color: Colors.green),
             label: L10().addStock,
             onTap: _addStockDialog,
-          )
+          ),
         );
       }
 
@@ -129,8 +122,8 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           label: L10().transferStock,
           onTap: () {
             _transferStockDialog(context);
-          }
-        )
+          },
+        ),
       );
     }
 
@@ -141,26 +134,26 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           label: L10().printLabel,
           onTap: () async {
             selectAndPrintLabel(
-                context,
-                labels,
-                widget.item.pk,
-                "stock",
-                "item=${widget.item.pk}"
+              context,
+              labels,
+              widget.item.pk,
+              "stock",
+              "item=${widget.item.pk}",
             );
-          }
-        )
+          },
+        ),
       );
     }
 
     if (widget.item.canDelete) {
       actions.add(
-          SpeedDialChild(
-              child: Icon(TablerIcons.trash, color: Colors.red),
-              label: L10().stockItemDelete,
-              onTap: () {
-                _deleteItem(context);
-              }
-          )
+        SpeedDialChild(
+          child: Icon(TablerIcons.trash, color: Colors.red),
+          label: L10().stockItemDelete,
+          onTap: () {
+            _deleteItem(context);
+          },
+        ),
       );
     }
 
@@ -174,26 +167,28 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     if (widget.item.canEdit) {
       // Scan item into location
       actions.add(
-          SpeedDialChild(
-              child: Icon(Icons.qr_code_scanner),
-              label: L10().scanIntoLocation,
-              onTap: () {
-                scanBarcode(
-                  context,
-                  handler: StockItemScanIntoLocationHandler(widget.item)
-                ).then((ctx) {
-                  refresh(context);
-                });
-              }
-          )
+        SpeedDialChild(
+          child: Icon(Icons.qr_code_scanner),
+          label: L10().scanIntoLocation,
+          onTap: () {
+            scanBarcode(
+              context,
+              handler: StockItemScanIntoLocationHandler(widget.item),
+            ).then((ctx) {
+              refresh(context);
+            });
+          },
+        ),
       );
 
       actions.add(
-          customBarcodeAction(
-              context, this,
-              widget.item.customBarcode,
-              "stockitem", widget.item.pk
-          )
+        customBarcodeAction(
+          context,
+          this,
+          widget.item.customBarcode,
+          "stockitem",
+          widget.item.pk,
+        ),
       );
     }
 
@@ -217,8 +212,12 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   @override
   Future<void> request(BuildContext context) async {
     await api.StockStatus.load();
-    stockShowHistory = await InvenTreeSettingsManager().getValue(INV_STOCK_SHOW_HISTORY, false) as bool;
-    stockShowTests = await InvenTreeSettingsManager().getValue(INV_STOCK_SHOW_TESTS, true) as bool;
+    stockShowHistory =
+        await InvenTreeSettingsManager().getValue(INV_STOCK_SHOW_HISTORY, false)
+            as bool;
+    stockShowTests =
+        await InvenTreeSettingsManager().getValue(INV_STOCK_SHOW_TESTS, true)
+            as bool;
 
     final bool result = widget.item.pk > 0 && await widget.item.reload();
 
@@ -238,7 +237,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     // Request test results (async)
     if (stockShowTests) {
       widget.item.getTestResults().then((value) {
-
         if (mounted) {
           setState(() {
             // Update
@@ -248,7 +246,9 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     }
 
     // Request the number of attachments
-    InvenTreeStockItemAttachment().countAttachments(widget.item.pk).then((int value) {
+    InvenTreeStockItemAttachment().countAttachments(widget.item.pk).then((
+      int value,
+    ) {
       if (mounted) {
         setState(() {
           attachmentCount = value;
@@ -258,13 +258,18 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     // Request SalesOrder information
     if (widget.item.hasSalesOrder) {
-      InvenTreeSalesOrder().get(widget.item.salesOrderId).then((instance) => {
-        if (mounted) {
-            setState(() {
-              salesOrder = instance as InvenTreeSalesOrder?;
-            })
-        }
-      });
+      InvenTreeSalesOrder()
+          .get(widget.item.salesOrderId)
+          .then(
+            (instance) => {
+              if (mounted)
+                {
+                  setState(() {
+                    salesOrder = instance as InvenTreeSalesOrder?;
+                  }),
+                },
+            },
+          );
     } else {
       if (mounted) {
         setState(() {
@@ -275,13 +280,18 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     // Request Customer information
     if (widget.item.hasCustomer) {
-      InvenTreeCompany().get(widget.item.customerId).then((instance) => {
-        if (mounted) {
-          setState(() {
-            customer = instance as InvenTreeCompany?;
-          })
-        }
-      });
+      InvenTreeCompany()
+          .get(widget.item.customerId)
+          .then(
+            (instance) => {
+              if (mounted)
+                {
+                  setState(() {
+                    customer = instance as InvenTreeCompany?;
+                  }),
+                },
+            },
+          );
     } else {
       if (mounted) {
         setState(() {
@@ -291,22 +301,23 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     }
 
     List<Map<String, dynamic>> _labels = [];
-    bool allowLabelPrinting = await InvenTreeSettingsManager().getBool(INV_ENABLE_LABEL_PRINTING, true);
+    bool allowLabelPrinting = await InvenTreeSettingsManager().getBool(
+      INV_ENABLE_LABEL_PRINTING,
+      true,
+    );
     allowLabelPrinting &= api.supportsMixin("labels");
 
     // Request information on labels available for this stock item
     if (allowLabelPrinting) {
-
-      String model_type = api.supportsModernLabelPrinting ? InvenTreeStockItem.MODEL_TYPE : "stock";
+      String model_type = api.supportsModernLabelPrinting
+          ? InvenTreeStockItem.MODEL_TYPE
+          : "stock";
       String item_key = api.supportsModernLabelPrinting ? "items" : "item";
 
       // Clear the existing labels list
-      _labels = await getLabelTemplates(
-          model_type,
-          {
-              item_key: widget.item.pk.toString()
-          }
-      );
+      _labels = await getLabelTemplates(model_type, {
+        item_key: widget.item.pk.toString(),
+      });
     }
 
     if (mounted) {
@@ -318,7 +329,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
   /// Delete the stock item from the database
   Future<void> _deleteItem(BuildContext context) async {
-
     confirmationDialog(
       L10().stockItemDelete,
       L10().stockItemDeleteConfirm,
@@ -327,7 +337,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       acceptText: L10().delete,
       onAccept: () async {
         final bool result = await widget.item.delete();
-        
+
         if (result) {
           Navigator.of(context).pop();
           showSnackIcon(L10().stockItemDeleteSuccess, success: true);
@@ -336,11 +346,9 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         }
       },
     );
-
   }
 
-  Future <void> _editStockItem(BuildContext context) async {
-
+  Future<void> _editStockItem(BuildContext context) async {
     var fields = InvenTreeStockItem().formFields();
 
     // Some fields we don't want to edit!
@@ -360,16 +368,14 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       onSuccess: (data) async {
         refresh(context);
         showSnackIcon(L10().stockItemUpdated, success: true);
-      }
+      },
     );
-
   }
 
   /*
    * Launch a dialog to 'add' quantity to this StockItem
    */
-  Future <void> _addStockDialog() async {
-
+  Future<void> _addStockDialog() async {
     Map<String, dynamic> fields = {
       "pk": {
         "parent": "items",
@@ -377,11 +383,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         "hidden": true,
         "value": widget.item.pk,
       },
-      "quantity": {
-        "parent": "items",
-        "nested": true,
-        "value": 0,
-      },
+      "quantity": {"parent": "items", "nested": true, "value": 0},
       "notes": {},
     };
 
@@ -395,12 +397,11 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       onSuccess: (data) async {
         _stockUpdateMessage(true);
         refresh(context);
-      }
+      },
     );
   }
 
   void _stockUpdateMessage(bool result) {
-
     if (result) {
       showSnackIcon(L10().stockItemUpdated, success: true);
     }
@@ -410,7 +411,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
    * Launch a dialog to 'remove' quantity from this StockItem
    */
   void _removeStockDialog() {
-
     Map<String, dynamic> fields = {
       "pk": {
         "parent": "items",
@@ -418,30 +418,25 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         "hidden": true,
         "value": widget.item.pk,
       },
-      "quantity": {
-        "parent": "items",
-        "nested": true,
-        "value": 0,
-      },
+      "quantity": {"parent": "items", "nested": true, "value": 0},
       "notes": {},
     };
 
     launchApiForm(
-        context,
-        L10().removeStock,
-        InvenTreeStockItem.removeStockUrl(),
-        fields,
-        method: "POST",
-        icon: TablerIcons.circle_minus,
-        onSuccess: (data) async {
-          _stockUpdateMessage(true);
-          refresh(context);
-        }
+      context,
+      L10().removeStock,
+      InvenTreeStockItem.removeStockUrl(),
+      fields,
+      method: "POST",
+      icon: TablerIcons.circle_minus,
+      onSuccess: (data) async {
+        _stockUpdateMessage(true);
+        refresh(context);
+      },
     );
   }
 
-  Future <void> _countStockDialog() async {
-
+  Future<void> _countStockDialog() async {
     Map<String, dynamic> fields = {
       "pk": {
         "parent": "items",
@@ -458,58 +453,51 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     };
 
     launchApiForm(
-        context,
-        L10().countStock,
-        InvenTreeStockItem.countStockUrl(),
-        fields,
-        method: "POST",
-        icon: TablerIcons.clipboard_check,
-        onSuccess: (data) async {
-          _stockUpdateMessage(true);
-          refresh(context);
-        }
+      context,
+      L10().countStock,
+      InvenTreeStockItem.countStockUrl(),
+      fields,
+      method: "POST",
+      icon: TablerIcons.clipboard_check,
+      onSuccess: (data) async {
+        _stockUpdateMessage(true);
+        refresh(context);
+      },
     );
   }
 
   /*
    * Launches an API Form to transfer this stock item to a new location
    */
-  Future <void> _transferStockDialog(BuildContext context) async {
-
+  Future<void> _transferStockDialog(BuildContext context) async {
     Map<String, dynamic> fields = widget.item.transferFields();
 
     launchApiForm(
-        context,
-        L10().transferStock,
-        InvenTreeStockItem.transferStockUrl(),
-        fields,
-        method: "POST",
-        icon: TablerIcons.transfer,
-        onSuccess: (data) async {
-          _stockUpdateMessage(true);
-          refresh(context);
-        }
+      context,
+      L10().transferStock,
+      InvenTreeStockItem.transferStockUrl(),
+      fields,
+      method: "POST",
+      icon: TablerIcons.transfer,
+      onSuccess: (data) async {
+        _stockUpdateMessage(true);
+        refresh(context);
+      },
     );
   }
 
   Widget headerTile() {
-
     Widget? trailing;
 
     if (!widget.item.isInStock) {
-      trailing = Text(
-        L10().unavailable,
-        style: TextStyle(
-          color: COLOR_DANGER
-        )
-      );
+      trailing = Text(L10().unavailable, style: TextStyle(color: COLOR_DANGER));
     } else if (!widget.item.isSerialized()) {
       trailing = Text(
-          widget.item.quantityString(),
-          style: TextStyle(
-            fontSize: 20,
-            color: api.StockStatus.color(widget.item.status),
-          )
+        widget.item.quantityString(),
+        style: TextStyle(
+          fontSize: 20,
+          color: api.StockStatus.color(widget.item.status),
+        ),
       );
     }
 
@@ -521,7 +509,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         trailing: trailing,
         onTap: () async {
           if (widget.item.partId > 0) {
-
             showLoadingOverlay();
             var part = await InvenTreePart().get(widget.item.partId);
             hideLoadingOverlay();
@@ -532,7 +519,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           }
         },
         //trailing: Text(item.serialOrQuantityDisplay()),
-      )
+      ),
     );
   }
 
@@ -558,15 +545,13 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         ListTile(
           title: Text(L10().stockLocation),
           subtitle: Text("${widget.item.locationPathString}"),
-          leading: Icon(
-            TablerIcons.location,
-            color: COLOR_ACTION,
-          ),
+          leading: Icon(TablerIcons.location, color: COLOR_ACTION),
           onTap: () async {
             if (widget.item.locationId > 0) {
-
               showLoadingOverlay();
-              var loc = await InvenTreeStockLocation().get(widget.item.locationId);
+              var loc = await InvenTreeStockLocation().get(
+                widget.item.locationId,
+              );
               hideLoadingOverlay();
 
               if (loc is InvenTreeStockLocation) {
@@ -578,30 +563,32 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     } else {
       tiles.add(
-          ListTile(
-            title: Text(L10().stockLocation),
-            leading: Icon(TablerIcons.location),
-            subtitle: Text(L10().locationNotSet),
-          )
+        ListTile(
+          title: Text(L10().stockLocation),
+          leading: Icon(TablerIcons.location),
+          subtitle: Text(L10().locationNotSet),
+        ),
       );
     }
 
     // Quantity information
     if (widget.item.isSerialized()) {
       tiles.add(
-          ListTile(
-            title: Text(L10().serialNumber),
-            leading: Icon(TablerIcons.hash),
-            subtitle: Text("${widget.item.serialNumber}"),
-          )
+        ListTile(
+          title: Text(L10().serialNumber),
+          leading: Icon(TablerIcons.hash),
+          subtitle: Text("${widget.item.serialNumber}"),
+        ),
       );
     } else if (widget.item.isInStock) {
       tiles.add(
-          ListTile(
-            title: widget.item.allocated > 0 ? Text(L10().quantityAvailable) : Text(L10().quantity),
-            leading: Icon(TablerIcons.packages),
-            trailing: Text("${widget.item.quantityString()}"),
-          )
+        ListTile(
+          title: widget.item.allocated > 0
+              ? Text(L10().quantityAvailable)
+              : Text(L10().quantity),
+          leading: Icon(TablerIcons.packages),
+          trailing: Text("${widget.item.quantityString()}"),
+        ),
       );
     }
 
@@ -611,18 +598,13 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           leading: Icon(TablerIcons.box_off),
           title: Text(
             L10().unavailable,
-            style: TextStyle(
-              color: COLOR_DANGER,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(color: COLOR_DANGER, fontWeight: FontWeight.bold),
           ),
           subtitle: Text(
             L10().unavailableDetail,
-            style: TextStyle(
-              color: COLOR_DANGER
-            )
-          )
-        )
+            style: TextStyle(color: COLOR_DANGER),
+          ),
+        ),
       );
     }
 
@@ -633,11 +615,9 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         leading: Icon(TablerIcons.help_circle),
         trailing: Text(
           api.StockStatus.label(widget.item.status),
-          style: TextStyle(
-            color: api.StockStatus.color(widget.item.status),
-          )
-        )
-      )
+          style: TextStyle(color: api.StockStatus.color(widget.item.status)),
+        ),
+      ),
     );
 
     // Supplier part information (if available)
@@ -647,20 +627,26 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           title: Text(L10().supplierPart),
           subtitle: Text(widget.item.supplierSKU),
           leading: Icon(TablerIcons.building, color: COLOR_ACTION),
-          trailing: InvenTreeAPI().getThumbnail(widget.item.supplierImage, hideIfNull: true),
+          trailing: InvenTreeAPI().getThumbnail(
+            widget.item.supplierImage,
+            hideIfNull: true,
+          ),
           onTap: () async {
             showLoadingOverlay();
             var sp = await InvenTreeSupplierPart().get(
-                widget.item.supplierPartId);
+              widget.item.supplierPartId,
+            );
             hideLoadingOverlay();
             if (sp is InvenTreeSupplierPart) {
               Navigator.push(
-                  context, MaterialPageRoute(
-                  builder: (context) => SupplierPartDetailWidget(sp))
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SupplierPartDetailWidget(sp),
+                ),
               );
             }
-          }
-        )
+          },
+        ),
       );
     }
 
@@ -673,7 +659,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           onTap: () {
             // TODO: Click through to the "build order"
           },
-        )
+        ),
       );
     }
 
@@ -686,8 +672,8 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           trailing: Text(salesOrder?.reference ?? ""),
           onTap: () {
             salesOrder?.goToDetailPage(context);
-          }
-        )
+          },
+        ),
       );
     }
 
@@ -701,7 +687,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           onTap: () {
             customer?.goToDetailPage(context);
           },
-        )
+        ),
       );
     }
 
@@ -711,7 +697,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           title: Text(L10().batchCode),
           subtitle: Text(widget.item.batch),
           leading: Icon(TablerIcons.clipboard_text),
-        )
+        ),
       );
     }
 
@@ -721,18 +707,23 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           title: Text(L10().packaging),
           subtitle: Text(widget.item.packaging),
           leading: Icon(TablerIcons.package),
-        )
+        ),
       );
     }
 
     if (expiryEnabled && widget.item.expiryDate != null) {
-
       Widget? _expiryIcon;
 
       if (widget.item.expired) {
-        _expiryIcon = Text(L10().expiryExpired, style: TextStyle(color: COLOR_DANGER));
+        _expiryIcon = Text(
+          L10().expiryExpired,
+          style: TextStyle(color: COLOR_DANGER),
+        );
       } else if (widget.item.stale) {
-        _expiryIcon = Text(L10().expiryStale, style: TextStyle(color: COLOR_WARNING));
+        _expiryIcon = Text(
+          L10().expiryStale,
+          style: TextStyle(color: COLOR_WARNING),
+        );
       }
 
       tiles.add(
@@ -741,19 +732,18 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           subtitle: Text(widget.item.expiryDateString),
           leading: Icon(TablerIcons.calendar_x),
           trailing: _expiryIcon,
-        )
+        ),
       );
     }
 
     // Last update?
     if (widget.item.updatedDateString.isNotEmpty) {
-
       tiles.add(
         ListTile(
           title: Text(L10().lastUpdated),
           subtitle: Text(widget.item.updatedDateString),
-          leading: Icon(TablerIcons.calendar)
-        )
+          leading: Icon(TablerIcons.calendar),
+        ),
       );
     }
 
@@ -763,8 +753,8 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         ListTile(
           title: Text(L10().lastStocktake),
           subtitle: Text(widget.item.stocktakeDateString),
-          leading: Icon(TablerIcons.calendar)
-        )
+          leading: Icon(TablerIcons.calendar),
+        ),
       );
     }
 
@@ -776,26 +766,27 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           onTap: () {
             widget.item.openLink();
           },
-        )
+        ),
       );
     }
 
     if (stockShowTests || (widget.item.testResultCount > 0)) {
       tiles.add(
-          ListTile(
-              title: Text(L10().testResults),
-              leading: Icon(TablerIcons.list_check, color: COLOR_ACTION),
-              trailing: Text("${widget.item.testResultCount}"),
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => StockItemTestResultsWidget(widget.item))
-                ).then((ctx) {
-                  refresh(context);
-                });
-              }
-          )
+        ListTile(
+          title: Text(L10().testResults),
+          leading: Icon(TablerIcons.list_check, color: COLOR_ACTION),
+          trailing: Text("${widget.item.testResultCount}"),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => StockItemTestResultsWidget(widget.item),
+              ),
+            ).then((ctx) {
+              refresh(context);
+            });
+          },
+        ),
       );
     }
 
@@ -805,9 +796,12 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           title: Text(L10().purchasePrice),
           leading: Icon(TablerIcons.currency_dollar),
           trailing: Text(
-            renderCurrency(widget.item.purchasePrice, widget.item.purchasePriceCurrency)
-          )
-        )
+            renderCurrency(
+              widget.item.purchasePrice,
+              widget.item.purchasePriceCurrency,
+            ),
+          ),
+        ),
       );
     }
 
@@ -823,12 +817,13 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => StockItemHistoryWidget(widget.item))
-              ).then((ctx) {
-                refresh(context);
+                builder: (context) => StockItemHistoryWidget(widget.item),
+              ),
+            ).then((ctx) {
+              refresh(context);
             });
           },
-        )
+        ),
       );
     }
 
@@ -840,34 +835,33 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => NotesWidget(widget.item))
+            MaterialPageRoute(builder: (context) => NotesWidget(widget.item)),
           );
-        }
-      )
+        },
+      ),
     );
 
     tiles.add(
-        ListTile(
-          title: Text(L10().attachments),
-          leading: Icon(TablerIcons.file, color: COLOR_ACTION),
-          trailing: attachmentCount > 0 ? Text(attachmentCount.toString()) : null,
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => AttachmentWidget(
-                  InvenTreeStockItemAttachment(),
-                  widget.item.pk,
-                  L10().stockItem,
-                  widget.item.canEdit,
-                )
-              )
-            );
-          },
-        )
+      ListTile(
+        title: Text(L10().attachments),
+        leading: Icon(TablerIcons.file, color: COLOR_ACTION),
+        trailing: attachmentCount > 0 ? Text(attachmentCount.toString()) : null,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AttachmentWidget(
+                InvenTreeStockItemAttachment(),
+                widget.item.pk,
+                L10().stockItem,
+                widget.item.canEdit,
+              ),
+            ),
+          );
+        },
+      ),
     );
 
     return tiles;
   }
-
 }

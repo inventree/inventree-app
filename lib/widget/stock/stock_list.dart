@@ -7,9 +7,7 @@ import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/api.dart";
 
-
 class StockItemList extends StatefulWidget {
-
   const StockItemList(this.filters);
 
   final Map<String, String> filters;
@@ -18,9 +16,7 @@ class StockItemList extends StatefulWidget {
   _StockListState createState() => _StockListState(filters);
 }
 
-
 class _StockListState extends RefreshableState<StockItemList> {
-
   _StockListState(this.filters);
 
   final Map<String, String> filters;
@@ -35,20 +31,18 @@ class _StockListState extends RefreshableState<StockItemList> {
 }
 
 class PaginatedStockItemList extends PaginatedSearchWidget {
-
-  const PaginatedStockItemList(Map<String, String> filters) : super(filters: filters);
+  const PaginatedStockItemList(Map<String, String> filters)
+    : super(filters: filters);
 
   @override
   String get searchTitle => L10().stockItems;
 
   @override
   _PaginatedStockItemListState createState() => _PaginatedStockItemListState();
-  
 }
 
-
-class _PaginatedStockItemListState extends PaginatedSearchState<PaginatedStockItemList> {
-
+class _PaginatedStockItemListState
+    extends PaginatedSearchState<PaginatedStockItemList> {
   _PaginatedStockItemListState() : super();
 
   @override
@@ -100,7 +94,7 @@ class _PaginatedStockItemListState extends PaginatedSearchState<PaginatedStockIt
         "label": L10().status,
         "help_text": L10().statusCode,
         "choices": InvenTreeAPI().StockStatus.choices,
-      }
+      },
     };
 
     if (!InvenTreeAPI().supportsStatusLabelEndpoints) {
@@ -111,15 +105,18 @@ class _PaginatedStockItemListState extends PaginatedSearchState<PaginatedStockIt
   }
 
   @override
-  Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
-
+  Future<InvenTreePageResponse?> requestPage(
+    int limit,
+    int offset,
+    Map<String, String> params,
+  ) async {
     // Ensure StockStatus codes are loaded
     await InvenTreeAPI().StockStatus.load();
 
     final page = await InvenTreeStockItem().listPaginated(
       limit,
       offset,
-      filters: params
+      filters: params,
     );
 
     return page;
@@ -127,7 +124,6 @@ class _PaginatedStockItemListState extends PaginatedSearchState<PaginatedStockIt
 
   @override
   Widget buildItem(BuildContext context, InvenTreeModel model) {
-
     InvenTreeStockItem item = model as InvenTreeStockItem;
 
     return ListTile(
@@ -136,13 +132,14 @@ class _PaginatedStockItemListState extends PaginatedSearchState<PaginatedStockIt
       leading: InvenTreeAPI().getThumbnail(item.partThumbnail),
       trailing: SizedBox(
         width: 48,
-        child: Text("${item.displayQuantity}",
+        child: Text(
+          "${item.displayQuantity}",
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 14,
             color: InvenTreeAPI().StockStatus.color(item.status),
           ),
-        )
+        ),
       ),
       onTap: () {
         item.goToDetailPage(context);

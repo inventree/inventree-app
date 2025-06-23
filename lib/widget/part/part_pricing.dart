@@ -7,8 +7,11 @@ import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/helpers.dart";
 
 class PartPricingWidget extends StatefulWidget {
-
-  const PartPricingWidget({Key? key, required this.part, required this.partPricing}) : super(key: key);
+  const PartPricingWidget({
+    Key? key,
+    required this.part,
+    required this.partPricing,
+  }) : super(key: key);
   final InvenTreePart part;
   final InvenTreePartPricing? partPricing;
 
@@ -17,7 +20,6 @@ class PartPricingWidget extends StatefulWidget {
 }
 
 class _PartPricingWidgetState extends RefreshableState<PartPricingWidget> {
-
   @override
   String getAppBarTitle() {
     return L10().partPricing;
@@ -25,14 +27,13 @@ class _PartPricingWidgetState extends RefreshableState<PartPricingWidget> {
 
   @override
   List<Widget> getTiles(BuildContext context) {
-
     List<Widget> tiles = [
       Card(
         child: ListTile(
           title: Text(widget.part.fullname),
           subtitle: Text(widget.part.description),
-          leading: api.getThumbnail(widget.part.thumbnail)
-        )
+          leading: api.getThumbnail(widget.part.thumbnail),
+        ),
       ),
     ];
 
@@ -41,7 +42,7 @@ class _PartPricingWidgetState extends RefreshableState<PartPricingWidget> {
         ListTile(
           title: Text(L10().noPricingAvailable),
           subtitle: Text(L10().noPricingDataFound),
-        )
+        ),
       );
 
       return tiles;
@@ -50,10 +51,7 @@ class _PartPricingWidgetState extends RefreshableState<PartPricingWidget> {
     final pricing = widget.partPricing!;
 
     tiles.add(
-        ListTile(
-          title: Text(L10().currency),
-          trailing: Text(pricing.currency),
-        )
+      ListTile(title: Text(L10().currency), trailing: Text(pricing.currency)),
     );
 
     tiles.add(
@@ -63,10 +61,10 @@ class _PartPricingWidgetState extends RefreshableState<PartPricingWidget> {
           formatPriceRange(
             pricing.overallMin,
             pricing.overallMax,
-            currency: pricing.currency
-          )
+            currency: pricing.currency,
+          ),
         ),
-      )
+      ),
     );
 
     if (pricing.overallMin != null) {
@@ -74,9 +72,9 @@ class _PartPricingWidgetState extends RefreshableState<PartPricingWidget> {
         ListTile(
           title: Text(L10().priceOverrideMin),
           trailing: Text(
-            renderCurrency(pricing.overallMin, pricing.overrideMinCurrency)
-          )
-        )
+            renderCurrency(pricing.overallMin, pricing.overrideMinCurrency),
+          ),
+        ),
       );
     }
 
@@ -85,9 +83,9 @@ class _PartPricingWidgetState extends RefreshableState<PartPricingWidget> {
         ListTile(
           title: Text(L10().priceOverrideMax),
           trailing: Text(
-            renderCurrency(pricing.overallMax, pricing.overrideMaxCurrency)
-          )
-        )
+            renderCurrency(pricing.overallMax, pricing.overrideMaxCurrency),
+          ),
+        ),
       );
     }
 
@@ -98,10 +96,10 @@ class _PartPricingWidgetState extends RefreshableState<PartPricingWidget> {
           formatPriceRange(
             pricing.internalCostMin,
             pricing.internalCostMax,
-            currency: pricing.currency
-          )
+            currency: pricing.currency,
+          ),
         ),
-      )
+      ),
     );
 
     if (widget.part.isTemplate) {
@@ -112,10 +110,10 @@ class _PartPricingWidgetState extends RefreshableState<PartPricingWidget> {
             formatPriceRange(
               pricing.variantCostMin,
               pricing.variantCostMax,
-              currency: pricing.currency
-            )
+              currency: pricing.currency,
+            ),
           ),
-        )
+        ),
       );
     }
 
@@ -124,13 +122,13 @@ class _PartPricingWidgetState extends RefreshableState<PartPricingWidget> {
         ListTile(
           title: Text(L10().bomCost),
           trailing: Text(
-              formatPriceRange(
+            formatPriceRange(
               pricing.bomCostMin,
               pricing.bomCostMax,
-              currency: pricing.currency
-              )
-          )
-        )
+              currency: pricing.currency,
+            ),
+          ),
+        ),
       );
     }
 
@@ -142,10 +140,10 @@ class _PartPricingWidgetState extends RefreshableState<PartPricingWidget> {
             formatPriceRange(
               pricing.purchaseCostMin,
               pricing.purchaseCostMax,
-              currency: pricing.currency
-            )
+              currency: pricing.currency,
+            ),
           ),
-        )
+        ),
       );
 
       tiles.add(
@@ -155,10 +153,10 @@ class _PartPricingWidgetState extends RefreshableState<PartPricingWidget> {
             formatPriceRange(
               pricing.supplierPriceMin,
               pricing.supplierPriceMax,
-              currency: pricing.currency
-            )
+              currency: pricing.currency,
+            ),
           ),
-        )
+        ),
       );
     }
 
@@ -172,10 +170,10 @@ class _PartPricingWidgetState extends RefreshableState<PartPricingWidget> {
             formatPriceRange(
               pricing.salePriceMin,
               pricing.salePriceMax,
-              currency: pricing.currency
-            )
+              currency: pricing.currency,
+            ),
           ),
-        )
+        ),
       );
 
       tiles.add(
@@ -185,14 +183,13 @@ class _PartPricingWidgetState extends RefreshableState<PartPricingWidget> {
             formatPriceRange(
               pricing.saleHistoryMin,
               pricing.saleHistoryMax,
-              currency: pricing.currency
-            )
+              currency: pricing.currency,
+            ),
           ),
-        )
+        ),
       );
     }
 
     return tiles;
   }
-
 }

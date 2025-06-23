@@ -1,4 +1,3 @@
-
 import "package:flutter/services.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:inventree/api.dart";
@@ -16,11 +15,13 @@ void setupTestEnv() {
   CustomBinding();
 
   // Mock the path provider
-  const MethodChannel channel = MethodChannel("plugins.flutter.io/path_provider");
+  const MethodChannel channel = MethodChannel(
+    "plugins.flutter.io/path_provider",
+  );
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       .setMockMethodCallHandler(channel, (MethodCall methodCall) async {
-    return ".";
-  });
+        return ".";
+      });
 }
 
 // Accessors for default testing values
@@ -29,40 +30,43 @@ const String testServerName = "Test Server";
 const String testUsername = "testuser";
 const String testPassword = "testpassword";
 
-
 /*
  * Request an API token for the given profile
  */
 Future<bool> fetchProfileToken({
   UserProfile? profile,
   String username = testUsername,
-  String password = testPassword
+  String password = testPassword,
 }) async {
-
   profile ??= await UserProfileDBManager().getProfileByName(testServerName);
 
   assert(profile != null);
 
-  final response = await InvenTreeAPI().fetchToken(profile!, username, password);
+  final response = await InvenTreeAPI().fetchToken(
+    profile!,
+    username,
+    password,
+  );
   return response.successful();
 }
-
 
 /*
  * Setup a valid profile, and return it
  */
-Future<UserProfile> setupServerProfile({bool select = true, bool fetchToken = false}) async {
+Future<UserProfile> setupServerProfile({
+  bool select = true,
+  bool fetchToken = false,
+}) async {
   // Setup a valid server profile
 
-  UserProfile? profile = await UserProfileDBManager().getProfileByName(testServerName);
+  UserProfile? profile = await UserProfileDBManager().getProfileByName(
+    testServerName,
+  );
 
   if (profile == null) {
     // Profile does not already exist - create it!
     bool result = await UserProfileDBManager().addProfile(
-        UserProfile(
-          server: testServerAddress,
-          name: testServerName
-        )
+      UserProfile(server: testServerAddress, name: testServerName),
     );
 
     assert(result);
@@ -84,12 +88,10 @@ Future<UserProfile> setupServerProfile({bool select = true, bool fetchToken = fa
   return profile!;
 }
 
-
 /*
  * Complete all steps necessary to login to the server
  */
 Future<void> connectToTestServer() async {
-
   // Setup profile, and fetch user token as necessary
   final profile = await setupServerProfile(fetchToken: true);
 

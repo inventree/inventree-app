@@ -12,39 +12,37 @@ import "package:inventree/api.dart";
 import "package:inventree/user_profile.dart";
 
 class InvenTreeSelectServerWidget extends StatefulWidget {
-
   @override
   _InvenTreeSelectServerState createState() => _InvenTreeSelectServerState();
 }
 
-
 class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
-
   _InvenTreeSelectServerState() {
     _reload();
   }
 
-  final GlobalKey<_InvenTreeSelectServerState> _loginKey = GlobalKey<_InvenTreeSelectServerState>();
+  final GlobalKey<_InvenTreeSelectServerState> _loginKey =
+      GlobalKey<_InvenTreeSelectServerState>();
 
   List<UserProfile> profiles = [];
 
-  Future <void> _reload() async {
-
+  Future<void> _reload() async {
     profiles = await UserProfileDBManager().getAllProfiles();
 
     if (!mounted) {
       return;
     }
 
-    setState(() {
-    });
+    setState(() {});
   }
 
   /*
    * Logout the selected profile (delete the stored token)
    */
-  Future<void> _logoutProfile(BuildContext context, {UserProfile? userProfile}) async {
-
+  Future<void> _logoutProfile(
+    BuildContext context, {
+    UserProfile? userProfile,
+  }) async {
     if (userProfile != null) {
       userProfile.token = "";
       await UserProfileDBManager().updateProfile(userProfile);
@@ -54,26 +52,25 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
 
     InvenTreeAPI().disconnectFromServer();
     _reload();
-
   }
 
   /*
    * Edit the selected profile
    */
-  void _editProfile(BuildContext context, {UserProfile? userProfile, bool createNew = false}) {
-
+  void _editProfile(
+    BuildContext context, {
+    UserProfile? userProfile,
+    bool createNew = false,
+  }) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => ProfileEditWidget(userProfile)
-      )
+      MaterialPageRoute(builder: (context) => ProfileEditWidget(userProfile)),
     ).then((context) {
       _reload();
     });
   }
 
-  Future <void> _selectProfile(BuildContext context, UserProfile profile) async {
-
+  Future<void> _selectProfile(BuildContext context, UserProfile profile) async {
     // Disconnect InvenTree
     InvenTreeAPI().disconnectFromServer();
 
@@ -94,8 +91,9 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
     // First check if the profile has an associate token
     if (!prf.hasToken) {
       // Redirect user to login screen
-      Navigator.push(context,
-        MaterialPageRoute(builder: (context) => InvenTreeLoginWidget(profile))
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => InvenTreeLoginWidget(profile)),
       ).then((value) async {
         _reload();
         // Reload profile
@@ -125,8 +123,7 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
     _reload();
   }
 
-  Future <void> _deleteProfile(UserProfile profile) async {
-
+  Future<void> _deleteProfile(UserProfile profile) async {
     await UserProfileDBManager().deleteProfile(profile);
 
     if (!mounted) {
@@ -135,13 +132,13 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
 
     _reload();
 
-    if (InvenTreeAPI().isConnected() && profile.key == (InvenTreeAPI().profile?.key ?? "")) {
+    if (InvenTreeAPI().isConnected() &&
+        profile.key == (InvenTreeAPI().profile?.key ?? "")) {
       InvenTreeAPI().disconnectFromServer();
     }
   }
 
   Widget? _getProfileIcon(UserProfile profile) {
-
     // Not selected? No icon for you!
     if (!profile.selected) return null;
 
@@ -152,45 +149,38 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
 
     // Reflect the connection status of the server
     if (InvenTreeAPI().isConnected()) {
-      return Icon(
-        TablerIcons.circle_check,
-        color: COLOR_SUCCESS
-      );
+      return Icon(TablerIcons.circle_check, color: COLOR_SUCCESS);
     } else if (InvenTreeAPI().isConnecting()) {
-      return Spinner(
-        icon: TablerIcons.loader_2,
-        color: COLOR_PROGRESS,
-      );
+      return Spinner(icon: TablerIcons.loader_2, color: COLOR_PROGRESS);
     } else {
-      return Icon(
-        TablerIcons.circle_x,
-        color: COLOR_DANGER,
-      );
+      return Icon(TablerIcons.circle_x, color: COLOR_DANGER);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-
     List<Widget> children = [];
 
     if (profiles.isNotEmpty) {
       for (int idx = 0; idx < profiles.length; idx++) {
         UserProfile profile = profiles[idx];
 
-        children.add(ListTile(
-          title: Text(
-            profile.name,
-          ),
-          tileColor: profile.selected ? Theme.of(context).secondaryHeaderColor : null,
-          subtitle: Text("${profile.server}"),
-          leading: profile.hasToken ? Icon(TablerIcons.user_check, color: COLOR_SUCCESS) : Icon(TablerIcons.user_cancel, color: COLOR_WARNING),
-          trailing: _getProfileIcon(profile),
-          onTap: () {
-            _selectProfile(context, profile);
-          },
-          onLongPress: () {
-            OneContext().showDialog(
+        children.add(
+          ListTile(
+            title: Text(profile.name),
+            tileColor: profile.selected
+                ? Theme.of(context).secondaryHeaderColor
+                : null,
+            subtitle: Text("${profile.server}"),
+            leading: profile.hasToken
+                ? Icon(TablerIcons.user_check, color: COLOR_SUCCESS)
+                : Icon(TablerIcons.user_cancel, color: COLOR_WARNING),
+            trailing: _getProfileIcon(profile),
+            onTap: () {
+              _selectProfile(context, profile);
+            },
+            onLongPress: () {
+              OneContext().showDialog(
                 builder: (BuildContext context) {
                   return SimpleDialog(
                     title: Text(profile.name),
@@ -204,7 +194,7 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
                         child: ListTile(
                           title: Text(L10().profileConnect),
                           leading: Icon(TablerIcons.server),
-                        )
+                        ),
                       ),
                       SimpleDialogOption(
                         onPressed: () {
@@ -213,8 +203,8 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
                         },
                         child: ListTile(
                           title: Text(L10().profileEdit),
-                          leading: Icon(TablerIcons.edit)
-                        )
+                          leading: Icon(TablerIcons.edit),
+                        ),
                       ),
                       SimpleDialogOption(
                         onPressed: () {
@@ -224,7 +214,7 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
                         child: ListTile(
                           title: Text(L10().profileLogout),
                           leading: Icon(TablerIcons.logout),
-                        )
+                        ),
                       ),
                       Divider(),
                       SimpleDialogOption(
@@ -238,28 +228,28 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
                             icon: TablerIcons.trash,
                             onAccept: () {
                               _deleteProfile(profile);
-                            }
+                            },
                           );
                         },
                         child: ListTile(
-                          title: Text(L10().profileDelete, style: TextStyle(color: Colors.red)),
+                          title: Text(
+                            L10().profileDelete,
+                            style: TextStyle(color: Colors.red),
+                          ),
                           leading: Icon(TablerIcons.trash, color: Colors.red),
-                        )
-                      )
+                        ),
+                      ),
                     ],
                   );
-                }
-            );
-          },
-        ));
+                },
+              );
+            },
+          ),
+        );
       }
     } else {
       // No profile available!
-      children.add(
-        ListTile(
-          title: Text(L10().profileNone),
-        )
-      );
+      children.add(ListTile(title: Text(L10().profileNone)));
     }
 
     return Scaffold(
@@ -273,27 +263,25 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
             onPressed: () {
               _editProfile(context, createNew: true);
             },
-          )
+          ),
         ],
       ),
       body: Container(
         child: ListView(
           children: ListTile.divideTiles(
             context: context,
-            tiles: children
+            tiles: children,
           ).toList(),
-        )
+        ),
       ),
     );
   }
 }
 
-
 /*
  * Widget for editing server details
  */
 class ProfileEditWidget extends StatefulWidget {
-
   const ProfileEditWidget(this.profile) : super();
 
   final UserProfile? profile;
@@ -303,7 +291,6 @@ class ProfileEditWidget extends StatefulWidget {
 }
 
 class _ProfileEditState extends State<ProfileEditWidget> {
-
   _ProfileEditState() : super();
 
   final formKey = GlobalKey<FormState>();
@@ -316,7 +303,9 @@ class _ProfileEditState extends State<ProfileEditWidget> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: COLOR_APP_BAR,
-        title: Text(widget.profile == null ? L10().profileAdd : L10().profileEdit),
+        title: Text(
+          widget.profile == null ? L10().profileAdd : L10().profileEdit,
+        ),
         actions: [
           IconButton(
             icon: Icon(TablerIcons.circle_check),
@@ -327,14 +316,10 @@ class _ProfileEditState extends State<ProfileEditWidget> {
                 UserProfile? prf = widget.profile;
 
                 if (prf == null) {
-                  UserProfile profile = UserProfile(
-                    name: name,
-                    server: server,
-                  );
+                  UserProfile profile = UserProfile(name: name, server: server);
 
                   await UserProfileDBManager().addProfile(profile);
                 } else {
-
                   prf.name = name;
                   prf.server = server;
 
@@ -345,8 +330,8 @@ class _ProfileEditState extends State<ProfileEditWidget> {
                 Navigator.of(context).pop();
               }
             },
-          )
-        ]
+          ),
+        ],
       ),
       body: Form(
         key: formKey,
@@ -373,7 +358,7 @@ class _ProfileEditState extends State<ProfileEditWidget> {
                   }
 
                   return null;
-                }
+                },
               ),
               TextFormField(
                 decoration: InputDecoration(
@@ -398,7 +383,8 @@ class _ProfileEditState extends State<ProfileEditWidget> {
                     return L10().invalidHost;
                   }
 
-                  if (!value.startsWith("http:") && !value.startsWith("https:")) {
+                  if (!value.startsWith("http:") &&
+                      !value.startsWith("https:")) {
                     // return L10().serverStart;
                   }
 
@@ -410,7 +396,10 @@ class _ProfileEditState extends State<ProfileEditWidget> {
                     Uri uri = Uri.parse(value);
 
                     if (uri.hasScheme) {
-                      if (!["http", "https"].contains(uri.scheme.toLowerCase())) {
+                      if (![
+                        "http",
+                        "https",
+                      ].contains(uri.scheme.toLowerCase())) {
                         return L10().serverStart;
                       }
                     } else {
@@ -422,12 +411,11 @@ class _ProfileEditState extends State<ProfileEditWidget> {
                   return null;
                 },
               ),
-            ]
+            ],
           ),
           padding: EdgeInsets.all(16),
         ),
-      )
+      ),
     );
   }
-
 }

@@ -7,9 +7,7 @@ import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/l10.dart";
 
-
 class StockLocationList extends StatefulWidget {
-
   const StockLocationList(this.filters);
 
   final Map<String, String> filters;
@@ -18,9 +16,7 @@ class StockLocationList extends StatefulWidget {
   _StockLocationListState createState() => _StockLocationListState(filters);
 }
 
-
 class _StockLocationListState extends RefreshableState<StockLocationList> {
-
   _StockLocationListState(this.filters);
 
   final Map<String, String> filters;
@@ -34,21 +30,22 @@ class _StockLocationListState extends RefreshableState<StockLocationList> {
   }
 }
 
-
 class PaginatedStockLocationList extends PaginatedSearchWidget {
-
-  const PaginatedStockLocationList(Map<String, String> filters, {String title = ""}) : super(filters: filters, title: title);
+  const PaginatedStockLocationList(
+    Map<String, String> filters, {
+    String title = "",
+  }) : super(filters: filters, title: title);
 
   @override
   String get searchTitle => title.isNotEmpty ? title : L10().stockLocations;
 
   @override
-  _PaginatedStockLocationListState createState() => _PaginatedStockLocationListState();
+  _PaginatedStockLocationListState createState() =>
+      _PaginatedStockLocationListState();
 }
 
-
-class _PaginatedStockLocationListState extends PaginatedSearchState<PaginatedStockLocationList> {
-
+class _PaginatedStockLocationListState
+    extends PaginatedSearchState<PaginatedStockLocationList> {
   _PaginatedStockLocationListState() : super();
 
   @override
@@ -64,20 +61,26 @@ class _PaginatedStockLocationListState extends PaginatedSearchState<PaginatedSto
       "label": L10().includeSublocations,
       "help_text": L10().includeSublocationsDetail,
       "tristate": false,
-    }
+    },
   };
 
   @override
-  Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
-
-    final page = await InvenTreeStockLocation().listPaginated(limit, offset, filters: params);
+  Future<InvenTreePageResponse?> requestPage(
+    int limit,
+    int offset,
+    Map<String, String> params,
+  ) async {
+    final page = await InvenTreeStockLocation().listPaginated(
+      limit,
+      offset,
+      filters: params,
+    );
 
     return page;
   }
 
   @override
   Widget buildItem(BuildContext context, InvenTreeModel model) {
-
     InvenTreeStockLocation location = model as InvenTreeStockLocation;
 
     return ListTile(

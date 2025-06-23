@@ -5,7 +5,6 @@ import "package:inventree/widget/refreshable_state.dart";
 import "package:flutter_markdown/flutter_markdown.dart";
 import "package:inventree/l10.dart";
 
-
 /*
  * A widget for displaying the notes associated with a given model.
  * We need to pass in the following parameters:
@@ -14,7 +13,6 @@ import "package:inventree/l10.dart";
  * - Title for the app bar
  */
 class NotesWidget extends StatefulWidget {
-
   const NotesWidget(this.model, {Key? key}) : super(key: key);
 
   final InvenTreeModel model;
@@ -23,12 +21,10 @@ class NotesWidget extends StatefulWidget {
   _NotesState createState() => _NotesState();
 }
 
-
 /*
  * Class representing the state of the NotesWidget
  */
 class _NotesState extends RefreshableState<NotesWidget> {
-
   _NotesState();
 
   @override
@@ -41,7 +37,6 @@ class _NotesState extends RefreshableState<NotesWidget> {
 
   @override
   List<Widget> appBarActions(BuildContext context) {
-
     List<Widget> actions = [];
 
     if (widget.model.canEdit) {
@@ -54,16 +49,14 @@ class _NotesState extends RefreshableState<NotesWidget> {
               context,
               L10().editNotes,
               fields: {
-                "notes": {
-                  "multiline": true,
-                }
+                "notes": {"multiline": true},
               },
               onSuccess: (data) async {
                 refresh(context);
-              }
+              },
             );
-          }
-        )
+          },
+        ),
       );
     }
 
@@ -72,10 +65,6 @@ class _NotesState extends RefreshableState<NotesWidget> {
 
   @override
   Widget getBody(BuildContext context) {
-    return Markdown(
-      selectable: false,
-      data: widget.model.notes,
-    );
+    return Markdown(selectable: false, data: widget.model.notes);
   }
-
 }
