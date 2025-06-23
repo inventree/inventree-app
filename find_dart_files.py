@@ -15,6 +15,7 @@ if __name__ == "__main__":
 
     with open("test/coverage_helper_test.dart", "w") as f:
         f.write("// ignore_for_file: unused_import\n\n")
+        f.write("// dart format off\n\n")
 
         skips = [
             "generated",
