@@ -680,7 +680,7 @@ class InvenTreeAPI {
       if (_notification_timer == null) {
         debug("starting notification timer");
         _notification_timer = Timer.periodic(
-            Duration(seconds: 5),
+            Duration(seconds: 60),
                 (timer) {
               _refreshNotifications();
             });

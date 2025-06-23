@@ -3,6 +3,7 @@
 - Replace barcode scanning library for better performance
 - Display part pricing information
 - Fix broken documentation link
+- Reduce frequency of notification checks
 - Updated translations
 
 ### 0.18.1 - April 2025
