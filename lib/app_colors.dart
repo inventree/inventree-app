@@ -4,7 +4,6 @@ import "package:inventree/helpers.dart";
 import "package:one_context/one_context.dart";
 
 bool isDarkMode() {
-
   if (!hasContext()) {
     return false;
   }

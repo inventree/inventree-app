@@ -11,7 +11,6 @@ import "package:inventree/dsn.dart";
 import "package:inventree/preferences.dart";
 
 Future<Map<String, dynamic>> getDeviceInfo() async {
-
   // Extract device information
   final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
 
@@ -31,7 +30,6 @@ Future<Map<String, dynamic>> getDeviceInfo() async {
       "identifierForVendor": iosDeviceInfo.identifierForVendor,
       "isPhysicalDevice": iosDeviceInfo.isPhysicalDevice,
     };
-
   } else if (Platform.isAndroid) {
     final androidDeviceInfo = await deviceInfo.androidInfo;
 
@@ -57,12 +55,10 @@ Future<Map<String, dynamic>> getDeviceInfo() async {
   return device_info;
 }
 
-
 Map<String, dynamic> getServerInfo() => {
   "version": InvenTreeAPI().serverVersion,
   "apiVersion": InvenTreeAPI().apiVersion,
 };
-
 
 Future<Map<String, dynamic>> getAppInfo() async {
   // Add app info
@@ -76,7 +72,6 @@ Future<Map<String, dynamic>> getAppInfo() async {
   };
 }
 
-
 bool isInDebugMode() {
   bool inDebugMode = false;
 
@@ -85,8 +80,10 @@ bool isInDebugMode() {
   return inDebugMode;
 }
 
-Future<bool> sentryReportMessage(String message, {Map<String, String>? context}) async {
-
+Future<bool> sentryReportMessage(
+  String message, {
+  Map<String, String>? context,
+}) async {
   if (SENTRY_DSN_KEY.isEmpty) {
     return false;
   }
@@ -106,23 +103,22 @@ Future<bool> sentryReportMessage(String message, {Map<String, String>? context})
         // We don't care about the server address, only the path and query parameters!
         // Overwrite the provided URL
         context["url"] = uri.path + "?" + uri.query;
-
       } catch (error) {
         // Ignore if any errors are thrown here
       }
-
     }
   }
 
   print("Sending user message to Sentry: ${message}, ${context}");
 
   if (isInDebugMode()) {
-
     print("----- In dev mode. Not sending message to Sentry.io -----");
     return true;
   }
 
-  final upload = await InvenTreeSettingsManager().getValue(INV_REPORT_ERRORS, true) as bool;
+  final upload =
+      await InvenTreeSettingsManager().getValue(INV_REPORT_ERRORS, true)
+          as bool;
 
   if (!upload) {
     print("----- Error reporting disabled -----");
@@ -152,12 +148,15 @@ Future<bool> sentryReportMessage(String message, {Map<String, String>? context})
   }
 }
 
-
 /*
  * Report an error message to sentry.io
  */
-Future<void> sentryReportError(String source, dynamic error, StackTrace? stackTrace, {Map<String, String> context = const {}}) async {
-
+Future<void> sentryReportError(
+  String source,
+  dynamic error,
+  StackTrace? stackTrace, {
+  Map<String, String> context = const {},
+}) async {
   if (sentryIgnoreError(error)) {
     // No action on this error
     return;
@@ -170,7 +169,6 @@ Future<void> sentryReportError(String source, dynamic error, StackTrace? stackTr
   // check if you are running in dev mode using an assertion and omit sending
   // the report.
   if (isInDebugMode()) {
-
     print("----- In dev mode. Not sending report to Sentry.io -----");
     return;
   }
@@ -179,7 +177,9 @@ Future<void> sentryReportError(String source, dynamic error, StackTrace? stackTr
     return;
   }
 
-  final upload = await InvenTreeSettingsManager().getValue(INV_REPORT_ERRORS, true) as bool;
+  final upload =
+      await InvenTreeSettingsManager().getValue(INV_REPORT_ERRORS, true)
+          as bool;
 
   if (!upload) {
     print("----- Error reporting disabled -----");
@@ -188,11 +188,12 @@ Future<void> sentryReportError(String source, dynamic error, StackTrace? stackTr
 
   // Some errors are outside our control, and we do not want to "pollute" the uploaded data
   if (source == "FlutterError.onError") {
-
     String errorString = error.toString();
 
     // Missing media file
-    if (errorString.contains("HttpException") && errorString.contains("404") && errorString.contains("/media/")) {
+    if (errorString.contains("HttpException") &&
+        errorString.contains("404") &&
+        errorString.contains("/media/")) {
       return;
     }
 
@@ -225,15 +226,16 @@ Future<void> sentryReportError(String source, dynamic error, StackTrace? stackTr
     scope.setContexts("context", context);
   });
 
-  Sentry.captureException(error, stackTrace: stackTrace).catchError((error) {
-    print("Error uploading information to Sentry.io:");
-    print(error);
-    return SentryId.empty();
-  }).then((response) {
-    print("Uploaded information to Sentry.io : ${response.toString()}");
-  });
+  Sentry.captureException(error, stackTrace: stackTrace)
+      .catchError((error) {
+        print("Error uploading information to Sentry.io:");
+        print(error);
+        return SentryId.empty();
+      })
+      .then((response) {
+        print("Uploaded information to Sentry.io : ${response.toString()}");
+      });
 }
-
 
 /*
  * Test if a certain error should be ignored by Sentry
@@ -241,7 +243,8 @@ Future<void> sentryReportError(String source, dynamic error, StackTrace? stackTr
 bool sentryIgnoreError(dynamic error) {
   // Ignore 404 errors for media files
   if (error is HttpException) {
-    if (error.uri.toString().contains("/media/") && error.message.contains("404")) {
+    if (error.uri.toString().contains("/media/") &&
+        error.message.contains("404")) {
       return true;
     }
   }

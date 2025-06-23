@@ -14,15 +14,14 @@ import "package:inventree/inventree/model.dart";
 import "package:inventree/widget/part/category_display.dart";
 import "package:inventree/widget/part/part_detail.dart";
 
-
 /*
  * Class representing the PartCategory database model
  */
 class InvenTreePartCategory extends InvenTreeModel {
-
   InvenTreePartCategory() : super();
 
-  InvenTreePartCategory.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+  InvenTreePartCategory.fromJson(Map<String, dynamic> json)
+    : super.fromJson(json);
 
   @override
   String get URL => "part/category/";
@@ -37,16 +36,13 @@ class InvenTreePartCategory extends InvenTreeModel {
   Future<Object?> goToDetailPage(BuildContext context) async {
     // Default implementation does not do anything...
     return Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => CategoryDisplayWidget(this)
-        )
+      context,
+      MaterialPageRoute(builder: (context) => CategoryDisplayWidget(this)),
     );
   }
 
   @override
   Map<String, Map<String, dynamic>> formFields() {
-
     Map<String, Map<String, dynamic>> fields = {
       "name": {},
       "description": {},
@@ -58,9 +54,8 @@ class InvenTreePartCategory extends InvenTreeModel {
   }
 
   String get pathstring => getString("pathstring");
-  
-  String get parentPathString {
 
+  String get parentPathString {
     List<String> psplit = pathstring.split("/");
 
     if (psplit.isNotEmpty) {
@@ -78,21 +73,22 @@ class InvenTreePartCategory extends InvenTreeModel {
 
   // Return the number of parts in this category
   // Note that the API changed from 'parts' to 'part_count' (v69)
-  int get partcount => (jsondata["part_count"] ?? jsondata["parts"] ?? 0) as int;
+  int get partcount =>
+      (jsondata["part_count"] ?? jsondata["parts"] ?? 0) as int;
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreePartCategory.fromJson(json);
+  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
+      InvenTreePartCategory.fromJson(json);
 }
-
 
 /*
  * Class representing the PartTestTemplate database model
  */
 class InvenTreePartTestTemplate extends InvenTreeModel {
-
   InvenTreePartTestTemplate() : super();
 
-  InvenTreePartTestTemplate.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+  InvenTreePartTestTemplate.fromJson(Map<String, dynamic> json)
+    : super.fromJson(json);
 
   @override
   String get URL => "part/test-template/";
@@ -104,16 +100,16 @@ class InvenTreePartTestTemplate extends InvenTreeModel {
   String get testName => getString("test_name");
 
   bool get required => getBool("required");
-  
+
   bool get requiresValue => getBool("requires_value");
 
   bool get requiresAttachment => getBool("requires_attachment");
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreePartTestTemplate.fromJson(json);
+  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
+      InvenTreePartTestTemplate.fromJson(json);
 
   bool passFailStatus() {
-
     var result = latestResult();
 
     if (result == null) {
@@ -134,17 +130,16 @@ class InvenTreePartTestTemplate extends InvenTreeModel {
 
     return results.last;
   }
-
 }
 
 /*
  Class representing the PartParameter database model
  */
 class InvenTreePartParameter extends InvenTreeModel {
-
   InvenTreePartParameter() : super();
 
-  InvenTreePartParameter.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+  InvenTreePartParameter.fromJson(Map<String, dynamic> json)
+    : super.fromJson(json);
 
   @override
   String get URL => "part/parameter/";
@@ -153,11 +148,11 @@ class InvenTreePartParameter extends InvenTreeModel {
   List<String> get rolesRequired => ["part"];
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreePartParameter.fromJson(json);
+  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
+      InvenTreePartParameter.fromJson(json);
 
   @override
   Map<String, Map<String, dynamic>> formFields() {
-
     Map<String, Map<String, dynamic>> fields = {
       "header": {
         "type": "string",
@@ -166,9 +161,7 @@ class InvenTreePartParameter extends InvenTreeModel {
         "help_text": description,
         "value": "",
       },
-      "data": {
-        "type": "string",
-      }
+      "data": {"type": "string"},
     };
 
     return fields;
@@ -179,9 +172,9 @@ class InvenTreePartParameter extends InvenTreeModel {
 
   @override
   String get description => getString("description", subKey: "template_detail");
-  
+
   String get value => getString("data");
-  
+
   String get valueString {
     String v = value;
 
@@ -196,15 +189,15 @@ class InvenTreePartParameter extends InvenTreeModel {
   bool get as_bool => value.toLowerCase() == "true";
 
   String get units => getString("units", subKey: "template_detail");
-  
-  bool get is_checkbox => getBool("checkbox", subKey: "template_detail", backup: false);
+
+  bool get is_checkbox =>
+      getBool("checkbox", subKey: "template_detail", backup: false);
 }
 
 /*
  * Class representing the Part database model
  */
 class InvenTreePart extends InvenTreeModel {
-
   InvenTreePart() : super();
 
   InvenTreePart.fromJson(Map<String, dynamic> json) : super.fromJson(json);
@@ -222,10 +215,8 @@ class InvenTreePart extends InvenTreeModel {
   Future<Object?> goToDetailPage(BuildContext context) async {
     // Default implementation does not do anything...
     return Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => PartDetailWidget(this)
-        )
+      context,
+      MaterialPageRoute(builder: (context) => PartDetailWidget(this)),
     );
   }
 
@@ -259,9 +250,7 @@ class InvenTreePart extends InvenTreeModel {
 
   @override
   Map<String, String> defaultFilters() {
-    return {
-      "category_detail": "true",
-    };
+    return {"category_detail": "true"};
   }
 
   // Cached list of stock items
@@ -270,27 +259,25 @@ class InvenTreePart extends InvenTreeModel {
   int get stockItemCount => stockItems.length;
 
   // Request stock items for this part
-  Future<void> getStockItems(BuildContext context, {bool showDialog=false}) async {
+  Future<void> getStockItems(
+    BuildContext context, {
+    bool showDialog = false,
+  }) async {
+    await InvenTreeStockItem()
+        .list(filters: {"part": "${pk}", "in_stock": "true"})
+        .then((var items) {
+          stockItems.clear();
 
-    await InvenTreeStockItem().list(
-      filters: {
-        "part": "${pk}",
-        "in_stock": "true",
-      },
-    ).then((var items) {
-      stockItems.clear();
-
-      for (var item in items) {
-        if (item is InvenTreeStockItem) {
-          stockItems.add(item);
-        }
-      }
-    });
+          for (var item in items) {
+            if (item is InvenTreeStockItem) {
+              stockItems.add(item);
+            }
+          }
+        });
   }
 
   // Request pricing data for this part
   Future<InvenTreePartPricing?> getPricing() async {
-
     print("REQUEST PRICING FOR: ${pk}");
 
     try {
@@ -311,15 +298,13 @@ class InvenTreePart extends InvenTreeModel {
   }
 
   int get supplierCount => getInt("suppliers", backup: 0);
-  
+
   // Request supplier parts for this part
   Future<List<InvenTreeSupplierPart>> getSupplierParts() async {
     List<InvenTreeSupplierPart> _supplierParts = [];
 
     final parts = await InvenTreeSupplierPart().list(
-        filters: {
-          "part": "${pk}",
-        }
+      filters: {"part": "${pk}"},
     );
 
     for (var result in parts) {
@@ -338,13 +323,9 @@ class InvenTreePart extends InvenTreeModel {
 
   // Request test templates from the serve
   Future<void> getTestTemplates() async {
-
-    InvenTreePartTestTemplate().list(
-      filters: {
-        "part": "${pk}",
-      },
-    ).then((var templates) {
-
+    InvenTreePartTestTemplate().list(filters: {"part": "${pk}"}).then((
+      var templates,
+    ) {
       testingTemplates.clear();
 
       for (var t in templates) {
@@ -373,12 +354,12 @@ class InvenTreePart extends InvenTreeModel {
 
   // Get the 'available stock' for this Part
   double get unallocatedStock {
-
     double unallocated = 0;
 
     // Note that the 'available_stock' was not added until API v35
     if (jsondata.containsKey("unallocated_stock")) {
-      unallocated = double.tryParse(jsondata["unallocated_stock"].toString()) ?? 0;
+      unallocated =
+          double.tryParse(jsondata["unallocated_stock"].toString()) ?? 0;
     } else {
       unallocated = inStock;
     }
@@ -386,148 +367,150 @@ class InvenTreePart extends InvenTreeModel {
     return max(0, unallocated);
   }
 
-    String get unallocatedStockString => simpleNumberString(unallocatedStock);
+  String get unallocatedStockString => simpleNumberString(unallocatedStock);
 
-    String stockString({bool includeUnits = true}) {
-      String q = unallocatedStockString;
+  String stockString({bool includeUnits = true}) {
+    String q = unallocatedStockString;
 
-      if (unallocatedStock != inStock) {
-        q += " / ${inStockString}";
-      }
-
-      if (includeUnits && units.isNotEmpty) {
-        q += " ${units}";
-      }
-
-      return q;
+    if (unallocatedStock != inStock) {
+      q += " / ${inStockString}";
     }
 
-    String get units => getString("units");
-
-    // Get the ID of the Part that this part is a variant of (or null)
-    int? get variantOf => jsondata["variant_of"] as int?;
-
-    // Get the number of units being build for this Part
-    double get building => getDouble("building");
-
-    // Get the number of BOMs this Part is used in (if it is a component)
-    int get usedInCount => jsondata.containsKey("used_in") ? getInt("used_in", backup: 0) : 0;
-
-    bool get isAssembly => getBool("assembly");
-
-    bool get isComponent => getBool("component");
-
-    bool get isPurchaseable => getBool("purchaseable");
-
-    bool get isSalable => getBool("salable");
-
-    bool get isActive => getBool("active");
-
-    bool get isVirtual => getBool("virtual");
-
-    bool get isTemplate => getBool("is_template");
-
-    bool get isTrackable => getBool("trackable");
-
-    // Get the IPN (internal part number) for the Part instance
-    String get IPN => getString("IPN");
-
-    // Get the revision string for the Part instance
-    String get revision => getString("revision");
-
-    // Get the category ID for the Part instance (or "null" if does not exist)
-    int get categoryId => getInt("category");
-
-    // Get the category name for the Part instance
-    String get categoryName {
-      // Inavlid category ID
-      if (categoryId <= 0) return "";
-
-      if (!jsondata.containsKey("category_detail")) return "";
-
-      return (jsondata["category_detail"]?["name"] ?? "") as String;
+    if (includeUnits && units.isNotEmpty) {
+      q += " ${units}";
     }
 
-    // Get the category description for the Part instance
-    String get categoryDescription {
-      // Invalid category ID
-      if (categoryId <= 0) return "";
+    return q;
+  }
 
-      if (!jsondata.containsKey("category_detail")) return "";
+  String get units => getString("units");
 
-      return (jsondata["category_detail"]?["description"] ?? "") as String;
-    }
-    // Get the image URL for the Part instance
-    String get _image  => getString("image");
+  // Get the ID of the Part that this part is a variant of (or null)
+  int? get variantOf => jsondata["variant_of"] as int?;
 
-    // Get the thumbnail URL for the Part instance
-    String get _thumbnail => getString("thumbnail");
+  // Get the number of units being build for this Part
+  double get building => getDouble("building");
 
-    // Return the fully-qualified name for the Part instance
-    String get fullname {
+  // Get the number of BOMs this Part is used in (if it is a component)
+  int get usedInCount =>
+      jsondata.containsKey("used_in") ? getInt("used_in", backup: 0) : 0;
 
-      String fn = getString("full_name");
+  bool get isAssembly => getBool("assembly");
 
-      if (fn.isNotEmpty) return fn;
+  bool get isComponent => getBool("component");
 
-      List<String> elements = [];
+  bool get isPurchaseable => getBool("purchaseable");
 
-      if (IPN.isNotEmpty) elements.add(IPN);
+  bool get isSalable => getBool("salable");
 
-      elements.add(name);
+  bool get isActive => getBool("active");
 
-      if (revision.isNotEmpty) elements.add(revision);
+  bool get isVirtual => getBool("virtual");
 
-      return elements.join(" | ");
-    }
+  bool get isTemplate => getBool("is_template");
 
-    // Return a path to the image for this Part
-    String get image {
-      // Use thumbnail as a backup
-      String img = _image.isNotEmpty ? _image : _thumbnail;
+  bool get isTrackable => getBool("trackable");
 
-      return img.isNotEmpty ? img : InvenTreeAPI.staticImage;
-    }
+  // Get the IPN (internal part number) for the Part instance
+  String get IPN => getString("IPN");
 
-    // Return a path to the thumbnail for this part
-    String get thumbnail {
-      // Use image as a backup
-      String img = _thumbnail.isNotEmpty ? _thumbnail : _image;
+  // Get the revision string for the Part instance
+  String get revision => getString("revision");
 
-      return img.isNotEmpty ? img : InvenTreeAPI.staticThumb;
-    }
+  // Get the category ID for the Part instance (or "null" if does not exist)
+  int get categoryId => getInt("category");
 
-    Future<bool> uploadImage(File image) async {
-      // Upload file against this part
-      final APIResponse response = await InvenTreeAPI().uploadFile(
-        url,
-        image,
-        method: "PATCH",
-        name: "image",
-      );
+  // Get the category name for the Part instance
+  String get categoryName {
+    // Inavlid category ID
+    if (categoryId <= 0) return "";
 
-      return response.successful();
-    }
+    if (!jsondata.containsKey("category_detail")) return "";
 
-    // Return the "starred" status of this part
-    bool get starred => getBool("starred");
+    return (jsondata["category_detail"]?["name"] ?? "") as String;
+  }
+
+  // Get the category description for the Part instance
+  String get categoryDescription {
+    // Invalid category ID
+    if (categoryId <= 0) return "";
+
+    if (!jsondata.containsKey("category_detail")) return "";
+
+    return (jsondata["category_detail"]?["description"] ?? "") as String;
+  }
+
+  // Get the image URL for the Part instance
+  String get _image => getString("image");
+
+  // Get the thumbnail URL for the Part instance
+  String get _thumbnail => getString("thumbnail");
+
+  // Return the fully-qualified name for the Part instance
+  String get fullname {
+    String fn = getString("full_name");
+
+    if (fn.isNotEmpty) return fn;
+
+    List<String> elements = [];
+
+    if (IPN.isNotEmpty) elements.add(IPN);
+
+    elements.add(name);
+
+    if (revision.isNotEmpty) elements.add(revision);
+
+    return elements.join(" | ");
+  }
+
+  // Return a path to the image for this Part
+  String get image {
+    // Use thumbnail as a backup
+    String img = _image.isNotEmpty ? _image : _thumbnail;
+
+    return img.isNotEmpty ? img : InvenTreeAPI.staticImage;
+  }
+
+  // Return a path to the thumbnail for this part
+  String get thumbnail {
+    // Use image as a backup
+    String img = _thumbnail.isNotEmpty ? _thumbnail : _image;
+
+    return img.isNotEmpty ? img : InvenTreeAPI.staticThumb;
+  }
+
+  Future<bool> uploadImage(File image) async {
+    // Upload file against this part
+    final APIResponse response = await InvenTreeAPI().uploadFile(
+      url,
+      image,
+      method: "PATCH",
+      name: "image",
+    );
+
+    return response.successful();
+  }
+
+  // Return the "starred" status of this part
+  bool get starred => getBool("starred");
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreePart.fromJson(json);
+  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
+      InvenTreePart.fromJson(json);
 }
 
-
 class InvenTreePartPricing extends InvenTreeModel {
-
   InvenTreePartPricing() : super();
 
-  InvenTreePartPricing.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+  InvenTreePartPricing.fromJson(Map<String, dynamic> json)
+    : super.fromJson(json);
 
   @override
   List<String> get rolesRequired => ["part"];
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreePartPricing.fromJson(json);
+  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
+      InvenTreePartPricing.fromJson(json);
 
   // Price data accessors
   String get currency => getString("currency", backup: "USD");
@@ -538,8 +521,10 @@ class InvenTreePartPricing extends InvenTreeModel {
   double? get overrideMin => getDoubleOrNull("override_min");
   double? get overrideMax => getDoubleOrNull("override_max");
 
-  String get overrideMinCurrency => getString("override_min_currency", backup: currency);
-  String get overrideMaxCurrency => getString("override_max_currency", backup: currency);
+  String get overrideMinCurrency =>
+      getString("override_min_currency", backup: currency);
+  String get overrideMaxCurrency =>
+      getString("override_max_currency", backup: currency);
 
   double? get bomCostMin => getDoubleOrNull("bom_cost_min");
   double? get bomCostMax => getDoubleOrNull("bom_cost_max");
@@ -563,15 +548,14 @@ class InvenTreePartPricing extends InvenTreeModel {
   double? get saleHistoryMax => getDoubleOrNull("sale_history_max");
 }
 
-
 /*
  * Class representing an attachment file against a Part object
  */
 class InvenTreePartAttachment extends InvenTreeAttachment {
-
   InvenTreePartAttachment() : super();
 
-  InvenTreePartAttachment.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+  InvenTreePartAttachment.fromJson(Map<String, dynamic> json)
+    : super.fromJson(json);
 
   @override
   String get REFERENCE_FIELD => "part";
@@ -580,9 +564,11 @@ class InvenTreePartAttachment extends InvenTreeAttachment {
   String get REF_MODEL_TYPE => "part";
 
   @override
-  String get URL => InvenTreeAPI().supportsModernAttachments ? "attachment/" : "part/attachment/";
+  String get URL => InvenTreeAPI().supportsModernAttachments
+      ? "attachment/"
+      : "part/attachment/";
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreePartAttachment.fromJson(json);
-
+  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
+      InvenTreePartAttachment.fromJson(json);
 }

@@ -1,4 +1,3 @@
-
 import "dart:io";
 
 import "package:intl/intl.dart";
@@ -27,13 +26,11 @@ import "package:inventree/widget/fields.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/snacks.dart";
 
-
 /*
  * Class that represents a single "form field",
  * defined by the InvenTree API
  */
 class APIFormField {
-
   // Constructor
   APIFormField(this.name, this.data);
 
@@ -53,7 +50,6 @@ class APIFormField {
 
   // Return the "lookup path" for this field, within the server data
   String get lookupPath {
-
     // Simple top-level case
     if (parent.isEmpty && !nested) {
       return name;
@@ -133,19 +129,16 @@ class APIFormField {
 
   // Construct a set of "filters" for this field (e.g. related field)
   Map<String, String> get filters {
-
     Map<String, String> _filters = {};
 
     // Start with the field "definition" (provided by the server)
     if (definition.containsKey("filters")) {
-
       try {
         var fDef = definition["filters"] as Map<String, dynamic>;
 
         fDef.forEach((String key, dynamic value) {
           _filters[key] = value.toString();
         });
-
       } catch (error) {
         // pass
       }
@@ -153,7 +146,6 @@ class APIFormField {
 
     // Next, look at any "instance_filters" provided by the server
     if (definition.containsKey("instance_filters")) {
-
       try {
         var fIns = definition["instance_filters"] as Map<String, dynamic>;
 
@@ -163,7 +155,6 @@ class APIFormField {
       } catch (error) {
         // pass
       }
-
     }
 
     // Finally, augment or override with any filters provided by the calling function
@@ -180,14 +171,12 @@ class APIFormField {
     }
 
     return _filters;
-
   }
 
   bool hasErrors() => errorMessages().isNotEmpty;
 
   // Extract error messages from the server response
   void extractErrorMessages(APIResponse response) {
-
     dynamic errors;
 
     if (isSimple) {
@@ -213,7 +202,6 @@ class APIFormField {
 
   // Return the error message associated with this field
   List<String> errorMessages() {
-
     dynamic errors = data["errors"] ?? [];
 
     // Handle the case where a single error message is returned
@@ -246,7 +234,6 @@ class APIFormField {
   List<dynamic> get choices => (getParameter("choices") ?? []) as List<dynamic>;
 
   Future<void> loadInitialData() async {
-
     // Only for "related fields"
     if (type != "related field") {
       return;
@@ -265,10 +252,7 @@ class APIFormField {
 
     String url = api_url + "/" + pk.toString() + "/";
 
-    final APIResponse response = await InvenTreeAPI().get(
-      url,
-      params: filters,
-    );
+    final APIResponse response = await InvenTreeAPI().get(url, params: filters);
 
     if (response.successful()) {
       initial_data = response.data;
@@ -277,7 +261,6 @@ class APIFormField {
 
   // Construct a widget for this input
   Widget constructField(BuildContext context) {
-
     switch (type) {
       case "string":
       case "url":
@@ -302,17 +285,14 @@ class APIFormField {
         return ListTile(
           title: Text(
             "Unsupported field type: '${type}' for field '${name}'",
-            style: TextStyle(
-                color: COLOR_DANGER,
-                fontStyle: FontStyle.italic),
-          )
+            style: TextStyle(color: COLOR_DANGER, fontStyle: FontStyle.italic),
+          ),
         );
     }
   }
 
   // Field for capturing a barcode
   Widget _constructBarcodeField(BuildContext context) {
-
     TextEditingController controller = TextEditingController();
 
     String barcode = (value ?? "").toString();
@@ -332,10 +312,7 @@ class APIFormField {
         hintText: placeholderText,
       ),
       child: ListTile(
-        title: TextField(
-          readOnly: true,
-          controller: controller,
-        ),
+        title: TextField(readOnly: true, controller: controller),
         trailing: IconButton(
           icon: Icon(TablerIcons.qrcode),
           onPressed: () async {
@@ -349,15 +326,13 @@ class APIFormField {
             scanBarcode(context, handler: handler);
           },
         ),
-      )
+      ),
     );
-
   }
 
   // Field for displaying and selecting dates
   Widget _constructDateField() {
-
-    DateTime? currentDate = DateTime.tryParse((value ?? "")as String);
+    DateTime? currentDate = DateTime.tryParse((value ?? "") as String);
 
     return InputDecorator(
       decoration: InputDecoration(
@@ -387,18 +362,17 @@ class APIFormField {
 
           return time;
         },
-      )
+      ),
     );
-
   }
-
 
   // Field for selecting and uploading files
   Widget _constructFileField() {
-
     TextEditingController controller = TextEditingController();
 
-    controller.text = (attachedfile?.path ?? L10().attachmentSelect).split("/").last;
+    controller.text = (attachedfile?.path ?? L10().attachmentSelect)
+        .split("/")
+        .last;
 
     return InputDecorator(
       decoration: InputDecoration(
@@ -406,10 +380,7 @@ class APIFormField {
         labelStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
       ),
       child: ListTile(
-        title: TextField(
-          readOnly: true,
-          controller: controller,
-        ),
+        title: TextField(readOnly: true, controller: controller),
         trailing: IconButton(
           icon: Icon(TablerIcons.circle_plus),
           onPressed: () async {
@@ -421,17 +392,16 @@ class APIFormField {
 
                 // Save the file
                 attachedfile = file;
-              }
+              },
             );
           },
-        )
-      )
+        ),
+      ),
     );
   }
 
   // Field for selecting from multiple choice options
   Widget _constructChoiceField() {
-
     dynamic initial;
 
     // Check if the current value is within the allowed values
@@ -445,17 +415,16 @@ class APIFormField {
     return DropdownSearch<dynamic>(
       popupProps: PopupProps.bottomSheet(
         showSelectedItems: false,
-        searchFieldProps: TextFieldProps(
-          autofocus: true
-        )
+        searchFieldProps: TextFieldProps(autofocus: true),
       ),
       selectedItem: initial,
       items: choices,
       dropdownDecoratorProps: DropDownDecoratorProps(
-          dropdownSearchDecoration: InputDecoration(
-        labelText: label,
-        hintText: helpText,
-      )),
+        dropdownSearchDecoration: InputDecoration(
+          labelText: label,
+          hintText: helpText,
+        ),
+      ),
       onChanged: null,
       clearButtonProps: ClearButtonProps(isVisible: !required),
       itemAsString: (dynamic item) {
@@ -467,12 +436,12 @@ class APIFormField {
         } else {
           data["value"] = item["value"];
         }
-      });
+      },
+    );
   }
 
   // Construct a floating point numerical input field
   Widget _constructFloatField() {
-
     // Initial value: try to cast to a valid number
     String initial = "";
 
@@ -491,7 +460,10 @@ class APIFormField {
         hintText: placeholderText,
       ),
       initialValue: initial,
-      keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
+      keyboardType: TextInputType.numberWithOptions(
+        signed: true,
+        decimal: true,
+      ),
       validator: (value) {
         value = value?.trim() ?? "";
 
@@ -512,7 +484,6 @@ class APIFormField {
         data["value"] = val;
       },
     );
-
   }
 
   // Construct an input for a related field
@@ -528,22 +499,20 @@ class APIFormField {
         emptyBuilder: (context, item) {
           return _renderEmptyResult();
         },
-        searchFieldProps: TextFieldProps(
-          autofocus: true
-        )
+        searchFieldProps: TextFieldProps(autofocus: true),
       ),
       selectedItem: initial_data,
       asyncItems: (String filter) async {
-        Map<String, String> _filters = {
-          ..._relatedFieldFilters(),
-          ...filters,
-        };
+        Map<String, String> _filters = {..._relatedFieldFilters(), ...filters};
 
         _filters["search"] = filter;
         _filters["offset"] = "0";
         _filters["limit"] = "25";
 
-        final APIResponse response = await InvenTreeAPI().get(api_url, params: _filters);
+        final APIResponse response = await InvenTreeAPI().get(
+          api_url,
+          params: _filters,
+        );
 
         if (response.isValid()) {
           return response.resultsList();
@@ -551,14 +520,13 @@ class APIFormField {
           return [];
         }
       },
-      clearButtonProps: ClearButtonProps(
-        isVisible: !required
-      ),
+      clearButtonProps: ClearButtonProps(isVisible: !required),
       dropdownDecoratorProps: DropDownDecoratorProps(
-          dropdownSearchDecoration: InputDecoration(
-        labelText: label,
-        hintText: helpText,
-      )),
+        dropdownSearchDecoration: InputDecoration(
+          labelText: label,
+          hintText: helpText,
+        ),
+      ),
       onChanged: null,
       itemAsString: (dynamic item) {
         Map<String, dynamic> data = item as Map<String, dynamic>;
@@ -607,12 +575,12 @@ class APIFormField {
         }
 
         return result;
-      });
+      },
+    );
   }
 
   // Construct a set of custom filters for the dropdown search
   Map<String, String> _relatedFieldFilters() {
-
     switch (model) {
       case InvenTreeSupplierPart.MODEL_TYPE:
         return InvenTreeSupplierPart().defaultListFilters();
@@ -626,8 +594,12 @@ class APIFormField {
   }
 
   // Render a "related field" based on the "model" type
-  Widget _renderRelatedField(String fieldName, dynamic item, bool selected, bool extended) {
-
+  Widget _renderRelatedField(
+    String fieldName,
+    dynamic item,
+    bool selected,
+    bool extended,
+  ) {
     // Convert to JSON
     Map<String, dynamic> data = {};
 
@@ -641,14 +613,16 @@ class APIFormField {
       data = {};
 
       sentryReportError(
-        "_renderRelatedField", error, stackTrace,
+        "_renderRelatedField",
+        error,
+        stackTrace,
         context: {
           "method": "_renderRelateField",
           "field_name": fieldName,
           "item": item.toString(),
           "selected": selected.toString(),
           "extended": extended.toString(),
-        }
+        },
       );
     }
 
@@ -658,52 +632,71 @@ class APIFormField {
 
         return ListTile(
           title: Text(
-              part.fullname,
-              style: TextStyle(fontWeight: selected && extended ? FontWeight.bold : FontWeight.normal)
+            part.fullname,
+            style: TextStyle(
+              fontWeight: selected && extended
+                  ? FontWeight.bold
+                  : FontWeight.normal,
+            ),
           ),
-          subtitle: extended ? Text(
-            part.description,
-            style: TextStyle(fontWeight: selected ? FontWeight.bold : FontWeight.normal),
-          ) : null,
-          leading: extended ? InvenTreeAPI().getThumbnail(part.thumbnail) : null,
+          subtitle: extended
+              ? Text(
+                  part.description,
+                  style: TextStyle(
+                    fontWeight: selected ? FontWeight.bold : FontWeight.normal,
+                  ),
+                )
+              : null,
+          leading: extended
+              ? InvenTreeAPI().getThumbnail(part.thumbnail)
+              : null,
         );
       case InvenTreePartTestTemplate.MODEL_TYPE:
-          var template = InvenTreePartTestTemplate.fromJson(data);
+        var template = InvenTreePartTestTemplate.fromJson(data);
 
-          return ListTile(
-            title: Text(template.testName),
-            subtitle: Text(template.description),
-          );
+        return ListTile(
+          title: Text(template.testName),
+          subtitle: Text(template.description),
+        );
       case InvenTreeSupplierPart.MODEL_TYPE:
         var part = InvenTreeSupplierPart.fromJson(data);
 
         return ListTile(
           title: Text(part.SKU),
           subtitle: Text(part.partName),
-          leading: extended ? InvenTreeAPI().getThumbnail(part.partImage) : null,
-          trailing: extended && part.supplierImage.isNotEmpty ? InvenTreeAPI().getThumbnail(part.supplierImage) : null,
+          leading: extended
+              ? InvenTreeAPI().getThumbnail(part.partImage)
+              : null,
+          trailing: extended && part.supplierImage.isNotEmpty
+              ? InvenTreeAPI().getThumbnail(part.supplierImage)
+              : null,
         );
       case InvenTreePartCategory.MODEL_TYPE:
-
         var cat = InvenTreePartCategory.fromJson(data);
 
         return ListTile(
           title: Text(
-              cat.pathstring,
-              style: TextStyle(fontWeight: selected && extended ? FontWeight.bold : FontWeight.normal)
+            cat.pathstring,
+            style: TextStyle(
+              fontWeight: selected && extended
+                  ? FontWeight.bold
+                  : FontWeight.normal,
+            ),
           ),
-          subtitle: extended ? Text(
-            cat.description,
-            style: TextStyle(fontWeight: selected ? FontWeight.bold : FontWeight.normal),
-          ) : null,
+          subtitle: extended
+              ? Text(
+                  cat.description,
+                  style: TextStyle(
+                    fontWeight: selected ? FontWeight.bold : FontWeight.normal,
+                  ),
+                )
+              : null,
         );
       case InvenTreeStockItem.MODEL_TYPE:
         var item = InvenTreeStockItem.fromJson(data);
 
         return ListTile(
-          title: Text(
-            item.partName,
-          ),
+          title: Text(item.partName),
           leading: InvenTreeAPI().getThumbnail(item.partThumbnail),
           trailing: Text(item.quantityString()),
         );
@@ -712,13 +705,21 @@ class APIFormField {
 
         return ListTile(
           title: Text(
-              loc.pathstring,
-              style: TextStyle(fontWeight: selected && extended ? FontWeight.bold : FontWeight.normal)
+            loc.pathstring,
+            style: TextStyle(
+              fontWeight: selected && extended
+                  ? FontWeight.bold
+                  : FontWeight.normal,
+            ),
           ),
-          subtitle: extended ? Text(
-            loc.description,
-            style: TextStyle(fontWeight: selected ? FontWeight.bold : FontWeight.normal),
-          ) : null,
+          subtitle: extended
+              ? Text(
+                  loc.description,
+                  style: TextStyle(
+                    fontWeight: selected ? FontWeight.bold : FontWeight.normal,
+                  ),
+                )
+              : null,
         );
       case InvenTreeSalesOrderShipment.MODEL_TYPE:
         var shipment = InvenTreeSalesOrderShipment.fromJson(data);
@@ -738,32 +739,26 @@ class APIFormField {
       case "contact":
         String name = (data["name"] ?? "") as String;
         String role = (data["role"] ?? "") as String;
-        return ListTile(
-          title: Text(name),
-          subtitle: Text(role),
-        );
+        return ListTile(title: Text(name), subtitle: Text(role));
       case InvenTreeCompany.MODEL_TYPE:
         var company = InvenTreeCompany.fromJson(data);
         return ListTile(
-            title: Text(company.name),
-            subtitle: extended ? Text(company.description) : null,
-            leading: InvenTreeAPI().getThumbnail(company.thumbnail)
+          title: Text(company.name),
+          subtitle: extended ? Text(company.description) : null,
+          leading: InvenTreeAPI().getThumbnail(company.thumbnail),
         );
       case InvenTreeProjectCode.MODEL_TYPE:
         var project_code = InvenTreeProjectCode.fromJson(data);
         return ListTile(
-            title: Text(project_code.code),
-            subtitle: Text(project_code.description),
-            leading: Icon(TablerIcons.list)
+          title: Text(project_code.code),
+          subtitle: Text(project_code.description),
+          leading: Icon(TablerIcons.list),
         );
       default:
         return ListTile(
           title: Text(
-              "Unsupported model",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: COLOR_DANGER
-              )
+            "Unsupported model",
+            style: TextStyle(fontWeight: FontWeight.bold, color: COLOR_DANGER),
           ),
           subtitle: Text("Model '${model}' rendering not supported"),
         );
@@ -782,10 +777,8 @@ class APIFormField {
     );
   }
 
-
   // Construct a string input element
   Widget _constructString() {
-
     if (readOnly) {
       return ListTile(
         title: Text(label),
@@ -821,7 +814,6 @@ class APIFormField {
 
   // Construct a boolean input element
   Widget _constructBoolean() {
-
     bool? initial_value;
 
     if (value is bool || value == null) {
@@ -860,15 +852,12 @@ class APIFormField {
       color: hasErrors() ? COLOR_DANGER : null,
     );
   }
-
 }
-
 
 /*
  * Extract field options from a returned OPTIONS request
  */
 Map<String, dynamic> extractFields(APIResponse response) {
-
   if (!response.isValid()) {
     return {};
   }
@@ -896,8 +885,10 @@ Map<String, dynamic> extractFields(APIResponse response) {
  * The map "tree" is traversed based on the provided lookup string, which can use dotted notation.
  * This allows complex paths to be used to lookup field information.
  */
-Map<String, dynamic> extractFieldDefinition(Map<String, dynamic> data, String lookup) {
-
+Map<String, dynamic> extractFieldDefinition(
+  Map<String, dynamic> data,
+  String lookup,
+) {
   List<String> path = lookup.split(".");
 
   // Shadow copy the data for path traversal
@@ -905,7 +896,6 @@ Map<String, dynamic> extractFieldDefinition(Map<String, dynamic> data, String lo
 
   // Iterate through all but the last element of the path
   for (int ii = 0; ii < (path.length - 1); ii++) {
-
     String el = path[ii];
 
     if (!_data.containsKey(el)) {
@@ -923,11 +913,9 @@ Map<String, dynamic> extractFieldDefinition(Map<String, dynamic> data, String lo
       // Report the error
       sentryReportError(
         "apiForm.extractFieldDefinition : path traversal",
-        error, stackTrace,
-        context: {
-          "path": path.toString(),
-          "el": el,
-        }
+        error,
+        stackTrace,
+        context: {"path": path.toString(), "el": el},
       );
       return {};
     }
@@ -938,7 +926,6 @@ Map<String, dynamic> extractFieldDefinition(Map<String, dynamic> data, String lo
   if (!_data.containsKey(el)) {
     return {};
   } else {
-
     try {
       Map<String, dynamic> definition = _data[el] as Map<String, dynamic>;
 
@@ -950,18 +937,15 @@ Map<String, dynamic> extractFieldDefinition(Map<String, dynamic> data, String lo
       // Report the error
       sentryReportError(
         "apiForm.extractFieldDefinition : as map",
-        error, stacktrace,
-        context: {
-          "el": el.toString(),
-        }
+        error,
+        stacktrace,
+        context: {"el": el.toString()},
       );
 
       return {};
     }
-
   }
 }
-
 
 /*
  * Launch an API-driven form,
@@ -976,24 +960,24 @@ Map<String, dynamic> extractFieldDefinition(Map<String, dynamic> data, String lo
  */
 
 Future<void> launchApiForm(
-    BuildContext context, String title, String url, Map<String, dynamic> fields,
-    {
-      String fileField = "",
-      Map<String, dynamic> modelData = const {},
-      String method = "PATCH",
-      Function(Map<String, dynamic>)? onSuccess,
-      bool Function(Map<String, dynamic>)? validate,
-      Function? onCancel,
-      IconData icon = TablerIcons.device_floppy
-    }) async {
-
+  BuildContext context,
+  String title,
+  String url,
+  Map<String, dynamic> fields, {
+  String fileField = "",
+  Map<String, dynamic> modelData = const {},
+  String method = "PATCH",
+  Function(Map<String, dynamic>)? onSuccess,
+  bool Function(Map<String, dynamic>)? validate,
+  Function? onCancel,
+  IconData icon = TablerIcons.device_floppy,
+}) async {
   showLoadingOverlay();
 
   // List of fields defined by the server
   Map<String, dynamic> serverFields = {};
 
   if (url.isNotEmpty) {
-
     var options = await InvenTreeAPI().options(url);
 
     // Invalid response from server
@@ -1006,10 +990,7 @@ Future<void> launchApiForm(
 
     if (serverFields.isEmpty) {
       // User does not have permission to perform this action
-      showSnackIcon(
-        L10().response403,
-        icon: TablerIcons.user_x,
-      );
+      showSnackIcon(L10().response403, icon: TablerIcons.user_x);
 
       hideLoadingOverlay();
       return;
@@ -1022,7 +1003,6 @@ Future<void> launchApiForm(
   APIFormField field;
 
   for (String fieldName in fields.keys) {
-
     dynamic data = fields[fieldName];
 
     Map<String, dynamic> fieldData = {};
@@ -1066,35 +1046,33 @@ Future<void> launchApiForm(
   // Now, launch a new widget!
   Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => APIFormWidget(
-      title,
-      url,
-      formFields,
-      method,
-      onSuccess: onSuccess,
-      validate: validate,
-      fileField: fileField,
-      icon: icon,
-    ))
+    MaterialPageRoute(
+      builder: (context) => APIFormWidget(
+        title,
+        url,
+        formFields,
+        method,
+        onSuccess: onSuccess,
+        validate: validate,
+        fileField: fileField,
+        icon: icon,
+      ),
+    ),
   );
 }
 
-
 class APIFormWidget extends StatefulWidget {
-
   const APIFormWidget(
-      this.title,
-      this.url,
-      this.fields,
-      this.method,
-      {
-        Key? key,
-        this.onSuccess,
-        this.validate,
-        this.fileField = "",
-        this.icon = TablerIcons.device_floppy,
-      }
-      ) : super(key: key);
+    this.title,
+    this.url,
+    this.fields,
+    this.method, {
+    Key? key,
+    this.onSuccess,
+    this.validate,
+    this.fileField = "",
+    this.icon = TablerIcons.device_floppy,
+  }) : super(key: key);
 
   //! Form title to display
   final String title;
@@ -1118,12 +1096,9 @@ class APIFormWidget extends StatefulWidget {
 
   @override
   _APIFormWidgetState createState() => _APIFormWidgetState();
-
 }
 
-
 class _APIFormWidgetState extends State<APIFormWidget> {
-
   _APIFormWidgetState() : super();
 
   final _formKey = GlobalKey<FormState>();
@@ -1133,7 +1108,6 @@ class _APIFormWidgetState extends State<APIFormWidget> {
   bool spacerRequired = false;
 
   List<Widget> _buildForm() {
-
     List<Widget> widgets = [];
 
     // Display non-field errors first
@@ -1141,26 +1115,16 @@ class _APIFormWidgetState extends State<APIFormWidget> {
       for (String error in nonFieldErrors) {
         widgets.add(
           ListTile(
-            title: Text(
-              error,
-              style: TextStyle(
-                color: COLOR_DANGER,
-              ),
-            ),
-            leading: Icon(
-              TablerIcons.exclamation_circle,
-              color: COLOR_DANGER
-            ),
-          )
+            title: Text(error, style: TextStyle(color: COLOR_DANGER)),
+            leading: Icon(TablerIcons.exclamation_circle, color: COLOR_DANGER),
+          ),
         );
       }
 
       widgets.add(Divider(height: 5));
-
     }
 
     for (var field in widget.fields) {
-
       if (field.hidden) {
         continue;
       }
@@ -1189,8 +1153,8 @@ class _APIFormWidgetState extends State<APIFormWidget> {
                   fontStyle: FontStyle.italic,
                   fontSize: 16,
                 ),
-              )
-            )
+              ),
+            ),
           );
         }
       }
@@ -1210,20 +1174,16 @@ class _APIFormWidgetState extends State<APIFormWidget> {
   }
 
   Future<APIResponse> _submit(Map<String, dynamic> data) async {
-
     // If a file upload is required, we have to handle the submission differently
     if (widget.fileField.isNotEmpty) {
-
       // Pop the "file" field
       data.remove(widget.fileField);
 
       for (var field in widget.fields) {
         if (field.name == widget.fileField) {
-
           File? file = field.attachedfile;
 
           if (file != null) {
-
             // A valid file has been supplied
             final response = await InvenTreeAPI().uploadFile(
               widget.url,
@@ -1239,23 +1199,21 @@ class _APIFormWidgetState extends State<APIFormWidget> {
     }
 
     if (widget.method == "POST") {
-
       showLoadingOverlay();
-      final response =  await InvenTreeAPI().post(
+      final response = await InvenTreeAPI().post(
         widget.url,
         body: data,
-        expectedStatusCode: null
+        expectedStatusCode: null,
       );
       hideLoadingOverlay();
 
       return response;
-
     } else {
       showLoadingOverlay();
       final response = await InvenTreeAPI().patch(
         widget.url,
         body: data,
-        expectedStatusCode: null
+        expectedStatusCode: null,
       );
       hideLoadingOverlay();
 
@@ -1264,17 +1222,12 @@ class _APIFormWidgetState extends State<APIFormWidget> {
   }
 
   void extractNonFieldErrors(APIResponse response) {
-
     List<String> errors = [];
 
     Map<String, dynamic> data = response.asMap();
 
     // Potential keys representing non-field errors
-    List<String> keys = [
-      "__all__",
-      "non_field_errors",
-      "errors",
-    ];
+    List<String> keys = ["__all__", "non_field_errors", "errors"];
 
     for (String key in keys) {
       if (data.containsKey(key)) {
@@ -1301,7 +1254,6 @@ class _APIFormWidgetState extends State<APIFormWidget> {
     var errors = response.asMap();
 
     for (String fieldName in errors.keys) {
-
       bool match = false;
 
       switch (fieldName) {
@@ -1313,7 +1265,6 @@ class _APIFormWidgetState extends State<APIFormWidget> {
           continue;
         default:
           for (var field in widget.fields) {
-
             // Hidden fields can't display errors, so we won't match
             if (field.hidden) {
               continue;
@@ -1324,7 +1275,6 @@ class _APIFormWidgetState extends State<APIFormWidget> {
               match = true;
               break;
             } else if (field.parent == fieldName) {
-
               var error = errors[fieldName];
 
               if (error is List) {
@@ -1340,7 +1290,6 @@ class _APIFormWidgetState extends State<APIFormWidget> {
               }
             }
           }
-
       }
 
       if (!match) {
@@ -1352,7 +1301,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
             "status_code": response.statusCode.toString(),
             "field": fieldName,
             "error_message": response.data.toString(),
-          }
+          },
         );
       }
     }
@@ -1362,14 +1311,12 @@ class _APIFormWidgetState extends State<APIFormWidget> {
    * Submit the form data to the server, and handle the results
    */
   Future<void> _save(BuildContext context) async {
-
     // Package up the form data
     Map<String, dynamic> data = {};
 
     // Iterate through and find "simple" top-level fields
 
     for (var field in widget.fields) {
-
       if (field.readOnly) {
         continue;
       }
@@ -1380,7 +1327,6 @@ class _APIFormWidgetState extends State<APIFormWidget> {
       } else {
         // Not so simple... (WHY DID I MAKE THE API SO COMPLEX?)
         if (field.parent.isNotEmpty) {
-
           // TODO: This is a dirty hack, there *must* be a cleaner way?!
 
           dynamic parent = data[field.parent] ?? {};
@@ -1402,7 +1348,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
         }
       }
     }
-    
+
     final bool isValid = widget.validate?.call(data) ?? true;
 
     if (!isValid) {
@@ -1442,7 +1388,6 @@ class _APIFormWidgetState extends State<APIFormWidget> {
         Navigator.pop(context);
 
         if (successFunc != null) {
-
           // Ensure the response is a valid JSON structure
           Map<String, dynamic> json = {};
 
@@ -1457,10 +1402,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
         return;
       case 400:
         // Form submission / validation error
-        showSnackIcon(
-          L10().formError,
-          success: false,
-        );
+        showSnackIcon(L10().formError, success: false);
 
         // Update field errors
         for (var field in widget.fields) {
@@ -1470,30 +1412,15 @@ class _APIFormWidgetState extends State<APIFormWidget> {
         extractNonFieldErrors(response);
         checkInvalidErrors(response);
       case 401:
-        showSnackIcon(
-          "401: " + L10().response401,
-          success: false
-        );
+        showSnackIcon("401: " + L10().response401, success: false);
       case 403:
-        showSnackIcon(
-          "403: " + L10().response403,
-          success: false,
-        );
+        showSnackIcon("403: " + L10().response403, success: false);
       case 404:
-        showSnackIcon(
-          "404: " + L10().response404,
-          success: false,
-        );
+        showSnackIcon("404: " + L10().response404, success: false);
       case 405:
-        showSnackIcon(
-          "405: " + L10().response405,
-          success: false,
-        );
+        showSnackIcon("405: " + L10().response405, success: false);
       case 500:
-        showSnackIcon(
-          "500: " + L10().response500,
-          success: false,
-        );
+        showSnackIcon("500: " + L10().response500, success: false);
       default:
         showSnackIcon(
           "${response.statusCode}: " + L10().responseInvalid,
@@ -1504,12 +1431,10 @@ class _APIFormWidgetState extends State<APIFormWidget> {
     setState(() {
       // Refresh the form
     });
-
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -1518,15 +1443,14 @@ class _APIFormWidgetState extends State<APIFormWidget> {
           IconButton(
             icon: Icon(widget.icon),
             onPressed: () {
-
               if (_formKey.currentState!.validate()) {
                 _formKey.currentState!.save();
 
                 _save(context);
               }
             },
-          )
-        ]
+          ),
+        ],
       ),
       body: Form(
         key: _formKey,
@@ -1538,9 +1462,8 @@ class _APIFormWidgetState extends State<APIFormWidget> {
             children: _buildForm(),
           ),
           padding: EdgeInsets.all(16),
-        )
-      )
+        ),
+      ),
     );
-
   }
 }

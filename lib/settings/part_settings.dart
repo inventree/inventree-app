@@ -1,4 +1,3 @@
-
 import "package:flutter/material.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
@@ -6,15 +5,12 @@ import "package:inventree/l10.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/preferences.dart";
 
-
 class InvenTreePartSettingsWidget extends StatefulWidget {
   @override
   _InvenTreePartSettingsState createState() => _InvenTreePartSettingsState();
 }
 
-
 class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
-
   _InvenTreePartSettingsState();
 
   bool partShowParameters = true;
@@ -32,16 +28,33 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
   }
 
   Future<void> loadSettings() async {
-    partShowParameters = await InvenTreeSettingsManager().getBool(INV_PART_SHOW_PARAMETERS, true);
-    partShowBom = await InvenTreeSettingsManager().getBool(INV_PART_SHOW_BOM, true);
-    partShowPricing = await InvenTreeSettingsManager().getBool(INV_PART_SHOW_PRICING, true);
-    stockShowHistory = await InvenTreeSettingsManager().getBool(INV_STOCK_SHOW_HISTORY, false);
-    stockShowTests = await InvenTreeSettingsManager().getBool(INV_STOCK_SHOW_TESTS, true);
-    stockConfirmScan = await InvenTreeSettingsManager().getBool(INV_STOCK_CONFIRM_SCAN, false);
+    partShowParameters = await InvenTreeSettingsManager().getBool(
+      INV_PART_SHOW_PARAMETERS,
+      true,
+    );
+    partShowBom = await InvenTreeSettingsManager().getBool(
+      INV_PART_SHOW_BOM,
+      true,
+    );
+    partShowPricing = await InvenTreeSettingsManager().getBool(
+      INV_PART_SHOW_PRICING,
+      true,
+    );
+    stockShowHistory = await InvenTreeSettingsManager().getBool(
+      INV_STOCK_SHOW_HISTORY,
+      false,
+    );
+    stockShowTests = await InvenTreeSettingsManager().getBool(
+      INV_STOCK_SHOW_TESTS,
+      true,
+    );
+    stockConfirmScan = await InvenTreeSettingsManager().getBool(
+      INV_STOCK_CONFIRM_SCAN,
+      false,
+    );
 
     if (mounted) {
-      setState(() {
-      });
+      setState(() {});
     }
   }
 
@@ -50,7 +63,7 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
     return Scaffold(
       appBar: AppBar(
         title: Text(L10().partSettings),
-          backgroundColor: COLOR_APP_BAR
+        backgroundColor: COLOR_APP_BAR,
       ),
       body: Container(
         child: ListView(
@@ -62,7 +75,10 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
               trailing: Switch(
                 value: partShowParameters,
                 onChanged: (bool value) {
-                  InvenTreeSettingsManager().setValue(INV_PART_SHOW_PARAMETERS, value);
+                  InvenTreeSettingsManager().setValue(
+                    INV_PART_SHOW_PARAMETERS,
+                    value,
+                  );
                   setState(() {
                     partShowParameters = value;
                   });
@@ -90,7 +106,10 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
               trailing: Switch(
                 value: partShowPricing,
                 onChanged: (bool value) {
-                  InvenTreeSettingsManager().setValue(INV_PART_SHOW_PRICING, value);
+                  InvenTreeSettingsManager().setValue(
+                    INV_PART_SHOW_PRICING,
+                    value,
+                  );
                   setState(() {
                     partShowPricing = value;
                   });
@@ -105,7 +124,10 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
               trailing: Switch(
                 value: stockShowHistory,
                 onChanged: (bool value) {
-                  InvenTreeSettingsManager().setValue(INV_STOCK_SHOW_HISTORY, value);
+                  InvenTreeSettingsManager().setValue(
+                    INV_STOCK_SHOW_HISTORY,
+                    value,
+                  );
                   setState(() {
                     stockShowHistory = value;
                   });
@@ -115,11 +137,14 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
             ListTile(
               title: Text(L10().testResults),
               subtitle: Text(L10().testResultsDetail),
-              leading:  Icon(TablerIcons.test_pipe),
+              leading: Icon(TablerIcons.test_pipe),
               trailing: Switch(
                 value: stockShowTests,
                 onChanged: (bool value) {
-                  InvenTreeSettingsManager().setValue(INV_STOCK_SHOW_TESTS, value);
+                  InvenTreeSettingsManager().setValue(
+                    INV_STOCK_SHOW_TESTS,
+                    value,
+                  );
                   setState(() {
                     stockShowTests = value;
                   });
@@ -133,16 +158,19 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
               trailing: Switch(
                 value: stockConfirmScan,
                 onChanged: (bool value) {
-                  InvenTreeSettingsManager().setValue(INV_STOCK_CONFIRM_SCAN, value);
+                  InvenTreeSettingsManager().setValue(
+                    INV_STOCK_CONFIRM_SCAN,
+                    value,
+                  );
                   setState(() {
                     stockConfirmScan = value;
                   });
-                }
+                },
               ),
-            )
-          ]
-        )
-      )
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

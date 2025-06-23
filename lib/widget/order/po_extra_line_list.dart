@@ -9,28 +9,27 @@ import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 
-
 class POExtraLineListWidget extends StatefulWidget {
-
-  const POExtraLineListWidget(this.order, {this.filters = const {}, Key? key}) : super(key: key);
+  const POExtraLineListWidget(this.order, {this.filters = const {}, Key? key})
+    : super(key: key);
 
   final InvenTreePurchaseOrder order;
 
   final Map<String, String> filters;
 
   @override
-  _PurchaseOrderExtraLineListWidgetState createState() => _PurchaseOrderExtraLineListWidgetState();
+  _PurchaseOrderExtraLineListWidgetState createState() =>
+      _PurchaseOrderExtraLineListWidgetState();
 }
 
-class _PurchaseOrderExtraLineListWidgetState extends RefreshableState<POExtraLineListWidget> {
-
+class _PurchaseOrderExtraLineListWidgetState
+    extends RefreshableState<POExtraLineListWidget> {
   _PurchaseOrderExtraLineListWidgetState();
 
   @override
   String getAppBarTitle() => L10().extraLineItems;
 
   Future<void> _addLineItem(BuildContext context) async {
-
     var fields = InvenTreePOExtraLineItem().formFields();
 
     fields["order"]?["value"] = widget.order.pk;
@@ -42,7 +41,7 @@ class _PurchaseOrderExtraLineListWidgetState extends RefreshableState<POExtraLin
       onSuccess: (data) async {
         refresh(context);
         showSnackIcon(L10().lineItemUpdated, success: true);
-      }
+      },
     );
   }
 
@@ -57,8 +56,8 @@ class _PurchaseOrderExtraLineListWidgetState extends RefreshableState<POExtraLin
           label: L10().lineItemAdd,
           onTap: () {
             _addLineItem(context);
-          }
-        )
+          },
+        ),
       );
     }
 
@@ -71,35 +70,41 @@ class _PurchaseOrderExtraLineListWidgetState extends RefreshableState<POExtraLin
   }
 }
 
-
 class PaginatedPOExtraLineList extends PaginatedSearchWidget {
-
-  const PaginatedPOExtraLineList(Map<String, String> filters) : super(filters: filters);
+  const PaginatedPOExtraLineList(Map<String, String> filters)
+    : super(filters: filters);
 
   @override
   String get searchTitle => L10().extraLineItems;
 
   @override
-  _PaginatedPOExtraLineListState createState() => _PaginatedPOExtraLineListState();
-
+  _PaginatedPOExtraLineListState createState() =>
+      _PaginatedPOExtraLineListState();
 }
 
-class _PaginatedPOExtraLineListState extends PaginatedSearchState<PaginatedPOExtraLineList> {
-
+class _PaginatedPOExtraLineListState
+    extends PaginatedSearchState<PaginatedPOExtraLineList> {
   _PaginatedPOExtraLineListState() : super();
 
   @override
   String get prefix => "po_extra_line_";
 
   @override
-  Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
-    final page = await InvenTreePOExtraLineItem().listPaginated(limit, offset, filters: params);
+  Future<InvenTreePageResponse?> requestPage(
+    int limit,
+    int offset,
+    Map<String, String> params,
+  ) async {
+    final page = await InvenTreePOExtraLineItem().listPaginated(
+      limit,
+      offset,
+      filters: params,
+    );
     return page;
   }
 
   @override
   Widget buildItem(BuildContext context, InvenTreeModel model) {
-
     InvenTreePOExtraLineItem line = model as InvenTreePOExtraLineItem;
 
     return ListTile(

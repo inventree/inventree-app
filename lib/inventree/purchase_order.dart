@@ -12,18 +12,18 @@ import "package:inventree/widget/progress.dart";
 import "package:inventree/api_form.dart";
 import "package:inventree/l10.dart";
 
-
 /*
  * Class representing an individual PurchaseOrder instance
  */
 class InvenTreePurchaseOrder extends InvenTreeOrder {
-
   InvenTreePurchaseOrder() : super();
 
-  InvenTreePurchaseOrder.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+  InvenTreePurchaseOrder.fromJson(Map<String, dynamic> json)
+    : super.fromJson(json);
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreePurchaseOrder.fromJson(json);
+  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
+      InvenTreePurchaseOrder.fromJson(json);
 
   @override
   String get URL => "order/po/";
@@ -31,10 +31,8 @@ class InvenTreePurchaseOrder extends InvenTreeOrder {
   @override
   Future<Object?> goToDetailPage(BuildContext context) async {
     return Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => PurchaseOrderDetailWidget(this)
-        )
+      context,
+      MaterialPageRoute(builder: (context) => PurchaseOrderDetailWidget(this)),
     );
   }
 
@@ -50,9 +48,7 @@ class InvenTreePurchaseOrder extends InvenTreeOrder {
     Map<String, Map<String, dynamic>> fields = {
       "reference": {},
       "supplier": {
-        "filters": {
-          "is_supplier": true,
-        },
+        "filters": {"is_supplier": true},
       },
       "supplier_reference": {},
       "description": {},
@@ -63,9 +59,7 @@ class InvenTreePurchaseOrder extends InvenTreeOrder {
       "link": {},
       "responsible": {},
       "contact": {
-        "filters": {
-          "company": supplierId,
-        }
+        "filters": {"company": supplierId},
       },
     };
 
@@ -82,20 +76,16 @@ class InvenTreePurchaseOrder extends InvenTreeOrder {
     }
 
     return fields;
-
   }
 
   @override
   Map<String, String> defaultFilters() {
-    return {
-      "supplier_detail": "true",
-    };
+    return {"supplier_detail": "true"};
   }
 
   int get supplierId => getInt("supplier");
 
   InvenTreeCompany? get supplier {
-
     dynamic supplier_detail = jsondata["supplier_detail"];
 
     if (supplier_detail == null) {
@@ -109,20 +99,26 @@ class InvenTreePurchaseOrder extends InvenTreeOrder {
 
   int get destinationId => getInt("destination");
 
-  bool get isOpen => api.PurchaseOrderStatus.isNameIn(status, ["PENDING", "PLACED", "ON_HOLD"]);
+  bool get isOpen => api.PurchaseOrderStatus.isNameIn(status, [
+    "PENDING",
+    "PLACED",
+    "ON_HOLD",
+  ]);
 
-  bool get isPending => api.PurchaseOrderStatus.isNameIn(status, ["PENDING", "ON_HOLD"]);
+  bool get isPending =>
+      api.PurchaseOrderStatus.isNameIn(status, ["PENDING", "ON_HOLD"]);
 
   bool get isPlaced => api.PurchaseOrderStatus.isNameIn(status, ["PLACED"]);
 
-  bool get isFailed => api.PurchaseOrderStatus.isNameIn(status, ["CANCELLED", "LOST", "RETURNED"]);
+  bool get isFailed => api.PurchaseOrderStatus.isNameIn(status, [
+    "CANCELLED",
+    "LOST",
+    "RETURNED",
+  ]);
 
   Future<List<InvenTreePOLineItem>> getLineItems() async {
-
     final results = await InvenTreePOLineItem().list(
-        filters: {
-          "order": "${pk}",
-        }
+      filters: {"order": "${pk}"},
     );
 
     List<InvenTreePOLineItem> items = [];
@@ -161,13 +157,14 @@ class InvenTreePurchaseOrder extends InvenTreeOrder {
 }
 
 class InvenTreePOLineItem extends InvenTreeOrderLine {
-
   InvenTreePOLineItem() : super();
 
-  InvenTreePOLineItem.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+  InvenTreePOLineItem.fromJson(Map<String, dynamic> json)
+    : super.fromJson(json);
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreePOLineItem.fromJson(json);
+  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
+      InvenTreePOLineItem.fromJson(json);
 
   @override
   String get URL => "order/po-line/";
@@ -198,10 +195,7 @@ class InvenTreePOLineItem extends InvenTreeOrderLine {
 
   @override
   Map<String, String> defaultFilters() {
-    return {
-      "part_detail": "true",
-      "order_detail": "true",
-    };
+    return {"part_detail": "true", "order_detail": "true"};
   }
 
   double get received => getDouble("received");
@@ -216,14 +210,14 @@ class InvenTreePOLineItem extends InvenTreeOrderLine {
     return received / quantity;
   }
 
-  String get progressString => simpleNumberString(received) + " / " + simpleNumberString(quantity);
+  String get progressString =>
+      simpleNumberString(received) + " / " + simpleNumberString(quantity);
 
   double get outstanding => quantity - received;
 
   int get supplierPartId => getInt("part");
 
   InvenTreeSupplierPart? get supplierPart {
-
     dynamic detail = jsondata["supplier_part_detail"];
 
     if (detail == null) {
@@ -246,7 +240,7 @@ class InvenTreePOLineItem extends InvenTreeOrderLine {
   String get SKU => getString("SKU", subKey: "supplier_part_detail");
 
   double get purchasePrice => getDouble("purchase_price");
-  
+
   String get purchasePriceCurrency => getString("purchase_price_currency");
 
   int get destinationId => getInt("destination");
@@ -256,7 +250,13 @@ class InvenTreePOLineItem extends InvenTreeOrderLine {
   Map<String, dynamic> get destinationDetail => getMap("destination_detail");
 
   // Receive this line item into stock
-  Future<void> receive(BuildContext context, {int? destination, double? quantity, String? barcode, Function? onSuccess}) async {
+  Future<void> receive(
+    BuildContext context, {
+    int? destination,
+    double? quantity,
+    String? barcode,
+    Function? onSuccess,
+  }) async {
     // Infer the destination location from the line item if not provided
     if (destinationId > 0) {
       destination = destinationId;
@@ -274,20 +274,10 @@ class InvenTreePOLineItem extends InvenTreeOrderLine {
         "hidden": true,
         "value": pk,
       },
-      "quantity": {
-        "parent": "items",
-        "nested": true,
-        "value": quantity,
-      },
+      "quantity": {"parent": "items", "nested": true, "value": quantity},
       "location": {},
-      "status": {
-        "parent": "items",
-        "nested": true,
-      },
-      "batch_code": {
-        "parent": "items",
-        "nested": true,
-      },
+      "status": {"parent": "items", "nested": true},
+      "batch_code": {"parent": "items", "nested": true},
       "barcode": {
         "parent": "items",
         "nested": true,
@@ -295,7 +285,7 @@ class InvenTreePOLineItem extends InvenTreeOrderLine {
         "label": L10().barcodeAssign,
         "value": barcode,
         "required": false,
-      }
+      },
     };
 
     if (destination != null && destination > 0) {
@@ -306,31 +296,31 @@ class InvenTreePOLineItem extends InvenTreeOrderLine {
 
     if (order != null) {
       await launchApiForm(
-          context,
-          L10().receiveItem,
-          order.receive_url,
-          fields,
-          method: "POST",
-          icon: TablerIcons.transition_right,
-          onSuccess: (data) {
-            if (onSuccess != null) {
-              onSuccess();
-            }
+        context,
+        L10().receiveItem,
+        order.receive_url,
+        fields,
+        method: "POST",
+        icon: TablerIcons.transition_right,
+        onSuccess: (data) {
+          if (onSuccess != null) {
+            onSuccess();
           }
+        },
       );
     }
   }
 }
 
-
 class InvenTreePOExtraLineItem extends InvenTreeExtraLineItem {
-
   InvenTreePOExtraLineItem() : super();
 
-  InvenTreePOExtraLineItem.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+  InvenTreePOExtraLineItem.fromJson(Map<String, dynamic> json)
+    : super.fromJson(json);
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreePOExtraLineItem.fromJson(json);
+  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
+      InvenTreePOExtraLineItem.fromJson(json);
 
   @override
   String get URL => "order/po-extra-line/";
@@ -342,23 +332,19 @@ class InvenTreePOExtraLineItem extends InvenTreeExtraLineItem {
   Future<Object?> goToDetailPage(BuildContext context) async {
     return Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => ExtraLineDetailWidget(this)
-      )
+      MaterialPageRoute(builder: (context) => ExtraLineDetailWidget(this)),
     );
   }
-
 }
-
 
 /*
  * Class representing an attachment file against a PurchaseOrder object
  */
 class InvenTreePurchaseOrderAttachment extends InvenTreeAttachment {
-
   InvenTreePurchaseOrderAttachment() : super();
 
-  InvenTreePurchaseOrderAttachment.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+  InvenTreePurchaseOrderAttachment.fromJson(Map<String, dynamic> json)
+    : super.fromJson(json);
 
   @override
   String get REFERENCE_FIELD => "order";
@@ -367,9 +353,11 @@ class InvenTreePurchaseOrderAttachment extends InvenTreeAttachment {
   String get REF_MODEL_TYPE => "purchaseorder";
 
   @override
-  String get URL => InvenTreeAPI().supportsModernAttachments ? "attachment/" : "order/po/attachment/";
+  String get URL => InvenTreeAPI().supportsModernAttachments
+      ? "attachment/"
+      : "order/po/attachment/";
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreePurchaseOrderAttachment.fromJson(json);
-
+  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
+      InvenTreePurchaseOrderAttachment.fromJson(json);
 }

@@ -1,4 +1,3 @@
-
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/part.dart";
 
@@ -6,13 +5,13 @@ import "package:inventree/inventree/part.dart";
  * Class representing the BomItem database model
  */
 class InvenTreeBomItem extends InvenTreeModel {
-
   InvenTreeBomItem() : super();
 
   InvenTreeBomItem.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
   @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) => InvenTreeBomItem.fromJson(json);
+  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
+      InvenTreeBomItem.fromJson(json);
 
   @override
   String get URL => "bom/";
@@ -28,7 +27,7 @@ class InvenTreeBomItem extends InvenTreeModel {
 
   // Extract the 'reference' value associated with this BomItem
   String get reference => getString("reference");
-  
+
   // Extract the 'quantity' value associated with this BomItem
   double get quantity => getDouble("quantity");
 
@@ -57,7 +56,7 @@ class InvenTreeBomItem extends InvenTreeModel {
     }
 
     return null;
-}
+  }
 
   // Extract the ID of the related sub-part
   int get subPartId => getInt("sub_part");

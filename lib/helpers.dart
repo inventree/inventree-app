@@ -17,8 +17,6 @@ import "package:audioplayers/audioplayers.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/widget/snacks.dart";
 
-
-
 List<String> debug_messages = [];
 
 void clearDebugMessage() => debug_messages.clear();
@@ -44,13 +42,11 @@ bool debugContains(String msg, {bool raiseAssert = true}) {
   }
 
   if (raiseAssert) {
-
     assert(result);
   }
 
   return result;
 }
-
 
 bool isTesting() {
   return Platform.environment.containsKey("FLUTTER_TEST");
@@ -64,12 +60,10 @@ bool hasContext() {
   }
 }
 
-
 /*
  * Display a debug message if we are in testing mode, or running in debug mode
  */
 void debug(dynamic msg) {
-
   if (Platform.environment.containsKey("FLUTTER_TEST")) {
     debug_messages.add(msg.toString());
   }
@@ -77,13 +71,11 @@ void debug(dynamic msg) {
   print("DEBUG: ${msg.toString()}");
 }
 
-
 /*
  * Simplify string representation of a floating point value
  * Basically, don't display fractional component if it is an integer
  */
 String simpleNumberString(double number) {
-
   if (number.toInt() == number) {
     return number.toInt().toString();
   } else {
@@ -98,7 +90,6 @@ String simpleNumberString(double number) {
  *       we will not attempt to play the sound
  */
 Future<void> playAudioFile(String path) async {
-
   // Debug message for unit testing
   debug("Playing audio file: '${path}'");
 
@@ -110,21 +101,21 @@ Future<void> playAudioFile(String path) async {
 
   // Specify context options for the audio player
   // Ref: https://github.com/inventree/inventree-app/issues/582
-  player.setAudioContext(AudioContext(
-    android: AudioContextAndroid(
-      usageType: AndroidUsageType.notification,
-      audioFocus: AndroidAudioFocus.none,
+  player.setAudioContext(
+    AudioContext(
+      android: AudioContextAndroid(
+        usageType: AndroidUsageType.notification,
+        audioFocus: AndroidAudioFocus.none,
+      ),
+      iOS: AudioContextIOS(),
     ),
-    iOS: AudioContextIOS()
-  ));
+  );
 
   player.play(AssetSource(path));
 }
 
-
 // Open an external URL
 Future<void> openLink(String url) async {
-
   final link = Uri.parse(url);
 
   try {
@@ -134,24 +125,20 @@ Future<void> openLink(String url) async {
   }
 }
 
-
 /*
  * Helper function for rendering a money / currency object as a String
  */
 String renderCurrency(double? amount, String currency, {int decimals = 2}) {
-
   if (amount == null || amount.isInfinite || amount.isNaN) return "-";
 
   currency = currency.trim();
 
   if (currency.isEmpty) return "-";
 
-  CurrencyFormat fmt = CurrencyFormat.fromCode(currency.toLowerCase()) ?? CurrencyFormat.usd;
+  CurrencyFormat fmt =
+      CurrencyFormat.fromCode(currency.toLowerCase()) ?? CurrencyFormat.usd;
 
-  String value = CurrencyFormatter.format(
-    amount,
-    fmt
-  );
+  String value = CurrencyFormatter.format(amount, fmt);
 
   return value;
 }
@@ -163,8 +150,11 @@ bool isValidNumber(double? value) {
 /*
  * Render a "range" of prices between two values.
  */
-String formatPriceRange(double? minPrice, double? maxPrice, { String? currency }) {
-
+String formatPriceRange(
+  double? minPrice,
+  double? maxPrice, {
+  String? currency,
+}) {
   // Account for empty or null values
   if (!isValidNumber(minPrice) && !isValidNumber(maxPrice)) {
     return "-";

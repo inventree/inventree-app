@@ -1,4 +1,3 @@
-
 import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
@@ -12,20 +11,18 @@ import "package:inventree/api.dart";
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/model.dart";
 
-
 class SalesOrderListWidget extends StatefulWidget {
-
-  const SalesOrderListWidget({this.filters = const {}, Key? key}) : super(key: key);
+  const SalesOrderListWidget({this.filters = const {}, Key? key})
+    : super(key: key);
 
   final Map<String, String> filters;
 
   @override
   _SalesOrderListWidgetState createState() => _SalesOrderListWidgetState();
-
 }
 
-class _SalesOrderListWidgetState extends RefreshableState<SalesOrderListWidget> {
-
+class _SalesOrderListWidgetState
+    extends RefreshableState<SalesOrderListWidget> {
   _SalesOrderListWidgetState();
 
   @override
@@ -37,13 +34,13 @@ class _SalesOrderListWidgetState extends RefreshableState<SalesOrderListWidget> 
 
     if (InvenTreeSalesOrder().canCreate) {
       actions.add(
-          SpeedDialChild(
-              child: Icon(TablerIcons.circle_plus),
-              label: L10().salesOrderCreate,
-              onTap: () {
-                _createSalesOrder(context);
-              }
-          )
+        SpeedDialChild(
+          child: Icon(TablerIcons.circle_plus),
+          label: L10().salesOrderCreate,
+          onTap: () {
+            _createSalesOrder(context);
+          },
+        ),
       );
     }
 
@@ -58,17 +55,17 @@ class _SalesOrderListWidgetState extends RefreshableState<SalesOrderListWidget> 
     fields.remove("contact");
 
     InvenTreeSalesOrder().createForm(
-        context,
-        L10().salesOrderCreate,
-        fields: fields,
-        onSuccess: (result) async {
-          Map<String, dynamic> data = result as Map<String, dynamic>;
+      context,
+      L10().salesOrderCreate,
+      fields: fields,
+      onSuccess: (result) async {
+        Map<String, dynamic> data = result as Map<String, dynamic>;
 
-          if (data.containsKey("pk")) {
-            var order = InvenTreeSalesOrder.fromJson(data);
-            order.goToDetailPage(context);
-          }
+        if (data.containsKey("pk")) {
+          var order = InvenTreeSalesOrder.fromJson(data);
+          order.goToDetailPage(context);
         }
+      },
     );
   }
 
@@ -82,25 +79,22 @@ class _SalesOrderListWidgetState extends RefreshableState<SalesOrderListWidget> 
   Widget getBody(BuildContext context) {
     return PaginatedSalesOrderList(widget.filters);
   }
-
 }
 
-
 class PaginatedSalesOrderList extends PaginatedSearchWidget {
-
-  const PaginatedSalesOrderList(Map<String, String> filters) : super(filters: filters);
+  const PaginatedSalesOrderList(Map<String, String> filters)
+    : super(filters: filters);
 
   @override
   String get searchTitle => L10().salesOrders;
 
   @override
-  _PaginatedSalesOrderListState createState() => _PaginatedSalesOrderListState();
-
+  _PaginatedSalesOrderListState createState() =>
+      _PaginatedSalesOrderListState();
 }
 
-
-class _PaginatedSalesOrderListState extends PaginatedSearchState<PaginatedSalesOrderList> {
-
+class _PaginatedSalesOrderListState
+    extends PaginatedSearchState<PaginatedSalesOrderList> {
   _PaginatedSalesOrderListState() : super();
 
   @override
@@ -130,21 +124,27 @@ class _PaginatedSalesOrderListState extends PaginatedSearchState<PaginatedSalesO
       "label": L10().assignedToMe,
       "help_text": L10().assignedToMeDetail,
       "tristate": true,
-    }
+    },
   };
 
   @override
-  Future<InvenTreePageResponse?> requestPage(int limit, int offset, Map<String, String> params) async {
-
+  Future<InvenTreePageResponse?> requestPage(
+    int limit,
+    int offset,
+    Map<String, String> params,
+  ) async {
     await InvenTreeAPI().SalesOrderStatus.load();
-    final page = await InvenTreeSalesOrder().listPaginated(limit, offset, filters: params);
+    final page = await InvenTreeSalesOrder().listPaginated(
+      limit,
+      offset,
+      filters: params,
+    );
 
     return page;
   }
 
   @override
   Widget buildItem(BuildContext context, InvenTreeModel model) {
-
     InvenTreeSalesOrder order = model as InvenTreeSalesOrder;
 
     InvenTreeCompany? customer = order.customer;
@@ -152,18 +152,18 @@ class _PaginatedSalesOrderListState extends PaginatedSearchState<PaginatedSalesO
     return ListTile(
       title: Text(order.reference),
       subtitle: Text(order.description),
-      leading: customer == null ? null : InvenTreeAPI().getThumbnail(customer.thumbnail),
+      leading: customer == null
+          ? null
+          : InvenTreeAPI().getThumbnail(customer.thumbnail),
       trailing: Text(
         InvenTreeAPI().SalesOrderStatus.label(order.status),
         style: TextStyle(
           color: InvenTreeAPI().SalesOrderStatus.color(order.status),
-        )
+        ),
       ),
       onTap: () async {
         order.goToDetailPage(context);
-      }
+      },
     );
-
   }
-
 }

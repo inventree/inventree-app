@@ -273,8 +273,9 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
   }
 
   Widget bottomCenterOverlay() {
-    String info_text =
-        scanning_paused ? L10().barcodeScanPaused : L10().barcodeScanPause;
+    String info_text = scanning_paused
+        ? L10().barcodeScanPaused
+        : L10().barcodeScanPause;
 
     String text = scanned_code.isNotEmpty ? scanned_code : info_text;
 

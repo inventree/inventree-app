@@ -14,13 +14,11 @@ import "package:inventree/barcode/tones.dart";
 
 import "package:inventree/widget/snacks.dart";
 
-
 /*
  * Barcode handler class for scanning a new part into a SalesOrder
  */
 
 class SOAddItemBarcodeHandler extends BarcodeHandler {
-
   SOAddItemBarcodeHandler({this.salesOrder});
 
   InvenTreeSalesOrder? salesOrder;
@@ -30,7 +28,6 @@ class SOAddItemBarcodeHandler extends BarcodeHandler {
 
   @override
   Future<void> onBarcodeMatched(Map<String, dynamic> data) async {
-
     // Extract the part ID from the returned data
     int part_id = -1;
 
@@ -46,7 +43,6 @@ class SOAddItemBarcodeHandler extends BarcodeHandler {
     var part = await InvenTreePart().get(part_id);
 
     if (part is InvenTreePart) {
-
       if (part.isSalable) {
         // Dispose of the barcode scanner
         if (OneContext.hasContext) {
@@ -68,23 +64,18 @@ class SOAddItemBarcodeHandler extends BarcodeHandler {
           L10().lineItemAdd,
           fields: fields,
         );
-
       } else {
         barcodeFailureTone();
         showSnackIcon(L10().partNotSalable, success: false);
       }
-
     } else {
       // Failed to fetch part
       return onBarcodeUnknown(data);
     }
-
   }
 }
 
-
 class SOAllocateStockHandler extends BarcodeHandler {
-
   SOAllocateStockHandler({this.salesOrder, this.lineItem, this.shipment});
 
   InvenTreeSalesOrder? salesOrder;
@@ -95,16 +86,16 @@ class SOAllocateStockHandler extends BarcodeHandler {
   String getOverlayText(BuildContext context) => L10().allocateStock;
 
   @override
-  Future<void> processBarcode(String barcode,
-  {
+  Future<void> processBarcode(
+    String barcode, {
     String url = "barcode/so-allocate/",
-    Map<String, dynamic> extra_data = const {}}) {
-
+    Map<String, dynamic> extra_data = const {},
+  }) {
     final so_extra_data = {
       "sales_order": salesOrder?.pk,
       "shipment": shipment?.pk,
       "line": lineItem?.pk,
-      ...extra_data
+      ...extra_data,
     };
 
     return super.processBarcode(barcode, url: url, extra_data: so_extra_data);
@@ -121,8 +112,8 @@ class SOAllocateStockHandler extends BarcodeHandler {
 
   @override
   Future<void> onBarcodeUnhandled(Map<String, dynamic> data) async {
-
-    if (!data.containsKey("action_required") || !data.containsKey("line_item")) {
+    if (!data.containsKey("action_required") ||
+        !data.containsKey("line_item")) {
       return super.onBarcodeUnhandled(data);
     }
 
@@ -132,10 +123,7 @@ class SOAllocateStockHandler extends BarcodeHandler {
     // Update fields with data gathered from the API response
     fields["line_item"]?["value"] = data["line_item"];
 
-    Map<String, dynamic> stock_filters = {
-      "in_stock": true,
-      "available": true,
-    };
+    Map<String, dynamic> stock_filters = {"in_stock": true, "available": true};
 
     if (data.containsKey("part")) {
       stock_filters["part"] = data["part"];
@@ -147,9 +135,7 @@ class SOAllocateStockHandler extends BarcodeHandler {
     fields["quantity"]?["value"] = data["quantity"];
 
     fields["shipment"]?["value"] = data["shipment"];
-    fields["shipment"]?["filters"] = {
-      "order": salesOrder!.pk.toString()
-    };
+    fields["shipment"]?["filters"] = {"order": salesOrder!.pk.toString()};
 
     final context = OneContext().context!;
 
@@ -157,20 +143,21 @@ class SOAllocateStockHandler extends BarcodeHandler {
       context,
       L10().allocateStock,
       salesOrder!.allocate_url,
-    fields,
-    method: "POST",
-    icon: TablerIcons.transition_right,
-    onSuccess: (data) async {
+      fields,
+      method: "POST",
+      icon: TablerIcons.transition_right,
+      onSuccess: (data) async {
         showSnackIcon(L10().allocated, success: true);
-    });
+      },
+    );
   }
 
   @override
   Future<void> onBarcodeUnknown(Map<String, dynamic> data) async {
     barcodeFailureTone();
     showSnackIcon(
-        data["error"] as String? ?? L10().barcodeError,
-        success: false
+      data["error"] as String? ?? L10().barcodeError,
+      success: false,
     );
   }
 }

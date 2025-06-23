@@ -7,44 +7,52 @@ import "package:inventree/app_colors.dart";
 
 import "package:inventree/widget/dialogs.dart";
 
-
 class InvenTreeBarcodeSettingsWidget extends StatefulWidget {
   @override
-  _InvenTreeBarcodeSettingsState createState() => _InvenTreeBarcodeSettingsState();
+  _InvenTreeBarcodeSettingsState createState() =>
+      _InvenTreeBarcodeSettingsState();
 }
 
+class _InvenTreeBarcodeSettingsState
+    extends State<InvenTreeBarcodeSettingsWidget> {
+  _InvenTreeBarcodeSettingsState();
 
-class _InvenTreeBarcodeSettingsState extends State<InvenTreeBarcodeSettingsWidget> {
+  int barcodeScanDelay = 500;
+  int barcodeScanType = BARCODE_CONTROLLER_CAMERA;
+  bool barcodeScanSingle = false;
 
- _InvenTreeBarcodeSettingsState();
+  final TextEditingController _barcodeScanDelayController =
+      TextEditingController();
 
- int barcodeScanDelay = 500;
- int barcodeScanType = BARCODE_CONTROLLER_CAMERA;
- bool barcodeScanSingle = false;
-
- final TextEditingController _barcodeScanDelayController = TextEditingController();
-
- @override
- void initState() {
-  super.initState();
-  loadSettings();
- }
+  @override
+  void initState() {
+    super.initState();
+    loadSettings();
+  }
 
   Future<void> loadSettings() async {
-    barcodeScanDelay = await InvenTreeSettingsManager().getValue(INV_BARCODE_SCAN_DELAY, 500) as int;
-    barcodeScanType = await InvenTreeSettingsManager().getValue(INV_BARCODE_SCAN_TYPE, BARCODE_CONTROLLER_CAMERA) as int;
-    barcodeScanSingle = await InvenTreeSettingsManager().getBool(INV_BARCODE_SCAN_SINGLE, false);
+    barcodeScanDelay =
+        await InvenTreeSettingsManager().getValue(INV_BARCODE_SCAN_DELAY, 500)
+            as int;
+    barcodeScanType =
+        await InvenTreeSettingsManager().getValue(
+              INV_BARCODE_SCAN_TYPE,
+              BARCODE_CONTROLLER_CAMERA,
+            )
+            as int;
+    barcodeScanSingle = await InvenTreeSettingsManager().getBool(
+      INV_BARCODE_SCAN_SINGLE,
+      false,
+    );
 
     if (mounted) {
-      setState(() {
-      });
+      setState(() {});
     }
   }
 
   // Callback function to edit the barcode scan delay value
   // TODO: Next time any new settings are added, refactor this into a generic function
   Future<void> _editBarcodeScanDelay(BuildContext context) async {
-
     _barcodeScanDelayController.text = barcodeScanDelay.toString();
 
     return showDialog(
@@ -56,9 +64,7 @@ class _InvenTreeBarcodeSettingsState extends State<InvenTreeBarcodeSettingsWidge
             onChanged: (value) {},
             controller: _barcodeScanDelayController,
             keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              hintText: L10().barcodeScanDelayDetail,
-            ),
+            decoration: InputDecoration(hintText: L10().barcodeScanDelayDetail),
           ),
           actions: <Widget>[
             MaterialButton(
@@ -76,13 +82,18 @@ class _InvenTreeBarcodeSettingsState extends State<InvenTreeBarcodeSettingsWidge
               textColor: Colors.white,
               child: Text(L10().ok),
               onPressed: () async {
-                int delay = int.tryParse(_barcodeScanDelayController.text) ?? barcodeScanDelay;
+                int delay =
+                    int.tryParse(_barcodeScanDelayController.text) ??
+                    barcodeScanDelay;
 
                 // Apply limits
                 if (delay < 100) delay = 100;
                 if (delay > 2500) delay = 2500;
 
-                InvenTreeSettingsManager().setValue(INV_BARCODE_SCAN_DELAY, delay);
+                InvenTreeSettingsManager().setValue(
+                  INV_BARCODE_SCAN_DELAY,
+                  delay,
+                );
                 setState(() {
                   barcodeScanDelay = delay;
                   Navigator.pop(context);
@@ -91,13 +102,12 @@ class _InvenTreeBarcodeSettingsState extends State<InvenTreeBarcodeSettingsWidge
             ),
           ],
         );
-      }
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-
     // Construct an icon for the barcode scanner input
     Widget? barcodeInputIcon;
 
@@ -112,7 +122,7 @@ class _InvenTreeBarcodeSettingsState extends State<InvenTreeBarcodeSettingsWidge
     return Scaffold(
       appBar: AppBar(
         title: Text(L10().barcodeSettings),
-        backgroundColor: COLOR_APP_BAR
+        backgroundColor: COLOR_APP_BAR,
       ),
       body: Container(
         child: ListView(
@@ -135,17 +145,20 @@ class _InvenTreeBarcodeSettingsState extends State<InvenTreeBarcodeSettingsWidge
                       title: Text(L10().scannerExternal),
                       subtitle: Text(L10().scannerExternalDetail),
                       leading: Icon(Icons.barcode_reader),
-                    )
+                    ),
                   ],
                   onSelected: (idx) async {
                     barcodeScanType = idx as int;
-                    InvenTreeSettingsManager().setValue(INV_BARCODE_SCAN_TYPE, barcodeScanType);
+                    InvenTreeSettingsManager().setValue(
+                      INV_BARCODE_SCAN_TYPE,
+                      barcodeScanType,
+                    );
                     if (mounted) {
                       setState(() {});
                     }
-                  }
+                  },
                 );
-              }
+              },
             ),
             ListTile(
               title: Text(L10().barcodeScanDelay),
@@ -165,17 +178,19 @@ class _InvenTreeBarcodeSettingsState extends State<InvenTreeBarcodeSettingsWidge
               trailing: Switch(
                 value: barcodeScanSingle,
                 onChanged: (bool v) {
-                  InvenTreeSettingsManager().setValue(INV_BARCODE_SCAN_SINGLE, v);
+                  InvenTreeSettingsManager().setValue(
+                    INV_BARCODE_SCAN_SINGLE,
+                    v,
+                  );
                   setState(() {
                     barcodeScanSingle = v;
                   });
                 },
               ),
-            )
+            ),
           ],
-        )
-      )
+        ),
+      ),
     );
   }
-
 }

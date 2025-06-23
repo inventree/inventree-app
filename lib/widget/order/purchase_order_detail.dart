@@ -18,7 +18,6 @@ import "package:inventree/widget/order/po_extra_line_list.dart";
 import "package:inventree/widget/stock/location_display.dart";
 import "package:inventree/widget/order/po_line_list.dart";
 
-
 import "package:inventree/widget/attachment_widget.dart";
 import "package:inventree/widget/notes_widget.dart";
 import "package:inventree/widget/progress.dart";
@@ -27,13 +26,11 @@ import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/stock/stock_list.dart";
 import "package:inventree/preferences.dart";
 
-
 /*
  * Widget for viewing a single PurchaseOrder instance
  */
 class PurchaseOrderDetailWidget extends StatefulWidget {
-
-  const PurchaseOrderDetailWidget(this.order, {Key? key}): super(key: key);
+  const PurchaseOrderDetailWidget(this.order, {Key? key}) : super(key: key);
 
   final InvenTreePurchaseOrder order;
 
@@ -41,11 +38,10 @@ class PurchaseOrderDetailWidget extends StatefulWidget {
   _PurchaseOrderDetailState createState() => _PurchaseOrderDetailState();
 }
 
-
-class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidget> {
-
+class _PurchaseOrderDetailState
+    extends RefreshableState<PurchaseOrderDetailWidget> {
   _PurchaseOrderDetailState();
-  
+
   List<InvenTreePOLineItem> lines = [];
   int extraLineCount = 0;
 
@@ -79,8 +75,8 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
           tooltip: L10().purchaseOrderEdit,
           onPressed: () {
             editOrder(context);
-          }
-        )
+          },
+        ),
       );
     }
 
@@ -93,27 +89,26 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
     if (showCameraShortcut && widget.order.canEdit) {
       actions.add(
-          SpeedDialChild(
-              child: Icon(TablerIcons.camera, color: Colors.blue),
-              label: L10().takePicture,
-              onTap: () async {
-                _uploadImage(context);
-              }
-          )
+        SpeedDialChild(
+          child: Icon(TablerIcons.camera, color: Colors.blue),
+          label: L10().takePicture,
+          onTap: () async {
+            _uploadImage(context);
+          },
+        ),
       );
     }
 
     if (widget.order.canCreate) {
       if (widget.order.isPending) {
-
         actions.add(
           SpeedDialChild(
             child: Icon(TablerIcons.circle_plus, color: Colors.green),
             label: L10().lineItemAdd,
             onTap: () async {
               _addLineItem(context);
-            }
-          )
+            },
+          ),
         );
 
         actions.add(
@@ -122,8 +117,8 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
             label: L10().issueOrder,
             onTap: () async {
               _issueOrder(context);
-            }
-          )
+            },
+          ),
         );
       }
 
@@ -134,8 +129,8 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
             label: L10().cancelOrder,
             onTap: () async {
               _cancelOrder(context);
-            }
-          )
+            },
+          ),
         );
       }
     }
@@ -145,14 +140,11 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
   /// Add a new line item to this order
   Future<void> _addLineItem(BuildContext context) async {
-
     var fields = InvenTreePOLineItem().formFields();
 
     // Update part field definition
     fields["part"]?["hidden"] = false;
-    fields["part"]?["filters"] = {
-      "supplier": widget.order.supplierId
-    };
+    fields["part"]?["filters"] = {"supplier": widget.order.supplierId};
 
     fields["order"]?["value"] = widget.order.pk;
 
@@ -163,24 +155,22 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       onSuccess: (data) async {
         refresh(context);
         showSnackIcon(L10().lineItemUpdated, success: true);
-      }
+      },
     );
   }
 
   /// Upload an image against the current PurchaseOrder
   Future<void> _uploadImage(BuildContext context) async {
-
-    InvenTreePurchaseOrderAttachment().uploadImage(
-        widget.order.pk,
-        prefix: widget.order.reference,
-    ).then((result) => refresh(context));
+    InvenTreePurchaseOrderAttachment()
+        .uploadImage(widget.order.pk, prefix: widget.order.reference)
+        .then((result) => refresh(context));
   }
 
   /// Issue this order
   Future<void> _issueOrder(BuildContext context) async {
-
     confirmationDialog(
-      L10().issueOrder, "",
+      L10().issueOrder,
+      "",
       icon: TablerIcons.send,
       color: Colors.blue,
       acceptText: L10().issue,
@@ -188,15 +178,15 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
         widget.order.issueOrder().then((dynamic) {
           refresh(context);
         });
-      }
+      },
     );
   }
 
   /// Cancel this order
   Future<void> _cancelOrder(BuildContext context) async {
-
     confirmationDialog(
-      L10().cancelOrder, "",
+      L10().cancelOrder,
+      "",
       icon: TablerIcons.circle_x,
       color: Colors.red,
       acceptText: L10().cancel,
@@ -204,7 +194,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
         widget.order.cancelOrder().then((dynamic) {
           refresh(context);
         });
-      }
+      },
     );
   }
 
@@ -217,7 +207,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
         SpeedDialChild(
           child: Icon(Icons.barcode_reader),
           label: L10().scanReceivedParts,
-          onTap:() async {
+          onTap: () async {
             scanBarcode(
               context,
               handler: POReceiveBarcodeHandler(purchaseOrder: widget.order),
@@ -225,7 +215,7 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
               refresh(context);
             });
           },
-        )
+        ),
       );
     }
 
@@ -239,14 +229,13 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
               context,
               handler: POAllocateBarcodeHandler(purchaseOrder: widget.order),
             );
-          }
-        )
+          },
+        ),
       );
     }
 
     return actions;
   }
-
 
   @override
   Future<void> request(BuildContext context) async {
@@ -256,8 +245,16 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
 
     lines = await widget.order.getLineItems();
 
-    showCameraShortcut = await InvenTreeSettingsManager().getBool(INV_PO_SHOW_CAMERA, true);
-    supportProjectCodes = api.supportsProjectCodes && await api.getGlobalBooleanSetting("PROJECT_CODES_ENABLED", backup: true);
+    showCameraShortcut = await InvenTreeSettingsManager().getBool(
+      INV_PO_SHOW_CAMERA,
+      true,
+    );
+    supportProjectCodes =
+        api.supportsProjectCodes &&
+        await api.getGlobalBooleanSetting(
+          "PROJECT_CODES_ENABLED",
+          backup: true,
+        );
 
     completedLines = 0;
 
@@ -267,7 +264,9 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       }
     }
 
-    InvenTreePurchaseOrderAttachment().countAttachments(widget.order.pk).then((int value) {
+    InvenTreePurchaseOrderAttachment().countAttachments(widget.order.pk).then((
+      int value,
+    ) {
       if (mounted) {
         setState(() {
           attachmentCount = value;
@@ -275,8 +274,11 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       }
     });
 
-    if (api.supportsPurchaseOrderDestination && widget.order.destinationId > 0) {
-      InvenTreeStockLocation().get(widget.order.destinationId).then((InvenTreeModel? loc) {
+    if (api.supportsPurchaseOrderDestination &&
+        widget.order.destinationId > 0) {
+      InvenTreeStockLocation().get(widget.order.destinationId).then((
+        InvenTreeModel? loc,
+      ) {
         if (mounted) {
           if (loc != null && loc is InvenTreeStockLocation) {
             setState(() {
@@ -298,17 +300,19 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
     }
 
     // Count number of "extra line items" against this order
-    InvenTreePOExtraLineItem().count(filters: {"order": widget.order.pk.toString() }).then((int value) {
-      if (mounted) {
-        setState(() {
-          extraLineCount = value;
+    InvenTreePOExtraLineItem()
+        .count(filters: {"order": widget.order.pk.toString()})
+        .then((int value) {
+          if (mounted) {
+            setState(() {
+              extraLineCount = value;
+            });
+          }
         });
-      }
-    });
   }
 
   // Edit the currently displayed PurchaseOrder
-  Future <void> editOrder(BuildContext context) async {
+  Future<void> editOrder(BuildContext context) async {
     var fields = widget.order.formFields();
 
     // Cannot edit supplier field from here
@@ -331,32 +335,29 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
       onSuccess: (data) async {
         refresh(context);
         showSnackIcon(L10().purchaseOrderUpdated, success: true);
-      }
+      },
     );
   }
 
   Widget headerTile(BuildContext context) {
-
     InvenTreeCompany? supplier = widget.order.supplier;
 
     return Card(
-        child: ListTile(
-          title: Text(widget.order.reference),
-          subtitle: Text(widget.order.description),
-          leading: supplier == null ? null : api.getThumbnail(supplier.thumbnail),
-          trailing: Text(
-            api.PurchaseOrderStatus.label(widget.order.status),
-            style: TextStyle(
-              color: api.PurchaseOrderStatus.color(widget.order.status)
-            ),
-          )
-        )
+      child: ListTile(
+        title: Text(widget.order.reference),
+        subtitle: Text(widget.order.description),
+        leading: supplier == null ? null : api.getThumbnail(supplier.thumbnail),
+        trailing: Text(
+          api.PurchaseOrderStatus.label(widget.order.status),
+          style: TextStyle(
+            color: api.PurchaseOrderStatus.color(widget.order.status),
+          ),
+        ),
+      ),
     );
-
   }
 
   List<Widget> orderTiles(BuildContext context) {
-
     List<Widget> tiles = [];
 
     InvenTreeCompany? supplier = widget.order.supplier;
@@ -364,165 +365,204 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
     tiles.add(headerTile(context));
 
     if (supportProjectCodes && widget.order.hasProjectCode) {
-      tiles.add(ListTile(
-        title: Text(L10().projectCode),
-        subtitle: Text("${widget.order.projectCode} - ${widget.order.projectCodeDescription}"),
-        leading: Icon(TablerIcons.list),
-      ));
+      tiles.add(
+        ListTile(
+          title: Text(L10().projectCode),
+          subtitle: Text(
+            "${widget.order.projectCode} - ${widget.order.projectCodeDescription}",
+          ),
+          leading: Icon(TablerIcons.list),
+        ),
+      );
     }
 
     if (supplier != null) {
-      tiles.add(ListTile(
-        title: Text(L10().supplier),
-        subtitle: Text(supplier.name),
-        leading: Icon(TablerIcons.building, color: COLOR_ACTION),
-        onTap: () {
-          supplier.goToDetailPage(context);
-        },
-      ));
+      tiles.add(
+        ListTile(
+          title: Text(L10().supplier),
+          subtitle: Text(supplier.name),
+          leading: Icon(TablerIcons.building, color: COLOR_ACTION),
+          onTap: () {
+            supplier.goToDetailPage(context);
+          },
+        ),
+      );
     }
 
     if (widget.order.supplierReference.isNotEmpty) {
-      tiles.add(ListTile(
-        title: Text(L10().supplierReference),
-        subtitle: Text(widget.order.supplierReference),
-        leading: Icon(TablerIcons.hash),
-      ));
+      tiles.add(
+        ListTile(
+          title: Text(L10().supplierReference),
+          subtitle: Text(widget.order.supplierReference),
+          leading: Icon(TablerIcons.hash),
+        ),
+      );
     }
 
     // Order destination
     if (destination != null) {
-      tiles.add(ListTile(
-        title: Text(L10().destination),
-        subtitle: Text(destination!.name),
-        leading: Icon(TablerIcons.map_pin, color: COLOR_ACTION),
+      tiles.add(
+        ListTile(
+          title: Text(L10().destination),
+          subtitle: Text(destination!.name),
+          leading: Icon(TablerIcons.map_pin, color: COLOR_ACTION),
+          onTap: () => {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => LocationDisplayWidget(destination),
+              ),
+            ),
+          },
+        ),
+      );
+    }
+
+    Color lineColor = completedLines < widget.order.lineItemCount
+        ? COLOR_WARNING
+        : COLOR_SUCCESS;
+
+    tiles.add(
+      ListTile(
+        title: Text(L10().lineItems),
+        subtitle: ProgressBar(
+          completedLines.toDouble(),
+          maximum: widget.order.lineItemCount.toDouble(),
+        ),
+        leading: Icon(TablerIcons.clipboard_check),
+        trailing: Text(
+          "${completedLines} /  ${widget.order.lineItemCount}",
+          style: TextStyle(color: lineColor),
+        ),
+      ),
+    );
+
+    // Extra line items
+    tiles.add(
+      ListTile(
+        title: Text(L10().extraLineItems),
+        leading: Icon(TablerIcons.clipboard_list, color: COLOR_ACTION),
+        trailing: Text(extraLineCount.toString()),
         onTap: () => {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => LocationDisplayWidget(destination)
-            )
-          )
-        }
-      ));
-    }
-
-    Color lineColor = completedLines < widget.order.lineItemCount ? COLOR_WARNING : COLOR_SUCCESS;
-
-    tiles.add(ListTile(
-      title: Text(L10().lineItems),
-      subtitle: ProgressBar(
-        completedLines.toDouble(),
-        maximum: widget.order.lineItemCount.toDouble(),
+              builder: (context) => POExtraLineListWidget(
+                widget.order,
+                filters: {"order": widget.order.pk.toString()},
+              ),
+            ),
+          ),
+        },
       ),
-      leading: Icon(TablerIcons.clipboard_check),
-      trailing: Text("${completedLines} /  ${widget.order.lineItemCount}", style: TextStyle(color: lineColor)),
-    ));
+    );
 
-    // Extra line items
-    tiles.add(ListTile(
-      title: Text(L10().extraLineItems),
-      leading: Icon(TablerIcons.clipboard_list, color: COLOR_ACTION),
-      trailing: Text(extraLineCount.toString()),
-      onTap: () => {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => POExtraLineListWidget(widget.order, filters: {"order": widget.order.pk.toString()})
-          )
-        )
-      },
-    ));
-
-    tiles.add(ListTile(
-      title: Text(L10().totalPrice),
-      leading: Icon(TablerIcons.currency_dollar),
-      trailing: Text(
-        renderCurrency(widget.order.totalPrice, widget.order.totalPriceCurrency)
+    tiles.add(
+      ListTile(
+        title: Text(L10().totalPrice),
+        leading: Icon(TablerIcons.currency_dollar),
+        trailing: Text(
+          renderCurrency(
+            widget.order.totalPrice,
+            widget.order.totalPriceCurrency,
+          ),
+        ),
       ),
-    ));
+    );
 
     if (widget.order.issueDate.isNotEmpty) {
-      tiles.add(ListTile(
-        title: Text(L10().issueDate),
-        trailing: Text(widget.order.issueDate),
-        leading: Icon(TablerIcons.calendar),
-      ));
+      tiles.add(
+        ListTile(
+          title: Text(L10().issueDate),
+          trailing: Text(widget.order.issueDate),
+          leading: Icon(TablerIcons.calendar),
+        ),
+      );
     }
 
     if (widget.order.startDate.isNotEmpty) {
-      tiles.add(ListTile(
-        title: Text(L10().startDate),
-        trailing: Text(widget.order.startDate),
-        leading: Icon(TablerIcons.calendar),
-      ));
+      tiles.add(
+        ListTile(
+          title: Text(L10().startDate),
+          trailing: Text(widget.order.startDate),
+          leading: Icon(TablerIcons.calendar),
+        ),
+      );
     }
 
     if (widget.order.targetDate.isNotEmpty) {
-      tiles.add(ListTile(
-        title: Text(L10().targetDate),
-        trailing: Text(widget.order.targetDate),
-        leading: Icon(TablerIcons.calendar),
-      ));
+      tiles.add(
+        ListTile(
+          title: Text(L10().targetDate),
+          trailing: Text(widget.order.targetDate),
+          leading: Icon(TablerIcons.calendar),
+        ),
+      );
     }
 
     if (widget.order.completionDate.isNotEmpty) {
-      tiles.add(ListTile(
-        title: Text(L10().completionDate),
-        trailing: Text(widget.order.completionDate),
-        leading: Icon(TablerIcons.calendar),
-      ));
+      tiles.add(
+        ListTile(
+          title: Text(L10().completionDate),
+          trailing: Text(widget.order.completionDate),
+          leading: Icon(TablerIcons.calendar),
+        ),
+      );
     }
 
     // Responsible "owner"
-    if (widget.order.responsibleName.isNotEmpty && widget.order.responsibleLabel.isNotEmpty) {
-      tiles.add(ListTile(
-        title: Text(L10().responsible),
-        leading: Icon(widget.order.responsibleLabel == "group" ? TablerIcons.users : TablerIcons.user),
-        trailing: Text(widget.order.responsibleName)
-      ));
+    if (widget.order.responsibleName.isNotEmpty &&
+        widget.order.responsibleLabel.isNotEmpty) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().responsible),
+          leading: Icon(
+            widget.order.responsibleLabel == "group"
+                ? TablerIcons.users
+                : TablerIcons.user,
+          ),
+          trailing: Text(widget.order.responsibleName),
+        ),
+      );
     }
 
     // Notes tile
     tiles.add(
-        ListTile(
-          title: Text(L10().notes),
-          leading: Icon(TablerIcons.note, color: COLOR_ACTION),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => NotesWidget(widget.order)
-              )
-            );
-          },
-        )
+      ListTile(
+        title: Text(L10().notes),
+        leading: Icon(TablerIcons.note, color: COLOR_ACTION),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => NotesWidget(widget.order)),
+          );
+        },
+      ),
     );
 
     // Attachments
     tiles.add(
-        ListTile(
-          title: Text(L10().attachments),
-          leading: Icon(TablerIcons.file, color: COLOR_ACTION),
-          trailing: attachmentCount > 0 ? Text(attachmentCount.toString()) : null,
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => AttachmentWidget(
-                    InvenTreePurchaseOrderAttachment(),
-                    widget.order.pk,
-                    widget.order.reference,
-                    widget.order.canEdit
-                )
-              )
-            );
-          },
-        )
+      ListTile(
+        title: Text(L10().attachments),
+        leading: Icon(TablerIcons.file, color: COLOR_ACTION),
+        trailing: attachmentCount > 0 ? Text(attachmentCount.toString()) : null,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AttachmentWidget(
+                InvenTreePurchaseOrderAttachment(),
+                widget.order.pk,
+                widget.order.reference,
+                widget.order.canEdit,
+              ),
+            ),
+          );
+        },
+      ),
     );
 
     return tiles;
-
   }
 
   @override
@@ -530,10 +570,10 @@ class _PurchaseOrderDetailState extends RefreshableState<PurchaseOrderDetailWidg
     return [
       Tab(text: L10().details),
       Tab(text: L10().lineItems),
-      Tab(text: L10().received)
+      Tab(text: L10().received),
     ];
   }
-  
+
   @override
   List<Widget> getTabs(BuildContext context) {
     return [

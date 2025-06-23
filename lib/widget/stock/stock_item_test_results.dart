@@ -13,20 +13,18 @@ import "package:inventree/inventree/model.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
 
-
 class StockItemTestResultsWidget extends StatefulWidget {
-
   const StockItemTestResultsWidget(this.item, {Key? key}) : super(key: key);
 
   final InvenTreeStockItem item;
 
   @override
-  _StockItemTestResultDisplayState createState() => _StockItemTestResultDisplayState(item);
+  _StockItemTestResultDisplayState createState() =>
+      _StockItemTestResultDisplayState(item);
 }
 
-
-class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestResultsWidget> {
-
+class _StockItemTestResultDisplayState
+    extends RefreshableState<StockItemTestResultsWidget> {
   _StockItemTestResultDisplayState(this.item);
 
   @override
@@ -46,8 +44,8 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
           label: L10().testResultAdd,
           onTap: () {
             addTestResult(context);
-          }
-        )
+          },
+        ),
       );
     }
 
@@ -62,9 +60,18 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
 
   final InvenTreeStockItem item;
 
-  Future <void> addTestResult(BuildContext context, {int templateId = 0, String name = "", bool nameIsEditable = true, bool result = false, String value = "", bool valueRequired = false, bool attachmentRequired = false}) async  {
-
-    Map<String, Map<String, dynamic>> fields = InvenTreeStockItemTestResult().formFields();
+  Future<void> addTestResult(
+    BuildContext context, {
+    int templateId = 0,
+    String name = "",
+    bool nameIsEditable = true,
+    bool result = false,
+    String value = "",
+    bool valueRequired = false,
+    bool attachmentRequired = false,
+  }) async {
+    Map<String, Map<String, dynamic>> fields = InvenTreeStockItemTestResult()
+        .formFields();
 
     // Add additional filters
     fields["template"]?["filters"]?["part"] = "${item.partId}";
@@ -102,7 +109,6 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
       bool match = false;
 
       for (var ii = 0; ii < outputs.length; ii++) {
-
         // Check against templates
         if (outputs[ii] is InvenTreePartTestTemplate) {
           var template = outputs[ii] as InvenTreePartTestTemplate;
@@ -143,16 +149,17 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
           title: Text(item.partName),
           subtitle: Text(item.partDescription),
           leading: InvenTreeAPI().getThumbnail(item.partImage),
-        )
-      )
+        ),
+      ),
     );
 
     tiles.add(
       ListTile(
-        title: Text(L10().testResults,
-          style: TextStyle(fontWeight: FontWeight.bold)
-        )
-      )
+        title: Text(
+          L10().testResults,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ),
     );
 
     if (loading) {
@@ -163,16 +170,17 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
     var results = getTestResults();
 
     if (results.isEmpty) {
-      tiles.add(ListTile(
-        title: Text(L10().testResultNone),
-        subtitle: Text(L10().testResultNoneDetail),
-      ));
+      tiles.add(
+        ListTile(
+          title: Text(L10().testResultNone),
+          subtitle: Text(L10().testResultNoneDetail),
+        ),
+      );
 
       return tiles;
     }
 
     for (var item in results) {
-
       bool _hasResult = false;
       bool _required = false;
       String _test = "";
@@ -213,33 +221,36 @@ class _StockItemTestResultDisplayState extends RefreshableState<StockItemTestRes
         _icon = Icon(TablerIcons.circle_x, color: COLOR_DANGER);
       }
 
-      tiles.add(ListTile(
-        title: Text(_test, style: TextStyle(
-          fontWeight: _required ? FontWeight.bold : FontWeight.normal,
-          fontStyle: _hasResult ? FontStyle.normal : FontStyle.italic
-        )),
-        subtitle: Text(_value),
-        trailing: Text(_date),
-        leading: _icon,
-        onTap: () {
-          if (InvenTreeStockItemTestResult().canCreate) {
-            addTestResult(
+      tiles.add(
+        ListTile(
+          title: Text(
+            _test,
+            style: TextStyle(
+              fontWeight: _required ? FontWeight.bold : FontWeight.normal,
+              fontStyle: _hasResult ? FontStyle.normal : FontStyle.italic,
+            ),
+          ),
+          subtitle: Text(_value),
+          trailing: Text(_date),
+          leading: _icon,
+          onTap: () {
+            if (InvenTreeStockItemTestResult().canCreate) {
+              addTestResult(
                 context,
                 name: _test,
                 templateId: _templateId,
                 nameIsEditable: !_required,
                 valueRequired: _valueRequired,
-                attachmentRequired: _attachmentRequired
-            );
-          }
-        }
-      ));
+                attachmentRequired: _attachmentRequired,
+              );
+            }
+          },
+        ),
+      );
     }
 
     if (tiles.isEmpty) {
-      tiles.add(ListTile(
-        title: Text(L10().testResultNone),
-      ));
+      tiles.add(ListTile(title: Text(L10().testResultNone)));
     }
 
     return tiles;

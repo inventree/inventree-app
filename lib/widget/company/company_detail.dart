@@ -16,24 +16,19 @@ import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/company/supplier_part_list.dart";
 
-
 /*
  * Widget for displaying detail view of a single Company instance
  */
 class CompanyDetailWidget extends StatefulWidget {
-
   const CompanyDetailWidget(this.company, {Key? key}) : super(key: key);
 
   final InvenTreeCompany company;
 
   @override
   _CompanyDetailState createState() => _CompanyDetailState();
-
 }
 
-
 class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
-
   _CompanyDetailState();
 
   int supplierPartCount = 0;
@@ -61,15 +56,15 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
     if (InvenTreeCompany().canEdit) {
       actions.add(
         IconButton(
-            icon: Icon(TablerIcons.edit),
-            tooltip: L10().companyEdit,
-            onPressed: () {
-              editCompany(context);
-            }
-        )
+          icon: Icon(TablerIcons.edit),
+          tooltip: L10().companyEdit,
+          onPressed: () {
+            editCompany(context);
+          },
+        ),
       );
     }
-    
+
     return actions;
   }
 
@@ -78,23 +73,27 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
     List<SpeedDialChild> actions = [];
 
     if (widget.company.isCustomer && InvenTreeSalesOrder().canCreate) {
-      actions.add(SpeedDialChild(
-        child: Icon(TablerIcons.truck),
-        label: L10().salesOrderCreate,
-        onTap: () async {
-          _createSalesOrder(context);
-        }
-      ));
+      actions.add(
+        SpeedDialChild(
+          child: Icon(TablerIcons.truck),
+          label: L10().salesOrderCreate,
+          onTap: () async {
+            _createSalesOrder(context);
+          },
+        ),
+      );
     }
 
     if (widget.company.isSupplier && InvenTreePurchaseOrder().canCreate) {
-      actions.add(SpeedDialChild(
-        child: Icon(TablerIcons.shopping_cart),
-        label: L10().purchaseOrderCreate,
-        onTap: () async {
-          _createPurchaseOrder(context);
-        }
-      ));
+      actions.add(
+        SpeedDialChild(
+          child: Icon(TablerIcons.shopping_cart),
+          label: L10().purchaseOrderCreate,
+          onTap: () async {
+            _createPurchaseOrder(context);
+          },
+        ),
+      );
     }
 
     return actions;
@@ -109,17 +108,17 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
     fields["customer"]?["value"] = widget.company.pk;
 
     InvenTreeSalesOrder().createForm(
-        context,
-        L10().salesOrderCreate,
-        fields: fields,
-        onSuccess: (result) async {
-          Map<String, dynamic> data = result as Map<String, dynamic>;
+      context,
+      L10().salesOrderCreate,
+      fields: fields,
+      onSuccess: (result) async {
+        Map<String, dynamic> data = result as Map<String, dynamic>;
 
-          if (data.containsKey("pk")) {
-            var order = InvenTreeSalesOrder.fromJson(data);
-            order.goToDetailPage(context);
-          }
+        if (data.containsKey("pk")) {
+          var order = InvenTreeSalesOrder.fromJson(data);
+          order.goToDetailPage(context);
         }
+      },
     );
   }
 
@@ -132,17 +131,17 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
     fields["supplier"]?["value"] = widget.company.pk;
 
     InvenTreePurchaseOrder().createForm(
-        context,
-        L10().purchaseOrderCreate,
-        fields: fields,
-        onSuccess: (result) async {
-          Map<String, dynamic> data = result as Map<String, dynamic>;
+      context,
+      L10().purchaseOrderCreate,
+      fields: fields,
+      onSuccess: (result) async {
+        Map<String, dynamic> data = result as Map<String, dynamic>;
 
-          if (data.containsKey("pk")) {
-            var order = InvenTreePurchaseOrder.fromJson(data);
-            order.goToDetailPage(context);
-          }
+        if (data.containsKey("pk")) {
+          var order = InvenTreePurchaseOrder.fromJson(data);
+          order.goToDetailPage(context);
         }
+      },
     );
   }
 
@@ -156,32 +155,37 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
       return;
     }
 
-    outstandingPurchaseOrders = widget.company.isSupplier ?
-        await InvenTreePurchaseOrder().count(filters: {
-          "supplier": widget.company.pk.toString(),
-          "outstanding": "true"
-        }) : 0;
+    outstandingPurchaseOrders = widget.company.isSupplier
+        ? await InvenTreePurchaseOrder().count(
+            filters: {
+              "supplier": widget.company.pk.toString(),
+              "outstanding": "true",
+            },
+          )
+        : 0;
 
-    outstandingSalesOrders = widget.company.isCustomer ?
-        await InvenTreeSalesOrder().count(filters: {
-          "customer": widget.company.pk.toString(),
-          "outstanding": "true"
-        }) : 0;
-  
-    InvenTreeSupplierPart().count(
-        filters: {
-          "supplier": widget.company.pk.toString()
-        }
-    ).then((value) {
-      if (mounted) {
-        setState(() {
-          supplierPartCount = value;
+    outstandingSalesOrders = widget.company.isCustomer
+        ? await InvenTreeSalesOrder().count(
+            filters: {
+              "customer": widget.company.pk.toString(),
+              "outstanding": "true",
+            },
+          )
+        : 0;
+
+    InvenTreeSupplierPart()
+        .count(filters: {"supplier": widget.company.pk.toString()})
+        .then((value) {
+          if (mounted) {
+            setState(() {
+              supplierPartCount = value;
+            });
+          }
         });
-      }
-    });
 
-    InvenTreeCompanyAttachment().countAttachments(widget.company.pk)
-    .then((value) {
+    InvenTreeCompanyAttachment().countAttachments(widget.company.pk).then((
+      value,
+    ) {
       if (mounted) {
         setState(() {
           attachmentCount = value;
@@ -190,15 +194,14 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
     });
   }
 
-  Future <void> editCompany(BuildContext context) async {
-
+  Future<void> editCompany(BuildContext context) async {
     widget.company.editForm(
       context,
       L10().companyEdit,
       onSuccess: (data) async {
         refresh(context);
         showSnackIcon(L10().companyUpdated, success: true);
-      }
+      },
     );
   }
 
@@ -207,87 +210,86 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
    */
   @override
   List<Widget> getTiles(BuildContext context) {
-
     List<Widget> tiles = [];
 
     bool sep = false;
 
-    tiles.add(Card(
-      child: ListTile(
-        title: Text("${widget.company.name}"),
-        subtitle: Text("${widget.company.description}"),
-        leading: InvenTreeAPI().getThumbnail(widget.company.image),
+    tiles.add(
+      Card(
+        child: ListTile(
+          title: Text("${widget.company.name}"),
+          subtitle: Text("${widget.company.description}"),
+          leading: InvenTreeAPI().getThumbnail(widget.company.image),
+        ),
       ),
-    ));
+    );
 
     if (!widget.company.active) {
       tiles.add(
-          ListTile(
-            title: Text(
-                L10().inactive,
-                style: TextStyle(
-                    color: COLOR_DANGER
-                )
-            ),
-            subtitle: Text(
-                L10().inactiveCompany,
-                style: TextStyle(
-                    color: COLOR_DANGER
-                )
-            ),
-            leading: Icon(
-                TablerIcons.exclamation_circle,
-                color: COLOR_DANGER
-            ),
-          )
+        ListTile(
+          title: Text(L10().inactive, style: TextStyle(color: COLOR_DANGER)),
+          subtitle: Text(
+            L10().inactiveCompany,
+            style: TextStyle(color: COLOR_DANGER),
+          ),
+          leading: Icon(TablerIcons.exclamation_circle, color: COLOR_DANGER),
+        ),
       );
     }
 
-  if (widget.company.website.isNotEmpty) {
-    tiles.add(ListTile(
-      title: Text("${widget.company.website}"),
-      leading: Icon(TablerIcons.globe, color: COLOR_ACTION),
-      onTap: () async {
-        openLink(widget.company.website);
-      },
-    ));
+    if (widget.company.website.isNotEmpty) {
+      tiles.add(
+        ListTile(
+          title: Text("${widget.company.website}"),
+          leading: Icon(TablerIcons.globe, color: COLOR_ACTION),
+          onTap: () async {
+            openLink(widget.company.website);
+          },
+        ),
+      );
 
-    sep = true;
-  }
+      sep = true;
+    }
 
-  if (widget.company.email.isNotEmpty) {
-    tiles.add(ListTile(
-      title: Text("${widget.company.email}"),
-      leading: Icon(TablerIcons.at, color: COLOR_ACTION),
-      onTap: () async {
-        openLink("mailto:${widget.company.email}");
-      },
-    ));
+    if (widget.company.email.isNotEmpty) {
+      tiles.add(
+        ListTile(
+          title: Text("${widget.company.email}"),
+          leading: Icon(TablerIcons.at, color: COLOR_ACTION),
+          onTap: () async {
+            openLink("mailto:${widget.company.email}");
+          },
+        ),
+      );
 
-    sep = true;
-  }
+      sep = true;
+    }
 
-  if (widget.company.phone.isNotEmpty) {
-    tiles.add(ListTile(
-      title: Text("${widget.company.phone}"),
-      leading: Icon(TablerIcons.phone, color: COLOR_ACTION),
-      onTap: () {
-        openLink("tel:${widget.company.phone}");
-      },
-    ));
+    if (widget.company.phone.isNotEmpty) {
+      tiles.add(
+        ListTile(
+          title: Text("${widget.company.phone}"),
+          leading: Icon(TablerIcons.phone, color: COLOR_ACTION),
+          onTap: () {
+            openLink("tel:${widget.company.phone}");
+          },
+        ),
+      );
 
-    sep = true;
-  }
+      sep = true;
+    }
 
     // External link
     if (widget.company.link.isNotEmpty) {
-      tiles.add(ListTile(
-        title: Text("${widget.company.link}"),
-        leading: Icon(TablerIcons.link, color: COLOR_ACTION),
-        onTap: () {
-          widget.company.openLink();
-        },
-      ));
+      tiles.add(
+        ListTile(
+          title: Text("${widget.company.link}"),
+          leading: Icon(TablerIcons.link, color: COLOR_ACTION),
+          onTap: () {
+            widget.company.openLink();
+          },
+        ),
+      );
 
       sep = true;
     }
@@ -297,7 +299,6 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
     }
 
     if (widget.company.isSupplier) {
-
       if (supplierPartCount > 0) {
         tiles.add(
           ListTile(
@@ -309,12 +310,12 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => SupplierPartList({
-                    "supplier": widget.company.pk.toString()
-                  })
-                )
+                    "supplier": widget.company.pk.toString(),
+                  }),
+                ),
               );
-            }
-          )
+            },
+          ),
         );
       }
 
@@ -328,14 +329,12 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
               context,
               MaterialPageRoute(
                 builder: (context) => PurchaseOrderListWidget(
-                  filters: {
-                    "supplier": "${widget.company.pk}"
-                  }
-                )
-              )
+                  filters: {"supplier": "${widget.company.pk}"},
+                ),
+              ),
             );
-          }
-        )
+          },
+        ),
       );
 
       // TODO: Display "supplied parts" count (click through to list of supplier parts)
@@ -365,46 +364,46 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
               context,
               MaterialPageRoute(
                 builder: (context) => SalesOrderListWidget(
-                  filters: {
-                    "customer": widget.company.pk.toString()
-                  }
-                )
-              )
+                  filters: {"customer": widget.company.pk.toString()},
+                ),
+              ),
             );
-          }
-        )
+          },
+        ),
       );
     }
 
     if (widget.company.notes.isNotEmpty) {
-      tiles.add(ListTile(
-        title: Text(L10().notes),
-        leading: Icon(TablerIcons.note),
-        onTap: null,
-      ));
+      tiles.add(
+        ListTile(
+          title: Text(L10().notes),
+          leading: Icon(TablerIcons.note),
+          onTap: null,
+        ),
+      );
     }
 
-
-    tiles.add(ListTile(
-      title: Text(L10().attachments),
-      leading: Icon(TablerIcons.file, color: COLOR_ACTION),
-      trailing: attachmentCount > 0 ? Text(attachmentCount.toString()) : null,
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => AttachmentWidget(
-              InvenTreeCompanyAttachment(),
-              widget.company.pk,
-              widget.company.name,
-              InvenTreeCompany().canEdit
-            )
-          )
-        );
-      }
-    ));
+    tiles.add(
+      ListTile(
+        title: Text(L10().attachments),
+        leading: Icon(TablerIcons.file, color: COLOR_ACTION),
+        trailing: attachmentCount > 0 ? Text(attachmentCount.toString()) : null,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AttachmentWidget(
+                InvenTreeCompanyAttachment(),
+                widget.company.pk,
+                widget.company.name,
+                InvenTreeCompany().canEdit,
+              ),
+            ),
+          );
+        },
+      ),
+    );
 
     return tiles;
   }
-
 }

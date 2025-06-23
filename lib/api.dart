@@ -27,13 +27,17 @@ import "package:inventree/user_profile.dart";
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/snacks.dart";
 
-
 /*
  * Class representing an API response from the server
  */
 class APIResponse {
-
-  APIResponse({this.url = "", this.method = "", this.statusCode = -1, this.error = "", this.data = const {}});
+  APIResponse({
+    this.url = "",
+    this.method = "",
+    this.statusCode = -1,
+    this.error = "",
+    this.data = const {},
+  });
 
   int statusCode = -1;
 
@@ -88,7 +92,6 @@ class APIResponse {
    * Handles case where the response is paginated, or a complete set of results
    */
   List<dynamic> resultsList() {
-
     if (isList()) {
       return asList();
     } else if (isMap()) {
@@ -104,14 +107,12 @@ class APIResponse {
   }
 }
 
-
 /*
  * Custom FileService for caching network images
  * Requires a custom badCertificateCallback,
  * so we can accept "dodgy" (e.g. self-signed) certificates
  */
 class InvenTreeFileService extends FileService {
-
   InvenTreeFileService({HttpClient? client, bool strictHttps = false}) {
     _client = client ?? HttpClient();
 
@@ -126,8 +127,10 @@ class InvenTreeFileService extends FileService {
   HttpClient? _client;
 
   @override
-  Future<FileServiceResponse> get(String url,
-      {Map<String, String>? headers}) async {
+  Future<FileServiceResponse> get(
+    String url, {
+    Map<String, String>? headers,
+  }) async {
     final Uri resolved = Uri.base.resolve(url);
 
     final HttpClientRequest req = await _client!.getUrl(resolved);
@@ -141,8 +144,11 @@ class InvenTreeFileService extends FileService {
     final HttpClientResponse httpResponse = await req.close();
 
     final http.StreamedResponse _response = http.StreamedResponse(
-      httpResponse.timeout(Duration(seconds: 60)), httpResponse.statusCode,
-      contentLength: httpResponse.contentLength < 0 ? 0 : httpResponse.contentLength,
+      httpResponse.timeout(Duration(seconds: 60)),
+      httpResponse.statusCode,
+      contentLength: httpResponse.contentLength < 0
+          ? 0
+          : httpResponse.contentLength,
       reasonPhrase: httpResponse.reasonPhrase,
       isRedirect: httpResponse.isRedirect,
     );
@@ -158,12 +164,10 @@ class InvenTreeFileService extends FileService {
  * initialised using a username:password combination.
  */
 
-
 /*
  * API class which manages all communication with the InvenTree server
  */
 class InvenTreeAPI {
-
   factory InvenTreeAPI() {
     return _api;
   }
@@ -209,7 +213,6 @@ class InvenTreeAPI {
   }
 
   String _makeUrl(String url) {
-
     // Strip leading slash
     if (url.startsWith("/")) {
       url = url.substring(1, url.length);
@@ -257,14 +260,12 @@ class InvenTreeAPI {
    * Useful as a precursor check before performing operations.
    */
   bool checkConnection() {
-
     // Is the server connected?
     if (!isConnected()) {
-
       showSnackIcon(
         L10().notConnected,
         success: false,
-        icon: TablerIcons.server
+        icon: TablerIcons.server,
       );
 
       return false;
@@ -388,7 +389,6 @@ class InvenTreeAPI {
     return !isConnected() && _connecting;
   }
 
-
   /*
    * Perform the required login steps, in sequence.
    * Internal function, called by connectToServer()
@@ -403,7 +403,6 @@ class InvenTreeAPI {
    * 5. Request information on available plugins
    */
   Future<bool> _connectToServer() async {
-
     if (!await _checkServer()) {
       return false;
     }
@@ -413,7 +412,11 @@ class InvenTreeAPI {
     }
 
     if (!await _checkAuth()) {
-      showServerError(_URL_ME, L10().serverNotConnected, L10().serverAuthenticationError);
+      showServerError(
+        _URL_ME,
+        L10().serverNotConnected,
+        L10().serverAuthenticationError,
+      );
 
       // Invalidate the token
       if (profile != null) {
@@ -436,20 +439,18 @@ class InvenTreeAPI {
     return true;
   }
 
-
   /*
    * Check that the remote server is available.
    * Ping the api/ endpoint, which does not require user authentication
    */
   Future<bool> _checkServer() async {
-
     String address = profile?.server ?? "";
 
     if (address.isEmpty) {
       showSnackIcon(
-          L10().incompleteDetails,
-          icon: TablerIcons.exclamation_circle,
-          success: false
+        L10().incompleteDetails,
+        icon: TablerIcons.exclamation_circle,
+        success: false,
       );
       return false;
     }
@@ -459,7 +460,9 @@ class InvenTreeAPI {
     }
 
     // Cache the "strictHttps" setting, so we can use it later without async requirement
-    _strictHttps = await InvenTreeSettingsManager().getValue(INV_STRICT_HTTPS, false) as bool;
+    _strictHttps =
+        await InvenTreeSettingsManager().getValue(INV_STRICT_HTTPS, false)
+            as bool;
 
     debug("Connecting to ${apiUrl}");
 
@@ -467,7 +470,11 @@ class InvenTreeAPI {
 
     if (!response.successful()) {
       debug("Server returned invalid response: ${response.statusCode}");
-      showStatusCodeError(apiUrl, response.statusCode, details: response.data.toString());
+      showStatusCodeError(
+        apiUrl,
+        response.statusCode,
+        details: response.data.toString(),
+      );
       return false;
     }
 
@@ -476,17 +483,12 @@ class InvenTreeAPI {
     serverInfo = {..._data};
 
     if (serverVersion.isEmpty) {
-      showServerError(
-        apiUrl,
-        L10().missingData,
-        L10().serverMissingData,
-      );
+      showServerError(apiUrl, L10().missingData, L10().serverMissingData);
 
       return false;
     }
 
     if (apiVersion < _minApiVersion) {
-
       String message = L10().serverApiVersion + ": ${apiVersion}";
 
       message += "\n";
@@ -496,11 +498,7 @@ class InvenTreeAPI {
 
       message += "Ensure your InvenTree server version is up to date!";
 
-      showServerError(
-        apiUrl,
-        L10().serverOld,
-        message,
-      );
+      showServerError(apiUrl, L10().serverOld, message);
 
       return false;
     }
@@ -508,7 +506,6 @@ class InvenTreeAPI {
     // At this point, we have a server which is responding
     return true;
   }
-
 
   /*
    * Check that the user is authenticated
@@ -525,7 +522,9 @@ class InvenTreeAPI {
       userInfo = response.asMap();
       return true;
     } else {
-      debug("Auth request failed: Server returned status ${response.statusCode}");
+      debug(
+        "Auth request failed: Server returned status ${response.statusCode}",
+      );
       if (response.data != null) {
         debug("Server response: ${response.data.toString()}");
       }
@@ -538,8 +537,11 @@ class InvenTreeAPI {
    * Fetch a token from the server,
    * with a temporary authentication header
    */
-  Future<APIResponse> fetchToken(UserProfile userProfile, String username, String password) async {
-
+  Future<APIResponse> fetchToken(
+    UserProfile userProfile,
+    String username,
+    String password,
+  ) async {
     debug("Fetching user token from ${userProfile.server}");
 
     profile = userProfile;
@@ -574,13 +576,14 @@ class InvenTreeAPI {
     }
 
     // Construct auth header from username and password
-    String authHeader = "Basic " + base64Encode(utf8.encode("${username}:${password}"));
+    String authHeader =
+        "Basic " + base64Encode(utf8.encode("${username}:${password}"));
 
     // Perform request to get a token
     final response = await get(
-        _URL_TOKEN,
-        params: { "name": platform_name},
-        headers: { HttpHeaders.authorizationHeader: authHeader}
+      _URL_TOKEN,
+      params: {"name": platform_name},
+      headers: {HttpHeaders.authorizationHeader: authHeader},
     );
 
     // Invalid response
@@ -641,11 +644,9 @@ class InvenTreeAPI {
     _connectionStatusChanged();
   }
 
-
   /* Public facing connection function.
    */
   Future<bool> connectToServer(UserProfile prf) async {
-
     // Ensure server is first disconnected
     disconnectFromServer();
 
@@ -653,9 +654,9 @@ class InvenTreeAPI {
 
     if (profile == null) {
       showSnackIcon(
-          L10().profileSelect,
-          success: false,
-          icon: TablerIcons.exclamation_circle
+        L10().profileSelect,
+        success: false,
+        icon: TablerIcons.exclamation_circle,
       );
       return false;
     }
@@ -679,11 +680,9 @@ class InvenTreeAPI {
 
       if (_notification_timer == null) {
         debug("starting notification timer");
-        _notification_timer = Timer.periodic(
-            Duration(seconds: 60),
-                (timer) {
-              _refreshNotifications();
-            });
+        _notification_timer = Timer.periodic(Duration(seconds: 60), (timer) {
+          _refreshNotifications();
+        });
       }
     }
 
@@ -698,7 +697,6 @@ class InvenTreeAPI {
    * Request the user roles (permissions) from the InvenTree server
    */
   Future<bool> _fetchRoles() async {
-
     roles.clear();
 
     debug("API: Requesting user role data");
@@ -712,15 +710,10 @@ class InvenTreeAPI {
     var data = response.asMap();
 
     if (!data.containsKey("roles")) {
-
       roles = {};
       permissions = {};
 
-      showServerError(
-        apiUrl,
-        L10().serverError,
-        L10().errorUserRoles,
-      );
+      showServerError(apiUrl, L10().serverError, L10().errorUserRoles);
       return false;
     }
 
@@ -737,7 +730,6 @@ class InvenTreeAPI {
 
   // Request plugin information from the server
   Future<bool> _fetchPlugins() async {
-
     _plugins.clear();
 
     debug("API: getPluginInformation()");
@@ -762,7 +754,6 @@ class InvenTreeAPI {
    * e.g. "sales_order", "change"
    */
   bool checkRole(String role, String permission) {
-
     if (!_connected) {
       return false;
     }
@@ -793,12 +784,13 @@ class InvenTreeAPI {
         // Unknown error - report it!
         sentryReportError(
           "api.checkRole",
-          error, stackTrace,
+          error,
+          stackTrace,
           context: {
             "role": role,
             "permission": permission,
             "error": error.toString(),
-         }
+          },
         );
       }
 
@@ -840,13 +832,14 @@ class InvenTreeAPI {
       } else {
         // Unknown error - report it!
         sentryReportError(
-            "api.checkPermission",
-            error, stackTrace,
-            context: {
-              "model": model,
-              "permission": permission,
-              "error": error.toString(),
-            }
+          "api.checkPermission",
+          error,
+          stackTrace,
+          context: {
+            "model": model,
+            "permission": permission,
+            "error": error.toString(),
+          },
         );
       }
 
@@ -855,10 +848,12 @@ class InvenTreeAPI {
     }
   }
 
-
   // Perform a PATCH request
-  Future<APIResponse> patch(String url, {Map<String, dynamic> body = const {}, int? expectedStatusCode}) async {
-
+  Future<APIResponse> patch(
+    String url, {
+    Map<String, dynamic> body = const {},
+    int? expectedStatusCode,
+  }) async {
     Map<String, dynamic> _body = body;
 
     HttpClientRequest? request = await apiRequest(url, "PATCH");
@@ -868,14 +863,14 @@ class InvenTreeAPI {
       return APIResponse(
         url: url,
         method: "PATCH",
-        error: "HttpClientRequest is null"
+        error: "HttpClientRequest is null",
       );
     }
 
     return completeRequest(
       request,
       data: json.encode(_body),
-      statusCode: expectedStatusCode
+      statusCode: expectedStatusCode,
     );
   }
 
@@ -883,7 +878,6 @@ class InvenTreeAPI {
    * Download a file from the given URL
    */
   Future<void> downloadFile(String url, {bool openOnDownload = true}) async {
-
     if (url.isEmpty) {
       // No URL provided for download
       return;
@@ -910,19 +904,22 @@ class InvenTreeAPI {
 
     HttpClientRequest? _request;
 
-    final bool strictHttps = await InvenTreeSettingsManager().getValue(INV_STRICT_HTTPS, false) as bool;
+    final bool strictHttps =
+        await InvenTreeSettingsManager().getValue(INV_STRICT_HTTPS, false)
+            as bool;
 
     var client = createClient(url, strictHttps: strictHttps);
 
     // Attempt to open a connection to the server
     try {
-      _request = await client.openUrl("GET", _uri).timeout(Duration(seconds: 10));
+      _request = await client
+          .openUrl("GET", _uri)
+          .timeout(Duration(seconds: 10));
 
       // Set headers
       defaultHeaders().forEach((key, value) {
         _request?.headers.set(key, value);
       });
-
     } on SocketException catch (error) {
       debug("SocketException at ${url}: ${error.toString()}");
       showServerError(url, L10().connectionRefused, error.toString());
@@ -939,10 +936,7 @@ class InvenTreeAPI {
     } catch (error, stackTrace) {
       debug("Server error at ${url}: ${error.toString()}");
       showServerError(url, L10().serverError, error.toString());
-      sentryReportError(
-        "api.downloadFile : client.openUrl",
-        error, stackTrace,
-      );
+      sentryReportError("api.downloadFile : client.openUrl", error, stackTrace);
       return;
     }
 
@@ -972,7 +966,8 @@ class InvenTreeAPI {
       showServerError(url, L10().downloadError, error.toString());
       sentryReportError(
         "api.downloadFile : client.closeRequest",
-        error, stackTrace,
+        error,
+        stackTrace,
       );
     }
   }
@@ -980,8 +975,13 @@ class InvenTreeAPI {
   /*
    * Upload a file to the given URL
    */
-  Future<APIResponse> uploadFile(String url, File f,
-      {String name = "attachment", String method="POST", Map<String, dynamic>? fields}) async {
+  Future<APIResponse> uploadFile(
+    String url,
+    File f, {
+    String name = "attachment",
+    String method = "POST",
+    Map<String, dynamic>? fields,
+  }) async {
     var _url = makeApiUrl(url);
 
     var request = http.MultipartRequest(method, Uri.parse(_url));
@@ -990,7 +990,6 @@ class InvenTreeAPI {
 
     if (fields != null) {
       fields.forEach((String key, dynamic value) {
-
         if (value == null) {
           request.fields[key] = "";
         } else {
@@ -1003,10 +1002,7 @@ class InvenTreeAPI {
 
     request.files.add(_file);
 
-    APIResponse response = APIResponse(
-      url: url,
-      method: method,
-    );
+    APIResponse response = APIResponse(url: url, method: method);
 
     String jsondata = "";
 
@@ -1022,15 +1018,15 @@ class InvenTreeAPI {
       // Report a server-side error
       if (response.statusCode == 500) {
         sentryReportMessage(
-            "Server error in uploadFile()",
-            context: {
-              "url": url,
-              "method": request.method,
-              "name": name,
-              "statusCode": response.statusCode.toString(),
-              "requestHeaders": request.headers.toString(),
-              "responseHeaders": httpResponse.headers.toString(),
-            }
+          "Server error in uploadFile()",
+          context: {
+            "url": url,
+            "method": request.method,
+            "name": name,
+            "statusCode": response.statusCode.toString(),
+            "requestHeaders": request.headers.toString(),
+            "responseHeaders": httpResponse.headers.toString(),
+          },
         );
       }
     } on SocketException catch (error) {
@@ -1041,28 +1037,24 @@ class InvenTreeAPI {
       showServerError(
         url,
         L10().formatException,
-        L10().formatExceptionJson + ":\n${jsondata}"
+        L10().formatExceptionJson + ":\n${jsondata}",
       );
 
       sentryReportMessage(
-          "Error decoding JSON response from server",
-          context: {
-            "method": "uploadFile",
-            "url": url,
-            "statusCode": response.statusCode.toString(),
-            "data": jsondata,
-          }
+        "Error decoding JSON response from server",
+        context: {
+          "method": "uploadFile",
+          "url": url,
+          "statusCode": response.statusCode.toString(),
+          "data": jsondata,
+        },
       );
-
     } on TimeoutException {
       showTimeoutError(url);
       response.error = "TimeoutException";
     } catch (error, stackTrace) {
       showServerError(url, L10().serverError, error.toString());
-      sentryReportError(
-        "api.uploadFile",
-        error, stackTrace
-      );
+      sentryReportError("api.uploadFile", error, stackTrace);
       response.error = "UnknownError";
       response.errorDetail = error.toString();
     }
@@ -1077,15 +1069,11 @@ class InvenTreeAPI {
    * so that (hopefully) the field messages are correctly translated
    */
   Future<APIResponse> options(String url) async {
-
     HttpClientRequest? request = await apiRequest(url, "OPTIONS");
 
     if (request == null) {
       // Return an "invalid" APIResponse
-      return APIResponse(
-        url: url,
-        method: "OPTIONS"
-      );
+      return APIResponse(url: url, method: "OPTIONS");
     }
 
     return completeRequest(request);
@@ -1095,22 +1083,22 @@ class InvenTreeAPI {
    * Perform a HTTP POST request
    * Returns a json object (or null if unsuccessful)
    */
-  Future<APIResponse> post(String url, {Map<String, dynamic> body = const {}, int? expectedStatusCode=201}) async {
-
+  Future<APIResponse> post(
+    String url, {
+    Map<String, dynamic> body = const {},
+    int? expectedStatusCode = 201,
+  }) async {
     HttpClientRequest? request = await apiRequest(url, "POST");
 
     if (request == null) {
       // Return an "invalid" APIResponse
-      return APIResponse(
-        url: url,
-        method: "POST"
-      );
+      return APIResponse(url: url, method: "POST");
     }
 
     return completeRequest(
       request,
       data: json.encode(body),
-      statusCode: expectedStatusCode
+      statusCode: expectedStatusCode,
     );
   }
 
@@ -1118,28 +1106,25 @@ class InvenTreeAPI {
    * Perform a request to link a custom barcode to a particular item
    */
   Future<bool> linkBarcode(Map<String, String> body) async {
+    HttpClientRequest? request = await apiRequest("/barcode/link/", "POST");
 
-  HttpClientRequest? request = await apiRequest("/barcode/link/", "POST");
+    if (request == null) {
+      return false;
+    }
 
-  if (request == null) {
-    return false;
-  }
+    final response = await completeRequest(
+      request,
+      data: json.encode(body),
+      statusCode: 200,
+    );
 
-  final response = await completeRequest(
-    request,
-    data: json.encode(body),
-    statusCode: 200
-  );
-
-  return response.isValid() && response.statusCode == 200;
-
+    return response.isValid() && response.statusCode == 200;
   }
 
   /*
    * Perform a request to unlink a custom barcode from a particular item
    */
   Future<bool> unlinkBarcode(Map<String, dynamic> body) async {
-
     HttpClientRequest? request = await apiRequest("/barcode/unlink/", "POST");
 
     if (request == null) {
@@ -1147,33 +1132,31 @@ class InvenTreeAPI {
     }
 
     final response = await completeRequest(
-        request,
-        data: json.encode(body),
-        statusCode: 200,
+      request,
+      data: json.encode(body),
+      statusCode: 200,
     );
 
     return response.isValid() && response.statusCode == 200;
   }
 
-
   HttpClient createClient(String url, {bool strictHttps = false}) {
-
     var client = HttpClient();
 
-    client.badCertificateCallback = (X509Certificate cert, String host, int port) {
+    client.badCertificateCallback =
+        (X509Certificate cert, String host, int port) {
+          if (strictHttps) {
+            showServerError(
+              url,
+              L10().serverCertificateError,
+              L10().serverCertificateInvalid,
+            );
+            return false;
+          }
 
-      if (strictHttps) {
-        showServerError(
-          url,
-          L10().serverCertificateError,
-          L10().serverCertificateInvalid,
-        );
-        return false;
-      }
-
-      // Strict HTTPs not enforced, so we'll ignore the bad cert
-      return true;
-    };
+          // Strict HTTPs not enforced, so we'll ignore the bad cert
+          return true;
+        };
 
     // Set the connection timeout
     client.connectionTimeout = Duration(seconds: 30);
@@ -1189,22 +1172,15 @@ class InvenTreeAPI {
    * @param params is the request parameters
    */
   Future<HttpClientRequest?> apiRequest(
-      String url,
-      String method,
-      {
-        Map<String, String> urlParams = const {},
-        Map<String, String> headers = const {},
-      }
-    ) async {
-
+    String url,
+    String method, {
+    Map<String, String> urlParams = const {},
+    Map<String, String> headers = const {},
+  }) async {
     var _url = makeApiUrl(url);
 
     if (_url.isEmpty) {
-      showServerError(
-          url,
-          L10().invalidHost,
-          L10().invalidHostDetails
-      );
+      showServerError(url, L10().invalidHost, L10().invalidHostDetails);
       return null;
     }
 
@@ -1225,23 +1201,23 @@ class InvenTreeAPI {
     Uri? _uri = Uri.tryParse(_url);
 
     if (_uri == null || _uri.host.isEmpty) {
-      showServerError(
-          _url,
-          L10().invalidHost,
-          L10().invalidHostDetails
-      );
+      showServerError(_url, L10().invalidHost, L10().invalidHostDetails);
       return null;
     }
 
     HttpClientRequest? _request;
 
-    final bool strictHttps = await InvenTreeSettingsManager().getValue(INV_STRICT_HTTPS, false) as bool;
+    final bool strictHttps =
+        await InvenTreeSettingsManager().getValue(INV_STRICT_HTTPS, false)
+            as bool;
 
     var client = createClient(url, strictHttps: strictHttps);
 
     // Attempt to open a connection to the server
     try {
-      _request = await client.openUrl(method, _uri).timeout(Duration(seconds: 10));
+      _request = await client
+          .openUrl(method, _uri)
+          .timeout(Duration(seconds: 10));
 
       // Default headers
       defaultHeaders().forEach((key, value) {
@@ -1281,40 +1257,45 @@ class InvenTreeAPI {
       showServerError(url, L10().serverError, error.toString());
       sentryReportError(
         "api.apiRequest : openUrl",
-        error, stackTrace,
-        context: {
-          "url": url,
-          "method": method,
-        }
+        error,
+        stackTrace,
+        context: {"url": url, "method": method},
       );
 
       return null;
     }
   }
 
-
   /*
    * Complete an API request, and return an APIResponse object
    */
-  Future<APIResponse> completeRequest(HttpClientRequest request, {String? data, int? statusCode, bool ignoreResponse = false}) async {
-
+  Future<APIResponse> completeRequest(
+    HttpClientRequest request, {
+    String? data,
+    int? statusCode,
+    bool ignoreResponse = false,
+  }) async {
     if (data != null && data.isNotEmpty) {
-
       var encoded_data = utf8.encode(data);
 
-      request.headers.set(HttpHeaders.contentLengthHeader, encoded_data.length.toString());
+      request.headers.set(
+        HttpHeaders.contentLengthHeader,
+        encoded_data.length.toString(),
+      );
       request.add(encoded_data);
     }
 
     APIResponse response = APIResponse(
       method: request.method,
-      url: request.uri.toString()
+      url: request.uri.toString(),
     );
 
     String url = request.uri.toString();
 
     try {
-      HttpClientResponse? _response = await request.close().timeout(Duration(seconds: 10));
+      HttpClientResponse? _response = await request.close().timeout(
+        Duration(seconds: 10),
+      );
 
       response.statusCode = _response.statusCode;
 
@@ -1324,30 +1305,35 @@ class InvenTreeAPI {
 
         // Some server errors are not ones for us to worry about!
         switch (_response.statusCode) {
-          case 502:   // Bad gateway
-          case 503:   // Service unavailable
-          case 504:   // Gateway timeout
+          case 502: // Bad gateway
+          case 503: // Service unavailable
+          case 504: // Gateway timeout
             break;
-          default:    // Any other error code
+          default: // Any other error code
             sentryReportMessage(
-                "Server error",
-                context: {
-                  "url": request.uri.toString(),
-                  "method": request.method,
-                  "statusCode": _response.statusCode.toString(),
-                  "requestHeaders": request.headers.toString(),
-                  "responseHeaders": _response.headers.toString(),
-                  "responseData": response.data.toString(),
-                }
+              "Server error",
+              context: {
+                "url": request.uri.toString(),
+                "method": request.method,
+                "statusCode": _response.statusCode.toString(),
+                "requestHeaders": request.headers.toString(),
+                "responseHeaders": _response.headers.toString(),
+                "responseData": response.data.toString(),
+              },
             );
         }
       } else {
-
-        response.data = ignoreResponse ? {} : await responseToJson(url, _response) ?? {};
+        response.data = ignoreResponse
+            ? {}
+            : await responseToJson(url, _response) ?? {};
 
         // First check that the returned status code is what we expected
         if (statusCode != null && statusCode != _response.statusCode) {
-          showStatusCodeError(url, _response.statusCode, details: response.data.toString());
+          showStatusCodeError(
+            url,
+            _response.statusCode,
+            details: response.data.toString(),
+          );
         }
       }
     } on HttpException catch (error) {
@@ -1373,14 +1359,12 @@ class InvenTreeAPI {
     }
 
     return response;
-
   }
 
   /*
    * Convert a HttpClientResponse response object to JSON
    */
   dynamic responseToJson(String url, HttpClientResponse response) async {
-
     String body = await response.transform(utf8.decoder).join();
 
     try {
@@ -1388,7 +1372,6 @@ class InvenTreeAPI {
 
       return data ?? {};
     } on FormatException {
-
       switch (response.statusCode) {
         case 400:
         case 401:
@@ -1403,41 +1386,43 @@ class InvenTreeAPI {
           break;
         default:
           sentryReportMessage(
-              "Error decoding JSON response from server",
-              context: {
-                "headers": response.headers.toString(),
-                "statusCode": response.statusCode.toString(),
-                "data": body.toString(),
-                "endpoint": url,
-              }
+            "Error decoding JSON response from server",
+            context: {
+              "headers": response.headers.toString(),
+              "statusCode": response.statusCode.toString(),
+              "data": body.toString(),
+              "endpoint": url,
+            },
           );
       }
 
       showServerError(
         url,
         L10().formatException,
-        L10().formatExceptionJson + ":\n${body}"
+        L10().formatExceptionJson + ":\n${body}",
       );
 
       // Return an empty map
       return {};
     }
-
   }
 
   /*
    * Perform a HTTP GET request
    * Returns a json object (or null if did not complete)
    */
-  Future<APIResponse> get(String url, {Map<String, String> params = const {}, Map<String, String> headers = const {}, int? expectedStatusCode=200}) async {
-
+  Future<APIResponse> get(
+    String url, {
+    Map<String, String> params = const {},
+    Map<String, String> headers = const {},
+    int? expectedStatusCode = 200,
+  }) async {
     HttpClientRequest? request = await apiRequest(
       url,
       "GET",
       urlParams: params,
       headers: headers,
     );
-
 
     if (request == null) {
       // Return an "invalid" APIResponse
@@ -1455,11 +1440,7 @@ class InvenTreeAPI {
    * Perform a HTTP DELETE request
    */
   Future<APIResponse> delete(String url) async {
-
-    HttpClientRequest? request = await apiRequest(
-      url,
-      "DELETE",
-    );
+    HttpClientRequest? request = await apiRequest(url, "DELETE");
 
     if (request == null) {
       // Return an "invalid" APIResponse object
@@ -1470,23 +1451,17 @@ class InvenTreeAPI {
       );
     }
 
-    return completeRequest(
-      request,
-      ignoreResponse: true,
-    );
+    return completeRequest(request, ignoreResponse: true);
   }
 
   // Find the current locale code for the running app
   String get currentLocale {
-
     if (hasContext()) {
       // Try to get app context
       BuildContext? context = OneContext().context;
 
       if (context != null) {
-        Locale? locale = InvenTreeApp
-            .of(context)
-            ?.locale;
+        Locale? locale = InvenTreeApp.of(context)?.locale;
 
         if (locale != null) {
           return locale.languageCode; //.toString();
@@ -1526,8 +1501,11 @@ class InvenTreeAPI {
 
   static String get staticThumb => "/static/img/blank_image.thumbnail.png";
 
-  CachedNetworkImage? getThumbnail(String imageUrl, {double size = 40, bool hideIfNull = false}) {
-
+  CachedNetworkImage? getThumbnail(
+    String imageUrl, {
+    double size = 40,
+    bool hideIfNull = false,
+  }) {
     if (hideIfNull) {
       if (imageUrl.isEmpty) {
         return null;
@@ -1535,11 +1513,7 @@ class InvenTreeAPI {
     }
 
     try {
-      return getImage(
-          imageUrl,
-          width: size,
-          height: size
-      );
+      return getImage(imageUrl, width: size, height: size);
     } catch (error, stackTrace) {
       sentryReportError("_getThumbnail", error, stackTrace);
       return null;
@@ -1550,7 +1524,11 @@ class InvenTreeAPI {
    * Load image from the InvenTree server,
    * or from local cache (if it has been cached!)
    */
-  CachedNetworkImage getImage(String imageUrl, {double? height, double? width}) {
+  CachedNetworkImage getImage(
+    String imageUrl, {
+    double? height,
+    double? width,
+  }) {
     if (imageUrl.isEmpty) {
       imageUrl = staticImage;
     }
@@ -1560,18 +1538,14 @@ class InvenTreeAPI {
     const key = "inventree_network_image";
 
     CacheManager manager = CacheManager(
-      Config(
-        key,
-        fileService: InvenTreeFileService(
-          strictHttps: _strictHttps,
-        ),
-      )
+      Config(key, fileService: InvenTreeFileService(strictHttps: _strictHttps)),
     );
 
     return CachedNetworkImage(
       imageUrl: url,
       placeholder: (context, url) => CircularProgressIndicator(),
-      errorWidget: (context, url, error) => Icon(TablerIcons.circle_x, color: COLOR_DANGER),
+      errorWidget: (context, url, error) =>
+          Icon(TablerIcons.circle_x, color: COLOR_DANGER),
       httpHeaders: defaultHeaders(),
       height: height,
       width: width,
@@ -1584,7 +1558,6 @@ class InvenTreeAPI {
   Map<String, InvenTreeUserSetting> _userSettings = {};
 
   Future<String> getGlobalSetting(String key) async {
-
     InvenTreeGlobalSetting? setting = _globalSettings[key];
 
     if ((setting != null) && setting.reloadedWithin(Duration(minutes: 5))) {
@@ -1603,7 +1576,10 @@ class InvenTreeAPI {
   }
 
   // Return a boolean global setting value
-  Future<bool> getGlobalBooleanSetting(String key, { bool backup = false }) async {
+  Future<bool> getGlobalBooleanSetting(
+    String key, {
+    bool backup = false,
+  }) async {
     String value = await getGlobalSetting(key);
 
     if (value.isEmpty) {
@@ -1614,7 +1590,6 @@ class InvenTreeAPI {
   }
 
   Future<String> getUserSetting(String key) async {
-
     InvenTreeUserSetting? setting = _userSettings[key];
 
     if ((setting != null) && setting.reloadedWithin(Duration(minutes: 5))) {
@@ -1641,8 +1616,11 @@ class InvenTreeAPI {
   /*
    * Send a request to the server to locate / identify either a StockItem or StockLocation
    */
-  Future<void> locateItemOrLocation(BuildContext context, {int? item, int? location}) async {
-
+  Future<void> locateItemOrLocation(
+    BuildContext context, {
+    int? item,
+    int? location,
+  }) async {
     var plugins = getPlugins(mixin: "locate");
 
     if (plugins.isEmpty) {
@@ -1672,24 +1650,22 @@ class InvenTreeAPI {
           "value": plugins.first.key,
           "choices": plugin_options,
           "required": true,
-        }
+        },
       };
 
       await launchApiForm(
-          context,
-          L10().locateLocation,
-          "",
-          fields,
-          icon: TablerIcons.location_search,
-          onSuccess: (Map<String, dynamic> data) async {
-            plugin_name = (data["plugin"] ?? "") as String;
-          }
+        context,
+        L10().locateLocation,
+        "",
+        fields,
+        icon: TablerIcons.location_search,
+        onSuccess: (Map<String, dynamic> data) async {
+          plugin_name = (data["plugin"] ?? "") as String;
+        },
       );
     }
 
-    Map<String, dynamic> body = {
-      "plugin": plugin_name,
-    };
+    Map<String, dynamic> body = {"plugin": plugin_name};
 
     if (item != null) {
       body["item"] = item.toString();
@@ -1699,16 +1675,11 @@ class InvenTreeAPI {
       body["location"] = location.toString();
     }
 
-    post(
-      "/api/locate/",
-      body: body,
-      expectedStatusCode: 200,
-    ).then((APIResponse response) {
+    post("/api/locate/", body: body, expectedStatusCode: 200).then((
+      APIResponse response,
+    ) {
       if (response.successful()) {
-        showSnackIcon(
-          L10().requestSuccessful,
-          success: true,
-        );
+        showSnackIcon(L10().requestSuccessful, success: true);
       }
     });
   }
@@ -1726,10 +1697,13 @@ class InvenTreeAPI {
   }
 
   // Accessors methods for various status code classes
-  InvenTreeStatusCode get StockHistoryStatus => _get_status_class("stock/track/status/");
+  InvenTreeStatusCode get StockHistoryStatus =>
+      _get_status_class("stock/track/status/");
   InvenTreeStatusCode get StockStatus => _get_status_class("stock/status/");
-  InvenTreeStatusCode get PurchaseOrderStatus => _get_status_class("order/po/status/");
-  InvenTreeStatusCode get SalesOrderStatus => _get_status_class("order/so/status/");
+  InvenTreeStatusCode get PurchaseOrderStatus =>
+      _get_status_class("order/po/status/");
+  InvenTreeStatusCode get SalesOrderStatus =>
+      _get_status_class("order/so/status/");
 
   void clearStatusCodeData() {
     StockHistoryStatus.data.clear();
@@ -1762,5 +1736,3 @@ class InvenTreeAPI {
     });
   }
 }
-
-

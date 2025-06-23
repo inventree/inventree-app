@@ -16,12 +16,10 @@ import "package:inventree/widget/notifications.dart";
 import "package:inventree/widget/order/purchase_order_list.dart";
 import "package:inventree/widget/stock/location_display.dart";
 
-
 /*
  * Custom "drawer" widget for the InvenTree app.
  */
 class InvenTreeDrawer extends StatelessWidget {
-
   const InvenTreeDrawer(this.context);
 
   final BuildContext context;
@@ -53,8 +51,8 @@ class InvenTreeDrawer extends StatelessWidget {
 
     if (_checkConnection()) {
       Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null))
+        context,
+        MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)),
       );
     }
   }
@@ -65,8 +63,8 @@ class InvenTreeDrawer extends StatelessWidget {
 
     if (_checkConnection()) {
       Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => LocationDisplayWidget(null))
+        context,
+        MaterialPageRoute(builder: (context) => LocationDisplayWidget(null)),
       );
     }
   }
@@ -77,24 +75,24 @@ class InvenTreeDrawer extends StatelessWidget {
 
     if (_checkConnection()) {
       Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => SalesOrderListWidget(filters: {})
-          )
+        context,
+        MaterialPageRoute(
+          builder: (context) => SalesOrderListWidget(filters: {}),
+        ),
       );
     }
   }
-  
+
   // Load "purchase orders" page
   void _purchaseOrders() {
     _closeDrawer();
 
     if (_checkConnection()) {
       Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => PurchaseOrderListWidget(filters: {})
-          )
+        context,
+        MaterialPageRoute(
+          builder: (context) => PurchaseOrderListWidget(filters: {}),
+        ),
       );
     }
   }
@@ -104,15 +102,20 @@ class InvenTreeDrawer extends StatelessWidget {
     _closeDrawer();
 
     if (_checkConnection()) {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => NotificationWidget()));
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => NotificationWidget()),
+      );
     }
   }
 
   // Load settings widget
   void _settings() {
     _closeDrawer();
-    Navigator.push(context, MaterialPageRoute(builder: (context) => InvenTreeSettingsWidget()));
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => InvenTreeSettingsWidget()),
+    );
   }
 
   // Construct list of tiles to display in the "drawer" menu
@@ -120,14 +123,16 @@ class InvenTreeDrawer extends StatelessWidget {
     List<Widget> tiles = [];
 
     // "Home" access
-    tiles.add(ListTile(
-      leading: Icon(TablerIcons.home, color: COLOR_ACTION),
-      title: Text(
-        L10().appTitle,
-        style: TextStyle(fontWeight: FontWeight.bold),
+    tiles.add(
+      ListTile(
+        leading: Icon(TablerIcons.home, color: COLOR_ACTION),
+        title: Text(
+          L10().appTitle,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        onTap: _home,
       ),
-      onTap: _home,
-    ));
+    );
 
     tiles.add(Divider());
 
@@ -137,7 +142,7 @@ class InvenTreeDrawer extends StatelessWidget {
           title: Text(L10().parts),
           leading: Icon(TablerIcons.box, color: COLOR_ACTION),
           onTap: _parts,
-        )
+        ),
       );
     }
 
@@ -147,7 +152,7 @@ class InvenTreeDrawer extends StatelessWidget {
           title: Text(L10().stock),
           leading: Icon(TablerIcons.package, color: COLOR_ACTION),
           onTap: _stock,
-        )
+        ),
       );
     }
 
@@ -157,7 +162,7 @@ class InvenTreeDrawer extends StatelessWidget {
           title: Text(L10().purchaseOrders),
           leading: Icon(TablerIcons.shopping_cart, color: COLOR_ACTION),
           onTap: _purchaseOrders,
-        )
+        ),
       );
     }
 
@@ -167,7 +172,7 @@ class InvenTreeDrawer extends StatelessWidget {
           title: Text(L10().salesOrders),
           leading: Icon(TablerIcons.truck_delivery, color: COLOR_ACTION),
           onTap: _salesOrders,
-        )
+        ),
       );
     }
 
@@ -180,10 +185,12 @@ class InvenTreeDrawer extends StatelessWidget {
     tiles.add(
       ListTile(
         leading: Icon(TablerIcons.bell, color: COLOR_ACTION),
-        trailing: notification_count > 0 ? Text(notification_count.toString()) : null,
+        trailing: notification_count > 0
+            ? Text(notification_count.toString())
+            : null,
         title: Text(L10().notifications),
         onTap: _notifications,
-      )
+      ),
     );
 
     tiles.add(Divider());
@@ -198,14 +205,9 @@ class InvenTreeDrawer extends StatelessWidget {
         },
         title: Text(L10().colorScheme),
         subtitle: Text(L10().colorSchemeDetail),
-        leading: Icon(
-          TablerIcons.sun_moon,
-          color: COLOR_ACTION
-        ),
-        trailing: Icon(
-          darkMode ? TablerIcons.moon : TablerIcons.sun,
-        )
-      )
+        leading: Icon(TablerIcons.sun_moon, color: COLOR_ACTION),
+        trailing: Icon(darkMode ? TablerIcons.moon : TablerIcons.sun),
+      ),
     );
 
     tiles.add(
@@ -213,7 +215,7 @@ class InvenTreeDrawer extends StatelessWidget {
         title: Text(L10().settings),
         leading: Icon(Icons.settings, color: COLOR_ACTION),
         onTap: _settings,
-      )
+      ),
     );
 
     return tiles;
@@ -221,11 +223,6 @@ class InvenTreeDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    return  Drawer(
-        child: ListView(
-          children: drawerTiles(context),
-        )
-    );
+    return Drawer(child: ListView(children: drawerTiles(context)));
   }
 }
