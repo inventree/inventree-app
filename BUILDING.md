@@ -72,7 +72,7 @@ Set Flutter SDK path in Android Studio:
 2. Go to `File` -> `Settings` -> `Languages & Frameworks` -> `Flutter`
 3. Set `Flutter SDK path` to `.fvm/flutter_sdk`:
 
-![Setting Flutter SDK path in Android Studio](android_studio_fvm.png)
+![Setting Flutter SDK path in Android Studio](docs/android_studio_fvm.png)
 
 
 ## Getting Started
