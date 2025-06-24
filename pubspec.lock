@@ -281,6 +281,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.0"
+  custom_image_crop:
+    dependency: "direct main"
+    description:
+      name: custom_image_crop
+      sha256: d352ebe734677c391d77a1234dcc64a4e1a0ec5a35f8248d7274655f723edda4
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.1"
   datetime_picker_formfield:
     dependency: "direct main"
     description:
@@ -493,6 +501,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.0"
+  gesture_x_detector:
+    dependency: transitive
+    description:
+      name: gesture_x_detector
+      sha256: "777855ee4e1fa4d677c40d6a44b9106696ef6745879027c8871e334cee8cde1e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.1"
   glob:
     dependency: transitive
     description:

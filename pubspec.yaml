@@ -14,6 +14,7 @@ dependencies:
   camera: ^0.11.1                         # Camera
   cupertino_icons: ^1.0.8
   currency_formatter: ^2.2.1              # Currency formatting
+  custom_image_crop: ^0.1.1               # Crop selected images
   datetime_picker_formfield: ^2.0.1       # Date / time picker
   device_info_plus: ^11.4.0               # Information about the device
   dropdown_search: ^5.0.6                 # Dropdown autocomplete form fields
