@@ -5,6 +5,7 @@
 - Fix broken documentation link
 - Reduce frequency of notification checks
 - Updated translations
+- Add image cropping functionality
 
 ### 0.18.1 - April 2025
 ---
