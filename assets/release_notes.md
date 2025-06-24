@@ -2,6 +2,7 @@
 ---
 - Replace barcode scanning library for better performance
 - Display part pricing information
+- Updated theme support
 - Fix broken documentation link
 - Reduce frequency of notification checks
 - Updated translations
