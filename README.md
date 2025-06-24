@@ -9,6 +9,10 @@ The InvenTree mobile / tablet application is a companion app for the [InvenTree 
 
 Written in the [Flutter](https://flutter.dev/) environment, the app provides native support for Android and iOS devices.
 
+<p align="center">
+  <img width="30%" src="https://github.com/user-attachments/assets/aee96f90-2953-47f6-916a-06f19d3b8aa5">
+</p>
+
 ## Installation
 
 You can install the app via the following channels:
