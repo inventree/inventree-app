@@ -72,7 +72,7 @@ mixin BaseWidgetProperties {
     BuildContext context,
     GlobalKey<ScaffoldState> key,
   ) {
-    const double iconSize = 40;
+    const double iconSize = 32;
 
     List<Widget> icons = [
       IconButton(

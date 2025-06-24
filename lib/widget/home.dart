@@ -225,10 +225,9 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
           child: ListTile(
             leading: Icon(
               icon,
-              size: 32,
               color: connected && allowed ? COLOR_ACTION : Colors.grey,
             ),
-            title: Text(label, style: TextStyle(fontSize: 20)),
+            title: Text(label),
             trailing: trailing,
           ),
           alignment: Alignment.center,
@@ -457,15 +456,39 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
     return Scaffold(
       key: homeKey,
       appBar: AppBar(
-        title: Text(L10().appTitle),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset("assets/image/logo_transparent.png", height: 24),
+            SizedBox(width: 8),
+            Text(L10().appTitle),
+          ],
+        ),
         backgroundColor: COLOR_APP_BAR,
         actions: [
           IconButton(
-            icon: Icon(
-              TablerIcons.server,
-              color: connected
-                  ? COLOR_SUCCESS
-                  : (connecting ? COLOR_PROGRESS : COLOR_DANGER),
+            icon: Stack(
+              children: [
+                Icon(TablerIcons.server),
+                Positioned(
+                  right: 0,
+                  bottom: 0,
+                  child: Container(
+                    width: 10,
+                    height: 10,
+                    decoration: BoxDecoration(
+                      color: connected
+                          ? COLOR_SUCCESS
+                          : (connecting ? COLOR_PROGRESS : COLOR_DANGER),
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        width: 1.5,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
             onPressed: _selectProfile,
           ),

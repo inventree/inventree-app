@@ -19,6 +19,81 @@ import "package:inventree/widget/stock/location_display.dart";
 /*
  * Custom "drawer" widget for the InvenTree app.
  */
+// Dialog for theme selection
+class ThemeSelectionDialog extends StatelessWidget {
+  const ThemeSelectionDialog({Key? key, required this.onThemeSelected})
+    : super(key: key);
+
+  final VoidCallback onThemeSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final currentThemeMode = AdaptiveTheme.of(context).mode;
+
+    return AlertDialog(
+      title: Text(L10().colorScheme),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          RadioListTile<AdaptiveThemeMode>(
+            title: Row(
+              children: [
+                Icon(TablerIcons.device_desktop),
+                SizedBox(width: 10),
+                Text("System"),
+              ],
+            ),
+            value: AdaptiveThemeMode.system,
+            groupValue: currentThemeMode,
+            onChanged: (value) {
+              AdaptiveTheme.of(context).setThemeMode(AdaptiveThemeMode.system);
+              onThemeSelected();
+            },
+          ),
+          RadioListTile<AdaptiveThemeMode>(
+            title: Row(
+              children: [
+                Icon(TablerIcons.sun),
+                SizedBox(width: 10),
+                Text("Light"),
+              ],
+            ),
+            value: AdaptiveThemeMode.light,
+            groupValue: currentThemeMode,
+            onChanged: (value) {
+              AdaptiveTheme.of(context).setThemeMode(AdaptiveThemeMode.light);
+              onThemeSelected();
+            },
+          ),
+          RadioListTile<AdaptiveThemeMode>(
+            title: Row(
+              children: [
+                Icon(TablerIcons.moon),
+                SizedBox(width: 10),
+                Text("Dark"),
+              ],
+            ),
+            value: AdaptiveThemeMode.dark,
+            groupValue: currentThemeMode,
+            onChanged: (value) {
+              AdaptiveTheme.of(context).setThemeMode(AdaptiveThemeMode.dark);
+              onThemeSelected();
+            },
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text("Cancel"),
+        ),
+      ],
+    );
+  }
+}
+
 class InvenTreeDrawer extends StatelessWidget {
   const InvenTreeDrawer(this.context);
 
@@ -118,6 +193,18 @@ class InvenTreeDrawer extends StatelessWidget {
     );
   }
 
+  // Return an icon representing the current theme mode
+  Widget _getThemeModeIcon(AdaptiveThemeMode mode) {
+    switch (mode) {
+      case AdaptiveThemeMode.dark:
+        return Icon(TablerIcons.moon);
+      case AdaptiveThemeMode.light:
+        return Icon(TablerIcons.sun);
+      case AdaptiveThemeMode.system:
+        return Icon(TablerIcons.device_desktop);
+    }
+  }
+
   // Construct list of tiles to display in the "drawer" menu
   List<Widget> drawerTiles(BuildContext context) {
     List<Widget> tiles = [];
@@ -125,7 +212,7 @@ class InvenTreeDrawer extends StatelessWidget {
     // "Home" access
     tiles.add(
       ListTile(
-        leading: Icon(TablerIcons.home, color: COLOR_ACTION),
+        leading: Image.asset("assets/image/logo_transparent.png", height: 24),
         title: Text(
           L10().appTitle,
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -195,18 +282,25 @@ class InvenTreeDrawer extends StatelessWidget {
 
     tiles.add(Divider());
 
-    bool darkMode = AdaptiveTheme.of(context).mode.isDark;
-
     tiles.add(
       ListTile(
         onTap: () {
-          AdaptiveTheme.of(context).toggleThemeMode();
-          _closeDrawer();
+          showDialog(
+            context: context,
+            builder: (BuildContext dialogContext) {
+              return ThemeSelectionDialog(
+                onThemeSelected: () {
+                  Navigator.of(dialogContext).pop();
+                  _closeDrawer();
+                },
+              );
+            },
+          );
         },
         title: Text(L10().colorScheme),
         subtitle: Text(L10().colorSchemeDetail),
-        leading: Icon(TablerIcons.sun_moon, color: COLOR_ACTION),
-        trailing: Icon(darkMode ? TablerIcons.moon : TablerIcons.sun),
+        leading: Icon(TablerIcons.palette, color: COLOR_ACTION),
+        trailing: _getThemeModeIcon(AdaptiveTheme.of(context).mode),
       ),
     );
 
