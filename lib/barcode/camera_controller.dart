@@ -1,5 +1,4 @@
 import "dart:math";
-import "dart:typed_data";
 
 import "package:camera/camera.dart";
 import "package:flutter/material.dart";
@@ -126,24 +125,7 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
       });
     }
 
-    Uint8List rawData = result.barcodes.first.rawBytes ?? Uint8List(0);
-
-    String barcode;
-
-    if (rawData.isNotEmpty) {
-      final buffer = StringBuffer();
-
-      for (int ii = 0; ii < rawData.length; ii++) {
-        buffer.writeCharCode(rawData[ii]);
-      }
-
-      barcode = buffer.toString();
-
-      print(barcode);
-    } else {
-      // Fall back to text value
-      barcode = result.barcodes.first.rawValue ?? "";
-    }
+    String barcode = result.barcodes.first.rawValue ?? "";
 
     if (barcode.isEmpty) {
       // TODO: Error message "empty barcode"
