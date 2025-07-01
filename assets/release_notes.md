@@ -1,3 +1,7 @@
+### 0.19.1 - July 2025
+---
+- Fixes bug related to barcode scanning with certain devices
+
 ### 0.19.0 - June 2025
 ---
 - Replace barcode scanning library for better performance
