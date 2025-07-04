@@ -6,6 +6,7 @@ import "package:inventree/barcode/sales_order.dart";
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/preferences.dart";
+import "package:inventree/widget/link_icon.dart";
 import "package:inventree/widget/order/so_extra_line_list.dart";
 import "package:inventree/widget/order/so_line_list.dart";
 import "package:inventree/widget/order/so_shipment_list.dart";
@@ -323,11 +324,9 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
         title: Text(widget.order.reference),
         subtitle: Text(widget.order.description),
         leading: customer == null ? null : api.getThumbnail(customer.thumbnail),
-        trailing: Text(
+        trailing: LargeText(
           api.SalesOrderStatus.label(widget.order.status),
-          style: TextStyle(
-            color: api.SalesOrderStatus.color(widget.order.status),
-          ),
+          color: api.SalesOrderStatus.color(widget.order.status),
         ),
       ),
     );
@@ -356,6 +355,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
           title: Text(L10().customer),
           subtitle: Text(customer.name),
           leading: Icon(TablerIcons.user, color: COLOR_ACTION),
+          trailing: LinkIcon(),
           onTap: () {
             customer.goToDetailPage(context);
           },
@@ -367,13 +367,31 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
       tiles.add(
         ListTile(
           title: Text(L10().customerReference),
-          trailing: Text(widget.order.customerReference),
+          trailing: LargeText(widget.order.customerReference),
           leading: Icon(TablerIcons.hash),
         ),
       );
     }
 
     Color lineColor = widget.order.complete ? COLOR_SUCCESS : COLOR_WARNING;
+
+    // Shipment progress
+    if (widget.order.shipmentCount > 0) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().shipments),
+          subtitle: ProgressBar(
+            widget.order.completedShipmentCount.toDouble(),
+            maximum: widget.order.shipmentCount.toDouble(),
+          ),
+          leading: Icon(TablerIcons.truck_delivery),
+          trailing: LargeText(
+            "${widget.order.completedShipmentCount} / ${widget.order.shipmentCount}",
+            color: lineColor,
+          ),
+        ),
+      );
+    }
 
     tiles.add(
       ListTile(
@@ -383,9 +401,9 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
           maximum: widget.order.lineItemCount.toDouble(),
         ),
         leading: Icon(TablerIcons.clipboard_check),
-        trailing: Text(
+        trailing: LargeText(
           "${widget.order.completedLineItemCount} / ${widget.order.lineItemCount}",
-          style: TextStyle(color: lineColor),
+          color: lineColor,
         ),
       ),
     );
@@ -395,7 +413,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
       ListTile(
         title: Text(L10().extraLineItems),
         leading: Icon(TablerIcons.clipboard_list, color: COLOR_ACTION),
-        trailing: Text(extraLineCount.toString()),
+        trailing: LinkIcon(text: extraLineCount.toString()),
         onTap: () => {
           Navigator.push(
             context,
@@ -410,31 +428,13 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
       ),
     );
 
-    // Shipment progress
-    if (widget.order.shipmentCount > 0) {
-      tiles.add(
-        ListTile(
-          title: Text(L10().shipments),
-          subtitle: ProgressBar(
-            widget.order.completedShipmentCount.toDouble(),
-            maximum: widget.order.shipmentCount.toDouble(),
-          ),
-          leading: Icon(TablerIcons.truck_delivery),
-          trailing: Text(
-            "${widget.order.completedShipmentCount} / ${widget.order.shipmentCount}",
-            style: TextStyle(color: lineColor),
-          ),
-        ),
-      );
-    }
-
     // TODO: total price
 
     if (widget.order.startDate.isNotEmpty) {
       tiles.add(
         ListTile(
           title: Text(L10().startDate),
-          trailing: Text(widget.order.startDate),
+          trailing: LargeText(widget.order.startDate),
           leading: Icon(TablerIcons.calendar),
         ),
       );
@@ -444,7 +444,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
       tiles.add(
         ListTile(
           title: Text(L10().targetDate),
-          trailing: Text(widget.order.targetDate),
+          trailing: LargeText(widget.order.targetDate),
           leading: Icon(TablerIcons.calendar),
         ),
       );
@@ -454,7 +454,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
       tiles.add(
         ListTile(
           title: Text(L10().completionDate),
-          trailing: Text(widget.order.shipmentDate),
+          trailing: LargeText(widget.order.shipmentDate),
           leading: Icon(TablerIcons.calendar),
         ),
       );
@@ -471,7 +471,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
                 ? TablerIcons.users
                 : TablerIcons.user,
           ),
-          trailing: Text(widget.order.responsibleName),
+          trailing: LargeText(widget.order.responsibleName),
         ),
       );
     }
@@ -481,6 +481,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
       ListTile(
         title: Text(L10().notes),
         leading: Icon(TablerIcons.note, color: COLOR_ACTION),
+        trailing: LinkIcon(),
         onTap: () {
           Navigator.push(
             context,
@@ -495,7 +496,9 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
       ListTile(
         title: Text(L10().attachments),
         leading: Icon(TablerIcons.file, color: COLOR_ACTION),
-        trailing: attachmentCount > 0 ? Text(attachmentCount.toString()) : null,
+        trailing: LinkIcon(
+          text: attachmentCount > 0 ? attachmentCount.toString() : null,
+        ),
         onTap: () {
           Navigator.push(
             context,
@@ -519,8 +522,8 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
   List<Widget> getTabIcons(BuildContext context) {
     return [
       Tab(text: L10().details),
-      Tab(text: L10().lineItems),
       Tab(text: L10().shipments),
+      Tab(text: L10().lineItems),
     ];
   }
 
@@ -528,8 +531,8 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
   List<Widget> getTabs(BuildContext context) {
     return [
       ListView(children: orderTiles(context)),
-      PaginatedSOLineList({"order": widget.order.pk.toString()}),
       PaginatedSOShipmentList({"order": widget.order.pk.toString()}),
+      PaginatedSOLineList({"order": widget.order.pk.toString()}),
     ];
   }
 }

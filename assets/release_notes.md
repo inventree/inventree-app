@@ -1,3 +1,8 @@
+### TBD - ???
+---
+
+- Improved UX across the entire app
+
 ### 0.19.1 - July 2025
 ---
 - Fixes bug related to barcode scanning with certain devices

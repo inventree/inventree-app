@@ -5,6 +5,7 @@ import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/purchase_order.dart";
+import "package:inventree/widget/link_icon.dart";
 import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
@@ -110,7 +111,7 @@ class _PaginatedPOExtraLineListState
     return ListTile(
       title: Text(line.reference),
       subtitle: Text(line.description),
-      trailing: Text(line.quantity.toString()),
+      trailing: LargeText(line.quantity.toString(), size: 14),
       onTap: () {
         line.goToDetailPage(context).then((_) {
           refresh();

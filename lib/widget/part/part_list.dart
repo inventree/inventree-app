@@ -5,6 +5,7 @@ import "package:inventree/l10.dart";
 
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/part.dart";
+import "package:inventree/widget/link_icon.dart";
 
 import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/refreshable_state.dart";
@@ -121,10 +122,7 @@ class _PaginatedPartListState extends PaginatedSearchState<PaginatedPartList> {
     return ListTile(
       title: Text(part.fullname),
       subtitle: Text(part.description),
-      trailing: Text(
-        part.stockString(),
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-      ),
+      trailing: LargeText(part.stockString()),
       leading: InvenTreeAPI().getThumbnail(part.thumbnail),
       onTap: () {
         part.goToDetailPage(context);

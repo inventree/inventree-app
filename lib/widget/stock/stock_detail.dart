@@ -18,9 +18,9 @@ import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/inventree/part.dart";
 
-import "package:inventree/widget/company/supplier_part_detail.dart";
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/attachment_widget.dart";
+import "package:inventree/widget/link_icon.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
@@ -490,14 +490,11 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     Widget? trailing;
 
     if (!widget.item.isInStock) {
-      trailing = Text(L10().unavailable, style: TextStyle(color: COLOR_DANGER));
+      trailing = LargeText(L10().unavailable, color: COLOR_DANGER);
     } else if (!widget.item.isSerialized()) {
-      trailing = Text(
+      trailing = LargeText(
         widget.item.quantityString(),
-        style: TextStyle(
-          fontSize: 20,
-          color: api.StockStatus.color(widget.item.status),
-        ),
+        color: api.StockStatus.color(widget.item.status),
       );
     }
 
@@ -518,7 +515,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
             }
           }
         },
-        //trailing: Text(item.serialOrQuantityDisplay()),
+        //trailing: LargeText(item.serialOrQuantityDisplay()),
       ),
     );
   }
@@ -546,6 +543,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           title: Text(L10().stockLocation),
           subtitle: Text("${widget.item.locationPathString}"),
           leading: Icon(TablerIcons.location, color: COLOR_ACTION),
+          trailing: LinkIcon(),
           onTap: () async {
             if (widget.item.locationId > 0) {
               showLoadingOverlay();
@@ -587,7 +585,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
               ? Text(L10().quantityAvailable)
               : Text(L10().quantity),
           leading: Icon(TablerIcons.packages),
-          trailing: Text("${widget.item.quantityString()}"),
+          trailing: LargeText("${widget.item.quantityString()}"),
         ),
       );
     }
@@ -613,9 +611,9 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       ListTile(
         title: Text(L10().status),
         leading: Icon(TablerIcons.help_circle),
-        trailing: Text(
+        trailing: LargeText(
           api.StockStatus.label(widget.item.status),
-          style: TextStyle(color: api.StockStatus.color(widget.item.status)),
+          color: api.StockStatus.color(widget.item.status),
         ),
       ),
     );
@@ -627,10 +625,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           title: Text(L10().supplierPart),
           subtitle: Text(widget.item.supplierSKU),
           leading: Icon(TablerIcons.building, color: COLOR_ACTION),
-          trailing: InvenTreeAPI().getThumbnail(
-            widget.item.supplierImage,
-            hideIfNull: true,
-          ),
+          trailing: LinkIcon(),
           onTap: () async {
             showLoadingOverlay();
             var sp = await InvenTreeSupplierPart().get(
@@ -638,12 +633,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
             );
             hideLoadingOverlay();
             if (sp is InvenTreeSupplierPart) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SupplierPartDetailWidget(sp),
-                ),
-              );
+              sp.goToDetailPage(context);
             }
           },
         ),
@@ -667,9 +657,11 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       tiles.add(
         ListTile(
           title: Text(L10().salesOrder),
-          subtitle: Text(salesOrder?.description ?? ""),
+          subtitle: Text(
+            salesOrder?.reference ?? salesOrder?.description ?? "",
+          ),
           leading: Icon(TablerIcons.truck_delivery, color: COLOR_ACTION),
-          trailing: Text(salesOrder?.reference ?? ""),
+          trailing: LinkIcon(),
           onTap: () {
             salesOrder?.goToDetailPage(context);
           },
@@ -681,9 +673,9 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       tiles.add(
         ListTile(
           title: Text(L10().customer),
-          subtitle: Text(customer?.description ?? ""),
+          subtitle: Text("${customer?.name} - ${customer?.description}"),
           leading: Icon(TablerIcons.building_store, color: COLOR_ACTION),
-          trailing: Text(customer?.name ?? ""),
+          trailing: LinkIcon(),
           onTap: () {
             customer?.goToDetailPage(context);
           },
@@ -741,7 +733,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       tiles.add(
         ListTile(
           title: Text(L10().lastUpdated),
-          subtitle: Text(widget.item.updatedDateString),
+          trailing: LargeText(widget.item.updatedDateString),
           leading: Icon(TablerIcons.calendar),
         ),
       );
@@ -775,7 +767,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         ListTile(
           title: Text(L10().testResults),
           leading: Icon(TablerIcons.list_check, color: COLOR_ACTION),
-          trailing: Text("${widget.item.testResultCount}"),
+          trailing: LinkIcon(text: "${widget.item.testResultCount}"),
           onTap: () {
             Navigator.push(
               context,
@@ -795,7 +787,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         ListTile(
           title: Text(L10().purchasePrice),
           leading: Icon(TablerIcons.currency_dollar),
-          trailing: Text(
+          trailing: LargeText(
             renderCurrency(
               widget.item.purchasePrice,
               widget.item.purchasePriceCurrency,
@@ -812,7 +804,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
         ListTile(
           title: Text(L10().history),
           leading: Icon(TablerIcons.history, color: COLOR_ACTION),
-          trailing: Text("${widget.item.trackingItemCount}"),
+          trailing: LinkIcon(text: "${widget.item.trackingItemCount}"),
           onTap: () {
             Navigator.push(
               context,
@@ -832,6 +824,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       ListTile(
         title: Text(L10().notes),
         leading: Icon(TablerIcons.note, color: COLOR_ACTION),
+        trailing: LinkIcon(),
         onTap: () {
           Navigator.push(
             context,
@@ -845,7 +838,9 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       ListTile(
         title: Text(L10().attachments),
         leading: Icon(TablerIcons.file, color: COLOR_ACTION),
-        trailing: attachmentCount > 0 ? Text(attachmentCount.toString()) : null,
+        trailing: LinkIcon(
+          text: attachmentCount > 0 ? attachmentCount.toString() : null,
+        ),
         onTap: () {
           Navigator.push(
             context,

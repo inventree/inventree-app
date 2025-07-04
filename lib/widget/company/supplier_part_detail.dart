@@ -1,9 +1,9 @@
 import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
+import "package:inventree/widget/link_icon.dart";
 import "package:url_launcher/url_launcher.dart";
 
-import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/l10.dart";
 
@@ -117,7 +117,7 @@ class _SupplierPartDisplayState
         title: Text(L10().internalPart),
         subtitle: Text(widget.supplierPart.partName),
         leading: Icon(TablerIcons.box, color: COLOR_ACTION),
-        trailing: InvenTreeAPI().getThumbnail(widget.supplierPart.partImage),
+        trailing: LinkIcon(),
         onTap: () async {
           showLoadingOverlay();
           final part = await InvenTreePart().get(widget.supplierPart.partId);
@@ -149,9 +149,7 @@ class _SupplierPartDisplayState
         title: Text(L10().supplier),
         subtitle: Text(widget.supplierPart.supplierName),
         leading: Icon(TablerIcons.building, color: COLOR_ACTION),
-        trailing: InvenTreeAPI().getThumbnail(
-          widget.supplierPart.supplierImage,
-        ),
+        trailing: LinkIcon(),
         onTap: () async {
           showLoadingOverlay();
           var supplier = await InvenTreeCompany().get(
@@ -182,9 +180,7 @@ class _SupplierPartDisplayState
           title: Text(L10().manufacturer),
           subtitle: Text(widget.supplierPart.manufacturerName),
           leading: Icon(TablerIcons.building_factory_2, color: COLOR_ACTION),
-          trailing: InvenTreeAPI().getThumbnail(
-            widget.supplierPart.manufacturerImage,
-          ),
+          trailing: LinkIcon(),
           onTap: () async {
             showLoadingOverlay();
             var supplier = await InvenTreeCompany().get(
@@ -204,6 +200,7 @@ class _SupplierPartDisplayState
           title: Text(L10().manufacturerPartNumber),
           subtitle: Text(widget.supplierPart.MPN),
           leading: Icon(TablerIcons.hash, color: COLOR_ACTION),
+          trailing: LinkIcon(),
           onTap: () async {
             showLoadingOverlay();
             var manufacturerPart = await InvenTreeManufacturerPart().get(
@@ -236,7 +233,7 @@ class _SupplierPartDisplayState
               : null,
           leading: Icon(TablerIcons.package),
           trailing: widget.supplierPart.pack_quantity.isNotEmpty
-              ? Text(widget.supplierPart.pack_quantity)
+              ? LargeText(widget.supplierPart.pack_quantity)
               : null,
         ),
       );
@@ -245,8 +242,10 @@ class _SupplierPartDisplayState
     if (widget.supplierPart.link.isNotEmpty) {
       tiles.add(
         ListTile(
-          title: Text(widget.supplierPart.link),
+          title: Text(L10().link),
+          subtitle: Text(widget.supplierPart.link),
           leading: Icon(TablerIcons.link, color: COLOR_ACTION),
+          trailing: LinkIcon(external: true),
           onTap: () async {
             var uri = Uri.tryParse(widget.supplierPart.link);
             if (uri != null && await canLaunchUrl(uri)) {
@@ -260,7 +259,8 @@ class _SupplierPartDisplayState
     if (widget.supplierPart.note.isNotEmpty) {
       tiles.add(
         ListTile(
-          title: Text(widget.supplierPart.note),
+          title: Text(L10().notes),
+          subtitle: Text(widget.supplierPart.note),
           leading: Icon(TablerIcons.pencil),
         ),
       );

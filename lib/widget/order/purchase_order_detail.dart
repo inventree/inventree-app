@@ -14,8 +14,8 @@ import "package:inventree/inventree/stock.dart";
 import "package:inventree/inventree/purchase_order.dart";
 
 import "package:inventree/widget/dialogs.dart";
+import "package:inventree/widget/link_icon.dart";
 import "package:inventree/widget/order/po_extra_line_list.dart";
-import "package:inventree/widget/stock/location_display.dart";
 import "package:inventree/widget/order/po_line_list.dart";
 
 import "package:inventree/widget/attachment_widget.dart";
@@ -347,11 +347,9 @@ class _PurchaseOrderDetailState
         title: Text(widget.order.reference),
         subtitle: Text(widget.order.description),
         leading: supplier == null ? null : api.getThumbnail(supplier.thumbnail),
-        trailing: Text(
+        trailing: LargeText(
           api.PurchaseOrderStatus.label(widget.order.status),
-          style: TextStyle(
-            color: api.PurchaseOrderStatus.color(widget.order.status),
-          ),
+          color: api.PurchaseOrderStatus.color(widget.order.status),
         ),
       ),
     );
@@ -382,6 +380,7 @@ class _PurchaseOrderDetailState
           title: Text(L10().supplier),
           subtitle: Text(supplier.name),
           leading: Icon(TablerIcons.building, color: COLOR_ACTION),
+          trailing: LinkIcon(),
           onTap: () {
             supplier.goToDetailPage(context);
           },
@@ -406,14 +405,8 @@ class _PurchaseOrderDetailState
           title: Text(L10().destination),
           subtitle: Text(destination!.name),
           leading: Icon(TablerIcons.map_pin, color: COLOR_ACTION),
-          onTap: () => {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => LocationDisplayWidget(destination),
-              ),
-            ),
-          },
+          trailing: LinkIcon(),
+          onTap: () => {destination!.goToDetailPage(context)},
         ),
       );
     }
@@ -430,9 +423,9 @@ class _PurchaseOrderDetailState
           maximum: widget.order.lineItemCount.toDouble(),
         ),
         leading: Icon(TablerIcons.clipboard_check),
-        trailing: Text(
+        trailing: LargeText(
           "${completedLines} /  ${widget.order.lineItemCount}",
-          style: TextStyle(color: lineColor),
+          color: lineColor,
         ),
       ),
     );
@@ -442,7 +435,7 @@ class _PurchaseOrderDetailState
       ListTile(
         title: Text(L10().extraLineItems),
         leading: Icon(TablerIcons.clipboard_list, color: COLOR_ACTION),
-        trailing: Text(extraLineCount.toString()),
+        trailing: LinkIcon(text: extraLineCount.toString()),
         onTap: () => {
           Navigator.push(
             context,
@@ -461,7 +454,7 @@ class _PurchaseOrderDetailState
       ListTile(
         title: Text(L10().totalPrice),
         leading: Icon(TablerIcons.currency_dollar),
-        trailing: Text(
+        trailing: LargeText(
           renderCurrency(
             widget.order.totalPrice,
             widget.order.totalPriceCurrency,
@@ -474,7 +467,7 @@ class _PurchaseOrderDetailState
       tiles.add(
         ListTile(
           title: Text(L10().issueDate),
-          trailing: Text(widget.order.issueDate),
+          trailing: LargeText(widget.order.issueDate),
           leading: Icon(TablerIcons.calendar),
         ),
       );
@@ -484,7 +477,7 @@ class _PurchaseOrderDetailState
       tiles.add(
         ListTile(
           title: Text(L10().startDate),
-          trailing: Text(widget.order.startDate),
+          trailing: LargeText(widget.order.startDate),
           leading: Icon(TablerIcons.calendar),
         ),
       );
@@ -494,7 +487,7 @@ class _PurchaseOrderDetailState
       tiles.add(
         ListTile(
           title: Text(L10().targetDate),
-          trailing: Text(widget.order.targetDate),
+          trailing: LargeText(widget.order.targetDate),
           leading: Icon(TablerIcons.calendar),
         ),
       );
@@ -504,7 +497,7 @@ class _PurchaseOrderDetailState
       tiles.add(
         ListTile(
           title: Text(L10().completionDate),
-          trailing: Text(widget.order.completionDate),
+          trailing: LargeText(widget.order.completionDate),
           leading: Icon(TablerIcons.calendar),
         ),
       );
@@ -521,7 +514,7 @@ class _PurchaseOrderDetailState
                 ? TablerIcons.users
                 : TablerIcons.user,
           ),
-          trailing: Text(widget.order.responsibleName),
+          trailing: LargeText(widget.order.responsibleName),
         ),
       );
     }
@@ -531,6 +524,7 @@ class _PurchaseOrderDetailState
       ListTile(
         title: Text(L10().notes),
         leading: Icon(TablerIcons.note, color: COLOR_ACTION),
+        trailing: LinkIcon(),
         onTap: () {
           Navigator.push(
             context,
@@ -545,7 +539,9 @@ class _PurchaseOrderDetailState
       ListTile(
         title: Text(L10().attachments),
         leading: Icon(TablerIcons.file, color: COLOR_ACTION),
-        trailing: attachmentCount > 0 ? Text(attachmentCount.toString()) : null,
+        trailing: LinkIcon(
+          text: attachmentCount > 0 ? attachmentCount.toString() : null,
+        ),
         onTap: () {
           Navigator.push(
             context,

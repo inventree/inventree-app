@@ -14,6 +14,7 @@ import "package:inventree/labels.dart";
 import "package:inventree/preferences.dart";
 
 import "package:inventree/widget/attachment_widget.dart";
+import "package:inventree/widget/link_icon.dart";
 import "package:inventree/widget/part/bom_list.dart";
 import "package:inventree/widget/part/part_list.dart";
 import "package:inventree/widget/notes_widget.dart";
@@ -334,6 +335,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           title: Text(L10().templatePart),
           subtitle: Text(parentPart!.fullname),
           leading: api.getImage(parentPart!.thumbnail, width: 32, height: 32),
+          trailing: LinkIcon(),
           onTap: () {
             parentPart?.goToDetailPage(context);
           },
@@ -348,6 +350,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           title: Text(L10().partCategory),
           subtitle: Text("${part.categoryName}"),
           leading: Icon(TablerIcons.sitemap, color: COLOR_ACTION),
+          trailing: LinkIcon(),
           onTap: () async {
             if (part.categoryId > 0) {
               showLoadingOverlay();
@@ -385,7 +388,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         ListTile(
           title: Text(L10().variants),
           leading: Icon(TablerIcons.versions, color: COLOR_ACTION),
-          trailing: Text(variantCount.toString()),
+          trailing: LinkIcon(text: variantCount.toString()),
           onTap: () {
             Navigator.push(
               context,
@@ -405,10 +408,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         title: Text(L10().availableStock),
         subtitle: Text(L10().stockDetails),
         leading: Icon(TablerIcons.packages),
-        trailing: Text(
-          part.stockString(),
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
+        trailing: LargeText(part.stockString()),
       ),
     );
 
@@ -422,11 +422,11 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       tiles.add(
         ListTile(
           title: Text(L10().partPricing),
-          leading: Icon(TablerIcons.currency_dollar, color: COLOR_ACTION),
-          trailing: Text(
+          subtitle: Text(
             pricing.isNotEmpty ? pricing : L10().noPricingAvailable,
-            style: TextStyle(fontWeight: FontWeight.bold),
           ),
+          leading: Icon(TablerIcons.currency_dollar, color: COLOR_ACTION),
+          trailing: LinkIcon(),
           onTap: () {
             Navigator.push(
               context,
@@ -448,7 +448,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           title: Text(L10().onOrder),
           subtitle: Text(L10().onOrderDetails),
           leading: Icon(TablerIcons.shopping_cart),
-          trailing: Text("${part.onOrderString}"),
+          trailing: LargeText("${part.onOrderString}"),
           onTap: () {
             // TODO - Order views
           },
@@ -463,7 +463,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           ListTile(
             title: Text(L10().billOfMaterials),
             leading: Icon(TablerIcons.list_tree, color: COLOR_ACTION),
-            trailing: Text(bomCount.toString()),
+            trailing: LinkIcon(text: bomCount.toString()),
             onTap: () {
               Navigator.push(
                 context,
@@ -482,9 +482,9 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           ListTile(
             title: Text(L10().building),
             leading: Icon(TablerIcons.tools),
-            trailing: Text("${simpleNumberString(part.building)}"),
+            trailing: LargeText("${simpleNumberString(part.building)}"),
             onTap: () {
-              // TODO
+              // TODO: List of active build orders?
             },
           ),
         );
@@ -498,7 +498,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
             title: Text(L10().usedIn),
             subtitle: Text(L10().usedInDetails),
             leading: Icon(TablerIcons.stack_2, color: COLOR_ACTION),
-            trailing: Text(usedInCount.toString()),
+            trailing: LinkIcon(text: usedInCount.toString()),
             onTap: () {
               Navigator.push(
                 context,
@@ -543,9 +543,9 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           title: Text(L10().usedIn),
           subtitle: Text(L10().usedInDetails),
           leading: Icon(TablerIcons.sitemap),
-          trailing: Text("${part.usedInCount}"),
+          trailing: LargeText("${part.usedInCount}"),
           onTap: () {
-            // TODO
+            // TODO: Show assemblies which use this part
           },
         ),
       );
@@ -557,7 +557,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           ListTile(
             title: Text(L10().suppliers),
             leading: Icon(TablerIcons.building_factory, color: COLOR_ACTION),
-            trailing: Text("${part.supplierCount}"),
+            trailing: LinkIcon(text: "${part.supplierCount}"),
             onTap: () {
               Navigator.push(
                 context,
@@ -577,7 +577,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       ListTile(
         title: Text(L10().notes),
         leading: Icon(TablerIcons.note, color: COLOR_ACTION),
-        trailing: Text(""),
+        trailing: LinkIcon(),
         onTap: () {
           Navigator.push(
             context,
@@ -591,7 +591,9 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       ListTile(
         title: Text(L10().attachments),
         leading: Icon(TablerIcons.file, color: COLOR_ACTION),
-        trailing: attachmentCount > 0 ? Text(attachmentCount.toString()) : null,
+        trailing: LinkIcon(
+          text: attachmentCount > 0 ? attachmentCount.toString() : null,
+        ),
         onTap: () {
           Navigator.push(
             context,

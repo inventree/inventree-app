@@ -8,7 +8,6 @@ import "package:inventree/inventree/model.dart";
 
 import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/refreshable_state.dart";
-import "package:inventree/widget/company/supplier_part_detail.dart";
 
 /*
  * Widget for displaying a list of Supplier Part instances
@@ -93,12 +92,7 @@ class _PaginatedSupplierPartListState
       leading: InvenTreeAPI().getThumbnail(supplierPart.supplierImage),
       trailing: InvenTreeAPI().getThumbnail(supplierPart.partImage),
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SupplierPartDetailWidget(supplierPart),
-          ),
-        );
+        supplierPart.goToDetailPage(context);
       },
     );
   }

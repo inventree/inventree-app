@@ -4,6 +4,7 @@ import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/model.dart";
+import "package:inventree/widget/link_icon.dart";
 import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/l10.dart";
@@ -173,11 +174,9 @@ class _PaginatedPurchaseOrderListState
       leading: supplier == null
           ? null
           : InvenTreeAPI().getThumbnail(supplier.thumbnail),
-      trailing: Text(
+      trailing: LargeText(
         InvenTreeAPI().PurchaseOrderStatus.label(order.status),
-        style: TextStyle(
-          color: InvenTreeAPI().PurchaseOrderStatus.color(order.status),
-        ),
+        color: InvenTreeAPI().PurchaseOrderStatus.color(order.status),
       ),
       onTap: () async {
         order.goToDetailPage(context);

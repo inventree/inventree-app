@@ -6,6 +6,7 @@ import "package:inventree/app_colors.dart";
 import "package:inventree/l10.dart";
 
 import "package:inventree/inventree/part.dart";
+import "package:inventree/widget/link_icon.dart";
 
 import "package:inventree/widget/part/category_list.dart";
 import "package:inventree/widget/part/part_list.dart";
@@ -144,6 +145,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
             title: Text(L10().parentCategory),
             subtitle: Text("${widget.category?.parentPathString}"),
             leading: Icon(TablerIcons.arrow_move_up, color: COLOR_ACTION),
+            trailing: LinkIcon(),
             onTap: () async {
               int parentId = widget.category?.parentId ?? -1;
 

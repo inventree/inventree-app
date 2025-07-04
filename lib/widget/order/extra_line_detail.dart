@@ -3,6 +3,7 @@ import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/helpers.dart";
 
 import "package:inventree/l10.dart";
+import "package:inventree/widget/link_icon.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 
@@ -70,36 +71,44 @@ class _ExtraLineDetailWidgetState
     tiles.add(
       ListTile(
         title: Text(L10().reference),
-        trailing: Text(widget.item.reference),
+        subtitle: Text(widget.item.reference),
+        leading: Icon(TablerIcons.hash),
       ),
     );
 
     tiles.add(
       ListTile(
         title: Text(L10().description),
-        trailing: Text(widget.item.description),
+        subtitle: Text(widget.item.description),
+        leading: Icon(TablerIcons.info_circle),
       ),
     );
 
     tiles.add(
       ListTile(
         title: Text(L10().quantity),
-        trailing: Text(widget.item.quantity.toString()),
+        trailing: LargeText(widget.item.quantity.toString()),
+        leading: Icon(TablerIcons.progress),
       ),
     );
 
     tiles.add(
       ListTile(
         title: Text(L10().unitPrice),
-        trailing: Text(
+        trailing: LargeText(
           renderCurrency(widget.item.price, widget.item.priceCurrency),
         ),
+        leading: Icon(TablerIcons.currency_dollar),
       ),
     );
 
     if (widget.item.notes.isNotEmpty) {
       tiles.add(
-        ListTile(title: Text(L10().notes), subtitle: Text(widget.item.notes)),
+        ListTile(
+          title: Text(L10().notes),
+          subtitle: Text(widget.item.notes),
+          leading: Icon(TablerIcons.note),
+        ),
       );
     }
 
