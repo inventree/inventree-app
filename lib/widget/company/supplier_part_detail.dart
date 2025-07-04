@@ -234,7 +234,7 @@ class _SupplierPartDisplayState
               : null,
           leading: Icon(TablerIcons.package),
           trailing: widget.supplierPart.pack_quantity.isNotEmpty
-              ? Text(widget.supplierPart.pack_quantity)
+              ? LargeText(widget.supplierPart.pack_quantity)
               : null,
         ),
       );
