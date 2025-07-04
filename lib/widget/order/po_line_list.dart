@@ -7,6 +7,7 @@ import "package:inventree/l10.dart";
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/purchase_order.dart";
+import "package:inventree/widget/link_icon.dart";
 
 import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/order/po_line_detail.dart";
@@ -80,11 +81,9 @@ class _PaginatedPOLineListState
       return ListTile(
         title: Text(supplierPart.SKU),
         subtitle: Text(item.partName),
-        trailing: Text(
+        trailing: LargeText(
           item.progressString,
-          style: TextStyle(
-            color: item.isComplete ? COLOR_SUCCESS : COLOR_WARNING,
-          ),
+          color: item.isComplete ? COLOR_SUCCESS : COLOR_WARNING,
         ),
         leading: InvenTreeAPI().getThumbnail(supplierPart.partImage),
         onTap: () async {

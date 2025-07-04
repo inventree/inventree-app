@@ -5,6 +5,7 @@ import "package:inventree/api.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/widget/company/company_detail.dart";
+import "package:inventree/widget/company/supplier_part_detail.dart";
 
 /*
  * The InvenTreeCompany class represents the Company model in the InvenTree database.
@@ -151,6 +152,16 @@ class InvenTreeSupplierPart extends InvenTreeModel {
 
   @override
   List<String> get rolesRequired => ["part", "purchase_order"];
+
+  @override
+  Future<Object?> goToDetailPage(BuildContext context) async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SupplierPartDetailWidget(this),
+      ),
+    );
+  }
 
   @override
   Map<String, Map<String, dynamic>> formFields() {

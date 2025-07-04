@@ -10,6 +10,7 @@ import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/widget/attachment_widget.dart";
+import "package:inventree/widget/link_icon.dart";
 import "package:inventree/widget/order/purchase_order_list.dart";
 import "package:inventree/widget/order/sales_order_list.dart";
 import "package:inventree/widget/refreshable_state.dart";
@@ -240,8 +241,10 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
     if (widget.company.website.isNotEmpty) {
       tiles.add(
         ListTile(
-          title: Text("${widget.company.website}"),
+          title: Text(L10().website),
+          subtitle: Text("${widget.company.website}"),
           leading: Icon(TablerIcons.globe, color: COLOR_ACTION),
+          trailing: LinkIcon(external: true),
           onTap: () async {
             openLink(widget.company.website);
           },
@@ -254,8 +257,10 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
     if (widget.company.email.isNotEmpty) {
       tiles.add(
         ListTile(
-          title: Text("${widget.company.email}"),
+          title: Text(L10().email),
+          subtitle: Text("${widget.company.email}"),
           leading: Icon(TablerIcons.at, color: COLOR_ACTION),
+          trailing: LinkIcon(external: true),
           onTap: () async {
             openLink("mailto:${widget.company.email}");
           },
@@ -268,8 +273,10 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
     if (widget.company.phone.isNotEmpty) {
       tiles.add(
         ListTile(
-          title: Text("${widget.company.phone}"),
+          title: Text(L10().phone),
+          subtitle: Text("${widget.company.phone}"),
           leading: Icon(TablerIcons.phone, color: COLOR_ACTION),
+          trailing: LinkIcon(external: true),
           onTap: () {
             openLink("tel:${widget.company.phone}");
           },
@@ -283,8 +290,10 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
     if (widget.company.link.isNotEmpty) {
       tiles.add(
         ListTile(
-          title: Text("${widget.company.link}"),
+          title: Text(L10().link),
+          subtitle: Text("${widget.company.link}"),
           leading: Icon(TablerIcons.link, color: COLOR_ACTION),
+          trailing: LinkIcon(external: true),
           onTap: () {
             widget.company.openLink();
           },
@@ -304,7 +313,9 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
           ListTile(
             title: Text(L10().supplierParts),
             leading: Icon(TablerIcons.building, color: COLOR_ACTION),
-            trailing: Text(supplierPartCount.toString()),
+            trailing: LinkIcon(
+              text: supplierPartCount.toString()
+            ),
             onTap: () {
               Navigator.push(
                 context,
@@ -323,7 +334,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
         ListTile(
           title: Text(L10().purchaseOrders),
           leading: Icon(TablerIcons.shopping_cart, color: COLOR_ACTION),
-          trailing: Text("${outstandingPurchaseOrders}"),
+          trailing: LinkIcon(text: "${outstandingPurchaseOrders}"),
           onTap: () {
             Navigator.push(
               context,
@@ -343,7 +354,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
         ListTile(
           title: Text(L10().suppliedParts),
           leading: Icon(TablerIcons.box),
-          trailing: Text("${company.partSuppliedCount}"),
+          trailing: LargeText("${company.partSuppliedCount}"),
         )
       );
        */
@@ -358,7 +369,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
         ListTile(
           title: Text(L10().salesOrders),
           leading: Icon(TablerIcons.truck, color: COLOR_ACTION),
-          trailing: Text("${outstandingSalesOrders}"),
+          trailing: LinkIcon(text: "${outstandingSalesOrders}"),
           onTap: () {
             Navigator.push(
               context,
@@ -377,6 +388,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
       tiles.add(
         ListTile(
           title: Text(L10().notes),
+          subtitle: Text(widget.company.notes),
           leading: Icon(TablerIcons.note),
           onTap: null,
         ),
@@ -387,7 +399,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
       ListTile(
         title: Text(L10().attachments),
         leading: Icon(TablerIcons.file, color: COLOR_ACTION),
-        trailing: attachmentCount > 0 ? Text(attachmentCount.toString()) : null,
+        trailing: LinkIcon(text: attachmentCount > 0 ? attachmentCount.toString() : null),
         onTap: () {
           Navigator.push(
             context,

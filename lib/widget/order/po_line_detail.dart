@@ -11,6 +11,7 @@ import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/inventree/stock.dart";
+import "package:inventree/widget/link_icon.dart";
 
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
@@ -145,7 +146,9 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
         title: Text(L10().internalPart),
         subtitle: Text(widget.item.partName),
         leading: Icon(TablerIcons.box, color: COLOR_ACTION),
-        trailing: api.getThumbnail(widget.item.partImage),
+        trailing: LinkIcon(
+          image: api.getThumbnail(widget.item.partImage),
+        ),
         onTap: () async {
           showLoadingOverlay();
           var part = await InvenTreePart().get(widget.item.partId);
@@ -164,6 +167,7 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
         title: Text(L10().supplierPart),
         subtitle: Text(widget.item.SKU),
         leading: Icon(TablerIcons.building, color: COLOR_ACTION),
+        trailing: LinkIcon(),
         onTap: () async {
           showLoadingOverlay();
           var part = await InvenTreeSupplierPart().get(
@@ -172,12 +176,7 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
           hideLoadingOverlay();
 
           if (part is InvenTreeSupplierPart) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => SupplierPartDetailWidget(part),
-              ),
-            );
+            part.goToDetailPage(context);
           }
         },
       ),
@@ -200,11 +199,9 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
       ListTile(
         title: Text(L10().received),
         subtitle: ProgressBar(widget.item.progressRatio),
-        trailing: Text(
+        trailing: LargeText(
           widget.item.progressString,
-          style: TextStyle(
-            color: widget.item.isComplete ? COLOR_SUCCESS : COLOR_WARNING,
-          ),
+          color: widget.item.isComplete ? COLOR_SUCCESS : COLOR_WARNING,
         ),
         leading: Icon(TablerIcons.progress),
       ),
@@ -226,7 +223,7 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
       ListTile(
         title: Text(L10().unitPrice),
         leading: Icon(TablerIcons.currency_dollar),
-        trailing: Text(
+        trailing: LargeText(
           renderCurrency(
             widget.item.purchasePrice,
             widget.item.purchasePriceCurrency,

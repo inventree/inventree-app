@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/part.dart";
+import "package:inventree/widget/link_icon.dart";
 import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/refreshable_state.dart";
 
@@ -96,7 +97,7 @@ class _PaginatedPartCategoryListState
     return ListTile(
       title: Text(category.name),
       subtitle: Text(category.pathstring),
-      trailing: Text("${category.partcount}"),
+      trailing: LargeText("${category.partcount}", size: 14),
       leading: category.customIcon == null ? null : Icon(category.customIcon),
       onTap: () {
         category.goToDetailPage(context);

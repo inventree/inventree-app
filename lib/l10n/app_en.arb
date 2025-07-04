@@ -391,6 +391,9 @@
   "editLineItem": "Edit Line Item",
   "@editLineItem": {},
 
+   "email": "Email",
+    "@email": {},
+
   "enterPassword": "Enter password",
   "@enterPassword": {},
 
@@ -923,6 +926,9 @@
 
   "permissionRequired": "Permission Required",
   "@permissionRequired": {},
+
+  "phone": "Phone",
+    "@phone": {},
 
   "printLabel": "Print Label",
   "@printLabel": {},

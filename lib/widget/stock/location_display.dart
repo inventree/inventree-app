@@ -10,6 +10,7 @@ import "package:inventree/l10.dart";
 
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/preferences.dart";
+import "package:inventree/widget/link_icon.dart";
 
 import "package:inventree/widget/stock/location_list.dart";
 import "package:inventree/widget/progress.dart";
@@ -341,6 +342,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
             title: Text(L10().parentLocation),
             subtitle: Text("${location!.parentPathString}"),
             leading: Icon(TablerIcons.arrow_move_up, color: COLOR_ACTION),
+            trailing: LinkIcon(),
             onTap: () async {
               int parentId = location?.parentId ?? -1;
 

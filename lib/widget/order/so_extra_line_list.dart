@@ -6,6 +6,7 @@ import "package:inventree/l10.dart";
 
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/sales_order.dart";
+import "package:inventree/widget/link_icon.dart";
 
 import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/refreshable_state.dart";
@@ -112,7 +113,7 @@ class _PaginatedSOExtraLineListState
     return ListTile(
       title: Text(line.reference),
       subtitle: Text(line.description),
-      trailing: Text(line.quantity.toString()),
+      trailing: LargeText(line.quantity.toString()),
       onTap: () {
         line.goToDetailPage(context).then((_) {
           refresh();

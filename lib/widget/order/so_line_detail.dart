@@ -10,6 +10,7 @@ import "package:inventree/barcode/sales_order.dart";
 
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/sales_order.dart";
+import "package:inventree/widget/link_icon.dart";
 
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/progress.dart";
@@ -172,7 +173,7 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
         title: Text(L10().part),
         subtitle: Text(widget.item.partName),
         leading: Icon(TablerIcons.box, color: COLOR_ACTION),
-        trailing: api.getThumbnail(widget.item.partImage),
+        trailing: LinkIcon(image: api.getThumbnail(widget.item.partImage)),
         onTap: () async {
           showLoadingOverlay();
           var part = await InvenTreePart().get(widget.item.partId);
@@ -190,7 +191,7 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
       ListTile(
         title: Text(L10().availableStock),
         leading: Icon(TablerIcons.packages),
-        trailing: Text(simpleNumberString(widget.item.availableStock)),
+        trailing: LargeText(simpleNumberString(widget.item.availableStock)),
       ),
     );
 
@@ -200,11 +201,9 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
         leading: Icon(TablerIcons.clipboard_check),
         title: Text(L10().allocated),
         subtitle: ProgressBar(widget.item.allocatedRatio),
-        trailing: Text(
+        trailing: LargeText(
           widget.item.allocatedString,
-          style: TextStyle(
-            color: widget.item.isAllocated ? COLOR_SUCCESS : COLOR_WARNING,
-          ),
+          color: widget.item.isAllocated ? COLOR_SUCCESS : COLOR_WARNING,
         ),
       ),
     );
@@ -214,11 +213,9 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
       ListTile(
         title: Text(L10().shipped),
         subtitle: ProgressBar(widget.item.progressRatio),
-        trailing: Text(
+        trailing: LargeText(
           widget.item.progressString,
-          style: TextStyle(
-            color: widget.item.isComplete ? COLOR_SUCCESS : COLOR_WARNING,
-          ),
+          color: widget.item.isComplete ? COLOR_SUCCESS : COLOR_WARNING,
         ),
         leading: Icon(TablerIcons.truck),
       ),

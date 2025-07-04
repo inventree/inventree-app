@@ -93,12 +93,7 @@ class _PaginatedSupplierPartListState
       leading: InvenTreeAPI().getThumbnail(supplierPart.supplierImage),
       trailing: InvenTreeAPI().getThumbnail(supplierPart.partImage),
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SupplierPartDetailWidget(supplierPart),
-          ),
-        );
+        supplierPart.goToDetailPage(context);
       },
     );
   }

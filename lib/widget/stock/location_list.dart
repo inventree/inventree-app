@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/stock.dart";
+import "package:inventree/widget/link_icon.dart";
 import "package:inventree/widget/paginator.dart";
 
 import "package:inventree/widget/refreshable_state.dart";
@@ -86,7 +87,7 @@ class _PaginatedStockLocationListState
     return ListTile(
       title: Text(location.name),
       subtitle: Text(location.pathstring),
-      trailing: Text("${location.itemcount}"),
+      trailing: LargeText("${location.itemcount}", size: 14),
       leading: location.customIcon == null ? null : Icon(location.customIcon),
       onTap: () {
         location.goToDetailPage(context);

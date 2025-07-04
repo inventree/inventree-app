@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/stock.dart";
+import "package:inventree/widget/link_icon.dart";
 import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/l10.dart";
@@ -130,17 +131,7 @@ class _PaginatedStockItemListState
       title: Text("${item.partName}"),
       subtitle: Text(item.locationPathString),
       leading: InvenTreeAPI().getThumbnail(item.partThumbnail),
-      trailing: SizedBox(
-        width: 48,
-        child: Text(
-          "${item.displayQuantity}",
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 14,
-            color: InvenTreeAPI().StockStatus.color(item.status),
-          ),
-        ),
-      ),
+      trailing: LargeText(item.displayQuantity, size: 14, color: InvenTreeAPI().StockStatus.color(item.status)),
       onTap: () {
         item.goToDetailPage(context);
       },
