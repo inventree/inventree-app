@@ -14,6 +14,8 @@ import "package:inventree/settings/part_settings.dart";
 import "package:inventree/settings/purchase_order_settings.dart";
 import "package:inventree/settings/sales_order_settings.dart";
 
+import "package:inventree/widget/link_icon.dart";
+
 // InvenTree settings view
 class InvenTreeSettingsWidget extends StatefulWidget {
   @override
@@ -50,6 +52,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
               title: Text(L10().server),
               subtitle: Text(L10().configureServer),
               leading: Icon(TablerIcons.server, color: COLOR_ACTION),
+              trailing: LinkIcon(),
               onTap: () {
                 Navigator.push(
                   context,
@@ -64,6 +67,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
               title: Text(L10().appSettings),
               subtitle: Text(L10().appSettingsDetails),
               leading: Icon(TablerIcons.settings, color: COLOR_ACTION),
+              trailing: LinkIcon(),
               onTap: () {
                 Navigator.push(
                   context,
@@ -77,6 +81,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
               title: Text(L10().homeScreen),
               subtitle: Text(L10().homeScreenSettings),
               leading: Icon(TablerIcons.home, color: COLOR_ACTION),
+              trailing: LinkIcon(),
               onTap: () {
                 Navigator.push(
                   context,
@@ -90,6 +95,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
               title: Text(L10().barcodes),
               subtitle: Text(L10().barcodeSettings),
               leading: Icon(TablerIcons.barcode, color: COLOR_ACTION),
+              trailing: LinkIcon(),
               onTap: () {
                 Navigator.push(
                   context,
@@ -103,6 +109,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
               title: Text(L10().part),
               subtitle: Text(L10().partSettings),
               leading: Icon(TablerIcons.box, color: COLOR_ACTION),
+              trailing: LinkIcon(),
               onTap: () {
                 Navigator.push(
                   context,
@@ -116,6 +123,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
               title: Text(L10().purchaseOrder),
               subtitle: Text(L10().purchaseOrderSettings),
               leading: Icon(TablerIcons.shopping_cart, color: COLOR_ACTION),
+              trailing: LinkIcon(),
               onTap: () {
                 Navigator.push(
                   context,
@@ -130,6 +138,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
               title: Text(L10().salesOrder),
               subtitle: Text(L10().salesOrderSettings),
               leading: Icon(TablerIcons.truck, color: COLOR_ACTION),
+              trailing: LinkIcon(),
               onTap: () {
                 Navigator.push(
                   context,
@@ -143,6 +152,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
             ListTile(
               title: Text(L10().about),
               leading: Icon(TablerIcons.info_circle, color: COLOR_ACTION),
+              trailing: LinkIcon(),
               onTap: _about,
             ),
           ],

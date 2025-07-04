@@ -5,6 +5,7 @@ import "package:inventree/settings/release.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
+import "package:inventree/widget/link_icon.dart";
 import "package:package_info_plus/package_info_plus.dart";
 
 import "package:inventree/l10.dart";
@@ -182,6 +183,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
         title: Text(L10().releaseNotes),
         subtitle: Text(L10().appReleaseNotes),
         leading: Icon(TablerIcons.file, color: COLOR_ACTION),
+        trailing: LinkIcon(),
         onTap: () {
           _releaseNotes(context);
         },
@@ -193,6 +195,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
         title: Text(L10().credits),
         subtitle: Text(L10().appCredits),
         leading: Icon(TablerIcons.balloon, color: COLOR_ACTION),
+        trailing: LinkIcon(),
         onTap: () {
           _credits(context);
         },
@@ -204,6 +207,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
         title: Text(L10().documentation),
         subtitle: Text(DOCS_URL),
         leading: Icon(TablerIcons.book, color: COLOR_ACTION),
+        trailing: LinkIcon(external: true),
         onTap: () {
           _openDocs();
         },
@@ -215,6 +219,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
         title: Text(L10().translate),
         subtitle: Text(L10().translateHelp),
         leading: Icon(TablerIcons.language, color: COLOR_ACTION),
+        trailing: LinkIcon(external: true),
         onTap: () {
           _translate();
         },
@@ -226,6 +231,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
         title: Text(L10().reportBug),
         subtitle: Text(L10().reportBugDescription),
         leading: Icon(TablerIcons.bug, color: COLOR_ACTION),
+        trailing: LinkIcon(external: true),
         onTap: () {
           _reportBug(context);
         },
