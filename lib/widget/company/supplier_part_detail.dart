@@ -4,7 +4,6 @@ import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/widget/link_icon.dart";
 import "package:url_launcher/url_launcher.dart";
 
-import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/l10.dart";
 

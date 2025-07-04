@@ -16,7 +16,6 @@ import "package:inventree/widget/link_icon.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
-import "package:inventree/widget/company/supplier_part_detail.dart";
 
 /*
  * Widget for displaying detail view of a single PurchaseOrderLineItem

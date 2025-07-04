@@ -16,7 +16,6 @@ import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/link_icon.dart";
 import "package:inventree/widget/order/po_extra_line_list.dart";
-import "package:inventree/widget/stock/location_display.dart";
 import "package:inventree/widget/order/po_line_list.dart";
 
 import "package:inventree/widget/attachment_widget.dart";

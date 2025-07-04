@@ -8,7 +8,6 @@ import "package:inventree/inventree/model.dart";
 
 import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/refreshable_state.dart";
-import "package:inventree/widget/company/supplier_part_detail.dart";
 
 /*
  * Widget for displaying a list of Supplier Part instances

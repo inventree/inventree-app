@@ -42,10 +42,7 @@ mixin BaseWidgetProperties {
     // Override getTiles to replace the internal context
     return ListView(
       physics: AlwaysScrollableScrollPhysics(),
-      children: [
-        Divider(),
-        ...getTiles(context),
-      ]
+      children: [Divider(), ...getTiles(context)],
     );
   }
 
