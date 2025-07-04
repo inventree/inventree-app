@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/inventree/sales_order.dart";
+import "package:inventree/widget/link_icon.dart";
 import "package:inventree/widget/paginator.dart";
 
 import "package:inventree/inventree/model.dart";
@@ -56,7 +57,9 @@ class _PaginatedSOShipmentListState
       leading: shipment.shipped
           ? Icon(TablerIcons.calendar_check, color: COLOR_SUCCESS)
           : Icon(TablerIcons.calendar_cancel, color: COLOR_WARNING),
-      trailing: shipment.shipped ? Text(shipment.shipment_date ?? "") : null,
+      trailing: shipment.shipped
+          ? LargeText(shipment.shipment_date ?? "")
+          : null,
     );
   }
 }

@@ -522,8 +522,8 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
   List<Widget> getTabIcons(BuildContext context) {
     return [
       Tab(text: L10().details),
-      Tab(text: L10().lineItems),
       Tab(text: L10().shipments),
+      Tab(text: L10().lineItems),
     ];
   }
 
@@ -531,8 +531,8 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
   List<Widget> getTabs(BuildContext context) {
     return [
       ListView(children: orderTiles(context)),
-      PaginatedSOLineList({"order": widget.order.pk.toString()}),
       PaginatedSOShipmentList({"order": widget.order.pk.toString()}),
+      PaginatedSOLineList({"order": widget.order.pk.toString()}),
     ];
   }
 }
