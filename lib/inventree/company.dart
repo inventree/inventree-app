@@ -157,9 +157,7 @@ class InvenTreeSupplierPart extends InvenTreeModel {
   Future<Object?> goToDetailPage(BuildContext context) async {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => SupplierPartDetailWidget(this),
-      ),
+      MaterialPageRoute(builder: (context) => SupplierPartDetailWidget(this)),
     );
   }
 

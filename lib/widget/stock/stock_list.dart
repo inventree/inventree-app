@@ -131,7 +131,11 @@ class _PaginatedStockItemListState
       title: Text("${item.partName}"),
       subtitle: Text(item.locationPathString),
       leading: InvenTreeAPI().getThumbnail(item.partThumbnail),
-      trailing: LargeText(item.displayQuantity, size: 14, color: InvenTreeAPI().StockStatus.color(item.status)),
+      trailing: LargeText(
+        item.displayQuantity,
+        size: 14,
+        color: InvenTreeAPI().StockStatus.color(item.status),
+      ),
       onTap: () {
         item.goToDetailPage(context);
       },

@@ -72,7 +72,7 @@ class _ExtraLineDetailWidgetState
       ListTile(
         title: Text(L10().reference),
         subtitle: Text(widget.item.reference),
-        leading: Icon(TablerIcons.hash)
+        leading: Icon(TablerIcons.hash),
       ),
     );
 
@@ -88,7 +88,7 @@ class _ExtraLineDetailWidgetState
       ListTile(
         title: Text(L10().quantity),
         trailing: LargeText(widget.item.quantity.toString()),
-        leading: Icon(TablerIcons.progress)
+        leading: Icon(TablerIcons.progress),
       ),
     );
 
@@ -98,16 +98,16 @@ class _ExtraLineDetailWidgetState
         trailing: LargeText(
           renderCurrency(widget.item.price, widget.item.priceCurrency),
         ),
-        leading: Icon(TablerIcons.currency_dollar)
+        leading: Icon(TablerIcons.currency_dollar),
       ),
     );
 
     if (widget.item.notes.isNotEmpty) {
       tiles.add(
         ListTile(
-            title: Text(L10().notes),
-            subtitle: Text(widget.item.notes),
-          leading: Icon(TablerIcons.note)
+          title: Text(L10().notes),
+          subtitle: Text(widget.item.notes),
+          leading: Icon(TablerIcons.note),
         ),
       );
     }

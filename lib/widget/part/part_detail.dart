@@ -408,9 +408,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         title: Text(L10().availableStock),
         subtitle: Text(L10().stockDetails),
         leading: Icon(TablerIcons.packages),
-        trailing: LargeText(
-          part.stockString(),
-        ),
+        trailing: LargeText(part.stockString()),
       ),
     );
 
@@ -424,7 +422,9 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       tiles.add(
         ListTile(
           title: Text(L10().partPricing),
-          subtitle: Text(pricing.isNotEmpty ? pricing : L10().noPricingAvailable),
+          subtitle: Text(
+            pricing.isNotEmpty ? pricing : L10().noPricingAvailable,
+          ),
           leading: Icon(TablerIcons.currency_dollar, color: COLOR_ACTION),
           trailing: LinkIcon(),
           onTap: () {
@@ -591,7 +591,9 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       ListTile(
         title: Text(L10().attachments),
         leading: Icon(TablerIcons.file, color: COLOR_ACTION),
-        trailing: LinkIcon(text: attachmentCount > 0 ? attachmentCount.toString() : null),
+        trailing: LinkIcon(
+          text: attachmentCount > 0 ? attachmentCount.toString() : null,
+        ),
         onTap: () {
           Navigator.push(
             context,

@@ -387,7 +387,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
           leading: Icon(TablerIcons.truck_delivery),
           trailing: LargeText(
             "${widget.order.completedShipmentCount} / ${widget.order.shipmentCount}",
-            color: lineColor
+            color: lineColor,
           ),
         ),
       );
@@ -496,7 +496,9 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
       ListTile(
         title: Text(L10().attachments),
         leading: Icon(TablerIcons.file, color: COLOR_ACTION),
-        trailing: LinkIcon(text: attachmentCount > 0 ? attachmentCount.toString() : null),
+        trailing: LinkIcon(
+          text: attachmentCount > 0 ? attachmentCount.toString() : null,
+        ),
         onTap: () {
           Navigator.push(
             context,

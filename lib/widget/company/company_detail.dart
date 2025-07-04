@@ -313,9 +313,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
           ListTile(
             title: Text(L10().supplierParts),
             leading: Icon(TablerIcons.building, color: COLOR_ACTION),
-            trailing: LinkIcon(
-              text: supplierPartCount.toString()
-            ),
+            trailing: LinkIcon(text: supplierPartCount.toString()),
             onTap: () {
               Navigator.push(
                 context,
@@ -399,7 +397,9 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
       ListTile(
         title: Text(L10().attachments),
         leading: Icon(TablerIcons.file, color: COLOR_ACTION),
-        trailing: LinkIcon(text: attachmentCount > 0 ? attachmentCount.toString() : null),
+        trailing: LinkIcon(
+          text: attachmentCount > 0 ? attachmentCount.toString() : null,
+        ),
         onTap: () {
           Navigator.push(
             context,

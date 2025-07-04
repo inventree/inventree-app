@@ -495,7 +495,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     } else if (!widget.item.isSerialized()) {
       trailing = LargeText(
         widget.item.quantityString(),
-        color: api.StockStatus.color(widget.item.status)
+        color: api.StockStatus.color(widget.item.status),
       );
     }
 
@@ -658,7 +658,9 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       tiles.add(
         ListTile(
           title: Text(L10().salesOrder),
-          subtitle: Text(salesOrder?.reference ?? salesOrder?.description ?? ""),
+          subtitle: Text(
+            salesOrder?.reference ?? salesOrder?.description ?? "",
+          ),
           leading: Icon(TablerIcons.truck_delivery, color: COLOR_ACTION),
           trailing: LinkIcon(),
           onTap: () {
@@ -837,7 +839,9 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       ListTile(
         title: Text(L10().attachments),
         leading: Icon(TablerIcons.file, color: COLOR_ACTION),
-        trailing: LinkIcon(text: attachmentCount > 0 ? attachmentCount.toString() : null),
+        trailing: LinkIcon(
+          text: attachmentCount > 0 ? attachmentCount.toString() : null,
+        ),
         onTap: () {
           Navigator.push(
             context,

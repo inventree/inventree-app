@@ -407,9 +407,7 @@ class _PurchaseOrderDetailState
           subtitle: Text(destination!.name),
           leading: Icon(TablerIcons.map_pin, color: COLOR_ACTION),
           trailing: LinkIcon(),
-          onTap: () => {
-            destination!.goToDetailPage(context),
-          },
+          onTap: () => {destination!.goToDetailPage(context)},
         ),
       );
     }
@@ -542,7 +540,9 @@ class _PurchaseOrderDetailState
       ListTile(
         title: Text(L10().attachments),
         leading: Icon(TablerIcons.file, color: COLOR_ACTION),
-        trailing: LinkIcon(text: attachmentCount > 0 ? attachmentCount.toString() : null),
+        trailing: LinkIcon(
+          text: attachmentCount > 0 ? attachmentCount.toString() : null,
+        ),
         onTap: () {
           Navigator.push(
             context,

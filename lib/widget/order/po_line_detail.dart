@@ -146,9 +146,7 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
         title: Text(L10().internalPart),
         subtitle: Text(widget.item.partName),
         leading: Icon(TablerIcons.box, color: COLOR_ACTION),
-        trailing: LinkIcon(
-          image: api.getThumbnail(widget.item.partImage),
-        ),
+        trailing: LinkIcon(image: api.getThumbnail(widget.item.partImage)),
         onTap: () async {
           showLoadingOverlay();
           var part = await InvenTreePart().get(widget.item.partId);
