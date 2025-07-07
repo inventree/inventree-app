@@ -628,7 +628,7 @@
   "@permissionAccountDenied": {},
   "permissionRequired": "Autorizzazione necessaria",
   "@permissionRequired": {},
-  "phone": "Phone",
+  "phone": "Telefono",
   "@phone": {},
   "printLabel": "Stampa Etichetta",
   "@printLabel": {},
