@@ -39,6 +39,7 @@ dependencies:
   package_info_plus: ^8.1.1               # App information introspection
   path: ^1.9.0
   path_provider: ^2.1.5                   # Local file storage
+  percent_indicator: ^4.2.5
   sembast: ^3.6.0                         # NoSQL data storage
   sentry_flutter: 8.14.2                   # Error reporting
   url_launcher: ^6.3.1                    # Open link in system browser
