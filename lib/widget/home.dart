@@ -21,6 +21,7 @@ import "package:inventree/widget/stock/location_display.dart";
 import "package:inventree/widget/part/part_list.dart";
 import "package:inventree/widget/order/purchase_order_list.dart";
 import "package:inventree/widget/order/sales_order_list.dart";
+import "package:inventree/widget/build/build_list.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/spinner.dart";
@@ -55,6 +56,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
 
   bool homeShowPo = false;
   bool homeShowSo = false;
+  bool homeShowBuild = false;
   bool homeShowSubscribed = false;
   bool homeShowManufacturers = false;
   bool homeShowCustomers = false;
@@ -108,6 +110,17 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
       context,
       MaterialPageRoute(
         builder: (context) => SalesOrderListWidget(filters: {}),
+      ),
+    );
+  }
+
+  void _showBuildOrders(BuildContext context) {
+    if (!InvenTreeAPI().checkConnection()) return;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BuildOrderListWidget(filters: {}),
       ),
     );
   }
@@ -166,6 +179,9 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
             as bool;
     homeShowSo =
         await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_SO, true)
+            as bool;
+    homeShowBuild =
+        await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_BUILD, true)
             as bool;
     homeShowManufacturers =
         await InvenTreeSettingsManager().getValue(
@@ -321,6 +337,22 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
           callback: () {
             _showSalesOrders(context);
           },
+        ),
+      );
+    }
+
+    // Build Orders
+    if (homeShowBuild && InvenTreeAPI().checkRole("build", "view")) {
+      tiles.add(
+        _listTile(
+          context,
+          "Build Orders", // Using hardcoded string until L10n is implemented for build orders
+          TablerIcons.building_factory,
+          callback: () {
+            _showBuildOrders(context);
+          },
+          role: "build",
+          permission: "view",
         ),
       );
     }
