@@ -2,6 +2,7 @@
 ---
 
 - Improved UX across the entire app
+- Fix bug which prevented display of part images for purchase order line items
 
 ### 0.19.1 - July 2025
 ---
