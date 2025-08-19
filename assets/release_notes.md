@@ -1,4 +1,4 @@
-### TBD - ???
+### 0.19.2 - August 2025
 ---
 
 - Allow purchase orders to be completed
