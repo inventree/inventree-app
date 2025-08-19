@@ -67,9 +67,7 @@ class _PaginatedPOLineListState
     final page = await InvenTreePOLineItem().listPaginated(
       limit,
       offset,
-      filters: {
-        ...params,
-      }
+      filters: {...params},
     );
     return page;
   }
