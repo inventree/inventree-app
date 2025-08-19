@@ -217,16 +217,6 @@ class InvenTreePOLineItem extends InvenTreeOrderLine {
 
   int get supplierPartId => getInt("part");
 
-  String get partImage {
-    String img = getString("thumbnail", subKey: "part_detail");
-
-    if (img.isEmpty) {
-      img = getString("image", subKey: "part_detail");
-    }
-
-    return img;
-  }
-
   InvenTreeSupplierPart? get supplierPart {
     dynamic detail = jsondata["supplier_part_detail"];
 
