@@ -67,7 +67,9 @@ class _PaginatedPOLineListState
     final page = await InvenTreePOLineItem().listPaginated(
       limit,
       offset,
-      filters: params,
+      filters: {
+        ...params,
+      }
     );
     return page;
   }
@@ -85,7 +87,7 @@ class _PaginatedPOLineListState
           item.progressString,
           color: item.isComplete ? COLOR_SUCCESS : COLOR_WARNING,
         ),
-        leading: InvenTreeAPI().getThumbnail(supplierPart.partImage),
+        leading: InvenTreeAPI().getThumbnail(item.partImage),
         onTap: () async {
           showLoadingOverlay();
           await item.reload();
