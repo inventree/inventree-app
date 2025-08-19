@@ -6,6 +6,11 @@ from invoke import task
 
 
 @task
+def format(c):
+    """Code formatting using dart format."""
+    c.run("fvm dart format lib")
+
+@task
 def clean(c):
     """Clean flutter build."""
     c.run("fvm flutter clean")

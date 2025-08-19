@@ -122,7 +122,7 @@ class _PurchaseOrderDetailState
           ),
         );
       }
-      
+
       if (widget.order.isOpen && !widget.order.isPending) {
         actions.add(
           SpeedDialChild(
@@ -130,8 +130,8 @@ class _PurchaseOrderDetailState
             label: L10().completeOrder,
             onTap: () async {
               _completeOrder(context);
-            }
-          )
+            },
+          ),
         );
       }
 
@@ -197,9 +197,7 @@ class _PurchaseOrderDetailState
 
   /// Complete this order
   Future<void> _completeOrder(BuildContext context) async {
-    Map<String, Map<String, dynamic>> fields = {
-      "accept_incomplete": {},
-    };
+    Map<String, Map<String, dynamic>> fields = {"accept_incomplete": {}};
 
     String URL = "order/po/${widget.order.pk}/complete/";
 
@@ -211,7 +209,7 @@ class _PurchaseOrderDetailState
       method: "POST",
       onSuccess: (data) async {
         refresh(context);
-      }
+      },
     );
   }
 

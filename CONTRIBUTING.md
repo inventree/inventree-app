@@ -27,7 +27,7 @@ We enforce consistent code formatting using Dart's built-in formatter. Before su
 1. Fork the repository and create a feature branch
 2. Make your changes
 3. Ensure your code passes all tests and linting
-4. Format your code using `fvm dart format`
+4. Format your code using `invoke format`
 5. Submit a pull request with a clear description of the changes
 6. Address any review comments
 
