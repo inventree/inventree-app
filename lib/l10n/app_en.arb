@@ -261,6 +261,12 @@
   "companies": "Companies",
   "@companies": {},
 
+  "complete": "Complete",
+  "@complete": {},
+
+  "completeOrder": "Complete Order",
+  "@completeOrder": {},
+
   "completionDate": "Completion Date",
   "@completionDate": {},
 

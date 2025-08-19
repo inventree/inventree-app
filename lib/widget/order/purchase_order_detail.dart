@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
+import "package:inventree/api_form.dart";
 
 import "package:inventree/app_colors.dart";
 import "package:inventree/barcode/barcode.dart";
@@ -122,6 +123,18 @@ class _PurchaseOrderDetailState
         );
       }
 
+      if (widget.order.isOpen && !widget.order.isPending) {
+        actions.add(
+          SpeedDialChild(
+            child: Icon(TablerIcons.circle_check, color: Colors.green),
+            label: L10().completeOrder,
+            onTap: () async {
+              _completeOrder(context);
+            },
+          ),
+        );
+      }
+
       if (widget.order.isOpen) {
         actions.add(
           SpeedDialChild(
@@ -178,6 +191,24 @@ class _PurchaseOrderDetailState
         widget.order.issueOrder().then((dynamic) {
           refresh(context);
         });
+      },
+    );
+  }
+
+  /// Complete this order
+  Future<void> _completeOrder(BuildContext context) async {
+    Map<String, Map<String, dynamic>> fields = {"accept_incomplete": {}};
+
+    String URL = "order/po/${widget.order.pk}/complete/";
+
+    launchApiForm(
+      context,
+      L10().completeOrder,
+      URL,
+      fields,
+      method: "POST",
+      onSuccess: (data) async {
+        refresh(context);
       },
     );
   }
