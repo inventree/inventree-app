@@ -1118,7 +1118,7 @@
   "@price": {},
   "priceRange": "价格范围",
   "@priceRange": {},
-  "priceOverrideMin": "Minimum Price Override",
+  "priceOverrideMin": "最低价格覆盖",
   "@priceOverrideMin": {},
   "priceOverrideMax": "Maximum Price Override",
   "@priceOverrideMax": {},
