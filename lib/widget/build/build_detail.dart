@@ -10,6 +10,7 @@ import "package:inventree/inventree/build.dart";
 import "package:inventree/inventree/part.dart";
 
 import "package:inventree/widget/dialogs.dart";
+import "package:inventree/widget/link_icon.dart";
 import "package:inventree/widget/notes_widget.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/build/build_line_list.dart";
@@ -286,11 +287,13 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
   Future<void> request(BuildContext context) async {
     super.request(context);
 
-    if (widget.order.pk > 0) {
-      // To be implemented later when build order is fully integrated
-      // This will load all build order related data (attachments, outputs, etc.)
-      refresh(context);
-    }
+    // Refresh the BuildOrder instance
+    widget.order.reload().then((response) => {
+      if (mounted) {
+        setState(() {
+        })
+      }
+    });
   }
 
   /// Edit this build order
@@ -441,7 +444,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
           "Stock Allocations",
         ), // Will use L10().stockAllocations later
         leading: Icon(TablerIcons.box_model_2, color: COLOR_ACTION),
-        trailing: Text(widget.order.outputCount.toString()),
+        trailing: LinkIcon(text: widget.order.outputCount.toString()),
       ),
     );
 
@@ -495,6 +498,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
       ListTile(
         title: const Text("Notes"), // Will use L10().notes later
         leading: Icon(TablerIcons.notes, color: COLOR_ACTION),
+        trailing: LinkIcon(),
         onTap: () {
           Navigator.push(
             context,
@@ -509,7 +513,9 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
       ListTile(
         title: const Text("Attachments"), // Will use L10().attachments later
         leading: Icon(TablerIcons.file, color: COLOR_ACTION),
-        trailing: attachmentCount > 0 ? Text(attachmentCount.toString()) : null,
+        trailing: LinkIcon(
+          text: attachmentCount > 0 ? attachmentCount.toString() : null
+        ),
         onTap: () {
           // Implement attachment view when attachment classes are created
           // This would be similar to: AttachmentWidget(InvenTreeBuildOrderAttachment(), widget.order.pk, widget.order.reference, widget.order.canEdit)

@@ -731,7 +731,7 @@ class InvenTreeModel {
     }
 
     var response = await api.get(URL, params: params);
-    
+
     if (!response.isValid()) {
       return null;
     }
