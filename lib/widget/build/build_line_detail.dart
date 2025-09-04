@@ -78,7 +78,7 @@ class _BuildLineDetailWidgetState
         showSnackIcon(
           L10().itemUpdated,
           success: true,
-        ); // Will use L10().lineItemUpdated later
+        );
       },
     );
   }

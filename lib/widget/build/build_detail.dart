@@ -4,7 +4,7 @@ import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
-import "package:inventree/l10.dart";  // Will implement later for internationalization
+import "package:inventree/l10.dart";
 
 import "package:inventree/inventree/build.dart";
 import "package:inventree/inventree/part.dart";
@@ -419,9 +419,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
 
     tiles.add(
       ListTile(
-        title: const Text(
-          "Required Components",
-        ), // Will use L10().requiredComponents later
+        title: Text(L10().requiredParts),
         subtitle: LinearProgressIndicator(
           value: widget.order.lineItemCount > 0
               ? widget.order.allocatedLineItemCount / widget.order.lineItemCount
@@ -439,9 +437,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
     // Output items
     tiles.add(
       ListTile(
-        title: const Text(
-          "Stock Allocations",
-        ), // Will use L10().stockAllocations later
+        title: Text(L10().allocatedStock),
         leading: Icon(TablerIcons.box_model_2, color: COLOR_ACTION),
         trailing: LinkIcon(text: widget.order.outputCount.toString()),
       ),
@@ -451,9 +447,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
     if (widget.order.creationDate.isNotEmpty) {
       tiles.add(
         ListTile(
-          title: const Text(
-            "Creation Date",
-          ), // Will use L10().creationDate later
+          title: Text(L10().creationDate),
           trailing: Text(widget.order.creationDate),
           leading: const Icon(TablerIcons.calendar),
         ),
