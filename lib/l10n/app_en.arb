@@ -47,8 +47,23 @@
   "appDetails": "App Details",
   "@appDetails": {},
 
+  "allocate": "Allocate",
+  "@allocate": {},
+
+  "allocateAuto": "Auto Allocate",
+  "@allocateAuto": {},
+
+  "allocateAutoDetail": "Automatically allocate required stock items to this order",
+  "@allocateAutoDetail": {},
+
+  "allocateStock": "Allocate Stock",
+  "@allocateStock": {},
+
   "allocated": "Allocated",
   "@allocated": {},
+
+  "allocatedStock": "Allocated Stock",
+  "@allocatedStock": {},
 
   "aspectRatio16x9": "16:9",
   "@aspectRatio16x9": {},
@@ -211,6 +226,18 @@
   "build": "Build",
   "@build": {},
 
+  "buildOrder": "Build Order",
+  "@buildOrder": {},
+
+  "buildOrderEdit": "Edit Build Order",
+  "@buildOrderEdit": {},
+
+  "buildOrderUnallocateDetail": "Unallocate all stock from this build order",
+  "@buildOrderUnallocateDetail": {},
+
+  "buildOutputs": "Outputs",
+  "@buildOutputs": {},
+
   "building": "Building",
   "@building": {},
 
@@ -230,6 +257,9 @@
 
   "cancelOrder": "Cancel Order",
   "@cancelOrder": {},
+
+  "cancelOrderConfirm": "Are you sure you want to cancel this order?",
+  "@cancelOrderConfirm": {},
 
   "category": "Category",
   "@category": {},
@@ -266,6 +296,9 @@
 
   "completeOrder": "Complete Order",
   "@completeOrder": {},
+
+  "completeOrderConfirm": "Are you sure you want to complete this order?",
+  "@completeOrderConfirm": {},
 
   "completionDate": "Completion Date",
   "@completionDate": {},
@@ -533,6 +566,15 @@
     "description": "history"
   },
 
+  "hold": "Hold",
+  "@hold": {},
+
+  "holdOrder": "Hold Order",
+  "@holdOrder": {},
+
+  "holdOrderConfirm": "Are you sure you want to place this order on hold?",
+  "@holdOrderConfirm": {},
+
   "home": "Home",
   "@home": {},
 
@@ -655,6 +697,9 @@
 
   "issueOrder": "Issue Order",
   "@issueOrder": {},
+
+  "issueOrderConfirm": "Are you sure you want to issue this order?",
+  "@issueOrderConfirm": {},
 
   "itemInLocation": "Item already in location",
   "@itemInLocation": {},
@@ -1127,6 +1172,9 @@
     "description": "This field is required"
   },
 
+  "requiredParts": "Required Parts",
+  "@requiredParts": {},
+
   "response400": "Bad Request",
   "@response400": {},
 
@@ -1579,6 +1627,12 @@
 
   "translateHelp": "Help translate the InvenTree app",
   "@translateHelp": {},
+
+  "unallocate": "Unallocate",
+  "@unallocate": {},
+
+  "unallocateStock": "Unallocate Stock",
+  "@unallocateStock": {},
 
   "unavailable": "Unavailable",
   "@unavailable": {},

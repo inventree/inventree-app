@@ -4,7 +4,7 @@ import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
-// import "package:inventree/l10.dart";  // Will implement later for internationalization
+import "package:inventree/l10.dart";  // Will implement later for internationalization
 
 import "package:inventree/inventree/build.dart";
 import "package:inventree/inventree/part.dart";
@@ -43,7 +43,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
 
   @override
   String getAppBarTitle() {
-    String title = "Build Order"; // Will use L10().buildOrder later
+    String title = L10().buildOrder;
 
     if (widget.order.reference.isNotEmpty) {
       title += " - ${widget.order.reference}";
@@ -60,7 +60,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
       actions.add(
         IconButton(
           icon: const Icon(TablerIcons.edit),
-          tooltip: "Edit Build Order", // Will use L10().buildOrderEdit later
+          tooltip: L10().buildOrderEdit,
           onPressed: () {
             editOrder(context);
           },
@@ -80,7 +80,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
       actions.add(
         SpeedDialChild(
           child: const Icon(TablerIcons.camera, color: Colors.blue),
-          label: "Take Picture", // Will use L10().takePicture later
+          label: L10().takePicture,
           onTap: () async {
             _uploadImage(context);
           },
@@ -95,7 +95,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
         actions.add(
           SpeedDialChild(
             child: const Icon(TablerIcons.send, color: Colors.blue),
-            label: "Issue Order", // Will use L10().issueOrder later
+            label: L10().issueOrder,
             onTap: () async {
               _issueOrder(context);
             },
@@ -108,7 +108,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
         actions.add(
           SpeedDialChild(
             child: const Icon(TablerIcons.check, color: Colors.green),
-            label: "Complete Order", // Will use L10().completeOrder later
+            label: L10().completeOrder,
             onTap: () async {
               _completeOrder(context);
             },
@@ -121,7 +121,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
         actions.add(
           SpeedDialChild(
             child: const Icon(TablerIcons.player_pause, color: Colors.orange),
-            label: "Hold Order", // Will use L10().holdOrder later
+            label: L10().holdOrder,
             onTap: () async {
               _holdOrder(context);
             },
@@ -137,7 +137,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
               TablerIcons.arrow_autofit_down,
               color: Colors.purple,
             ),
-            label: "Auto Allocate", // Will use L10().autoAllocate later
+            label: L10().allocateAuto,
             onTap: () async {
               _autoAllocate(context);
             },
@@ -151,7 +151,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
         actions.add(
           SpeedDialChild(
             child: const Icon(TablerIcons.arrow_autofit_up, color: Colors.red),
-            label: "Unallocate All", // Will use L10().unallocateAll later
+            label: L10().unallocateStock,
             onTap: () async {
               _unallocateAll(context);
             },
@@ -164,7 +164,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
         actions.add(
           SpeedDialChild(
             child: const Icon(TablerIcons.circle_x, color: Colors.red),
-            label: "Cancel Order", // Will use L10().cancelOrder later
+            label: L10().cancelOrder,
             onTap: () async {
               _cancelOrder(context);
             },
@@ -185,11 +185,11 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
   /// Issue this build order
   Future<void> _issueOrder(BuildContext context) async {
     confirmationDialog(
-      "Issue Build Order", // Will use L10().issueBuildOrder later
-      "Are you sure you want to issue this build order?", // Will use L10().issueBuildOrderConfirm later
+      L10().issueOrder,
+      L10().issueOrderConfirm,
       icon: TablerIcons.send,
       color: Colors.blue,
-      acceptText: "Issue", // Will use L10().issue later
+      acceptText: L10().issue,
       onAccept: () async {
         widget.order.issue().then((dynamic) {
           refresh(context);
@@ -201,11 +201,11 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
   /// Complete this build order
   Future<void> _completeOrder(BuildContext context) async {
     confirmationDialog(
-      "Complete Build Order", // Will use L10().completeBuildOrder later
-      "Are you sure you want to complete this build order?", // Will use L10().completeBuildOrderConfirm later
+      L10().completeOrder,
+      L10().completeOrderConfirm,
       icon: TablerIcons.check,
       color: Colors.green,
-      acceptText: "Complete", // Will use L10().complete later
+      acceptText: L10().complete,
       onAccept: () async {
         widget.order.completeOrder().then((dynamic) {
           refresh(context);
@@ -217,11 +217,11 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
   /// Hold this build order
   Future<void> _holdOrder(BuildContext context) async {
     confirmationDialog(
-      "Hold Build Order", // Will use L10().holdBuildOrder later
-      "Are you sure you want to place this build order on hold?", // Will use L10().holdBuildOrderConfirm later
+      L10().holdOrder,
+      L10().holdOrderConfirm,
       icon: TablerIcons.player_pause,
       color: Colors.orange,
-      acceptText: "Hold", // Will use L10().hold later
+      acceptText: L10().hold,
       onAccept: () async {
         widget.order.hold().then((dynamic) {
           refresh(context);
@@ -233,11 +233,11 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
   /// Cancel this build order
   Future<void> _cancelOrder(BuildContext context) async {
     confirmationDialog(
-      "Cancel Build Order", // Will use L10().cancelBuildOrder later
-      "Are you sure you want to cancel this build order?", // Will use L10().cancelBuildOrderConfirm later
+      L10().cancelOrder,
+      L10().cancelOrderConfirm,
       icon: TablerIcons.circle_x,
       color: Colors.red,
-      acceptText: "Cancel", // Will use L10().cancel later
+      acceptText: L10().cancel,
       onAccept: () async {
         widget.order.cancel().then((dynamic) {
           refresh(context);
@@ -249,11 +249,11 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
   /// Auto allocate stock items for this build order
   Future<void> _autoAllocate(BuildContext context) async {
     confirmationDialog(
-      "Auto Allocate", // Will use L10().autoAllocate later
-      "Automatically allocate required stock items to this build order?", // Will use L10().autoAllocateConfirm later
+      L10().allocateAuto,
+      L10().allocateAutoDetail,
       icon: TablerIcons.arrow_autofit_down,
       color: Colors.purple,
-      acceptText: "Allocate", // Will use L10().allocate later
+      acceptText: L10().allocate,
       onAccept: () async {
         widget.order.autoAllocate().then((dynamic) {
           refresh(context);
@@ -265,11 +265,11 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
   /// Unallocate all stock from this build order
   Future<void> _unallocateAll(BuildContext context) async {
     confirmationDialog(
-      "Unallocate All", // Will use L10().unallocateAll later
-      "Unallocate all stock items from this build order?", // Will use L10().unallocateAllConfirm later
+      L10().unallocateStock,
+      L10().buildOrderUnallocateDetail,
       icon: TablerIcons.trash,
       color: Colors.orange,
-      acceptText: "Unallocate", // Will use L10().unallocate later
+      acceptText: L10().unallocate,
       onAccept: () async {
         widget.order.unallocateAll().then((dynamic) {
           refresh(context);
@@ -310,7 +310,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
 
     widget.order.editForm(
       context,
-      "Edit Build Order", // Will use L10().editBuildOrder later
+      L10().buildOrderEdit,
       fields: fields,
       onSuccess: (data) async {
         refresh(context);
@@ -375,9 +375,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
     // Build quantities
     tiles.add(
       ListTile(
-        title: const Text(
-          "Build Quantity",
-        ), // Will use L10().buildQuantity later
+        title: Text(L10().quantity),
         leading: const Icon(TablerIcons.box),
         trailing: Text(
           "${widget.order.completed.toInt()} / ${widget.order.quantity.toInt()}",
@@ -465,7 +463,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
     if (widget.order.startDate.isNotEmpty) {
       tiles.add(
         ListTile(
-          title: const Text("Start Date"), // Will use L10().startDate later
+          title: Text(L10().startDate),
           trailing: Text(widget.order.startDate),
           leading: const Icon(TablerIcons.calendar),
         ),
@@ -475,7 +473,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
     if (widget.order.targetDate.isNotEmpty) {
       tiles.add(
         ListTile(
-          title: const Text("Target Date"), // Will use L10().targetDate later
+          title: Text(L10().targetDate),
           trailing: Text(widget.order.targetDate),
           leading: const Icon(TablerIcons.calendar),
         ),
@@ -485,9 +483,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
     if (widget.order.completionDate.isNotEmpty) {
       tiles.add(
         ListTile(
-          title: const Text(
-            "Completion Date",
-          ), // Will use L10().completionDate later
+          title: Text(L10().completionDate),
           trailing: Text(widget.order.completionDate),
           leading: const Icon(TablerIcons.calendar),
         ),
@@ -497,7 +493,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
     // Notes tile
     tiles.add(
       ListTile(
-        title: const Text("Notes"), // Will use L10().notes later
+        title: Text(L10().notes),
         leading: Icon(TablerIcons.notes, color: COLOR_ACTION),
         trailing: LinkIcon(),
         onTap: () {
@@ -512,7 +508,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
     // Attachments tile
     tiles.add(
       ListTile(
-        title: const Text("Attachments"), // Will use L10().attachments later
+        title: Text(L10().attachments),
         leading: Icon(TablerIcons.file, color: COLOR_ACTION),
         trailing: LinkIcon(
           text: attachmentCount > 0 ? attachmentCount.toString() : null
@@ -524,7 +520,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
               builder: (context) => AttachmentWidget(
                 InvenTreeBuildAttachment(),
                 widget.order.pk,
-                "build order",
+                L10().buildOrder,
                 widget.order.canEdit
             ),
           )
@@ -539,14 +535,10 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
   @override
   List<Widget> getTabIcons(BuildContext context) {
     return [
-      const Tab(text: "Details"), // Will use L10().details later
-      const Tab(
-        text: "Required Components",
-      ), // Will use L10().requiredComponents later
-      const Tab(
-        text: "Stock Allocations",
-      ), // Will use L10().stockAllocations later
-      const Tab(text: "Build Outputs"), // Will use L10().buildOutputs later
+      Tab(text: L10().details),
+      Tab(text: L10().requiredParts),
+      Tab(text: L10().allocatedStock),
+      Tab(text: L10().buildOutputs),
     ];
   }
 
