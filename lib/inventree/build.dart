@@ -328,10 +328,10 @@ class InvenTreeBuildItem extends InvenTreeModel {
   @override
   Map<String, Map<String, dynamic>> formFields() {
     return {
-      "build_line": {"required": true},
+      "build_line": {"required": true, "hidden": true},
       "stock_item": {"required": true},
       "quantity": {"required": true},
-      "install_into": {},
+      "install_into": {"hidden": true},
     };
   }
 }
@@ -343,9 +343,9 @@ class BuildOrderStatus {
   // Status codes as defined in backend status_codes.py
   static const int PENDING = 10; // Build is pending / inactive
   static const int PRODUCTION = 20; // Build is active
+  static const int ON_HOLD = 25; // Build is on hold
   static const int CANCELLED = 30; // Build was cancelled
   static const int COMPLETE = 40; // Build is complete
-  static const int ON_HOLD = 50; // Build is on hold
 
   // Return a color based on the build status
   static Color getStatusColor(int status) {
@@ -367,6 +367,9 @@ class BuildOrderStatus {
 
   // Return a string based on the build status
   static String getStatusText(int status) {
+
+    // TODO: This can be pulled from the API
+
     switch (status) {
       case PENDING:
         return "Pending";

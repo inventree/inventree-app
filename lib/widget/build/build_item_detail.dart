@@ -4,8 +4,7 @@ import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
-// Will use L10 later for internationalization
-// import "package:inventree/l10.dart";
+import "package:inventree/l10.dart";
 
 import "package:inventree/inventree/build.dart";
 import "package:inventree/inventree/stock.dart";
@@ -35,7 +34,7 @@ class _BuildItemDetailWidgetState
   _BuildItemDetailWidgetState();
 
   @override
-  String getAppBarTitle() => "Allocated Item"; // Will use L10().allocatedItem later
+  String getAppBarTitle() => L10().allocatedItem;
 
   @override
   List<Widget> appBarActions(BuildContext context) {
@@ -44,7 +43,7 @@ class _BuildItemDetailWidgetState
     actions.add(
       IconButton(
         icon: const Icon(TablerIcons.edit),
-        tooltip: "Edit Allocation", // Will use L10().editAllocation later
+        tooltip: L10().allocationEdit,
         onPressed: () {
           _editAllocation(context);
         },
@@ -62,7 +61,7 @@ class _BuildItemDetailWidgetState
     buttons.add(
       SpeedDialChild(
         child: const Icon(TablerIcons.minus, color: Colors.red),
-        label: "Unallocate", // Will use L10().unallocate later
+        label: L10().unallocate,
         onTap: () async {
           _unallocateStock(context);
         },
@@ -80,17 +79,19 @@ class _BuildItemDetailWidgetState
   // Edit this allocation
   Future<void> _editAllocation(BuildContext context) async {
     var fields = widget.item.formFields();
+    
+    fields["stock_item"]?["hidden"] = true;
 
     widget.item.editForm(
       context,
-      "Edit Allocation", // Will use L10().editAllocation later
+      L10().allocationEdit,
       fields: fields,
       onSuccess: (data) async {
         refresh(context);
         showSnackIcon(
-          "Allocation updated",
+          L10().itemUpdated,
           success: true,
-        ); // Will use L10().allocationUpdated later
+        );
       },
     );
   }
@@ -98,23 +99,21 @@ class _BuildItemDetailWidgetState
   // Deallocate this stock item
   Future<void> _unallocateStock(BuildContext context) async {
     confirmationDialog(
-      "Unallocate Stock", // Will use L10().unallocateStock later
-      "Are you sure you want to unallocate this stock item?", // Will use L10().unallocateStockConfirm later
+      L10().unallocateStock,
+      L10().unallocateStockConfirm,
       icon: TablerIcons.minus,
       color: Colors.red,
-      acceptText: "Unallocate", // Will use L10().unallocate later
+      acceptText: L10().unallocate,
       onAccept: () async {
         widget.item.delete().then((result) {
           if (result) {
             showSnackIcon(
-              "Stock unallocated",
+              L10().stockItemUpdated,
               success: true,
-            ); // Will use L10().stockUnallocated later
+            );
             Navigator.pop(context);
           } else {
-            showSnackIcon(
-              "Failed to unallocate stock",
-            ); // Will use L10().stockUnallocateFailed later
+            showSnackIcon(L10().error);
           }
         });
       },
@@ -136,7 +135,7 @@ class _BuildItemDetailWidgetState
     if (widget.item.stockItem != null) {
       tiles.add(
         ListTile(
-          title: const Text("Stock Item"), // Will use L10().stockItem later
+          title: Text(L10().stockItem),
           subtitle: Text(widget.item.stockItem!.partName),
           leading: widget.item.stockItem!.partImage.isNotEmpty
               ? SizedBox(
@@ -157,11 +156,11 @@ class _BuildItemDetailWidgetState
       // Location information
       tiles.add(
         ListTile(
-          title: const Text("Location"), // Will use L10().location later
+          title: Text(L10().stockLocation),
           subtitle: Text(
             widget.item.locationName.isNotEmpty
                 ? widget.item.locationPath
-                : "No location",
+                : L10().locationNotSet
           ),
           leading: const Icon(TablerIcons.map_pin),
         ),
@@ -171,9 +170,7 @@ class _BuildItemDetailWidgetState
       if (widget.item.serialNumber.isNotEmpty) {
         tiles.add(
           ListTile(
-            title: const Text(
-              "Serial Number",
-            ), // Will use L10().serialNumber later
+            title: Text(L10().serialNumber),
             subtitle: Text(widget.item.serialNumber),
             leading: const Icon(TablerIcons.hash),
           ),
@@ -184,7 +181,7 @@ class _BuildItemDetailWidgetState
       if (widget.item.batchCode.isNotEmpty) {
         tiles.add(
           ListTile(
-            title: const Text("Batch Code"), // Will use L10().batchCode later
+            title: Text(L10().batchCode),
             subtitle: Text(widget.item.batchCode),
             leading: const Icon(TablerIcons.barcode),
           ),
@@ -195,9 +192,7 @@ class _BuildItemDetailWidgetState
     // Quantity allocated
     tiles.add(
       ListTile(
-        title: const Text(
-          "Quantity Allocated",
-        ), // Will use L10().quantityAllocated later
+        title: Text(L10().quantity),
         subtitle: Text(widget.item.quantity.toString()),
         leading: const Icon(TablerIcons.list),
       ),
@@ -207,8 +202,8 @@ class _BuildItemDetailWidgetState
     if (widget.item.installIntoId > 0) {
       tiles.add(
         ListTile(
-          title: const Text("Install Into"), // Will use L10().installInto later
-          subtitle: const Text("View stock item"),
+          title: Text(L10().buildOutput),
+          subtitle: Text(L10().viewDetails),
           leading: const Icon(TablerIcons.arrow_right),
           trailing: const Icon(TablerIcons.chevron_right),
           onTap: () async {

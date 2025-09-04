@@ -62,8 +62,14 @@
   "allocated": "Allocated",
   "@allocated": {},
 
+  "allocatedItem": "Allocated Item",
+  "@allocatedItem": {},
+
   "allocatedStock": "Allocated Stock",
   "@allocatedStock": {},
+
+  "allocationEdit": "Edit Allocation",
+  "@allocationEdit": {},
 
   "aspectRatio16x9": "16:9",
   "@aspectRatio16x9": {},
@@ -235,7 +241,10 @@
   "buildOrderUnallocateDetail": "Unallocate all stock from this build order",
   "@buildOrderUnallocateDetail": {},
 
-  "buildOutputs": "Outputs",
+  "buildOutput": "Build Output",
+  "@buildOutput": {},
+
+  "buildOutputs": "Build Outputs",
   "@buildOutputs": {},
 
   "building": "Building",
@@ -860,7 +869,7 @@
 
   "orientationLandscape": "Landscape",
   "@orientationLandscape": {},
-  
+
   "orientationPortrait": "Portrait",
   "@orientationPortrait": {},
 
@@ -1634,6 +1643,9 @@
   "unallocateStock": "Unallocate Stock",
   "@unallocateStock": {},
 
+  "unallocateStockConfirm": "Are you sure you want to unallocate the selected items?",
+  "@unallocateStockConfirm": {},
+
   "unavailable": "Unavailable",
   "@unavailable": {},
 
@@ -1689,6 +1701,9 @@
 
   "version": "Version",
   "@version": {},
+
+  "viewDetails": "View Details",
+  "@viewDetails": {},
 
   "viewSupplierPart": "View Supplier Part",
   "@viewSupplierPart": {},
