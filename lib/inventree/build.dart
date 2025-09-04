@@ -37,11 +37,16 @@ class InvenTreeBuildOrder extends InvenTreeOrder {
   // Return the reference field for the modern attachment API
   String get REF_MODEL_TYPE => "build";
 
+  static const String MODEL_TYPE = "build";
+
   @override
   List<String> get rolesRequired => ["build"];
 
   // Return icon for this model
   static IconData get icon => TablerIcons.hammer;
+
+  @override
+  String get description => getString("title");
 
   // Part to be built
   int get partId => getInt("part");

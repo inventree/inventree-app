@@ -10,8 +10,10 @@ import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/barcode/barcode.dart";
 import "package:inventree/helpers.dart";
+import "package:inventree/inventree/build.dart";
 import "package:inventree/l10.dart";
 
+import "package:inventree/inventree/build.dart";
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/project_code.dart";
@@ -269,8 +271,9 @@ class APIFormField {
         return _constructBoolean();
       case "related field":
         return _constructRelatedField();
-      case "float":
       case "decimal":
+      case "float":
+      case "integer":
         return _constructFloatField();
       case "choice":
         return _constructChoiceField();
@@ -720,6 +723,30 @@ class APIFormField {
                   ),
                 )
               : null,
+        );
+      case InvenTreeBuildOrder.MODEL_TYPE:
+        var order = InvenTreeBuildOrder.fromJson(data);
+
+        return ListTile(
+          title: Text(order.reference),
+          subtitle: Text(order.description),
+        );
+
+      case InvenTreePurchaseOrder.MODEL_TYPE:
+        var order = InvenTreePurchaseOrder.fromJson(data);
+
+        return ListTile(
+          title: Text(order.reference),
+          subtitle: Text(order.description),
+          trailing: Text(order.supplier?.name ?? "")
+        );
+      case InvenTreeSalesOrder.MODEL_TYPE:
+        var order = InvenTreeSalesOrder.fromJson(data);
+
+        return ListTile(
+          title: Text(order.reference),
+          subtitle: Text(order.description),
+          trailing: Text(order.customer?.name ?? ""),
         );
       case InvenTreeSalesOrderShipment.MODEL_TYPE:
         var shipment = InvenTreeSalesOrderShipment.fromJson(data);
