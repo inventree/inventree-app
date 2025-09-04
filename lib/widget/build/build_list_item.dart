@@ -30,8 +30,7 @@ class BuildOrderListItem extends StatelessWidget {
 
     // Format dates
     String creationDate = order.creationDate;
-    String targetDate = order.targetDate.isNotEmpty
-        ? order.targetDate : "-";
+    String targetDate = order.targetDate.isNotEmpty ? order.targetDate : "-";
 
     return Card(
       margin: const EdgeInsets.all(4.0),
@@ -152,7 +151,8 @@ class BuildOrderListItem extends StatelessWidget {
                     children: [
                       const Icon(TablerIcons.calendar, size: 14),
                       const SizedBox(width: 4),
-                      Text("${L10().creationDate}: ${creationDate}",
+                      Text(
+                        "${L10().creationDate}: ${creationDate}",
                         style: const TextStyle(fontSize: 12),
                       ),
                     ],

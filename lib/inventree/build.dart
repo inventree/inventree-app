@@ -372,7 +372,6 @@ class BuildOrderStatus {
 
   // Return a string based on the build status
   static String getStatusText(int status) {
-
     // TODO: This can be pulled from the API
 
     switch (status) {
@@ -392,12 +391,11 @@ class BuildOrderStatus {
   }
 }
 
-
 class InvenTreeBuildAttachment extends InvenTreeAttachment {
   InvenTreeBuildAttachment() : super();
 
   InvenTreeBuildAttachment.fromJson(Map<String, dynamic> json)
-      : super.fromJson(json);
+    : super.fromJson(json);
 
   @override
   String get REFERENCE_FIELD => "build";

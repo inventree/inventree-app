@@ -289,12 +289,11 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
     super.request(context);
 
     // Refresh the BuildOrder instance
-    widget.order.reload().then((response) => {
-      if (mounted) {
-        setState(() {
-        })
-      }
-    });
+    widget.order.reload().then(
+      (response) => {
+        if (mounted) {setState(() {})},
+      },
+    );
   }
 
   /// Edit this build order
@@ -505,7 +504,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
         title: Text(L10().attachments),
         leading: Icon(TablerIcons.file, color: COLOR_ACTION),
         trailing: LinkIcon(
-          text: attachmentCount > 0 ? attachmentCount.toString() : null
+          text: attachmentCount > 0 ? attachmentCount.toString() : null,
         ),
         onTap: () {
           Navigator.push(
@@ -515,9 +514,9 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
                 InvenTreeBuildAttachment(),
                 widget.order.pk,
                 L10().buildOrder,
-                widget.order.canEdit
+                widget.order.canEdit,
+              ),
             ),
-          )
           );
         },
       ),

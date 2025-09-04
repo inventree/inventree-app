@@ -738,7 +738,7 @@ class APIFormField {
         return ListTile(
           title: Text(order.reference),
           subtitle: Text(order.description),
-          trailing: Text(order.supplier?.name ?? "")
+          trailing: Text(order.supplier?.name ?? ""),
         );
       case InvenTreeSalesOrder.MODEL_TYPE:
         var order = InvenTreeSalesOrder.fromJson(data);

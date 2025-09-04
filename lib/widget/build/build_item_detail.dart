@@ -88,10 +88,7 @@ class _BuildItemDetailWidgetState
       fields: fields,
       onSuccess: (data) async {
         refresh(context);
-        showSnackIcon(
-          L10().itemUpdated,
-          success: true,
-        );
+        showSnackIcon(L10().itemUpdated, success: true);
       },
     );
   }
@@ -107,10 +104,7 @@ class _BuildItemDetailWidgetState
       onAccept: () async {
         widget.item.delete().then((result) {
           if (result) {
-            showSnackIcon(
-              L10().stockItemUpdated,
-              success: true,
-            );
+            showSnackIcon(L10().stockItemUpdated, success: true);
             Navigator.pop(context);
           } else {
             showSnackIcon(L10().error);
@@ -160,7 +154,7 @@ class _BuildItemDetailWidgetState
           subtitle: Text(
             widget.item.locationName.isNotEmpty
                 ? widget.item.locationPath
-                : L10().locationNotSet
+                : L10().locationNotSet,
           ),
           leading: const Icon(TablerIcons.map_pin),
         ),

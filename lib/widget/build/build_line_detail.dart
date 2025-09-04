@@ -75,10 +75,7 @@ class _BuildLineDetailWidgetState
       fields: fields,
       onSuccess: (data) async {
         refresh(context);
-        showSnackIcon(
-          L10().itemUpdated,
-          success: true,
-        );
+        showSnackIcon(L10().itemUpdated, success: true);
       },
     );
   }
