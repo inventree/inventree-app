@@ -286,7 +286,7 @@
   "@errorCreate": {},
   "errorDelete": "删除数据库条目时出错",
   "@errorDelete": {},
-  "errorDetails": "c w错误详情",
+  "errorDetails": "错误详情",
   "@errorDetails": {},
   "errorFetch": "从服务器获取数据时出错",
   "@errorFetch": {},

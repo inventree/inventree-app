@@ -26,7 +26,7 @@
   "@addStock": {
     "description": "add stock"
   },
-  "address": "Address",
+  "address": "",
   "@address": {},
   "appAbout": "About InvenTree",
   "@appAbout": {},
@@ -112,7 +112,7 @@
   "@barcodeScanDelay": {},
   "barcodeScanDelayDetail": "Delay between barcode scans",
   "@barcodeScanDelayDetail": {},
-  "barcodeScanGeneral": "Scan an InvenTree barcode",
+  "barcodeScanGeneral": "InvenTree बारकोड स्कैन करें",
   "@barcodeScanGeneral": {},
   "barcodeScanInItems": "Scan stock items into this location",
   "@barcodeScanInItems": {},
