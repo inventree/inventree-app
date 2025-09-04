@@ -8,11 +8,9 @@ import "package:flutter/material.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
-import "package:inventree/barcode/barcode.dart";
 import "package:inventree/helpers.dart";
-import "package:inventree/inventree/build.dart";
 import "package:inventree/l10.dart";
-
+import "package:inventree/barcode/barcode.dart";
 import "package:inventree/inventree/build.dart";
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/part.dart";
@@ -20,9 +18,7 @@ import "package:inventree/inventree/project_code.dart";
 import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/inventree/stock.dart";
-
 import "package:inventree/inventree/sentry.dart";
-
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/fields.dart";
 import "package:inventree/widget/progress.dart";
