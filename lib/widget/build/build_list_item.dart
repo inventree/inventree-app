@@ -3,6 +3,7 @@ import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:percent_indicator/linear_percent_indicator.dart";
 
 import "package:inventree/api.dart";
+import "package:inventree/l10.dart";
 import "package:inventree/inventree/build.dart";
 
 /*
@@ -25,13 +26,12 @@ class BuildOrderListItem extends StatelessWidget {
     progress = progress.clamp(0, 1);
 
     // Part name may be empty
-    String partName = order.partDetail?.name ?? "No Part";
+    String partName = order.partDetail?.name ?? "-";
 
     // Format dates
     String creationDate = order.creationDate;
     String targetDate = order.targetDate.isNotEmpty
-        ? order.targetDate
-        : "No target date";
+        ? order.targetDate : "-";
 
     return Card(
       margin: const EdgeInsets.all(4.0),
@@ -152,8 +152,7 @@ class BuildOrderListItem extends StatelessWidget {
                     children: [
                       const Icon(TablerIcons.calendar, size: 14),
                       const SizedBox(width: 4),
-                      Text(
-                        "Created: $creationDate",
+                      Text("${L10().creationDate}: ${creationDate}",
                         style: const TextStyle(fontSize: 12),
                       ),
                     ],
@@ -163,7 +162,7 @@ class BuildOrderListItem extends StatelessWidget {
                       const Icon(TablerIcons.calendar_due, size: 14),
                       const SizedBox(width: 4),
                       Text(
-                        "Due: $targetDate",
+                        "${L10().targetDate}: $targetDate",
                         style: TextStyle(
                           fontSize: 12,
                           color:

@@ -4,8 +4,7 @@ import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
-// Will use L10 later for internationalization
-// import "package:inventree/l10.dart";
+import "package:inventree/l10.dart";
 
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/build.dart";
@@ -34,7 +33,7 @@ class _BuildLineDetailWidgetState
   _BuildLineDetailWidgetState();
 
   @override
-  String getAppBarTitle() => "Line Item"; // Will use L10().lineItem later
+  String getAppBarTitle() => L10().lineItem;
 
   @override
   List<Widget> appBarActions(BuildContext context) {
@@ -72,12 +71,12 @@ class _BuildLineDetailWidgetState
 
     widget.item.editForm(
       context,
-      "Edit Line Item", // Will use L10().editLineItem later
+      L10().lineItemEdit,
       fields: fields,
       onSuccess: (data) async {
         refresh(context);
         showSnackIcon(
-          "Line item updated",
+          L10().itemUpdated,
           success: true,
         ); // Will use L10().lineItemUpdated later
       },
@@ -91,7 +90,7 @@ class _BuildLineDetailWidgetState
     // Reference to the part
     tiles.add(
       ListTile(
-        title: const Text("Part"), // Will use L10().part later
+        title: Text(L10().part),
         subtitle: Text(widget.item.partName),
         leading:
             widget.item.part != null && widget.item.part!.thumbnail.isNotEmpty
@@ -117,9 +116,7 @@ class _BuildLineDetailWidgetState
     // Required quantity
     tiles.add(
       ListTile(
-        title: const Text(
-          "Required Quantity",
-        ), // Will use L10().requiredQuantity later
+        title: Text(L10().quantity),
         subtitle: Text(widget.item.requiredQuantity.toString()),
         leading: const Icon(TablerIcons.list),
       ),
@@ -128,7 +125,7 @@ class _BuildLineDetailWidgetState
     // Allocated quantity
     tiles.add(
       ListTile(
-        title: const Text("Allocated"), // Will use L10().allocated later
+        title: Text(L10().allocated),
         subtitle: ProgressBar(
           widget.item.allocatedQuantity / widget.item.requiredQuantity,
         ),
@@ -146,7 +143,7 @@ class _BuildLineDetailWidgetState
     if (widget.item.reference.isNotEmpty) {
       tiles.add(
         ListTile(
-          title: const Text("Reference"), // Will use L10().reference later
+          title: Text(L10().reference),
           subtitle: Text(widget.item.reference),
           leading: const Icon(TablerIcons.hash),
         ),
@@ -157,7 +154,7 @@ class _BuildLineDetailWidgetState
     if (widget.item.notes.isNotEmpty) {
       tiles.add(
         ListTile(
-          title: const Text("Notes"), // Will use L10().notes later
+          title: Text(L10().notes),
           subtitle: Text(widget.item.notes),
           leading: const Icon(TablerIcons.note),
         ),

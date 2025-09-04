@@ -2,10 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/api.dart";
-
-// Will use L10 later for internationalization
-// import "package:inventree/l10.dart";
-
+import "package:inventree/l10.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/stock.dart";
 
@@ -21,7 +18,7 @@ class PaginatedBuildOutputList extends PaginatedSearchWidget {
     : super(filters: filters);
 
   @override
-  String get searchTitle => "Build Outputs"; // Will use L10().buildOutputs later
+  String get searchTitle => L10().buildOutputs;
 
   @override
   _PaginatedBuildOutputListState createState() =>
@@ -40,9 +37,9 @@ class _PaginatedBuildOutputListState
 
   @override
   Map<String, String> get orderingOptions => {
-    "part": "Part", // Will use L10().part later
-    "serial": "Serial Number", // Will use L10().serialNumber later
-    "quantity": "Quantity", // Will use L10().quantity later
+    "part": L10().part,
+    "serial": L10().serialNumber,
+    "quantity": L10().quantity,
   };
 
   @override
@@ -74,11 +71,11 @@ class _PaginatedBuildOutputListState
 
     // Show serial number if available
     if (stockItem.serialNumber.isNotEmpty) {
-      info = "SN: ${stockItem.serialNumber}";
+      info = "${L10().serialNumber}: ${stockItem.serialNumber}";
     }
     // Show batch code if available
     else if (stockItem.batch.isNotEmpty) {
-      info = "Batch: ${stockItem.batch}";
+      info = "${L10().batchCode}: ${stockItem.batch}";
     }
     // Otherwise show location
     else if (stockItem.locationId > 0) {

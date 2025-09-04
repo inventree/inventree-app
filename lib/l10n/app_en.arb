@@ -62,6 +62,9 @@
   "allocated": "Allocated",
   "@allocated": {},
 
+  "allocatedFilterDetail": "Show allocated items",
+  "@allocatedFilterDetail": {},
+
   "allocatedItem": "Allocated Item",
   "@allocatedItem": {},
 
@@ -82,9 +85,6 @@
 
   "aspectRatioSquare": "Square (1:1)",
   "@aspectRatioSquare": {},
-
-  "allocateStock": "Allocate Stock",
-  "@allocateStock": {},
 
   "appReleaseNotes": "Display app release notes",
   "@appReleaseNotes": {},
@@ -121,8 +121,8 @@
   "attention": "Attention",
   "@attention": {},
 
-   "available": "Available",
-   "@available": {},
+  "available": "Available",
+  "@available": {},
 
   "availableStock": "Available Stock",
   "@availableStock": {},
@@ -235,6 +235,12 @@
   "buildOrder": "Build Order",
   "@buildOrder": {},
 
+  "buildOrderCreate": "New Build Order",
+  "@buildOrderCreate": {},
+
+  "buildOrders": "Build Orders",
+  "@buildOrders": {},
+
   "buildOrderEdit": "Edit Build Order",
   "@buildOrderEdit": {},
 
@@ -309,6 +315,9 @@
   "completeOrderConfirm": "Are you sure you want to complete this order?",
   "@completeOrderConfirm": {},
 
+  "completedFilterDetail": "Show completed items",
+  "@completedFilterDetail": {},
+
   "completionDate": "Completion Date",
   "@completionDate": {},
 
@@ -333,6 +342,9 @@
   "@countStock": {
     "description": "Count Stock"
   },
+
+  "creationDate": "Creation Date",
+  "@creationDate": {},
 
   "credits": "Credits",
   "@credits": {},
@@ -765,6 +777,9 @@
   "lineItems": "Line Items",
   "@lineItems": {},
 
+  "lineItemEdit": "Edit Line Item",
+  "@lineItemEdit": {},
+
   "lineItemUpdated": "Line item updated",
   "@lineItemUpdated": {},
 
@@ -1126,6 +1141,9 @@
 
   "reference": "Reference",
   "@reference": {},
+
+  "referenceNone": "No reference",
+  "@referenceNone": {},
 
   "refresh": "Refresh",
   "@refresh": {},

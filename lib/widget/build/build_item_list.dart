@@ -2,13 +2,9 @@ import "package:flutter/material.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/api.dart";
-
-// Will use L10 later for internationalization
-// import "package:inventree/l10.dart";
-
+import "package:inventree/l10.dart";
 import "package:inventree/inventree/build.dart";
 import "package:inventree/inventree/model.dart";
-
 import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/build/build_item_detail.dart";
 import "package:inventree/widget/progress.dart";
@@ -21,7 +17,7 @@ class PaginatedBuildItemList extends PaginatedSearchWidget {
     : super(filters: filters);
 
   @override
-  String get searchTitle => "Stock Allocations"; // Will use L10().stockAllocations later
+  String get searchTitle => L10().allocatedStock;
 
   @override
   _PaginatedBuildItemListState createState() => _PaginatedBuildItemListState();
@@ -39,8 +35,8 @@ class _PaginatedBuildItemListState
 
   @override
   Map<String, String> get orderingOptions => {
-    "stock_item": "Stock Item", // Will use L10().stockItem later
-    "quantity": "Quantity", // Will use L10().quantity later
+    "stock_item": L10().stockItem,
+    "quantity": L10().quantity,
   };
 
   @override
@@ -66,11 +62,11 @@ class _PaginatedBuildItemListState
 
     // Show serial number if available
     if (item.serialNumber.isNotEmpty) {
-      info = "SN: ${item.serialNumber}";
+      info = "${L10().serialNumber}: ${item.serialNumber}";
     }
     // Show batch code if available
     else if (item.batchCode.isNotEmpty) {
-      info = "Batch: ${item.batchCode}";
+      info = "${L10().batchCode}: ${item.batchCode}";
     }
     // Otherwise show location
     else if (item.locationName.isNotEmpty) {
@@ -78,7 +74,7 @@ class _PaginatedBuildItemListState
     }
 
     return ListTile(
-      title: Text(item.stockItem?.partName ?? "Stock Item"),
+      title: Text(item.stockItem?.partName ?? L10().stockItem),
       subtitle: Text(info),
       trailing: Text(
         item.quantity.toString(),

@@ -79,7 +79,7 @@ class _BuildItemDetailWidgetState
   // Edit this allocation
   Future<void> _editAllocation(BuildContext context) async {
     var fields = widget.item.formFields();
-    
+
     fields["stock_item"]?["hidden"] = true;
 
     widget.item.editForm(

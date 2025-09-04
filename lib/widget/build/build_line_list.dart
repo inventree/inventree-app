@@ -3,8 +3,7 @@ import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/api.dart";
 
 import "package:inventree/app_colors.dart";
-// Will use L10 later for internationalization
-// import "package:inventree/l10.dart";
+import "package:inventree/l10.dart";
 
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/build.dart";
@@ -21,7 +20,7 @@ class PaginatedBuildLineList extends PaginatedSearchWidget {
     : super(filters: filters);
 
   @override
-  String get searchTitle => "Required Components"; // Will use L10().requiredComponents later
+  String get searchTitle => L10().requiredParts;
 
   @override
   _PaginatedBuildLineListState createState() => _PaginatedBuildLineListState();
@@ -39,23 +38,21 @@ class _PaginatedBuildLineListState
 
   @override
   Map<String, String> get orderingOptions => {
-    "part": "Part", // Will use L10().part later
-    "reference": "Reference", // Will use L10().reference later
-    "quantity": "Quantity", // Will use L10().quantity later
+    "part": L10().part,
+    "reference": L10().reference,
+    "quantity": L10().quantity,
   };
 
   @override
   Map<String, Map<String, dynamic>> get filterOptions => {
     "allocated": {
-      "label": "Allocated", // Will use L10().allocated later
-      "help_text":
-          "Show allocated items", // Will use L10().allocatedFilterDetail later
+      "label": L10().allocated,
+      "help_text": L10().allocatedFilterDetail,
       "tristate": true,
     },
     "completed": {
-      "label": "Completed", // Will use L10().completed later
-      "help_text":
-          "Show completed items", // Will use L10().completedFilterDetail later
+      "label": L10().complete,
+      "help_text": L10().completedFilterDetail,
       "tristate": true,
     },
   };
@@ -90,7 +87,7 @@ class _PaginatedBuildLineListState
     return ListTile(
       title: Text(item.partName),
       subtitle: Text(
-        item.reference.isNotEmpty ? item.reference : "No reference",
+        item.reference.isNotEmpty ? item.reference : L10().referenceNone,
       ),
       trailing: Text(
         "${item.allocatedQuantity.toInt()} / ${item.requiredQuantity.toInt()}",

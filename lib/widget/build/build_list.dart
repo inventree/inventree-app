@@ -5,7 +5,7 @@ import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/refreshable_state.dart";
-// import "package:inventree/l10.dart"; // Will use later for internationalization
+import "package:inventree/l10.dart";
 import "package:inventree/api.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/build.dart";
@@ -28,7 +28,7 @@ class _BuildOrderListWidgetState
   _BuildOrderListWidgetState();
 
   @override
-  String getAppBarTitle() => "Build Orders"; // Hardcoded for now, will use L10() later
+  String getAppBarTitle() => L10().buildOrders;
 
   @override
   List<SpeedDialChild> actionButtons(BuildContext context) {
@@ -40,7 +40,7 @@ class _BuildOrderListWidgetState
       actions.add(
         SpeedDialChild(
           child: const Icon(TablerIcons.circle_plus),
-          label: "Create Build Order", // Hardcoded for now
+          label: L10().buildOrderCreate,
           onTap: () {
             _createBuildOrder(context);
           },
@@ -57,7 +57,7 @@ class _BuildOrderListWidgetState
 
     InvenTreeBuildOrder().createForm(
       context,
-      "Create Build Order", // Hardcoded for now
+      L10().buildOrderCreate,
       fields: fields,
       onSuccess: (result) async {
         Map<String, dynamic> data = result as Map<String, dynamic>;
@@ -87,7 +87,7 @@ class PaginatedBuildOrderList extends PaginatedSearchWidget {
     : super(filters: filters);
 
   @override
-  String get searchTitle => "Build Orders"; // Hardcoded for now
+  String get searchTitle => L10().buildOrders;
 
   @override
   _PaginatedBuildOrderListState createState() =>
@@ -103,29 +103,29 @@ class _PaginatedBuildOrderListState
 
   @override
   Map<String, String> get orderingOptions => {
-    "reference": "Reference",
-    "part__name": "Part",
-    "status": "Status",
-    "creation_date": "Created",
-    "target_date": "Target Date",
-    "completion_date": "Completed",
+    "reference": L10().reference,
+    "part__name": L10().part,
+    "status": L10().status,
+    "creation_date": L10().creationDate,
+    "target_date": L10().targetDate,
+    "completion_date": L10().completionDate,
   };
 
   @override
   Map<String, Map<String, dynamic>> get filterOptions => {
     "outstanding": {
-      "label": "Outstanding",
-      "help_text": "Show outstanding build orders",
+      "label": L10().outstanding,
+      "help_text": L10().outstandingOrderDetail,
       "tristate": true,
     },
     "overdue": {
-      "label": "Overdue",
-      "help_text": "Show overdue build orders",
+      "label": L10().overdue,
+      "help_text": L10().overdueDetail,
       "tristate": true,
     },
     "assigned_to_me": {
-      "label": "Assigned to Me",
-      "help_text": "Show build orders assigned to me",
+      "label": L10().assignedToMe,
+      "help_text": L10().assignedToMeDetail,
       "tristate": true,
     },
   };
