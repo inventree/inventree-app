@@ -8,6 +8,7 @@ import "package:inventree/app_colors.dart";
 
 import "package:inventree/inventree/build.dart";
 import "package:inventree/inventree/part.dart";
+import "package:inventree/widget/attachment_widget.dart";
 
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/link_icon.dart";
@@ -517,8 +518,17 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
           text: attachmentCount > 0 ? attachmentCount.toString() : null
         ),
         onTap: () {
-          // Implement attachment view when attachment classes are created
-          // This would be similar to: AttachmentWidget(InvenTreeBuildOrderAttachment(), widget.order.pk, widget.order.reference, widget.order.canEdit)
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AttachmentWidget(
+                InvenTreeBuildAttachment(),
+                widget.order.pk,
+                "build order",
+                widget.order.canEdit
+            ),
+          )
+          );
         },
       ),
     );

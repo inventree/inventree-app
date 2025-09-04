@@ -232,7 +232,7 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
       }
     }
 
-    if (tiles.isEmpty) {
+    if (tiles.isEmpty && !loading) {
       tiles.add(
         ListTile(
           leading: Icon(TablerIcons.file_x, color: COLOR_WARNING),
