@@ -240,6 +240,9 @@ class InvenTreeBuildLine extends InvenTreeOrderLine {
   @override
   String get URL => "build/line/";
 
+  @override
+  List<String> get rolesRequired => ["build"];
+
   // Build order reference
   int get buildId => getInt("build");
 
@@ -286,6 +289,9 @@ class InvenTreeBuildItem extends InvenTreeModel {
   // API endpoint URL
   @override
   String get URL => "build/item/";
+
+  @override
+  List<String> get rolesRequired => ["build"];
 
   // Build line reference
   int get buildLineId => getInt("build_line");
