@@ -86,7 +86,7 @@
   "@barcodeAssigned": {},
   "barcodeError": "สแกนบาร์โค้ดผิดพลาด",
   "@barcodeError": {},
-  "barcodeInUse": "Barcode already assigned",
+  "barcodeInUse": "",
   "@barcodeInUse": {},
   "barcodeMissingHash": "Barcode hash data missing from response",
   "@barcodeMissingHash": {},
