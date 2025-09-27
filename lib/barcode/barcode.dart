@@ -255,7 +255,7 @@ class BarcodeScanHandler extends BarcodeHandler {
       InvenTreeManufacturerPart.MODEL_TYPE,
       InvenTreePart.MODEL_TYPE,
       InvenTreeStockLocation.MODEL_TYPE,
-      InvenTreeCompany.MODEL_TYPE
+      InvenTreeCompany.MODEL_TYPE,
     ];
 
     if (InvenTreeAPI().supportsOrderBarcodes) {
