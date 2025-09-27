@@ -676,7 +676,7 @@
   "@projectCode": {},
   "purchaseOrderConfirmScan": "Confirm Scan Data",
   "@purchaseOrderConfirmScan": {},
-  "purchaseOrderConfirmScanDetail": "Confirm details when scanning in items",
+  "purchaseOrderConfirmScanDetail": "Confirmar detalhes ao escanear itens",
   "@purchaseOrderConfirmScanDetail": {},
   "purchaseOrderEnable": "Habilitar Pedidos de Compra",
   "@purchaseOrderEnable": {},
