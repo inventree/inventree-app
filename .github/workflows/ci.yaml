@@ -57,7 +57,10 @@ jobs:
 
       - name: Static Analysis Tests
         run: |
-          flutter pub get
+          python3 find_dart_files.py
+          fvm flutter pub get
+          fvm flutter analyze
+          dart format --output=none --set-exit-if-changed .
 
       - name: Install Python
         uses: actions/setup-python@v4
