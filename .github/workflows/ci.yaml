@@ -30,6 +30,11 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
@@ -57,12 +62,11 @@ jobs:
 
       - name: Static Analysis Tests
         working-directory: .
-        run: flutter pub get
-
-      - name: Install Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.9
+        run: |
+          python ./find_dart_files.py
+          flutter pub get
+          flutter analyze
+          dart format --output=none --set-exit-if-changed .
 
       - name: Start InvenTree Server
         run: |
