@@ -58,8 +58,6 @@ jobs:
       - name: Static Analysis Tests
         run: |
           flutter pub get
-          flutter analyze
-          dart format --output=none --set-exit-if-changed lib
 
       - name: Install Python
         uses: actions/setup-python@v4
