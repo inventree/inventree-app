@@ -56,6 +56,7 @@ jobs:
           python3 collect_translations.py
 
       - name: Static Analysis Tests
+        working-directory: .
         run: |
           python3 find_dart_files.py
           flutter pub get
