@@ -1,3 +1,8 @@
+### 0.19.3 - September 2025
+---
+
+- Fixes incorrect priority of barcode scanner results
+
 ### 0.19.2 - August 2025
 ---
 
