@@ -85,7 +85,7 @@ jobs:
 
       - name: Unit Tests
         run: |
-          flutter test --coverage
+          fvm flutter test --coverage
 
       - name: Coveralls
         uses: coverallsapp/github-action@master
