@@ -13,6 +13,8 @@ from pathlib import Path
 if __name__ == "__main__":
     dart_files = Path("lib").rglob("*.dart")
 
+    print("Discovering dart files...");
+
     with open("test/coverage_helper_test.dart", "w") as f:
         f.write("// ignore_for_file: unused_import\n\n")
         f.write("// dart format off\n\n")

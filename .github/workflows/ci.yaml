@@ -30,6 +30,11 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
@@ -53,19 +58,17 @@ jobs:
       - name: Collect Translation Files
         run: |
           cd lib/l10n
-          python3 collect_translations.py
+          python collect_translations.py
 
       - name: Static Analysis Tests
+        working-directory: .
         run: |
-          python3 find_dart_files.py
-          flutter pub get
-          flutter analyze
+          python ./find_dart_files.py
+          dart pub global activate fvm
+          fvm install
+          fvm flutter pub get
+          fvm flutter analyze
           dart format --output=none --set-exit-if-changed .
-
-      - name: Install Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.9
 
       - name: Start InvenTree Server
         run: |
@@ -82,7 +85,7 @@ jobs:
 
       - name: Unit Tests
         run: |
-          flutter test --coverage
+          fvm flutter test --coverage
 
       - name: Coveralls
         uses: coverallsapp/github-action@master
