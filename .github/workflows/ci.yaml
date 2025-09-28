@@ -64,6 +64,7 @@ jobs:
         working-directory: .
         run: |
           python ./find_dart_files.py
+          pwd && ls -la
           flutter pub get
           flutter analyze
           dart format --output=none --set-exit-if-changed .
