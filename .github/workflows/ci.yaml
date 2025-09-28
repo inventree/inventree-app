@@ -58,15 +58,16 @@ jobs:
       - name: Collect Translation Files
         run: |
           cd lib/l10n
-          python3 collect_translations.py
+          python collect_translations.py
 
       - name: Static Analysis Tests
         working-directory: .
         run: |
           python ./find_dart_files.py
-          pwd && ls -la
-          flutter pub get
-          flutter analyze
+          dart pub global activate fvm
+          fvm install
+          fvm flutter pub get
+          fvm flutter analyze
           dart format --output=none --set-exit-if-changed .
 
       - name: Start InvenTree Server
