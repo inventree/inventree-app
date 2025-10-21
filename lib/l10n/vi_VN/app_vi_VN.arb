@@ -254,7 +254,7 @@
   "@edit": {
     "description": "edit"
   },
-  "editAttachment": "Edit Attachment",
+  "editAttachment": "Sửa tệp đính kèm",
   "@editAttachment": {},
   "editCategory": "Sửa Danh mục",
   "@editCategory": {},
