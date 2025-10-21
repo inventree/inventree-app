@@ -183,7 +183,7 @@ class _PurchaseOrderDetailState
   Future<void> _issueOrder(BuildContext context) async {
     confirmationDialog(
       L10().issueOrder,
-      "",
+      L10().issueOrderConfirm,
       icon: TablerIcons.send,
       color: Colors.blue,
       acceptText: L10().issue,
@@ -217,7 +217,7 @@ class _PurchaseOrderDetailState
   Future<void> _cancelOrder(BuildContext context) async {
     confirmationDialog(
       L10().cancelOrder,
-      "",
+      L10().cancelOrderConfirm,
       icon: TablerIcons.circle_x,
       color: Colors.red,
       acceptText: L10().cancel,
