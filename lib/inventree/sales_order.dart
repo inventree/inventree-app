@@ -270,6 +270,8 @@ class InvenTreeSalesOrderShipment extends InvenTreeModel {
   @override
   String get URL => "/order/so/shipment/";
 
+  String get SHIP_SHIPMENT_URL => "/order/so/shipment/${pk}/ship/";
+
   @override
   Future<Object?> goToDetailPage(BuildContext context) async {
     return Navigator.push(

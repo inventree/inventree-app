@@ -7,6 +7,7 @@ import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/api.dart";
+import "package:inventree/api_form.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/l10.dart";
@@ -78,9 +79,6 @@ class _SOShipmentDetailWidgetState extends RefreshableState<SOShipmentDetailWidg
   Future<void> request(BuildContext context) async {
     await widget.shipment.reload();
 
-    print("Shipment: ${widget.shipment.reference}");
-    print("checked_by: ${widget.shipment.checked_by_id} : ${widget.shipment.isChecked}");
-
     showCameraShortcut = await InvenTreeSettingsManager().getBool(
       INV_SO_SHOW_CAMERA,
       true,
@@ -110,6 +108,34 @@ class _SOShipmentDetailWidgetState extends RefreshableState<SOShipmentDetailWidg
     InvenTreeSalesOrderShipmentAttachment()
         .uploadImage(widget.shipment.pk, prefix: widget.shipment.reference)
         .then((result) => refresh(context));
+  }
+
+  /// Mark this shipment as shipped
+  Future<void> _sendShipment(BuildContext context) async {
+    Map<String, dynamic> fields = {
+      "shipment_date": {
+        "value": widget.shipment.isShipped ? widget.shipment.shipment_date! : DateTime.now().toIso8601String().split("T").first,
+      },
+      "tracking_number": {
+        "value": widget.shipment.tracking_number,
+      },
+      "invoice_number": {
+        "value" : widget.shipment.invoice_number,
+      }
+    };
+
+    launchApiForm(
+      context,
+      L10().shipmentSend,
+      widget.shipment.SHIP_SHIPMENT_URL,
+      fields,
+      method: "POST",
+      onSuccess: (data) {
+        refresh(context);
+        showSnackIcon(L10().shipmentUpdated, success: true);
+      }
+    );
+
   }
 
   @override
@@ -179,7 +205,7 @@ class _SOShipmentDetailWidgetState extends RefreshableState<SOShipmentDetailWidg
           child: Icon(TablerIcons.truck_delivery, color: Colors.green),
           label: L10().shipmentSend,
           onTap: () async {
-            // TODO
+            _sendShipment(context);
           }
         )
       );
