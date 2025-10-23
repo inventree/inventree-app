@@ -729,7 +729,7 @@ class APIFormField {
         return ListTile(
           title: Text(shipment.reference),
           subtitle: Text(shipment.tracking_number),
-          trailing: shipment.shipped ? Text(shipment.shipment_date!) : null,
+          trailing: shipment.isShipped ? Text(shipment.shipment_date!) : null,
         );
       case "owner":
         String name = (data["name"] ?? "") as String;

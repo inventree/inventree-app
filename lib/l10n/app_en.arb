@@ -331,6 +331,15 @@
   "deleteFailed": "Delete operation failed",
   "@deleteFailed": {},
 
+  "deleteImageConfirmation": "Are you sure you want to delete this image?",
+  "@deleteImageConfirmation": {},
+
+  "deleteImageTooltip": "Delete Image",
+  "@deleteImageTooltip": {},
+
+  "deleteImage": "Delete Image",
+  "@deleteImage": {},
+
   "deletePart": "Delete Part",
   "@deletePart": {},
 
@@ -339,6 +348,9 @@
 
   "deleteSuccess": "Delete operation successful",
   "@deleteSuccess": {},
+
+  "deliveryDate": "Delivery Date",
+  "@deliveryDate": {},
 
   "description": "Description",
   "@description": {},
@@ -647,6 +659,12 @@
   "invalidUsernamePassword": "Invalid username / password combination",
   "@invalidUsernamePassword": {},
 
+  "invoice": "Invoice",
+  "@invoice": {},
+
+  "invoiceNumber": "Invoice Number",
+  "@invoiceNumber": {},
+
   "issue": "Issue",
   "@issue": {},
 
@@ -769,6 +787,9 @@
   "@name": {
   },
 
+  "no": "No",
+  "@no": {},
+
   "notConnected": "Not Connected",
   "@notConnected": {},
 
@@ -780,8 +801,8 @@
   "notifications": "Notifications",
   "@notifications": {},
 
-   "notificationsEmpty": "No unread notifications",
-   "@notificationsEmpty": {},
+  "notificationsEmpty": "No unread notifications",
+  "@notificationsEmpty": {},
 
   "noResponse": "No Response from Server",
   "@noResponse": {},
@@ -791,6 +812,12 @@
 
   "noImageAvailable": "No image available",
   "@noImageAvailable": {},
+
+  "noPricingAvailable": "No pricing available",
+  "@noPricingAvailable": {},
+
+  "noPricingDataFound": "No pricing data found for this part",
+  "@noPricingDataFound": {},
 
   "noSubcategories": "No Subcategories",
   "@noSubcategories": {},
@@ -1347,8 +1374,26 @@
   "shipmentAdd": "Add Shipment",
   "@shipmentAdd": {},
 
+  "shipmentCheck": "Check Shipment",
+  "@shipmentCheck": {},
+
+  "shipmentCheckDetail": "Mark this shipment as checked",
+  "@shipmentCheckDetail": {},
+
+  "shipmentChecked": "Shipment Checked",
+  "@shipmentChecked": {},
+
+  "shipmentDate": "Shipment Date",
+  "@shipmentDate": {},
+
   "shipmentEdit": "Edit Shipment",
   "@shipmentEdit": {},
+
+  "shipmentUncheck": "Uncheck Shipment",
+  "@shipmentUncheck": {},
+
+  "shipmentUncheckDetail": "Mark this shipment as unchecked",
+  "@shipmentUncheckDetail": {},
 
   "shipmentUpdated": "Shipment Updated",
   "@shipmentUpdated": {},
@@ -1564,6 +1609,9 @@
   "totalPrice": "Total Price",
   "@totalPrice": {},
 
+  "trackingNumber": "Tracking Number",
+  "@trackingNumber": {},
+
   "transfer": "Transfer",
   "@transfer": {
     "description": "transfer"
@@ -1651,6 +1699,9 @@
   "website": "Website",
   "@website": {},
 
+  "yes": "Yes",
+  "@yes": {},
+
   "price": "Price",
   "@price": {},
 
@@ -1691,20 +1742,5 @@
   "@currency": {},
 
   "priceBreaks": "Price Breaks",
-  "@priceBreaks": {},
-
-  "noPricingAvailable": "No pricing available",
-  "@noPricingAvailable": {},
-
-  "noPricingDataFound": "No pricing data found for this part",
-  "@noPricingDataFound": {},
-
-  "deleteImageConfirmation": "Are you sure you want to delete this image?",
-  "@deleteImageConfirmation": {},
-
-  "deleteImageTooltip": "Delete Image",
-  "@deleteImageTooltip": {},
-
-  "deleteImage": "Delete Image",
-  "@deleteImage": {}
+  "@priceBreaks": {}
 }
