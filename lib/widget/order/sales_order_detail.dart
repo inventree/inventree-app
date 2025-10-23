@@ -400,7 +400,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
             widget.order.completedShipmentCount.toDouble(),
             maximum: widget.order.shipmentCount.toDouble(),
           ),
-          leading: Icon(TablerIcons.truck_delivery),
+          leading: Icon(TablerIcons.cube_send),
           trailing: LargeText(
             "${widget.order.completedShipmentCount} / ${widget.order.shipmentCount}",
             color: lineColor,

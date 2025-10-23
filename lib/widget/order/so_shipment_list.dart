@@ -7,6 +7,35 @@ import "package:inventree/widget/paginator.dart";
 
 import "package:inventree/inventree/model.dart";
 import "package:inventree/l10.dart";
+import "package:inventree/widget/refreshable_state.dart";
+
+
+class SOShipmentListWidget extends StatefulWidget {
+  const SOShipmentListWidget({this.title = "", this.filters = const {}, Key? key})
+    : super(key: key);
+
+  final Map<String, String> filters;
+
+  final String title;
+
+  @override
+  _SOShipmentListWidgetState createState() => _SOShipmentListWidgetState();
+}
+
+
+class _SOShipmentListWidgetState extends RefreshableState<SOShipmentListWidget> {
+
+  _SOShipmentListWidgetState();
+
+  @override
+  String getAppBarTitle() => widget.title;
+
+  @override
+  Widget getBody(BuildContext context) {
+    return PaginatedSOShipmentList(widget.filters);
+  }
+}
+
 
 class PaginatedSOShipmentList extends PaginatedSearchWidget {
   const PaginatedSOShipmentList(Map<String, String> filters)

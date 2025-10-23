@@ -560,6 +560,12 @@
   "homeShowPoDescription": "Show purchase order button on home screen",
   "@homeShowPoDescription": {},
 
+  "homeShowShipments": "Show Shipments",
+  "@homeShowShipments": {},
+
+  "homeShowShipmentsDescription": "Show pending shipments on the home screen",
+  "@homeShowShipmentsDescription": {},
+
   "homeShowSo": "Show Sales Orders",
   "@homeShowSo": {},
 
@@ -1373,6 +1379,9 @@
 
   "shipments": "Shipments",
   "@shipments": {},
+
+  "shipmentsPending": "Pending Shipments",
+  "@shipmentsPending": {},
 
   "shipmentAdd": "Add Shipment",
   "@shipmentAdd": {},

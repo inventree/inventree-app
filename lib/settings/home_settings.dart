@@ -20,6 +20,7 @@ class _HomeScreenSettingsState extends State<HomeScreenSettingsWidget> {
   bool homeShowSubscribed = true;
   bool homeShowPo = true;
   bool homeShowSo = true;
+  bool homeShowShipments = true;
   bool homeShowSuppliers = true;
   bool homeShowManufacturers = true;
   bool homeShowCustomers = true;
@@ -46,6 +47,9 @@ class _HomeScreenSettingsState extends State<HomeScreenSettingsWidget> {
     homeShowSo =
         await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_SO, true)
             as bool;
+
+    homeShowShipments = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_SHIPMENTS, true) as bool;
+
     homeShowManufacturers =
         await InvenTreeSettingsManager().getValue(
               INV_HOME_SHOW_MANUFACTURERS,
@@ -117,6 +121,23 @@ class _HomeScreenSettingsState extends State<HomeScreenSettingsWidget> {
                   });
                 },
               ),
+            ),
+            ListTile(
+              title: Text(L10().homeShowShipments),
+              subtitle: Text(L10().homeShowShipmentsDescription),
+              leading: Icon(TablerIcons.cube_send),
+              trailing: Switch(
+                value: homeShowShipments,
+                onChanged: (bool value) {
+                  InvenTreeSettingsManager().setValue(
+                    INV_HOME_SHOW_SHIPMENTS,
+                    value,
+                  );
+                  setState(() {
+                    homeShowShipments = value;
+                  });
+                },
+              )
             ),
             ListTile(
               title: Text(L10().homeShowSuppliers),
