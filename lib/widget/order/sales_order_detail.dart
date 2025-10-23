@@ -375,6 +375,22 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
 
     Color lineColor = widget.order.complete ? COLOR_SUCCESS : COLOR_WARNING;
 
+    // Line items progress
+    tiles.add(
+      ListTile(
+        title: Text(L10().lineItems),
+        subtitle: ProgressBar(
+          widget.order.completedLineItemCount.toDouble(),
+          maximum: widget.order.lineItemCount.toDouble(),
+        ),
+        leading: Icon(TablerIcons.clipboard_check),
+        trailing: LargeText(
+          "${widget.order.completedLineItemCount} / ${widget.order.lineItemCount}",
+          color: lineColor,
+        ),
+      ),
+    );
+
     // Shipment progress
     if (widget.order.shipmentCount > 0) {
       tiles.add(
@@ -392,21 +408,6 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
         ),
       );
     }
-
-    tiles.add(
-      ListTile(
-        title: Text(L10().lineItems),
-        subtitle: ProgressBar(
-          widget.order.completedLineItemCount.toDouble(),
-          maximum: widget.order.lineItemCount.toDouble(),
-        ),
-        leading: Icon(TablerIcons.clipboard_check),
-        trailing: LargeText(
-          "${widget.order.completedLineItemCount} / ${widget.order.lineItemCount}",
-          color: lineColor,
-        ),
-      ),
-    );
 
     // Extra line items
     tiles.add(
@@ -522,8 +523,8 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
   List<Widget> getTabIcons(BuildContext context) {
     return [
       Tab(text: L10().details),
-      Tab(text: L10().shipments),
       Tab(text: L10().lineItems),
+      Tab(text: L10().shipments),
     ];
   }
 
@@ -531,8 +532,8 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
   List<Widget> getTabs(BuildContext context) {
     return [
       ListView(children: orderTiles(context)),
-      PaginatedSOShipmentList({"order": widget.order.pk.toString()}),
       PaginatedSOLineList({"order": widget.order.pk.toString()}),
+      PaginatedSOShipmentList({"order": widget.order.pk.toString()}),
     ];
   }
 }
