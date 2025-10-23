@@ -296,6 +296,8 @@ class InvenTreeSalesOrderShipment extends InvenTreeModel {
     return fields;
   }
 
+  int get orderId => getInt("order");
+
   String get reference => getString("reference");
 
   String get tracking_number => getString("tracking_number");
@@ -334,4 +336,25 @@ class InvenTreeSalesOrderAttachment extends InvenTreeAttachment {
   String get URL => InvenTreeAPI().supportsModernAttachments
       ? "attachment/"
       : "order/so/attachment/";
+}
+
+
+class InvenTreeSalesOrderShipmentAttachment extends InvenTreeAttachment {
+  InvenTreeSalesOrderShipmentAttachment() : super();
+
+  InvenTreeSalesOrderShipmentAttachment.fromJson(Map<String, dynamic> json)
+    : super.fromJson(json);
+
+  @override
+  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
+      InvenTreeSalesOrderShipmentAttachment.fromJson(json);
+
+  @override
+  String get REFERENCE_FIELD => "shipment";
+
+  @override
+  String get REF_MODEL_TYPE => "salesordershipment";
+
+  @override
+  String get URL => "attachment/";
 }
