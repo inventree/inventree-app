@@ -306,11 +306,15 @@ class InvenTreeSalesOrderShipment extends InvenTreeModel {
 
   String? get shipment_date => getString("shipment_date");
 
+  String? get delivery_date => getString("delivery_date");
+
   int? get checked_by_id => getInt("checked_by");
 
   bool get isChecked => checked_by_id != null;
 
-  bool get shipped => shipment_date != null && shipment_date!.isNotEmpty;
+  bool get isShipped => shipment_date != null && shipment_date!.isNotEmpty;
+
+  bool get isDelivered => delivery_date != null && delivery_date!.isNotEmpty;
 }
 
 /*

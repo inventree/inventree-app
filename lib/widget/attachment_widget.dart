@@ -212,17 +212,14 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
             },
           ),
         );
-      } else if (attachment.link.isNotEmpty) {
+      } else if (attachment.hasLink) {
         tiles.add(
           ListTile(
             title: Text(attachment.link),
             subtitle: Text(attachment.comment),
             leading: Icon(TablerIcons.link, color: COLOR_ACTION),
             onTap: () async {
-              var uri = Uri.tryParse(attachment.link.trimLeft());
-              if (uri != null && await canLaunchUrl(uri)) {
-                await launchUrl(uri);
-              }
+              attachment.openLink();
             },
             onLongPress: () {
               showOptionsMenu(context, attachment);

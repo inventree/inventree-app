@@ -163,16 +163,13 @@ class _ManufacturerPartDisplayState
       );
     }
 
-    if (widget.manufacturerPart.link.isNotEmpty) {
+    if (widget.manufacturerPart.hasLink) {
       tiles.add(
         ListTile(
           title: Text(widget.manufacturerPart.link),
           leading: Icon(TablerIcons.link, color: COLOR_ACTION),
           onTap: () async {
-            var uri = Uri.tryParse(widget.manufacturerPart.link);
-            if (uri != null && await canLaunchUrl(uri)) {
-              await launchUrl(uri);
-            }
+            widget.manufacturerPart.openLink();
           },
         ),
       );

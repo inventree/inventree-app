@@ -524,7 +524,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     }
 
     // External link?
-    if (part.link.isNotEmpty) {
+    if (part.hasLink) {
       tiles.add(
         ListTile(
           title: Text("${part.link}"),

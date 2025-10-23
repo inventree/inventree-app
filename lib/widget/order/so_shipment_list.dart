@@ -57,10 +57,10 @@ class _PaginatedSOShipmentListState
       onTap: () async {
         shipment.goToDetailPage(context);
       },
-      leading: shipment.shipped
+      leading: shipment.isShipped
           ? Icon(TablerIcons.calendar_check, color: COLOR_SUCCESS)
           : Icon(TablerIcons.calendar_cancel, color: COLOR_WARNING),
-      trailing: shipment.shipped
+      trailing: shipment.isShipped
           ? LargeText(shipment.shipment_date ?? "")
           : null,
     );

@@ -241,7 +241,7 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
     }
 
     // External link
-    if (widget.item.link.isNotEmpty) {
+    if (widget.item.hasLink) {
       tiles.add(
         ListTile(
           title: Text(L10().link),

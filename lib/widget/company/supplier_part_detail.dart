@@ -239,7 +239,7 @@ class _SupplierPartDisplayState
       );
     }
 
-    if (widget.supplierPart.link.isNotEmpty) {
+    if (widget.supplierPart.hasLink) {
       tiles.add(
         ListTile(
           title: Text(L10().link),
@@ -247,10 +247,7 @@ class _SupplierPartDisplayState
           leading: Icon(TablerIcons.link, color: COLOR_ACTION),
           trailing: LinkIcon(external: true),
           onTap: () async {
-            var uri = Uri.tryParse(widget.supplierPart.link);
-            if (uri != null && await canLaunchUrl(uri)) {
-              await launchUrl(uri);
-            }
+            widget.supplierPart.openLink();
           },
         ),
       );
