@@ -1395,6 +1395,9 @@
   "shipmentReference": "Shipment Reference",
   "@shipmentReference": {},
 
+  "shipmentSend": "Send Shipment",
+  "@shipmentSend": {},
+
   "shipmentUncheck": "Uncheck Shipment",
   "@shipmentUncheck": {},
 

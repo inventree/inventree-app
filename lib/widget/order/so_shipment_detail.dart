@@ -144,7 +144,10 @@ class _SOShipmentDetailWidgetState extends RefreshableState<SOShipmentDetailWidg
               values: {
                 "checked_by": InvenTreeAPI().userId
               }
-            ).then((_) => refresh(context));
+            ).then((_) {
+              showSnackIcon(L10().shipmentUpdated, success: true);
+              refresh(context);
+            });
           },
         )
       );
@@ -160,11 +163,29 @@ class _SOShipmentDetailWidgetState extends RefreshableState<SOShipmentDetailWidg
             widget.shipment.update(
               values: {
                 "checked_by": null
-            }).then((_) => refresh(context));
+            }).then((_) {
+              showSnackIcon(L10().shipmentUpdated, success: true);
+              refresh(context);
+            });
           },
         )
       );
     }
+
+    // Send shipment
+    if (!widget.shipment.isShipped) {
+      actions.add(
+        SpeedDialChild(
+          child: Icon(TablerIcons.truck_delivery, color: Colors.green),
+          label: L10().shipmentSend,
+          onTap: () async {
+            // TODO
+          }
+        )
+      );
+    }
+
+    // TODO: Cancel shipment
 
     return actions;
   }
