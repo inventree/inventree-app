@@ -1347,6 +1347,12 @@
   "shipmentAdd": "Add Shipment",
   "@shipmentAdd": {},
 
+  "shipmentEdit": "Edit Shipment",
+  "@shipmentEdit": {},
+
+  "shipmentUpdated": "Shipment Updated",
+  "@shipmentUpdated": {},
+
   "shipped": "Shipped",
   "@shipped": {},
 

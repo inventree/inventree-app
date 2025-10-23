@@ -586,6 +586,8 @@ class APIFormField {
         return InvenTreeSupplierPart().defaultListFilters();
       case InvenTreeStockItem.MODEL_TYPE:
         return InvenTreeStockItem().defaultListFilters();
+      case InvenTreeSalesOrder.MODEL_TYPE:
+        return InvenTreeSalesOrder().defaultListFilters();
       default:
         break;
     }
@@ -753,6 +755,13 @@ class APIFormField {
           title: Text(project_code.code),
           subtitle: Text(project_code.description),
           leading: Icon(TablerIcons.list),
+        );
+      case InvenTreeSalesOrder.MODEL_TYPE:
+        var so = InvenTreeSalesOrder.fromJson(data);
+        return ListTile(
+          title: Text(so.reference),
+          subtitle: Text(so.description),
+          leading: InvenTreeAPI().getThumbnail(so.customer?.thumbnail ?? so.customer?.image ?? "")
         );
       default:
         return ListTile(

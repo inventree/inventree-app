@@ -278,6 +278,9 @@ class InvenTreeSalesOrderShipment extends InvenTreeModel {
     );
   }
 
+  @override
+  List<String> get rolesRequired => ["sales_order"];
+
   static const String MODEL_TYPE = "salesordershipment";
 
   @override
@@ -300,6 +303,10 @@ class InvenTreeSalesOrderShipment extends InvenTreeModel {
   String get invoice_number => getString("invoice_number");
 
   String? get shipment_date => getString("shipment_date");
+
+  int? get checked_by_id => getInt("checked_by");
+
+  bool get isChecked => checked_by_id != null;
 
   bool get shipped => shipment_date != null && shipment_date!.isNotEmpty;
 }
