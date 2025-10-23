@@ -790,6 +790,9 @@
   "no": "No",
   "@no": {},
 
+  "notApplicable": "N/A",
+  "@notApplicable": {},
+
   "notConnected": "Not Connected",
   "@notConnected": {},
 
@@ -1388,6 +1391,9 @@
 
   "shipmentEdit": "Edit Shipment",
   "@shipmentEdit": {},
+
+  "shipmentReference": "Shipment Reference",
+  "@shipmentReference": {},
 
   "shipmentUncheck": "Uncheck Shipment",
   "@shipmentUncheck": {},

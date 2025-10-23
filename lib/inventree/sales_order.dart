@@ -310,7 +310,7 @@ class InvenTreeSalesOrderShipment extends InvenTreeModel {
 
   int? get checked_by_id => getInt("checked_by");
 
-  bool get isChecked => checked_by_id != null;
+  bool get isChecked => checked_by_id != null && checked_by_id! > 0;
 
   bool get isShipped => shipment_date != null && shipment_date!.isNotEmpty;
 

@@ -279,6 +279,8 @@ class InvenTreeAPI {
 
   String get username => (userInfo["username"] ?? "") as String;
 
+  int get userId => (userInfo["pk"] ?? -1) as int;
+
   // Map of server information
   Map<String, dynamic> serverInfo = {};
 
