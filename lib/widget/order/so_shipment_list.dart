@@ -54,6 +54,9 @@ class _PaginatedSOShipmentListState
     return ListTile(
       title: Text(shipment.reference),
       subtitle: Text(shipment.tracking_number),
+      onTap: () async {
+        shipment.goToDetailPage(context);
+      },
       leading: shipment.shipped
           ? Icon(TablerIcons.calendar_check, color: COLOR_SUCCESS)
           : Icon(TablerIcons.calendar_cancel, color: COLOR_WARNING),

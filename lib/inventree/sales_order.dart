@@ -5,6 +5,7 @@ import "package:inventree/helpers.dart";
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/orders.dart";
+import "package:inventree/widget/order/so_shipment_detail.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/order/extra_line_detail.dart";
 import "package:inventree/widget/order/sales_order_detail.dart";
@@ -268,6 +269,14 @@ class InvenTreeSalesOrderShipment extends InvenTreeModel {
 
   @override
   String get URL => "/order/so/shipment/";
+
+  @override
+  Future<Object?> goToDetailPage(BuildContext context) async {
+    return Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SOShipmentDetailWidget(this)),
+    );
+  }
 
   static const String MODEL_TYPE = "salesordershipment";
 
