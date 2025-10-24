@@ -1,7 +1,7 @@
 name: inventree
 description: InvenTree stock management
 
-version: 0.19.3+102
+version: 0.20.0+103
 
 environment:
   sdk: ^3.8.1
