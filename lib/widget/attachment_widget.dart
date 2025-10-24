@@ -3,7 +3,6 @@ import "dart:io";
 import "package:flutter/material.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:one_context/one_context.dart";
-import "package:url_launcher/url_launcher.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/l10.dart";

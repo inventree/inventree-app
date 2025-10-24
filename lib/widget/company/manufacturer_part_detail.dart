@@ -12,7 +12,6 @@ import "package:inventree/inventree/part.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/progress.dart";
-import "package:url_launcher/url_launcher.dart";
 
 /*
  * Detail widget for viewing a single ManufacturerPart instance
