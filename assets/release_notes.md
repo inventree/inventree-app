@@ -5,6 +5,7 @@
 - Display detail view for shipments
 - Adds ability to ship pending outgoing shipments
 - Adds ability to mark outgoing shipments as "checked" or "unchecked"
+- Updated translations
 
 ### 0.19.3 - September 2025
 ---
