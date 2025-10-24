@@ -20,7 +20,6 @@ import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 
 class SOShipmentDetailWidget extends StatefulWidget {
-
   const SOShipmentDetailWidget(this.shipment, {Key? key}) : super(key: key);
 
   final InvenTreeSalesOrderShipment shipment;
@@ -29,8 +28,8 @@ class SOShipmentDetailWidget extends StatefulWidget {
   _SOShipmentDetailWidgetState createState() => _SOShipmentDetailWidgetState();
 }
 
-class _SOShipmentDetailWidgetState extends RefreshableState<SOShipmentDetailWidget> {
-
+class _SOShipmentDetailWidgetState
+    extends RefreshableState<SOShipmentDetailWidget> {
   _SOShipmentDetailWidgetState();
 
   // The SalesOrder associated with this shipment
@@ -72,7 +71,7 @@ class _SOShipmentDetailWidgetState extends RefreshableState<SOShipmentDetailWidg
       onSuccess: (data) async {
         refresh(context);
         showSnackIcon(L10().shipmentUpdated, success: true);
-      }
+      },
     );
   }
 
@@ -93,15 +92,15 @@ class _SOShipmentDetailWidgetState extends RefreshableState<SOShipmentDetailWidg
       });
     }
 
-    InvenTreeSalesOrderShipmentAttachment().countAttachments(widget.shipment.pk).then((
-        int value,
-        ) {
-      if (mounted) {
-        setState(() {
-          attachmentCount = value;
+    InvenTreeSalesOrderShipmentAttachment()
+        .countAttachments(widget.shipment.pk)
+        .then((int value) {
+          if (mounted) {
+            setState(() {
+              attachmentCount = value;
+            });
+          }
         });
-      }
-    });
   }
 
   /// Upload an image for this shipment
@@ -115,14 +114,12 @@ class _SOShipmentDetailWidgetState extends RefreshableState<SOShipmentDetailWidg
   Future<void> _sendShipment(BuildContext context) async {
     Map<String, dynamic> fields = {
       "shipment_date": {
-        "value": widget.shipment.isShipped ? widget.shipment.shipment_date! : DateTime.now().toIso8601String().split("T").first,
+        "value": widget.shipment.isShipped
+            ? widget.shipment.shipment_date!
+            : DateTime.now().toIso8601String().split("T").first,
       },
-      "tracking_number": {
-        "value": widget.shipment.tracking_number,
-      },
-      "invoice_number": {
-        "value" : widget.shipment.invoice_number,
-      }
+      "tracking_number": {"value": widget.shipment.tracking_number},
+      "invoice_number": {"value": widget.shipment.invoice_number},
     };
 
     launchApiForm(
@@ -134,9 +131,8 @@ class _SOShipmentDetailWidgetState extends RefreshableState<SOShipmentDetailWidg
       onSuccess: (data) {
         refresh(context);
         showSnackIcon(L10().shipmentUpdated, success: true);
-      }
+      },
     );
-
   }
 
   @override
@@ -167,16 +163,14 @@ class _SOShipmentDetailWidgetState extends RefreshableState<SOShipmentDetailWidg
           child: Icon(TablerIcons.check, color: Colors.green),
           label: L10().shipmentCheck,
           onTap: () async {
-            widget.shipment.update(
-              values: {
-                "checked_by": InvenTreeAPI().userId
-              }
-            ).then((_) {
-              showSnackIcon(L10().shipmentUpdated, success: true);
-              refresh(context);
-            });
+            widget.shipment
+                .update(values: {"checked_by": InvenTreeAPI().userId})
+                .then((_) {
+                  showSnackIcon(L10().shipmentUpdated, success: true);
+                  refresh(context);
+                });
           },
-        )
+        ),
       );
     }
 
@@ -187,15 +181,12 @@ class _SOShipmentDetailWidgetState extends RefreshableState<SOShipmentDetailWidg
           child: Icon(TablerIcons.x, color: Colors.red),
           label: L10().shipmentUncheck,
           onTap: () async {
-            widget.shipment.update(
-              values: {
-                "checked_by": null
-            }).then((_) {
+            widget.shipment.update(values: {"checked_by": null}).then((_) {
               showSnackIcon(L10().shipmentUpdated, success: true);
               refresh(context);
             });
           },
-        )
+        ),
       );
     }
 
@@ -207,8 +198,8 @@ class _SOShipmentDetailWidgetState extends RefreshableState<SOShipmentDetailWidg
           label: L10().shipmentSend,
           onTap: () async {
             _sendShipment(context);
-          }
-        )
+          },
+        ),
       );
     }
 
@@ -241,11 +232,10 @@ class _SOShipmentDetailWidgetState extends RefreshableState<SOShipmentDetailWidg
             onTap: () {
               order!.goToDetailPage(context);
             },
-          )
-        )
+          ),
+        ),
       );
     }
-
 
     // Shipment reference number
     tiles.add(
@@ -253,7 +243,7 @@ class _SOShipmentDetailWidgetState extends RefreshableState<SOShipmentDetailWidg
         title: Text(L10().shipmentReference),
         trailing: LargeText(widget.shipment.reference),
         leading: Icon(TablerIcons.hash),
-      )
+      ),
     );
 
     if (widget.shipment.invoice_number.isNotEmpty) {
@@ -261,8 +251,8 @@ class _SOShipmentDetailWidgetState extends RefreshableState<SOShipmentDetailWidg
         ListTile(
           title: Text(L10().invoiceNumber),
           trailing: LargeText(widget.shipment.invoice_number),
-          leading: Icon(TablerIcons.invoice)
-        )
+          leading: Icon(TablerIcons.invoice),
+        ),
       );
     }
 
@@ -273,40 +263,50 @@ class _SOShipmentDetailWidgetState extends RefreshableState<SOShipmentDetailWidg
           title: Text(L10().trackingNumber),
           trailing: LargeText(widget.shipment.tracking_number),
           leading: Icon(TablerIcons.truck_delivery),
-        )
+        ),
       );
     }
 
     if (checked || !shipped) {
       tiles.add(
-          ListTile(
-            title: Text(L10().shipmentChecked),
-            trailing: LargeText(
-              checked ? L10().yes : L10().no,
-              color: checked ? COLOR_SUCCESS : COLOR_WARNING,
-            ),
-            leading: Icon(
-              checked ? TablerIcons.circle_check : TablerIcons.circle_x,
-              color: checked ? COLOR_SUCCESS : COLOR_WARNING,
-            ),
-          )
+        ListTile(
+          title: Text(L10().shipmentChecked),
+          trailing: LargeText(
+            checked ? L10().yes : L10().no,
+            color: checked ? COLOR_SUCCESS : COLOR_WARNING,
+          ),
+          leading: Icon(
+            checked ? TablerIcons.circle_check : TablerIcons.circle_x,
+            color: checked ? COLOR_SUCCESS : COLOR_WARNING,
+          ),
+        ),
       );
     }
 
     tiles.add(
       ListTile(
         title: Text(L10().shipmentDate),
-        trailing: LargeText(shipped ? widget.shipment.shipment_date! : L10().notApplicable),
-        leading: Icon(shipped ? TablerIcons.calendar_check : TablerIcons.calendar_cancel, color: shipped ? COLOR_SUCCESS : COLOR_WARNING)
-      )
+        trailing: LargeText(
+          shipped ? widget.shipment.shipment_date! : L10().notApplicable,
+        ),
+        leading: Icon(
+          shipped ? TablerIcons.calendar_check : TablerIcons.calendar_cancel,
+          color: shipped ? COLOR_SUCCESS : COLOR_WARNING,
+        ),
+      ),
     );
 
     tiles.add(
       ListTile(
         title: Text(L10().deliveryDate),
-        trailing: LargeText(delivered ? widget.shipment.delivery_date! : L10().notApplicable),
-        leading: Icon(delivered ? TablerIcons.calendar_check : TablerIcons.calendar_cancel, color: delivered ? COLOR_SUCCESS : COLOR_WARNING)
-      )
+        trailing: LargeText(
+          delivered ? widget.shipment.delivery_date! : L10().notApplicable,
+        ),
+        leading: Icon(
+          delivered ? TablerIcons.calendar_check : TablerIcons.calendar_cancel,
+          color: delivered ? COLOR_SUCCESS : COLOR_WARNING,
+        ),
+      ),
     );
 
     // External link
@@ -332,7 +332,9 @@ class _SOShipmentDetailWidgetState extends RefreshableState<SOShipmentDetailWidg
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => NotesWidget(widget.shipment)),
+            MaterialPageRoute(
+              builder: (context) => NotesWidget(widget.shipment),
+            ),
           );
         },
       ),
@@ -368,10 +370,7 @@ class _SOShipmentDetailWidgetState extends RefreshableState<SOShipmentDetailWidg
 
   @override
   List<Widget> getTabIcons(BuildContext context) {
-    return [
-      Tab(text: L10().details),
-      Tab(text: L10().allocatedStock),
-    ];
+    return [Tab(text: L10().details), Tab(text: L10().allocatedStock)];
   }
 
   @override
@@ -381,8 +380,7 @@ class _SOShipmentDetailWidgetState extends RefreshableState<SOShipmentDetailWidg
       PaginatedSOAllocationList({
         "order": widget.shipment.orderId.toString(),
         "shipment": widget.shipment.pk.toString(),
-      })
+      }),
     ];
   }
-
 }

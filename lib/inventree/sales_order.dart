@@ -331,7 +331,6 @@ class InvenTreeSalesOrderShipment extends InvenTreeModel {
   bool get isDelivered => delivery_date != null && delivery_date!.isNotEmpty;
 }
 
-
 /*
   * Class representing an allocation of stock against a SalesOrderShipment
  */
@@ -357,7 +356,7 @@ class InvenTreeSalesOrderAllocation extends InvenTreeAttachment {
       "part_detail": "true",
       "order_detail": "true",
       "item_detail": "true",
-      "location_detail": "true"
+      "location_detail": "true",
     };
   }
 
@@ -410,7 +409,8 @@ class InvenTreeSalesOrderAllocation extends InvenTreeAttachment {
       return null;
     } else {
       return InvenTreeSalesOrderShipment.fromJson(
-          shipment_detail as Map<String, dynamic>);
+        shipment_detail as Map<String, dynamic>,
+      );
     }
   }
 
@@ -423,11 +423,11 @@ class InvenTreeSalesOrderAllocation extends InvenTreeAttachment {
       return null;
     } else {
       return InvenTreeStockLocation.fromJson(
-          location_detail as Map<String, dynamic>);
+        location_detail as Map<String, dynamic>,
+      );
     }
   }
 }
-
 
 /*
  * Class representing an attachment file against a SalesOrder object
@@ -453,7 +453,6 @@ class InvenTreeSalesOrderAttachment extends InvenTreeAttachment {
       ? "attachment/"
       : "order/so/attachment/";
 }
-
 
 class InvenTreeSalesOrderShipmentAttachment extends InvenTreeAttachment {
   InvenTreeSalesOrderShipmentAttachment() : super();

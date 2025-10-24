@@ -120,8 +120,11 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SOShipmentListWidget(title: L10().shipmentsPending, filters: {"order_outstanding": "true", "shipped": "false"}),
-      )
+        builder: (context) => SOShipmentListWidget(
+          title: L10().shipmentsPending,
+          filters: {"order_outstanding": "true", "shipped": "false"},
+        ),
+      ),
     );
   }
 
@@ -181,7 +184,9 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
         await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_SO, true)
             as bool;
 
-    homeShowShipments = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_SHIPMENTS, true) as bool;
+    homeShowShipments =
+        await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_SHIPMENTS, true)
+            as bool;
 
     homeShowManufacturers =
         await InvenTreeSettingsManager().getValue(
@@ -349,8 +354,8 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
           TablerIcons.cube_send,
           callback: () {
             _showPendingShipments(context);
-          }
-        )
+          },
+        ),
       );
     }
 

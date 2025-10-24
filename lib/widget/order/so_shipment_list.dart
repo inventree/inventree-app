@@ -9,10 +9,12 @@ import "package:inventree/inventree/model.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/widget/refreshable_state.dart";
 
-
 class SOShipmentListWidget extends StatefulWidget {
-  const SOShipmentListWidget({this.title = "", this.filters = const {}, Key? key})
-    : super(key: key);
+  const SOShipmentListWidget({
+    this.title = "",
+    this.filters = const {},
+    Key? key,
+  }) : super(key: key);
 
   final Map<String, String> filters;
 
@@ -22,9 +24,8 @@ class SOShipmentListWidget extends StatefulWidget {
   _SOShipmentListWidgetState createState() => _SOShipmentListWidgetState();
 }
 
-
-class _SOShipmentListWidgetState extends RefreshableState<SOShipmentListWidget> {
-
+class _SOShipmentListWidgetState
+    extends RefreshableState<SOShipmentListWidget> {
   _SOShipmentListWidgetState();
 
   @override
@@ -35,7 +36,6 @@ class _SOShipmentListWidgetState extends RefreshableState<SOShipmentListWidget> 
     return PaginatedSOShipmentList(widget.filters);
   }
 }
-
 
 class PaginatedSOShipmentList extends PaginatedSearchWidget {
   const PaginatedSOShipmentList(Map<String, String> filters)
@@ -82,7 +82,9 @@ class _PaginatedSOShipmentListState
 
     InvenTreeSalesOrder? order = shipment.order;
     return ListTile(
-      title: Text("${order?.reference ?? L10().salesOrder} - ${shipment.reference}"),
+      title: Text(
+        "${order?.reference ?? L10().salesOrder} - ${shipment.reference}",
+      ),
       subtitle: Text(order?.description ?? L10().description),
       onTap: () async {
         shipment.goToDetailPage(context);

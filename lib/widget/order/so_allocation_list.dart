@@ -1,5 +1,3 @@
-
-
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:inventree/api.dart";
@@ -23,8 +21,8 @@ class PaginatedSOAllocationList extends PaginatedSearchWidget {
       _PaginatedSOAllocationListState();
 }
 
-
-class _PaginatedSOAllocationListState extends PaginatedSearchState<PaginatedSOAllocationList> {
+class _PaginatedSOAllocationListState
+    extends PaginatedSearchState<PaginatedSOAllocationList> {
   _PaginatedSOAllocationListState() : super();
 
   @override
@@ -53,7 +51,8 @@ class _PaginatedSOAllocationListState extends PaginatedSearchState<PaginatedSOAl
 
   @override
   Widget buildItem(BuildContext context, InvenTreeModel model) {
-    InvenTreeSalesOrderAllocation allocation = model as InvenTreeSalesOrderAllocation;
+    InvenTreeSalesOrderAllocation allocation =
+        model as InvenTreeSalesOrderAllocation;
 
     InvenTreePart? part = allocation.part;
     InvenTreeStockItem? stockItem = allocation.stockItem;

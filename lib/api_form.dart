@@ -761,7 +761,9 @@ class APIFormField {
         return ListTile(
           title: Text(so.reference),
           subtitle: Text(so.description),
-          leading: InvenTreeAPI().getThumbnail(so.customer?.thumbnail ?? so.customer?.image ?? "")
+          leading: InvenTreeAPI().getThumbnail(
+            so.customer?.thumbnail ?? so.customer?.image ?? "",
+          ),
         );
       default:
         return ListTile(

@@ -48,7 +48,9 @@ class _HomeScreenSettingsState extends State<HomeScreenSettingsWidget> {
         await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_SO, true)
             as bool;
 
-    homeShowShipments = await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_SHIPMENTS, true) as bool;
+    homeShowShipments =
+        await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_SHIPMENTS, true)
+            as bool;
 
     homeShowManufacturers =
         await InvenTreeSettingsManager().getValue(
@@ -137,7 +139,7 @@ class _HomeScreenSettingsState extends State<HomeScreenSettingsWidget> {
                     homeShowShipments = value;
                   });
                 },
-              )
+              ),
             ),
             ListTile(
               title: Text(L10().homeShowSuppliers),
