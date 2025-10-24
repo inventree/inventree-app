@@ -65,6 +65,9 @@
   "allocateStock": "Allocate Stock",
   "@allocateStock": {},
 
+  "allocatedStock": "Allocated Stock",
+  "@allocatedStock": {},
+
   "appReleaseNotes": "Display app release notes",
   "@appReleaseNotes": {},
 

@@ -346,7 +346,7 @@ class InvenTreeSalesOrderAllocation extends InvenTreeAttachment {
       InvenTreeSalesOrderAllocation.fromJson(json);
 
   @override
-  String get URL => "/order/so/so-allocation/";
+  String get URL => "/order/so-allocation/";
 
   @override
   List<String> get rolesRequired => ["sales_order"];
@@ -356,6 +356,7 @@ class InvenTreeSalesOrderAllocation extends InvenTreeAttachment {
     return {
       "part_detail": "true",
       "order_detail": "true",
+      "item_detail": "true",
       "location_detail": "true"
     };
   }

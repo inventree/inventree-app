@@ -15,6 +15,7 @@ import "package:inventree/preferences.dart";
 import "package:inventree/widget/attachment_widget.dart";
 import "package:inventree/widget/link_icon.dart";
 import "package:inventree/widget/notes_widget.dart";
+import "package:inventree/widget/order/so_allocation_list.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 
@@ -369,13 +370,19 @@ class _SOShipmentDetailWidgetState extends RefreshableState<SOShipmentDetailWidg
   List<Widget> getTabIcons(BuildContext context) {
     return [
       Tab(text: L10().details),
+      Tab(text: L10().allocatedStock),
     ];
   }
 
   @override
   List<Widget> getTabs(BuildContext context) {
     return [
-      ListView(children: shipmentTiles(context)),    ];
+      ListView(children: shipmentTiles(context)),
+      PaginatedSOAllocationList({
+        "order": widget.shipment.orderId.toString(),
+        "shipment": widget.shipment.pk.toString(),
+      })
+    ];
   }
 
 }
