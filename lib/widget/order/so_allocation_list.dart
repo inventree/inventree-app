@@ -57,12 +57,12 @@ class _PaginatedSOAllocationListState extends PaginatedSearchState<PaginatedSOAl
 
     InvenTreePart? part = allocation.part;
     InvenTreeStockItem? stockItem = allocation.stockItem;
-    
+
     return ListTile(
       title: Text(part?.fullname ?? ""),
       subtitle: Text(part?.description ?? ""),
       onTap: () async {
-        // TODO
+        stockItem?.goToDetailPage(context);
       },
       leading: InvenTreeAPI().getThumbnail(allocation.part?.thumbnail ?? ""),
       trailing: LargeText(stockItem?.serialOrQuantityDisplay() ?? ""),
