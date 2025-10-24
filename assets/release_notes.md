@@ -1,3 +1,11 @@
+### 0.20.0 - October 2025
+---
+
+- View pending shipments from the home screen
+- Display detail view for shipments
+- Adds ability to ship pending outgoing shipments
+- Adds ability to mark outgoing shipments as "checked" or "unchecked"
+
 ### 0.19.3 - September 2025
 ---
 
