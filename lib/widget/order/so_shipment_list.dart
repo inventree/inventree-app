@@ -80,9 +80,10 @@ class _PaginatedSOShipmentListState
   Widget buildItem(BuildContext context, InvenTreeModel model) {
     InvenTreeSalesOrderShipment shipment = model as InvenTreeSalesOrderShipment;
 
+    InvenTreeSalesOrder? order = shipment.order;
     return ListTile(
-      title: Text(shipment.reference),
-      subtitle: Text(shipment.tracking_number),
+      title: Text("${order?.reference ?? L10().salesOrder} - ${shipment.reference}"),
+      subtitle: Text(order?.description ?? L10().description),
       onTap: () async {
         shipment.goToDetailPage(context);
       },
@@ -91,7 +92,7 @@ class _PaginatedSOShipmentListState
           : Icon(TablerIcons.calendar_cancel, color: COLOR_WARNING),
       trailing: shipment.isShipped
           ? LargeText(shipment.shipment_date ?? "")
-          : null,
+          : LargeText(L10().pending),
     );
   }
 }

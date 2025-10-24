@@ -300,6 +300,16 @@ class InvenTreeSalesOrderShipment extends InvenTreeModel {
 
   int get orderId => getInt("order");
 
+  InvenTreeSalesOrder? get order {
+    dynamic order_detail = jsondata["order_detail"];
+
+    if (order_detail == null) {
+      return null;
+    } else {
+      return InvenTreeSalesOrder.fromJson(order_detail as Map<String, dynamic>);
+    }
+  }
+
   String get reference => getString("reference");
 
   String get tracking_number => getString("tracking_number");

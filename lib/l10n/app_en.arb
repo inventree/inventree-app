@@ -963,6 +963,9 @@
   "passwordEmpty": "Password cannot be empty",
   "@passwordEmpty": {},
 
+  "pending": "Pending",
+  "@pending": {},
+
   "permissionAccountDenied": "Your account does not have the required permissions to perform this action",
   "@permissionAccountDenied": {},
 
@@ -1222,20 +1225,20 @@
   "salesOrders": "Sales Orders",
   "@salesOrders": {},
 
-   "salesOrderEnable": "Enable Sales Orders",
-   "@salesOrderEnable": {},
+  "salesOrderEnable": "Enable Sales Orders",
+  "@salesOrderEnable": {},
 
-   "salesOrderEnableDetail": "Enable sales order functionality",
-    "@salesOrderEnableDetail": {},
+  "salesOrderEnableDetail": "Enable sales order functionality",
+  "@salesOrderEnableDetail": {},
 
-    "salesOrderShowCamera": "Camera Shortcut",
-    "@salesOrderShowCamera": {},
+  "salesOrderShowCamera": "Camera Shortcut",
+  "@salesOrderShowCamera": {},
 
-    "salesOrderShowCameraDetail": "Enable image upload shortcut on sales order screen",
-    "@salesOrderShowCameraDetail": {},
+  "salesOrderShowCameraDetail": "Enable image upload shortcut on sales order screen",
+  "@salesOrderShowCameraDetail": {},
 
   "salesOrderSettings": "Sales order settings",
-    "@salesOrderSettings": {},
+  "@salesOrderSettings": {},
 
   "salesOrderCreate": "New Sales Order",
   "@saleOrderCreate": {},
