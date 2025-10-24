@@ -287,7 +287,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
     }
 
     // External link
-    if (widget.company.link.isNotEmpty) {
+    if (widget.company.hasLink) {
       tiles.add(
         ListTile(
           title: Text(L10().link),

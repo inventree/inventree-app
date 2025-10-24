@@ -14,6 +14,7 @@ import "package:inventree/preferences.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/settings/select_server.dart";
 import "package:inventree/user_profile.dart";
+import "package:inventree/widget/order/so_shipment_list.dart";
 
 import "package:inventree/widget/part/category_display.dart";
 import "package:inventree/widget/drawer.dart";
@@ -55,6 +56,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
 
   bool homeShowPo = false;
   bool homeShowSo = false;
+  bool homeShowShipments = false;
   bool homeShowSubscribed = false;
   bool homeShowManufacturers = false;
   bool homeShowCustomers = false;
@@ -108,6 +110,20 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
       context,
       MaterialPageRoute(
         builder: (context) => SalesOrderListWidget(filters: {}),
+      ),
+    );
+  }
+
+  void _showPendingShipments(BuildContext context) {
+    if (!InvenTreeAPI().checkConnection()) return;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SOShipmentListWidget(
+          title: L10().shipmentsPending,
+          filters: {"order_outstanding": "true", "shipped": "false"},
+        ),
       ),
     );
   }
@@ -167,6 +183,11 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
     homeShowSo =
         await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_SO, true)
             as bool;
+
+    homeShowShipments =
+        await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_SHIPMENTS, true)
+            as bool;
+
     homeShowManufacturers =
         await InvenTreeSettingsManager().getValue(
               INV_HOME_SHOW_MANUFACTURERS,
@@ -320,6 +341,19 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
           TablerIcons.truck_delivery,
           callback: () {
             _showSalesOrders(context);
+          },
+        ),
+      );
+    }
+
+    if (homeShowShipments && InvenTreeSalesOrderShipment().canView) {
+      tiles.add(
+        _listTile(
+          context,
+          L10().shipmentsPending,
+          TablerIcons.cube_send,
+          callback: () {
+            _showPendingShipments(context);
           },
         ),
       );

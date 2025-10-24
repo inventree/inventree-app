@@ -750,7 +750,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     }
 
-    if (widget.item.link.isNotEmpty) {
+    if (widget.item.hasLink) {
       tiles.add(
         ListTile(
           title: Text("${widget.item.link}"),

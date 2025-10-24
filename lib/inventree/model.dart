@@ -601,7 +601,7 @@ class InvenTreeModel {
 
   // POST data to update the model
   Future<APIResponse> update({
-    Map<String, String> values = const {},
+    Map<String, dynamic> values = const {},
     int? expectedStatusCode = 200,
   }) async {
     var url = path.join(URL, pk.toString());

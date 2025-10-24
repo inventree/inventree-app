@@ -2,7 +2,6 @@ import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/widget/link_icon.dart";
-import "package:url_launcher/url_launcher.dart";
 
 import "package:inventree/app_colors.dart";
 import "package:inventree/l10.dart";
@@ -239,7 +238,7 @@ class _SupplierPartDisplayState
       );
     }
 
-    if (widget.supplierPart.link.isNotEmpty) {
+    if (widget.supplierPart.hasLink) {
       tiles.add(
         ListTile(
           title: Text(L10().link),
@@ -247,10 +246,7 @@ class _SupplierPartDisplayState
           leading: Icon(TablerIcons.link, color: COLOR_ACTION),
           trailing: LinkIcon(external: true),
           onTap: () async {
-            var uri = Uri.tryParse(widget.supplierPart.link);
-            if (uri != null && await canLaunchUrl(uri)) {
-              await launchUrl(uri);
-            }
+            widget.supplierPart.openLink();
           },
         ),
       );

@@ -244,7 +244,7 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
     }
 
     // External link
-    if (widget.item.link.isNotEmpty) {
+    if (widget.item.hasLink) {
       tiles.add(
         ListTile(
           title: Text(L10().link),

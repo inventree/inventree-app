@@ -65,6 +65,9 @@
   "allocateStock": "Allocate Stock",
   "@allocateStock": {},
 
+  "allocatedStock": "Allocated Stock",
+  "@allocatedStock": {},
+
   "appReleaseNotes": "Display app release notes",
   "@appReleaseNotes": {},
 
@@ -331,6 +334,15 @@
   "deleteFailed": "Delete operation failed",
   "@deleteFailed": {},
 
+  "deleteImageConfirmation": "Are you sure you want to delete this image?",
+  "@deleteImageConfirmation": {},
+
+  "deleteImageTooltip": "Delete Image",
+  "@deleteImageTooltip": {},
+
+  "deleteImage": "Delete Image",
+  "@deleteImage": {},
+
   "deletePart": "Delete Part",
   "@deletePart": {},
 
@@ -339,6 +351,9 @@
 
   "deleteSuccess": "Delete operation successful",
   "@deleteSuccess": {},
+
+  "deliveryDate": "Delivery Date",
+  "@deliveryDate": {},
 
   "description": "Description",
   "@description": {},
@@ -548,6 +563,12 @@
   "homeShowPoDescription": "Show purchase order button on home screen",
   "@homeShowPoDescription": {},
 
+  "homeShowShipments": "Show Shipments",
+  "@homeShowShipments": {},
+
+  "homeShowShipmentsDescription": "Show pending shipments on the home screen",
+  "@homeShowShipmentsDescription": {},
+
   "homeShowSo": "Show Sales Orders",
   "@homeShowSo": {},
 
@@ -646,6 +667,12 @@
 
   "invalidUsernamePassword": "Invalid username / password combination",
   "@invalidUsernamePassword": {},
+
+  "invoice": "Invoice",
+  "@invoice": {},
+
+  "invoiceNumber": "Invoice Number",
+  "@invoiceNumber": {},
 
   "issue": "Issue",
   "@issue": {},
@@ -769,6 +796,12 @@
   "@name": {
   },
 
+  "no": "No",
+  "@no": {},
+
+  "notApplicable": "N/A",
+  "@notApplicable": {},
+
   "notConnected": "Not Connected",
   "@notConnected": {},
 
@@ -780,8 +813,8 @@
   "notifications": "Notifications",
   "@notifications": {},
 
-   "notificationsEmpty": "No unread notifications",
-   "@notificationsEmpty": {},
+  "notificationsEmpty": "No unread notifications",
+  "@notificationsEmpty": {},
 
   "noResponse": "No Response from Server",
   "@noResponse": {},
@@ -791,6 +824,12 @@
 
   "noImageAvailable": "No image available",
   "@noImageAvailable": {},
+
+  "noPricingAvailable": "No pricing available",
+  "@noPricingAvailable": {},
+
+  "noPricingDataFound": "No pricing data found for this part",
+  "@noPricingDataFound": {},
 
   "noSubcategories": "No Subcategories",
   "@noSubcategories": {},
@@ -926,6 +965,9 @@
 
   "passwordEmpty": "Password cannot be empty",
   "@passwordEmpty": {},
+
+  "pending": "Pending",
+  "@pending": {},
 
   "permissionAccountDenied": "Your account does not have the required permissions to perform this action",
   "@permissionAccountDenied": {},
@@ -1186,20 +1228,20 @@
   "salesOrders": "Sales Orders",
   "@salesOrders": {},
 
-   "salesOrderEnable": "Enable Sales Orders",
-   "@salesOrderEnable": {},
+  "salesOrderEnable": "Enable Sales Orders",
+  "@salesOrderEnable": {},
 
-   "salesOrderEnableDetail": "Enable sales order functionality",
-    "@salesOrderEnableDetail": {},
+  "salesOrderEnableDetail": "Enable sales order functionality",
+  "@salesOrderEnableDetail": {},
 
-    "salesOrderShowCamera": "Camera Shortcut",
-    "@salesOrderShowCamera": {},
+  "salesOrderShowCamera": "Camera Shortcut",
+  "@salesOrderShowCamera": {},
 
-    "salesOrderShowCameraDetail": "Enable image upload shortcut on sales order screen",
-    "@salesOrderShowCameraDetail": {},
+  "salesOrderShowCameraDetail": "Enable image upload shortcut on sales order screen",
+  "@salesOrderShowCameraDetail": {},
 
   "salesOrderSettings": "Sales order settings",
-    "@salesOrderSettings": {},
+  "@salesOrderSettings": {},
 
   "salesOrderCreate": "New Sales Order",
   "@saleOrderCreate": {},
@@ -1338,11 +1380,47 @@
   "serverNotSelected": "Server not selected",
   "@serverNotSelected": {},
 
+  "shipment": "Shipment",
+  "@shipment": {},
+
   "shipments": "Shipments",
   "@shipments": {},
 
+  "shipmentsPending": "Pending Shipments",
+  "@shipmentsPending": {},
+
   "shipmentAdd": "Add Shipment",
   "@shipmentAdd": {},
+
+  "shipmentCheck": "Check Shipment",
+  "@shipmentCheck": {},
+
+  "shipmentCheckDetail": "Mark this shipment as checked",
+  "@shipmentCheckDetail": {},
+
+  "shipmentChecked": "Shipment Checked",
+  "@shipmentChecked": {},
+
+  "shipmentDate": "Shipment Date",
+  "@shipmentDate": {},
+
+  "shipmentEdit": "Edit Shipment",
+  "@shipmentEdit": {},
+
+  "shipmentReference": "Shipment Reference",
+  "@shipmentReference": {},
+
+  "shipmentSend": "Send Shipment",
+  "@shipmentSend": {},
+
+  "shipmentUncheck": "Uncheck Shipment",
+  "@shipmentUncheck": {},
+
+  "shipmentUncheckDetail": "Mark this shipment as unchecked",
+  "@shipmentUncheckDetail": {},
+
+  "shipmentUpdated": "Shipment Updated",
+  "@shipmentUpdated": {},
 
   "shipped": "Shipped",
   "@shipped": {},
@@ -1555,6 +1633,9 @@
   "totalPrice": "Total Price",
   "@totalPrice": {},
 
+  "trackingNumber": "Tracking Number",
+  "@trackingNumber": {},
+
   "transfer": "Transfer",
   "@transfer": {
     "description": "transfer"
@@ -1642,6 +1723,9 @@
   "website": "Website",
   "@website": {},
 
+  "yes": "Yes",
+  "@yes": {},
+
   "price": "Price",
   "@price": {},
 
@@ -1682,20 +1766,5 @@
   "@currency": {},
 
   "priceBreaks": "Price Breaks",
-  "@priceBreaks": {},
-
-  "noPricingAvailable": "No pricing available",
-  "@noPricingAvailable": {},
-
-  "noPricingDataFound": "No pricing data found for this part",
-  "@noPricingDataFound": {},
-
-  "deleteImageConfirmation": "Are you sure you want to delete this image?",
-  "@deleteImageConfirmation": {},
-
-  "deleteImageTooltip": "Delete Image",
-  "@deleteImageTooltip": {},
-
-  "deleteImage": "Delete Image",
-  "@deleteImage": {}
+  "@priceBreaks": {}
 }

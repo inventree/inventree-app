@@ -12,7 +12,6 @@ import "package:inventree/inventree/part.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/progress.dart";
-import "package:url_launcher/url_launcher.dart";
 
 /*
  * Detail widget for viewing a single ManufacturerPart instance
@@ -163,16 +162,13 @@ class _ManufacturerPartDisplayState
       );
     }
 
-    if (widget.manufacturerPart.link.isNotEmpty) {
+    if (widget.manufacturerPart.hasLink) {
       tiles.add(
         ListTile(
           title: Text(widget.manufacturerPart.link),
           leading: Icon(TablerIcons.link, color: COLOR_ACTION),
           onTap: () async {
-            var uri = Uri.tryParse(widget.manufacturerPart.link);
-            if (uri != null && await canLaunchUrl(uri)) {
-              await launchUrl(uri);
-            }
+            widget.manufacturerPart.openLink();
           },
         ),
       );
