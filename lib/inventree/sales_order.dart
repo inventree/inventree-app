@@ -5,6 +5,8 @@ import "package:inventree/helpers.dart";
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/orders.dart";
+import "package:inventree/inventree/part.dart";
+import "package:inventree/inventree/stock.dart";
 import "package:inventree/widget/order/so_shipment_detail.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/order/extra_line_detail.dart";
@@ -328,6 +330,103 @@ class InvenTreeSalesOrderShipment extends InvenTreeModel {
 
   bool get isDelivered => delivery_date != null && delivery_date!.isNotEmpty;
 }
+
+
+/*
+  * Class representing an allocation of stock against a SalesOrderShipment
+ */
+class InvenTreeSalesOrderAllocation extends InvenTreeAttachment {
+  InvenTreeSalesOrderAllocation() : super();
+
+  InvenTreeSalesOrderAllocation.fromJson(Map<String, dynamic> json)
+    : super.fromJson(json);
+
+  @override
+  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
+      InvenTreeSalesOrderAllocation.fromJson(json);
+
+  @override
+  String get URL => "/order/so/so-allocation/";
+
+  @override
+  List<String> get rolesRequired => ["sales_order"];
+
+  @override
+  Map<String, String> defaultFilters() {
+    return {
+      "part_detail": "true",
+      "order_detail": "true",
+      "location_detail": "true"
+    };
+  }
+
+  static const String MODEL_TYPE = "salesorderallocation";
+
+  int get orderId => getInt("order");
+
+  InvenTreeSalesOrder? get order {
+    dynamic order_detail = jsondata["order_detail"];
+
+    if (order_detail == null) {
+      return null;
+    } else {
+      return InvenTreeSalesOrder.fromJson(order_detail as Map<String, dynamic>);
+    }
+  }
+
+  int get stockItemId => getInt("item");
+
+  InvenTreeStockItem? get stockItem {
+    dynamic item_detail = jsondata["item_detail"];
+
+    if (item_detail == null) {
+      return null;
+    } else {
+      return InvenTreeStockItem.fromJson(item_detail as Map<String, dynamic>);
+    }
+  }
+
+  int get partId => getInt("part");
+
+  InvenTreePart? get part {
+    dynamic part_detail = jsondata["part_detail"];
+
+    if (part_detail == null) {
+      return null;
+    } else {
+      return InvenTreePart.fromJson(part_detail as Map<String, dynamic>);
+    }
+  }
+
+  int get shipmentId => getInt("shipment");
+
+  bool get hasShipment => shipmentId > 0;
+
+  InvenTreeSalesOrderShipment? get shipment {
+    dynamic shipment_detail = jsondata["shipment_detail"];
+
+    if (shipment_detail == null) {
+      return null;
+    } else {
+      return InvenTreeSalesOrderShipment.fromJson(
+          shipment_detail as Map<String, dynamic>);
+    }
+  }
+
+  int get locationId => getInt("location");
+
+  InvenTreeStockLocation? get location {
+    dynamic location_detail = jsondata["location_detail"];
+
+    if (location_detail == null) {
+      return null;
+    } else {
+      return InvenTreeStockLocation.fromJson(
+          location_detail as Map<String, dynamic>);
+    }
+  }
+}
+
 
 /*
  * Class representing an attachment file against a SalesOrder object

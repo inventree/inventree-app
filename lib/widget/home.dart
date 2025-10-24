@@ -120,7 +120,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SOShipmentListWidget(title: L10().shipmentsPending, filters: {"shipped": "false"}),
+        builder: (context) => SOShipmentListWidget(title: L10().shipmentsPending, filters: {"order_outstanding": "true", "shipped": "false"}),
       )
     );
   }
