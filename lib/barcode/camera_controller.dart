@@ -55,6 +55,7 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
   @override
   void dispose() {
     super.dispose();
+    controller.dispose();
     WakelockPlus.disable();
   }
 

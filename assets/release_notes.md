@@ -1,3 +1,8 @@
+### 0.20.1 - October 2025
+---
+
+- Bug fix for camera barcode scanner
+
 ### 0.20.0 - October 2025
 ---
 
