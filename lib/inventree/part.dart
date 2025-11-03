@@ -278,8 +278,7 @@ class InvenTreePart extends InvenTreeModel {
 
   // Request pricing data for this part
   Future<InvenTreePartPricing?> getPricing() async {
-    print("REQUEST PRICING FOR: ${pk}");
-
+    
     try {
       final response = await InvenTreeAPI().get("/api/part/${pk}/pricing/");
       if (response.isValid()) {
