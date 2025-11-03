@@ -1545,8 +1545,15 @@ class InvenTreeAPI {
     return CachedNetworkImage(
       imageUrl: url,
       placeholder: (context, url) => CircularProgressIndicator(),
-      errorWidget: (context, url, error) =>
-          Icon(TablerIcons.circle_x, color: COLOR_DANGER),
+      errorWidget: (context, url, error) {
+        print("CachedNetworkimage error: ${error.toString()}");
+        return GestureDetector(
+          child: Icon(TablerIcons.circle_x, color: COLOR_DANGER),
+          onTap: () => {
+            showSnackIcon(error.toString().split(",")[0], success: false),
+          },
+        );
+      },
       httpHeaders: defaultHeaders(),
       height: height,
       width: width,
