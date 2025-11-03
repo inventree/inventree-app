@@ -1550,7 +1550,7 @@ class InvenTreeAPI {
         return GestureDetector(
           child: Icon(TablerIcons.circle_x, color: COLOR_DANGER),
           onTap: () => {
-            showSnackIcon(error.toString().split(",")[0], success: false)
+            showSnackIcon(error.toString().split(",")[0], success: false),
           },
         );
       },
