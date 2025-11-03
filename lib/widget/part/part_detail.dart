@@ -190,11 +190,13 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     }
 
     // Request part test templates
-    part.getTestTemplates().then((value) {
-      if (mounted) {
-        setState(() {});
-      }
-    });
+    if (part.isTestable) {
+      part.getTestTemplates().then((value) {
+        if (mounted) {
+          setState(() {});
+        }
+      });
+    }
 
     // Request the number of attachments
     InvenTreePartAttachment().countAttachments(part.pk).then((int value) {

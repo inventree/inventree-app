@@ -278,8 +278,6 @@ class InvenTreePart extends InvenTreeModel {
 
   // Request pricing data for this part
   Future<InvenTreePartPricing?> getPricing() async {
-    print("REQUEST PRICING FOR: ${pk}");
-
     try {
       final response = await InvenTreeAPI().get("/api/part/${pk}/pricing/");
       if (response.isValid()) {
@@ -410,6 +408,8 @@ class InvenTreePart extends InvenTreeModel {
   bool get isTemplate => getBool("is_template");
 
   bool get isTrackable => getBool("trackable");
+
+  bool get isTestable => getBool("testable");
 
   // Get the IPN (internal part number) for the Part instance
   String get IPN => getString("IPN");
