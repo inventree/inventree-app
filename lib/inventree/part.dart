@@ -410,6 +410,8 @@ class InvenTreePart extends InvenTreeModel {
 
   bool get isTrackable => getBool("trackable");
 
+  bool get isTestable => getBool("testable");
+
   // Get the IPN (internal part number) for the Part instance
   String get IPN => getString("IPN");
 
