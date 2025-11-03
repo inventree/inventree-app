@@ -1,3 +1,9 @@
+### 0.20.2 - November 2025
+---
+
+- Fixes URL for reporting issues on GitHub
+
+
 ### 0.20.1 - October 2025
 ---
 
