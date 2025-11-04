@@ -984,13 +984,13 @@ class InvenTreeAPI {
     String method = "POST",
     Map<String, dynamic>? fields,
   }) async {
-
-    bool strictHttps = await InvenTreeSettingsManager().getBool(INV_STRICT_HTTPS, false);
+    bool strictHttps = await InvenTreeSettingsManager().getBool(
+      INV_STRICT_HTTPS,
+      false,
+    );
 
     // Create an IOClient wrapper for sending the MultipartRequest
-    final ioClient = IOClient(
-        createClient(url, strictHttps: strictHttps)
-    );
+    final ioClient = IOClient(createClient(url, strictHttps: strictHttps));
 
     final uri = Uri.parse(makeApiUrl(url));
     final request = http.MultipartRequest(method, uri);
@@ -1021,7 +1021,9 @@ class InvenTreeAPI {
     String jsondata = "";
 
     try {
-      var streamedResponse = await ioClient.send(request).timeout(Duration(seconds: 120));
+      var streamedResponse = await ioClient
+          .send(request)
+          .timeout(Duration(seconds: 120));
       final httpResponse = await http.Response.fromStream(streamedResponse);
 
       response.statusCode = httpResponse.statusCode;
