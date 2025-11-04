@@ -1028,7 +1028,7 @@ class InvenTreeAPI {
 
       response.statusCode = httpResponse.statusCode;
 
-      jsondata = await httpResponse.body;
+      jsondata = httpResponse.body;
 
       response.data = json.decode(jsondata);
 
