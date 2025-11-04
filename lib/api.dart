@@ -4,6 +4,7 @@ import "dart:io";
 
 import "package:flutter/foundation.dart";
 import "package:http/http.dart" as http;
+import "package:http/io_client.dart";
 import "package:intl/intl.dart";
 import "package:inventree/main.dart";
 import "package:one_context/one_context.dart";
@@ -983,12 +984,23 @@ class InvenTreeAPI {
     String method = "POST",
     Map<String, dynamic>? fields,
   }) async {
-    var _url = makeApiUrl(url);
 
-    var request = http.MultipartRequest(method, Uri.parse(_url));
+    bool strictHttps = await InvenTreeSettingsManager().getBool(INV_STRICT_HTTPS, false);
 
-    request.headers.addAll(defaultHeaders());
+    // Create an IOClient wrapper for sending the MultipartRequest
+    final ioClient = IOClient(
+        createClient(url, strictHttps: strictHttps)
+    );
 
+    final uri = Uri.parse(makeApiUrl(url));
+    final request = http.MultipartRequest(method, uri);
+
+    // Default headers
+    defaultHeaders().forEach((key, value) {
+      request.headers[key] = value;
+    });
+
+    // Optional fields
     if (fields != null) {
       fields.forEach((String key, dynamic value) {
         if (value == null) {
@@ -999,20 +1011,22 @@ class InvenTreeAPI {
       });
     }
 
+    // Add file to upload
     var _file = await http.MultipartFile.fromPath(name, f.path);
-
     request.files.add(_file);
 
+    // Construct a response object to return
     APIResponse response = APIResponse(url: url, method: method);
 
     String jsondata = "";
 
     try {
-      var httpResponse = await request.send().timeout(Duration(seconds: 120));
+      var streamedResponse = await ioClient.send(request).timeout(Duration(seconds: 120));
+      final httpResponse = await http.Response.fromStream(streamedResponse);
 
       response.statusCode = httpResponse.statusCode;
 
-      jsondata = await httpResponse.stream.bytesToString();
+      jsondata = await httpResponse.body;
 
       response.data = json.decode(jsondata);
 
