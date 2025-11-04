@@ -2,7 +2,7 @@
 ---
 
 - Fixes URL for reporting issues on GitHub
-
+- Fix for uploading files against server with self-signed certificates
 
 ### 0.20.1 - October 2025
 ---
