@@ -454,7 +454,7 @@
   "@invalidSupplierPart": {},
   "invalidUsernamePassword": "Felaktigt användarnamn / lösenord kombination",
   "@invalidUsernamePassword": {},
-  "invoice": "Invoice",
+  "invoice": "Faktura",
   "@invoice": {},
   "invoiceNumber": "Fakturanummer",
   "@invoiceNumber": {},
@@ -1194,7 +1194,7 @@
   "@overallPricing": {},
   "pricingOverrides": "Pricing Overrides",
   "@pricingOverrides": {},
-  "currency": "Currency",
+  "currency": "Valuta",
   "@currency": {},
   "priceBreaks": "Price Breaks",
   "@priceBreaks": {}
