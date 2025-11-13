@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
+import "package:inventree/helpers.dart";
 import "package:inventree/widget/link_icon.dart";
 
 import "package:inventree/app_colors.dart";
@@ -15,6 +16,7 @@ import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/company/manufacturer_part_detail.dart";
+import "package:inventree/widget/stock/stock_list.dart";
 
 /*
  * Detail widget for viewing a single SupplierPart instance
@@ -142,6 +144,26 @@ class _SupplierPartDisplayState
       );
     }
 
+    // Stock levels associated with this SupplierPart
+    tiles.add(
+      ListTile(
+        title: Text(L10().availableStock),
+        leading: Icon(TablerIcons.packages),
+        trailing: LinkIcon(text: simpleNumberString(widget.supplierPart.inStock)),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => StockItemList({
+                "in_stock": "true",
+                "supplier_part": widget.supplierPart.pkString
+              })
+            )
+          );
+        },
+      )
+    );
+
     // Supplier details
     tiles.add(
       ListTile(
@@ -196,7 +218,7 @@ class _SupplierPartDisplayState
 
       tiles.add(
         ListTile(
-          title: Text(L10().manufacturerPartNumber),
+          title: Text(L10().manufacturerPart),
           subtitle: Text(widget.supplierPart.MPN),
           leading: Icon(TablerIcons.hash, color: COLOR_ACTION),
           trailing: LinkIcon(),
