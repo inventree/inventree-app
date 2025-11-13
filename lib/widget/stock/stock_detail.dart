@@ -587,7 +587,8 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     }
 
-    if (defaultLocation != null && defaultLocation?.pk != widget.item.locationId) {
+    if (defaultLocation != null &&
+        defaultLocation?.pk != widget.item.locationId) {
       tiles.add(
         ListTile(
           title: Text(L10().locationDefault),
@@ -597,7 +598,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           onTap: () {
             defaultLocation?.goToDetailPage(context);
           },
-        )
+        ),
       );
     }
 

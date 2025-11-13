@@ -198,7 +198,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
     if (defaultLocationId != null) {
       InvenTreeStockLocation().get(defaultLocationId).then((value) {
-
         if (mounted) {
           setState(() {
             defaultLocation = value as InvenTreeStockLocation?;
