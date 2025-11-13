@@ -1,7 +1,8 @@
 ### 0.21.0 - November 2025
 ---
 
-- Display default stock location in part detail page
+- Display default stock location in Part detail page
+- Display stock information in SupplierPart detail page
 
 ### 0.20.2 - November 2025
 ---
