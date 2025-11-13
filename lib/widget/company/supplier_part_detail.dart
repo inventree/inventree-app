@@ -149,19 +149,21 @@ class _SupplierPartDisplayState
       ListTile(
         title: Text(L10().availableStock),
         leading: Icon(TablerIcons.packages),
-        trailing: LinkIcon(text: simpleNumberString(widget.supplierPart.inStock)),
+        trailing: LinkIcon(
+          text: simpleNumberString(widget.supplierPart.inStock),
+        ),
         onTap: () {
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => StockItemList({
                 "in_stock": "true",
-                "supplier_part": widget.supplierPart.pkString
-              })
-            )
+                "supplier_part": widget.supplierPart.pkString,
+              }),
+            ),
           );
         },
-      )
+      ),
     );
 
     // Supplier details
