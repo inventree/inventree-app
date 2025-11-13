@@ -440,7 +440,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       tiles.add(
         ListTile(
           title: Text(L10().locationDefault),
-          subtitle: Text(defaultLocation!.name),
+          subtitle: Text(defaultLocation!.pathstring),
           leading: Icon(TablerIcons.map_pin),
           trailing: LinkIcon(),
           onTap: () {
