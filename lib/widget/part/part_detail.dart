@@ -47,6 +47,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   InvenTreePart? parentPart;
 
+  InvenTreeStockLocation? defaultLocation;
+
   int parameterCount = 0;
 
   bool allowLabelPrinting = false;
@@ -177,16 +179,18 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     // If the part points to a parent "template" part, request that too
     int? templatePartId = part.variantOf;
 
-    if (templatePartId == null) {
-      parentPart = null;
-    } else {
-      final result = await InvenTreePart().get(templatePartId);
-
-      if (result != null && result is InvenTreePart) {
-        parentPart = result;
-      } else {
+    if (templatePartId != null) {
+      InvenTreePart().get(templatePartId).then((value) {
+        if (mounted) {
+          setState(() {
+            parentPart = value as InvenTreePart?;
+          });
+        }
+      });
+    } else if (mounted) {
+      setState(() {
         parentPart = null;
-      }
+      });
     }
 
     // Request part test templates
