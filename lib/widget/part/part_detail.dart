@@ -47,6 +47,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   InvenTreePart? parentPart;
 
+  InvenTreeStockLocation? defaultLocation;
+
   int parameterCount = 0;
 
   bool allowLabelPrinting = false;
@@ -177,16 +179,35 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     // If the part points to a parent "template" part, request that too
     int? templatePartId = part.variantOf;
 
-    if (templatePartId == null) {
-      parentPart = null;
-    } else {
-      final result = await InvenTreePart().get(templatePartId);
-
-      if (result != null && result is InvenTreePart) {
-        parentPart = result;
-      } else {
+    if (templatePartId != null) {
+      InvenTreePart().get(templatePartId).then((value) {
+        if (mounted) {
+          setState(() {
+            parentPart = value as InvenTreePart?;
+          });
+        }
+      });
+    } else if (mounted) {
+      setState(() {
         parentPart = null;
-      }
+      });
+    }
+
+    // Is there a default location specified for this part?
+    int? defaultLocationId = part.defaultLocation;
+
+    if (defaultLocationId != null) {
+      InvenTreeStockLocation().get(defaultLocationId).then((value) {
+        if (mounted) {
+          setState(() {
+            defaultLocation = value as InvenTreeStockLocation?;
+          });
+        }
+      });
+    } else if (mounted) {
+      setState(() {
+        defaultLocation = null;
+      });
     }
 
     // Request part test templates
@@ -413,6 +434,20 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         trailing: LargeText(part.stockString()),
       ),
     );
+
+    if (defaultLocation != null) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().locationDefault),
+          subtitle: Text(defaultLocation!.pathstring),
+          leading: Icon(TablerIcons.map_pin),
+          trailing: LinkIcon(),
+          onTap: () {
+            defaultLocation?.goToDetailPage(context);
+          },
+        ),
+      );
+    }
 
     if (showPricing && partPricing != null) {
       String pricing = formatPriceRange(
