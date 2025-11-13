@@ -193,6 +193,24 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       });
     }
 
+    // Is there a default location specified for this part?
+    int? defaultLocationId = part.defaultLocation;
+
+    if (defaultLocationId != null) {
+      InvenTreeStockLocation().get(defaultLocationId!).then((value) {
+
+        if (mounted) {
+          setState(() {
+            defaultLocation = value as InvenTreeStockLocation?;
+          });
+        }
+      });
+    } else if (mounted) {
+      setState(() {
+        defaultLocation = null;
+      });
+    }
+
     // Request part test templates
     if (part.isTestable) {
       part.getTestTemplates().then((value) {
@@ -417,6 +435,20 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         trailing: LargeText(part.stockString()),
       ),
     );
+
+    if (defaultLocation != null) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().locationDefault),
+          subtitle: Text(defaultLocation!.name),
+          leading: Icon(TablerIcons.map_pin),
+          trailing: LinkIcon(),
+          onTap: () {
+            defaultLocation?.goToDetailPage(context);
+          },
+        ),
+      );
+    }
 
     if (showPricing && partPricing != null) {
       String pricing = formatPriceRange(
