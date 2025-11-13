@@ -1,3 +1,8 @@
+### 0.21.0 - November 2025
+---
+
+- Display default stock location in part detail page
+
 ### 0.20.2 - November 2025
 ---
 
