@@ -856,7 +856,7 @@
   "@scanBarcode": {},
   "scanSupplierPart": "Сканувати штрих-код позиції постачальника",
   "@scanSupplierPart": {},
-  "scanIntoLocation": "Scan Into Location",
+  "scanIntoLocation": "",
   "@scanIntoLocation": {},
   "scanIntoLocationDetail": "Scan this item into location",
   "@scanIntoLocationDetail": {},

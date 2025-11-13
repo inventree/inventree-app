@@ -1196,6 +1196,6 @@
   "@pricingOverrides": {},
   "currency": "Währung",
   "@currency": {},
-  "priceBreaks": "Price Breaks",
+  "priceBreaks": "Preisstaffel",
   "@priceBreaks": {}
 }
