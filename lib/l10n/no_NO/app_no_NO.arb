@@ -510,6 +510,8 @@
   "@locationCreate": {},
   "locationCreateDetail": "Opprett ny lagerplassering",
   "@locationCreateDetail": {},
+  "locationDefault": "Default Location",
+  "@locationDefault": {},
   "locationNotSet": "Ingen plassering spesifisert",
   "@locationNotSet": {},
   "locationUpdated": "Lagerplassering oppdatert",
