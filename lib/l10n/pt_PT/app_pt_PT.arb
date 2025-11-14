@@ -510,6 +510,8 @@
   "@locationCreate": {},
   "locationCreateDetail": "Create new stock location",
   "@locationCreateDetail": {},
+  "locationDefault": "Default Location",
+  "@locationDefault": {},
   "locationNotSet": "No location specified",
   "@locationNotSet": {},
   "locationUpdated": "Stock location updated",
