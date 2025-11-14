@@ -510,6 +510,8 @@
   "@locationCreate": {},
   "locationCreateDetail": "Thêm mới vị trí kho hàng",
   "@locationCreateDetail": {},
+  "locationDefault": "Default Location",
+  "@locationDefault": {},
   "locationNotSet": "Không xác định được vị trí",
   "@locationNotSet": {},
   "locationUpdated": "Cập nhật vị trí kho hàng",
