@@ -510,6 +510,8 @@
   "@locationCreate": {},
   "locationCreateDetail": "Criar nova localizacao no estoque",
   "@locationCreateDetail": {},
+  "locationDefault": "Default Location",
+  "@locationDefault": {},
   "locationNotSet": "Nenhuma localizacao especificada",
   "@locationNotSet": {},
   "locationUpdated": "Localizacao no estoque atualizada",
