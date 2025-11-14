@@ -510,6 +510,8 @@
   "@locationCreate": {},
   "locationCreateDetail": "Creează o nouă locație de stoc",
   "@locationCreateDetail": {},
+  "locationDefault": "Default Location",
+  "@locationDefault": {},
   "locationNotSet": "Nici o locaţie specificată",
   "@locationNotSet": {},
   "locationUpdated": "Locație stoc actualizată",
