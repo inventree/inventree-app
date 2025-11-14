@@ -38,7 +38,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
   final InvenTreeStockLocation? location;
 
-  List<Map<String, dynamic>> labels = [];
+  bool allowLabelPrinting = false;
 
   @override
   String getAppBarTitle() {
@@ -179,7 +179,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       );
     }
 
-    if (widget.location != null && labels.isNotEmpty) {
+    if (widget.location != null && allowLabelPrinting && api.supportsModernLabelPrinting) {
       actions.add(
         SpeedDialChild(
           child: Icon(TablerIcons.printer),
@@ -187,10 +187,8 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
           onTap: () async {
             selectAndPrintLabel(
               context,
-              labels,
+              "stocklocation",
               widget.location!.pk,
-              "location",
-              "location=${widget.location!.pk}",
             );
           },
         ),
@@ -236,33 +234,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       }
     }
 
-    List<Map<String, dynamic>> _labels = [];
-    bool allowLabelPrinting = await InvenTreeSettingsManager().getBool(
-      INV_ENABLE_LABEL_PRINTING,
-      true,
-    );
-    allowLabelPrinting &= api.supportsMixin("labels");
-
-    if (allowLabelPrinting) {
-      if (widget.location != null) {
-        String model_type = api.supportsModernLabelPrinting
-            ? InvenTreeStockLocation.MODEL_TYPE
-            : "location";
-        String item_key = api.supportsModernLabelPrinting
-            ? "items"
-            : "location";
-
-        _labels = await getLabelTemplates(model_type, {
-          item_key: widget.location!.pk.toString(),
-        });
-      }
-    }
-
-    if (mounted) {
-      setState(() {
-        labels = _labels;
-      });
-    }
+    allowLabelPrinting = await InvenTreeSettingsManager().getBool(INV_ENABLE_LABEL_PRINTING, true);
   }
 
   Future<void> _newLocation(BuildContext context) async {

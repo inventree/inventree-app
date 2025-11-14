@@ -9,16 +9,55 @@ import "package:inventree/l10.dart";
 import "package:inventree/widget/snacks.dart";
 
 /*
+ * Discover which label templates are available for a given item
+ */
+Future<List<Map<String, dynamic>>> getLabelTemplates(
+    String labelType,
+    Map<String, String> data,
+    ) async {
+  if (!InvenTreeAPI().isConnected() ||
+      !InvenTreeAPI().supportsMixin("labels")) {
+    return [];
+  }
+
+  // Filter by active plugins
+  data["enabled"] = "true";
+
+  String url = "/label/template/";
+
+  if (InvenTreeAPI().supportsModernLabelPrinting) {
+    data["model_type"] = labelType;
+  } else {
+    // Legacy label printing API endpoint
+    url = "/label/${labelType}/";
+  }
+
+  List<Map<String, dynamic>> labels = [];
+
+  await InvenTreeAPI().get(url, params: data).then((APIResponse response) {
+    if (response.isValid() && response.statusCode == 200) {
+      for (var label in response.resultsList()) {
+        if (label is Map<String, dynamic>) {
+          labels.add(label);
+        }
+      }
+    }
+  });
+
+  return labels;
+}
+
+
+
+/*
  * Select a particular label, from a provided list of options,
  * and print against the selected instances.
  *
  */
 Future<void> selectAndPrintLabel(
   BuildContext context,
-  List<Map<String, dynamic>> labels,
-  int instanceId,
   String labelType,
-  String labelQuery,
+  int instanceId,
 ) async {
   if (!InvenTreeAPI().isConnected()) {
     return;
@@ -33,43 +72,44 @@ Future<void> selectAndPrintLabel(
     return;
   }
 
+  // Fetch list of available label templates
+  List<Map<String, dynamic>> labels = [];
+
+  await getLabelTemplates(labelType, {"items": instanceId.toString()}).then((templates) {
+    labels = templates;
+  });
+
+  print("labels: ${labels.toString()}");
+
+  if (labels.isEmpty) {
+    showSnackIcon(
+      "No label printing templates available",
+      success: false,
+    );
+    return;
+  }
+
+  // Find a list of available plugins which support label printing
+  final plugins = InvenTreeAPI().getPlugins(mixin: "labels");
+
   Navigator.push(
     context,
     MaterialPageRoute(
       builder: (context) => PrintLabelWidget(
-        labelQuery: labelQuery,
         labelType: labelType,
         instanceId: instanceId,
+        labelTemplates: labels,
+        labelPlugins: [...plugins],
       )
     )
   );
 
-  return;
-
-  // Find a list of available plugins which support label printing
-  var plugins = InvenTreeAPI().getPlugins(mixin: "labels");
-
+  /**
   dynamic initial_label;
   dynamic initial_plugin;
 
-  List<Map<String, dynamic>> label_options = [];
-  List<Map<String, dynamic>> plugin_options = [];
 
-  // Construct list of available label templates
-  for (var label in labels) {
-    String name = (label["name"] ?? "").toString();
-    String description = (label["description"] ?? "").toString();
 
-    if (description.isNotEmpty) {
-      name += " - ${description}";
-    }
-
-    int pk = (label["pk"] ?? -1) as int;
-
-    if (name.isNotEmpty && pk > 0) {
-      label_options.add({"display_name": name, "value": pk});
-    }
-  }
 
   if (label_options.length == 1) {
     initial_label = label_options.first["value"];
@@ -196,43 +236,6 @@ Future<void> selectAndPrintLabel(
       }
     },
   );
+  */
 }
 
-/*
- * Discover which label templates are available for a given item
- */
-Future<List<Map<String, dynamic>>> getLabelTemplates(
-  String labelType,
-  Map<String, String> data,
-) async {
-  if (!InvenTreeAPI().isConnected() ||
-      !InvenTreeAPI().supportsMixin("labels")) {
-    return [];
-  }
-
-  // Filter by active plugins
-  data["enabled"] = "true";
-
-  String url = "/label/template/";
-
-  if (InvenTreeAPI().supportsModernLabelPrinting) {
-    data["model_type"] = labelType;
-  } else {
-    // Legacy label printing API endpoint
-    url = "/label/${labelType}/";
-  }
-
-  List<Map<String, dynamic>> labels = [];
-
-  await InvenTreeAPI().get(url, params: data).then((APIResponse response) {
-    if (response.isValid() && response.statusCode == 200) {
-      for (var label in response.resultsList()) {
-        if (label is Map<String, dynamic>) {
-          labels.add(label);
-        }
-      }
-    }
-  });
-
-  return labels;
-}

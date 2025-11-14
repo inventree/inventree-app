@@ -128,7 +128,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     }
 
-    if (labels.isNotEmpty) {
+    if (allowLabelPrinting && api.supportsModernLabelPrinting) {
       actions.add(
         SpeedDialChild(
           child: Icon(TablerIcons.printer),
@@ -136,10 +136,8 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           onTap: () async {
             selectAndPrintLabel(
               context,
-              labels,
-              widget.item.pk,
-              "stock",
-              "item=${widget.item.pk}",
+              "stockitem",
+              widget.item.pk
             );
           },
         ),
@@ -196,10 +194,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     return actions;
   }
 
-  // Is label printing enabled for this StockItem?
-  // This will be determined when the widget is loaded
-  List<Map<String, dynamic>> labels = [];
-
+  bool allowLabelPrinting = false;
   int attachmentCount = 0;
 
   @override
@@ -318,31 +313,10 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       }
     }
 
-    List<Map<String, dynamic>> _labels = [];
-    bool allowLabelPrinting = await InvenTreeSettingsManager().getBool(
+    allowLabelPrinting = await InvenTreeSettingsManager().getBool(
       INV_ENABLE_LABEL_PRINTING,
       true,
     );
-    allowLabelPrinting &= api.supportsMixin("labels");
-
-    // Request information on labels available for this stock item
-    if (allowLabelPrinting) {
-      String model_type = api.supportsModernLabelPrinting
-          ? InvenTreeStockItem.MODEL_TYPE
-          : "stock";
-      String item_key = api.supportsModernLabelPrinting ? "items" : "item";
-
-      // Clear the existing labels list
-      _labels = await getLabelTemplates(model_type, {
-        item_key: widget.item.pk.toString(),
-      });
-    }
-
-    if (mounted) {
-      setState(() {
-        labels = _labels;
-      });
-    }
   }
 
   /// Delete the stock item from the database

@@ -63,8 +63,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   InvenTreePartPricing? partPricing;
 
-  List<Map<String, dynamic>> labels = [];
-
   @override
   String getAppBarTitle() => L10().partDetails;
 
@@ -121,7 +119,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       );
     }
 
-    if (labels.isNotEmpty) {
+    if (allowLabelPrinting && api.supportsModernLabelPrinting) {
       actions.add(
         SpeedDialChild(
           child: Icon(TablerIcons.printer),
@@ -129,10 +127,8 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           onTap: () async {
             selectAndPrintLabel(
               context,
-              labels,
-              widget.part.pk,
               "part",
-              "part=${widget.part.pk}",
+              widget.part.pk
             );
           },
         ),
@@ -271,26 +267,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         });
       }
     });
-
-    List<Map<String, dynamic>> _labels = [];
-    allowLabelPrinting &= api.supportsMixin("labels");
-
-    if (allowLabelPrinting) {
-      String model_type = api.supportsModernLabelPrinting
-          ? InvenTreePart.MODEL_TYPE
-          : "part";
-      String item_key = api.supportsModernLabelPrinting ? "items" : "part";
-
-      _labels = await getLabelTemplates(model_type, {
-        item_key: widget.part.pk.toString(),
-      });
-    }
-
-    if (mounted) {
-      setState(() {
-        labels = _labels;
-      });
-    }
   }
 
   void _editPartDialog(BuildContext context) {
