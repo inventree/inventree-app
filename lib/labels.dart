@@ -1,6 +1,8 @@
 import "package:flutter/cupertino.dart";
+import "package:flutter/material.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/api.dart";
+import "package:inventree/widget/print_label.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/api_form.dart";
 import "package:inventree/l10.dart";
@@ -21,6 +23,28 @@ Future<void> selectAndPrintLabel(
   if (!InvenTreeAPI().isConnected()) {
     return;
   }
+
+  if (!InvenTreeAPI().supportsModernLabelPrinting) {
+    // Legacy label printing API not supported
+    showSnackIcon(
+      "Label printing not supported by server",
+      success: false,
+    );
+    return;
+  }
+
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => PrintLabelWidget(
+        labelQuery: labelQuery,
+        labelType: labelType,
+        instanceId: instanceId,
+      )
+    )
+  );
+
+  return;
 
   // Find a list of available plugins which support label printing
   var plugins = InvenTreeAPI().getPlugins(mixin: "labels");
