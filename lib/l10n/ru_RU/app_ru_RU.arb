@@ -510,6 +510,8 @@
   "@locationCreate": {},
   "locationCreateDetail": "Создать новое расположение склада",
   "@locationCreateDetail": {},
+  "locationDefault": "Default Location",
+  "@locationDefault": {},
   "locationNotSet": "Не указано месторасположение",
   "@locationNotSet": {},
   "locationUpdated": "Расположение склада обновлено",

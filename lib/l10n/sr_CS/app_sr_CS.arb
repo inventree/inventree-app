@@ -510,6 +510,8 @@
   "@locationCreate": {},
   "locationCreateDetail": "Kreiraj novu lokaciju zaliha",
   "@locationCreateDetail": {},
+  "locationDefault": "Default Location",
+  "@locationDefault": {},
   "locationNotSet": "Nema određene lokacije",
   "@locationNotSet": {},
   "locationUpdated": "Ažurirana lokacija zaliha",

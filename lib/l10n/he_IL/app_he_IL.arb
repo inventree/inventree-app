@@ -510,6 +510,8 @@
   "@locationCreate": {},
   "locationCreateDetail": "צור מיקום מלאי חדש",
   "@locationCreateDetail": {},
+  "locationDefault": "Default Location",
+  "@locationDefault": {},
   "locationNotSet": "לא צוין מיקום",
   "@locationNotSet": {},
   "locationUpdated": "מיקום המלאי עודכן",

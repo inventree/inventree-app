@@ -510,6 +510,8 @@
   "@locationCreate": {},
   "locationCreateDetail": "新しい在庫場所を作成",
   "@locationCreateDetail": {},
+  "locationDefault": "Default Location",
+  "@locationDefault": {},
   "locationNotSet": "在庫場所が指定されていません",
   "@locationNotSet": {},
   "locationUpdated": "在庫場所を更新しました",

@@ -510,6 +510,8 @@
   "@locationCreate": {},
   "locationCreateDetail": "Creëer nieuwe voorraadlocatie",
   "@locationCreateDetail": {},
+  "locationDefault": "Default Location",
+  "@locationDefault": {},
   "locationNotSet": "Geen locatie opgegeven",
   "@locationNotSet": {},
   "locationUpdated": "Voorraadlocatie bijgewerkt",

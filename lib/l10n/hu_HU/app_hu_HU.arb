@@ -510,6 +510,8 @@
   "@locationCreate": {},
   "locationCreateDetail": "Új készlet hely létrehozása",
   "@locationCreateDetail": {},
+  "locationDefault": "Default Location",
+  "@locationDefault": {},
   "locationNotSet": "Nincs megadva hely",
   "@locationNotSet": {},
   "locationUpdated": "Készlet hely adatai frissítve",
