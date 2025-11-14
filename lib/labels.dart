@@ -79,8 +79,6 @@ Future<void> selectAndPrintLabel(
     labels = templates;
   });
 
-  print("labels: ${labels.toString()}");
-
   if (labels.isEmpty) {
     showSnackIcon(
       "No label printing templates available",
@@ -115,20 +113,7 @@ Future<void> selectAndPrintLabel(
     initial_label = label_options.first["value"];
   }
 
-  // Construct list of available plugins
-  for (var plugin in plugins) {
-    plugin_options.add({"display_name": plugin.humanName, "value": plugin.key});
-  }
 
-  String selectedPlugin = await InvenTreeAPI().getUserSetting(
-    "LABEL_DEFAULT_PRINTER",
-  );
-
-  if (selectedPlugin.isNotEmpty) {
-    initial_plugin = selectedPlugin;
-  } else if (plugin_options.length == 1) {
-    initial_plugin = plugin_options.first["value"];
-  }
 
   Map<String, dynamic> fields = {
     "label": {
