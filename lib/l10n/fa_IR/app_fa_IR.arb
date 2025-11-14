@@ -510,6 +510,8 @@
   "@locationCreate": {},
   "locationCreateDetail": "مکان سهام جدید ایجاد کنید",
   "@locationCreateDetail": {},
+  "locationDefault": "Default Location",
+  "@locationDefault": {},
   "locationNotSet": "هیچ مکانی مشخص نشده است",
   "@locationNotSet": {},
   "locationUpdated": "مکان سهام به روز شد",
