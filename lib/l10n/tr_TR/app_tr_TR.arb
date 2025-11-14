@@ -510,6 +510,8 @@
   "@locationCreate": {},
   "locationCreateDetail": "Yeni stok konumu oluştur",
   "@locationCreateDetail": {},
+  "locationDefault": "Default Location",
+  "@locationDefault": {},
   "locationNotSet": "Belirtilmiş konum yok",
   "@locationNotSet": {},
   "locationUpdated": "Stok lokasyonu güncellendi",
