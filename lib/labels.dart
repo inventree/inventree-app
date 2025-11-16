@@ -1,10 +1,7 @@
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
-import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/api.dart";
 import "package:inventree/preferences.dart";
-import "package:inventree/widget/print_label.dart";
-import "package:inventree/widget/progress.dart";
 import "package:inventree/api_form.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/widget/snacks.dart";
@@ -18,8 +15,19 @@ class LabelFormWidgetState extends APIFormWidgetState {
 
   @override
   List<APIFormField> get formFields {
-    return widget.fields;
+    final baseFields = super.formFields;
+
+    // TODO: Inject dynamic fields based on selected plugin
+
+    return baseFields;
   }
+
+  @override
+  void onValueChanged(String field, dynamic value) {
+    // TODO: Selected plugin changed
+
+  }
+
 }
 
 /*
@@ -74,6 +82,7 @@ Future<void> selectAndPrintLabel(
     },
     "plugin": {
       "default": defaultPlugin,
+      "pk_field": "key",
       "filters": {"enabled": true, "mixin": "labels"},
     },
     "items": {
