@@ -510,6 +510,8 @@
   "@locationCreate": {},
   "locationCreateDetail": "Vytvořit nové skladové místo",
   "@locationCreateDetail": {},
+  "locationDefault": "Výchozí umístění",
+  "@locationDefault": {},
   "locationNotSet": "Není zadáno žádné umístění",
   "@locationNotSet": {},
   "locationUpdated": "Skladové místo bylo aktualizováno",

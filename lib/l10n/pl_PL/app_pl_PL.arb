@@ -510,6 +510,8 @@
   "@locationCreate": {},
   "locationCreateDetail": "Utwórz nową pozycję magazynową",
   "@locationCreateDetail": {},
+  "locationDefault": "Default Location",
+  "@locationDefault": {},
   "locationNotSet": "Nie określono lokacji",
   "@locationNotSet": {},
   "locationUpdated": "Lokalizacja stanu magazynowego została zaktualizowana",

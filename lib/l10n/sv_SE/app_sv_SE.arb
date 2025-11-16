@@ -510,6 +510,8 @@
   "@locationCreate": {},
   "locationCreateDetail": "Skapa ny lagerplats",
   "@locationCreateDetail": {},
+  "locationDefault": "Default Location",
+  "@locationDefault": {},
   "locationNotSet": "Ingen plats specificerad",
   "@locationNotSet": {},
   "locationUpdated": "Lagerplatsen uppdaterad",

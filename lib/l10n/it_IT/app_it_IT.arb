@@ -510,6 +510,8 @@
   "@locationCreate": {},
   "locationCreateDetail": "Crea nuova ubicazione di magazzino",
   "@locationCreateDetail": {},
+  "locationDefault": "Default Location",
+  "@locationDefault": {},
   "locationNotSet": "Nessuna ubicazione specificata",
   "@locationNotSet": {},
   "locationUpdated": "Ubicazione di magazzino aggiornata",

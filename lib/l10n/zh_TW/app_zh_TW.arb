@@ -510,6 +510,8 @@
   "@locationCreate": {},
   "locationCreateDetail": "創建新庫存地點",
   "@locationCreateDetail": {},
+  "locationDefault": "Default Location",
+  "@locationDefault": {},
   "locationNotSet": "沒有指定倉儲位置",
   "@locationNotSet": {},
   "locationUpdated": "庫存地點已更新",
