@@ -780,12 +780,12 @@ class APIFormField {
             so.customer?.thumbnail ?? so.customer?.image ?? "",
           ),
         );
-      case 'labeltemplate':
+      case "labeltemplate":
         return ListTile(
           title: Text((data["name"] ?? "").toString()),
           subtitle: Text((data["description"] ?? "").toString()),
         );
-      case 'pluginconfig':
+      case "pluginconfig":
         return ListTile(
           title: Text(
             (data["meta"]?["human_name"] ?? data["name"] ?? "").toString(),
