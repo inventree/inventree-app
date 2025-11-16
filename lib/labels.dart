@@ -9,46 +9,6 @@ import "package:inventree/api_form.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/widget/snacks.dart";
 
-/*
- * Discover which label templates are available for a given item
- */
-Future<List<Map<String, dynamic>>> getLabelTemplates(
-    String labelType,
-    Map<String, String> data,
-    ) async {
-  if (!InvenTreeAPI().isConnected() ||
-      !InvenTreeAPI().supportsMixin("labels")) {
-    return [];
-  }
-
-  // Filter by active plugins
-  data["enabled"] = "true";
-
-  String url = "/label/template/";
-
-  if (InvenTreeAPI().supportsModernLabelPrinting) {
-    data["model_type"] = labelType;
-  } else {
-    // Legacy label printing API endpoint
-    url = "/label/${labelType}/";
-  }
-
-  List<Map<String, dynamic>> labels = [];
-
-  await InvenTreeAPI().get(url, params: data).then((APIResponse response) {
-    if (response.isValid() && response.statusCode == 200) {
-      for (var label in response.resultsList()) {
-        if (label is Map<String, dynamic>) {
-          labels.add(label);
-        }
-      }
-    }
-  });
-
-  return labels;
-}
-
-
 
 /*
  * Select a particular label, from a provided list of options,
