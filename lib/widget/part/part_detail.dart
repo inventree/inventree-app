@@ -125,11 +125,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           child: Icon(TablerIcons.printer),
           label: L10().printLabel,
           onTap: () async {
-            selectAndPrintLabel(
-              context,
-              "part",
-              widget.part.pk
-            );
+            selectAndPrintLabel(context, "part", widget.part.pk);
           },
         ),
       );

@@ -9,6 +9,18 @@ import "package:inventree/api_form.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/widget/snacks.dart";
 
+/*
+ * Custom form handler for label printing.
+ * Required to manage dynamic form fields.
+ */
+class LabelFormWidgetState extends APIFormWidgetState {
+  LabelFormWidgetState() : super();
+
+  @override
+  List<APIFormField> get formFields {
+    return widget.fields;
+  }
+}
 
 /*
  * Select a particular label, from a provided list of options,
@@ -26,17 +38,17 @@ Future<void> selectAndPrintLabel(
 
   if (!InvenTreeAPI().supportsModernLabelPrinting) {
     // Legacy label printing API not supported
-    showSnackIcon(
-      "Label printing not supported by server",
-      success: false,
-    );
+    showSnackIcon("Label printing not supported by server", success: false);
     return;
   }
 
   // Fetch default values for label printing
 
   // Default template
-  final defaultTemplates = await InvenTreeSettingsManager().getValue(INV_LABEL_DEFAULT_TEMPLATES, null);
+  final defaultTemplates = await InvenTreeSettingsManager().getValue(
+    INV_LABEL_DEFAULT_TEMPLATES,
+    null,
+  );
   int? defaultTemplate;
 
   if (defaultTemplates != null && defaultTemplates is Map<String, dynamic>) {
@@ -44,7 +56,10 @@ Future<void> selectAndPrintLabel(
   }
 
   // Default plugin
-  final defaultPlugin = await InvenTreeSettingsManager().getValue(INV_LABEL_DEFAULT_PLUGIN, null);
+  final defaultPlugin = await InvenTreeSettingsManager().getValue(
+    INV_LABEL_DEFAULT_PLUGIN,
+    null,
+  );
 
   // Specify a default list of fields for printing
   // The selected plugin may optionally extend this list of fields dynamically
@@ -55,21 +70,26 @@ Future<void> selectAndPrintLabel(
         "enabled": true,
         "model_type": labelType,
         "items": instanceId.toString(),
-      }
+      },
     },
     "plugin": {
       "default": defaultPlugin,
-      "filters": {
-        "enabled": true,
-        "mixin": "labels"
-      }
+      "filters": {"enabled": true, "mixin": "labels"},
     },
     "items": {
       "hidden": true,
       "value": [instanceId],
-    }
+    },
   };
 
-  launchApiForm(context, L10().printLabel, "api/label/print/", baseFields, method: 'POST');
-}
+  final formHandler = LabelFormWidgetState();
 
+  launchApiForm(
+    context,
+    L10().printLabel,
+    "api/label/print/",
+    baseFields,
+    method: "POST",
+    formHandler: formHandler,
+  );
+}

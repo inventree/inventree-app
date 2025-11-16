@@ -134,11 +134,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
           child: Icon(TablerIcons.printer),
           label: L10().printLabel,
           onTap: () async {
-            selectAndPrintLabel(
-              context,
-              "stockitem",
-              widget.item.pk
-            );
+            selectAndPrintLabel(context, "stockitem", widget.item.pk);
           },
         ),
       );

@@ -772,7 +772,9 @@ class APIFormField {
         );
       case 'pluginconfig':
         return ListTile(
-          title: Text((data["meta"]?["human_name"] ?? data["name"] ?? "").toString()),
+          title: Text(
+            (data["meta"]?["human_name"] ?? data["name"] ?? "").toString(),
+          ),
           subtitle: Text((data["meta"]?["description"] ?? "").toString()),
         );
       default:
@@ -991,6 +993,7 @@ Future<void> launchApiForm(
   Function(Map<String, dynamic>)? onSuccess,
   bool Function(Map<String, dynamic>)? validate,
   Function? onCancel,
+  APIFormWidgetState? formHandler,
   IconData icon = TablerIcons.device_floppy,
 }) async {
   showLoadingOverlay();
@@ -1076,12 +1079,12 @@ Future<void> launchApiForm(
         onSuccess: onSuccess,
         validate: validate,
         fileField: fileField,
+        state: formHandler,
         icon: icon,
       ),
     ),
   );
 }
-
 
 class APIFormWidget extends StatefulWidget {
   const APIFormWidget(
@@ -1501,7 +1504,7 @@ class APIFormWidgetState extends State<APIFormWidget> {
           ),
         ],
       ),
-      body: buildForm(context)
+      body: buildForm(context),
     );
   }
 }

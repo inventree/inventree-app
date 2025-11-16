@@ -179,17 +179,15 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       );
     }
 
-    if (widget.location != null && allowLabelPrinting && api.supportsModernLabelPrinting) {
+    if (widget.location != null &&
+        allowLabelPrinting &&
+        api.supportsModernLabelPrinting) {
       actions.add(
         SpeedDialChild(
           child: Icon(TablerIcons.printer),
           label: L10().printLabel,
           onTap: () async {
-            selectAndPrintLabel(
-              context,
-              "stocklocation",
-              widget.location!.pk,
-            );
+            selectAndPrintLabel(context, "stocklocation", widget.location!.pk);
           },
         ),
       );
@@ -234,7 +232,10 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       }
     }
 
-    allowLabelPrinting = await InvenTreeSettingsManager().getBool(INV_ENABLE_LABEL_PRINTING, true);
+    allowLabelPrinting = await InvenTreeSettingsManager().getBool(
+      INV_ENABLE_LABEL_PRINTING,
+      true,
+    );
   }
 
   Future<void> _newLocation(BuildContext context) async {
