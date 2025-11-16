@@ -1072,6 +1072,7 @@ Future<void> launchApiForm(
   );
 }
 
+
 class APIFormWidget extends StatefulWidget {
   const APIFormWidget(
     this.title,
@@ -1118,6 +1119,13 @@ class _APIFormWidgetState extends State<APIFormWidget> {
 
   bool spacerRequired = false;
 
+  // Return a list of all fields used for this form
+  // The default implementation just returns the fields provided to the widget
+  // However, custom form implementations may override this function
+  List<APIFormField> get formFields {
+    return widget.fields;
+  }
+
   List<Widget> _buildForm() {
     List<Widget> widgets = [];
 
@@ -1135,7 +1143,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
       widgets.add(Divider(height: 5));
     }
 
-    for (var field in widget.fields) {
+    for (var field in formFields) {
       if (field.hidden) {
         continue;
       }
@@ -1190,7 +1198,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
       // Pop the "file" field
       data.remove(widget.fileField);
 
-      for (var field in widget.fields) {
+      for (var field in formFields) {
         if (field.name == widget.fileField) {
           File? file = field.attachedfile;
 
@@ -1275,7 +1283,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
           match = true;
           continue;
         default:
-          for (var field in widget.fields) {
+          for (var field in formFields) {
             // Hidden fields can't display errors, so we won't match
             if (field.hidden) {
               continue;
@@ -1327,7 +1335,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
 
     // Iterate through and find "simple" top-level fields
 
-    for (var field in widget.fields) {
+    for (var field in formFields) {
       if (field.readOnly) {
         continue;
       }
@@ -1416,7 +1424,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
         showSnackIcon(L10().formError, success: false);
 
         // Update field errors
-        for (var field in widget.fields) {
+        for (var field in formFields) {
           field.extractErrorMessages(response);
         }
 
@@ -1444,6 +1452,22 @@ class _APIFormWidgetState extends State<APIFormWidget> {
     });
   }
 
+  // Construct the internal form widget, based on the provided fields
+  Widget buildForm(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: _buildForm(),
+        ),
+        padding: EdgeInsets.all(16),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1463,18 +1487,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
           ),
         ],
       ),
-      body: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: _buildForm(),
-          ),
-          padding: EdgeInsets.all(16),
-        ),
-      ),
+      body: buildForm(context)
     );
   }
 }
