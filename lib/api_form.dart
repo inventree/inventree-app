@@ -765,6 +765,16 @@ class APIFormField {
             so.customer?.thumbnail ?? so.customer?.image ?? "",
           ),
         );
+      case 'labeltemplate':
+        return ListTile(
+          title: Text((data["name"] ?? "").toString()),
+          subtitle: Text((data["description"] ?? "").toString()),
+        );
+      case 'pluginconfig':
+        return ListTile(
+          title: Text((data["meta"]?["human_name"] ?? data["name"] ?? "").toString()),
+          subtitle: Text((data["meta"]?["description"] ?? "").toString()),
+        );
       default:
         return ListTile(
           title: Text(
@@ -1080,6 +1090,7 @@ class APIFormWidget extends StatefulWidget {
     this.fields,
     this.method, {
     Key? key,
+    this.state,
     this.onSuccess,
     this.validate,
     this.fileField = "",
@@ -1106,12 +1117,15 @@ class APIFormWidget extends StatefulWidget {
 
   final bool Function(Map<String, dynamic>)? validate;
 
+  final APIFormWidgetState? state;
+
+  // Default form handler is constructed if none is provided
   @override
-  _APIFormWidgetState createState() => _APIFormWidgetState();
+  APIFormWidgetState createState() => state ?? APIFormWidgetState();
 }
 
-class _APIFormWidgetState extends State<APIFormWidget> {
-  _APIFormWidgetState() : super();
+class APIFormWidgetState extends State<APIFormWidget> {
+  APIFormWidgetState() : super();
 
   final _formKey = GlobalKey<FormState>();
 

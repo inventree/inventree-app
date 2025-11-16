@@ -2,6 +2,7 @@ import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/api.dart";
+import "package:inventree/preferences.dart";
 import "package:inventree/widget/print_label.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/api_form.dart";
@@ -72,155 +73,43 @@ Future<void> selectAndPrintLabel(
     return;
   }
 
-  // Fetch list of available label templates
-  List<Map<String, dynamic>> labels = [];
+  // Fetch default values for label printing
 
-  await getLabelTemplates(labelType, {"items": instanceId.toString()}).then((templates) {
-    labels = templates;
-  });
+  // Default template
+  final defaultTemplates = await InvenTreeSettingsManager().getValue(INV_LABEL_DEFAULT_TEMPLATES, null);
+  int? defaultTemplate;
 
-  if (labels.isEmpty) {
-    showSnackIcon(
-      "No label printing templates available",
-      success: false,
-    );
-    return;
+  if (defaultTemplates != null && defaultTemplates is Map<String, dynamic>) {
+    defaultTemplate = defaultTemplates[labelType] as int?;
   }
 
-  // Find a list of available plugins which support label printing
-  final plugins = InvenTreeAPI().getPlugins(mixin: "labels");
+  // Default plugin
+  final defaultPlugin = await InvenTreeSettingsManager().getValue(INV_LABEL_DEFAULT_PLUGIN, null);
 
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => PrintLabelWidget(
-        labelType: labelType,
-        instanceId: instanceId,
-        labelTemplates: labels,
-        labelPlugins: [...plugins],
-      )
-    )
-  );
-
-  /**
-  dynamic initial_label;
-  dynamic initial_plugin;
-
-
-
-
-  if (label_options.length == 1) {
-    initial_label = label_options.first["value"];
-  }
-
-
-
-  Map<String, dynamic> fields = {
-    "label": {
-      "label": L10().labelTemplate,
-      "type": "choice",
-      "value": initial_label,
-      "choices": label_options,
-      "required": true,
+  // Specify a default list of fields for printing
+  // The selected plugin may optionally extend this list of fields dynamically
+  Map<String, Map<String, dynamic>> baseFields = {
+    "template": {
+      "default": defaultTemplate,
+      "filters": {
+        "enabled": true,
+        "model_type": labelType,
+        "items": instanceId.toString(),
+      }
     },
     "plugin": {
-      "label": L10().pluginPrinter,
-      "type": "choice",
-      "value": initial_plugin,
-      "choices": plugin_options,
-      "required": true,
+      "default": defaultPlugin,
+      "filters": {
+        "enabled": true,
+        "mixin": "labels"
+      }
     },
+    "items": {
+      "hidden": true,
+      "value": [instanceId],
+    }
   };
 
-  launchApiForm(
-    context,
-    L10().printLabel,
-    "",
-    fields,
-    icon: TablerIcons.printer,
-    validate: (Map<String, dynamic> data) {
-      final template = data["label"];
-      final plugin = data["plugin"];
-
-      if (template == null) {
-        showSnackIcon(L10().labelSelectTemplate, success: false);
-        return false;
-      }
-
-      if (plugin == null) {
-        showSnackIcon(L10().labelSelectPrinter, success: false);
-        return false;
-      }
-
-      return true;
-    },
-    onSuccess: (Map<String, dynamic> data) async {
-      int labelId = (data["label"] ?? -1) as int;
-      var pluginKey = data["plugin"];
-
-      bool result = false;
-
-      if (labelId != -1 && pluginKey != null) {
-        showLoadingOverlay();
-
-        if (InvenTreeAPI().supportsModernLabelPrinting) {
-          // Modern label printing API uses a POST request to a single API endpoint.
-          await InvenTreeAPI()
-              .post(
-                "/label/print/",
-                body: {
-                  "plugin": pluginKey,
-                  "template": labelId,
-                  "items": [instanceId],
-                },
-              )
-              .then((APIResponse response) {
-                if (response.isValid() &&
-                    response.statusCode >= 200 &&
-                    response.statusCode <= 201) {
-                  var data = response.asMap();
-
-                  if (data.containsKey("output")) {
-                    String? label_file = (data["output"]) as String?;
-
-                    if (label_file != null && label_file.isNotEmpty) {
-                      // Attempt to open generated file
-                      InvenTreeAPI().downloadFile(label_file);
-                    }
-
-                    result = true;
-                  }
-                }
-              });
-        } else {
-          // Legacy label printing API
-          // Uses a GET request to a specially formed URL which depends on the parameters
-          String url =
-              "/label/${labelType}/${labelId}/print/?${labelQuery}&plugin=${pluginKey}";
-          await InvenTreeAPI().get(url).then((APIResponse response) {
-            if (response.isValid() && response.statusCode == 200) {
-              var data = response.asMap();
-              if (data.containsKey("file")) {
-                var label_file = (data["file"] ?? "") as String;
-
-                // Attempt to open remote file
-                InvenTreeAPI().downloadFile(label_file);
-                result = true;
-              }
-            }
-          });
-        }
-
-        hideLoadingOverlay();
-
-        if (result) {
-          showSnackIcon(L10().printLabelSuccess, success: true);
-        } else {
-          showSnackIcon(L10().printLabelFailure, success: false);
-        }
-      }
-    },
-  );
-  */
+  launchApiForm(context, L10().printLabel, "api/label/print/", baseFields, method: 'POST');
 }
 
