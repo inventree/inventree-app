@@ -4,7 +4,10 @@ import "package:inventree/api.dart";
 import "package:inventree/preferences.dart";
 import "package:inventree/api_form.dart";
 import "package:inventree/l10.dart";
+import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/snacks.dart";
+
+const String PRINT_LABEL_URL = "api/label/print/";
 
 /*
  * Custom form handler for label printing.
@@ -13,22 +16,84 @@ import "package:inventree/widget/snacks.dart";
 class LabelFormWidgetState extends APIFormWidgetState {
   LabelFormWidgetState() : super();
 
+  List<APIFormField> dynamicFields = [];
+
   @override
   List<APIFormField> get formFields {
     final baseFields = super.formFields;
 
     // TODO: Inject dynamic fields based on selected plugin
 
-    return baseFields;
+    return [...baseFields, ...dynamicFields];
   }
 
   @override
   void onValueChanged(String field, dynamic value) {
-    // TODO: Selected plugin changed
-
+    if (field == "plugin") {
+      onPluginChanged(value.toString());
+    }
   }
 
+  /*
+   * Re-fetch printing options when the plugin changes
+   */
+  Future<void> onPluginChanged(String key) async {
+
+    showLoadingOverlay();
+
+    InvenTreeAPI().options(
+        PRINT_LABEL_URL,
+        params: {
+          "plugin": key
+        }
+    ).then((APIResponse response) {
+      if (response.isValid()) {
+        updateFields(response);
+        hideLoadingOverlay();
+      }
+    });
+  }
+
+  /*
+ * Callback when the server responds with printing options,
+ * based on the selected printing plugin
+ */
+  Future<void> updateFields(APIResponse response) async {
+    Map<String, dynamic> printingFields = extractFields(response);
+
+    // Find only the fields which are not in the "base" fields
+    List<APIFormField> uniqueFields = [];
+
+    final baseFields = super.formFields;
+
+    for (String key in printingFields.keys) {
+      if (super.formFields.any((field) => field.name == key)) {
+        continue;
+      }
+
+      dynamic data = printingFields[key];
+
+      Map<String, dynamic> fieldData = {};
+
+      if (data is Map) {
+        fieldData = Map<String, dynamic>.from(data);
+      }
+
+      APIFormField field = APIFormField(key, fieldData);
+      field.definition = extractFieldDefinition(printingFields, field.lookupPath);
+
+      uniqueFields.add(field);
+    }
+
+    if (mounted) {
+      setState(() {
+        dynamicFields = uniqueFields;
+      });
+    }
+  }
 }
+
+
 
 /*
  * Select a particular label, from a provided list of options,
@@ -96,7 +161,7 @@ Future<void> selectAndPrintLabel(
   launchApiForm(
     context,
     L10().printLabel,
-    "api/label/print/",
+    PRINT_LABEL_URL,
     baseFields,
     method: "POST",
     formHandler: formHandler,

@@ -26,6 +26,28 @@ import "package:inventree/widget/fields.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/snacks.dart";
 
+
+/*
+ * Extract field options from a returned OPTIONS request
+ */
+Map<String, dynamic> extractFields(APIResponse response) {
+  if (!response.isValid()) {
+    return {};
+  }
+
+  var data = response.asMap();
+
+  if (!data.containsKey("actions")) {
+    return {};
+  }
+
+  var actions = response.data["actions"] as Map<String, dynamic>;
+
+  dynamic result = actions["POST"] ?? actions["PUT"] ?? actions["PATCH"] ?? {};
+
+  return result as Map<String, dynamic>;
+}
+
 /*
  * Class that represents a single "form field",
  * defined by the InvenTree API
@@ -893,27 +915,6 @@ class APIFormField {
       color: hasErrors() ? COLOR_DANGER : null,
     );
   }
-}
-
-/*
- * Extract field options from a returned OPTIONS request
- */
-Map<String, dynamic> extractFields(APIResponse response) {
-  if (!response.isValid()) {
-    return {};
-  }
-
-  var data = response.asMap();
-
-  if (!data.containsKey("actions")) {
-    return {};
-  }
-
-  var actions = response.data["actions"] as Map<String, dynamic>;
-
-  dynamic result = actions["POST"] ?? actions["PUT"] ?? actions["PATCH"] ?? {};
-
-  return result as Map<String, dynamic>;
 }
 
 /*
