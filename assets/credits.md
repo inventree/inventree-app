@@ -10,6 +10,7 @@ Thanks to the following contributors, for their work building this app!
 - [Bobbe](https://github.com/30350n)
 - [awnz](https://github.com/awnz)
 - [joaomnuno](https://github.com/joaomnuno)
+- [Alex9779](https://github.com/Alex9779)
 --------
 
 ## Assets
