@@ -44,7 +44,7 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
   double zoomFactor = 0.0;
 
   final MobileScannerController controller = MobileScannerController(
-    autoZoom: true,
+    autoZoom: false, // Disable autoZoom as we implement a manual slider
   );
 
   @override
