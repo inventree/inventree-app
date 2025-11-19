@@ -656,7 +656,7 @@
   "@password": {},
   "passwordEmpty": "Lösenordet får inte vara tomt",
   "@passwordEmpty": {},
-  "pending": "Pending",
+  "pending": "Väntande",
   "@pending": {},
   "permissionAccountDenied": "Ditt konto har inte de rättigheter som krävs för att utföra denna åtgärd",
   "@permissionAccountDenied": {},
