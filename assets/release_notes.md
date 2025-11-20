@@ -1,6 +1,7 @@
 ### 0.21.0 - November 2025
 ---
 
+- Support label printing again, fixing issues with new printing API
 - Adds zoom controller for barcode scanner camera view
 - Display default stock location in Part detail page
 - Display stock information in SupplierPart detail page
