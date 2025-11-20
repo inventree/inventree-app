@@ -117,7 +117,47 @@ class LabelFormWidgetState extends APIFormWidgetState {
   }
 }
 
+Future<void> handlePrintingSuccess(
+  BuildContext context,
+  Map<String, dynamic> data,
+  int repeatCount
+) async {
 
+  const int MAX_REPEATS = 60;
+
+  int id = (data["pk"] ?? -1) as int;
+  bool complete = (data["complete"] ?? false) as bool;
+  bool error = data["errors"] != null;
+  String? output = data["output"] as String?;
+
+  if (complete) {
+    if (output != null && output.isNotEmpty) {
+      // An output was generated - we can download it!
+      showSnackIcon(L10().downloading, success: true);
+      InvenTreeAPI().downloadFile(output);
+    } else {
+      // Label was offloaded, likely to an external printer
+      showSnackIcon(L10().printLabelSuccess, success: true);
+    }
+  } else if (error) {
+    showSnackIcon(L10().printLabelFailure, success: false);
+  } else if (repeatCount < MAX_REPEATS && id > 0){
+    // Printing is not yet complete, but we have a valid output ID
+    Future.delayed(Duration(milliseconds: 1000), () async {
+      // Re-query the printing status
+      InvenTreeAPI().get(
+        "data-output/$id/",
+      ).then((response) {
+        if (response.statusCode == 200) {
+          if (response.data is Map<String, dynamic>) {
+            final responseData = response.data as Map<String, dynamic>;
+            handlePrintingSuccess(context, responseData, repeatCount + 1);
+          }
+        }
+      });
+    });
+  }
+}
 
 /*
  * Select a particular label, from a provided list of options,
@@ -189,5 +229,8 @@ Future<void> selectAndPrintLabel(
     baseFields,
     method: "POST",
     formHandler: formHandler,
+    onSuccess: (data) async {
+      handlePrintingSuccess(context, data, 0);
+    }
   );
 }

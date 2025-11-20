@@ -7,6 +7,7 @@ import "package:http/http.dart" as http;
 import "package:http/io_client.dart";
 import "package:intl/intl.dart";
 import "package:inventree/main.dart";
+import "package:inventree/widget/progress.dart";
 import "package:one_context/one_context.dart";
 import "package:open_filex/open_filex.dart";
 import "package:cached_network_image/cached_network_image.dart";
@@ -912,6 +913,8 @@ class InvenTreeAPI {
 
     var client = createClient(url, strictHttps: strictHttps);
 
+    showLoadingOverlay();
+
     // Attempt to open a connection to the server
     try {
       _request = await client
@@ -953,6 +956,7 @@ class InvenTreeAPI {
         await localFile.writeAsBytes(bytes);
 
         if (openOnDownload) {
+          hideLoadingOverlay();
           OpenFilex.open(local_path);
         }
       } else {
@@ -972,6 +976,9 @@ class InvenTreeAPI {
         stackTrace,
       );
     }
+
+    hideLoadingOverlay();
+
   }
 
   /*
