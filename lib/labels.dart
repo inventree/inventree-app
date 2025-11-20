@@ -60,8 +60,6 @@ class LabelFormWidgetState extends APIFormWidgetState {
     // Find only the fields which are not in the "base" fields
     List<APIFormField> uniqueFields = [];
 
-    final baseFields = super.formFields;
-
     for (String key in printingFields.keys) {
       if (super.formFields.any((field) => field.name == key)) {
         continue;
