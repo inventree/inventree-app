@@ -26,7 +26,6 @@ import "package:inventree/widget/fields.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/snacks.dart";
 
-
 /*
  * Extract field options from a returned OPTIONS request
  */
@@ -606,7 +605,8 @@ class APIFormField {
         bool result = false;
 
         try {
-          result = item[pk_field].toString() == selectedItem[pk_field].toString();
+          result =
+              item[pk_field].toString() == selectedItem[pk_field].toString();
         } catch (error) {
           // Catch any conversion errors
           result = false;

@@ -38,15 +38,11 @@ class LabelFormWidgetState extends APIFormWidgetState {
    * Re-fetch printing options when the plugin changes
    */
   Future<void> onPluginChanged(String key) async {
-
     showLoadingOverlay();
 
-    InvenTreeAPI().options(
-        PRINT_LABEL_URL,
-        params: {
-          "plugin": key
-        }
-    ).then((APIResponse response) {
+    InvenTreeAPI().options(PRINT_LABEL_URL, params: {"plugin": key}).then((
+      APIResponse response,
+    ) {
       if (response.isValid()) {
         updateFields(response);
         hideLoadingOverlay();
@@ -80,7 +76,10 @@ class LabelFormWidgetState extends APIFormWidgetState {
       }
 
       APIFormField field = APIFormField(key, fieldData);
-      field.definition = extractFieldDefinition(printingFields, field.lookupPath);
+      field.definition = extractFieldDefinition(
+        printingFields,
+        field.lookupPath,
+      );
 
       if (field.type == "dependent field") {
         // Dependent fields must be handled separately
@@ -93,16 +92,19 @@ class LabelFormWidgetState extends APIFormWidgetState {
           dynamic nested_children = child_map["children"];
 
           if (nested_children != null && nested_children is Map) {
-            Map<String, dynamic> nested_child_map = nested_children as Map<String, dynamic>;
+            Map<String, dynamic> nested_child_map =
+                nested_children as Map<String, dynamic>;
 
             for (var field_key in nested_child_map.keys) {
               field = APIFormField(field_key, nested_child_map);
-              field.definition = extractFieldDefinition(nested_child_map, field_key);
+              field.definition = extractFieldDefinition(
+                nested_child_map,
+                field_key,
+              );
               uniqueFields.add(field);
             }
           }
         }
-
       } else {
         // This is a "standard" (non-nested) field
         uniqueFields.add(field);
@@ -120,9 +122,8 @@ class LabelFormWidgetState extends APIFormWidgetState {
 Future<void> handlePrintingSuccess(
   BuildContext context,
   Map<String, dynamic> data,
-  int repeatCount
+  int repeatCount,
 ) async {
-
   const int MAX_REPEATS = 60;
 
   int id = (data["pk"] ?? -1) as int;
@@ -141,13 +142,11 @@ Future<void> handlePrintingSuccess(
     }
   } else if (error) {
     showSnackIcon(L10().printLabelFailure, success: false);
-  } else if (repeatCount < MAX_REPEATS && id > 0){
+  } else if (repeatCount < MAX_REPEATS && id > 0) {
     // Printing is not yet complete, but we have a valid output ID
     Future.delayed(Duration(milliseconds: 1000), () async {
       // Re-query the printing status
-      InvenTreeAPI().get(
-        "data-output/$id/",
-      ).then((response) {
+      InvenTreeAPI().get("data-output/$id/").then((response) {
         if (response.statusCode == 200) {
           if (response.data is Map<String, dynamic>) {
             final responseData = response.data as Map<String, dynamic>;
@@ -231,6 +230,6 @@ Future<void> selectAndPrintLabel(
     formHandler: formHandler,
     onSuccess: (data) async {
       handlePrintingSuccess(context, data, 0);
-    }
+    },
   );
 }

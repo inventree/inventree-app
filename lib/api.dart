@@ -978,7 +978,6 @@ class InvenTreeAPI {
     }
 
     hideLoadingOverlay();
-
   }
 
   /*
@@ -1092,8 +1091,15 @@ class InvenTreeAPI {
    * We send this with the currently selected "locale",
    * so that (hopefully) the field messages are correctly translated
    */
-  Future<APIResponse> options(String url, {Map<String, String> params = const {}}) async {
-    HttpClientRequest? request = await apiRequest(url, "OPTIONS", urlParams: params);
+  Future<APIResponse> options(
+    String url, {
+    Map<String, String> params = const {},
+  }) async {
+    HttpClientRequest? request = await apiRequest(
+      url,
+      "OPTIONS",
+      urlParams: params,
+    );
 
     if (request == null) {
       // Return an "invalid" APIResponse
