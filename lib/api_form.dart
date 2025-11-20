@@ -301,6 +301,7 @@ class APIFormField {
         return _constructBoolean();
       case "related field":
         return _constructRelatedField();
+      case "integer":
       case "float":
       case "decimal":
         return _constructFloatField();

@@ -82,7 +82,31 @@ class LabelFormWidgetState extends APIFormWidgetState {
       APIFormField field = APIFormField(key, fieldData);
       field.definition = extractFieldDefinition(printingFields, field.lookupPath);
 
-      uniqueFields.add(field);
+      if (field.type == "dependent field") {
+        // Dependent fields must be handled separately
+
+        // TODO: This should be refactored into api_form.dart
+        dynamic child = field.definition["child"];
+
+        if (child != null && child is Map) {
+          Map<String, dynamic> child_map = child as Map<String, dynamic>;
+          dynamic nested_children = child_map["children"];
+
+          if (nested_children != null && nested_children is Map) {
+            Map<String, dynamic> nested_child_map = nested_children as Map<String, dynamic>;
+
+            for (var field_key in nested_child_map.keys) {
+              field = APIFormField(field_key, nested_child_map);
+              field.definition = extractFieldDefinition(nested_child_map, field_key);
+              uniqueFields.add(field);
+            }
+          }
+        }
+
+      } else {
+        // This is a "standard" (non-nested) field
+        uniqueFields.add(field);
+      }
     }
 
     if (mounted) {
