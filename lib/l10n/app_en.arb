@@ -148,7 +148,7 @@
   "barcodeScanPaused": "Barcode scanning paused",
   "@barodeScanPaused": {},
 
-  "barcodeScanPause": "Tap or hold to pause scanning",
+  "barcodeScanPause": "Tap to pause scanning",
   "@barcodeScanPause": {},
 
   "barcodeScanAssign": "Scan to assign barcode",
