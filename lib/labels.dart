@@ -32,7 +32,7 @@ class LabelFormWidgetState extends APIFormWidgetState {
     if (pluginKey.isEmpty) {
       // Handle case where default plugin is provided
       final APIFormField? pluginField = baseFields.firstWhere(
-            (field) => field.name == "plugin",
+        (field) => field.name == "plugin",
       );
 
       if (pluginField?.initial_data != null) {
@@ -46,14 +46,16 @@ class LabelFormWidgetState extends APIFormWidgetState {
 
   @override
   void onValueChanged(String field, dynamic value) {
-
     if (field == "plugin") {
       onPluginChanged(value.toString());
     }
   }
 
   @override
-  Future<void> handleSuccess(Map<String, dynamic> submittedData, Map<String, dynamic> responseData) async {
+  Future<void> handleSuccess(
+    Map<String, dynamic> submittedData,
+    Map<String, dynamic> responseData,
+  ) async {
     super.handleSuccess(submittedData, responseData);
 
     // Save default values to the database
@@ -67,18 +69,17 @@ class LabelFormWidgetState extends APIFormWidgetState {
 
     // Save default template for this label type
     if (labelType.isNotEmpty && template != null) {
-      final defaultTemplates = await InvenTreeSettingsManager().getValue(
-        INV_LABEL_DEFAULT_TEMPLATES,
-        null,
-      ) as Map<String, dynamic>?;
+      final defaultTemplates =
+          await InvenTreeSettingsManager().getValue(
+                INV_LABEL_DEFAULT_TEMPLATES,
+                null,
+              )
+              as Map<String, dynamic>?;
 
-      InvenTreeSettingsManager().setValue(
-        INV_LABEL_DEFAULT_TEMPLATES,
-        {
-          ...?defaultTemplates,
-          labelType: template,
-        },
-      );
+      InvenTreeSettingsManager().setValue(INV_LABEL_DEFAULT_TEMPLATES, {
+        ...?defaultTemplates,
+        labelType: template,
+      });
     }
   }
 
@@ -267,17 +268,14 @@ Future<void> selectAndPrintLabel(
 
   final formHandler = LabelFormWidgetState();
   formHandler.setLabelType(labelType);
-  
+
   launchApiForm(
     context,
     L10().printLabel,
     PRINT_LABEL_URL,
     baseFields,
     method: "POST",
-    modelData: {
-      "plugin": defaultPlugin,
-      "template": defaultTemplate,
-    },
+    modelData: {"plugin": defaultPlugin, "template": defaultTemplate},
     formHandler: formHandler,
     onSuccess: (data) async {
       handlePrintingSuccess(context, data, 0);

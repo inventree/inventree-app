@@ -1170,14 +1170,16 @@ class APIFormWidgetState extends State<APIFormWidget> {
   // but custom form implementations may override this function
   void onValueChanged(String field, dynamic value) {}
 
-  Future<void> handleSuccess(Map<String, dynamic> submittedData, Map<String, dynamic> responseData) async {
+  Future<void> handleSuccess(
+    Map<String, dynamic> submittedData,
+    Map<String, dynamic> responseData,
+  ) async {
     if (widget.onSuccess != null) {
       widget.onSuccess!(responseData);
     }
 
     Navigator.pop(context);
   }
-
 
   List<Widget> _buildForm() {
     List<Widget> widgets = [];
@@ -1449,16 +1451,16 @@ class APIFormWidgetState extends State<APIFormWidget> {
       case 200:
       case 201:
         // Form was successfully validated by the server
-      // Ensure the response is a valid JSON structure
-      Map<String, dynamic> json = {};
+        // Ensure the response is a valid JSON structure
+        Map<String, dynamic> json = {};
 
-      var responseData = response.asMap();
+        var responseData = response.asMap();
 
-      for (String key in responseData.keys) {
-        json[key.toString()] = responseData[key];
-      }
+        for (String key in responseData.keys) {
+          json[key.toString()] = responseData[key];
+        }
 
-      handleSuccess(data, json);
+        handleSuccess(data, json);
 
         return;
       case 400:
