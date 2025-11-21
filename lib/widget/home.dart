@@ -130,7 +130,6 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
     );
   }
 
-
   void _showBuildOrders(BuildContext context) {
     if (!InvenTreeAPI().checkConnection()) return;
 
@@ -200,9 +199,12 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
 
     homeShowShipments =
         await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_SHIPMENTS, true)
+            as bool;
+
     homeShowBuild =
         await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_BUILD, true)
             as bool;
+
     homeShowManufacturers =
         await InvenTreeSettingsManager().getValue(
               INV_HOME_SHOW_MANUFACTURERS,
@@ -373,7 +375,6 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
         ),
       );
     }
-
 
     // Build Orders
     if (homeShowBuild && InvenTreeAPI().checkRole("build", "view")) {
