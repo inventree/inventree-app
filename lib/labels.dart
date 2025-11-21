@@ -31,12 +31,12 @@ class LabelFormWidgetState extends APIFormWidgetState {
 
     if (pluginKey.isEmpty) {
       // Handle case where default plugin is provided
-      final APIFormField? pluginField = baseFields.firstWhere(
+      final APIFormField pluginField = baseFields.firstWhere(
         (field) => field.name == "plugin",
       );
 
-      if (pluginField?.initial_data != null) {
-        pluginKey = pluginField!.value.toString();
+      if (pluginField.initial_data != null) {
+        pluginKey = pluginField.value.toString();
         onValueChanged("plugin", pluginKey);
       }
     }

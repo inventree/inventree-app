@@ -1174,10 +1174,7 @@ class APIFormWidgetState extends State<APIFormWidget> {
     Map<String, dynamic> submittedData,
     Map<String, dynamic> responseData,
   ) async {
-    if (widget.onSuccess != null) {
-      widget.onSuccess!(responseData);
-    }
-
+    widget.onSuccess?.call(responseData);
     Navigator.pop(context);
   }
 
@@ -1428,9 +1425,6 @@ class APIFormWidgetState extends State<APIFormWidget> {
     if (!isValid) {
       return;
     }
-
-    // Run custom onSuccess function
-    var successFunc = widget.onSuccess;
 
     // An "empty" URL means we don't want to submit the form anywhere
     // Perhaps we just want to process the data?
