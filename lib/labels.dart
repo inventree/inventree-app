@@ -18,17 +18,30 @@ class LabelFormWidgetState extends APIFormWidgetState {
 
   List<APIFormField> dynamicFields = [];
 
+  String pluginKey = "";
+
   @override
   List<APIFormField> get formFields {
     final baseFields = super.formFields;
 
-    // TODO: Inject dynamic fields based on selected plugin
+    if (pluginKey.isEmpty) {
+      // Handle case where default plugin is provided
+      final APIFormField? pluginField = baseFields.firstWhere(
+            (field) => field.name == "plugin",
+      );
+
+      if (pluginField?.initial_data != null) {
+        pluginKey = pluginField!.value.toString();
+        onValueChanged("plugin", pluginKey);
+      }
+    }
 
     return [...baseFields, ...dynamicFields];
   }
 
   @override
   void onValueChanged(String field, dynamic value) {
+
     if (field == "plugin") {
       onPluginChanged(value.toString());
     }
@@ -219,12 +232,19 @@ Future<void> selectAndPrintLabel(
 
   final formHandler = LabelFormWidgetState();
 
+  print("defaultPlugin: $defaultPlugin");
+  print("defaultTemplate: $defaultTemplate");
+
   launchApiForm(
     context,
     L10().printLabel,
     PRINT_LABEL_URL,
     baseFields,
     method: "POST",
+    modelData: {
+      "plugin": defaultPlugin,
+      "template": defaultTemplate,
+    },
     formHandler: formHandler,
     onSuccess: (data) async {
       handlePrintingSuccess(context, data, 0);

@@ -275,18 +275,13 @@ class APIFormField {
       return;
     }
 
-    int? pk = int.tryParse(value.toString());
-
-    if (pk == null) {
-      return;
-    }
-
-    String url = api_url + "/" + pk.toString() + "/";
+    String url = api_url + "/" + value.toString() + "/";
 
     final APIResponse response = await InvenTreeAPI().get(url, params: filters);
 
     if (response.successful()) {
       initial_data = response.data;
+      formHandler?.onValueChanged(name, value);
     }
   }
 
@@ -1459,10 +1454,10 @@ class APIFormWidgetState extends State<APIFormWidget> {
           // Ensure the response is a valid JSON structure
           Map<String, dynamic> json = {};
 
-          var data = response.asMap();
+          var responseData = response.asMap();
 
-          for (String key in data.keys) {
-            json[key.toString()] = data[key];
+          for (String key in responseData.keys) {
+            json[key.toString()] = responseData[key];
           }
 
           successFunc(json);
