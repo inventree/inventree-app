@@ -779,15 +779,6 @@ class APIFormField {
           subtitle: Text(project_code.description),
           leading: Icon(TablerIcons.list),
         );
-      case InvenTreeSalesOrder.MODEL_TYPE:
-        var so = InvenTreeSalesOrder.fromJson(data);
-        return ListTile(
-          title: Text(so.reference),
-          subtitle: Text(so.description),
-          leading: InvenTreeAPI().getThumbnail(
-            so.customer?.thumbnail ?? so.customer?.image ?? "",
-          ),
-        );
       default:
         return ListTile(
           title: Text(
