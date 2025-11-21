@@ -5,6 +5,9 @@ import "package:inventree/helpers.dart";
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/orders.dart";
+import "package:inventree/inventree/part.dart";
+import "package:inventree/inventree/stock.dart";
+import "package:inventree/widget/order/so_shipment_detail.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/order/extra_line_detail.dart";
 import "package:inventree/widget/order/sales_order_detail.dart";
@@ -269,6 +272,19 @@ class InvenTreeSalesOrderShipment extends InvenTreeModel {
   @override
   String get URL => "/order/so/shipment/";
 
+  String get SHIP_SHIPMENT_URL => "/order/so/shipment/${pk}/ship/";
+
+  @override
+  Future<Object?> goToDetailPage(BuildContext context) async {
+    return Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SOShipmentDetailWidget(this)),
+    );
+  }
+
+  @override
+  List<String> get rolesRequired => ["sales_order"];
+
   static const String MODEL_TYPE = "salesordershipment";
 
   @override
@@ -284,6 +300,18 @@ class InvenTreeSalesOrderShipment extends InvenTreeModel {
     return fields;
   }
 
+  int get orderId => getInt("order");
+
+  InvenTreeSalesOrder? get order {
+    dynamic order_detail = jsondata["order_detail"];
+
+    if (order_detail == null) {
+      return null;
+    } else {
+      return InvenTreeSalesOrder.fromJson(order_detail as Map<String, dynamic>);
+    }
+  }
+
   String get reference => getString("reference");
 
   String get tracking_number => getString("tracking_number");
@@ -292,7 +320,113 @@ class InvenTreeSalesOrderShipment extends InvenTreeModel {
 
   String? get shipment_date => getString("shipment_date");
 
-  bool get shipped => shipment_date != null && shipment_date!.isNotEmpty;
+  String? get delivery_date => getString("delivery_date");
+
+  int? get checked_by_id => getInt("checked_by");
+
+  bool get isChecked => checked_by_id != null && checked_by_id! > 0;
+
+  bool get isShipped => shipment_date != null && shipment_date!.isNotEmpty;
+
+  bool get isDelivered => delivery_date != null && delivery_date!.isNotEmpty;
+}
+
+/*
+  * Class representing an allocation of stock against a SalesOrderShipment
+ */
+class InvenTreeSalesOrderAllocation extends InvenTreeAttachment {
+  InvenTreeSalesOrderAllocation() : super();
+
+  InvenTreeSalesOrderAllocation.fromJson(Map<String, dynamic> json)
+    : super.fromJson(json);
+
+  @override
+  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
+      InvenTreeSalesOrderAllocation.fromJson(json);
+
+  @override
+  String get URL => "/order/so-allocation/";
+
+  @override
+  List<String> get rolesRequired => ["sales_order"];
+
+  @override
+  Map<String, String> defaultFilters() {
+    return {
+      "part_detail": "true",
+      "order_detail": "true",
+      "item_detail": "true",
+      "location_detail": "true",
+    };
+  }
+
+  static const String MODEL_TYPE = "salesorderallocation";
+
+  int get orderId => getInt("order");
+
+  InvenTreeSalesOrder? get order {
+    dynamic order_detail = jsondata["order_detail"];
+
+    if (order_detail == null) {
+      return null;
+    } else {
+      return InvenTreeSalesOrder.fromJson(order_detail as Map<String, dynamic>);
+    }
+  }
+
+  int get stockItemId => getInt("item");
+
+  InvenTreeStockItem? get stockItem {
+    dynamic item_detail = jsondata["item_detail"];
+
+    if (item_detail == null) {
+      return null;
+    } else {
+      return InvenTreeStockItem.fromJson(item_detail as Map<String, dynamic>);
+    }
+  }
+
+  int get partId => getInt("part");
+
+  InvenTreePart? get part {
+    dynamic part_detail = jsondata["part_detail"];
+
+    if (part_detail == null) {
+      return null;
+    } else {
+      return InvenTreePart.fromJson(part_detail as Map<String, dynamic>);
+    }
+  }
+
+  int get shipmentId => getInt("shipment");
+
+  bool get hasShipment => shipmentId > 0;
+
+  InvenTreeSalesOrderShipment? get shipment {
+    dynamic shipment_detail = jsondata["shipment_detail"];
+
+    if (shipment_detail == null) {
+      return null;
+    } else {
+      return InvenTreeSalesOrderShipment.fromJson(
+        shipment_detail as Map<String, dynamic>,
+      );
+    }
+  }
+
+  int get locationId => getInt("location");
+
+  InvenTreeStockLocation? get location {
+    dynamic location_detail = jsondata["location_detail"];
+
+    if (location_detail == null) {
+      return null;
+    } else {
+      return InvenTreeStockLocation.fromJson(
+        location_detail as Map<String, dynamic>,
+      );
+    }
+  }
 }
 
 /*
@@ -318,4 +452,24 @@ class InvenTreeSalesOrderAttachment extends InvenTreeAttachment {
   String get URL => InvenTreeAPI().supportsModernAttachments
       ? "attachment/"
       : "order/so/attachment/";
+}
+
+class InvenTreeSalesOrderShipmentAttachment extends InvenTreeAttachment {
+  InvenTreeSalesOrderShipmentAttachment() : super();
+
+  InvenTreeSalesOrderShipmentAttachment.fromJson(Map<String, dynamic> json)
+    : super.fromJson(json);
+
+  @override
+  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
+      InvenTreeSalesOrderShipmentAttachment.fromJson(json);
+
+  @override
+  String get REFERENCE_FIELD => "shipment";
+
+  @override
+  String get REF_MODEL_TYPE => "salesordershipment";
+
+  @override
+  String get URL => "attachment/";
 }

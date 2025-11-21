@@ -49,7 +49,8 @@ class InvenTreeAboutWidget extends StatelessWidget {
     var url = Uri(
       scheme: "https",
       host: "github.com",
-      path: "inventree/inventree-app/issues/new?title=Enter+bug+description",
+      path: "inventree/inventree-app/issues/new/",
+      queryParameters: {"title": "Enter bug description"},
     );
 
     if (await canLaunchUrl(url)) {

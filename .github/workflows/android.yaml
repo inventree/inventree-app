@@ -50,5 +50,7 @@ jobs:
 
     - name: Build for Android
       run: |
-        flutter pub get
-        flutter build apk --debug
+        dart pub global activate fvm
+        fvm install
+        fvm flutter pub get
+        fvm flutter build apk --debug

@@ -250,12 +250,12 @@ class BarcodeScanHandler extends BarcodeHandler {
 
     // The following model types can be matched with barcodes
     List<String> validModels = [
-      InvenTreePart.MODEL_TYPE,
-      InvenTreeCompany.MODEL_TYPE,
       InvenTreeStockItem.MODEL_TYPE,
-      InvenTreeStockLocation.MODEL_TYPE,
       InvenTreeSupplierPart.MODEL_TYPE,
       InvenTreeManufacturerPart.MODEL_TYPE,
+      InvenTreePart.MODEL_TYPE,
+      InvenTreeStockLocation.MODEL_TYPE,
+      InvenTreeCompany.MODEL_TYPE,
     ];
 
     if (InvenTreeAPI().supportsOrderBarcodes) {

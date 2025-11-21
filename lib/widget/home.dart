@@ -14,6 +14,7 @@ import "package:inventree/preferences.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/settings/select_server.dart";
 import "package:inventree/user_profile.dart";
+import "package:inventree/widget/order/so_shipment_list.dart";
 
 import "package:inventree/widget/part/category_display.dart";
 import "package:inventree/widget/drawer.dart";
@@ -56,6 +57,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
 
   bool homeShowPo = false;
   bool homeShowSo = false;
+  bool homeShowShipments = false;
   bool homeShowBuild = false;
   bool homeShowSubscribed = false;
   bool homeShowManufacturers = false;
@@ -113,6 +115,21 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
       ),
     );
   }
+
+  void _showPendingShipments(BuildContext context) {
+    if (!InvenTreeAPI().checkConnection()) return;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SOShipmentListWidget(
+          title: L10().shipmentsPending,
+          filters: {"order_outstanding": "true", "shipped": "false"},
+        ),
+      ),
+    );
+  }
+
 
   void _showBuildOrders(BuildContext context) {
     if (!InvenTreeAPI().checkConnection()) return;
@@ -180,6 +197,9 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
     homeShowSo =
         await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_SO, true)
             as bool;
+
+    homeShowShipments =
+        await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_SHIPMENTS, true)
     homeShowBuild =
         await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_BUILD, true)
             as bool;
@@ -340,6 +360,20 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
         ),
       );
     }
+
+    if (homeShowShipments && InvenTreeSalesOrderShipment().canView) {
+      tiles.add(
+        _listTile(
+          context,
+          L10().shipmentsPending,
+          TablerIcons.cube_send,
+          callback: () {
+            _showPendingShipments(context);
+          },
+        ),
+      );
+    }
+
 
     // Build Orders
     if (homeShowBuild && InvenTreeAPI().checkRole("build", "view")) {

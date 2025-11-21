@@ -225,6 +225,10 @@ class InvenTreeSupplierPart extends InvenTreeModel {
 
   int get partId => getInt("part");
 
+  double get inStock => getDouble("in_stock");
+
+  double get onOrder => getDouble("on_order");
+
   String get partImage =>
       (jsondata["part_detail"]?["thumbnail"] ?? InvenTreeAPI.staticThumb)
           as String;

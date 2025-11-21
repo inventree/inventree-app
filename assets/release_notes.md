@@ -1,3 +1,35 @@
+### 0.21.0 - November 2025
+---
+
+- Adds zoom controller for barcode scanner camera view
+- Display default stock location in Part detail page
+- Display stock information in SupplierPart detail page
+
+### 0.20.2 - November 2025
+---
+
+- Fixes URL for reporting issues on GitHub
+- Fix for uploading files against server with self-signed certificates
+
+### 0.20.1 - October 2025
+---
+
+- Bug fix for camera barcode scanner
+
+### 0.20.0 - October 2025
+---
+
+- View pending shipments from the home screen
+- Display detail view for shipments
+- Adds ability to ship pending outgoing shipments
+- Adds ability to mark outgoing shipments as "checked" or "unchecked"
+- Updated translations
+
+### 0.19.3 - September 2025
+---
+
+- Fixes incorrect priority of barcode scanner results
+
 ### 0.19.2 - August 2025
 ---
 

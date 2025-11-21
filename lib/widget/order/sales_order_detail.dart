@@ -375,24 +375,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
 
     Color lineColor = widget.order.complete ? COLOR_SUCCESS : COLOR_WARNING;
 
-    // Shipment progress
-    if (widget.order.shipmentCount > 0) {
-      tiles.add(
-        ListTile(
-          title: Text(L10().shipments),
-          subtitle: ProgressBar(
-            widget.order.completedShipmentCount.toDouble(),
-            maximum: widget.order.shipmentCount.toDouble(),
-          ),
-          leading: Icon(TablerIcons.truck_delivery),
-          trailing: LargeText(
-            "${widget.order.completedShipmentCount} / ${widget.order.shipmentCount}",
-            color: lineColor,
-          ),
-        ),
-      );
-    }
-
+    // Line items progress
     tiles.add(
       ListTile(
         title: Text(L10().lineItems),
@@ -407,6 +390,24 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
         ),
       ),
     );
+
+    // Shipment progress
+    if (widget.order.shipmentCount > 0) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().shipments),
+          subtitle: ProgressBar(
+            widget.order.completedShipmentCount.toDouble(),
+            maximum: widget.order.shipmentCount.toDouble(),
+          ),
+          leading: Icon(TablerIcons.cube_send),
+          trailing: LargeText(
+            "${widget.order.completedShipmentCount} / ${widget.order.shipmentCount}",
+            color: lineColor,
+          ),
+        ),
+      );
+    }
 
     // Extra line items
     tiles.add(
@@ -522,8 +523,8 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
   List<Widget> getTabIcons(BuildContext context) {
     return [
       Tab(text: L10().details),
-      Tab(text: L10().shipments),
       Tab(text: L10().lineItems),
+      Tab(text: L10().shipments),
     ];
   }
 
@@ -531,8 +532,8 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
   List<Widget> getTabs(BuildContext context) {
     return [
       ListView(children: orderTiles(context)),
-      PaginatedSOShipmentList({"order": widget.order.pk.toString()}),
       PaginatedSOLineList({"order": widget.order.pk.toString()}),
+      PaginatedSOShipmentList({"order": widget.order.pk.toString()}),
     ];
   }
 }

@@ -7,6 +7,35 @@ import "package:inventree/widget/paginator.dart";
 
 import "package:inventree/inventree/model.dart";
 import "package:inventree/l10.dart";
+import "package:inventree/widget/refreshable_state.dart";
+
+class SOShipmentListWidget extends StatefulWidget {
+  const SOShipmentListWidget({
+    this.title = "",
+    this.filters = const {},
+    Key? key,
+  }) : super(key: key);
+
+  final Map<String, String> filters;
+
+  final String title;
+
+  @override
+  _SOShipmentListWidgetState createState() => _SOShipmentListWidgetState();
+}
+
+class _SOShipmentListWidgetState
+    extends RefreshableState<SOShipmentListWidget> {
+  _SOShipmentListWidgetState();
+
+  @override
+  String getAppBarTitle() => widget.title;
+
+  @override
+  Widget getBody(BuildContext context) {
+    return PaginatedSOShipmentList(widget.filters);
+  }
+}
 
 class PaginatedSOShipmentList extends PaginatedSearchWidget {
   const PaginatedSOShipmentList(Map<String, String> filters)
@@ -51,15 +80,21 @@ class _PaginatedSOShipmentListState
   Widget buildItem(BuildContext context, InvenTreeModel model) {
     InvenTreeSalesOrderShipment shipment = model as InvenTreeSalesOrderShipment;
 
+    InvenTreeSalesOrder? order = shipment.order;
     return ListTile(
-      title: Text(shipment.reference),
-      subtitle: Text(shipment.tracking_number),
-      leading: shipment.shipped
+      title: Text(
+        "${order?.reference ?? L10().salesOrder} - ${shipment.reference}",
+      ),
+      subtitle: Text(order?.description ?? L10().description),
+      onTap: () async {
+        shipment.goToDetailPage(context);
+      },
+      leading: shipment.isShipped
           ? Icon(TablerIcons.calendar_check, color: COLOR_SUCCESS)
           : Icon(TablerIcons.calendar_cancel, color: COLOR_WARNING),
-      trailing: shipment.shipped
+      trailing: shipment.isShipped
           ? LargeText(shipment.shipment_date ?? "")
-          : null,
+          : LargeText(L10().pending),
     );
   }
 }

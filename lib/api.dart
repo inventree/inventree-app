@@ -4,6 +4,7 @@ import "dart:io";
 
 import "package:flutter/foundation.dart";
 import "package:http/http.dart" as http;
+import "package:http/io_client.dart";
 import "package:intl/intl.dart";
 import "package:inventree/main.dart";
 import "package:one_context/one_context.dart";
@@ -278,6 +279,8 @@ class InvenTreeAPI {
   Map<String, dynamic> userInfo = {};
 
   String get username => (userInfo["username"] ?? "") as String;
+
+  int get userId => (userInfo["pk"] ?? -1) as int;
 
   // Map of server information
   Map<String, dynamic> serverInfo = {};
@@ -981,12 +984,23 @@ class InvenTreeAPI {
     String method = "POST",
     Map<String, dynamic>? fields,
   }) async {
-    var _url = makeApiUrl(url);
+    bool strictHttps = await InvenTreeSettingsManager().getBool(
+      INV_STRICT_HTTPS,
+      false,
+    );
 
-    var request = http.MultipartRequest(method, Uri.parse(_url));
+    // Create an IOClient wrapper for sending the MultipartRequest
+    final ioClient = IOClient(createClient(url, strictHttps: strictHttps));
 
-    request.headers.addAll(defaultHeaders());
+    final uri = Uri.parse(makeApiUrl(url));
+    final request = http.MultipartRequest(method, uri);
 
+    // Default headers
+    defaultHeaders().forEach((key, value) {
+      request.headers[key] = value;
+    });
+
+    // Optional fields
     if (fields != null) {
       fields.forEach((String key, dynamic value) {
         if (value == null) {
@@ -997,20 +1011,24 @@ class InvenTreeAPI {
       });
     }
 
+    // Add file to upload
     var _file = await http.MultipartFile.fromPath(name, f.path);
-
     request.files.add(_file);
 
+    // Construct a response object to return
     APIResponse response = APIResponse(url: url, method: method);
 
     String jsondata = "";
 
     try {
-      var httpResponse = await request.send().timeout(Duration(seconds: 120));
+      var streamedResponse = await ioClient
+          .send(request)
+          .timeout(Duration(seconds: 120));
+      final httpResponse = await http.Response.fromStream(streamedResponse);
 
       response.statusCode = httpResponse.statusCode;
 
-      jsondata = await httpResponse.stream.bytesToString();
+      jsondata = httpResponse.body;
 
       response.data = json.decode(jsondata);
 
@@ -1543,8 +1561,15 @@ class InvenTreeAPI {
     return CachedNetworkImage(
       imageUrl: url,
       placeholder: (context, url) => CircularProgressIndicator(),
-      errorWidget: (context, url, error) =>
-          Icon(TablerIcons.circle_x, color: COLOR_DANGER),
+      errorWidget: (context, url, error) {
+        print("CachedNetworkimage error: ${error.toString()}");
+        return GestureDetector(
+          child: Icon(TablerIcons.circle_x, color: COLOR_DANGER),
+          onTap: () => {
+            showSnackIcon(error.toString().split(",")[0], success: false),
+          },
+        );
+      },
       httpHeaders: defaultHeaders(),
       height: height,
       width: width,

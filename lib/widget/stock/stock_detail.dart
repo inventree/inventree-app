@@ -49,6 +49,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
   // Linked data fields
   InvenTreePart? part;
+  InvenTreeStockLocation? defaultLocation;
   InvenTreeSalesOrder? salesOrder;
   InvenTreeCompany? customer;
 
@@ -233,6 +234,23 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     part = await InvenTreePart().get(widget.item.partId) as InvenTreePart?;
 
     stockShowTests &= part?.isTrackable ?? false;
+
+    // Request default location
+    int? defaultLocationId = part?.defaultLocation;
+
+    if (defaultLocationId != null) {
+      InvenTreeStockLocation().get(defaultLocationId).then((value) {
+        if (mounted) {
+          setState(() {
+            defaultLocation = value as InvenTreeStockLocation?;
+          });
+        }
+      });
+    } else if (mounted) {
+      setState(() {
+        defaultLocation = null;
+      });
+    }
 
     // Request test results (async)
     if (stockShowTests) {
@@ -569,6 +587,21 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     }
 
+    if (defaultLocation != null &&
+        defaultLocation?.pk != widget.item.locationId) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().locationDefault),
+          subtitle: Text(defaultLocation!.pathstring),
+          leading: Icon(TablerIcons.map_pin),
+          trailing: LinkIcon(),
+          onTap: () {
+            defaultLocation?.goToDetailPage(context);
+          },
+        ),
+      );
+    }
+
     // Quantity information
     if (widget.item.isSerialized()) {
       tiles.add(
@@ -744,13 +777,13 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       tiles.add(
         ListTile(
           title: Text(L10().lastStocktake),
-          subtitle: Text(widget.item.stocktakeDateString),
+          trailing: LargeText(widget.item.stocktakeDateString),
           leading: Icon(TablerIcons.calendar),
         ),
       );
     }
 
-    if (widget.item.link.isNotEmpty) {
+    if (widget.item.hasLink) {
       tiles.add(
         ListTile(
           title: Text("${widget.item.link}"),

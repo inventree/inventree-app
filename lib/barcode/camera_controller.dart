@@ -41,8 +41,10 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
 
   String scanned_code = "";
 
+  double zoomFactor = 0.0;
+
   final MobileScannerController controller = MobileScannerController(
-    autoZoom: true,
+    autoZoom: false, // Disable autoZoom as we implement a manual slider
   );
 
   @override
@@ -55,6 +57,7 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
   @override
   void dispose() {
     super.dispose();
+    controller.dispose();
     WakelockPlus.disable();
   }
 
@@ -310,6 +313,60 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
     return SpeedDial(icon: Icons.more_horiz, children: actions);
   }
 
+  Widget zoomSlider() {
+    return Positioned(
+      left: 0,
+      right: 0,
+      bottom: 16,
+      child: Center(
+        child: Container(
+          width: 225,
+          height: 56,
+          decoration: BoxDecoration(
+            color: Colors.black.withValues(alpha: 0.3),
+            borderRadius: BorderRadius.circular(28),
+          ),
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            children: [
+              Icon(TablerIcons.zoom_out, color: Colors.white, size: 20),
+              Expanded(
+                child: Slider(
+                  value: zoomFactor,
+                  min: 0.0,
+                  max: 1.0,
+                  activeColor: Colors.white,
+                  inactiveColor: Colors.white.withValues(alpha: 0.3),
+                  onChanged: (value) {
+                    setState(() {
+                      zoomFactor = value;
+                      controller.setZoomScale(value);
+                    });
+                  },
+                  onChangeStart: (value) async {
+                    if (mounted) {
+                      setState(() {
+                        scanning_paused = true;
+                      });
+                    }
+                  },
+                  onChangeEnd: (value) async {
+                    if (mounted) {
+                      setState(() {
+                        scanning_paused = false;
+                      });
+                    }
+                  },
+                ),
+              ),
+              Icon(TablerIcons.zoom_in, color: Colors.white, size: 20),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -332,6 +389,7 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
             Column(children: [Expanded(child: BarcodeReader(context))]),
             topCenterOverlay(),
             bottomCenterOverlay(),
+            zoomSlider(),
           ],
         ),
       ),
