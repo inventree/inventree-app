@@ -19,13 +19,7 @@ class LabelFormWidgetState extends APIFormWidgetState {
   List<APIFormField> dynamicFields = [];
 
   String pluginKey = "";
-  String _labelType = "";
-
-  String get labelType => _labelType;
-
-  set labelType(String type) {
-    _labelType = type;
-  }
+  String labelType = "";
 
   @override
   List<APIFormField> get formFields {
