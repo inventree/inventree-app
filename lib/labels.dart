@@ -19,6 +19,11 @@ class LabelFormWidgetState extends APIFormWidgetState {
   List<APIFormField> dynamicFields = [];
 
   String pluginKey = "";
+  String labelType = "";
+
+  void setLabelType(String type) {
+    labelType = type;
+  }
 
   @override
   List<APIFormField> get formFields {
@@ -44,6 +49,36 @@ class LabelFormWidgetState extends APIFormWidgetState {
 
     if (field == "plugin") {
       onPluginChanged(value.toString());
+    }
+  }
+
+  @override
+  Future<void> handleSuccess(Map<String, dynamic> submittedData, Map<String, dynamic> responseData) async {
+    super.handleSuccess(submittedData, responseData);
+
+    // Save default values to the database
+    final String? plugin = submittedData["plugin"]?.toString();
+    final int? template = submittedData["template"] as int?;
+
+    // Save default printing plugin
+    if (plugin != null) {
+      InvenTreeSettingsManager().setValue(INV_LABEL_DEFAULT_PLUGIN, plugin);
+    }
+
+    // Save default template for this label type
+    if (labelType.isNotEmpty && template != null) {
+      final defaultTemplates = await InvenTreeSettingsManager().getValue(
+        INV_LABEL_DEFAULT_TEMPLATES,
+        null,
+      ) as Map<String, dynamic>?;
+
+      InvenTreeSettingsManager().setValue(
+        INV_LABEL_DEFAULT_TEMPLATES,
+        {
+          ...?defaultTemplates,
+          labelType: template,
+        },
+      );
     }
   }
 
@@ -231,10 +266,8 @@ Future<void> selectAndPrintLabel(
   };
 
   final formHandler = LabelFormWidgetState();
-
-  print("defaultPlugin: $defaultPlugin");
-  print("defaultTemplate: $defaultTemplate");
-
+  formHandler.setLabelType(labelType);
+  
   launchApiForm(
     context,
     L10().printLabel,
