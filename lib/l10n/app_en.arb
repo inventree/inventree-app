@@ -695,6 +695,12 @@
   "keywords": "Keywords",
   "@keywords": {},
 
+  "labelDriver": "Label Driver",
+  "@labelDriver": {},
+
+  "labelSelectDriver": "Select Label Printer Driver",
+  "@labelSelectDriver": {},
+
   "labelPrinting": "Label Printing",
   "@labelPrinting": {},
 
