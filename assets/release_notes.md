@@ -1,3 +1,8 @@
+### 0.21.1 - November 2025
+---
+
+- Fixed app freeze bug after form submission
+
 ### 0.21.0 - November 2025
 ---
 

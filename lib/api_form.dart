@@ -1174,8 +1174,8 @@ class APIFormWidgetState extends State<APIFormWidget> {
     Map<String, dynamic> submittedData,
     Map<String, dynamic> responseData,
   ) async {
-    widget.onSuccess?.call(responseData);
     Navigator.pop(context);
+    widget.onSuccess?.call(responseData);
   }
 
   List<Widget> _buildForm() {
