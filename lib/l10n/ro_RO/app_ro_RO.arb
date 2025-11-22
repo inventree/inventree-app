@@ -1154,9 +1154,9 @@
   "@usedIn": {},
   "usedInDetails": "Assemblies which require this part",
   "@usedInDetails": {},
-  "username": "Username",
+  "username": "Nume utilizator",
   "@username": {},
-  "usernameEmpty": "Username cannot be empty",
+  "usernameEmpty": "Numele de utilizator nu poate fi gol",
   "@usernameEmpty": {},
   "value": "Value",
   "@value": {
