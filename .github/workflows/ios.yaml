@@ -3,6 +3,9 @@
 name: iOS
 
 on:
+  pull_request:
+    branches:
+      - master
   push:
     branches:
       - master
@@ -49,6 +52,7 @@ jobs:
         dart pub global activate fvm
         fvm install
         fvm flutter pub get
+        fvm flutter precache --ios
         cd ios
         pod repo update
         pod install
