@@ -3,6 +3,9 @@
 name: Android
 
 on:
+  pull_request:
+    branches:
+      - master
   push:
     branches:
       - master
@@ -30,7 +33,7 @@ jobs:
       with:
         flutter-version: ${{ steps.fvm-config-action.outputs.FLUTTER_VERSION }}
         channel: ${{ steps.fvm-config-action.outputs.FLUTTER_CHANNEL }}
-        cache: true
+        cache: false
         cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
         cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
         pub-cache-key: "flutter-pub:os:-:channel:-:version:-:arch:-:hash:"
