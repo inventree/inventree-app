@@ -34,14 +34,6 @@ class InvenTreeAttachment extends InvenTreeModel {
     return fields;
   }
 
-  // Override this reference field for any subclasses
-  // Note: This is used for the *legacy* attachment API
-  String get REFERENCE_FIELD => "";
-
-  // Override this reference field for any subclasses
-  // Note: This is used for the *modern* attachment API
-  String get REF_MODEL_TYPE => "";
-
   // The model type of the instance this attachment is associated with
   String get modelType => getString("model_type");
 
