@@ -607,6 +607,18 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       ),
     );
 
+    ListTile? parameterTile = ShowParametersItem(
+      context,
+      InvenTreePart.MODEL_TYPE,
+      part.pk,
+      parameterCount,
+      part.canEdit,
+    );
+
+    if (parameterTile != null) {
+      tiles.add(parameterTile);
+    }
+
     ListTile? attachmentTile = ShowAttachmentsItem(
       context,
       InvenTreePart.MODEL_TYPE,

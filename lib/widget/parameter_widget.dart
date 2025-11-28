@@ -167,7 +167,7 @@ ListTile? ShowParametersItem(
   }
 
   return ListTile(
-    title: Text(L10().attachments),
+    title: Text(L10().parameters),
     leading: Icon(TablerIcons.list_details, color: COLOR_ACTION),
     trailing: LinkIcon(
       text: parameterCount > 0 ? parameterCount.toString() : null,
