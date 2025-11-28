@@ -42,6 +42,12 @@ class InvenTreeAttachment extends InvenTreeModel {
   // Note: This is used for the *modern* attachment API
   String get REF_MODEL_TYPE => "";
 
+  // The model type of the instance this attachment is associated with
+  String get modelType => getString("model_type");
+
+  // The ID of the instance this attachment is associated with
+  int get modelId => getInt("model_id");
+
   String get attachment => getString("attachment");
 
   bool get hasAttachment => attachment.isNotEmpty;
