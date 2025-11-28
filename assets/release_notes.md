@@ -1,3 +1,8 @@
+### x.xx.x - Month Year
+---
+
+- Fixes bug which launched camera twice when uploading an attachment
+
 ### 0.21.1 - November 2025
 ---
 
