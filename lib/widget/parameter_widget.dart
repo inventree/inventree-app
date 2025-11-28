@@ -46,7 +46,11 @@ class _ParameterWidgetState extends RefreshableState<ParameterWidget> {
       "model_id": widget.modelId.toString(),
     };
 
-    return Column(children: [Expanded(child: PaginatedParameterList(filters, widget.editable))]);
+    return Column(
+      children: [
+        Expanded(child: PaginatedParameterList(filters, widget.editable)),
+      ],
+    );
   }
 }
 
@@ -161,7 +165,6 @@ ListTile? ShowParametersItem(
   int parameterCount,
   bool editable,
 ) {
-
   // Note: Currently cannot add parameters from the app,
   // So, if there are no parameters, do not show the item
   if (parameterCount == 0) {
@@ -182,13 +185,9 @@ ListTile? ShowParametersItem(
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ParameterWidget(
-            modelType,
-            modelId,
-            editable,
-          ),
-        )
+          builder: (context) => ParameterWidget(modelType, modelId, editable),
+        ),
       );
-    }
+    },
   );
 }

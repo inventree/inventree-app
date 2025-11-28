@@ -274,16 +274,15 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
       true,
     );
 
-    InvenTreeParameter().countParameters(
-      InvenTreeSalesOrder.MODEL_TYPE,
-      widget.order.pk,
-    ).then((int value) {
-      if (mounted) {
-        setState(() {
-          parameterCount = value;
+    InvenTreeParameter()
+        .countParameters(InvenTreeSalesOrder.MODEL_TYPE, widget.order.pk)
+        .then((int value) {
+          if (mounted) {
+            setState(() {
+              parameterCount = value;
+            });
+          }
         });
-      }
-    });
 
     InvenTreeAttachment()
         .countAttachments(InvenTreeSalesOrder.MODEL_TYPE, widget.order.pk)

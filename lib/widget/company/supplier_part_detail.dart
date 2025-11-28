@@ -107,27 +107,31 @@ class _SupplierPartDisplayState
       return;
     }
 
-    InvenTreeParameter().countParameters(
-        InvenTreeSupplierPart.MODEL_TYPE,
-        widget.supplierPart.pk
-    ).then((value) {
-      if (mounted) {
-        setState(() {
-          parameterCount = value;
+    InvenTreeParameter()
+        .countParameters(
+          InvenTreeSupplierPart.MODEL_TYPE,
+          widget.supplierPart.pk,
+        )
+        .then((value) {
+          if (mounted) {
+            setState(() {
+              parameterCount = value;
+            });
+          }
         });
-      }
-    });
 
-    InvenTreeAttachment().countAttachments(
-        InvenTreeSupplierPart.MODEL_TYPE,
-        widget.supplierPart.pk
-    ).then((value) {
-      if (mounted) {
-        setState(() {
-          attachmentCount = value;
+    InvenTreeAttachment()
+        .countAttachments(
+          InvenTreeSupplierPart.MODEL_TYPE,
+          widget.supplierPart.pk,
+        )
+        .then((value) {
+          if (mounted) {
+            setState(() {
+              attachmentCount = value;
+            });
+          }
         });
-      }
-    });
   }
 
   /*

@@ -304,14 +304,14 @@ class _PurchaseOrderDetailState
     }
 
     InvenTreeParameter()
-    .countParameters(InvenTreePurchaseOrder.MODEL_TYPE, widget.order.pk)
-    .then((int value) {
-      if (mounted) {
-        setState(() {
-          parameterCount = value;
+        .countParameters(InvenTreePurchaseOrder.MODEL_TYPE, widget.order.pk)
+        .then((int value) {
+          if (mounted) {
+            setState(() {
+              parameterCount = value;
+            });
+          }
         });
-      }
-    });
 
     InvenTreeAttachment()
         .countAttachments(InvenTreePurchaseOrder.MODEL_TYPE, widget.order.pk)

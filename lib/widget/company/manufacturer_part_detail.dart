@@ -52,27 +52,31 @@ class _ManufacturerPartDisplayState
       return;
     }
 
-    InvenTreeParameter().countParameters(
-      InvenTreeManufacturerPart.MODEL_TYPE,
-        widget.manufacturerPart.pk
-    ).then((value) {
-      if (mounted) {
-        setState(() {
-          parameterCount = value;
+    InvenTreeParameter()
+        .countParameters(
+          InvenTreeManufacturerPart.MODEL_TYPE,
+          widget.manufacturerPart.pk,
+        )
+        .then((value) {
+          if (mounted) {
+            setState(() {
+              parameterCount = value;
+            });
+          }
         });
-      }
-    });
 
-    InvenTreeAttachment().countAttachments(
-      InvenTreeManufacturerPart.MODEL_TYPE,
-        widget.manufacturerPart.pk
-    ).then((value) {
-      if (mounted) {
-        setState(() {
-          attachmentCount = value;
+    InvenTreeAttachment()
+        .countAttachments(
+          InvenTreeManufacturerPart.MODEL_TYPE,
+          widget.manufacturerPart.pk,
+        )
+        .then((value) {
+          if (mounted) {
+            setState(() {
+              attachmentCount = value;
+            });
+          }
         });
-      }
-    });
   }
 
   Future<void> editManufacturerPart(BuildContext context) async {

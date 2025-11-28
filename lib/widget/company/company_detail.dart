@@ -188,16 +188,15 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
           }
         });
 
-    InvenTreeParameter().countParameters(
-      InvenTreeCompany.MODEL_TYPE,
-      widget.company.pk,
-    ).then((value) {
-      if (mounted) {
-        setState(() {
-          parameterCount = value;
+    InvenTreeParameter()
+        .countParameters(InvenTreeCompany.MODEL_TYPE, widget.company.pk)
+        .then((value) {
+          if (mounted) {
+            setState(() {
+              parameterCount = value;
+            });
+          }
         });
-      }
-    });
 
     InvenTreeAttachment()
         .countAttachments(InvenTreeCompany.MODEL_TYPE, widget.company.pk)

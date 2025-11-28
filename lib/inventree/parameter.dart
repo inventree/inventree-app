@@ -1,14 +1,13 @@
 import "package:inventree/inventree/model.dart";
 
 class InvenTreeParameter extends InvenTreeModel {
-
   InvenTreeParameter() : super();
 
-  InvenTreeParameter.fromJson(Map<String, dynamic> json)
-      : super.fromJson(json);
+  InvenTreeParameter.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 
   @override
-  InvenTreeParameter createFromJson(Map<String, dynamic> json) => InvenTreeParameter.fromJson(json);
+  InvenTreeParameter createFromJson(Map<String, dynamic> json) =>
+      InvenTreeParameter.fromJson(json);
 
   @override
   String get URL => "parameter/";
@@ -23,10 +22,8 @@ class InvenTreeParameter extends InvenTreeModel {
         "help_text": description,
         "value": "",
       },
-      "data": {
-        "type": "string",
-      },
-      "note": {}
+      "data": {"type": "string"},
+      "note": {},
     };
 
     return fields;

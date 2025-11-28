@@ -132,7 +132,6 @@ class InvenTreePartTestTemplate extends InvenTreeModel {
   }
 }
 
-
 /*
  * Class representing the Part database model
  */

@@ -212,23 +212,25 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       InvenTreeAttachment()
           .countAttachments(InvenTreePart.MODEL_TYPE, part.pk)
           .then((int value) {
-        if (mounted) {
-          setState(() {
-            attachmentCount = value;
+            if (mounted) {
+              setState(() {
+                attachmentCount = value;
+              });
+            }
           });
-        }
-      });
-  }
+    }
 
     // Request the number of parameters
     if (api.supportsModernParameters) {
-      InvenTreeParameter().countParameters(InvenTreePart.MODEL_TYPE, part.pk).then((int value) {
-        if (mounted) {
-          setState(() {
-            parameterCount = value;
+      InvenTreeParameter()
+          .countParameters(InvenTreePart.MODEL_TYPE, part.pk)
+          .then((int value) {
+            if (mounted) {
+              setState(() {
+                parameterCount = value;
+              });
+            }
           });
-        }
-      });
     }
 
     // If show pricing information?

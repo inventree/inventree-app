@@ -27,7 +27,6 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
   }
 
   Future<void> loadSettings() async {
-
     partShowBom = await InvenTreeSettingsManager().getBool(
       INV_PART_SHOW_BOM,
       true,
