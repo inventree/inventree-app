@@ -162,6 +162,12 @@ ListTile? ShowParametersItem(
   bool editable,
 ) {
 
+  // Note: Currently cannot add parameters from the app,
+  // So, if there are no parameters, do not show the item
+  if (parameterCount == 0) {
+    return null;
+  }
+
   if (!InvenTreeAPI().supportsModernParameters) {
     return null;
   }

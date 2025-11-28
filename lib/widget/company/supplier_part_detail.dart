@@ -2,6 +2,9 @@ import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/helpers.dart";
+import "package:inventree/inventree/attachment.dart";
+import "package:inventree/inventree/parameter.dart";
+import "package:inventree/widget/attachment_widget.dart";
 import "package:inventree/widget/link_icon.dart";
 
 import "package:inventree/app_colors.dart";
@@ -11,6 +14,7 @@ import "package:inventree/barcode/barcode.dart";
 
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/company.dart";
+import "package:inventree/widget/parameter_widget.dart";
 
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
@@ -34,6 +38,9 @@ class SupplierPartDetailWidget extends StatefulWidget {
 class _SupplierPartDisplayState
     extends RefreshableState<SupplierPartDetailWidget> {
   _SupplierPartDisplayState();
+
+  int parameterCount = 0;
+  int attachmentCount = 0;
 
   @override
   String getAppBarTitle() => L10().supplierPart;
@@ -97,7 +104,30 @@ class _SupplierPartDisplayState
 
     if (!result) {
       Navigator.of(context).pop();
+      return;
     }
+
+    InvenTreeParameter().countParameters(
+        InvenTreeSupplierPart.MODEL_TYPE,
+        widget.supplierPart.pk
+    ).then((value) {
+      if (mounted) {
+        setState(() {
+          parameterCount = value;
+        });
+      }
+    });
+
+    InvenTreeAttachment().countAttachments(
+        InvenTreeSupplierPart.MODEL_TYPE,
+        widget.supplierPart.pk
+    ).then((value) {
+      if (mounted) {
+        setState(() {
+          attachmentCount = value;
+        });
+      }
+    });
   }
 
   /*
@@ -284,6 +314,31 @@ class _SupplierPartDisplayState
           leading: Icon(TablerIcons.pencil),
         ),
       );
+    }
+
+    ListTile? parameterTile = ShowParametersItem(
+      context,
+      InvenTreeSupplierPart.MODEL_TYPE,
+      widget.supplierPart.pk,
+      parameterCount,
+      widget.supplierPart.canEdit,
+    );
+
+    if (parameterTile != null) {
+      tiles.add(parameterTile);
+    }
+
+    ListTile? attachmentTile = ShowAttachmentsItem(
+      context,
+      InvenTreeSupplierPart.MODEL_TYPE,
+      widget.supplierPart.pk,
+      widget.supplierPart.name,
+      attachmentCount,
+      widget.supplierPart.canEdit,
+    );
+
+    if (attachmentTile != null) {
+      tiles.add(attachmentTile);
     }
 
     return tiles;
