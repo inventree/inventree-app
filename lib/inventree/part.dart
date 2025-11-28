@@ -5,6 +5,7 @@ import "package:flutter/material.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/helpers.dart";
+import "package:inventree/inventree/attachment.dart";
 import "package:inventree/inventree/sentry.dart";
 import "package:inventree/l10.dart";
 
