@@ -6,7 +6,6 @@ import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/parameter.dart";
 
 import "package:inventree/l10.dart";
-import "package:inventree/inventree/part.dart";
 import "package:inventree/widget/link_icon.dart";
 import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/progress.dart";
