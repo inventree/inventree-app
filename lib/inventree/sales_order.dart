@@ -1,7 +1,6 @@
 import "package:flutter/material.dart";
 import "package:inventree/api.dart";
 import "package:inventree/helpers.dart";
-import "package:inventree/inventree/attachment.dart";
 
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/model.dart";

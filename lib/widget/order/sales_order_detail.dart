@@ -497,29 +497,18 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
       ),
     );
 
-    // Attachments
-    tiles.add(
-      ListTile(
-        title: Text(L10().attachments),
-        leading: Icon(TablerIcons.file, color: COLOR_ACTION),
-        trailing: LinkIcon(
-          text: attachmentCount > 0 ? attachmentCount.toString() : null,
-        ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AttachmentWidget(
-                InvenTreeSalesOrder.MODEL_TYPE,
-                widget.order.pk,
-                widget.order.reference,
-                widget.order.canEdit,
-              ),
-            ),
-          );
-        },
-      ),
+    ListTile? attachmentTile = ShowAttachmentsItem(
+      context,
+      InvenTreeSalesOrder.MODEL_TYPE,
+      widget.order.pk,
+      widget.order.reference,
+      attachmentCount,
+      widget.order.canEdit,
     );
+
+    if (attachmentTile != null) {
+      tiles.add(attachmentTile);
+    }
 
     return tiles;
   }

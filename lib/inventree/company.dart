@@ -2,7 +2,6 @@ import "dart:async";
 
 import "package:flutter/material.dart";
 import "package:inventree/api.dart";
-import "package:inventree/inventree/attachment.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/widget/company/company_detail.dart";

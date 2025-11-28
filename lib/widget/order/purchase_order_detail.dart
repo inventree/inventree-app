@@ -570,29 +570,18 @@ class _PurchaseOrderDetailState
       ),
     );
 
-    // Attachments
-    tiles.add(
-      ListTile(
-        title: Text(L10().attachments),
-        leading: Icon(TablerIcons.file, color: COLOR_ACTION),
-        trailing: LinkIcon(
-          text: attachmentCount > 0 ? attachmentCount.toString() : null,
-        ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AttachmentWidget(
-                InvenTreePurchaseOrder.MODEL_TYPE,
-                widget.order.pk,
-                widget.order.reference,
-                widget.order.canEdit,
-              ),
-            ),
-          );
-        },
-      ),
+    ListTile? attachmentTile = ShowAttachmentsItem(
+      context,
+      InvenTreePurchaseOrder.MODEL_TYPE,
+      widget.order.pk,
+      widget.order.reference,
+      attachmentCount,
+      widget.order.canEdit,
     );
+
+    if (attachmentTile != null) {
+      tiles.add(attachmentTile);
+    }
 
     return tiles;
   }

@@ -607,50 +607,18 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       ),
     );
 
-    tiles.add(
-      ListTile(
-        title: Text(L10().parameters),
-        leading: Icon(TablerIcons.list_details, color: COLOR_ACTION),
-        trailing: LinkIcon(
-          text: parameterCount > 0 ? parameterCount.toString() : null,
-        ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ParameterWidget(
-                InvenTreePart.MODEL_TYPE,
-                part.pk,
-                part.canEdit,
-              ),
-            ),
-          );
-        }
-      )
+    ListTile? attachmentTile = ShowAttachmentsItem(
+      context,
+      InvenTreePart.MODEL_TYPE,
+      part.pk,
+      L10().part,
+      attachmentCount,
+      part.canEdit,
     );
 
-    tiles.add(
-      ListTile(
-        title: Text(L10().attachments),
-        leading: Icon(TablerIcons.file, color: COLOR_ACTION),
-        trailing: LinkIcon(
-          text: attachmentCount > 0 ? attachmentCount.toString() : null,
-        ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AttachmentWidget(
-                InvenTreePart.MODEL_TYPE,
-                part.pk,
-                L10().part,
-                part.canEdit,
-              ),
-            ),
-          );
-        },
-      ),
-    );
+    if (attachmentTile != null) {
+      tiles.add(attachmentTile);
+    }
 
     return tiles;
   }

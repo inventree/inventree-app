@@ -2,15 +2,13 @@ import "dart:io";
 
 import "package:flutter/material.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
+import "package:inventree/api.dart";
 import "package:inventree/inventree/attachment.dart";
+import "package:inventree/widget/link_icon.dart";
 import "package:one_context/one_context.dart";
 
-import "package:inventree/api.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/app_colors.dart";
-
-import "package:inventree/inventree/model.dart";
-
 import "package:inventree/widget/fields.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/snacks.dart";
@@ -55,11 +53,15 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
       IconButton(
         icon: Icon(TablerIcons.camera),
         onPressed: () async {
-          FilePickerDialog.pickImageFromCamera().then((File? file) {
-            upload(context, file).then((_) {
-              refresh(context);
-            });
-          });
+          InvenTreeAttachment()
+              .uploadImage(
+                widget.modelType,
+                widget.modelId,
+                prefix: widget.imagePrefix,
+              )
+              .then((_) {
+                refresh(context);
+              });
         },
       ),
       IconButton(
@@ -170,9 +172,8 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
     filters["model_id"] = widget.modelId.toString();
 
     List<InvenTreeAttachment> _attachments = [];
-    
-    InvenTreeAttachment().list(filters: filters).then((var results) {
 
+    InvenTreeAttachment().list(filters: filters).then((var results) {
       for (var result in results) {
         if (result is InvenTreeAttachment) {
           _attachments.add(result);
@@ -237,4 +238,41 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
 
     return tiles;
   }
+}
+
+/*
+ * Return a ListTile to display attachments for the specified model
+ */
+ListTile? ShowAttachmentsItem(
+  BuildContext context,
+  String modelType,
+  int modelId,
+  String imagePrefix,
+  int attachmentCount,
+  bool hasUploadPermission,
+) {
+  if (!InvenTreeAPI().supportsModernAttachments) {
+    return null;
+  }
+
+  return ListTile(
+    title: Text(L10().attachments),
+    leading: Icon(TablerIcons.file, color: COLOR_ACTION),
+    trailing: LinkIcon(
+      text: attachmentCount > 0 ? attachmentCount.toString() : null,
+    ),
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AttachmentWidget(
+            modelType,
+            modelId,
+            imagePrefix,
+            hasUploadPermission,
+          ),
+        ),
+      );
+    },
+  );
 }
