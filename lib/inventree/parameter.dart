@@ -65,8 +65,12 @@ class InvenTreeParameter extends InvenTreeModel {
   int get modelId => getInt("model_id");
 
   // Return a count of how many parameters exist against the specified model ID
-  Future<int> countParameters(String modelType, int modelId) {
+  Future<int> countParameters(String modelType, int modelId) async {
     Map<String, String> filters = {};
+
+    if (!api.supportsModernParameters) {
+      return 0;
+    }
 
     filters["model_type"] = modelType;
     filters["model_id"] = modelId.toString();
