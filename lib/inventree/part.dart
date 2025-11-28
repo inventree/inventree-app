@@ -133,67 +133,6 @@ class InvenTreePartTestTemplate extends InvenTreeModel {
   }
 }
 
-/*
- Class representing the PartParameter database model
- */
-class InvenTreePartParameter extends InvenTreeModel {
-  InvenTreePartParameter() : super();
-
-  InvenTreePartParameter.fromJson(Map<String, dynamic> json)
-    : super.fromJson(json);
-
-  @override
-  String get URL => "part/parameter/";
-
-  @override
-  List<String> get rolesRequired => ["part"];
-
-  @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
-      InvenTreePartParameter.fromJson(json);
-
-  @override
-  Map<String, Map<String, dynamic>> formFields() {
-    Map<String, Map<String, dynamic>> fields = {
-      "header": {
-        "type": "string",
-        "read_only": true,
-        "label": name,
-        "help_text": description,
-        "value": "",
-      },
-      "data": {"type": "string"},
-    };
-
-    return fields;
-  }
-
-  @override
-  String get name => getString("name", subKey: "template_detail");
-
-  @override
-  String get description => getString("description", subKey: "template_detail");
-
-  String get value => getString("data");
-
-  String get valueString {
-    String v = value;
-
-    if (units.isNotEmpty) {
-      v += " ";
-      v += units;
-    }
-
-    return v;
-  }
-
-  bool get as_bool => value.toLowerCase() == "true";
-
-  String get units => getString("units", subKey: "template_detail");
-
-  bool get is_checkbox =>
-      getBool("checkbox", subKey: "template_detail", backup: false);
-}
 
 /*
  * Class representing the Part database model

@@ -15,10 +15,48 @@ class InvenTreeParameter extends InvenTreeModel {
 
   @override
   Map<String, Map<String, dynamic>> formFields() {
-    Map<String, Map<String, dynamic>> fields = {"data": {}, "notes": {}};
+    Map<String, Map<String, dynamic>> fields = {
+      "header": {
+        "type": "string",
+        "read_only": true,
+        "label": name,
+        "help_text": description,
+        "value": "",
+      },
+      "data": {
+        "type": "string",
+      },
+      "notes": {}
+    };
 
     return fields;
   }
+
+  @override
+  String get name => getString("name", subKey: "template_detail");
+
+  @override
+  String get description => getString("description", subKey: "template_detail");
+
+  String get value => getString("data");
+
+  String get valueString {
+    String v = value;
+
+    if (units.isNotEmpty) {
+      v += " ";
+      v += units;
+    }
+
+    return v;
+  }
+
+  bool get as_bool => value.toLowerCase() == "true";
+
+  String get units => getString("units", subKey: "template_detail");
+
+  bool get is_checkbox =>
+      getBool("checkbox", subKey: "template_detail", backup: false);
 
   // The model type of the instance this attachment is associated with
   String get modelType => getString("model_type");
