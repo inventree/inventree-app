@@ -1,9 +1,13 @@
 import "package:flutter/material.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
+import "package:inventree/api.dart";
+import "package:inventree/app_colors.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/parameter.dart";
 
 import "package:inventree/l10.dart";
 import "package:inventree/inventree/part.dart";
+import "package:inventree/widget/link_icon.dart";
 import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
@@ -145,4 +149,40 @@ class _PaginatedParameterState
             },
     );
   }
+}
+
+/*
+ * Return a ListTile to display parameters for the specified model
+ */
+ListTile? ShowParametersItem(
+  BuildContext context,
+  String modelType,
+  int modelId,
+  int parameterCount,
+  bool editable,
+) {
+
+  if (!InvenTreeAPI().supportsModernParameters) {
+    return null;
+  }
+
+  return ListTile(
+    title: Text(L10().attachments),
+    leading: Icon(TablerIcons.list_details, color: COLOR_ACTION),
+    trailing: LinkIcon(
+      text: parameterCount > 0 ? parameterCount.toString() : null,
+    ),
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ParameterWidget(
+            modelType,
+            modelId,
+            editable,
+          ),
+        )
+      );
+    }
+  );
 }
