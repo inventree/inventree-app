@@ -85,8 +85,12 @@ class InvenTreeAttachment extends InvenTreeModel {
   }
 
   // Return a count of how many attachments exist against the specified model ID
-  Future<int> countAttachments(String modelType, int modelId) {
+  Future<int> countAttachments(String modelType, int modelId) async {
     Map<String, String> filters = {};
+
+    if (!api.supportsModernAttachments) {
+      return 0;
+    }
 
     filters["model_type"] = modelType;
     filters["model_id"] = modelId.toString();
@@ -141,8 +145,8 @@ class InvenTreeAttachment extends InvenTreeModel {
         String filename = "${dir}/${prefix}_image_${now}${ext}";
 
         try {
-          file.rename(filename).then((File renamed) {
-            uploadAttachment(renamed, modelType, modelId).then((success) {
+          return file.rename(filename).then((File renamed) {
+            return uploadAttachment(renamed, modelType, modelId).then((success) {
               result = success;
               showSnackIcon(
                 result ? L10().imageUploadSuccess : L10().imageUploadFailure,

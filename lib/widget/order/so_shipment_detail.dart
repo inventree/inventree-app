@@ -347,29 +347,18 @@ class _SOShipmentDetailWidgetState
       ),
     );
 
-    // Attachments
-    tiles.add(
-      ListTile(
-        title: Text(L10().attachments),
-        leading: Icon(TablerIcons.file, color: COLOR_ACTION),
-        trailing: LinkIcon(
-          text: attachmentCount > 0 ? attachmentCount.toString() : null,
-        ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AttachmentWidget(
-                InvenTreeSalesOrderShipment.MODEL_TYPE,
-                widget.shipment.pk,
-                widget.shipment.reference,
-                widget.shipment.canEdit,
-              ),
-            ),
-          );
-        },
-      ),
+    ListTile? attachmentTile = ShowAttachmentsItem(
+      context,
+    InvenTreeSalesOrderShipment.MODEL_TYPE,
+      widget.shipment.pk,
+      widget.shipment.reference,
+      attachmentCount,
+      widget.shipment.canEdit,
     );
+
+    if (attachmentTile != null) {
+      tiles.add(attachmentTile);
+    }
 
     return tiles;
   }

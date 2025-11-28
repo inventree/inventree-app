@@ -838,28 +838,18 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       ),
     );
 
-    tiles.add(
-      ListTile(
-        title: Text(L10().attachments),
-        leading: Icon(TablerIcons.file, color: COLOR_ACTION),
-        trailing: LinkIcon(
-          text: attachmentCount > 0 ? attachmentCount.toString() : null,
-        ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AttachmentWidget(
-                InvenTreeStockItem.MODEL_TYPE,
-                widget.item.pk,
-                L10().stockItem,
-                widget.item.canEdit,
-              ),
-            ),
-          );
-        },
-      ),
+    ListTile? attachmentTile = ShowAttachmentsItem(
+      context,
+      InvenTreeStockItem.MODEL_TYPE,
+      widget.item.pk,
+      L10().stockItem,
+    attachmentCount,
+    widget.item.canEdit
     );
+
+    if (attachmentTile != null) {
+      tiles.add(attachmentTile);
+    }
 
     return tiles;
   }

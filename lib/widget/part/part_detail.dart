@@ -599,28 +599,18 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       ),
     );
 
-    tiles.add(
-      ListTile(
-        title: Text(L10().attachments),
-        leading: Icon(TablerIcons.file, color: COLOR_ACTION),
-        trailing: LinkIcon(
-          text: attachmentCount > 0 ? attachmentCount.toString() : null,
-        ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AttachmentWidget(
-                InvenTreePart.MODEL_TYPE,
-                part.pk,
-                L10().part,
-                part.canEdit,
-              ),
-            ),
-          );
-        },
-      ),
+    ListTile? attachmentTile = ShowAttachmentsItem(
+      context,
+      InvenTreePart.MODEL_TYPE,
+      part.pk,
+      L10().part,
+      attachmentCount,
+      part.canEdit,
     );
+
+    if (attachmentTile != null) {
+      tiles.add(attachmentTile);
+    }
 
     return tiles;
   }
