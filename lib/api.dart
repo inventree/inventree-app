@@ -353,6 +353,10 @@ class InvenTreeAPI {
   // Supports separate search against "supplier" / "customer" / "manufacturer"
   bool get supportsSplitCompanySearch => apiVersion >= 315;
 
+  // Does the server support the "modern" (consolidated) parameter API?
+  // Ref: https://github.com/inventree/InvenTree/pull/10699
+  bool get supportsModernParameters => apiVersion >= 428;
+
   // Cached list of plugins (refreshed when we connect to the server)
   List<InvenTreePlugin> _plugins = [];
 
