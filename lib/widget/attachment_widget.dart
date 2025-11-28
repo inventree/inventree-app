@@ -55,11 +55,6 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
       IconButton(
         icon: Icon(TablerIcons.camera),
         onPressed: () async {
-          InvenTreeAttachment().uploadImage(
-            widget.modelType,
-            widget.modelId,
-            prefix: widget.imagePrefix,
-          );
           FilePickerDialog.pickImageFromCamera().then((File? file) {
             upload(context, file).then((_) {
               refresh(context);
@@ -174,17 +169,22 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
     filters["model_type"] = widget.modelType;
     filters["model_id"] = widget.modelId.toString();
 
-    await InvenTreeAttachment().list(filters: filters).then((var results) {
-      attachments.clear();
+    List<InvenTreeAttachment> _attachments = [];
+    
+    InvenTreeAttachment().list(filters: filters).then((var results) {
 
       for (var result in results) {
         if (result is InvenTreeAttachment) {
-          attachments.add(result);
+          _attachments.add(result);
         }
       }
-    });
 
-    setState(() {});
+      if (mounted) {
+        setState(() {
+          attachments = _attachments;
+        });
+      }
+    });
   }
 
   @override

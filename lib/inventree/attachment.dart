@@ -18,6 +18,9 @@ class InvenTreeAttachment extends InvenTreeModel {
     : super.fromJson(json);
 
   @override
+  InvenTreeAttachment createFromJson(Map<String, dynamic> json) => InvenTreeAttachment.fromJson(json);
+
+  @override
   String get URL => "attachment/";
 
   @override
