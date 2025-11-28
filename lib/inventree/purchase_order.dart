@@ -337,28 +337,3 @@ class InvenTreePOExtraLineItem extends InvenTreeExtraLineItem {
     );
   }
 }
-
-/*
- * Class representing an attachment file against a PurchaseOrder object
- */
-class InvenTreePurchaseOrderAttachment extends InvenTreeAttachment {
-  InvenTreePurchaseOrderAttachment() : super();
-
-  InvenTreePurchaseOrderAttachment.fromJson(Map<String, dynamic> json)
-    : super.fromJson(json);
-
-  @override
-  String get REFERENCE_FIELD => "order";
-
-  @override
-  String get REF_MODEL_TYPE => "purchaseorder";
-
-  @override
-  String get URL => InvenTreeAPI().supportsModernAttachments
-      ? "attachment/"
-      : "order/po/attachment/";
-
-  @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
-      InvenTreePurchaseOrderAttachment.fromJson(json);
-}

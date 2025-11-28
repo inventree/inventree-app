@@ -576,30 +576,6 @@ class InvenTreeStockItem extends InvenTreeModel {
   }
 }
 
-/*
- * Class representing an attachment file against a StockItem object
- */
-class InvenTreeStockItemAttachment extends InvenTreeAttachment {
-  InvenTreeStockItemAttachment() : super();
-
-  InvenTreeStockItemAttachment.fromJson(Map<String, dynamic> json)
-    : super.fromJson(json);
-
-  @override
-  String get REFERENCE_FIELD => "stock_item";
-
-  @override
-  String get REF_MODEL_TYPE => "stockitem";
-
-  @override
-  String get URL => InvenTreeAPI().supportsModernAttachments
-      ? "attachment/"
-      : "stock/attachment/";
-
-  @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
-      InvenTreeStockItemAttachment.fromJson(json);
-}
 
 class InvenTreeStockLocation extends InvenTreeModel {
   InvenTreeStockLocation() : super();

@@ -112,30 +112,6 @@ class InvenTreeCompany extends InvenTreeModel {
       InvenTreeCompany.fromJson(json);
 }
 
-/*
- * Class representing an attachment file against a Company object
- */
-class InvenTreeCompanyAttachment extends InvenTreeAttachment {
-  InvenTreeCompanyAttachment() : super();
-
-  InvenTreeCompanyAttachment.fromJson(Map<String, dynamic> json)
-    : super.fromJson(json);
-
-  @override
-  String get REFERENCE_FIELD => "company";
-
-  @override
-  String get REF_MODEL_TYPE => "company";
-
-  @override
-  String get URL => InvenTreeAPI().supportsModernAttachments
-      ? "attachment/"
-      : "company/attachment/";
-
-  @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
-      InvenTreeCompanyAttachment.fromJson(json);
-}
 
 /*
  * The InvenTreeSupplierPart class represents the SupplierPart model in the InvenTree database

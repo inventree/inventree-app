@@ -335,7 +335,7 @@ class InvenTreeSalesOrderShipment extends InvenTreeModel {
 /*
   * Class representing an allocation of stock against a SalesOrderShipment
  */
-class InvenTreeSalesOrderAllocation extends InvenTreeAttachment {
+class InvenTreeSalesOrderAllocation extends InvenTreeModel {
   InvenTreeSalesOrderAllocation() : super();
 
   InvenTreeSalesOrderAllocation.fromJson(Map<String, dynamic> json)
@@ -428,49 +428,4 @@ class InvenTreeSalesOrderAllocation extends InvenTreeAttachment {
       );
     }
   }
-}
-
-/*
- * Class representing an attachment file against a SalesOrder object
- */
-class InvenTreeSalesOrderAttachment extends InvenTreeAttachment {
-  InvenTreeSalesOrderAttachment() : super();
-
-  InvenTreeSalesOrderAttachment.fromJson(Map<String, dynamic> json)
-    : super.fromJson(json);
-
-  @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
-      InvenTreeSalesOrderAttachment.fromJson(json);
-
-  @override
-  String get REFERENCE_FIELD => "order";
-
-  @override
-  String get REF_MODEL_TYPE => "salesorder";
-
-  @override
-  String get URL => InvenTreeAPI().supportsModernAttachments
-      ? "attachment/"
-      : "order/so/attachment/";
-}
-
-class InvenTreeSalesOrderShipmentAttachment extends InvenTreeAttachment {
-  InvenTreeSalesOrderShipmentAttachment() : super();
-
-  InvenTreeSalesOrderShipmentAttachment.fromJson(Map<String, dynamic> json)
-    : super.fromJson(json);
-
-  @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
-      InvenTreeSalesOrderShipmentAttachment.fromJson(json);
-
-  @override
-  String get REFERENCE_FIELD => "shipment";
-
-  @override
-  String get REF_MODEL_TYPE => "salesordershipment";
-
-  @override
-  String get URL => "attachment/";
 }
