@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:inventree/inventree/model.dart";
+import "package:inventree/inventree/parameter.dart";
 
 import "package:inventree/l10.dart";
 import "package:inventree/inventree/part.dart";
@@ -10,16 +11,18 @@ import "package:inventree/widget/refreshable_state.dart";
 /*
  * Widget for displaying a list of parameters associated with a given Part instance
  */
-class PartParameterWidget extends StatefulWidget {
-  const PartParameterWidget(this.part);
+class ParameterWidget extends StatefulWidget {
+  const ParameterWidget(this.modelType, this.modelId, this.editable) : super();
 
-  final InvenTreePart part;
+  final String modelType;
+  final int modelId;
+  final bool editable;
 
   @override
   _ParameterWidgetState createState() => _ParameterWidgetState();
 }
 
-class _ParameterWidgetState extends RefreshableState<PartParameterWidget> {
+class _ParameterWidgetState extends RefreshableState<ParameterWidget> {
   _ParameterWidgetState();
 
   @override
@@ -34,9 +37,12 @@ class _ParameterWidgetState extends RefreshableState<PartParameterWidget> {
 
   @override
   Widget getBody(BuildContext context) {
-    Map<String, String> filters = {"part": widget.part.pk.toString()};
+    Map<String, String> filters = {
+      "model_type": widget.modelType,
+      "model_id": widget.modelId.toString(),
+    };
 
-    return Column(children: [Expanded(child: PaginatedParameterList(filters))]);
+    return Column(children: [Expanded(child: PaginatedParameterList(filters, widget.editable))]);
   }
 }
 
@@ -44,8 +50,10 @@ class _ParameterWidgetState extends RefreshableState<PartParameterWidget> {
  * Widget for displaying a paginated list of Part parameters
  */
 class PaginatedParameterList extends PaginatedSearchWidget {
-  const PaginatedParameterList(Map<String, String> filters)
+  const PaginatedParameterList(Map<String, String> filters, this.editable)
     : super(filters: filters);
+
+  final bool editable;
 
   @override
   String get searchTitle => L10().parameters;
@@ -75,7 +83,7 @@ class _PaginatedParameterState
     int offset,
     Map<String, String> params,
   ) async {
-    final page = await InvenTreePartParameter().listPaginated(
+    final page = await InvenTreeParameter().listPaginated(
       limit,
       offset,
       filters: params,
@@ -84,7 +92,7 @@ class _PaginatedParameterState
     return page;
   }
 
-  Future<void> editParameter(InvenTreePartParameter parameter) async {
+  Future<void> editParameter(InvenTreeParameter parameter) async {
     // Checkbox values are handled separately
     if (parameter.is_checkbox) {
       return;
@@ -101,7 +109,7 @@ class _PaginatedParameterState
 
   @override
   Widget buildItem(BuildContext context, InvenTreeModel model) {
-    InvenTreePartParameter parameter = model as InvenTreePartParameter;
+    InvenTreeParameter parameter = model as InvenTreeParameter;
 
     String title = parameter.name;
 
@@ -116,7 +124,7 @@ class _PaginatedParameterState
           ? Switch(
               value: parameter.as_bool,
               onChanged: (bool value) {
-                if (parameter.canEdit) {
+                if (widget.editable) {
                   showLoadingOverlay();
                   parameter.update(values: {"data": value.toString()}).then((
                     value,
@@ -131,7 +139,7 @@ class _PaginatedParameterState
       onTap: parameter.is_checkbox
           ? null
           : () async {
-              if (parameter.canEdit) {
+              if (widget.editable) {
                 editParameter(parameter);
               }
             },

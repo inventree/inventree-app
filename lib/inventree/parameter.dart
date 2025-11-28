@@ -26,7 +26,7 @@ class InvenTreeParameter extends InvenTreeModel {
       "data": {
         "type": "string",
       },
-      "notes": {}
+      "note": {}
     };
 
     return fields;

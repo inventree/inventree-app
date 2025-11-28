@@ -13,7 +13,6 @@ class InvenTreePartSettingsWidget extends StatefulWidget {
 class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
   _InvenTreePartSettingsState();
 
-  bool partShowParameters = true;
   bool partShowBom = true;
   bool partShowPricing = true;
   bool stockShowHistory = false;
@@ -28,10 +27,7 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
   }
 
   Future<void> loadSettings() async {
-    partShowParameters = await InvenTreeSettingsManager().getBool(
-      INV_PART_SHOW_PARAMETERS,
-      true,
-    );
+
     partShowBom = await InvenTreeSettingsManager().getBool(
       INV_PART_SHOW_BOM,
       true,
@@ -68,23 +64,6 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
       body: Container(
         child: ListView(
           children: [
-            ListTile(
-              title: Text(L10().parameters),
-              subtitle: Text(L10().parametersSettingDetail),
-              leading: Icon(TablerIcons.list),
-              trailing: Switch(
-                value: partShowParameters,
-                onChanged: (bool value) {
-                  InvenTreeSettingsManager().setValue(
-                    INV_PART_SHOW_PARAMETERS,
-                    value,
-                  );
-                  setState(() {
-                    partShowParameters = value;
-                  });
-                },
-              ),
-            ),
             ListTile(
               title: Text(L10().bom),
               subtitle: Text(L10().bomEnable),
