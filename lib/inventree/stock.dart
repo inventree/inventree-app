@@ -576,7 +576,6 @@ class InvenTreeStockItem extends InvenTreeModel {
   }
 }
 
-
 class InvenTreeStockLocation extends InvenTreeModel {
   InvenTreeStockLocation() : super();
 

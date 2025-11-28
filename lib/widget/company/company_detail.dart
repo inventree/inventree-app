@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
+import "package:inventree/inventree/attachment.dart";
 
 import "package:inventree/l10.dart";
 import "package:inventree/api.dart";
@@ -184,15 +185,15 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
           }
         });
 
-    InvenTreeCompanyAttachment().countAttachments(widget.company.pk).then((
-      value,
-    ) {
-      if (mounted) {
-        setState(() {
-          attachmentCount = value;
+    InvenTreeAttachment()
+        .countAttachments(InvenTreeCompany.MODEL_TYPE, widget.company.pk)
+        .then((value) {
+          if (mounted) {
+            setState(() {
+              attachmentCount = value;
+            });
+          }
         });
-      }
-    });
   }
 
   Future<void> editCompany(BuildContext context) async {
@@ -405,7 +406,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
             context,
             MaterialPageRoute(
               builder: (context) => AttachmentWidget(
-                InvenTreeCompanyAttachment(),
+                InvenTreeCompany.MODEL_TYPE,
                 widget.company.pk,
                 widget.company.name,
                 InvenTreeCompany().canEdit,

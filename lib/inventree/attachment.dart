@@ -1,6 +1,3 @@
-
-
-
 import "dart:io";
 
 import "package:flutter/cupertino.dart";
@@ -18,7 +15,7 @@ class InvenTreeAttachment extends InvenTreeModel {
   InvenTreeAttachment() : super();
 
   InvenTreeAttachment.fromJson(Map<String, dynamic> json)
-      : super.fromJson(json);
+    : super.fromJson(json);
 
   @override
   String get URL => "attachment/";
@@ -93,25 +90,22 @@ class InvenTreeAttachment extends InvenTreeModel {
   }
 
   // Return a count of how many attachments exist against the specified model ID
-  Future<int> countAttachments(int modelId) {
+  Future<int> countAttachments(String modelType, int modelId) {
     Map<String, String> filters = {};
 
-    if (InvenTreeAPI().supportsModernAttachments) {
-      filters["model_type"] = REF_MODEL_TYPE;
-      filters["model_id"] = modelId.toString();
-    } else {
-      filters[REFERENCE_FIELD] = modelId.toString();
-    }
+    filters["model_type"] = modelType;
+    filters["model_id"] = modelId.toString();
 
     return count(filters: filters);
   }
 
   Future<bool> uploadAttachment(
-      File attachment,
-      int modelId, {
-        String comment = "",
-        Map<String, String> fields = const {},
-      }) async {
+    File attachment,
+    String modelType,
+    int modelId, {
+    String comment = "",
+    Map<String, String> fields = const {},
+  }) async {
     // Ensure that the correct reference field is set
     Map<String, String> data = Map<String, String>.from(fields);
 
@@ -121,20 +115,8 @@ class InvenTreeAttachment extends InvenTreeModel {
       data["comment"] = comment;
     }
 
-    if (InvenTreeAPI().supportsModernAttachments) {
-      url = "attachment/";
-      data["model_id"] = modelId.toString();
-      data["model_type"] = REF_MODEL_TYPE;
-    } else {
-      if (REFERENCE_FIELD.isEmpty) {
-        sentryReportMessage(
-          "uploadAttachment called with empty 'REFERENCE_FIELD'",
-        );
-        return false;
-      }
-
-      data[REFERENCE_FIELD] = modelId.toString();
-    }
+    data["model_type"] = modelType;
+    data["model_id"] = modelId.toString();
 
     final APIResponse response = await InvenTreeAPI().uploadFile(
       url,
@@ -147,7 +129,11 @@ class InvenTreeAttachment extends InvenTreeModel {
     return response.successful();
   }
 
-  Future<bool> uploadImage(int modelId, {String prefix = "InvenTree"}) async {
+  Future<bool> uploadImage(
+    String modelType,
+    int modelId, {
+    String prefix = "InvenTree",
+  }) async {
     bool result = false;
 
     await FilePickerDialog.pickImageFromCamera().then((File? file) {
@@ -161,7 +147,7 @@ class InvenTreeAttachment extends InvenTreeModel {
 
         try {
           file.rename(filename).then((File renamed) {
-            uploadAttachment(renamed, modelId).then((success) {
+            uploadAttachment(renamed, modelType, modelId).then((success) {
               result = success;
               showSnackIcon(
                 result ? L10().imageUploadSuccess : L10().imageUploadFailure,

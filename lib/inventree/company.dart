@@ -112,7 +112,6 @@ class InvenTreeCompany extends InvenTreeModel {
       InvenTreeCompany.fromJson(json);
 }
 
-
 /*
  * The InvenTreeSupplierPart class represents the SupplierPart model in the InvenTree database
  */

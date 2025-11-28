@@ -24,13 +24,13 @@ import "package:inventree/widget/refreshable_state.dart";
  */
 class AttachmentWidget extends StatefulWidget {
   const AttachmentWidget(
-    this.attachmentClass,
+    this.modelType,
     this.modelId,
     this.imagePrefix,
     this.hasUploadPermission,
   ) : super();
 
-  final InvenTreeAttachment attachmentClass;
+  final String modelType;
   final int modelId;
   final bool hasUploadPermission;
   final String imagePrefix;
@@ -55,7 +55,8 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
       IconButton(
         icon: Icon(TablerIcons.camera),
         onPressed: () async {
-          widget.attachmentClass.uploadImage(
+          InvenTreeAttachment().uploadImage(
+            widget.modelType,
             widget.modelId,
             prefix: widget.imagePrefix,
           );
@@ -84,8 +85,9 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
 
     showLoadingOverlay();
 
-    final bool result = await widget.attachmentClass.uploadAttachment(
+    final bool result = await InvenTreeAttachment().uploadAttachment(
       file,
+      widget.modelType,
       widget.modelId,
     );
 
@@ -169,15 +171,10 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
   Future<void> request(BuildContext context) async {
     Map<String, String> filters = {};
 
-    if (InvenTreeAPI().supportsModernAttachments) {
-      filters["model_type"] = widget.attachmentClass.REF_MODEL_TYPE;
-      filters["model_id"] = widget.modelId.toString();
-    } else {
-      filters[widget.attachmentClass.REFERENCE_FIELD] = widget.modelId
-          .toString();
-    }
+    filters["model_type"] = widget.modelType;
+    filters["model_id"] = widget.modelId.toString();
 
-    await widget.attachmentClass.list(filters: filters).then((var results) {
+    await InvenTreeAttachment().list(filters: filters).then((var results) {
       attachments.clear();
 
       for (var result in results) {
