@@ -843,8 +843,8 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       InvenTreeStockItem.MODEL_TYPE,
       widget.item.pk,
       L10().stockItem,
-    attachmentCount,
-    widget.item.canEdit
+      attachmentCount,
+      widget.item.canEdit,
     );
 
     if (attachmentTile != null) {

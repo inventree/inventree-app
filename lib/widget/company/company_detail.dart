@@ -185,15 +185,15 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
           }
         });
 
-      InvenTreeAttachment()
-          .countAttachments(InvenTreeCompany.MODEL_TYPE, widget.company.pk)
-          .then((value) {
-        if (mounted) {
-          setState(() {
-            attachmentCount = value;
-          });
-        }
-      });
+    InvenTreeAttachment()
+        .countAttachments(InvenTreeCompany.MODEL_TYPE, widget.company.pk)
+        .then((value) {
+          if (mounted) {
+            setState(() {
+              attachmentCount = value;
+            });
+          }
+        });
   }
 
   Future<void> editCompany(BuildContext context) async {
@@ -400,7 +400,7 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
       widget.company.pk,
       widget.company.name,
       attachmentCount,
-      widget.company.canEdit
+      widget.company.canEdit,
     );
 
     if (attachmentTile != null) {

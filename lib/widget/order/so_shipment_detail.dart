@@ -349,7 +349,7 @@ class _SOShipmentDetailWidgetState
 
     ListTile? attachmentTile = ShowAttachmentsItem(
       context,
-    InvenTreeSalesOrderShipment.MODEL_TYPE,
+      InvenTreeSalesOrderShipment.MODEL_TYPE,
       widget.shipment.pk,
       widget.shipment.reference,
       attachmentCount,

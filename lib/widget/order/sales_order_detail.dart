@@ -503,7 +503,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
       widget.order.pk,
       widget.order.reference,
       attachmentCount,
-      widget.order.canEdit
+      widget.order.canEdit,
     );
 
     if (attachmentTile != null) {

@@ -300,15 +300,15 @@ class _PurchaseOrderDetailState
       }
     }
 
-      InvenTreeAttachment()
-          .countAttachments(InvenTreePurchaseOrder.MODEL_TYPE, widget.order.pk)
-          .then((int value) {
-        if (mounted) {
-          setState(() {
-            attachmentCount = value;
-          });
-        }
-      });
+    InvenTreeAttachment()
+        .countAttachments(InvenTreePurchaseOrder.MODEL_TYPE, widget.order.pk)
+        .then((int value) {
+          if (mounted) {
+            setState(() {
+              attachmentCount = value;
+            });
+          }
+        });
 
     if (api.supportsPurchaseOrderDestination &&
         widget.order.destinationId > 0) {
@@ -574,9 +574,9 @@ class _PurchaseOrderDetailState
       context,
       InvenTreePurchaseOrder.MODEL_TYPE,
       widget.order.pk,
-    widget.order.reference,
-    attachmentCount,
-    widget.order.canEdit
+      widget.order.reference,
+      attachmentCount,
+      widget.order.canEdit,
     );
 
     if (attachmentTile != null) {

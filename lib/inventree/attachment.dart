@@ -18,7 +18,8 @@ class InvenTreeAttachment extends InvenTreeModel {
     : super.fromJson(json);
 
   @override
-  InvenTreeAttachment createFromJson(Map<String, dynamic> json) => InvenTreeAttachment.fromJson(json);
+  InvenTreeAttachment createFromJson(Map<String, dynamic> json) =>
+      InvenTreeAttachment.fromJson(json);
 
   @override
   String get URL => "attachment/";
@@ -146,7 +147,9 @@ class InvenTreeAttachment extends InvenTreeModel {
 
         try {
           return file.rename(filename).then((File renamed) {
-            return uploadAttachment(renamed, modelType, modelId).then((success) {
+            return uploadAttachment(renamed, modelType, modelId).then((
+              success,
+            ) {
               result = success;
               showSnackIcon(
                 result ? L10().imageUploadSuccess : L10().imageUploadFailure,
