@@ -219,7 +219,7 @@ class _ManufacturerPartDisplayState
       context,
       InvenTreeManufacturerPart.MODEL_TYPE,
       widget.manufacturerPart.pk,
-      widget.manufacturerPart.name,
+      widget.manufacturerPart.MPN,
       attachmentCount,
       widget.manufacturerPart.canEdit,
     );

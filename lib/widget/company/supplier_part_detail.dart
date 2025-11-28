@@ -336,7 +336,7 @@ class _SupplierPartDisplayState
       context,
       InvenTreeSupplierPart.MODEL_TYPE,
       widget.supplierPart.pk,
-      widget.supplierPart.name,
+      widget.supplierPart.SKU,
       attachmentCount,
       widget.supplierPart.canEdit,
     );
