@@ -355,7 +355,7 @@ class InvenTreeAPI {
 
   // Does the server support the "modern" (consolidated) parameter API?
   // Ref: https://github.com/inventree/InvenTree/pull/10699
-  bool get supportsModernParameters => apiVersion >= 428;
+  bool get supportsModernParameters => apiVersion >= 429;
 
   // Cached list of plugins (refreshed when we connect to the server)
   List<InvenTreePlugin> _plugins = [];
