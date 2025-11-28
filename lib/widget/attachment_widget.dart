@@ -2,14 +2,13 @@ import "dart:io";
 
 import "package:flutter/material.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
+import "package:inventree/api.dart";
+import "package:inventree/inventree/attachment.dart";
+import "package:inventree/widget/link_icon.dart";
 import "package:one_context/one_context.dart";
 
-import "package:inventree/api.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/app_colors.dart";
-
-import "package:inventree/inventree/model.dart";
-
 import "package:inventree/widget/fields.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/snacks.dart";
@@ -23,13 +22,13 @@ import "package:inventree/widget/refreshable_state.dart";
  */
 class AttachmentWidget extends StatefulWidget {
   const AttachmentWidget(
-    this.attachmentClass,
+    this.modelType,
     this.modelId,
     this.imagePrefix,
     this.hasUploadPermission,
   ) : super();
 
-  final InvenTreeAttachment attachmentClass;
+  final String modelType;
   final int modelId;
   final bool hasUploadPermission;
   final String imagePrefix;
@@ -54,15 +53,15 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
       IconButton(
         icon: Icon(TablerIcons.camera),
         onPressed: () async {
-          widget.attachmentClass.uploadImage(
-            widget.modelId,
-            prefix: widget.imagePrefix,
-          );
-          FilePickerDialog.pickImageFromCamera().then((File? file) {
-            upload(context, file).then((_) {
-              refresh(context);
-            });
-          });
+          InvenTreeAttachment()
+              .uploadImage(
+                widget.modelType,
+                widget.modelId,
+                prefix: widget.imagePrefix,
+              )
+              .then((_) {
+                refresh(context);
+              });
         },
       ),
       IconButton(
@@ -83,8 +82,9 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
 
     showLoadingOverlay();
 
-    final bool result = await widget.attachmentClass.uploadAttachment(
+    final bool result = await InvenTreeAttachment().uploadAttachment(
       file,
+      widget.modelType,
       widget.modelId,
     );
 
@@ -168,25 +168,24 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
   Future<void> request(BuildContext context) async {
     Map<String, String> filters = {};
 
-    if (InvenTreeAPI().supportsModernAttachments) {
-      filters["model_type"] = widget.attachmentClass.REF_MODEL_TYPE;
-      filters["model_id"] = widget.modelId.toString();
-    } else {
-      filters[widget.attachmentClass.REFERENCE_FIELD] = widget.modelId
-          .toString();
-    }
+    filters["model_type"] = widget.modelType;
+    filters["model_id"] = widget.modelId.toString();
 
-    await widget.attachmentClass.list(filters: filters).then((var results) {
-      attachments.clear();
+    List<InvenTreeAttachment> _attachments = [];
 
+    InvenTreeAttachment().list(filters: filters).then((var results) {
       for (var result in results) {
         if (result is InvenTreeAttachment) {
-          attachments.add(result);
+          _attachments.add(result);
         }
       }
-    });
 
-    setState(() {});
+      if (mounted) {
+        setState(() {
+          attachments = _attachments;
+        });
+      }
+    });
   }
 
   @override
@@ -239,4 +238,41 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
 
     return tiles;
   }
+}
+
+/*
+ * Return a ListTile to display attachments for the specified model
+ */
+ListTile? ShowAttachmentsItem(
+  BuildContext context,
+  String modelType,
+  int modelId,
+  String imagePrefix,
+  int attachmentCount,
+  bool hasUploadPermission,
+) {
+  if (!InvenTreeAPI().supportsModernAttachments) {
+    return null;
+  }
+
+  return ListTile(
+    title: Text(L10().attachments),
+    leading: Icon(TablerIcons.file, color: COLOR_ACTION),
+    trailing: LinkIcon(
+      text: attachmentCount > 0 ? attachmentCount.toString() : null,
+    ),
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AttachmentWidget(
+            modelType,
+            modelId,
+            imagePrefix,
+            hasUploadPermission,
+          ),
+        ),
+      );
+    },
+  );
 }

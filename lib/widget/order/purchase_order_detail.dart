@@ -7,6 +7,7 @@ import "package:inventree/app_colors.dart";
 import "package:inventree/barcode/barcode.dart";
 import "package:inventree/barcode/purchase_order.dart";
 import "package:inventree/helpers.dart";
+import "package:inventree/inventree/attachment.dart";
 import "package:inventree/l10.dart";
 
 import "package:inventree/inventree/model.dart";
@@ -174,8 +175,12 @@ class _PurchaseOrderDetailState
 
   /// Upload an image against the current PurchaseOrder
   Future<void> _uploadImage(BuildContext context) async {
-    InvenTreePurchaseOrderAttachment()
-        .uploadImage(widget.order.pk, prefix: widget.order.reference)
+    InvenTreeAttachment()
+        .uploadImage(
+          InvenTreePurchaseOrder.MODEL_TYPE,
+          widget.order.pk,
+          prefix: widget.order.reference,
+        )
         .then((result) => refresh(context));
   }
 
@@ -295,15 +300,15 @@ class _PurchaseOrderDetailState
       }
     }
 
-    InvenTreePurchaseOrderAttachment().countAttachments(widget.order.pk).then((
-      int value,
-    ) {
-      if (mounted) {
-        setState(() {
-          attachmentCount = value;
+    InvenTreeAttachment()
+        .countAttachments(InvenTreePurchaseOrder.MODEL_TYPE, widget.order.pk)
+        .then((int value) {
+          if (mounted) {
+            setState(() {
+              attachmentCount = value;
+            });
+          }
         });
-      }
-    });
 
     if (api.supportsPurchaseOrderDestination &&
         widget.order.destinationId > 0) {
@@ -565,29 +570,18 @@ class _PurchaseOrderDetailState
       ),
     );
 
-    // Attachments
-    tiles.add(
-      ListTile(
-        title: Text(L10().attachments),
-        leading: Icon(TablerIcons.file, color: COLOR_ACTION),
-        trailing: LinkIcon(
-          text: attachmentCount > 0 ? attachmentCount.toString() : null,
-        ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AttachmentWidget(
-                InvenTreePurchaseOrderAttachment(),
-                widget.order.pk,
-                widget.order.reference,
-                widget.order.canEdit,
-              ),
-            ),
-          );
-        },
-      ),
+    ListTile? attachmentTile = ShowAttachmentsItem(
+      context,
+      InvenTreePurchaseOrder.MODEL_TYPE,
+      widget.order.pk,
+      widget.order.reference,
+      attachmentCount,
+      widget.order.canEdit,
     );
+
+    if (attachmentTile != null) {
+      tiles.add(attachmentTile);
+    }
 
     return tiles;
   }

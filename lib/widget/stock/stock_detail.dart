@@ -7,6 +7,7 @@ import "package:inventree/app_colors.dart";
 import "package:inventree/barcode/barcode.dart";
 import "package:inventree/barcode/stock.dart";
 import "package:inventree/helpers.dart";
+import "package:inventree/inventree/attachment.dart";
 import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/api.dart";
@@ -255,15 +256,15 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     }
 
     // Request the number of attachments
-    InvenTreeStockItemAttachment().countAttachments(widget.item.pk).then((
-      int value,
-    ) {
-      if (mounted) {
-        setState(() {
-          attachmentCount = value;
+    InvenTreeAttachment()
+        .countAttachments(InvenTreeStockItem.MODEL_TYPE, widget.item.pk)
+        .then((int value) {
+          if (mounted) {
+            setState(() {
+              attachmentCount = value;
+            });
+          }
         });
-      }
-    });
 
     // Request SalesOrder information
     if (widget.item.hasSalesOrder) {
@@ -837,28 +838,18 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       ),
     );
 
-    tiles.add(
-      ListTile(
-        title: Text(L10().attachments),
-        leading: Icon(TablerIcons.file, color: COLOR_ACTION),
-        trailing: LinkIcon(
-          text: attachmentCount > 0 ? attachmentCount.toString() : null,
-        ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AttachmentWidget(
-                InvenTreeStockItemAttachment(),
-                widget.item.pk,
-                L10().stockItem,
-                widget.item.canEdit,
-              ),
-            ),
-          );
-        },
-      ),
+    ListTile? attachmentTile = ShowAttachmentsItem(
+      context,
+      InvenTreeStockItem.MODEL_TYPE,
+      widget.item.pk,
+      L10().stockItem,
+      attachmentCount,
+      widget.item.canEdit,
     );
+
+    if (attachmentTile != null) {
+      tiles.add(attachmentTile);
+    }
 
     return tiles;
   }
