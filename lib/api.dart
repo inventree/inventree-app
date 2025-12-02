@@ -7,6 +7,7 @@ import "package:http/http.dart" as http;
 import "package:http/io_client.dart";
 import "package:intl/intl.dart";
 import "package:inventree/main.dart";
+import "package:inventree/widget/progress.dart";
 import "package:one_context/one_context.dart";
 import "package:open_filex/open_filex.dart";
 import "package:cached_network_image/cached_network_image.dart";
@@ -912,6 +913,8 @@ class InvenTreeAPI {
 
     var client = createClient(url, strictHttps: strictHttps);
 
+    showLoadingOverlay();
+
     // Attempt to open a connection to the server
     try {
       _request = await client
@@ -953,6 +956,7 @@ class InvenTreeAPI {
         await localFile.writeAsBytes(bytes);
 
         if (openOnDownload) {
+          hideLoadingOverlay();
           OpenFilex.open(local_path);
         }
       } else {
@@ -972,6 +976,8 @@ class InvenTreeAPI {
         stackTrace,
       );
     }
+
+    hideLoadingOverlay();
   }
 
   /*
@@ -1085,8 +1091,15 @@ class InvenTreeAPI {
    * We send this with the currently selected "locale",
    * so that (hopefully) the field messages are correctly translated
    */
-  Future<APIResponse> options(String url) async {
-    HttpClientRequest? request = await apiRequest(url, "OPTIONS");
+  Future<APIResponse> options(
+    String url, {
+    Map<String, String> params = const {},
+  }) async {
+    HttpClientRequest? request = await apiRequest(
+      url,
+      "OPTIONS",
+      urlParams: params,
+    );
 
     if (request == null) {
       // Return an "invalid" APIResponse

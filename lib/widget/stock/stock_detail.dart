@@ -7,6 +7,7 @@ import "package:inventree/app_colors.dart";
 import "package:inventree/barcode/barcode.dart";
 import "package:inventree/barcode/stock.dart";
 import "package:inventree/helpers.dart";
+import "package:inventree/inventree/attachment.dart";
 import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/api.dart";
@@ -128,19 +129,13 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     }
 
-    if (labels.isNotEmpty) {
+    if (allowLabelPrinting && api.supportsModernLabelPrinting) {
       actions.add(
         SpeedDialChild(
           child: Icon(TablerIcons.printer),
           label: L10().printLabel,
           onTap: () async {
-            selectAndPrintLabel(
-              context,
-              labels,
-              widget.item.pk,
-              "stock",
-              "item=${widget.item.pk}",
-            );
+            selectAndPrintLabel(context, "stockitem", widget.item.pk);
           },
         ),
       );
@@ -196,10 +191,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     return actions;
   }
 
-  // Is label printing enabled for this StockItem?
-  // This will be determined when the widget is loaded
-  List<Map<String, dynamic>> labels = [];
-
+  bool allowLabelPrinting = false;
   int attachmentCount = 0;
 
   @override
@@ -264,15 +256,15 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     }
 
     // Request the number of attachments
-    InvenTreeStockItemAttachment().countAttachments(widget.item.pk).then((
-      int value,
-    ) {
-      if (mounted) {
-        setState(() {
-          attachmentCount = value;
+    InvenTreeAttachment()
+        .countAttachments(InvenTreeStockItem.MODEL_TYPE, widget.item.pk)
+        .then((int value) {
+          if (mounted) {
+            setState(() {
+              attachmentCount = value;
+            });
+          }
         });
-      }
-    });
 
     // Request SalesOrder information
     if (widget.item.hasSalesOrder) {
@@ -318,31 +310,10 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       }
     }
 
-    List<Map<String, dynamic>> _labels = [];
-    bool allowLabelPrinting = await InvenTreeSettingsManager().getBool(
+    allowLabelPrinting = await InvenTreeSettingsManager().getBool(
       INV_ENABLE_LABEL_PRINTING,
       true,
     );
-    allowLabelPrinting &= api.supportsMixin("labels");
-
-    // Request information on labels available for this stock item
-    if (allowLabelPrinting) {
-      String model_type = api.supportsModernLabelPrinting
-          ? InvenTreeStockItem.MODEL_TYPE
-          : "stock";
-      String item_key = api.supportsModernLabelPrinting ? "items" : "item";
-
-      // Clear the existing labels list
-      _labels = await getLabelTemplates(model_type, {
-        item_key: widget.item.pk.toString(),
-      });
-    }
-
-    if (mounted) {
-      setState(() {
-        labels = _labels;
-      });
-    }
   }
 
   /// Delete the stock item from the database
@@ -867,28 +838,18 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       ),
     );
 
-    tiles.add(
-      ListTile(
-        title: Text(L10().attachments),
-        leading: Icon(TablerIcons.file, color: COLOR_ACTION),
-        trailing: LinkIcon(
-          text: attachmentCount > 0 ? attachmentCount.toString() : null,
-        ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AttachmentWidget(
-                InvenTreeStockItemAttachment(),
-                widget.item.pk,
-                L10().stockItem,
-                widget.item.canEdit,
-              ),
-            ),
-          );
-        },
-      ),
+    ListTile? attachmentTile = ShowAttachmentsItem(
+      context,
+      InvenTreeStockItem.MODEL_TYPE,
+      widget.item.pk,
+      L10().stockItem,
+      attachmentCount,
+      widget.item.canEdit,
     );
+
+    if (attachmentTile != null) {
+      tiles.add(attachmentTile);
+    }
 
     return tiles;
   }

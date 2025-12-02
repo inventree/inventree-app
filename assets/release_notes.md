@@ -1,6 +1,17 @@
+### x.xx.x - Month Year
+---
+
+- Fixes bug which launched camera twice when uploading an attachment
+
+### 0.21.1 - November 2025
+---
+
+- Fixed app freeze bug after form submission
+
 ### 0.21.0 - November 2025
 ---
 
+- Support label printing again, fixing issues with new printing API
 - Adds zoom controller for barcode scanner camera view
 - Display default stock location in Part detail page
 - Display stock information in SupplierPart detail page

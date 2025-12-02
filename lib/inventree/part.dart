@@ -547,28 +547,3 @@ class InvenTreePartPricing extends InvenTreeModel {
   double? get saleHistoryMin => getDoubleOrNull("sale_history_min");
   double? get saleHistoryMax => getDoubleOrNull("sale_history_max");
 }
-
-/*
- * Class representing an attachment file against a Part object
- */
-class InvenTreePartAttachment extends InvenTreeAttachment {
-  InvenTreePartAttachment() : super();
-
-  InvenTreePartAttachment.fromJson(Map<String, dynamic> json)
-    : super.fromJson(json);
-
-  @override
-  String get REFERENCE_FIELD => "part";
-
-  @override
-  String get REF_MODEL_TYPE => "part";
-
-  @override
-  String get URL => InvenTreeAPI().supportsModernAttachments
-      ? "attachment/"
-      : "part/attachment/";
-
-  @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
-      InvenTreePartAttachment.fromJson(json);
-}

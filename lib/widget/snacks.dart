@@ -64,6 +64,7 @@ void showSnackIcon(
         },
       ),
       backgroundColor: backgroundColor,
+      showCloseIcon: true,
       action: onAction == null
           ? null
           : SnackBarAction(

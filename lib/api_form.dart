@@ -25,21 +25,50 @@ import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/snacks.dart";
 
 /*
+ * Extract field options from a returned OPTIONS request
+ */
+Map<String, dynamic> extractFields(APIResponse response) {
+  if (!response.isValid()) {
+    return {};
+  }
+
+  var data = response.asMap();
+
+  if (!data.containsKey("actions")) {
+    return {};
+  }
+
+  var actions = response.data["actions"] as Map<String, dynamic>;
+
+  dynamic result = actions["POST"] ?? actions["PUT"] ?? actions["PATCH"] ?? {};
+
+  return result as Map<String, dynamic>;
+}
+
+/*
  * Class that represents a single "form field",
  * defined by the InvenTree API
  */
 class APIFormField {
   // Constructor
-  APIFormField(this.name, this.data);
+  APIFormField(this.name, this.data, {this.formHandler});
 
   // File to be uploaded for this filed
   File? attachedfile;
+
+  APIFormWidgetState? formHandler;
 
   // Name of this field
   final String name;
 
   // JSON data which defines the field
   final Map<String, dynamic> data;
+
+  // Function to update the value of this field
+  void setFieldValue(dynamic val) {
+    data["value"] = val;
+    formHandler?.onValueChanged(name, value);
+  }
 
   // JSON field definition provided by the server
   Map<String, dynamic> definition = {};
@@ -85,6 +114,8 @@ class APIFormField {
       return null;
     }
   }
+
+  String get pk_field => (getParameter("pk_field") ?? "pk") as String;
 
   // Get the "api_url" associated with a related field
   String get api_url => (getParameter("api_url") ?? "") as String;
@@ -242,18 +273,13 @@ class APIFormField {
       return;
     }
 
-    int? pk = int.tryParse(value.toString());
-
-    if (pk == null) {
-      return;
-    }
-
-    String url = api_url + "/" + pk.toString() + "/";
+    String url = api_url + "/" + value.toString() + "/";
 
     final APIResponse response = await InvenTreeAPI().get(url, params: filters);
 
     if (response.successful()) {
       initial_data = response.data;
+      formHandler?.onValueChanged(name, value);
     }
   }
 
@@ -317,8 +343,7 @@ class APIFormField {
           onPressed: () async {
             var handler = UniqueBarcodeHandler((String hash) {
               controller.text = hash;
-              data["value"] = hash;
-
+              setFieldValue(hash);
               barcodeSuccess(L10().barcodeAssigned);
             });
 
@@ -346,9 +371,9 @@ class APIFormField {
         onChanged: (DateTime? time) {
           // Save the time string
           if (time == null) {
-            data["value"] = null;
+            setFieldValue(null);
           } else {
-            data["value"] = time.toString().split(" ").first;
+            setFieldValue(time.toString().split(" ").first);
           }
         },
         onShowPicker: (context, value) async {
@@ -431,9 +456,9 @@ class APIFormField {
       },
       onSaved: (item) {
         if (item == null) {
-          data["value"] = null;
+          setFieldValue(null);
         } else {
-          data["value"] = item["value"];
+          setFieldValue(item["value"]);
         }
       },
     );
@@ -480,7 +505,7 @@ class APIFormField {
         return null;
       },
       onSaved: (val) {
-        data["value"] = val;
+        setFieldValue(val);
       },
     );
   }
@@ -526,7 +551,20 @@ class APIFormField {
           hintText: helpText,
         ),
       ),
-      onChanged: null,
+      onChanged: (item) {
+        if (item != null) {
+          setFieldValue(item[pk_field]);
+        } else {
+          setFieldValue(null);
+        }
+      },
+      onSaved: (item) {
+        if (item != null) {
+          setFieldValue(item[pk_field]);
+        } else {
+          setFieldValue(null);
+        }
+      },
       itemAsString: (dynamic item) {
         Map<String, dynamic> data = item as Map<String, dynamic>;
 
@@ -550,13 +588,6 @@ class APIFormField {
       dropdownBuilder: (context, item) {
         return _renderRelatedField(name, item, true, false);
       },
-      onSaved: (item) {
-        if (item != null) {
-          data["value"] = item["pk"];
-        } else {
-          data["value"] = null;
-        }
-      },
       compareFn: (dynamic item, dynamic selectedItem) {
         // Comparison is based on the PK value
 
@@ -567,7 +598,8 @@ class APIFormField {
         bool result = false;
 
         try {
-          result = item["pk"].toString() == selectedItem["pk"].toString();
+          result =
+              item[pk_field].toString() == selectedItem[pk_field].toString();
         } catch (error) {
           // Catch any conversion errors
           result = false;
@@ -779,6 +811,15 @@ class APIFormField {
           subtitle: Text(project_code.description),
           leading: Icon(TablerIcons.list),
         );
+      case InvenTreeSalesOrder.MODEL_TYPE:
+        var so = InvenTreeSalesOrder.fromJson(data);
+        return ListTile(
+          title: Text(so.reference),
+          subtitle: Text(so.description),
+          leading: InvenTreeAPI().getThumbnail(
+            so.customer?.thumbnail ?? so.customer?.image ?? "",
+          ),
+        );
       default:
         return ListTile(
           title: Text(
@@ -824,8 +865,11 @@ class APIFormField {
       maxLines: multiline ? null : 1,
       expands: false,
       initialValue: (value ?? "") as String,
+      onChanged: (val) {
+        setFieldValue(val);
+      },
       onSaved: (val) {
-        data["value"] = val;
+        setFieldValue(val);
       },
       validator: (value) {
         if (required && (value == null || value.isEmpty)) {
@@ -856,7 +900,7 @@ class APIFormField {
       initial: initial_value,
       tristate: (getParameter("tristate") ?? false) as bool,
       onSaved: (val) {
-        data["value"] = val;
+        setFieldValue(val);
       },
     );
   }
@@ -877,27 +921,6 @@ class APIFormField {
       color: hasErrors() ? COLOR_DANGER : null,
     );
   }
-}
-
-/*
- * Extract field options from a returned OPTIONS request
- */
-Map<String, dynamic> extractFields(APIResponse response) {
-  if (!response.isValid()) {
-    return {};
-  }
-
-  var data = response.asMap();
-
-  if (!data.containsKey("actions")) {
-    return {};
-  }
-
-  var actions = response.data["actions"] as Map<String, dynamic>;
-
-  dynamic result = actions["POST"] ?? actions["PUT"] ?? actions["PATCH"] ?? {};
-
-  return result as Map<String, dynamic>;
 }
 
 /*
@@ -995,6 +1018,7 @@ Future<void> launchApiForm(
   Function(Map<String, dynamic>)? onSuccess,
   bool Function(Map<String, dynamic>)? validate,
   Function? onCancel,
+  APIFormWidgetState? formHandler,
   IconData icon = TablerIcons.device_floppy,
 }) async {
   showLoadingOverlay();
@@ -1055,7 +1079,7 @@ Future<void> launchApiForm(
       field.data["instance_value"] = model_value;
 
       if (field.data["value"] == null) {
-        field.data["value"] = model_value;
+        field.setFieldValue(model_value);
       }
     }
     formFields.add(field);
@@ -1080,6 +1104,7 @@ Future<void> launchApiForm(
         onSuccess: onSuccess,
         validate: validate,
         fileField: fileField,
+        state: formHandler,
         icon: icon,
       ),
     ),
@@ -1093,6 +1118,7 @@ class APIFormWidget extends StatefulWidget {
     this.fields,
     this.method, {
     Key? key,
+    this.state,
     this.onSuccess,
     this.validate,
     this.fileField = "",
@@ -1119,18 +1145,48 @@ class APIFormWidget extends StatefulWidget {
 
   final bool Function(Map<String, dynamic>)? validate;
 
+  final APIFormWidgetState? state;
+
+  // Default form handler is constructed if none is provided
   @override
-  _APIFormWidgetState createState() => _APIFormWidgetState();
+  APIFormWidgetState createState() => state ?? APIFormWidgetState();
 }
 
-class _APIFormWidgetState extends State<APIFormWidget> {
-  _APIFormWidgetState() : super();
+class APIFormWidgetState extends State<APIFormWidget> {
+  APIFormWidgetState() : super();
 
   final _formKey = GlobalKey<FormState>();
 
   List<String> nonFieldErrors = [];
 
   bool spacerRequired = false;
+
+  // Return a list of all fields used for this form
+  // The default implementation just returns the fields provided to the widget
+  // However, custom form implementations may override this function
+  List<APIFormField> get formFields {
+    final List<APIFormField> fields = widget.fields;
+
+    // Ensure each field has access to this form handler
+    for (var field in fields) {
+      field.formHandler ??= this;
+    }
+
+    return fields;
+  }
+
+  // Callback for when a field value is changed
+  // Default implementation does nothing,
+  // but custom form implementations may override this function
+  void onValueChanged(String field, dynamic value) {}
+
+  Future<void> handleSuccess(
+    Map<String, dynamic> submittedData,
+    Map<String, dynamic> responseData,
+  ) async {
+    Navigator.pop(context);
+    widget.onSuccess?.call(responseData);
+  }
 
   List<Widget> _buildForm() {
     List<Widget> widgets = [];
@@ -1149,7 +1205,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
       widgets.add(Divider(height: 5));
     }
 
-    for (var field in widget.fields) {
+    for (var field in formFields) {
       if (field.hidden) {
         continue;
       }
@@ -1204,7 +1260,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
       // Pop the "file" field
       data.remove(widget.fileField);
 
-      for (var field in widget.fields) {
+      for (var field in formFields) {
         if (field.name == widget.fileField) {
           File? file = field.attachedfile;
 
@@ -1289,7 +1345,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
           match = true;
           continue;
         default:
-          for (var field in widget.fields) {
+          for (var field in formFields) {
             // Hidden fields can't display errors, so we won't match
             if (field.hidden) {
               continue;
@@ -1341,7 +1397,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
 
     // Iterate through and find "simple" top-level fields
 
-    for (var field in widget.fields) {
+    for (var field in formFields) {
       if (field.readOnly) {
         continue;
       }
@@ -1380,20 +1436,11 @@ class _APIFormWidgetState extends State<APIFormWidget> {
       return;
     }
 
-    // Run custom onSuccess function
-    var successFunc = widget.onSuccess;
-
     // An "empty" URL means we don't want to submit the form anywhere
     // Perhaps we just want to process the data?
     if (widget.url.isEmpty) {
       // Hide the form
-      Navigator.pop(context);
-
-      if (successFunc != null) {
-        // Return the raw "submitted" data, rather than the server response
-        successFunc(data);
-      }
-
+      handleSuccess(data, {});
       return;
     }
 
@@ -1408,29 +1455,24 @@ class _APIFormWidgetState extends State<APIFormWidget> {
       case 200:
       case 201:
         // Form was successfully validated by the server
+        // Ensure the response is a valid JSON structure
+        Map<String, dynamic> json = {};
 
-        // Hide this form
-        Navigator.pop(context);
+        var responseData = response.asMap();
 
-        if (successFunc != null) {
-          // Ensure the response is a valid JSON structure
-          Map<String, dynamic> json = {};
-
-          var data = response.asMap();
-
-          for (String key in data.keys) {
-            json[key.toString()] = data[key];
-          }
-
-          successFunc(json);
+        for (String key in responseData.keys) {
+          json[key.toString()] = responseData[key];
         }
+
+        handleSuccess(data, json);
+
         return;
       case 400:
         // Form submission / validation error
         showSnackIcon(L10().formError, success: false);
 
         // Update field errors
-        for (var field in widget.fields) {
+        for (var field in formFields) {
           field.extractErrorMessages(response);
         }
 
@@ -1458,6 +1500,22 @@ class _APIFormWidgetState extends State<APIFormWidget> {
     });
   }
 
+  // Construct the internal form widget, based on the provided fields
+  Widget buildForm(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: _buildForm(),
+        ),
+        padding: EdgeInsets.all(16),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1477,18 +1535,7 @@ class _APIFormWidgetState extends State<APIFormWidget> {
           ),
         ],
       ),
-      body: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: _buildForm(),
-          ),
-          padding: EdgeInsets.all(16),
-        ),
-      ),
+      body: buildForm(context),
     );
   }
 }

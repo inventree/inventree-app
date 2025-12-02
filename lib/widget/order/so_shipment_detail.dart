@@ -8,6 +8,7 @@ import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/api.dart";
 import "package:inventree/api_form.dart";
 import "package:inventree/app_colors.dart";
+import "package:inventree/inventree/attachment.dart";
 import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/preferences.dart";
@@ -91,8 +92,11 @@ class _SOShipmentDetailWidgetState
       });
     }
 
-    InvenTreeSalesOrderShipmentAttachment()
-        .countAttachments(widget.shipment.pk)
+    InvenTreeAttachment()
+        .countAttachments(
+          InvenTreeSalesOrderShipment.MODEL_TYPE,
+          widget.shipment.pk,
+        )
         .then((int value) {
           if (mounted) {
             setState(() {
@@ -104,8 +108,12 @@ class _SOShipmentDetailWidgetState
 
   /// Upload an image for this shipment
   Future<void> _uploadImage(BuildContext context) async {
-    InvenTreeSalesOrderShipmentAttachment()
-        .uploadImage(widget.shipment.pk, prefix: widget.shipment.reference)
+    InvenTreeAttachment()
+        .uploadImage(
+          InvenTreeSalesOrderShipment.MODEL_TYPE,
+          widget.shipment.pk,
+          prefix: widget.shipment.reference,
+        )
         .then((result) => refresh(context));
   }
 
@@ -339,29 +347,18 @@ class _SOShipmentDetailWidgetState
       ),
     );
 
-    // Attachments
-    tiles.add(
-      ListTile(
-        title: Text(L10().attachments),
-        leading: Icon(TablerIcons.file, color: COLOR_ACTION),
-        trailing: LinkIcon(
-          text: attachmentCount > 0 ? attachmentCount.toString() : null,
-        ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AttachmentWidget(
-                InvenTreeSalesOrderShipmentAttachment(),
-                widget.shipment.pk,
-                widget.shipment.reference,
-                widget.shipment.canEdit,
-              ),
-            ),
-          );
-        },
-      ),
+    ListTile? attachmentTile = ShowAttachmentsItem(
+      context,
+      InvenTreeSalesOrderShipment.MODEL_TYPE,
+      widget.shipment.pk,
+      widget.shipment.reference,
+      attachmentCount,
+      widget.shipment.canEdit,
     );
+
+    if (attachmentTile != null) {
+      tiles.add(attachmentTile);
+    }
 
     return tiles;
   }

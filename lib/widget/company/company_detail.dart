@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
+import "package:inventree/inventree/attachment.dart";
 
 import "package:inventree/l10.dart";
 import "package:inventree/api.dart";
@@ -184,15 +185,15 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
           }
         });
 
-    InvenTreeCompanyAttachment().countAttachments(widget.company.pk).then((
-      value,
-    ) {
-      if (mounted) {
-        setState(() {
-          attachmentCount = value;
+    InvenTreeAttachment()
+        .countAttachments(InvenTreeCompany.MODEL_TYPE, widget.company.pk)
+        .then((value) {
+          if (mounted) {
+            setState(() {
+              attachmentCount = value;
+            });
+          }
         });
-      }
-    });
   }
 
   Future<void> editCompany(BuildContext context) async {
@@ -393,28 +394,18 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
       );
     }
 
-    tiles.add(
-      ListTile(
-        title: Text(L10().attachments),
-        leading: Icon(TablerIcons.file, color: COLOR_ACTION),
-        trailing: LinkIcon(
-          text: attachmentCount > 0 ? attachmentCount.toString() : null,
-        ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AttachmentWidget(
-                InvenTreeCompanyAttachment(),
-                widget.company.pk,
-                widget.company.name,
-                InvenTreeCompany().canEdit,
-              ),
-            ),
-          );
-        },
-      ),
+    ListTile? attachmentTile = ShowAttachmentsItem(
+      context,
+      InvenTreeCompany.MODEL_TYPE,
+      widget.company.pk,
+      widget.company.name,
+      attachmentCount,
+      widget.company.canEdit,
     );
+
+    if (attachmentTile != null) {
+      tiles.add(attachmentTile);
+    }
 
     return tiles;
   }
