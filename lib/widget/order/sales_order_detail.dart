@@ -5,12 +5,14 @@ import "package:inventree/barcode/barcode.dart";
 import "package:inventree/barcode/sales_order.dart";
 import "package:inventree/inventree/attachment.dart";
 import "package:inventree/inventree/company.dart";
+import "package:inventree/inventree/parameter.dart";
 import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/preferences.dart";
 import "package:inventree/widget/link_icon.dart";
 import "package:inventree/widget/order/so_extra_line_list.dart";
 import "package:inventree/widget/order/so_line_list.dart";
 import "package:inventree/widget/order/so_shipment_list.dart";
+import "package:inventree/widget/parameter_widget.dart";
 import "package:inventree/widget/refreshable_state.dart";
 
 import "package:inventree/l10.dart";
@@ -43,6 +45,7 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
   bool showCameraShortcut = true;
   bool supportsProjectCodes = false;
   int attachmentCount = 0;
+  int parameterCount = 0;
 
   @override
   String getAppBarTitle() {
@@ -271,6 +274,16 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
       true,
     );
 
+    InvenTreeParameter()
+        .countParameters(InvenTreeSalesOrder.MODEL_TYPE, widget.order.pk)
+        .then((int value) {
+          if (mounted) {
+            setState(() {
+              parameterCount = value;
+            });
+          }
+        });
+
     InvenTreeAttachment()
         .countAttachments(InvenTreeSalesOrder.MODEL_TYPE, widget.order.pk)
         .then((int value) {
@@ -496,6 +509,18 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
         },
       ),
     );
+
+    ListTile? parameterTile = ShowParametersItem(
+      context,
+      InvenTreeSalesOrder.MODEL_TYPE,
+      widget.order.pk,
+      parameterCount,
+      widget.order.canEdit,
+    );
+
+    if (parameterTile != null) {
+      tiles.add(parameterTile);
+    }
 
     ListTile? attachmentTile = ShowAttachmentsItem(
       context,

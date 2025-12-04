@@ -1,6 +1,8 @@
 import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
+import "package:inventree/inventree/attachment.dart";
+import "package:inventree/inventree/parameter.dart";
 
 import "package:inventree/l10.dart";
 import "package:inventree/api.dart";
@@ -8,6 +10,8 @@ import "package:inventree/app_colors.dart";
 
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/part.dart";
+import "package:inventree/widget/attachment_widget.dart";
+import "package:inventree/widget/parameter_widget.dart";
 
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
@@ -31,6 +35,9 @@ class _ManufacturerPartDisplayState
     extends RefreshableState<ManufacturerPartDetailWidget> {
   _ManufacturerPartDisplayState();
 
+  int parameterCount = 0;
+  int attachmentCount = 0;
+
   @override
   String getAppBarTitle() => L10().manufacturerPart;
 
@@ -42,7 +49,34 @@ class _ManufacturerPartDisplayState
 
     if (!result) {
       Navigator.of(context).pop();
+      return;
     }
+
+    InvenTreeParameter()
+        .countParameters(
+          InvenTreeManufacturerPart.MODEL_TYPE,
+          widget.manufacturerPart.pk,
+        )
+        .then((value) {
+          if (mounted) {
+            setState(() {
+              parameterCount = value;
+            });
+          }
+        });
+
+    InvenTreeAttachment()
+        .countAttachments(
+          InvenTreeManufacturerPart.MODEL_TYPE,
+          widget.manufacturerPart.pk,
+        )
+        .then((value) {
+          if (mounted) {
+            setState(() {
+              attachmentCount = value;
+            });
+          }
+        });
   }
 
   Future<void> editManufacturerPart(BuildContext context) async {
@@ -90,11 +124,6 @@ class _ManufacturerPartDisplayState
   @override
   List<Widget> getTiles(BuildContext context) {
     List<Widget> tiles = [];
-
-    if (loading) {
-      tiles.add(progressIndicator());
-      return tiles;
-    }
 
     // Internal Part
     tiles.add(
@@ -172,6 +201,31 @@ class _ManufacturerPartDisplayState
           },
         ),
       );
+    }
+
+    ListTile? parameterTile = ShowParametersItem(
+      context,
+      InvenTreeManufacturerPart.MODEL_TYPE,
+      widget.manufacturerPart.pk,
+      parameterCount,
+      widget.manufacturerPart.canEdit,
+    );
+
+    if (parameterTile != null) {
+      tiles.add(parameterTile);
+    }
+
+    ListTile? attachmentTile = ShowAttachmentsItem(
+      context,
+      InvenTreeManufacturerPart.MODEL_TYPE,
+      widget.manufacturerPart.pk,
+      widget.manufacturerPart.MPN,
+      attachmentCount,
+      widget.manufacturerPart.canEdit,
+    );
+
+    if (attachmentTile != null) {
+      tiles.add(attachmentTile);
     }
 
     return tiles;

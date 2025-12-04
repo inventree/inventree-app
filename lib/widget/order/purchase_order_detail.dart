@@ -8,6 +8,7 @@ import "package:inventree/barcode/barcode.dart";
 import "package:inventree/barcode/purchase_order.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/inventree/attachment.dart";
+import "package:inventree/inventree/parameter.dart";
 import "package:inventree/l10.dart";
 
 import "package:inventree/inventree/model.dart";
@@ -22,6 +23,7 @@ import "package:inventree/widget/order/po_line_list.dart";
 
 import "package:inventree/widget/attachment_widget.dart";
 import "package:inventree/widget/notes_widget.dart";
+import "package:inventree/widget/parameter_widget.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
@@ -51,6 +53,7 @@ class _PurchaseOrderDetailState
 
   int completedLines = 0;
   int attachmentCount = 0;
+  int parameterCount = 0;
 
   bool showCameraShortcut = true;
   bool supportProjectCodes = false;
@@ -299,6 +302,16 @@ class _PurchaseOrderDetailState
         completedLines += 1;
       }
     }
+
+    InvenTreeParameter()
+        .countParameters(InvenTreePurchaseOrder.MODEL_TYPE, widget.order.pk)
+        .then((int value) {
+          if (mounted) {
+            setState(() {
+              parameterCount = value;
+            });
+          }
+        });
 
     InvenTreeAttachment()
         .countAttachments(InvenTreePurchaseOrder.MODEL_TYPE, widget.order.pk)
@@ -569,6 +582,18 @@ class _PurchaseOrderDetailState
         },
       ),
     );
+
+    ListTile? parameterTile = ShowParametersItem(
+      context,
+      InvenTreePurchaseOrder.MODEL_TYPE,
+      widget.order.pk,
+      parameterCount,
+      widget.order.canEdit,
+    );
+
+    if (parameterTile != null) {
+      tiles.add(parameterTile);
+    }
 
     ListTile? attachmentTile = ShowAttachmentsItem(
       context,

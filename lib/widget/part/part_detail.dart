@@ -5,6 +5,7 @@ import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/barcode/barcode.dart";
 import "package:inventree/inventree/attachment.dart";
+import "package:inventree/inventree/parameter.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/helpers.dart";
 
@@ -16,10 +17,10 @@ import "package:inventree/preferences.dart";
 
 import "package:inventree/widget/attachment_widget.dart";
 import "package:inventree/widget/link_icon.dart";
+import "package:inventree/widget/parameter_widget.dart";
 import "package:inventree/widget/part/bom_list.dart";
 import "package:inventree/widget/part/part_list.dart";
 import "package:inventree/widget/notes_widget.dart";
-import "package:inventree/widget/part/part_parameter_widget.dart";
 import "package:inventree/widget/part/part_pricing.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/part/category_display.dart";
@@ -50,13 +51,11 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   InvenTreeStockLocation? defaultLocation;
 
-  int parameterCount = 0;
-
   bool allowLabelPrinting = false;
-  bool showParameters = false;
   bool showBom = false;
   bool showPricing = false;
 
+  int parameterCount = 0;
   int attachmentCount = 0;
   int bomCount = 0;
   int usedInCount = 0;
@@ -153,10 +152,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       INV_PART_SHOW_PRICING,
       true,
     );
-    showParameters = await InvenTreeSettingsManager().getBool(
-      INV_PART_SHOW_PARAMETERS,
-      true,
-    );
     showBom = await InvenTreeSettingsManager().getBool(INV_PART_SHOW_BOM, true);
     allowLabelPrinting = await InvenTreeSettingsManager().getBool(
       INV_ENABLE_LABEL_PRINTING,
@@ -213,15 +208,30 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     }
 
     // Request the number of attachments
-    InvenTreeAttachment()
-        .countAttachments(InvenTreePart.MODEL_TYPE, part.pk)
-        .then((int value) {
-          if (mounted) {
-            setState(() {
-              attachmentCount = value;
-            });
-          }
-        });
+    if (api.supportsModernAttachments) {
+      InvenTreeAttachment()
+          .countAttachments(InvenTreePart.MODEL_TYPE, part.pk)
+          .then((int value) {
+            if (mounted) {
+              setState(() {
+                attachmentCount = value;
+              });
+            }
+          });
+    }
+
+    // Request the number of parameters
+    if (api.supportsModernParameters) {
+      InvenTreeParameter()
+          .countParameters(InvenTreePart.MODEL_TYPE, part.pk)
+          .then((int value) {
+            if (mounted) {
+              setState(() {
+                parameterCount = value;
+              });
+            }
+          });
+    }
 
     // If show pricing information?
     if (showPricing) {
@@ -599,6 +609,18 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       ),
     );
 
+    ListTile? parameterTile = ShowParametersItem(
+      context,
+      InvenTreePart.MODEL_TYPE,
+      part.pk,
+      parameterCount,
+      part.canEdit,
+    );
+
+    if (parameterTile != null) {
+      tiles.add(parameterTile);
+    }
+
     ListTile? attachmentTile = ShowAttachmentsItem(
       context,
       InvenTreePart.MODEL_TYPE,
@@ -705,10 +727,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   List<Widget> getTabIcons(BuildContext context) {
     List<Widget> icons = [Tab(text: L10().details), Tab(text: L10().stock)];
 
-    if (showParameters) {
-      icons.add(Tab(text: L10().parameters));
-    }
-
     return icons;
   }
 
@@ -721,11 +739,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       ),
       PaginatedStockItemList({"part": part.pk.toString()}),
     ];
-
-    if (showParameters) {
-      tabs.add(PaginatedParameterList({"part": part.pk.toString()}));
-    }
-
     return tabs;
   }
 }
