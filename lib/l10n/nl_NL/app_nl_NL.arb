@@ -958,7 +958,7 @@
   "@shipmentDate": {},
   "shipmentEdit": "Wijzig levering",
   "@shipmentEdit": {},
-  "shipmentReference": "Shipment Reference",
+  "shipmentReference": "Referentie verzending",
   "@shipmentReference": {},
   "shipmentSend": "Verzending versturen",
   "@shipmentSend": {},
