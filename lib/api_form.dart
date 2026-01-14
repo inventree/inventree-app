@@ -1011,17 +1011,18 @@ Future<void> launchApiForm(
   APIFormWidgetState? formHandler,
   IconData icon = TablerIcons.device_floppy,
 }) async {
-  showLoadingOverlay();
 
   // List of fields defined by the server
   Map<String, dynamic> serverFields = {};
 
   if (url.isNotEmpty) {
+
+    showLoadingOverlay();
     var options = await InvenTreeAPI().options(url);
+    hideLoadingOverlay();
 
     // Invalid response from server
     if (!options.isValid()) {
-      hideLoadingOverlay();
       return;
     }
 
@@ -1030,8 +1031,6 @@ Future<void> launchApiForm(
     if (serverFields.isEmpty) {
       // User does not have permission to perform this action
       showSnackIcon(L10().response403, icon: TablerIcons.user_x);
-
-      hideLoadingOverlay();
       return;
     }
   }
@@ -1074,6 +1073,8 @@ Future<void> launchApiForm(
     }
     formFields.add(field);
   }
+
+  showLoadingOverlay();
 
   // Grab existing data for each form field
   for (var field in formFields) {
@@ -1175,6 +1176,7 @@ class APIFormWidgetState extends State<APIFormWidget> {
     Map<String, dynamic> responseData,
   ) async {
     Navigator.pop(context);
+    print("handleSuccess: $responseData}");
     widget.onSuccess?.call(responseData);
   }
 
@@ -1426,11 +1428,13 @@ class APIFormWidgetState extends State<APIFormWidget> {
       return;
     }
 
+
+
     // An "empty" URL means we don't want to submit the form anywhere
     // Perhaps we just want to process the data?
     if (widget.url.isEmpty) {
       // Hide the form
-      handleSuccess(data, {});
+      handleSuccess(data, data);
       return;
     }
 
