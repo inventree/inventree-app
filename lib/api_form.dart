@@ -1011,12 +1011,10 @@ Future<void> launchApiForm(
   APIFormWidgetState? formHandler,
   IconData icon = TablerIcons.device_floppy,
 }) async {
-
   // List of fields defined by the server
   Map<String, dynamic> serverFields = {};
 
   if (url.isNotEmpty) {
-
     showLoadingOverlay();
     var options = await InvenTreeAPI().options(url);
     hideLoadingOverlay();
@@ -1426,8 +1424,6 @@ class APIFormWidgetState extends State<APIFormWidget> {
     if (!isValid) {
       return;
     }
-
-
 
     // An "empty" URL means we don't want to submit the form anywhere
     // Perhaps we just want to process the data?
