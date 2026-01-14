@@ -1298,6 +1298,18 @@
   "searchLocation": "Search for location",
   "@searchLocation": {},
 
+  "searchOrderingField": "Ordering Field",
+  "@searchOrderingField": {},
+
+  "searchOrderingDirection": "Ordering Direction",
+  "@searchOrderingDirection": {},
+
+  "searchOrderingAscending": "Ascending",
+  "@searchOrderingAscending": {},
+
+  "searchOrderingDescending": "Descending",
+  "@searchOrderingDescending": {},
+
   "searchParts": "Search Parts",
   "@searchParts": {},
 

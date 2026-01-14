@@ -152,19 +152,19 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget>
     Map<String, dynamic> fields = {
       "ordering_field": {
         "type": "choice",
-        "label": "Ordering Field",
+        "label": L10().searchOrderingField,
         "required": true,
         "choices": _opts,
         "value": _field,
       },
       "ordering_order": {
         "type": "choice",
-        "label": "Ordering Direction",
+        "label": L10().searchOrderingDirection,
         "required": true,
         "value": _order,
         "choices": [
-          {"value": "+", "display_name": "Ascending"},
-          {"value": "-", "display_name": "Descending"},
+          {"value": "+", "display_name": L10().searchOrderingAscending},
+          {"value": "-", "display_name": L10().searchOrderingDescending},
         ],
       },
     };
