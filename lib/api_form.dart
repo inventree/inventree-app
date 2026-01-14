@@ -1176,7 +1176,6 @@ class APIFormWidgetState extends State<APIFormWidget> {
     Map<String, dynamic> responseData,
   ) async {
     Navigator.pop(context);
-    print("handleSuccess: $responseData}");
     widget.onSuccess?.call(responseData);
   }
 
