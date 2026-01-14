@@ -2,6 +2,7 @@
 ---
 
 - Fixes bug which launched camera twice when uploading an attachment
+- Fixed bug related to list sorting and filtering
 
 ### 0.21.1 - November 2025
 ---
