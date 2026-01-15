@@ -76,7 +76,7 @@ class _PaginatedStockItemListState
         "tristate": true,
       },
       "cascade": {
-        "default": false,
+        "default": true,
         "label": L10().includeSublocations,
         "help_text": L10().includeSublocationsDetail,
         "tristate": false,
