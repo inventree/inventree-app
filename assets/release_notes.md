@@ -1,3 +1,9 @@
+### x.xx.x - Month Year
+---
+
+- Fix default values for list sorting
+
+
 ### 0.21.2 - January 2026
 ---
 

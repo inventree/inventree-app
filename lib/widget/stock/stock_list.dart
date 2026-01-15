@@ -75,6 +75,11 @@ class _PaginatedStockItemListState
         "help_text": L10().filterInStockDetail,
         "tristate": true,
       },
+      "active": {
+        "default": true,
+        "label": L10().filterActive,
+        "help_text": L10().filterActiveDetail,
+      },
       "cascade": {
         "default": true,
         "label": L10().includeSublocations,

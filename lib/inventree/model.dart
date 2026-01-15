@@ -730,8 +730,6 @@ class InvenTreeModel {
 
     var response = await api.get(URL, params: params);
 
-    print("paginated: ${URL}: ${params}");
-
     if (!response.isValid()) {
       return null;
     }
