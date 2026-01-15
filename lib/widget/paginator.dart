@@ -53,7 +53,10 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget>
 
     bool tristate = (opts["tristate"] ?? true) as bool;
     dynamic backup = tristate ? opts["default"] : opts["default"] ?? false;
-    final result = await InvenTreeSettingsManager().getValue(settings_key, backup);
+    final result = await InvenTreeSettingsManager().getValue(
+      settings_key,
+      backup,
+    );
 
     return result;
   }
