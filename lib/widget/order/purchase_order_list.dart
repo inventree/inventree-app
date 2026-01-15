@@ -133,6 +133,7 @@ class _PaginatedPurchaseOrderListState
       "label": L10().outstanding,
       "help_text": L10().outstandingOrderDetail,
       "tristate": true,
+      "default": true,
     },
     "overdue": {
       "label": L10().overdue,

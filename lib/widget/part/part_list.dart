@@ -74,6 +74,7 @@ class _PaginatedPartListState extends PaginatedSearchState<PaginatedPartList> {
       "label": L10().filterActive,
       "help_text": L10().filterActiveDetail,
       "tristate": true,
+      "default": true,
     },
     "assembly": {
       "label": L10().filterAssembly,
