@@ -52,9 +52,13 @@ class _PaginatedStockLocationListState
   @override
   Map<String, String> get orderingOptions => {
     "name": L10().name,
+    "pathstring": L10().path,
     "items": L10().stockItems,
     "level": L10().level,
   };
+
+  @override
+  String get defaultOrdering => "pathstring";
 
   @override
   Map<String, Map<String, dynamic>> get filterOptions => {

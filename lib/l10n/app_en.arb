@@ -974,6 +974,9 @@
   "passwordEmpty": "Password cannot be empty",
   "@passwordEmpty": {},
 
+  "path": "Path",
+  "@path":  {},
+
   "pending": "Pending",
   "@pending": {},
 
@@ -1046,23 +1049,23 @@
   "projectCode": "Project Code",
   "@projectCode": {},
 
-    "purchaseOrderConfirmScan": "Confirm Scan Data",
-    "@purchaseOrderConfirmScan": {},
+  "purchaseOrderConfirmScan": "Confirm Scan Data",
+  "@purchaseOrderConfirmScan": {},
 
-    "purchaseOrderConfirmScanDetail": "Confirm details when scanning in items",
-    "@purchaseOrderConfirmScanDetail": {},
+  "purchaseOrderConfirmScanDetail": "Confirm details when scanning in items",
+  "@purchaseOrderConfirmScanDetail": {},
 
-   "purchaseOrderEnable": "Enable Purchase Orders",
-   "@purchaseOrderEnable": {},
+  "purchaseOrderEnable": "Enable Purchase Orders",
+  "@purchaseOrderEnable": {},
 
-   "purchaseOrderEnableDetail": "Enable purchase order functionality",
-    "@purchaseOrderEnableDetail": {},
+  "purchaseOrderEnableDetail": "Enable purchase order functionality",
+  "@purchaseOrderEnableDetail": {},
 
-    "purchaseOrderShowCamera": "Camera Shortcut",
-    "@purchaseOrderShowCamera": {},
+  "purchaseOrderShowCamera": "Camera Shortcut",
+  "@purchaseOrderShowCamera": {},
 
-    "purchaseOrderShowCameraDetail": "Enable image upload shortcut on purchase order screen",
-    "@purchaseOrderShowCameraDetail": {},
+  "purchaseOrderShowCameraDetail": "Enable image upload shortcut on purchase order screen",
+  "@purchaseOrderShowCameraDetail": {},
 
   "purchaseOrder": "Purchase Order",
   "@purchaseOrder": {},

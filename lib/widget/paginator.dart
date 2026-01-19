@@ -42,6 +42,9 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget>
   // Override in implementing class
   String get prefix => "prefix_";
 
+  // Default ordering option (can be overridden)
+  String get defaultOrdering => "";
+
   // Should be overridden by an implementing subclass
   Map<String, Map<String, dynamic>> get filterOptions => {};
 
@@ -103,6 +106,9 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget>
     if (field != null && orderingOptions.containsKey(field.toString())) {
       // A valid ordering field has been found
       return field.toString();
+    } else if (defaultOrdering.isNotEmpty) {
+      // A default ordering value is supplied
+      return defaultOrdering;
     } else if (orderingOptions.isNotEmpty) {
       // By default, return the first specified key
       return orderingOptions.keys.first;
