@@ -62,8 +62,15 @@ class _PaginatedPartCategoryListState
   };
 
   @override
+  String get defaultOrdering => "pathstring";
+
+  @override
   Map<String, String> get orderingOptions {
-    Map<String, String> options = {"name": L10().name, "level": L10().level};
+    Map<String, String> options = {
+      "name": L10().name,
+      "pathstring": L10().path,
+      "level": L10().level
+    };
 
     // Note: API v69 changed 'parts' to 'part_count'
     if (InvenTreeAPI().apiVersion >= 69) {
