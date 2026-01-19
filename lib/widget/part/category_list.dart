@@ -69,7 +69,7 @@ class _PaginatedPartCategoryListState
     Map<String, String> options = {
       "name": L10().name,
       "pathstring": L10().path,
-      "level": L10().level
+      "level": L10().level,
     };
 
     // Note: API v69 changed 'parts' to 'part_count'
