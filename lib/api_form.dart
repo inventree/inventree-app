@@ -732,6 +732,7 @@ class APIFormField {
 
         return ListTile(
           title: Text(item.partName),
+          subtitle: Text(item.locationPathString),
           leading: InvenTreeAPI().getThumbnail(item.partThumbnail),
           trailing: Text(item.quantityString()),
         );
