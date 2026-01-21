@@ -272,72 +272,126 @@ class APIFormField {
     // Try to map common API labels to localized strings
     switch (label) {
       // Company fields
-      case "Active": return L10().active;
-      case "Company name": return L10().name;
-      case "Company description": return L10().description;
-      case "Website": return L10().website;
-      case "Company Website URL": return L10().website;
-      case "Is supplier": return L10().supplier;
-      case "Is manufacturer": return L10().manufacturer;
-      case "Is customer": return L10().customer;
-      case "Currency": return L10().currency;
-      
+      case "Active":
+        return L10().active;
+      case "Company name":
+        return L10().name;
+      case "Company description":
+        return L10().description;
+      case "Website":
+        return L10().website;
+      case "Company Website URL":
+        return L10().website;
+      case "Is supplier":
+        return L10().supplier;
+      case "Is manufacturer":
+        return L10().manufacturer;
+      case "Is customer":
+        return L10().customer;
+      case "Currency":
+        return L10().currency;
+
       // Order fields
-      case "Customer Reference": return L10().customerReference;
-      case "Project Code": return L10().projectCode;
-      case "Start Date": return L10().startDate;
-      case "Target Date": return L10().targetDate;
-      case "Responsible": return L10().responsible;
-      case "Contact": return L10().contact;
-      
+      case "Customer Reference":
+        return L10().customerReference;
+      case "Project Code":
+        return L10().projectCode;
+      case "Start Date":
+        return L10().startDate;
+      case "Target Date":
+        return L10().targetDate;
+      case "Responsible":
+        return L10().responsible;
+      case "Contact":
+        return L10().contact;
+
       // Generic fields
-      case "Part": return L10().part;
-      case "Quantity": return L10().quantity;
-      case "Status": return L10().status;
-      case "Notes": return L10().notes;
-      case "Reference": return L10().reference;
-      
+      case "Part":
+        return L10().part;
+      case "Quantity":
+        return L10().quantity;
+      case "Status":
+        return L10().status;
+      case "Notes":
+        return L10().notes;
+      case "Reference":
+        return L10().reference;
+
       // Shipment related
-      case "Shipment": return L10().shipment;
-      case "Shipment Reference": return L10().shipmentReference;
-      case "Shipment Checked": return L10().shipmentChecked;
-      case "Shipment Date": return L10().shipmentDate;
-      case "Shipment Number": return L10().shipment;  // API uses "Shipment Number" for shipment field
-      case "Delivery Date": return L10().deliveryDate;
-      case "Allocated Stock": return L10().allocatedStock;
-      case "Tracking Number": return L10().trackingNumber;
-      case "Invoice Number": return L10().invoiceNumber;
-      case "Link": return L10().link;
-      
+      case "Shipment":
+        return L10().shipment;
+      case "Shipment Reference":
+        return L10().shipmentReference;
+      case "Shipment Checked":
+        return L10().shipmentChecked;
+      case "Shipment Date":
+        return L10().shipmentDate;
+      case "Shipment Number":
+        return L10().shipment; // API uses "Shipment Number" for shipment field
+      case "Delivery Date":
+        return L10().deliveryDate;
+      case "Allocated Stock":
+        return L10().allocatedStock;
+      case "Tracking Number":
+        return L10().trackingNumber;
+      case "Invoice Number":
+        return L10().invoiceNumber;
+      case "Link":
+        return L10().link;
+
       // Part fields
-      case "Name": return L10().name;
-      case "Internal Part Number": return L10().internalPartNumber;
-      case "Revision": return L10().revision;
-      case "Keywords": return L10().keywords;
-      case "Category": return L10().category;
-      case "Default Location": return L10().locationDefault;
-      case "Units": return L10().units;
-      case "Assembly": return L10().labelAssembly;
-      case "Component": return L10().labelComponent;
-      case "Salable": return L10().labelSalable;
-      case "Trackable": return L10().labelTrackable;
-      case "Is Template": return L10().labelTemplate;
-      case "Purchaseable": return L10().labelPurchaseable;
-      case "Virtual": return L10().labelVirtual;
-      case "Part Description (optional)": return L10().descPartDescription;
-      case "Part description (optional)": return L10().descPartDescription;
-      case "Part description": return L10().descPartDescription;
-      case "Part Description": return L10().descPartDescription;
-      
+      case "Name":
+        return L10().name;
+      case "Internal Part Number":
+        return L10().internalPartNumber;
+      case "Revision":
+        return L10().revision;
+      case "Keywords":
+        return L10().keywords;
+      case "Category":
+        return L10().category;
+      case "Default Location":
+        return L10().locationDefault;
+      case "Units":
+        return L10().units;
+      case "Assembly":
+        return L10().labelAssembly;
+      case "Component":
+        return L10().labelComponent;
+      case "Salable":
+        return L10().labelSalable;
+      case "Trackable":
+        return L10().labelTrackable;
+      case "Is Template":
+        return L10().labelTemplate;
+      case "Purchaseable":
+        return L10().labelPurchaseable;
+      case "Virtual":
+        return L10().labelVirtual;
+      case "Part Description (optional)":
+        return L10().descPartDescription;
+      case "Part description (optional)":
+        return L10().descPartDescription;
+      case "Part description":
+        return L10().descPartDescription;
+      case "Part Description":
+        return L10().descPartDescription;
+
       // Stock fields
-      case "Batch Code": return L10().batchCode;
-      case "Purchase Price": return L10().purchasePrice;
-      case "Packaging": return L10().packaging;
-      case "External Link": return L10().labelExternalLink;
-      
-      case "IPN": return L10().internalPartNumber;
-        
-      default: return label;
+      case "Batch Code":
+        return L10().batchCode;
+      case "Purchase Price":
+        return L10().purchasePrice;
+      case "Packaging":
+        return L10().packaging;
+      case "External Link":
+        return L10().labelExternalLink;
+
+      case "IPN":
+        return L10().internalPartNumber;
+
+      default:
+        return label;
     }
   }
 
@@ -358,7 +412,7 @@ class APIFormField {
         return L10().companyIsCustomer;
       case "Does this company manufacture parts?":
         return L10().companyIsManufacturer;
-      
+
       // Company field descriptions
       case "Company name":
         return L10().descCompanyName;
@@ -368,7 +422,7 @@ class APIFormField {
         return L10().descCompanyWebsite;
       case "Is this company active?":
         return L10().descCompanyActive;
-      
+
       // Shipment field descriptions
       case "Shipment":
         return L10().descShipment;
@@ -384,8 +438,8 @@ class APIFormField {
         return L10().descInvoiceNumber;
       case "Link to external page":
         return L10().descLink;
-      
-      // Part field descriptions  
+
+      // Part field descriptions
       case "Part name":
         return L10().descPartName;
       case "Internal Part Number":
@@ -404,7 +458,7 @@ class APIFormField {
         return L10().descUnits;
       case "Shipment Tracking Information":
         return L10().descTrackingNumber;
-      
+
       // Part boolean field descriptions
       case "Part Description (optional)":
         return L10().descPartDescription;
@@ -434,8 +488,9 @@ class APIFormField {
         return L10().descPurchaseCurrency;
       case "Packaging this stock item is stored in":
         return L10().descPackaging;
-        
-      default: return helpText;
+
+      default:
+        return helpText;
     }
   }
 

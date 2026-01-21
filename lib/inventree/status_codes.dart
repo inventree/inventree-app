@@ -107,11 +107,16 @@ class InvenTreeStatusCode {
     // Import L10 at the top if not already imported
     try {
       switch (name.toUpperCase()) {
-        case "PENDING": return L10().pending;
-        case "IN_PROGRESS": return L10().inProgress;
-        case "SHIPPED": return L10().shipped;
-        case "CANCELLED": return L10().cancelled;
-        default: return fallback; // Return original label if no translation
+        case "PENDING":
+          return L10().pending;
+        case "IN_PROGRESS":
+          return L10().inProgress;
+        case "SHIPPED":
+          return L10().shipped;
+        case "CANCELLED":
+          return L10().cancelled;
+        default:
+          return fallback; // Return original label if no translation
       }
     } catch (e) {
       // If L10() fails (no context), return fallback
