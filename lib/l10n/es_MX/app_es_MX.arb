@@ -282,7 +282,7 @@
   "@editItem": {},
   "editLineItem": "Editar artículo de línea",
   "@editLineItem": {},
-  "email": "Email",
+  "email": "Correo electrónico",
   "@email": {},
   "enterPassword": "Introducir contraseña",
   "@enterPassword": {},
@@ -480,7 +480,7 @@
   "@labelPrinting": {},
   "labelPrintingDetail": "Habilitar impresión de etiquetas",
   "@labelPrintingDetail": {},
-  "labelTemplate": "Plantilla de etiqueta",
+  "labelTemplate": "¿Es plantilla?",
   "@labelTemplate": {},
   "labelSelectTemplate": "Seleccionar Plantilla de Etiqueta",
   "@labelSelectTemplate": {},
@@ -1213,144 +1213,96 @@
   "priceBreaks": "Descuentos por volumen",
   "@priceBreaks": {},
   "path": "Ruta",
-
   "active": "Activa",
   "@active": {},
-
   "contact": "Contacto",
   "@contact": {},
-
   "inProgress": "En Progreso",
   "@inProgress": {},
-
   "cancelled": "Cancelado",
   "@cancelled": {},
-
   "companyIsSupplier": "¿Compra artículos de esta empresa?",
   "@companyIsSupplier": {},
-
   "companyIsCustomer": "¿Vende artículos a esta empresa?",
   "@companyIsCustomer": {},
-
   "companyIsManufacturer": "¿Esta empresa fabrica piezas?",
   "@companyIsManufacturer": {},
-
   "descCompanyName": "Nombre de la empresa",
   "@descCompanyName": {},
-
   "descCompanyDescription": "Descripción de la empresa",
   "@descCompanyDescription": {},
-
   "descCompanyWebsite": "URL del sitio web de la empresa",
   "@descCompanyWebsite": {},
-
   "descCompanyActive": "¿Está activa esta empresa?",
   "@descCompanyActive": {},
-
   "descShipment": "Envío",
   "@descShipment": {},
-
   "descShipmentNumber": "Número de envío",
   "@descShipmentNumber": {},
-
   "descTrackingNumber": "Información de seguimiento del envío",
   "@descTrackingNumber": {},
-
   "descInvoiceNumber": "Número de referencia de la factura asociada",
   "@descInvoiceNumber": {},
-
   "descLink": "Enlace a página externa",
   "@descLink": {},
-
   "revision": "Revisión",
   "@revision": {},
-
   "descPartName": "Nombre de la pieza",
   "@descPartName": {},
-
   "descIPN": "Número interno de pieza",
   "@descIPN": {},
-
   "descRevision": "Revisión o número de versión de la pieza",
   "@descRevision": {},
-
   "descKeywords": "Palabras clave de la pieza para mejorar la visibilidad en los resultados de búsqueda",
   "@descKeywords": {},
-
   "descPartLink": "Enlace a URL externa",
   "@descPartLink": {},
-
   "descCategory": "Categoría de la pieza",
   "@descCategory": {},
-
   "descDefaultLocation": "Ubicación de stock predeterminada para esta pieza",
   "@descDefaultLocation": {},
-
   "descUnits": "Unidades de medida para esta pieza",
   "@descUnits": {},
-
   "descPartDescription": "Descripción de la pieza (opcional)",
   "@descPartDescription": {},
-
   "descPartActive": "¿Está activa esta pieza?",
   "@descPartActive": {},
-
   "descAssembly": "¿Puede usarse esta pieza para construir otras piezas?",
   "@descAssembly": {},
-
   "descComponent": "¿Puede usarse esta pieza para construir otras piezas?",
   "@descComponent": {},
-
   "descPurchaseable": "¿Puede comprarse esta pieza de proveedores externos?",
   "@descPurchaseable": {},
-
   "descSalable": "¿Puede venderse esta pieza a clientes?",
   "@descSalable": {},
-
   "descTrackable": "¿Tiene esta pieza seguimiento para artículos únicos?",
   "@descTrackable": {},
-
   "descTemplate": "¿Es esta pieza una plantilla?",
   "@descTemplate": {},
-
   "descVirtual": "¿Es esta una pieza virtual, como un producto de software o licencia?",
   "@descVirtual": {},
-
   "labelAssembly": "Ensamblaje",
   "@labelAssembly": {},
   "descAssemblyBuiltFrom": "¿Puede esta pieza construirse a partir de otras piezas?",
   "@descAssemblyBuiltFrom": {},
-
   "labelComponent": "Componente",
   "@labelComponent": {},
-
   "labelSalable": "Vendible",
   "@labelSalable": {},
-
   "labelTrackable": "Rastreable",
   "@labelTrackable": {},
-
-  "labelTemplate": "¿Es plantilla?",
-  "@labelTemplate": {},
-  
   "labelPurchaseable": "Comprable",
   "@labelPurchaseable": {},
-  
   "labelVirtual": "Virtual",
   "@labelVirtual": {},
-
   "labelExternalLink": "Enlace externo",
   "@labelExternalLink": {},
-
   "descBatchCode": "Código de lote para este artículo de stock",
   "@descBatchCode": {},
-
   "descPurchasePrice": "Precio de compra de este artículo de stock, por unidad o paquete",
   "@descPurchasePrice": {},
-
   "descPurchaseCurrency": "Moneda de compra de este artículo de stock",
   "@descPurchaseCurrency": {},
-
   "descPackaging": "Embalaje en el que se almacena este artículo de stock",
   "@descPackaging": {}
 }
