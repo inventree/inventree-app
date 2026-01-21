@@ -55,10 +55,11 @@ class _PaginatedSOAllocationListState
 
     InvenTreePart? part = allocation.part;
     InvenTreeStockItem? stockItem = allocation.stockItem;
+    InvenTreeStockLocation? location = allocation.location;
 
     return ListTile(
       title: Text(part?.fullname ?? ""),
-      subtitle: Text(part?.description ?? ""),
+      subtitle: Text(location?.pathstring ?? L10().locationNotSet),
       onTap: () async {
         stockItem?.goToDetailPage(context);
       },

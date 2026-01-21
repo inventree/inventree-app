@@ -151,9 +151,16 @@ class _PaginatedSalesOrderListState
 
     InvenTreeCompany? customer = order.customer;
 
+    // Build subtitle with customer name and optional total price
+    String subtitle = customer?.name ?? order.description;
+    if (order.totalPrice != null && order.totalPrice! > 0) {
+      subtitle +=
+          " • ${order.totalPriceCurrency} ${order.totalPrice!.toStringAsFixed(2)}";
+    }
+
     return ListTile(
       title: Text(order.reference),
-      subtitle: Text(order.description),
+      subtitle: Text(subtitle),
       leading: customer == null
           ? null
           : InvenTreeAPI().getThumbnail(customer.thumbnail),
