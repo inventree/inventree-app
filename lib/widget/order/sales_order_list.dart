@@ -154,7 +154,8 @@ class _PaginatedSalesOrderListState
     // Build subtitle with customer name and optional total price
     String subtitle = customer?.name ?? order.description;
     if (order.totalPrice != null && order.totalPrice! > 0) {
-      subtitle += " • ${order.totalPriceCurrency} ${order.totalPrice!.toStringAsFixed(2)}";
+      subtitle +=
+          " • ${order.totalPriceCurrency} ${order.totalPrice!.toStringAsFixed(2)}";
     }
 
     return ListTile(
