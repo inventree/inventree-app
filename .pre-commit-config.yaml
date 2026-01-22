@@ -1,0 +1,8 @@
+repos:
+  - repo: local
+    hooks:
+      - id: dart-format
+        name: Dart Format
+        entry: dart format
+        language: system
+        types: [dart]
