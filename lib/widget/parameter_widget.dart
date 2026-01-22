@@ -142,7 +142,7 @@ class _PaginatedParameterState
                 }
               },
             )
-          : Text(parameter.value),
+          : LargeText(parameter.value),
       onTap: parameter.is_checkbox
           ? null
           : () async {
