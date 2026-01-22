@@ -256,8 +256,6 @@ class InvenTreeStockItem extends InvenTreeModel {
         });
   }
 
-  int get status => getInt("status");
-
   bool get isInStock => getBool("in_stock", backup: true);
 
   String get packaging => getString("packaging");
