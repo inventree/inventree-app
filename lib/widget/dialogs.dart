@@ -83,7 +83,7 @@ Future<void> confirmationDialog(
           title: Text(title, style: TextStyle(color: color)),
           leading: Icon(icon, color: color),
         ),
-        content: text.isEmpty ? Text(text) : null,
+        content: text.isNotEmpty ? Text(text) : null,
         actions: [
           TextButton(
             child: Text(_reject),
