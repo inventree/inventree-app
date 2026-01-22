@@ -334,6 +334,24 @@ class InvenTreeModel {
 
   String get description => getString("description");
 
+  int get logicalStatus => getInt("status");
+
+  int get customStatus => getInt("status_custom_key");
+
+  // Return the effective status of this object
+  // If a custom status is defined, return that, otherwise return the logical status
+  int get status {
+    if (customStatus > 0) {
+      return customStatus;
+    } else {
+      return logicalStatus;
+    }
+  }
+
+  String get statusText => getString("status_text");
+
+  bool get hasCustomStatus => customStatus > 0 && customStatus != status;
+
   String get notes => getString("notes");
 
   int get parentId => getInt("parent");
