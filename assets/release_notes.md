@@ -1,6 +1,7 @@
 ### x.xx.x - Month Year
 ---
 
+- Support display of custom status codes
 - Fix default values for list sorting
 
 
