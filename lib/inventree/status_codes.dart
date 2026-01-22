@@ -10,6 +10,7 @@ import "package:flutter/material.dart";
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/helpers.dart";
+import "package:inventree/l10.dart";
 
 /*
  * Base class definition for a "status code" definition.
@@ -89,13 +90,37 @@ class InvenTreeStatusCode {
     Map<String, dynamic> _entry = entry(status);
 
     String _label = (_entry["label"] ?? "") as String;
+    String _name = (_entry["name"] ?? "") as String;
 
     if (_label.isEmpty) {
       // If no match found, return the status code
       debug("No match for status code ${status} at '${URL}'");
       return status.toString();
     } else {
-      return _label;
+      // Try to translate the status label using the name
+      return _translateStatusLabel(_name, _label);
+    }
+  }
+
+  // Translate status labels based on the status name
+  String _translateStatusLabel(String name, String fallback) {
+    // Import L10 at the top if not already imported
+    try {
+      switch (name.toUpperCase()) {
+        case "PENDING":
+          return L10().pending;
+        case "IN_PROGRESS":
+          return L10().inProgress;
+        case "SHIPPED":
+          return L10().shipped;
+        case "CANCELLED":
+          return L10().cancelled;
+        default:
+          return fallback; // Return original label if no translation
+      }
+    } catch (e) {
+      // If L10() fails (no context), return fallback
+      return fallback;
     }
   }
 
