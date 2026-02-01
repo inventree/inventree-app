@@ -138,7 +138,7 @@ if __name__ == "__main__":
 
         f = os.path.join(here, locale)
 
-        if os.path.exists(f) and os.path.isdir(locale):
+        if os.path.exists(f) and os.path.isdir(f):
             copy_locale_file(f)
             locales.append(locale)
 
