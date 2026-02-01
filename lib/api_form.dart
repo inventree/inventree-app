@@ -256,11 +256,251 @@ class APIFormField {
 
   String get type => (getParameter("type") ?? "").toString();
 
-  String get label => (getParameter("label") ?? "").toString();
+  String get label {
+    String raw = (getParameter("label") ?? "").toString();
+    return _translateLabel(raw);
+  }
 
-  String get helpText => (getParameter("help_text") ?? "").toString();
+  String _translateLabel(String label) {
+    if (label.isEmpty) return "";
 
-  String get placeholderText => (getParameter("placeholder") ?? "").toString();
+    // Robust check for Part Description
+    if (label.toLowerCase().contains("part description")) {
+      return L10().descPartDescription;
+    }
+
+    // Try to map common API labels to localized strings
+    switch (label) {
+      // Company fields
+      case "Active":
+        return L10().active;
+      case "Company name":
+        return L10().name;
+      case "Company description":
+        return L10().description;
+      case "Website":
+        return L10().website;
+      case "Company Website URL":
+        return L10().website;
+      case "Is supplier":
+        return L10().supplier;
+      case "Is manufacturer":
+        return L10().manufacturer;
+      case "Is customer":
+        return L10().customer;
+      case "Currency":
+        return L10().currency;
+
+      // Order fields
+      case "Customer Reference":
+        return L10().customerReference;
+      case "Project Code":
+        return L10().projectCode;
+      case "Start Date":
+        return L10().startDate;
+      case "Target Date":
+        return L10().targetDate;
+      case "Responsible":
+        return L10().responsible;
+      case "Contact":
+        return L10().contact;
+
+      // Generic fields
+      case "Part":
+        return L10().part;
+      case "Quantity":
+        return L10().quantity;
+      case "Status":
+        return L10().status;
+      case "Notes":
+        return L10().notes;
+      case "Reference":
+        return L10().reference;
+
+      // Shipment related
+      case "Shipment":
+        return L10().shipment;
+      case "Shipment Reference":
+        return L10().shipmentReference;
+      case "Shipment Checked":
+        return L10().shipmentChecked;
+      case "Shipment Date":
+        return L10().shipmentDate;
+      case "Shipment Number":
+        return L10().shipment; // API uses "Shipment Number" for shipment field
+      case "Delivery Date":
+        return L10().deliveryDate;
+      case "Allocated Stock":
+        return L10().allocatedStock;
+      case "Tracking Number":
+        return L10().trackingNumber;
+      case "Invoice Number":
+        return L10().invoiceNumber;
+      case "Link":
+        return L10().link;
+
+      // Part fields
+      case "Name":
+        return L10().name;
+      case "Internal Part Number":
+        return L10().internalPartNumber;
+      case "Revision":
+        return L10().revision;
+      case "Keywords":
+        return L10().keywords;
+      case "Category":
+        return L10().category;
+      case "Default Location":
+        return L10().locationDefault;
+      case "Units":
+        return L10().units;
+      case "Assembly":
+        return L10().labelAssembly;
+      case "Component":
+        return L10().labelComponent;
+      case "Salable":
+        return L10().labelSalable;
+      case "Trackable":
+        return L10().labelTrackable;
+      case "Is Template":
+        return L10().labelTemplate;
+      case "Purchaseable":
+        return L10().labelPurchaseable;
+      case "Virtual":
+        return L10().labelVirtual;
+      case "Part Description (optional)":
+        return L10().descPartDescription;
+      case "Part description (optional)":
+        return L10().descPartDescription;
+      case "Part description":
+        return L10().descPartDescription;
+      case "Part Description":
+        return L10().descPartDescription;
+
+      // Stock fields
+      case "Batch Code":
+        return L10().batchCode;
+      case "Purchase Price":
+        return L10().purchasePrice;
+      case "Packaging":
+        return L10().packaging;
+      case "External Link":
+        return L10().labelExternalLink;
+
+      case "IPN":
+        return L10().internalPartNumber;
+
+      default:
+        return label;
+    }
+  }
+
+  String _translateHelpText(String helpText) {
+    if (helpText.isEmpty) return "";
+
+    // Robust check for Part Description
+    if (helpText.toLowerCase().contains("part description")) {
+      return L10().descPartDescription;
+    }
+
+    // Map specific API help text to localized strings
+    switch (helpText) {
+      // Company role questions
+      case "Do you purchase items from this company?":
+        return L10().companyIsSupplier;
+      case "Do you sell items to this company?":
+        return L10().companyIsCustomer;
+      case "Does this company manufacture parts?":
+        return L10().companyIsManufacturer;
+
+      // Company field descriptions
+      case "Company name":
+        return L10().descCompanyName;
+      case "Description of the company":
+        return L10().descCompanyDescription;
+      case "Company Web Site URL":
+        return L10().descCompanyWebsite;
+      case "Is this company active?":
+        return L10().descCompanyActive;
+
+      // Shipment field descriptions
+      case "Shipment":
+        return L10().descShipment;
+      case "Shipment Number":
+        return L10().descShipmentNumber;
+      case "Shipment number":
+        return L10().descShipmentNumber;
+      case "Shipment Tracking Information":
+        return L10().descTrackingNumber;
+      case "Shipment tracking information":
+        return L10().descTrackingNumber;
+      case "Reference number for associated invoice":
+        return L10().descInvoiceNumber;
+      case "Link to external page":
+        return L10().descLink;
+
+      // Part field descriptions
+      case "Part name":
+        return L10().descPartName;
+      case "Internal Part Number":
+        return L10().descIPN;
+      case "Part revision or version number":
+        return L10().descRevision;
+      case "Part keywords to improve visibility in search results":
+        return L10().descKeywords;
+      case "Link to external URL":
+        return L10().descPartLink;
+      case "Part category":
+        return L10().descCategory;
+      case "Default stock location for this part":
+        return L10().descDefaultLocation;
+      case "Units of measure for this part":
+        return L10().descUnits;
+
+      // Part boolean field descriptions
+      case "Part Description (optional)":
+        return L10().descPartDescription;
+      case "Is this part active?":
+        return L10().descPartActive;
+      case "Can this part be used to build other parts?":
+        return L10().descComponent; // "Used to build" = Component
+      case "Can this part be built from other parts?":
+        return L10().descAssemblyBuiltFrom; // "Built from" = Assembly
+      case "Can this part be purchased from external suppliers?":
+        return L10().descPurchaseable;
+      case "Can this part be sold to customers?":
+        return L10().descSalable;
+      case "Does this part have tracking for unique items?":
+        return L10().descTrackable;
+      case "Is this part a template part?":
+        return L10().descTemplate;
+      case "Is this a virtual part, such as a software product or license?":
+        return L10().descVirtual;
+
+      // Stock field descriptions
+      case "Batch code for this stock item":
+        return L10().descBatchCode;
+      case "Purchase price of this stock item, per unit or pack":
+        return L10().descPurchasePrice;
+      case "Purchase currency of this stock item":
+        return L10().descPurchaseCurrency;
+      case "Packaging this stock item is stored in":
+        return L10().descPackaging;
+
+      default:
+        return helpText;
+    }
+  }
+
+  String get helpText {
+    String raw = (getParameter("help_text") ?? "").toString();
+    return _translateHelpText(raw);
+  }
+
+  String get placeholderText {
+    String raw = (getParameter("placeholder") ?? "").toString();
+    return _translateLabel(raw);
+  }
 
   List<dynamic> get choices => (getParameter("choices") ?? []) as List<dynamic>;
 

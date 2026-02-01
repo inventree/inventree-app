@@ -1,7 +1,7 @@
 import "dart:async";
 import "dart:ui";
 
-import "package:inventree/l10n/supported_locales.dart";
+import "package:inventree/l10n/collected/app_localizations.dart";
 import "package:path_provider/path_provider.dart";
 import "package:sembast/sembast_io.dart";
 import "package:path/path.dart";
@@ -124,7 +124,7 @@ class InvenTreeSettingsManager {
       return null;
     }
 
-    for (var locale in supported_locales) {
+    for (var locale in I18N.supportedLocales) {
       if (locale.toString() == locale_name) {
         return locale;
       }

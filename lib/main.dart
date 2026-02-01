@@ -13,7 +13,7 @@ import "package:inventree/dsn.dart";
 
 import "package:inventree/preferences.dart";
 import "package:inventree/inventree/sentry.dart";
-import "package:inventree/l10n/supported_locales.dart";
+
 import "package:inventree/l10n/collected/app_localizations.dart";
 import "package:inventree/settings/release.dart";
 import "package:inventree/widget/home.dart";
@@ -182,7 +182,7 @@ class InvenTreeAppState extends State<StatefulWidget> {
           GlobalCupertinoLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
         ],
-        supportedLocales: supported_locales,
+        supportedLocales: I18N.supportedLocales,
         locale: _locale,
       ),
     );
