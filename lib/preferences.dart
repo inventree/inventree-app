@@ -34,6 +34,7 @@ const String INV_LABEL_DEFAULT_PLUGIN = "defaultLabelPlugin";
 // Part settings
 const String INV_PART_SHOW_BOM = "partShowBom";
 const String INV_PART_SHOW_PRICING = "partShowPricing";
+const String INV_PART_SHOW_REQUIREMENTS = "partShowRequirements";
 
 // Stock settings
 const String INV_STOCK_SHOW_HISTORY = "stockShowHistory";

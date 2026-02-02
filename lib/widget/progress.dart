@@ -3,6 +3,8 @@ import "dart:io";
 import "package:flutter/material.dart";
 import "package:flutter_overlay_loader/flutter_overlay_loader.dart";
 import "package:inventree/app_colors.dart";
+import "package:inventree/helpers.dart";
+import "package:inventree/widget/link_icon.dart";
 import "package:one_context/one_context.dart";
 
 /*
@@ -23,6 +25,15 @@ Widget ProgressBar(double value, {double maximum = 1.0}) {
     backgroundColor: Colors.grey,
     color: v >= 1 ? COLOR_SUCCESS : COLOR_WARNING,
   );
+}
+
+Widget ProgressText(double value, {double maximum = 1.0}) {
+  Color textColor = value < maximum ? COLOR_WARNING : COLOR_SUCCESS;
+
+  String v = simpleNumberString(value);
+  String m = simpleNumberString(maximum);
+
+  return LargeText("${v} / ${m}", color: textColor);
 }
 
 /*

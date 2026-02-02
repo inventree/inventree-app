@@ -54,6 +54,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   bool allowLabelPrinting = false;
   bool showBom = false;
   bool showPricing = false;
+  bool showRequirements = false;
 
   int parameterCount = 0;
   int attachmentCount = 0;
@@ -62,6 +63,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   int variantCount = 0;
 
   InvenTreePartPricing? partPricing;
+  InvenTreePartRequirements? partRequirements;
 
   @override
   String getAppBarTitle() => L10().partDetails;
@@ -148,6 +150,12 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     final bool result = await part.reload();
 
     // Load page settings from local storage
+
+    showRequirements = await InvenTreeSettingsManager().getBool(
+      INV_PART_SHOW_REQUIREMENTS,
+      false,
+    );
+
     showPricing = await InvenTreeSettingsManager().getBool(
       INV_PART_SHOW_PRICING,
       true,
@@ -233,6 +241,23 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           });
     }
 
+    // If show requirements information?
+    if (showRequirements && api.supportsPartRequirements) {
+      part.getRequirements().then((InvenTreePartRequirements? requirements) {
+        if (mounted) {
+          setState(() {
+            partRequirements = requirements;
+          });
+        }
+      });
+    } else {
+      if (mounted) {
+        setState(() {
+          partRequirements = null;
+        });
+      }
+    }
+
     // If show pricing information?
     if (showPricing) {
       part.getPricing().then((InvenTreePartPricing? pricing) {
@@ -242,6 +267,12 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           });
         }
       });
+    } else {
+      if (mounted) {
+        setState(() {
+          partPricing = null;
+        });
+      }
     }
 
     // Request the number of BOM items
@@ -434,6 +465,103 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       );
     }
 
+    // Part "requirements"
+    if (showRequirements &&
+        api.supportsPartRequirements &&
+        partRequirements != null) {
+      // Assembly parts
+      if (part.isAssembly) {
+        // Scheduled to build
+        if (partRequirements!.building > 0 ||
+            partRequirements!.scheduledToBuild > 0) {
+          tiles.add(
+            ListTile(
+              title: Text(L10().building),
+              subtitle: ProgressBar(
+                partRequirements!.building,
+                maximum: partRequirements!.scheduledToBuild,
+              ),
+              leading: Icon(TablerIcons.tools),
+              trailing: ProgressText(
+                partRequirements!.building,
+                maximum: partRequirements!.scheduledToBuild,
+              ),
+            ),
+          );
+        }
+
+        // Can build
+        if (part.isActive) {
+          tiles.add(
+            ListTile(
+              title: Text(L10().canBuild),
+              subtitle: Text(L10().canBuildDetail),
+              trailing: LargeText(
+                simpleNumberString(partRequirements!.canBuild),
+              ),
+              leading: Icon(TablerIcons.check),
+            ),
+          );
+        }
+      }
+
+      // Build requirements
+      if (partRequirements!.requiredForBuildOrders > 0 ||
+          partRequirements!.allocatedToBuildOrders > 0) {
+        tiles.add(
+          ListTile(
+            title: Text(L10().allocatedToBuildOrders),
+            subtitle: ProgressBar(
+              partRequirements!.allocatedToBuildOrders,
+              maximum: partRequirements!.requiredForBuildOrders,
+            ),
+            trailing: ProgressText(
+              partRequirements!.allocatedToBuildOrders,
+              maximum: partRequirements!.requiredForBuildOrders,
+            ),
+            leading: Icon(TablerIcons.tools),
+          ),
+        );
+      }
+
+      // Sales requirements
+      if (part.isSalable) {
+        if (partRequirements!.requiredForSalesOrders > 0 ||
+            partRequirements!.allocatedToSalesOrders > 0) {
+          tiles.add(
+            ListTile(
+              title: Text(L10().allocatedToSalesOrders),
+              subtitle: ProgressBar(
+                partRequirements!.allocatedToSalesOrders,
+                maximum: partRequirements!.requiredForSalesOrders,
+              ),
+              trailing: ProgressText(
+                partRequirements!.allocatedToSalesOrders,
+                maximum: partRequirements!.requiredForSalesOrders,
+              ),
+              leading: Icon(TablerIcons.truck_delivery),
+            ),
+          );
+        }
+      }
+
+      // Ordering stats
+      if (part.isPurchaseable && partRequirements!.ordering > 0) {
+        // On order
+        tiles.add(
+          ListTile(
+            title: Text(L10().onOrder),
+            subtitle: Text(L10().onOrderDetails),
+            leading: Icon(TablerIcons.shopping_cart),
+            trailing: LargeText("${part.onOrderString}"),
+            onTap: () {
+              // TODO - Order views
+            },
+          ),
+        );
+      }
+    }
+
     if (showPricing && partPricing != null) {
       String pricing = formatPriceRange(
         partPricing?.overallMin,
@@ -457,22 +585,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
                     PartPricingWidget(part: part, partPricing: partPricing),
               ),
             );
-          },
-        ),
-      );
-    }
-
-    // Tiles for "purchaseable" parts
-    if (part.isPurchaseable) {
-      // On order
-      tiles.add(
-        ListTile(
-          title: Text(L10().onOrder),
-          subtitle: Text(L10().onOrderDetails),
-          leading: Icon(TablerIcons.shopping_cart),
-          trailing: LargeText("${part.onOrderString}"),
-          onTap: () {
-            // TODO - Order views
           },
         ),
       );

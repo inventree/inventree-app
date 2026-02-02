@@ -1,6 +1,7 @@
 ### x.xx.x - Month Year
 ---
 
+- Display overall part requirements on part detail view
 - Support display of custom status codes
 - Fix default values for list sorting
 - Fix bug related to null values in list filters
