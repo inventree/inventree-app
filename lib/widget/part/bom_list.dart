@@ -123,9 +123,21 @@ class _PaginatedBomListState extends PaginatedSearchState<PaginatedBomList> {
 
   @override
   Map<String, Map<String, dynamic>> get filterOptions => {
+    "sub_part_active": {
+      "label": L10().filterActive,
+      "help_text": L10().filterActiveDetail,
+      "tristate": true,
+      "default": true,
+    },
     "sub_part_assembly": {
       "label": L10().filterAssembly,
       "help_text": L10().filterAssemblyDetail,
+    },
+    "sub_part_virtual": {
+      "label": L10().filterVirtual,
+      "help_text": L10().filterVirtualDetail,
+      "tristate": true,
+      "default": true,
     },
   };
 

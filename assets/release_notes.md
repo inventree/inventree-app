@@ -3,7 +3,8 @@
 
 - Support display of custom status codes
 - Fix default values for list sorting
-
+- Fix bug related to null values in list filters
+- Updated translations
 
 ### 0.21.2 - January 2026
 ---
