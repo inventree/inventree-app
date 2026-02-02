@@ -68,6 +68,12 @@
   "allocatedStock": "Allocated Stock",
   "@allocatedStock": {},
 
+  "allocatedToBuildOrders": "Allocated to Build Orders",
+  "@allocatedToBuildOrders": {},
+
+  "allocatedToSalesOrders": "Allocated to Sales Orders",
+  "@allocatedToSalesOrders": {},
+
   "appReleaseNotes": "Display app release notes",
   "@appReleaseNotes": {},
 
@@ -225,6 +231,12 @@
 
   "cameraInternalDetail": "Use internal camera to read barcodes",
   "@cameraInternalDetail": {},
+
+  "canBuild": "Can Build",
+  "@canBuild": {},
+
+  "canBuildDetail": "Can be produced with current stock",
+  "@canBuildDetail": {},
 
   "cancel": "Cancel",
   "@cancel": {
