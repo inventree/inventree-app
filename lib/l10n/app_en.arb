@@ -1541,6 +1541,9 @@
   "stockLocations": "Stock Locations",
   "@stockLocations": {},
 
+  "stockSettings": "Stock Settings",
+  "@stockSettings": {},
+
   "stockTopLevel": "Top level stock location",
   "@stockTopLevel": {},
 

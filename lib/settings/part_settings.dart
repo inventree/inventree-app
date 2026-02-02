@@ -16,9 +16,6 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
   bool partShowBom = true;
   bool partShowPricing = true;
   bool partShowRequirements = false;
-  bool stockShowHistory = false;
-  bool stockShowTests = false;
-  bool stockConfirmScan = false;
 
   @override
   void initState() {
@@ -38,18 +35,6 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
     );
     partShowRequirements = await InvenTreeSettingsManager().getBool(
       INV_PART_SHOW_REQUIREMENTS,
-      false,
-    );
-    stockShowHistory = await InvenTreeSettingsManager().getBool(
-      INV_STOCK_SHOW_HISTORY,
-      false,
-    );
-    stockShowTests = await InvenTreeSettingsManager().getBool(
-      INV_STOCK_SHOW_TESTS,
-      true,
-    );
-    stockConfirmScan = await InvenTreeSettingsManager().getBool(
-      INV_STOCK_CONFIRM_SCAN,
       false,
     );
 
@@ -112,58 +97,6 @@ class _InvenTreePartSettingsState extends State<InvenTreePartSettingsWidget> {
                   );
                   setState(() {
                     partShowRequirements = value;
-                  });
-                },
-              ),
-            ),
-            Divider(),
-            ListTile(
-              title: Text(L10().stockItemHistory),
-              subtitle: Text(L10().stockItemHistoryDetail),
-              leading: Icon(TablerIcons.history),
-              trailing: Switch(
-                value: stockShowHistory,
-                onChanged: (bool value) {
-                  InvenTreeSettingsManager().setValue(
-                    INV_STOCK_SHOW_HISTORY,
-                    value,
-                  );
-                  setState(() {
-                    stockShowHistory = value;
-                  });
-                },
-              ),
-            ),
-            ListTile(
-              title: Text(L10().testResults),
-              subtitle: Text(L10().testResultsDetail),
-              leading: Icon(TablerIcons.test_pipe),
-              trailing: Switch(
-                value: stockShowTests,
-                onChanged: (bool value) {
-                  InvenTreeSettingsManager().setValue(
-                    INV_STOCK_SHOW_TESTS,
-                    value,
-                  );
-                  setState(() {
-                    stockShowTests = value;
-                  });
-                },
-              ),
-            ),
-            ListTile(
-              title: Text(L10().confirmScan),
-              subtitle: Text(L10().confirmScanDetail),
-              leading: Icon(TablerIcons.qrcode),
-              trailing: Switch(
-                value: stockConfirmScan,
-                onChanged: (bool value) {
-                  InvenTreeSettingsManager().setValue(
-                    INV_STOCK_CONFIRM_SCAN,
-                    value,
-                  );
-                  setState(() {
-                    stockConfirmScan = value;
                   });
                 },
               ),

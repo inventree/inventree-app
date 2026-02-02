@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
+import "package:inventree/settings/stock_settings.dart";
 import "package:package_info_plus/package_info_plus.dart";
 
 import "package:inventree/app_colors.dart";
@@ -115,6 +116,20 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => InvenTreePartSettingsWidget(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              title: Text(L10().stock),
+              subtitle: Text(L10().stockSettings),
+              leading: Icon(TablerIcons.packages, color: COLOR_ACTION),
+              trailing: LinkIcon(),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => InvenTreeStockSettingsWidget(),
                   ),
                 );
               },
