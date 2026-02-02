@@ -54,6 +54,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   bool allowLabelPrinting = false;
   bool showBom = false;
   bool showPricing = false;
+  bool showRequirements = false;
 
   int parameterCount = 0;
   int attachmentCount = 0;
@@ -62,6 +63,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   int variantCount = 0;
 
   InvenTreePartPricing? partPricing;
+  InvenTreePartRequirements? partRequirements;
 
   @override
   String getAppBarTitle() => L10().partDetails;
@@ -148,6 +150,12 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     final bool result = await part.reload();
 
     // Load page settings from local storage
+
+    showRequirements = await InvenTreeSettingsManager().getBool(
+      INV_PART_SHOW_REQUIREMENTS,
+      false,
+    );
+
     showPricing = await InvenTreeSettingsManager().getBool(
       INV_PART_SHOW_PRICING,
       true,
@@ -233,6 +241,23 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           });
     }
 
+    // If show requirements information?
+    if (showRequirements && api.supportsPartRequirements) {
+      part.getRequirements().then((InvenTreePartRequirements? requirements) {
+        if (mounted) {
+          setState(() {
+            partRequirements = requirements;
+          });
+        }
+      });
+    } else {
+      if (mounted) {
+        setState(() {
+          partRequirements = null;
+        });
+      }
+    }
+
     // If show pricing information?
     if (showPricing) {
       part.getPricing().then((InvenTreePartPricing? pricing) {
@@ -242,6 +267,12 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           });
         }
       });
+    } else {
+      if (mounted) {
+        setState(() {
+          partPricing = null;
+        });
+      }
     }
 
     // Request the number of BOM items
