@@ -936,6 +936,12 @@
   "partPricingSettingDetail": "Display part pricing information",
   "@pricingSettingDetail": {},
 
+  "partRequirements": "Part Requirements",
+  "@partRequirements": {},
+
+  "partRequirementsSettingDetail": "Display part requirements",
+  "@partRequirementsSettingDetail": {},
+
   "partSettings": "Part Settings",
   "@partSettings": {},
 
