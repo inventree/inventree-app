@@ -1258,5 +1258,11 @@
   "descBatchCode": "Код партии товара",
   "descPurchasePrice": "Цена закупки этого товара, за единицу или упаковку",
   "descPurchaseCurrency": "Валюта закупки этого товара",
-  "descPackaging": "Упаковка, в которой хранится этот товар"
+  "descPackaging": "Упаковка, в которой хранится этот товар",
+  "salesOrderDescription": "",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "",
+  "@salesOrderTargetDateAlt": {}
 }

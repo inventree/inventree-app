@@ -1258,5 +1258,11 @@
   "descBatchCode": "Код партії для цього товару",
   "descPurchasePrice": "Ціна закупівлі цього товару, за одиницю або пакування",
   "descPurchaseCurrency": "Валюта закупівлі цього товару",
-  "descPackaging": "Упаковка, в якій зберігається цей товар"
+  "descPackaging": "Упаковка, в якій зберігається цей товар",
+  "salesOrderDescription": "",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "",
+  "@salesOrderTargetDateAlt": {}
 }

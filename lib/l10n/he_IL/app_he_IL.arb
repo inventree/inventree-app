@@ -1258,5 +1258,11 @@
   "descBatchCode": "קוד אצווה עבור פריט מלאי זה",
   "descPurchasePrice": "מחיר רכישה של פריט מלאי זה, ליחידה או למארז",
   "descPurchaseCurrency": "מטבע רכישה של פריט מלאי זה",
-  "descPackaging": "האריזה שבה מאוחסן פריט מלאי זה"
+  "descPackaging": "האריזה שבה מאוחסן פריט מלאי זה",
+  "salesOrderDescription": "",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "",
+  "@salesOrderTargetDateAlt": {}
 }

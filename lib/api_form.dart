@@ -293,13 +293,18 @@ class APIFormField {
 
       // Order fields
       case "Customer Reference":
+      case "Customer Reference ":
         return L10().customerReference;
       case "Project Code":
         return L10().projectCode;
       case "Start Date":
+      case "Start date": // Handle lowercase variant
         return L10().startDate;
       case "Target Date":
+      case "Target date": // Handle lowercase variant
         return L10().targetDate;
+      case "Expected date for order delivery. Order will be overdue if this date is exceeded.":
+        return L10().salesOrderTargetDate;
       case "Responsible":
         return L10().responsible;
       case "Contact":
@@ -316,6 +321,11 @@ class APIFormField {
         return L10().notes;
       case "Reference":
         return L10().reference;
+      case "Customer":
+        return L10().customer;
+      case "Description":
+      case "Descripción":
+        return L10().description;
 
       // Shipment related
       case "Shipment":
@@ -391,6 +401,7 @@ class APIFormField {
         return L10().internalPartNumber;
 
       default:
+        debug("Untranslated label: '${label}'");
         return label;
     }
   }
@@ -487,7 +498,30 @@ class APIFormField {
       case "Packaging this stock item is stored in":
         return L10().descPackaging;
 
+      // Order help texts
+      case "Order reference":
+        return L10().reference;
+      case "Customer order reference code":
+        return L10().customerReference;
+      case "Order description (optional)":
+        return L10().salesOrderDescription;
+      case "Select project code for this order":
+        return L10().projectCode;
+      case "Scheduled start date for this order":
+        return L10().startDate;
+      case "Expected date for order delivery. Order will be overdue if this date is exceeded.":
+        return L10().salesOrderTargetDate;
+      case "Expected date for order delivery. Order will be overdue after this date.":
+        return L10().salesOrderTargetDateAlt;
+      case "User or group responsible for this order":
+        return L10().responsible;
+      case "Point of contact for this order":
+        return L10().contact;
+
       default:
+        if (helpText.isNotEmpty) {
+          debug("Untranslated help text: '${helpText}'");
+        }
         return helpText;
     }
   }

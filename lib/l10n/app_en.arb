@@ -1236,6 +1236,15 @@
   "salesOrder": "Sales Order",
   "@salesOrder": {},
 
+  "salesOrderDescription": "Order description (optional)",
+  "@salesOrderDescription": {},
+
+  "salesOrderTargetDate": "Expected date for order delivery. Order will be overdue if this date is exceeded.",
+  "@salesOrderTargetDate": {},
+
+  "salesOrderTargetDateAlt": "Expected date for order delivery. Order will be overdue after this date.",
+  "@salesOrderTargetDateAlt": {},
+
   "salesOrders": "Sales Orders",
   "@salesOrders": {},
 

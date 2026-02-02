@@ -1258,5 +1258,11 @@
   "descBatchCode": "کد سری ساخت (Batch Code) این کالا",
   "descPurchasePrice": "قیمت خرید این کالا (به ازای واحد یا بسته)",
   "descPurchaseCurrency": "ارز خرید این کالا",
-  "descPackaging": "نوع بسته‌بندی این کالا"
+  "descPackaging": "نوع بسته‌بندی این کالا",
+  "salesOrderDescription": "",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "",
+  "@salesOrderTargetDateAlt": {}
 }

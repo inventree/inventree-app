@@ -1258,5 +1258,11 @@
   "descBatchCode": "Código de lote de este artículo de stock",
   "descPurchasePrice": "Precio de compra de este artículo de stock, por unidad o paquete",
   "descPurchaseCurrency": "Moneda de compra de este artículo de stock",
-  "descPackaging": "Embalaje en el que se almacena este artículo de stock"
+  "descPackaging": "Embalaje en el que se almacena este artículo de stock",
+  "salesOrderDescription": "Descripción del pedido (opcional)",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "Fecha de entrega prevista. El pedido estará vencido si se supera esta fecha.",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "Fecha de entrega prevista. El pedido estará vencido después de esta fecha.",
+  "@salesOrderTargetDateAlt": {}
 }

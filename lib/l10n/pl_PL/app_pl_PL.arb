@@ -1258,5 +1258,11 @@
   "descBatchCode": "Kod partii dla tego towaru",
   "descPurchasePrice": "Cena zakupu sztuki/opakowania",
   "descPurchaseCurrency": "Waluta zakupu tego towaru",
-  "descPackaging": "Opakowanie, w którym przechowywany jest ten produkt"
+  "descPackaging": "Opakowanie, w którym przechowywany jest ten produkt",
+  "salesOrderDescription": "",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "",
+  "@salesOrderTargetDateAlt": {}
 }

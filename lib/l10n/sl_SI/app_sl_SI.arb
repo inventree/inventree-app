@@ -1258,5 +1258,11 @@
   "descBatchCode": "Koda serije za ta artikel na zalogi",
   "descPurchasePrice": "Nakupna cena tega artikla, na enoto ali paket",
   "descPurchaseCurrency": "Valuta nakupa tega artikla",
-  "descPackaging": "Embalaža, v kateri je shranjen ta artikel"
+  "descPackaging": "Embalaža, v kateri je shranjen ta artikel",
+  "salesOrderDescription": "",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "",
+  "@salesOrderTargetDateAlt": {}
 }

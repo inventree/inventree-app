@@ -1258,5 +1258,11 @@
   "descBatchCode": "Код на партида за тази стока",
   "descPurchasePrice": "Покупна цена за единица или опаковка",
   "descPurchaseCurrency": "Валута на покупка",
-  "descPackaging": "Опаковка за съхранение на стоката"
+  "descPackaging": "Опаковка за съхранение на стоката",
+  "salesOrderDescription": "",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "",
+  "@salesOrderTargetDateAlt": {}
 }

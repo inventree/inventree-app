@@ -1258,5 +1258,11 @@
   "descBatchCode": "رمز الدفعة لعنصر المخزون هذا",
   "descPurchasePrice": "سعر شراء عنصر المخزون هذا، لكل وحدة أو عبوة",
   "descPurchaseCurrency": "عملة شراء هذا الصنف",
-  "descPackaging": "التغليف الذي يُخزن فيه هذا الصنف"
+  "descPackaging": "التغليف الذي يُخزن فيه هذا الصنف",
+  "salesOrderDescription": "",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "",
+  "@salesOrderTargetDateAlt": {}
 }

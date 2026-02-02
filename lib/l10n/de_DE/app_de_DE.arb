@@ -1258,5 +1258,11 @@
   "descBatchCode": "Chargennummer für diesen Lagerartikel",
   "descPurchasePrice": "Einkaufspreis dieses Lagerartikels, pro Einheit oder Packung",
   "descPurchaseCurrency": "Einkaufswährung dieses Lagerartikels",
-  "descPackaging": "Verpackung, in der dieser Lagerartikel gelagert wird"
+  "descPackaging": "Verpackung, in der dieser Lagerartikel gelagert wird",
+  "salesOrderDescription": "",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "",
+  "@salesOrderTargetDateAlt": {}
 }

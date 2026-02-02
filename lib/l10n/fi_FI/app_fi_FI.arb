@@ -1258,5 +1258,11 @@
   "descBatchCode": "Tämän varastonimikkeen eräkoodi",
   "descPurchasePrice": "Tämän varastonimikkeen ostohinta yksikköä tai pakkausta kohden",
   "descPurchaseCurrency": "Tämän varastonimikkeen ostovaluutta",
-  "descPackaging": "Pakkaus, jossa tätä varastonimikettä säilytetään"
+  "descPackaging": "Pakkaus, jossa tätä varastonimikettä säilytetään",
+  "salesOrderDescription": "",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "",
+  "@salesOrderTargetDateAlt": {}
 }

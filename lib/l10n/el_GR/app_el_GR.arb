@@ -1258,5 +1258,11 @@
   "descBatchCode": "Κωδικός παρτίδας για αυτό το απόθεμα",
   "descPurchasePrice": "Τιμή αγοράς αυτού του αποθέματος, ανά μονάδα ή συσκευασία",
   "descPurchaseCurrency": "Νόμισμα αγοράς αυτού του είδους αποθέματος",
-  "descPackaging": "Συσκευασία στην οποία αποθηκεύεται αυτό το είδος"
+  "descPackaging": "Συσκευασία στην οποία αποθηκεύεται αυτό το είδος",
+  "salesOrderDescription": "",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "",
+  "@salesOrderTargetDateAlt": {}
 }

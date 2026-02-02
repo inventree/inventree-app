@@ -1258,5 +1258,11 @@
   "descBatchCode": "Batchcode voor dit artikel",
   "descPurchasePrice": "Aankoopprijs van dit artikel, per stuk of verpakking",
   "descPurchaseCurrency": "Aankoopvaluta van dit voorraaditem",
-  "descPackaging": "Verpakking waarin dit artikel is opgeslagen"
+  "descPackaging": "Verpakking waarin dit artikel is opgeslagen",
+  "salesOrderDescription": "",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "",
+  "@salesOrderTargetDateAlt": {}
 }

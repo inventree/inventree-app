@@ -1258,5 +1258,11 @@
   "descBatchCode": "Cod lot pentru acest articol din stoc",
   "descPurchasePrice": "Prețul de achiziție al acestui produs, per unitate sau pachet",
   "descPurchaseCurrency": "Moneda de achiziție a acestui produs.",
-  "descPackaging": "Ambalajul în care este stocat acest produs"
+  "descPackaging": "Ambalajul în care este stocat acest produs",
+  "salesOrderDescription": "",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "",
+  "@salesOrderTargetDateAlt": {}
 }

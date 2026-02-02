@@ -1258,5 +1258,11 @@
   "descBatchCode": "Code de lot pour cet article en stock",
   "descPurchasePrice": "Prix d'achat de cet article en stock, par unité ou par lot",
   "descPurchaseCurrency": "Devise d'achat de cet article en stock",
-  "descPackaging": "Conditionnement de cet article en stock"
+  "descPackaging": "Conditionnement de cet article en stock",
+  "salesOrderDescription": "",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "",
+  "@salesOrderTargetDateAlt": {}
 }

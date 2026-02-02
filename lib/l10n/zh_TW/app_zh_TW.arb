@@ -1258,5 +1258,11 @@
   "descBatchCode": "此庫存品的批號",
   "descPurchasePrice": "此庫存品項的購買價格，以單個或包裝為單位",
   "descPurchaseCurrency": "此庫存品的採購幣別",
-  "descPackaging": "此庫存商品的包裝儲存方式"
+  "descPackaging": "此庫存商品的包裝儲存方式",
+  "salesOrderDescription": "",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "",
+  "@salesOrderTargetDateAlt": {}
 }

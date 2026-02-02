@@ -1258,5 +1258,11 @@
   "descBatchCode": "Mã lô hàng của sản phẩm này",
   "descPurchasePrice": "Giá mua của mặt hàng này, tính trên mỗi đơn vị hoặc gói",
   "descPurchaseCurrency": "Đơn vị tiền tệ mua của mặt hàng này",
-  "descPackaging": "Đóng gói mặt hàng này được lưu trữ trong"
+  "descPackaging": "Đóng gói mặt hàng này được lưu trữ trong",
+  "salesOrderDescription": "",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "",
+  "@salesOrderTargetDateAlt": {}
 }

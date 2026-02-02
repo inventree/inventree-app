@@ -1258,5 +1258,11 @@
   "descBatchCode": "Šī krājuma partijas kods",
   "descPurchasePrice": "Šī krājuma iegādes cena par vienību vai iepakojumu",
   "descPurchaseCurrency": "Šī krājuma iegādes valūta",
-  "descPackaging": "Iepakojums, kurā šī prece tiek uzglabāta"
+  "descPackaging": "Iepakojums, kurā šī prece tiek uzglabāta",
+  "salesOrderDescription": "",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "",
+  "@salesOrderTargetDateAlt": {}
 }

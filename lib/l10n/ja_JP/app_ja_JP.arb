@@ -1258,5 +1258,11 @@
   "descBatchCode": "この在庫品のロットコード",
   "descPurchasePrice": "この在庫品の購入価格 (単価またはパック)",
   "descPurchaseCurrency": "この在庫品の仕入通貨",
-  "descPackaging": "この在庫品が保管されている梱包"
+  "descPackaging": "この在庫品が保管されている梱包",
+  "salesOrderDescription": "",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "",
+  "@salesOrderTargetDateAlt": {}
 }

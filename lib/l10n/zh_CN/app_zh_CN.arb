@@ -1258,5 +1258,11 @@
   "descBatchCode": "此库存项目的批次代码",
   "descPurchasePrice": "此库存商品的采购单价或每包价格",
   "descPurchaseCurrency": "此库存商品的采购货币",
-  "descPackaging": "此库存商品的包装存储于"
+  "descPackaging": "此库存商品的包装存储于",
+  "salesOrderDescription": "",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "",
+  "@salesOrderTargetDateAlt": {}
 }

@@ -1258,5 +1258,11 @@
   "descBatchCode": "A készlettétel sarzskódja",
   "descPurchasePrice": "A készlettétel beszerzési ára egységenként vagy csomagonként",
   "descPurchaseCurrency": "A készlettétel beszerzési pénzneme",
-  "descPackaging": "Csomagolás, amelyben a készlettétel tárolva van"
+  "descPackaging": "Csomagolás, amelyben a készlettétel tárolva van",
+  "salesOrderDescription": "",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "",
+  "@salesOrderTargetDateAlt": {}
 }

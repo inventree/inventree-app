@@ -1258,5 +1258,11 @@
   "descBatchCode": "Bu stok kaleminin parti kodu",
   "descPurchasePrice": "Bu stok kaleminin birim veya paket başına alış fiyatı",
   "descPurchaseCurrency": "Bu stok kaleminin satın alma para birimi",
-  "descPackaging": "Bu stok kaleminin saklandığı ambalaj"
+  "descPackaging": "Bu stok kaleminin saklandığı ambalaj",
+  "salesOrderDescription": "",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "",
+  "@salesOrderTargetDateAlt": {}
 }

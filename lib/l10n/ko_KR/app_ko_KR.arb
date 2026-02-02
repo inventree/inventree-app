@@ -1258,5 +1258,11 @@
   "descBatchCode": "해당 재고 품목의 배치 코드",
   "descPurchasePrice": "해당 품목의 매입 단가 (개당/묶음당)",
   "descPurchaseCurrency": "해당 품목의 구매 통화",
-  "descPackaging": "재고 품목 포장 형태"
+  "descPackaging": "재고 품목 포장 형태",
+  "salesOrderDescription": "",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "",
+  "@salesOrderTargetDateAlt": {}
 }

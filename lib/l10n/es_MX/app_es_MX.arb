@@ -836,6 +836,15 @@
   "@returned": {},
   "salesOrder": "Orden de venta",
   "@salesOrder": {},
+
+  "salesOrderDescription": "Descripción del pedido (opcional)",
+  "@salesOrderDescription": {},
+
+  "salesOrderTargetDate": "Fecha de entrega prevista. El pedido estará vencido si se supera esta fecha.",
+  "@salesOrderTargetDate": {},
+
+  "salesOrderTargetDateAlt": "Fecha de entrega prevista. El pedido estará vencido después de esta fecha.",
+  "@salesOrderTargetDateAlt": {},
   "salesOrders": "Órdenes de venta",
   "@salesOrders": {},
   "salesOrderEnable": "Activar pedidos de venta",

@@ -1258,5 +1258,11 @@
   "descBatchCode": "Código do lote deste artigo",
   "descPurchasePrice": "Preço de compra deste artigo, por unidade ou embalagem",
   "descPurchaseCurrency": "Moeda de compra deste artigo",
-  "descPackaging": "Embalagem onde este artigo está armazenado"
+  "descPackaging": "Embalagem onde este artigo está armazenado",
+  "salesOrderDescription": "",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "",
+  "@salesOrderTargetDateAlt": {}
 }

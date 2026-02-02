@@ -1258,5 +1258,11 @@
   "descBatchCode": "Kod serije za ovu stavku zaliha",
   "descPurchasePrice": "Nabavna cena zalihe, po jedinici ili pakovanju",
   "descPurchaseCurrency": "Valuta nabavke ovog artikla",
-  "descPackaging": "Ambalaža u kojoj se čuva ova stavka zaliha"
+  "descPackaging": "Ambalaža u kojoj se čuva ova stavka zaliha",
+  "salesOrderDescription": "",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "",
+  "@salesOrderTargetDateAlt": {}
 }

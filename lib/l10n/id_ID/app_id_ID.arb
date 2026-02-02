@@ -1258,5 +1258,11 @@
   "descBatchCode": "Kode batch untuk item stok ini",
   "descPurchasePrice": "Harga beli barang ini, per unit atau kemasan",
   "descPurchaseCurrency": "Mata uang pembelian barang ini",
-  "descPackaging": "Kemasan tempat barang stok ini disimpan"
+  "descPackaging": "Kemasan tempat barang stok ini disimpan",
+  "salesOrderDescription": "",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "",
+  "@salesOrderTargetDateAlt": {}
 }

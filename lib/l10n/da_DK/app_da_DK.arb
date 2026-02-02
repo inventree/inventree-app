@@ -1258,5 +1258,11 @@
   "descBatchCode": "Batchkode for denne lagervare",
   "descPurchasePrice": "Indkøbspris for denne lagervare, pr. enhed eller pakke",
   "descPurchaseCurrency": "Indkøbsvaluta for denne lagervare",
-  "descPackaging": "Emballage denne lagervare opbevares i"
+  "descPackaging": "Emballage denne lagervare opbevares i",
+  "salesOrderDescription": "",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "",
+  "@salesOrderTargetDateAlt": {}
 }

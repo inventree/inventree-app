@@ -1258,5 +1258,11 @@
   "descBatchCode": "Šios prekės partijos kodas",
   "descPurchasePrice": "Šios prekės pirkimo kaina, už vienetą arba pakuotę",
   "descPurchaseCurrency": "Šio atsargų elemento pirkimo valiuta",
-  "descPackaging": "Pakuotė, kurioje laikoma ši prekė"
+  "descPackaging": "Pakuotė, kurioje laikoma ši prekė",
+  "salesOrderDescription": "",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "",
+  "@salesOrderTargetDateAlt": {}
 }

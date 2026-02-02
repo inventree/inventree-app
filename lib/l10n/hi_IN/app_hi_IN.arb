@@ -1258,5 +1258,11 @@
   "descBatchCode": "इस स्टॉक आइटम के लिए बैच कोड",
   "descPurchasePrice": "इस स्टॉक आइटम का खरीद मूल्य, प्रति यूनिट या पैक",
   "descPurchaseCurrency": "इस स्टॉक आइटम की खरीद मुद्रा",
-  "descPackaging": "पैकेजिंग जिसमें यह स्टॉक आइटम रखा गया है"
+  "descPackaging": "पैकेजिंग जिसमें यह स्टॉक आइटम रखा गया है",
+  "salesOrderDescription": "",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "",
+  "@salesOrderTargetDateAlt": {}
 }

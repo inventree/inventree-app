@@ -1258,5 +1258,11 @@
   "descBatchCode": "Kód šarže pre túto položku skladu",
   "descPurchasePrice": "Nákupná cena tejto položky skladu, za kus alebo balenie",
   "descPurchaseCurrency": "Mena nákupu tejto položky",
-  "descPackaging": "Balenie, v ktorom je táto položka skladu uložená"
+  "descPackaging": "Balenie, v ktorom je táto položka skladu uložená",
+  "salesOrderDescription": "",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "",
+  "@salesOrderTargetDateAlt": {}
 }

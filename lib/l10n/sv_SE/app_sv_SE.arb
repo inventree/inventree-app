@@ -1258,5 +1258,11 @@
   "descBatchCode": "Batchkod för denna lagerartikel",
   "descPurchasePrice": "Inköpspris för denna lagerartikel, per enhet eller förpackning",
   "descPurchaseCurrency": "Inköpsvaluta för denna lagerartikel",
-  "descPackaging": "Förpackning som denna lagerartikel lagras i"
+  "descPackaging": "Förpackning som denna lagerartikel lagras i",
+  "salesOrderDescription": "",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "",
+  "@salesOrderTargetDateAlt": {}
 }

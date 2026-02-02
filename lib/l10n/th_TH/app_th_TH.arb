@@ -1258,5 +1258,11 @@
   "descBatchCode": "รหัสชุดสินค้า",
   "descPurchasePrice": "ราคาซื้อของสินค้าคงคลังนี้ ต่อหน่วย หรือต่อแพ็ค",
   "descPurchaseCurrency": "สกุลเงินที่ใช้ซื้อสินค้านี้",
-  "descPackaging": "บรรจุภัณฑ์ที่ใช้จัดเก็บสินค้านี้"
+  "descPackaging": "บรรจุภัณฑ์ที่ใช้จัดเก็บสินค้านี้",
+  "salesOrderDescription": "",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "",
+  "@salesOrderTargetDateAlt": {}
 }

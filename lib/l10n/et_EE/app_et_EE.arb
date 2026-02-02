@@ -1258,5 +1258,11 @@
   "descBatchCode": "Selle laoelemendi partiikood",
   "descPurchasePrice": "Selle laoelemendi ostuhind ühiku või paki kohta",
   "descPurchaseCurrency": "Selle laoelemendi ostuvaluuta",
-  "descPackaging": "Pakend, milles seda laoelementi hoitakse"
+  "descPackaging": "Pakend, milles seda laoelementi hoitakse",
+  "salesOrderDescription": "",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "",
+  "@salesOrderTargetDateAlt": {}
 }

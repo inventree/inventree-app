@@ -1258,5 +1258,11 @@
   "descBatchCode": "Batchkode for denne varebeholdningen",
   "descPurchasePrice": "Innkjøpspris for denne varebeholdningen, per enhet eller pakke",
   "descPurchaseCurrency": "Valuta for innkjøp av denne varebeholdningen",
-  "descPackaging": "Emballasjen denne varebeholdningen er lagret i"
+  "descPackaging": "Emballasjen denne varebeholdningen er lagret i",
+  "salesOrderDescription": "",
+  "@salesOrderDescription": {},
+  "salesOrderTargetDate": "",
+  "@salesOrderTargetDate": {},
+  "salesOrderTargetDateAlt": "",
+  "@salesOrderTargetDateAlt": {}
 }
