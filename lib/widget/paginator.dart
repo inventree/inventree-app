@@ -61,6 +61,14 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget>
       backup,
     );
 
+    if (result == "null") {
+      if (tristate) {
+        return null;
+      } else {
+        return backup;
+      }
+    }
+
     return result;
   }
 
@@ -69,7 +77,7 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget>
     final String settings_key = "${prefix}filter_${key}";
 
     if (value == null) {
-      await InvenTreeSettingsManager().removeValue(settings_key);
+      await InvenTreeSettingsManager().setValue(settings_key, "null");
     } else {
       await InvenTreeSettingsManager().setValue(settings_key, value);
     }
