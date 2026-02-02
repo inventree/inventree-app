@@ -493,20 +493,46 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       );
     }
 
-    // Tiles for "purchaseable" parts
-    if (part.isPurchaseable) {
-      // On order
-      tiles.add(
-        ListTile(
-          title: Text(L10().onOrder),
-          subtitle: Text(L10().onOrderDetails),
-          leading: Icon(TablerIcons.shopping_cart),
-          trailing: LargeText("${part.onOrderString}"),
-          onTap: () {
-            // TODO - Order views
-          },
-        ),
-      );
+    // Part "requirements"
+    if (showRequirements &&
+        api.supportsPartRequirements &&
+        partRequirements != null) {
+      // Assembly parts
+      if (part.isAssembly) {
+        if (partRequirements!.building > 0 ||
+            partRequirements!.scheduledToBuild > 0) {
+          // Scheduled to build
+          tiles.add(
+            ListTile(
+              title: Text(L10().building),
+              subtitle: ProgressBar(
+                partRequirements!.building,
+                maximum: partRequirements!.scheduledToBuild,
+              ),
+              leading: Icon(TablerIcons.tools),
+              trailing: ProgressText(
+                partRequirements!.building,
+                maximum: partRequirements!.scheduledToBuild,
+              ),
+            ),
+          );
+        }
+      }
+
+      if (part.isPurchaseable && partRequirements!.ordering > 0) {
+        // On order
+        tiles.add(
+          ListTile(
+            title: Text(L10().onOrder),
+            subtitle: Text(L10().onOrderDetails),
+            leading: Icon(TablerIcons.shopping_cart),
+            trailing: LargeText("${part.onOrderString}"),
+            onTap: () {
+              // TODO - Order views
+            },
+          ),
+        );
+      }
     }
 
     // Tiles for an "assembly" part
