@@ -1,4 +1,4 @@
-### x.xx.x - Month Year
+### 0.22.0 - February 2026
 ---
 
 - Display overall part requirements on part detail view
