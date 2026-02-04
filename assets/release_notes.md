@@ -1,3 +1,8 @@
+## 0.22.1 - February 2026
+---
+
+- Fixes bug related to fetching images from remote URLs
+
 ### 0.22.0 - February 2026
 ---
 
