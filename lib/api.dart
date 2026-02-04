@@ -213,16 +213,17 @@ class InvenTreeAPI {
     return url;
   }
 
+  // Resolve a relative or absolute URL
   String _makeUrl(String url) {
-    // Strip leading slash
-    if (url.startsWith("/")) {
-      url = url.substring(1, url.length);
+    final baseUri = Uri.parse(baseUrl);
+    final pathUri = Uri.parse(url);
+
+    // If path is absolute (has scheme), ignore base
+    if (pathUri.hasScheme) {
+      return pathUri.toString();
     }
 
-    // Prevent double-slash
-    url = url.replaceAll("//", "/");
-
-    return baseUrl + url;
+    return baseUri.resolveUri(pathUri).toString();
   }
 
   String get apiUrl => _makeUrl("/api/");
