@@ -218,6 +218,8 @@ class InvenTreeAPI {
     final baseUri = Uri.parse(base.isNotEmpty ? base : baseUrl);
     final pathUri = Uri.parse(url);
 
+    print("DEBUGGIN' _makeUrl ${url} (base: ${base})");
+
     // If path is absolute (has scheme), ignore base
     if (pathUri.hasScheme) {
       return pathUri.toString();
