@@ -214,8 +214,8 @@ class InvenTreeAPI {
   }
 
   // Resolve a relative or absolute URL
-  String _makeUrl(String url) {
-    final baseUri = Uri.parse(baseUrl);
+  String _makeUrl(String url, {String base = ""}) {
+    final baseUri = Uri.parse(base.isNotEmpty ? base : baseUrl);
     final pathUri = Uri.parse(url);
 
     // If path is absolute (has scheme), ignore base
@@ -226,17 +226,13 @@ class InvenTreeAPI {
     return baseUri.resolveUri(pathUri).toString();
   }
 
-  String get apiUrl => _makeUrl("/api/");
-
-  String get imageUrl => _makeUrl("/image/");
-
   String makeApiUrl(String endpoint) {
-    if (endpoint.startsWith("/api/") || endpoint.startsWith("api/")) {
-      return _makeUrl(endpoint);
-    } else {
-      return _makeUrl("/api/${endpoint}");
-    }
+    String apiBase = makeUrl("/api/");
+
+    return _makeUrl(endpoint, base: apiBase);
   }
+
+  String get apiUrl => makeApiUrl("");
 
   String makeUrl(String endpoint) => _makeUrl(endpoint);
 
