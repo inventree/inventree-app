@@ -218,8 +218,6 @@ class InvenTreeAPI {
     final baseUri = Uri.parse(base.isNotEmpty ? base : baseUrl);
     final pathUri = Uri.parse(url);
 
-    print("DEBUGGIN' _makeUrl ${url} (base: ${base})");
-
     // If path is absolute (has scheme), ignore base
     if (pathUri.hasScheme) {
       return pathUri.toString();
@@ -1142,7 +1140,7 @@ class InvenTreeAPI {
    * Perform a request to link a custom barcode to a particular item
    */
   Future<bool> linkBarcode(Map<String, String> body) async {
-    HttpClientRequest? request = await apiRequest("/barcode/link/", "POST");
+    HttpClientRequest? request = await apiRequest("barcode/link/", "POST");
 
     if (request == null) {
       return false;
@@ -1161,7 +1159,7 @@ class InvenTreeAPI {
    * Perform a request to unlink a custom barcode from a particular item
    */
   Future<bool> unlinkBarcode(Map<String, dynamic> body) async {
-    HttpClientRequest? request = await apiRequest("/barcode/unlink/", "POST");
+    HttpClientRequest? request = await apiRequest("barcode/unlink/", "POST");
 
     if (request == null) {
       return false;
