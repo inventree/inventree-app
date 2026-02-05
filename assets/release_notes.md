@@ -1,7 +1,17 @@
-### x.xx.x - Month Year
+### 0.22.0 - February 2026
+---
+
+- Display overall part requirements on part detail view
+- Support display of custom status codes
+- Fix default values for list sorting
+- Fix bug related to null values in list filters
+- Updated translations
+
+### 0.21.2 - January 2026
 ---
 
 - Fixes bug which launched camera twice when uploading an attachment
+- Fixed bug related to list sorting and filtering
 
 ### 0.21.1 - November 2025
 ---

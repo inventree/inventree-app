@@ -133,68 +133,6 @@ class InvenTreePartTestTemplate extends InvenTreeModel {
 }
 
 /*
- Class representing the PartParameter database model
- */
-class InvenTreePartParameter extends InvenTreeModel {
-  InvenTreePartParameter() : super();
-
-  InvenTreePartParameter.fromJson(Map<String, dynamic> json)
-    : super.fromJson(json);
-
-  @override
-  String get URL => "part/parameter/";
-
-  @override
-  List<String> get rolesRequired => ["part"];
-
-  @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
-      InvenTreePartParameter.fromJson(json);
-
-  @override
-  Map<String, Map<String, dynamic>> formFields() {
-    Map<String, Map<String, dynamic>> fields = {
-      "header": {
-        "type": "string",
-        "read_only": true,
-        "label": name,
-        "help_text": description,
-        "value": "",
-      },
-      "data": {"type": "string"},
-    };
-
-    return fields;
-  }
-
-  @override
-  String get name => getString("name", subKey: "template_detail");
-
-  @override
-  String get description => getString("description", subKey: "template_detail");
-
-  String get value => getString("data");
-
-  String get valueString {
-    String v = value;
-
-    if (units.isNotEmpty) {
-      v += " ";
-      v += units;
-    }
-
-    return v;
-  }
-
-  bool get as_bool => value.toLowerCase() == "true";
-
-  String get units => getString("units", subKey: "template_detail");
-
-  bool get is_checkbox =>
-      getBool("checkbox", subKey: "template_detail", backup: false);
-}
-
-/*
  * Class representing the Part database model
  */
 class InvenTreePart extends InvenTreeModel {
@@ -274,6 +212,27 @@ class InvenTreePart extends InvenTreeModel {
             }
           }
         });
+  }
+
+  // Request requirements information for this part
+  Future<InvenTreePartRequirements?> getRequirements() async {
+    try {
+      final response = await InvenTreeAPI().get(
+        "/api/part/${pk}/requirements/",
+      );
+      if (response.isValid()) {
+        final requirementsData = response.data;
+
+        if (requirementsData is Map<String, dynamic>) {
+          return InvenTreePartRequirements.fromJson(requirementsData);
+        }
+      }
+    } catch (e, stackTrace) {
+      print("Exception while fetching requirements data for part $pk: $e");
+      sentryReportError("getRequirements", e, stackTrace);
+    }
+
+    return null;
   }
 
   // Request pricing data for this part
@@ -499,6 +458,43 @@ class InvenTreePart extends InvenTreeModel {
       InvenTreePart.fromJson(json);
 }
 
+/*
+ * Class representing requirements information for a given Part instance.
+ */
+class InvenTreePartRequirements extends InvenTreeModel {
+  InvenTreePartRequirements() : super();
+
+  InvenTreePartRequirements.fromJson(Map<String, dynamic> json)
+    : super.fromJson(json);
+
+  @override
+  List<String> get rolesRequired => ["part"];
+
+  @override
+  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
+      InvenTreePartRequirements.fromJson(json);
+
+  // Data accessors
+  double get canBuild => getDouble("can_build");
+
+  double get ordering => getDouble("ordering");
+
+  double get building => getDouble("building");
+
+  double get scheduledToBuild => getDouble("scheduled_to_build");
+
+  double get requiredForBuildOrders => getDouble("required_for_build_orders");
+
+  double get allocatedToBuildOrders => getDouble("allocated_to_build_orders");
+
+  double get requiredForSalesOrders => getDouble("required_for_sales_orders");
+
+  double get allocatedToSalesOrders => getDouble("allocated_to_sales_orders");
+}
+
+/*
+ * Class representing pricing information for a given Part instance.
+ */
 class InvenTreePartPricing extends InvenTreeModel {
   InvenTreePartPricing() : super();
 

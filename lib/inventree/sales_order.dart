@@ -48,7 +48,7 @@ class InvenTreeSalesOrder extends InvenTreeOrder {
     Map<String, Map<String, dynamic>> fields = {
       "reference": {},
       "customer": {
-        "filters": {"is_customer": true},
+        "filters": {"is_customer": true, "active": true},
       },
       "customer_reference": {},
       "description": {},

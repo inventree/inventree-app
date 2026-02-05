@@ -42,30 +42,44 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget>
   // Override in implementing class
   String get prefix => "prefix_";
 
+  // Default ordering option (can be overridden)
+  String get defaultOrdering => "";
+
   // Should be overridden by an implementing subclass
   Map<String, Map<String, dynamic>> get filterOptions => {};
 
   // Return the boolean value of a particular boolean filter
   Future<dynamic> getFilterValue(String key) async {
-    key = "${prefix}filter_${key}";
+    final String settings_key = "${prefix}filter_${key}";
 
     Map<String, dynamic> opts = filterOptions[key] ?? {};
 
     bool tristate = (opts["tristate"] ?? true) as bool;
-    dynamic backup = tristate ? null : opts["default"];
-    final result = await InvenTreeSettingsManager().getValue(key, backup);
+    dynamic backup = tristate ? opts["default"] : opts["default"] ?? false;
+    final result = await InvenTreeSettingsManager().getValue(
+      settings_key,
+      backup,
+    );
+
+    if (result == "null") {
+      if (tristate) {
+        return null;
+      } else {
+        return backup;
+      }
+    }
 
     return result;
   }
 
   // Set the boolean value of a particular boolean filter
   Future<void> setFilterValue(String key, dynamic value) async {
-    key = "${prefix}filter_${key}";
+    final String settings_key = "${prefix}filter_${key}";
 
     if (value == null) {
-      await InvenTreeSettingsManager().removeValue(key);
+      await InvenTreeSettingsManager().setValue(settings_key, "null");
     } else {
-      await InvenTreeSettingsManager().setValue(key, value);
+      await InvenTreeSettingsManager().setValue(settings_key, value);
     }
   }
 
@@ -100,6 +114,9 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget>
     if (field != null && orderingOptions.containsKey(field.toString())) {
       // A valid ordering field has been found
       return field.toString();
+    } else if (defaultOrdering.isNotEmpty) {
+      // A default ordering value is supplied
+      return defaultOrdering;
     } else if (orderingOptions.isNotEmpty) {
       // By default, return the first specified key
       return orderingOptions.keys.first;
@@ -152,19 +169,19 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget>
     Map<String, dynamic> fields = {
       "ordering_field": {
         "type": "choice",
-        "label": "Ordering Field",
+        "label": L10().searchOrderingField,
         "required": true,
         "choices": _opts,
         "value": _field,
       },
       "ordering_order": {
         "type": "choice",
-        "label": "Ordering Direction",
+        "label": L10().searchOrderingDirection,
         "required": true,
         "value": _order,
         "choices": [
-          {"value": "+", "display_name": "Ascending"},
-          {"value": "-", "display_name": "Descending"},
+          {"value": "+", "display_name": L10().searchOrderingAscending},
+          {"value": "-", "display_name": L10().searchOrderingDescending},
         ],
       },
     };

@@ -5,6 +5,7 @@ import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/barcode/barcode.dart";
 import "package:inventree/inventree/attachment.dart";
+import "package:inventree/inventree/parameter.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/helpers.dart";
 
@@ -16,10 +17,10 @@ import "package:inventree/preferences.dart";
 
 import "package:inventree/widget/attachment_widget.dart";
 import "package:inventree/widget/link_icon.dart";
+import "package:inventree/widget/parameter_widget.dart";
 import "package:inventree/widget/part/bom_list.dart";
 import "package:inventree/widget/part/part_list.dart";
 import "package:inventree/widget/notes_widget.dart";
-import "package:inventree/widget/part/part_parameter_widget.dart";
 import "package:inventree/widget/part/part_pricing.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/part/category_display.dart";
@@ -50,19 +51,19 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
   InvenTreeStockLocation? defaultLocation;
 
-  int parameterCount = 0;
-
   bool allowLabelPrinting = false;
-  bool showParameters = false;
   bool showBom = false;
   bool showPricing = false;
+  bool showRequirements = false;
 
+  int parameterCount = 0;
   int attachmentCount = 0;
   int bomCount = 0;
   int usedInCount = 0;
   int variantCount = 0;
 
   InvenTreePartPricing? partPricing;
+  InvenTreePartRequirements? partRequirements;
 
   @override
   String getAppBarTitle() => L10().partDetails;
@@ -149,12 +150,14 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     final bool result = await part.reload();
 
     // Load page settings from local storage
+
+    showRequirements = await InvenTreeSettingsManager().getBool(
+      INV_PART_SHOW_REQUIREMENTS,
+      false,
+    );
+
     showPricing = await InvenTreeSettingsManager().getBool(
       INV_PART_SHOW_PRICING,
-      true,
-    );
-    showParameters = await InvenTreeSettingsManager().getBool(
-      INV_PART_SHOW_PARAMETERS,
       true,
     );
     showBom = await InvenTreeSettingsManager().getBool(INV_PART_SHOW_BOM, true);
@@ -213,15 +216,47 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     }
 
     // Request the number of attachments
-    InvenTreeAttachment()
-        .countAttachments(InvenTreePart.MODEL_TYPE, part.pk)
-        .then((int value) {
-          if (mounted) {
-            setState(() {
-              attachmentCount = value;
-            });
-          }
+    if (api.supportsModernAttachments) {
+      InvenTreeAttachment()
+          .countAttachments(InvenTreePart.MODEL_TYPE, part.pk)
+          .then((int value) {
+            if (mounted) {
+              setState(() {
+                attachmentCount = value;
+              });
+            }
+          });
+    }
+
+    // Request the number of parameters
+    if (api.supportsModernParameters) {
+      InvenTreeParameter()
+          .countParameters(InvenTreePart.MODEL_TYPE, part.pk)
+          .then((int value) {
+            if (mounted) {
+              setState(() {
+                parameterCount = value;
+              });
+            }
+          });
+    }
+
+    // If show requirements information?
+    if (showRequirements && api.supportsPartRequirements) {
+      part.getRequirements().then((InvenTreePartRequirements? requirements) {
+        if (mounted) {
+          setState(() {
+            partRequirements = requirements;
+          });
+        }
+      });
+    } else {
+      if (mounted) {
+        setState(() {
+          partRequirements = null;
         });
+      }
+    }
 
     // If show pricing information?
     if (showPricing) {
@@ -232,6 +267,12 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
           });
         }
       });
+    } else {
+      if (mounted) {
+        setState(() {
+          partPricing = null;
+        });
+      }
     }
 
     // Request the number of BOM items
@@ -424,6 +465,103 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       );
     }
 
+    // Part "requirements"
+    if (showRequirements &&
+        api.supportsPartRequirements &&
+        partRequirements != null) {
+      // Assembly parts
+      if (part.isAssembly) {
+        // Scheduled to build
+        if (partRequirements!.building > 0 ||
+            partRequirements!.scheduledToBuild > 0) {
+          tiles.add(
+            ListTile(
+              title: Text(L10().building),
+              subtitle: ProgressBar(
+                partRequirements!.building,
+                maximum: partRequirements!.scheduledToBuild,
+              ),
+              leading: Icon(TablerIcons.tools),
+              trailing: ProgressText(
+                partRequirements!.building,
+                maximum: partRequirements!.scheduledToBuild,
+              ),
+            ),
+          );
+        }
+
+        // Can build
+        if (part.isActive) {
+          tiles.add(
+            ListTile(
+              title: Text(L10().canBuild),
+              subtitle: Text(L10().canBuildDetail),
+              trailing: LargeText(
+                simpleNumberString(partRequirements!.canBuild),
+              ),
+              leading: Icon(TablerIcons.check),
+            ),
+          );
+        }
+      }
+
+      // Build requirements
+      if (partRequirements!.requiredForBuildOrders > 0 ||
+          partRequirements!.allocatedToBuildOrders > 0) {
+        tiles.add(
+          ListTile(
+            title: Text(L10().allocatedToBuildOrders),
+            subtitle: ProgressBar(
+              partRequirements!.allocatedToBuildOrders,
+              maximum: partRequirements!.requiredForBuildOrders,
+            ),
+            trailing: ProgressText(
+              partRequirements!.allocatedToBuildOrders,
+              maximum: partRequirements!.requiredForBuildOrders,
+            ),
+            leading: Icon(TablerIcons.tools),
+          ),
+        );
+      }
+
+      // Sales requirements
+      if (part.isSalable) {
+        if (partRequirements!.requiredForSalesOrders > 0 ||
+            partRequirements!.allocatedToSalesOrders > 0) {
+          tiles.add(
+            ListTile(
+              title: Text(L10().allocatedToSalesOrders),
+              subtitle: ProgressBar(
+                partRequirements!.allocatedToSalesOrders,
+                maximum: partRequirements!.requiredForSalesOrders,
+              ),
+              trailing: ProgressText(
+                partRequirements!.allocatedToSalesOrders,
+                maximum: partRequirements!.requiredForSalesOrders,
+              ),
+              leading: Icon(TablerIcons.truck_delivery),
+            ),
+          );
+        }
+      }
+
+      // Ordering stats
+      if (part.isPurchaseable && partRequirements!.ordering > 0) {
+        // On order
+        tiles.add(
+          ListTile(
+            title: Text(L10().onOrder),
+            subtitle: Text(L10().onOrderDetails),
+            leading: Icon(TablerIcons.shopping_cart),
+            trailing: LargeText("${part.onOrderString}"),
+            onTap: () {
+              // TODO - Order views
+            },
+          ),
+        );
+      }
+    }
+
     if (showPricing && partPricing != null) {
       String pricing = formatPriceRange(
         partPricing?.overallMin,
@@ -447,22 +585,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
                     PartPricingWidget(part: part, partPricing: partPricing),
               ),
             );
-          },
-        ),
-      );
-    }
-
-    // Tiles for "purchaseable" parts
-    if (part.isPurchaseable) {
-      // On order
-      tiles.add(
-        ListTile(
-          title: Text(L10().onOrder),
-          subtitle: Text(L10().onOrderDetails),
-          leading: Icon(TablerIcons.shopping_cart),
-          trailing: LargeText("${part.onOrderString}"),
-          onTap: () {
-            // TODO - Order views
           },
         ),
       );
@@ -599,6 +721,18 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       ),
     );
 
+    ListTile? parameterTile = ShowParametersItem(
+      context,
+      InvenTreePart.MODEL_TYPE,
+      part.pk,
+      parameterCount,
+      part.canEdit,
+    );
+
+    if (parameterTile != null) {
+      tiles.add(parameterTile);
+    }
+
     ListTile? attachmentTile = ShowAttachmentsItem(
       context,
       InvenTreePart.MODEL_TYPE,
@@ -705,10 +839,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
   List<Widget> getTabIcons(BuildContext context) {
     List<Widget> icons = [Tab(text: L10().details), Tab(text: L10().stock)];
 
-    if (showParameters) {
-      icons.add(Tab(text: L10().parameters));
-    }
-
     return icons;
   }
 
@@ -721,11 +851,6 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       ),
       PaginatedStockItemList({"part": part.pk.toString()}),
     ];
-
-    if (showParameters) {
-      tabs.add(PaginatedParameterList({"part": part.pk.toString()}));
-    }
-
     return tabs;
   }
 }

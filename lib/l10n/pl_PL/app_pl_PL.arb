@@ -880,6 +880,14 @@
   "@searching": {},
   "searchLocation": "Wyszukaj lokalizację",
   "@searchLocation": {},
+  "searchOrderingField": "Ordering Field",
+  "@searchOrderingField": {},
+  "searchOrderingDirection": "Ordering Direction",
+  "@searchOrderingDirection": {},
+  "searchOrderingAscending": "Ascending",
+  "@searchOrderingAscending": {},
+  "searchOrderingDescending": "Descending",
+  "@searchOrderingDescending": {},
   "searchParts": "Szukaj części",
   "@searchParts": {},
   "searchStock": "Szukaj zapasów",
@@ -1202,6 +1210,6 @@
   "@pricingOverrides": {},
   "currency": "Waluta",
   "@currency": {},
-  "priceBreaks": "Price Breaks",
+  "priceBreaks": "Widełki cenowe",
   "@priceBreaks": {}
 }

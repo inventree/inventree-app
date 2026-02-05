@@ -57,10 +57,6 @@ class InvenTreeOrder extends InvenTreeModel {
 
   bool get hasProjectCode => projectCode.isNotEmpty;
 
-  int get status => getInt("status");
-
-  String get statusText => getString("status_text");
-
   double? get totalPrice {
     String price = getString("total_price");
 
