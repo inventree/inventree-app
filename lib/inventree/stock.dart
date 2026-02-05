@@ -534,19 +534,19 @@ class InvenTreeStockItem extends InvenTreeModel {
   }
 
   Future<bool> countStock(double q, {String? notes}) async {
-    final bool result = await adjustStock("/stock/count/", q, notes: notes);
+    final bool result = await adjustStock("stock/count/", q, notes: notes);
 
     return result;
   }
 
   Future<bool> addStock(double q, {String? notes}) async {
-    final bool result = await adjustStock("/stock/add/", q, notes: notes);
+    final bool result = await adjustStock("stock/add/", q, notes: notes);
 
     return result;
   }
 
   Future<bool> removeStock(double q, {String? notes}) async {
-    final bool result = await adjustStock("/stock/remove/", q, notes: notes);
+    final bool result = await adjustStock("stock/remove/", q, notes: notes);
 
     return result;
   }
@@ -563,7 +563,7 @@ class InvenTreeStockItem extends InvenTreeModel {
     }
 
     final bool result = await adjustStock(
-      "/stock/transfer/",
+      "stock/transfer/",
       q,
       notes: notes,
       location: location,

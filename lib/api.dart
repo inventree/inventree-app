@@ -213,29 +213,26 @@ class InvenTreeAPI {
     return url;
   }
 
-  String _makeUrl(String url) {
-    // Strip leading slash
-    if (url.startsWith("/")) {
-      url = url.substring(1, url.length);
+  // Resolve a relative or absolute URL
+  String _makeUrl(String url, {String base = ""}) {
+    final baseUri = Uri.parse(base.isNotEmpty ? base : baseUrl);
+    final pathUri = Uri.parse(url);
+
+    // If path is absolute (has scheme), ignore base
+    if (pathUri.hasScheme) {
+      return pathUri.toString();
     }
 
-    // Prevent double-slash
-    url = url.replaceAll("//", "/");
-
-    return baseUrl + url;
+    return baseUri.resolveUri(pathUri).toString();
   }
-
-  String get apiUrl => _makeUrl("/api/");
-
-  String get imageUrl => _makeUrl("/image/");
 
   String makeApiUrl(String endpoint) {
-    if (endpoint.startsWith("/api/") || endpoint.startsWith("api/")) {
-      return _makeUrl(endpoint);
-    } else {
-      return _makeUrl("/api/${endpoint}");
-    }
+    String apiBase = makeUrl("/api/");
+
+    return _makeUrl(endpoint, base: apiBase);
   }
+
+  String get apiUrl => makeApiUrl("");
 
   String makeUrl(String endpoint) => _makeUrl(endpoint);
 
@@ -1143,7 +1140,7 @@ class InvenTreeAPI {
    * Perform a request to link a custom barcode to a particular item
    */
   Future<bool> linkBarcode(Map<String, String> body) async {
-    HttpClientRequest? request = await apiRequest("/barcode/link/", "POST");
+    HttpClientRequest? request = await apiRequest("barcode/link/", "POST");
 
     if (request == null) {
       return false;
@@ -1162,7 +1159,7 @@ class InvenTreeAPI {
    * Perform a request to unlink a custom barcode from a particular item
    */
   Future<bool> unlinkBarcode(Map<String, dynamic> body) async {
-    HttpClientRequest? request = await apiRequest("/barcode/unlink/", "POST");
+    HttpClientRequest? request = await apiRequest("barcode/unlink/", "POST");
 
     if (request == null) {
       return false;

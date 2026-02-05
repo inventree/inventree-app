@@ -23,6 +23,27 @@ void main() {
     assert(await UserProfileDBManager().selectProfileByName(testServerName));
   });
 
+  // Ensure that generated URLs are correct
+  group("URL Tests:", () {
+    test("Generate URLs", () async {
+      UserProfile profile = await setupServerProfile();
+      var api = InvenTreeAPI();
+
+      api.profile = profile;
+
+      Map<String, String> tests = {
+        "": "http://localhost:8000/api/",
+        "barcode/": "http://localhost:8000/api/barcode/",
+        "https://remote-server.com/media/image.png":
+            "https://remote-server.com/media/image.png",
+      };
+
+      for (var test in tests.entries) {
+        expect(api.makeApiUrl(test.key), equals(test.value));
+      }
+    });
+  });
+
   group("Login Tests:", () {
     test("Disconnected", () async {
       // Test that calling disconnect() does the right thing
