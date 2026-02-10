@@ -1,3 +1,8 @@
+## 0.22.2 - February 2026
+---
+
+- Bug fix for label printing, which used improperly formatted URL
+
 ## 0.22.1 - February 2026
 ---
 
