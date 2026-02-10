@@ -9,7 +9,7 @@ import "package:flutter_localized_locales/flutter_localized_locales.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/api_form.dart";
 import "package:inventree/l10.dart";
-import "package:inventree/l10n/supported_locales.dart";
+import "package:inventree/l10n/collected/app_localizations.dart";
 import "package:inventree/main.dart";
 import "package:inventree/preferences.dart";
 
@@ -92,7 +92,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
     ];
 
     // Construct a list of available locales
-    for (var locale in supported_locales) {
+    for (var locale in I18N.supportedLocales) {
       options.add({
         "display_name": LocaleNames.of(context)!.nameOf(locale.toString()),
         "value": locale.toString(),
@@ -118,7 +118,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
         String locale_name = (data["locale"] ?? "") as String;
         Locale? selected_locale;
 
-        for (var locale in supported_locales) {
+        for (var locale in I18N.supportedLocales) {
           if (locale.toString() == locale_name) {
             selected_locale = locale;
           }

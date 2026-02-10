@@ -1254,6 +1254,15 @@
   "salesOrder": "Sales Order",
   "@salesOrder": {},
 
+  "salesOrderDescription": "Order description (optional)",
+  "@salesOrderDescription": {},
+
+  "salesOrderTargetDate": "Expected date for order delivery. Order will be overdue if this date is exceeded.",
+  "@salesOrderTargetDate": {},
+
+  "salesOrderTargetDateAlt": "Expected date for order delivery. Order will be overdue after this date.",
+  "@salesOrderTargetDateAlt": {},
+
   "salesOrders": "Sales Orders",
   "@salesOrders": {},
 
@@ -1810,5 +1819,145 @@
   "@currency": {},
 
   "priceBreaks": "Price Breaks",
-  "@priceBreaks": {}
+  "@priceBreaks": {},
+
+  "active": "Active",
+  "@active": {},
+
+  "contact": "Contact",
+  "@contact": {},
+
+  "inProgress": "In Progress",
+  "@inProgress": {},
+
+  "cancelled": "Cancelled",
+  "@cancelled": {},
+
+  "companyIsSupplier": "Do you purchase items from this company?",
+  "@companyIsSupplier": {},
+
+  "companyIsCustomer": "Do you sell items to this company?",
+  "@companyIsCustomer": {},
+
+  "companyIsManufacturer": "Does this company manufacture parts?",
+  "@companyIsManufacturer": {},
+
+  "descCompanyName": "Company name",
+  "@descCompanyName": {},
+
+  "descCompanyDescription": "Description of the company",
+  "@descCompanyDescription": {},
+
+  "descCompanyWebsite": "Company Web Site URL",
+  "@descCompanyWebsite": {},
+
+  "descCompanyActive": "Is this company active?",
+  "@descCompanyActive": {},
+
+  "descShipment": "Shipment",
+  "@descShipment": {},
+
+  "descShipmentNumber": "Shipment Number",
+  "@descShipmentNumber": {},
+
+  "descTrackingNumber": "Shipment Tracking Information",
+  "@descTrackingNumber": {},
+
+  "descInvoiceNumber": "Reference number for associated invoice",
+  "@descInvoiceNumber": {},
+
+  "descLink": "Link to external page",
+  "@descLink": {},
+
+  "revision": "Revision",
+  "@revision": {},
+
+  "descPartName": "Part name",
+  "@descPartName": {},
+
+  "descIPN": "Internal Part Number",
+  "@descIPN": {},
+
+  "descRevision": "Part revision or version number",
+  "@descRevision": {},
+
+  "descKeywords": "Part keywords to improve visibility in search results",
+  "@descKeywords": {},
+
+  "descPartLink": "Link to external URL",
+  "@descPartLink": {},
+
+  "descCategory": "Part category",
+  "@descCategory": {},
+
+  "descDefaultLocation": "Default stock location for this part",
+  "@descDefaultLocation": {},
+
+  "descUnits": "Units of measure for this part",
+  "@descUnits": {},
+
+  "descPartDescription": "Part Description (optional)",
+  "@descPartDescription": {},
+
+  "descPartActive": "Is this part active?",
+  "@descPartActive": {},
+
+  "descAssembly": "Can this part be used to build other parts?",
+  "@descAssembly": {},
+
+  "descComponent": "Can this part be used to build other parts?",
+  "@descComponent": {},
+
+  "descPurchaseable": "Can this part be purchased from external suppliers?",
+  "@descPurchaseable": {},
+
+  "descSalable": "Can this part be sold to customers?",
+  "@descSalable": {},
+
+  "descTrackable": "Does this part have tracking for unique items?",
+  "@descTrackable": {},
+
+  "descTemplate": "Is this part a template part?",
+  "@descTemplate": {},
+
+  "descVirtual": "Is this a virtual part, such as a software product or license?",
+  "@descVirtual": {},
+
+  "labelAssembly": "Assembly",
+  "@labelAssembly": {},
+  "descAssemblyBuiltFrom": "Can this part be built from other parts?",
+  "@descAssemblyBuiltFrom": {},
+
+  "labelComponent": "Component",
+  "@labelComponent": {},
+
+  "labelSalable": "Salable",
+  "@labelSalable": {},
+
+  "labelTrackable": "Trackable",
+  "@labelTrackable": {},
+
+  "labelTemplate": "Is Template",
+  "@labelTemplate": {},
+
+  "labelPurchaseable": "Purchaseable",
+  "@labelPurchaseable": {},
+  
+  "labelVirtual": "Virtual",
+  "@labelVirtual": {},
+
+  "labelExternalLink": "External Link",
+  "@labelExternalLink": {},
+
+  "descBatchCode": "Batch code for this stock item",
+  "@descBatchCode": {},
+
+  "descPurchasePrice": "Purchase price of this stock item, per unit or pack",
+  "@descPurchasePrice": {},
+
+  "descPurchaseCurrency": "Purchase currency of this stock item",
+  "@descPurchaseCurrency": {},
+
+  "descPackaging": "Packaging this stock item is stored in",
+  "@descPackaging": {}
 }
