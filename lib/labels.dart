@@ -7,7 +7,7 @@ import "package:inventree/l10.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/snacks.dart";
 
-const String PRINT_LABEL_URL = "api/label/print/";
+const String PRINT_LABEL_URL = "label/print/";
 
 /*
  * Custom form handler for label printing.
