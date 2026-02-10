@@ -8,6 +8,8 @@ import "package:inventree/api.dart";
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/progress.dart";
 
+enum LoginMethod { credentials, token }
+
 class InvenTreeLoginWidget extends StatefulWidget {
   const InvenTreeLoginWidget(this.profile) : super();
 
@@ -22,8 +24,11 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
 
   String username = "";
   String password = "";
+  String token = "";
 
   bool _obscured = true;
+
+  LoginMethod _method = LoginMethod.credentials;
 
   String error = "";
 
@@ -44,12 +49,19 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
 
       showLoadingOverlay();
 
-      // Attempt login
-      final response = await InvenTreeAPI().fetchToken(
-        widget.profile,
-        username,
-        password,
-      );
+      final APIResponse response;
+
+      if (_method == LoginMethod.credentials) {
+        // Attempt login
+        response = await InvenTreeAPI().fetchToken(
+          widget.profile,
+          username,
+          password,
+        );
+      } else {
+        // Check token validity
+        response = await InvenTreeAPI().checkToken(widget.profile, token);
+      }
 
       hideLoadingOverlay();
 
@@ -123,55 +135,120 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ...before,
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: L10().username,
-                  labelStyle: TextStyle(fontWeight: FontWeight.bold),
-                  hintText: L10().enterUsername,
-                ),
-                initialValue: "",
-                keyboardType: TextInputType.text,
-                onSaved: (value) {
-                  username = value?.trim() ?? "";
-                },
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return L10().usernameEmpty;
-                  }
-
-                  return null;
-                },
-              ),
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: L10().password,
-                  labelStyle: TextStyle(fontWeight: FontWeight.bold),
-                  hintText: L10().enterPassword,
-                  suffixIcon: IconButton(
-                    icon: _obscured
-                        ? Icon(TablerIcons.eye)
-                        : Icon(TablerIcons.eye_off),
-                    onPressed: () {
-                      setState(() {
-                        _obscured = !_obscured;
-                      });
-                    },
+              // Dropdown to select login method
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 8),
+                child: DropdownButtonFormField<LoginMethod>(
+                  value: _method,
+                  decoration: InputDecoration(
+                    labelText: L10().loginMethod,
+                    labelStyle: TextStyle(fontWeight: FontWeight.bold),
                   ),
+                  items: [
+                    DropdownMenuItem(
+                      child: Text(L10().usernameAndPassword),
+                      value: LoginMethod.credentials,
+                    ),
+                    DropdownMenuItem(
+                      child: Text(L10().token),
+                      value: LoginMethod.token,
+                    ),
+                  ],
+                  onChanged: (val) {
+                    setState(() {
+                      _method = val ?? LoginMethod.credentials;
+                      error = "";
+                    });
+                  },
                 ),
-                initialValue: "",
-                keyboardType: TextInputType.visiblePassword,
-                obscureText: _obscured,
-                onSaved: (value) {
-                  password = value?.trim() ?? "";
-                },
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return L10().passwordEmpty;
-                  }
-
-                  return null;
-                },
               ),
+
+              // Show fields depending on selected login method
+              if (_method == LoginMethod.credentials) ...[
+                TextFormField(
+                  key: ValueKey("input-username"),
+                  decoration: InputDecoration(
+                    labelText: L10().username,
+                    labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                    hintText: L10().enterUsername,
+                  ),
+                  initialValue: "",
+                  keyboardType: TextInputType.text,
+                  onSaved: (value) {
+                    username = value?.trim() ?? "";
+                  },
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return L10().usernameEmpty;
+                    }
+
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  key: ValueKey("input-password"),
+                  decoration: InputDecoration(
+                    labelText: L10().password,
+                    labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                    hintText: L10().enterPassword,
+                    suffixIcon: IconButton(
+                      icon: _obscured
+                          ? Icon(TablerIcons.eye)
+                          : Icon(TablerIcons.eye_off),
+                      onPressed: () {
+                        setState(() {
+                          _obscured = !_obscured;
+                        });
+                      },
+                    ),
+                  ),
+                  initialValue: "",
+                  keyboardType: TextInputType.visiblePassword,
+                  obscureText: _obscured,
+                  onSaved: (value) {
+                    password = value?.trim() ?? "";
+                  },
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return L10().passwordEmpty;
+                    }
+
+                    return null;
+                  },
+                ),
+              ] else ...[
+                TextFormField(
+                  key: ValueKey("input-token"),
+                  decoration: InputDecoration(
+                    labelText: L10().token,
+                    labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                    hintText: L10().enterToken,
+                    suffixIcon: IconButton(
+                      icon: _obscured
+                          ? Icon(TablerIcons.eye)
+                          : Icon(TablerIcons.eye_off),
+                      onPressed: () {
+                        setState(() {
+                          _obscured = !_obscured;
+                        });
+                      },
+                    ),
+                  ),
+                  initialValue: "",
+                  keyboardType: TextInputType.visiblePassword,
+                  obscureText: _obscured,
+                  onSaved: (value) {
+                    token = value?.trim() ?? "";
+                  },
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return L10().tokenEmpty;
+                    }
+
+                    return null;
+                  },
+                ),
+              ],
               ...after,
             ],
           ),

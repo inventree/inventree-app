@@ -163,6 +163,7 @@ class InvenTreeFileService extends FileService {
  *
  * InvenTree implements token-based authentication, which is
  * initialised using a username:password combination.
+ * Alternatively, an existing token provided by the user can be used for authentication.
  */
 
 /*
@@ -538,6 +539,40 @@ class InvenTreeAPI {
 
       return false;
     }
+  }
+
+  Future<APIResponse> checkToken(UserProfile userProfile, String token) async {
+    debug("Checking token @ ${_URL_ME}");
+
+    userProfile.token = token;
+    profile = userProfile;
+
+    final response = await get(_URL_ME);
+
+    if (!response.successful()) {
+      switch (response.statusCode) {
+        case 401:
+        case 403:
+          showServerError(
+            apiUrl,
+            L10().serverAuthenticationError,
+            L10().invalidToken,
+          );
+        default:
+          showStatusCodeError(apiUrl, response.statusCode);
+      }
+
+      debug("Request failed: STATUS ${response.statusCode}");
+
+      // reset token
+      userProfile.token = "";
+      profile = userProfile;
+    } else {
+      // save token
+      await UserProfileDBManager().updateProfile(userProfile);
+    }
+
+    return response;
   }
 
   /*
