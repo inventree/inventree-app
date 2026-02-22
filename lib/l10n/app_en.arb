@@ -430,6 +430,9 @@
   "enterPassword": "Enter password",
   "@enterPassword": {},
 
+  "enterToken": "Enter API token",
+  "@enterToken": {},
+
   "enterUsername": "Enter username",
   "@enterUsername": {},
 
@@ -677,6 +680,9 @@
   "invalidSupplierPart": "Invalid Supplier Part",
   "@invalidSupplierPart": {},
 
+  "invalidToken": "Invalid token",
+  "@invalidToken": {},
+
   "invalidUsernamePassword": "Invalid username / password combination",
   "@invalidUsernamePassword": {},
 
@@ -781,6 +787,9 @@
 
   "login": "Login",
   "@login": {},
+
+  "loginMethod": "Login method",
+  "@loginMethod": {},
 
   "loginEnter": "Enter login details",
   "@loginEnter": {},
@@ -1665,6 +1674,12 @@
   "toggleTorch": "Toggle Torch",
   "@toggleTorch": {},
 
+  "token": "Token",
+  "@token": {},
+
+  "tokenEmpty": "Token cannot be empty",
+  "@tokenEmpty": {},
+
   "tokenError": "Token Error",
   "@tokenError": {},
 
@@ -1740,6 +1755,9 @@
 
   "username": "Username",
   "@username": {},
+
+  "usernameAndPassword": "Username & Password",
+  "@usernameAndPassword": {},
 
   "usernameEmpty": "Username cannot be empty",
   "@usernameEmpty": {},
