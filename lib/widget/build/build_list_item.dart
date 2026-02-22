@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
-import "package:percent_indicator/linear_percent_indicator.dart";
+import "package:inventree/widget/progress.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/l10.dart";
@@ -117,29 +117,7 @@ class BuildOrderListItem extends StatelessWidget {
               const SizedBox(height: 8),
 
               // Progress indicator
-              LinearPercentIndicator(
-                lineHeight: 14,
-                percent: progress,
-                center: Text(
-                  "${order.completed.toInt()} / ${order.quantity.toInt()}",
-                  style: const TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                progressColor: order.isComplete
-                    ? Colors.green
-                    : (order.targetDate.isNotEmpty &&
-                          DateTime.tryParse(order.targetDate) != null &&
-                          DateTime.tryParse(
-                            order.targetDate,
-                          )!.isBefore(DateTime.now()))
-                    ? Colors.red
-                    : Colors.blue,
-                backgroundColor: Colors.grey.withValues(alpha: 0.2),
-                barRadius: const Radius.circular(7),
-                padding: EdgeInsets.zero,
-              ),
+              ProgressBar(order.completed, maximum: order.quantity),
 
               const SizedBox(height: 8),
 

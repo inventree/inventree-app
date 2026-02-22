@@ -499,28 +499,18 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
     );
 
     // Attachments tile
-    tiles.add(
-      ListTile(
-        title: Text(L10().attachments),
-        leading: Icon(TablerIcons.file, color: COLOR_ACTION),
-        trailing: LinkIcon(
-          text: attachmentCount > 0 ? attachmentCount.toString() : null,
-        ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AttachmentWidget(
-                InvenTreeBuildAttachment(),
-                widget.order.pk,
-                L10().buildOrder,
-                widget.order.canEdit,
-              ),
-            ),
-          );
-        },
-      ),
+    ListTile? attachmentTile = ShowAttachmentsItem(
+      context,
+      InvenTreeBuildOrder.MODEL_TYPE,
+      widget.order.pk,
+      widget.order.reference,
+      attachmentCount,
+      widget.order.canEdit,
     );
+
+    if (attachmentTile != null) {
+      tiles.add(attachmentTile);
+    }
 
     return tiles;
   }

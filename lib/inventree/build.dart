@@ -390,25 +390,3 @@ class BuildOrderStatus {
     }
   }
 }
-
-class InvenTreeBuildAttachment extends InvenTreeAttachment {
-  InvenTreeBuildAttachment() : super();
-
-  InvenTreeBuildAttachment.fromJson(Map<String, dynamic> json)
-    : super.fromJson(json);
-
-  @override
-  String get REFERENCE_FIELD => "build";
-
-  @override
-  String get REF_MODEL_TYPE => "build";
-
-  @override
-  String get URL => InvenTreeAPI().supportsModernAttachments
-      ? "attachment/"
-      : "build/attachment/";
-
-  @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
-      InvenTreeBuildAttachment.fromJson(json);
-}
