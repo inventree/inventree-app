@@ -47,8 +47,32 @@
   "appDetails": "App Details",
   "@appDetails": {},
 
+  "allocate": "Allocate",
+  "@allocate": {},
+
+  "allocateAuto": "Auto Allocate",
+  "@allocateAuto": {},
+
+  "allocateAutoDetail": "Automatically allocate required stock items to this order",
+  "@allocateAutoDetail": {},
+
+  "allocateStock": "Allocate Stock",
+  "@allocateStock": {},
+
   "allocated": "Allocated",
   "@allocated": {},
+
+  "allocatedFilterDetail": "Show allocated items",
+  "@allocatedFilterDetail": {},
+
+  "allocatedItem": "Allocated Item",
+  "@allocatedItem": {},
+
+  "allocatedStock": "Allocated Stock",
+  "@allocatedStock": {},
+
+  "allocationEdit": "Edit Allocation",
+  "@allocationEdit": {},
 
   "aspectRatio16x9": "16:9",
   "@aspectRatio16x9": {},
@@ -109,8 +133,8 @@
   "attention": "Attention",
   "@attention": {},
 
-   "available": "Available",
-   "@available": {},
+  "available": "Available",
+  "@available": {},
 
   "availableStock": "Available Stock",
   "@availableStock": {},
@@ -220,6 +244,27 @@
   "build": "Build",
   "@build": {},
 
+  "buildOrder": "Build Order",
+  "@buildOrder": {},
+
+  "buildOrderCreate": "New Build Order",
+  "@buildOrderCreate": {},
+
+  "buildOrders": "Build Orders",
+  "@buildOrders": {},
+
+  "buildOrderEdit": "Edit Build Order",
+  "@buildOrderEdit": {},
+
+  "buildOrderUnallocateDetail": "Unallocate all stock from this build order",
+  "@buildOrderUnallocateDetail": {},
+
+  "buildOutput": "Build Output",
+  "@buildOutput": {},
+
+  "buildOutputs": "Build Outputs",
+  "@buildOutputs": {},
+
   "building": "Building",
   "@building": {},
 
@@ -245,6 +290,9 @@
 
   "cancelOrder": "Cancel Order",
   "@cancelOrder": {},
+
+  "cancelOrderConfirm": "Are you sure you want to cancel this order?",
+  "@cancelOrderConfirm": {},
 
   "category": "Category",
   "@category": {},
@@ -282,6 +330,12 @@
   "completeOrder": "Complete Order",
   "@completeOrder": {},
 
+  "completeOrderConfirm": "Are you sure you want to complete this order?",
+  "@completeOrderConfirm": {},
+
+  "completedFilterDetail": "Show completed items",
+  "@completedFilterDetail": {},
+
   "completionDate": "Completion Date",
   "@completionDate": {},
 
@@ -306,6 +360,9 @@
   "@countStock": {
     "description": "Count Stock"
   },
+
+  "creationDate": "Creation Date",
+  "@creationDate": {},
 
   "credits": "Credits",
   "@credits": {},
@@ -560,6 +617,15 @@
     "description": "history"
   },
 
+  "hold": "Hold",
+  "@hold": {},
+
+  "holdOrder": "Hold Order",
+  "@holdOrder": {},
+
+  "holdOrderConfirm": "Are you sure you want to place this order on hold?",
+  "@holdOrderConfirm": {},
+
   "home": "Home",
   "@home": {},
 
@@ -695,6 +761,9 @@
   "issueOrder": "Issue Order",
   "@issueOrder": {},
 
+  "issueOrderConfirm": "Are you sure you want to issue this order?",
+  "@issueOrderConfirm": {},
+
   "itemInLocation": "Item already in location",
   "@itemInLocation": {},
 
@@ -754,6 +823,9 @@
 
   "lineItems": "Line Items",
   "@lineItems": {},
+
+  "lineItemEdit": "Edit Line Item",
+  "@lineItemEdit": {},
 
   "lineItemUpdated": "Line item updated",
   "@lineItemUpdated": {},
@@ -874,7 +946,7 @@
 
   "orientationLandscape": "Landscape",
   "@orientationLandscape": {},
-  
+
   "orientationPortrait": "Portrait",
   "@orientationPortrait": {},
 
@@ -1144,6 +1216,9 @@
   "reference": "Reference",
   "@reference": {},
 
+  "referenceNone": "No reference",
+  "@referenceNone": {},
+
   "refresh": "Refresh",
   "@refresh": {},
 
@@ -1197,6 +1272,9 @@
   "@required": {
     "description": "This field is required"
   },
+
+  "requiredParts": "Required Parts",
+  "@requiredParts": {},
 
   "response400": "Bad Request",
   "@response400": {},
@@ -1705,6 +1783,15 @@
   "translateHelp": "Help translate the InvenTree app",
   "@translateHelp": {},
 
+  "unallocate": "Unallocate",
+  "@unallocate": {},
+
+  "unallocateStock": "Unallocate Stock",
+  "@unallocateStock": {},
+
+  "unallocateStockConfirm": "Are you sure you want to unallocate the selected items?",
+  "@unallocateStockConfirm": {},
+
   "unavailable": "Unavailable",
   "@unavailable": {},
 
@@ -1760,6 +1847,9 @@
 
   "version": "Version",
   "@version": {},
+
+  "viewDetails": "View Details",
+  "@viewDetails": {},
 
   "viewSupplierPart": "View Supplier Part",
   "@viewSupplierPart": {},

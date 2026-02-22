@@ -11,6 +11,7 @@ const String INV_HOME_SHOW_SUBSCRIBED = "homeShowSubscribed";
 const String INV_HOME_SHOW_PO = "homeShowPo";
 const String INV_HOME_SHOW_SO = "homeShowSo";
 const String INV_HOME_SHOW_SHIPMENTS = "homeShowShipments";
+const String INV_HOME_SHOW_BUILD = "homeShowBuild";
 const String INV_HOME_SHOW_MANUFACTURERS = "homeShowManufacturers";
 const String INV_HOME_SHOW_CUSTOMERS = "homeShowCustomers";
 const String INV_HOME_SHOW_SUPPLIERS = "homeShowSuppliers";
