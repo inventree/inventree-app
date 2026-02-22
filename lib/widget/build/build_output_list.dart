@@ -43,17 +43,26 @@ class _PaginatedBuildOutputListState
   };
 
   @override
+  Map<String, Map<String, dynamic>> get filterOptions => {
+    "is_building": {
+      "label": L10().filterInProduction,
+      "help_text": L10().filterInProductionDetail,
+      "default": null,
+      "tristate": true,
+    },
+    "status": {
+      "label": L10().status,
+      "help_text": L10().statusCode,
+      "choices": InvenTreeAPI().StockStatus.choices,
+    },
+  };
+
+  @override
   Future<InvenTreePageResponse?> requestPage(
     int limit,
     int offset,
     Map<String, String> params,
   ) async {
-    // Use the stock API endpoint with a filter for stock items that are build outputs
-    // The 'build' filter specifies which build order the stock items are outputs of
-    params["is_building"] = "false"; // Only show completed items
-    params["status"] = "10"; // Status 10 = 'OK' for stock items
-    params["tracked_by"] = "2,3"; // Serialized or batch tracked
-
     final page = await InvenTreeStockItem().listPaginated(
       limit,
       offset,

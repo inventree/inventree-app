@@ -520,7 +520,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
     return [
       Tab(text: L10().details),
       Tab(text: L10().requiredParts),
-      Tab(text: L10().allocatedStock),
+      // Tab(text: L10().allocatedStock),
       Tab(text: L10().buildOutputs),
     ];
   }
@@ -530,7 +530,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
     return [
       ListView(children: orderTiles(context)),
       PaginatedBuildLineList({"build": widget.order.pk.toString()}),
-      PaginatedBuildItemList({"build": widget.order.pk.toString()}),
+      // PaginatedBuildItemList({"build": widget.order.pk.toString()}),
       PaginatedBuildOutputList({"build": widget.order.pk.toString()}),
     ];
   }
