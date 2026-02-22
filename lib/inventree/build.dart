@@ -246,6 +246,11 @@ class InvenTreeBuildLine extends InvenTreeOrderLine {
   String get URL => "build/line/";
 
   @override
+  Map<String, String> defaultFilters() {
+    return {"part_detail": "true"};
+  }
+
+  @override
   List<String> get rolesRequired => ["build"];
 
   // Build order reference

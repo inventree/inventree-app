@@ -86,9 +86,7 @@ class _PaginatedBuildLineListState
 
     return ListTile(
       title: Text(item.partName),
-      subtitle: Text(
-        item.reference.isNotEmpty ? item.reference : L10().referenceNone,
-      ),
+      subtitle: Text(item.partDescription),
       trailing: Text(
         "${item.allocatedQuantity.toInt()} / ${item.requiredQuantity.toInt()}",
         style: TextStyle(
