@@ -576,6 +576,12 @@
   "filterInStockDetail": "Show parts which have stock",
   "@filterInStockDetail": {},
 
+  "filterInProduction": "In Production",
+  "@filterInProduction": {},
+
+  "filterInProductionDetail": "Show parts in production",
+  "@filterInProductionDetail": {},
+
   "filterSerialized": "Serialized",
   "@filterSerialized": {},
 

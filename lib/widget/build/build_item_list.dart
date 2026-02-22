@@ -8,6 +8,46 @@ import "package:inventree/inventree/model.dart";
 import "package:inventree/widget/paginator.dart";
 import "package:inventree/widget/build/build_item_detail.dart";
 import "package:inventree/widget/progress.dart";
+import "package:inventree/widget/refreshable_state.dart";
+
+class PaginatedBuildItemWidget extends StatefulWidget {
+  const PaginatedBuildItemWidget(this.build, {Key? key}) : super(key: key);
+
+  final InvenTreeBuildOrder build;
+
+  @override
+  _PaginatedBuildItemWidgetState createState() =>
+      _PaginatedBuildItemWidgetState();
+}
+
+class _PaginatedBuildItemWidgetState
+    extends RefreshableState<PaginatedBuildItemWidget> {
+  _PaginatedBuildItemWidgetState();
+
+  @override
+  String getAppBarTitle() {
+    return L10().allocatedStock;
+  }
+
+  @override
+  Widget getBody(BuildContext context) {
+    Map<String, String> filters = {"build": widget.build.pk.toString()};
+
+    return Column(
+      children: [
+        ListTile(
+          leading: InvenTreeAPI().getThumbnail(
+            widget.build.partDetail!.thumbnail,
+          ),
+          title: Text(widget.build.reference),
+          subtitle: Text(L10().allocatedStock),
+        ),
+        Divider(thickness: 1.25),
+        Expanded(child: PaginatedBuildItemList(filters)),
+      ],
+    );
+  }
+}
 
 /*
  * Paginated widget class for displaying a list of build order item allocations
@@ -74,19 +114,13 @@ class _PaginatedBuildItemListState
     }
 
     return ListTile(
-      title: Text(item.stockItem?.partName ?? L10().stockItem),
+      title: Text(item.partName),
       subtitle: Text(info),
       trailing: Text(
         item.quantity.toString(),
         style: const TextStyle(fontWeight: FontWeight.bold),
       ),
-      leading: item.stockItem != null && item.stockItem!.partImage.isNotEmpty
-          ? SizedBox(
-              width: 32,
-              height: 32,
-              child: InvenTreeAPI().getThumbnail(item.stockItem!.partImage),
-            )
-          : const Icon(TablerIcons.box),
+      leading: InvenTreeAPI().getThumbnail(item.partThumbnail),
       onTap: () async {
         showLoadingOverlay();
         await item.reload();

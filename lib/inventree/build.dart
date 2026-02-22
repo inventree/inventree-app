@@ -301,6 +301,15 @@ class InvenTreeBuildItem extends InvenTreeModel {
   String get URL => "build/item/";
 
   @override
+  Map<String, String> defaultFilters() {
+    return {
+      "part_detail": "true",
+      "stock_detail": "true",
+      "location_detail": "true",
+    };
+  }
+
+  @override
   List<String> get rolesRequired => ["build"];
 
   // Build line reference
@@ -325,6 +334,13 @@ class InvenTreeBuildItem extends InvenTreeModel {
       return InvenTreeStockItem.fromJson(stock_item as Map<String, dynamic>);
     }
   }
+
+  // Part details
+  String get partName => getString("name", subKey: "part_detail");
+
+  String get partDescription => getString("description", subKey: "part_detail");
+
+  String get partThumbnail => getString("thumbnail", subKey: "part_detail");
 
   // Allocation details
   String get locationName => getString("name", subKey: "location_detail");

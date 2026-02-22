@@ -439,6 +439,14 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
         title: Text(L10().allocatedStock),
         leading: Icon(TablerIcons.box_model_2, color: COLOR_ACTION),
         trailing: LinkIcon(text: widget.order.outputCount.toString()),
+        onTap: () => {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PaginatedBuildItemWidget(widget.order),
+            ),
+          ),
+        },
       ),
     );
 
