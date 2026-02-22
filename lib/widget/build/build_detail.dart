@@ -4,6 +4,7 @@ import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
+import "package:inventree/inventree/stock.dart";
 import "package:inventree/l10.dart";
 
 import "package:inventree/inventree/build.dart";
@@ -40,6 +41,9 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
   int attachmentCount = 0;
 
   bool showCameraShortcut = true;
+
+  InvenTreeStockLocation? sourceLocation;
+  InvenTreeStockLocation? destinationLocation;
 
   @override
   String getAppBarTitle() {
@@ -289,11 +293,43 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
     super.request(context);
 
     // Refresh the BuildOrder instance
-    widget.order.reload().then(
-      (response) => {
-        if (mounted) {setState(() {})},
-      },
-    );
+    await widget.order.reload();
+
+    if (mounted) {
+      setState(() {});
+    } else {
+      return;
+    }
+
+    if (widget.order.sourceLocationId != null) {
+      InvenTreeStockLocation().get(widget.order.sourceLocationId!).then((
+        value,
+      ) {
+        if (mounted) {
+          setState(() {
+            sourceLocation = value as InvenTreeStockLocation?;
+          });
+        }
+      });
+    } else if (mounted) {
+      setState(() {
+        sourceLocation = null;
+      });
+    }
+
+    if (widget.order.destinationId != null) {
+      InvenTreeStockLocation().get(widget.order.destinationId!).then((value) {
+        if (mounted) {
+          setState(() {
+            destinationLocation = value as InvenTreeStockLocation?;
+          });
+        }
+      });
+    } else if (mounted) {
+      setState(() {
+        destinationLocation = null;
+      });
+    }
   }
 
   /// Edit this build order
@@ -449,6 +485,32 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
         },
       ),
     );
+
+    // Source location
+    if (sourceLocation != null) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().sourceLocation),
+          subtitle: Text(sourceLocation!.pathstring),
+          leading: Icon(TablerIcons.sitemap, color: COLOR_ACTION),
+          trailing: LinkIcon(),
+          onTap: () => sourceLocation!.goToDetailPage(context),
+        ),
+      );
+    }
+
+    // Destination location
+    if (destinationLocation != null) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().destination),
+          subtitle: Text(destinationLocation!.pathstring),
+          leading: Icon(TablerIcons.sitemap, color: COLOR_ACTION),
+          trailing: LinkIcon(),
+          onTap: () => destinationLocation!.goToDetailPage(context),
+        ),
+      );
+    }
 
     // Dates
     if (widget.order.creationDate.isNotEmpty) {

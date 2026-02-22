@@ -86,8 +86,11 @@ class InvenTreeBuildOrder extends InvenTreeOrder {
   // External build
   bool get external => getBool("external");
 
+  // Return the location where the items will be sourced from
+  int? get sourceLocationId => getInt("take_from");
+
   // Return the location where the completed items will be stored
-  int get destinationId => getInt("destination");
+  int? get destinationId => getInt("destination");
 
   String get destinationName => getString("name", subKey: "destination_detail");
 

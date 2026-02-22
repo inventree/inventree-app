@@ -1562,6 +1562,11 @@
   "soundOnServerError": "Play audible tone on server error",
   "@soundOnServerError": {},
 
+  "sourceLocation": "Source Location",
+  "@sourceLocation": {},
+
+  "sourceLocationDetail": "Source location for this item"
+
   "startDate": "Start Date",
   "@startDate": {},
 
