@@ -1,3 +1,8 @@
+## 0.xx.y - Month Year
+---
+
+- Auto-fill location data when receiving item via barcode scan
+
 ## 0.22.2 - February 2026
 ---
 

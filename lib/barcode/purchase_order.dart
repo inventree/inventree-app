@@ -154,14 +154,21 @@ class POAllocateBarcodeHandler extends BarcodeHandler {
       return onBarcodeUnknown(data);
     }
 
+    // Extract field data from the returned result
     dynamic supplier_part = data["supplierpart"];
+    dynamic location = data["location"];
 
     int supplier_part_pk = -1;
+    int location_pk = -1;
 
     if (supplier_part is Map<String, dynamic>) {
       supplier_part_pk = (supplier_part["pk"] ?? -1) as int;
     } else {
       return onBarcodeUnknown(data);
+    }
+
+    if (location is Map<String, dynamic>) {
+      location_pk = (location["pk"] ?? -1) as int;
     }
 
     // Dispose of the barcode scanner
@@ -176,6 +183,10 @@ class POAllocateBarcodeHandler extends BarcodeHandler {
     fields["order"]?["value"] = purchaseOrder!.pk;
     fields["part"]?["hidden"] = false;
     fields["part"]?["value"] = supplier_part_pk;
+
+    if (location_pk > 0) {
+      fields["location"]?["value"] = location_pk;
+    }
 
     InvenTreePOLineItem().createForm(
       context,
