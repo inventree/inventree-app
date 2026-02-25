@@ -1565,7 +1565,8 @@
   "sourceLocation": "Source Location",
   "@sourceLocation": {},
 
-  "sourceLocationDetail": "Source location for this item"
+  "sourceLocationDetail": "Source location for this item",
+  "@sourceLocationDetail": {},
 
   "startDate": "Start Date",
   "@startDate": {},
