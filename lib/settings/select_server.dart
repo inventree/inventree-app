@@ -298,6 +298,9 @@ class _ProfileEditState extends State<ProfileEditWidget> {
   String name = "";
   String server = "";
 
+  bool? serverStatus;
+  bool serverChecking = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -410,6 +413,49 @@ class _ProfileEditState extends State<ProfileEditWidget> {
                   // Everything is OK
                   return null;
                 },
+              ),
+              Divider(),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  label: Text(L10().connectionCheck),
+                  icon: serverStatus == true
+                      ? Icon(TablerIcons.circle_check, color: COLOR_SUCCESS)
+                      : serverStatus == false
+                      ? Icon(TablerIcons.circle_x, color: COLOR_DANGER)
+                      : Icon(TablerIcons.question_mark, color: COLOR_WARNING),
+                  onPressed: serverChecking
+                      ? null
+                      : () async {
+                          if (serverChecking) {
+                            return;
+                          }
+
+                          if (!formKey.currentState!.validate()) {
+                            return;
+                          }
+
+                          if (mounted) {
+                            setState(() {
+                              serverStatus = null;
+                              serverChecking = true;
+                            });
+                          }
+
+                          formKey.currentState!.save();
+
+                          InvenTreeAPI().checkServer(server: server).then((
+                            result,
+                          ) {
+                            if (mounted) {
+                              setState(() {
+                                serverStatus = result;
+                                serverChecking = false;
+                              });
+                            }
+                          });
+                        },
+                ),
               ),
             ],
           ),
