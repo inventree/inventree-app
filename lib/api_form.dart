@@ -874,25 +874,86 @@ class APIFormField {
 
   // Construct a boolean input element
   Widget _constructBoolean() {
-    bool? initial_value;
+    String initial_value = "null";
 
-    if (value is bool || value == null) {
-      initial_value = value as bool?;
+    bool allow_null = (getParameter("tristate") ?? false) as bool;
+
+    if (value is bool) {
+      initial_value = value.toString().toLowerCase();
+    } else if (value == null) {
+      if (allow_null) {
+        initial_value = "null";
+      } else {
+        initial_value = "false";
+      }
     } else {
-      String vs = value.toString().toLowerCase();
-      initial_value = ["1", "true", "yes"].contains(vs);
+      // Not a boolean value - may be a string
+      if (["1", "true", "yes"].contains(value.toString().toLowerCase())) {
+        initial_value = "true";
+      } else if ([
+        "0",
+        "false",
+        "no",
+      ].contains(value.toString().toLowerCase())) {
+        initial_value = "false";
+      } else if (allow_null) {
+        initial_value = "null";
+      } else {
+        initial_value = "false";
+      }
     }
 
-    return CheckBoxField(
-      label: label,
-      labelStyle: _labelStyle(),
-      helperText: helpText,
-      helperStyle: _helperStyle(),
-      initial: initial_value,
-      tristate: (getParameter("tristate") ?? false) as bool,
-      onSaved: (val) {
-        setFieldValue(val);
-      },
+    List<ButtonSegment<String>> buttons = [];
+
+    if ((getParameter("tristate") ?? false) as bool) {
+      buttons.add(
+        ButtonSegment<String>(
+          value: "null",
+          icon: Icon(TablerIcons.minus, color: COLOR_GRAY_LIGHT),
+        ),
+      );
+    }
+
+    buttons.add(
+      ButtonSegment<String>(
+        value: "false",
+        icon: Icon(TablerIcons.x, color: COLOR_DANGER),
+      ),
+    );
+
+    buttons.add(
+      ButtonSegment<String>(
+        value: "true",
+        icon: Icon(TablerIcons.check, color: COLOR_SUCCESS),
+      ),
+    );
+
+    return ListTile(
+      title: Text(label),
+      contentPadding: EdgeInsets.zero,
+      subtitle: Text(helpText),
+      trailing: SegmentedButton<String>(
+        segments: buttons,
+        selected: {initial_value},
+        showSelectedIcon: false,
+        multiSelectionEnabled: false,
+        style: SegmentedButton.styleFrom(
+          padding: EdgeInsets.all(0),
+          // minimumSize: MaterialStateProperty.all(Size(0, 0)),
+          // tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          visualDensity: VisualDensity.compact,
+        ),
+        onSelectionChanged: (Set<String> selection) {
+          String element = selection.first;
+          if (element == "null" && allow_null) {
+            setFieldValue(null);
+          } else if (element == "true") {
+            setFieldValue(true);
+          } else {
+            setFieldValue(false);
+          }
+        },
+      ),
     );
   }
 
@@ -1168,7 +1229,9 @@ class APIFormWidgetState extends State<APIFormWidget> {
   // Callback for when a field value is changed
   // Default implementation does nothing,
   // but custom form implementations may override this function
-  void onValueChanged(String field, dynamic value) {}
+  void onValueChanged(String field, dynamic value) {
+    setState(() {});
+  }
 
   Future<void> handleSuccess(
     Map<String, dynamic> submittedData,
