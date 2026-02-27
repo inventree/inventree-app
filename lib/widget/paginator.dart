@@ -92,9 +92,10 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget>
 
       // Skip null values
       if (value == null) {
-        continue;
+        f[k] = "null";
+      } else {
+        f[k] = value.toString();
       }
-      f[k] = value.toString();
     }
 
     return f;
