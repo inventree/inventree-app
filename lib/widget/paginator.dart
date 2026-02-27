@@ -342,7 +342,16 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget>
       Map<String, String> f = await constructFilters();
 
       if (f.isNotEmpty) {
-        params.addAll(f);
+        for (String k in f.keys) {
+          // Remove any existing filter keys
+          dynamic value = f[k];
+
+          if (value == null || value == "null") {
+            params.remove(k);
+          } else {
+            params[k] = value.toString();
+          }
+        }
       }
 
       final page = await requestPage(_pageSize, pageKey, params);
