@@ -2,6 +2,9 @@
 ---
 
 - Auto-fill location data when receiving item via barcode scan
+- Visual improvements for boolean form fields
+- Add support for tri-state boolean form fields
+- Bug fixes for refreshing list view data
 
 ## 0.22.2 - February 2026
 ---
