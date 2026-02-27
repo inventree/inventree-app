@@ -119,13 +119,15 @@ class StockItemScanIntoLocationHandler extends BarcodeScanStockLocationHandler {
       INV_STOCK_CONFIRM_SCAN,
       false,
     );
-
+    debug("confirm: ${confirm}");
     bool result = false;
 
     if (confirm) {
       Map<String, dynamic> fields = item.transferFields();
 
       // Override location with scanned value
+      debug("Location: ${locationId}");
+
       fields["location"]?["value"] = locationId;
 
       launchApiForm(
@@ -138,6 +140,7 @@ class StockItemScanIntoLocationHandler extends BarcodeScanStockLocationHandler {
         onSuccess: (data) async {
           showSnackIcon(L10().stockItemUpdated, success: true);
         },
+
       );
 
       return true;
@@ -193,7 +196,9 @@ class StockLocationScanInItemsHandler extends BarcodeScanStockItemHandler {
           Map<String, dynamic> fields = item.transferFields();
 
           // Override location with provided location value
-          fields["location"]?["value"] = location.pk;
+          fields["location"] = {
+            "value": location.pk
+          };
 
           launchApiForm(
             OneContext().context!,
@@ -206,7 +211,6 @@ class StockLocationScanInItemsHandler extends BarcodeScanStockItemHandler {
               showSnackIcon(L10().stockItemUpdated, success: true);
             },
           );
-
           return true;
         } else {
           result = await item.transferStock(location.pk);
