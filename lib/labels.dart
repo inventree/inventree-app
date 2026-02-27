@@ -45,6 +45,8 @@ class LabelFormWidgetState extends APIFormWidgetState {
     if (field == "plugin") {
       onPluginChanged(value.toString());
     }
+
+    super.onValueChanged(field, value);
   }
 
   @override
