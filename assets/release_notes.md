@@ -1,3 +1,9 @@
+## 0.22.4 - February 2026
+---
+
+- Adds button to check server connection
+- Fixes bug fetching sales order shipments
+
 ## 0.22.3 - February 2026
 ---
 
