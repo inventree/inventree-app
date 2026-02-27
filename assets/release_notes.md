@@ -1,7 +1,16 @@
-## 0.xx.y - Month Year
+## 0.22.4 - February 2026
+---
+
+- Adds button to check server connection
+- Fixes bug fetching sales order shipments
+
+## 0.22.3 - February 2026
 ---
 
 - Auto-fill location data when receiving item via barcode scan
+- Visual improvements for boolean form fields
+- Add support for tri-state boolean form fields
+- Bug fixes for refreshing list view data
 
 ## 0.22.2 - February 2026
 ---
