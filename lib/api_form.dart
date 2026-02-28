@@ -275,7 +275,7 @@ class APIFormField {
       return;
     }
 
-    String url = api_url + "/" + value.toString() + "/";
+    String url = api_url + value.toString() + "/";
 
     final APIResponse response = await InvenTreeAPI().get(url, params: filters);
 
