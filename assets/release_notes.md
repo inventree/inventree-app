@@ -1,4 +1,4 @@
-## 0.22.4 - February 2026
+## 0.22.4 - March 2026
 ---
 
 - Adds button to check server connection
