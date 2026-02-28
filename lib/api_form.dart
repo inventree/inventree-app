@@ -293,6 +293,8 @@ class APIFormField {
         return _constructString();
       case "boolean":
         return _constructBoolean();
+      case "boolean filter":
+        return _constructBooleanFilter();
       case "related field":
         return _constructRelatedField();
       case "integer":
@@ -874,6 +876,29 @@ class APIFormField {
 
   // Construct a boolean input element
   Widget _constructBoolean() {
+    bool v = false;
+
+    if (value is bool) {
+      v = value as bool;
+    } else {
+      v = false;
+    }
+
+    return ListTile(
+      title: Text(label),
+      subtitle: Text(helpText),
+      contentPadding: EdgeInsets.zero,
+      trailing: Switch(
+        value: v,
+        onChanged: (val) {
+          setFieldValue(val);
+        },
+      ),
+    );
+  }
+
+  // Construct a tri-state boolean filter element
+  Widget _constructBooleanFilter() {
     String initial_value = "null";
 
     bool allow_null = (getParameter("tristate") ?? false) as bool;
@@ -930,8 +955,8 @@ class APIFormField {
 
     return ListTile(
       title: Text(label),
-      contentPadding: EdgeInsets.zero,
       subtitle: Text(helpText),
+      contentPadding: EdgeInsets.zero,
       trailing: SegmentedButton<String>(
         segments: buttons,
         selected: {initial_value},
@@ -1457,7 +1482,7 @@ class APIFormWidgetState extends State<APIFormWidget> {
 
       if (field.isSimple) {
         // Simple top-level field data
-        data[field.name] = field.data["value"];
+        data[field.name] = field.data["value"] ?? field.defaultValue;
       } else {
         // Not so simple... (WHY DID I MAKE THE API SO COMPLEX?)
         if (field.parent.isNotEmpty) {

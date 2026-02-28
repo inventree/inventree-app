@@ -3,6 +3,7 @@
 
 - Adds button to check server connection
 - Fixes bug fetching sales order shipments
+- Fix for boolean fields in API forms
 
 ## 0.22.3 - February 2026
 ---

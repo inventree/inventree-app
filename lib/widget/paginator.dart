@@ -207,7 +207,7 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget>
       }
 
       Map<String, dynamic> filter = {
-        "type": "boolean",
+        "type": "boolean filter",
         "display_name": label,
         "label": label,
         "help_text": help_text,
