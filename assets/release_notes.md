@@ -1,3 +1,9 @@
+## 0.22.5 - March 2026
+---
+
+- Fix default value for "cascade" filter in PartCategory list view
+- Fix default value for "cascade" filter in StockLocation list view
+
 ## 0.22.4 - March 2026
 ---
 
