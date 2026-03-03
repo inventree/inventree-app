@@ -66,6 +66,7 @@ class _PaginatedStockLocationListState
       "label": L10().includeSublocations,
       "help_text": L10().includeSublocationsDetail,
       "tristate": false,
+      "default": true,
     },
   };
 

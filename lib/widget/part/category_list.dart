@@ -54,7 +54,7 @@ class _PaginatedPartCategoryListState
   @override
   Map<String, Map<String, dynamic>> get filterOptions => {
     "cascade": {
-      "default": false,
+      "default": true,
       "label": L10().includeSubcategories,
       "help_text": L10().includeSubcategoriesDetail,
       "tristate": false,
