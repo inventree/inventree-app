@@ -225,7 +225,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     // Request part information
     part = await InvenTreePart().get(widget.item.partId) as InvenTreePart?;
 
-    stockShowTests &= part?.isTrackable ?? false;
+    stockShowTests &= part?.isTestable ?? false;
 
     // Request default location
     int? defaultLocationId = part?.defaultLocation;

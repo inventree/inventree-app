@@ -1,3 +1,8 @@
+## 0.22.6 - March 2026
+---
+
+- Fix for displaying stock item test results
+
 ## 0.22.5 - March 2026
 ---
 
