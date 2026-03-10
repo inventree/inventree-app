@@ -10,6 +10,7 @@ import "package:flutter/material.dart";
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/helpers.dart";
+import "package:inventree/l10.dart";
 
 /*
  * Base class definition for a "status code" definition.
@@ -84,6 +85,30 @@ class InvenTreeStatusCode {
     return {};
   }
 
+  // Translate common status labels from server to localized versions
+  String _translateStatusLabel(String label) {
+    // Map common English status labels to L10() keys
+    switch (label) {
+      case "Pending":
+        return L10().pending;
+      case "In Progress":
+        return L10().inProgress;
+      case "Complete":
+        return L10().complete;
+      case "Cancelled":
+        return L10().cancelled;
+      case "Received":
+        return L10().received;
+      case "Shipped":
+        return L10().shipped;
+      case "Attention":
+        return L10().attention;
+      default:
+        // Return original label if no translation found
+        return label;
+    }
+  }
+
   // Return the 'label' associated with a given status code
   String label(int status) {
     Map<String, dynamic> _entry = entry(status);
@@ -95,7 +120,8 @@ class InvenTreeStatusCode {
       debug("No match for status code ${status} at '${URL}'");
       return status.toString();
     } else {
-      return _label;
+      // Translate the label to localized version
+      return _translateStatusLabel(_label);
     }
   }
 
