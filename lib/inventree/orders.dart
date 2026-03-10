@@ -110,6 +110,8 @@ class InvenTreeOrderLine extends InvenTreeModel {
 
   String get partName => getString("name", subKey: "part_detail");
 
+  String get partDescription => getString("description", subKey: "part_detail");
+
   String get partImage {
     String img = getString("thumbnail", subKey: "part_detail");
 
