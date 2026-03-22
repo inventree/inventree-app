@@ -155,7 +155,6 @@ class InvenTreeBuildOrder extends InvenTreeOrder {
       "link": {},
       "external": {},
       "responsible": {},
-      "notes": {},
     };
   }
 

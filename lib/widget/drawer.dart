@@ -89,7 +89,7 @@ class ThemeSelectionDialog extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text("Cancel"),
+          child: Text(L10().cancel),
         ),
       ],
     );
