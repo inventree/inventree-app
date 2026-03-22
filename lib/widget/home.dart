@@ -336,6 +336,22 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
       );
     }
 
+    // Build Orders
+    if (homeShowBuild && InvenTreeAPI().checkRole("build", "view")) {
+      tiles.add(
+        _listTile(
+          context,
+          L10().buildOrders,
+          TablerIcons.building_factory,
+          callback: () {
+            _showBuildOrders(context);
+          },
+          role: "build",
+          permission: "view",
+        ),
+      );
+    }
+
     // Purchase orders
     if (homeShowPo && InvenTreePurchaseOrder().canView) {
       tiles.add(
@@ -372,22 +388,6 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
           callback: () {
             _showPendingShipments(context);
           },
-        ),
-      );
-    }
-
-    // Build Orders
-    if (homeShowBuild && InvenTreeAPI().checkRole("build", "view")) {
-      tiles.add(
-        _listTile(
-          context,
-          "Build Orders", // Using hardcoded string until L10n is implemented for build orders
-          TablerIcons.building_factory,
-          callback: () {
-            _showBuildOrders(context);
-          },
-          role: "build",
-          permission: "view",
         ),
       );
     }
