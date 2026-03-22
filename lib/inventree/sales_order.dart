@@ -270,9 +270,9 @@ class InvenTreeSalesOrderShipment extends InvenTreeModel {
       InvenTreeSalesOrderShipment.fromJson(json);
 
   @override
-  String get URL => "/order/so/shipment/";
+  String get URL => "order/so/shipment";
 
-  String get SHIP_SHIPMENT_URL => "/order/so/shipment/${pk}/ship/";
+  String get SHIP_SHIPMENT_URL => "order/so/shipment/${pk}/ship/";
 
   @override
   Future<Object?> goToDetailPage(BuildContext context) async {
@@ -345,7 +345,7 @@ class InvenTreeSalesOrderAllocation extends InvenTreeModel {
       InvenTreeSalesOrderAllocation.fromJson(json);
 
   @override
-  String get URL => "/order/so-allocation/";
+  String get URL => "order/so-allocation/";
 
   @override
   List<String> get rolesRequired => ["sales_order"];

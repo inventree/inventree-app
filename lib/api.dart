@@ -410,7 +410,7 @@ class InvenTreeAPI {
    * 5. Request information on available plugins
    */
   Future<bool> _connectToServer() async {
-    if (!await _checkServer()) {
+    if (!await checkServer()) {
       return false;
     }
 
@@ -450,8 +450,8 @@ class InvenTreeAPI {
    * Check that the remote server is available.
    * Ping the api/ endpoint, which does not require user authentication
    */
-  Future<bool> _checkServer() async {
-    String address = profile?.server ?? "";
+  Future<bool> checkServer({String? server}) async {
+    String address = server ?? profile?.server ?? "";
 
     if (address.isEmpty) {
       showSnackIcon(
@@ -462,8 +462,10 @@ class InvenTreeAPI {
       return false;
     }
 
-    if (!address.endsWith("/")) {
-      address = address + "/";
+    String url = _makeUrl("/api/", base: address);
+
+    if (!url.endsWith("/")) {
+      url = url + "/";
     }
 
     // Cache the "strictHttps" setting, so we can use it later without async requirement
@@ -473,7 +475,7 @@ class InvenTreeAPI {
 
     debug("Connecting to ${apiUrl}");
 
-    APIResponse response = await get("", expectedStatusCode: 200);
+    APIResponse response = await get(url, expectedStatusCode: 200);
 
     if (!response.successful()) {
       debug("Server returned invalid response: ${response.statusCode}");

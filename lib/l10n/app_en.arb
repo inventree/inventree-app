@@ -348,6 +348,9 @@
   "confirmScanDetail": "Confirm stock transfer details when scanning barcodes",
   "@confirmScanDetail": {},
 
+  "connectionCheck": "Check Connection",
+  "@connectionCheck": {},
+
   "connectionRefused": "Connection Refused",
   "@connectionRefused": {},
 
