@@ -1,3 +1,8 @@
+## 0.22.7 - March 2026
+---
+
+- Bug fix for loading sales order shipments
+
 ## 0.22.6 - March 2026
 ---
 
