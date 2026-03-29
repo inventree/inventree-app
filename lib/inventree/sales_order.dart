@@ -270,7 +270,7 @@ class InvenTreeSalesOrderShipment extends InvenTreeModel {
       InvenTreeSalesOrderShipment.fromJson(json);
 
   @override
-  String get URL => "order/so/shipment";
+  String get URL => "order/so/shipment/";
 
   String get SHIP_SHIPMENT_URL => "order/so/shipment/${pk}/ship/";
 
