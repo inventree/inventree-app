@@ -5,7 +5,7 @@ class Spinner extends StatefulWidget {
   const Spinner({
     this.color = COLOR_GRAY_LIGHT,
     Key? key,
-    @required this.icon,
+    required this.icon,
     this.duration = const Duration(milliseconds: 1800),
   }) : super(key: key);
 
