@@ -8,6 +8,7 @@
  */
 
 import "dart:io";
+import "package:flutter/foundation.dart";
 import "package:currency_formatter/currency_formatter.dart";
 
 import "package:one_context/one_context.dart";
@@ -68,7 +69,9 @@ void debug(dynamic msg) {
     debug_messages.add(msg.toString());
   }
 
-  print("DEBUG: ${msg.toString()}");
+  if (kDebugMode) {
+    print("DEBUG: ${msg.toString()}");
+  }
 }
 
 /*
