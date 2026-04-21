@@ -11,7 +11,6 @@ import "package:inventree/inventree/build.dart";
 
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
-import "package:inventree/widget/snacks.dart";
 
 /*
  * Widget for displaying detail view of a single BuildOrderLineItem
