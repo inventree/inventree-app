@@ -39,6 +39,7 @@ class _BuildLineDetailWidgetState
   List<Widget> appBarActions(BuildContext context) {
     List<Widget> actions = [];
 
+    /*
     if (widget.item.canEdit) {
       actions.add(
         IconButton(
@@ -49,6 +50,7 @@ class _BuildLineDetailWidgetState
         ),
       );
     }
+    */
 
     return actions;
   }
