@@ -39,19 +39,6 @@ class _BuildLineDetailWidgetState
   List<Widget> appBarActions(BuildContext context) {
     List<Widget> actions = [];
 
-    /*
-    if (widget.item.canEdit) {
-      actions.add(
-        IconButton(
-          icon: const Icon(TablerIcons.edit),
-          onPressed: () {
-            _editLineItem(context);
-          },
-        ),
-      );
-    }
-    */
-
     return actions;
   }
 
@@ -65,21 +52,6 @@ class _BuildLineDetailWidgetState
   @override
   Future<void> request(BuildContext context) async {
     await widget.item.reload();
-  }
-
-  // Callback to edit this line item
-  Future<void> _editLineItem(BuildContext context) async {
-    var fields = widget.item.formFields();
-
-    widget.item.editForm(
-      context,
-      L10().lineItemEdit,
-      fields: fields,
-      onSuccess: (data) async {
-        refresh(context);
-        showSnackIcon(L10().itemUpdated, success: true);
-      },
-    );
   }
 
   @override
