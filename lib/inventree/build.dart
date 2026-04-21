@@ -148,6 +148,7 @@ class InvenTreeBuildOrder extends InvenTreeOrder {
       "parent": {},
       "sales_order": {},
       "batch": {},
+      "start_date": {},
       "target_date": {},
       "take_from": {},
       "destination": {},

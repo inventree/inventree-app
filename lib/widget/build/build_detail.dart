@@ -445,6 +445,8 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
     );
 
     // Line items tile
+    /*
+     * TODO: Reimplement this item
     Color lineColor = Colors.red;
     if (widget.order.areAllLinesAllocated) {
       lineColor = Colors.green;
@@ -468,6 +470,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
         ),
       ),
     );
+    */
 
     // Output items
     tiles.add(
