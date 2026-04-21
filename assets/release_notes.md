@@ -1,3 +1,8 @@
+## 0.24.0 - April 2026
+---
+
+- Adds support for build order management
+
 ## 0.23.0 - April 2026
 ---
 
