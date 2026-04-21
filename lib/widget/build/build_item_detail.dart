@@ -130,17 +130,15 @@ class _BuildItemDetailWidgetState
       tiles.add(
         ListTile(
           title: Text(L10().stockItem),
-          subtitle: Text(widget.item.stockItem!.partName),
-          leading: widget.item.stockItem!.partImage.isNotEmpty
+          subtitle: Text(widget.item.partName),
+          leading: widget.item.partThumbnail.isNotEmpty
               ? SizedBox(
                   width: 32,
                   height: 32,
-                  child: InvenTreeAPI().getThumbnail(
-                    widget.item.stockItem!.partImage,
-                  ),
+                  child: InvenTreeAPI().getThumbnail(widget.item.partThumbnail),
                 )
               : Icon(TablerIcons.box, color: COLOR_ACTION),
-          trailing: const Icon(TablerIcons.chevron_right),
+          trailing: Icon(TablerIcons.chevron_right, color: COLOR_ACTION),
           onTap: () {
             _viewStockItem(context);
           },

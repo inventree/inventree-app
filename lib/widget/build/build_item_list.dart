@@ -84,6 +84,8 @@ class _PaginatedBuildItemListState
     int offset,
     Map<String, String> params,
   ) async {
+    params["part_detail"] = "true";
+
     final page = await InvenTreeBuildItem().listPaginated(
       limit,
       offset,
