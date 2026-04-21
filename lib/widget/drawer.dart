@@ -4,12 +4,14 @@ import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
+import "package:inventree/inventree/build.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/settings/settings.dart";
+import "package:inventree/widget/build/build_list.dart";
 import "package:inventree/widget/order/sales_order_list.dart";
 import "package:inventree/widget/part/category_display.dart";
 import "package:inventree/widget/notifications.dart";
@@ -70,7 +72,7 @@ class ThemeSelectionDialog extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text("Cancel"),
+          child: Text(L10().cancel),
         ),
       ],
     );
@@ -155,6 +157,20 @@ class InvenTreeDrawer extends StatelessWidget {
     }
   }
 
+  // Load "build orders" page
+  void _buildOrders() {
+    _closeDrawer();
+
+    if (_checkConnection()) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => BuildOrderListWidget(filters: {}),
+        ),
+      );
+    }
+  }
+
   // Load notifications screen
   void _notifications() {
     _closeDrawer();
@@ -222,6 +238,16 @@ class InvenTreeDrawer extends StatelessWidget {
           title: Text(L10().stock),
           leading: Icon(TablerIcons.package, color: COLOR_ACTION),
           onTap: _stock,
+        ),
+      );
+    }
+
+    if (InvenTreeBuildOrder().canView) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().buildOrders),
+          leading: Icon(TablerIcons.building_factory, color: COLOR_ACTION),
+          onTap: _buildOrders,
         ),
       );
     }
