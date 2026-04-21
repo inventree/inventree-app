@@ -824,6 +824,9 @@
   "level": "Level",
   "@level": {},
 
+  "lightMode": "Light Mode",
+  "@lightMode": {},
+
   "lineItemAdd": "Add Line Item",
   "@lineItemAdd": {},
 
@@ -1708,6 +1711,9 @@
 
   "switchCamera": "Switch Camera",
   "@switchCamera": {},
+
+  "system": "System",
+  "@system": {},
 
   "takePicture": "Take Picture",
   "@takePicture": {},

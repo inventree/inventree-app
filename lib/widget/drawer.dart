@@ -37,50 +37,33 @@ class ThemeSelectionDialog extends StatelessWidget {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          RadioListTile<AdaptiveThemeMode>(
-            title: Row(
-              children: [
-                Icon(TablerIcons.device_desktop),
-                SizedBox(width: 10),
-                Text("System"),
-              ],
-            ),
-            value: AdaptiveThemeMode.system,
+          RadioGroup<AdaptiveThemeMode>(
             groupValue: currentThemeMode,
             onChanged: (value) {
-              AdaptiveTheme.of(context).setThemeMode(AdaptiveThemeMode.system);
-              onThemeSelected();
+              if (value != null) {
+                AdaptiveTheme.of(context).setThemeMode(value);
+                onThemeSelected();
+              }
             },
-          ),
-          RadioListTile<AdaptiveThemeMode>(
-            title: Row(
+            child: Column(
               children: [
-                Icon(TablerIcons.sun),
-                SizedBox(width: 10),
-                Text("Light"),
+                RadioListTile<AdaptiveThemeMode>(
+                  value: AdaptiveThemeMode.system,
+                  title: Text(L10().system),
+                  secondary: Icon(TablerIcons.device_desktop),
+                ),
+                RadioListTile<AdaptiveThemeMode>(
+                  value: AdaptiveThemeMode.light,
+                  title: Text(L10().lightMode),
+                  secondary: Icon(TablerIcons.sun),
+                ),
+                RadioListTile<AdaptiveThemeMode>(
+                  value: AdaptiveThemeMode.dark,
+                  title: Text(L10().darkMode),
+                  secondary: Icon(TablerIcons.moon),
+                ),
               ],
             ),
-            value: AdaptiveThemeMode.light,
-            groupValue: currentThemeMode,
-            onChanged: (value) {
-              AdaptiveTheme.of(context).setThemeMode(AdaptiveThemeMode.light);
-              onThemeSelected();
-            },
-          ),
-          RadioListTile<AdaptiveThemeMode>(
-            title: Row(
-              children: [
-                Icon(TablerIcons.moon),
-                SizedBox(width: 10),
-                Text("Dark"),
-              ],
-            ),
-            value: AdaptiveThemeMode.dark,
-            groupValue: currentThemeMode,
-            onChanged: (value) {
-              AdaptiveTheme.of(context).setThemeMode(AdaptiveThemeMode.dark);
-              onThemeSelected();
-            },
           ),
         ],
       ),
