@@ -2,6 +2,7 @@
 ---
 
 - Adds support for build order management
+- Updated translations
 
 ## 0.23.0 - April 2026
 ---
