@@ -1,3 +1,8 @@
+## 0.24.1 - April 2026
+---
+
+- Fixes bug which prevented label printing
+
 ## 0.24.0 - April 2026
 ---
 
