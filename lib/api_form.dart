@@ -814,6 +814,18 @@ class APIFormField {
           subtitle: Text(project_code.description),
           leading: Icon(TablerIcons.list),
         );
+      case "labeltemplate":
+        return ListTile(
+          title: Text((data["name"] ?? "").toString()),
+          subtitle: Text((data["description"] ?? "").toString()),
+        );
+      case "pluginconfig":
+        return ListTile(
+          title: Text(
+            (data["meta"]?["human_name"] ?? data["name"] ?? "").toString(),
+          ),
+          subtitle: Text((data["meta"]?["description"] ?? "").toString()),
+        );
       default:
         return ListTile(
           title: Text(
