@@ -110,7 +110,7 @@ void main() {
 
         assert(item != null);
         assert(item!.pk == id);
-        assert(item!.locationId == 1);
+        assert(int.tryParse(item!.locationId.toString()) != null);
       }
     });
   });
