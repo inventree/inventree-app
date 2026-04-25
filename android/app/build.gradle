@@ -30,7 +30,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace "inventree.inventree_app"
-    ndkVersion "26.3.11579264"
+    ndkVersion "28.2.13676358"
     compileSdkVersion 36
 
     compileOptions {
