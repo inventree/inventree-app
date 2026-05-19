@@ -357,6 +357,10 @@ class InvenTreeAPI {
   // Ref: https://github.com/inventree/InvenTree/pull/10699
   bool get supportsModernParameters => apiVersion >= 429;
 
+  // Does the server use the new "user/me/" endpoints?
+  // Ref: https://github.com/inventree/InvenTree/pull/11963
+  bool get supportsNewUserEndpoints => apiVersion >= 490;
+
   // Cached list of plugins (refreshed when we connect to the server)
   List<InvenTreePlugin> _plugins = [];
 
@@ -588,9 +592,11 @@ class InvenTreeAPI {
     String authHeader =
         "Basic " + base64Encode(utf8.encode("${username}:${password}"));
 
+    String actualUrlToken = supportsNewUserEndpoints ? "user/me/token/" : _URL_TOKEN;
+
     // Perform request to get a token
     final response = await get(
-      _URL_TOKEN,
+      actualUrlToken,
       params: {"name": platform_name},
       headers: {HttpHeaders.authorizationHeader: authHeader},
     );
