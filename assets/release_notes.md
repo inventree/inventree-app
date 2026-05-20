@@ -1,3 +1,9 @@
+## 0.24.2 - May 2026
+---
+
+- Moves notifications to the top of the screen
+- Updated translations
+
 ## 0.24.1 - April 2026
 ---
 
