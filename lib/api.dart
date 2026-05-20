@@ -592,7 +592,9 @@ class InvenTreeAPI {
     String authHeader =
         "Basic " + base64Encode(utf8.encode("${username}:${password}"));
 
-    String actualTokenUrl = supportsNewUserEndpoints ? _URL_TOKEN : "user/token/";
+    String actualTokenUrl = supportsNewUserEndpoints
+        ? _URL_TOKEN
+        : "user/token/";
 
     // Perform request to get a token
     final response = await get(
@@ -715,7 +717,9 @@ class InvenTreeAPI {
     roles.clear();
 
     debug("API: Requesting user role data");
-    String actualRoleUrl = supportsNewUserEndpoints ? _URL_ROLES : "user/roles/";
+    String actualRoleUrl = supportsNewUserEndpoints
+        ? _URL_ROLES
+        : "user/roles/";
     final response = await get(actualRoleUrl, expectedStatusCode: 200);
 
     if (!response.successful()) {
