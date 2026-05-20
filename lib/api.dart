@@ -198,8 +198,8 @@ class InvenTreeAPI {
   bool _strictHttps = false;
 
   // Endpoint for requesting an API token
-  static const _URL_TOKEN = "user/token/";
-  static const _URL_ROLES = "user/roles/";
+  static const _URL_TOKEN = "user/me/token/";
+  static const _URL_ROLES = "user/me/roles/";
   static const _URL_ME = "user/me/";
 
   // Accessors for various url endpoints
@@ -592,11 +592,11 @@ class InvenTreeAPI {
     String authHeader =
         "Basic " + base64Encode(utf8.encode("${username}:${password}"));
 
-    String actualUrlToken = supportsNewUserEndpoints ? "user/me/token/" : _URL_TOKEN;
+    String actualTokenUrl = supportsNewUserEndpoints ? _URL_TOKEN : "user/token/";
 
     // Perform request to get a token
     final response = await get(
-      actualUrlToken,
+      actualTokenUrl,
       params: {"name": platform_name},
       headers: {HttpHeaders.authorizationHeader: authHeader},
     );
@@ -715,8 +715,8 @@ class InvenTreeAPI {
     roles.clear();
 
     debug("API: Requesting user role data");
-
-    final response = await get(_URL_ROLES, expectedStatusCode: 200);
+    String actualRoleUrl = supportsNewUserEndpoints ? _URL_ROLES : "user/roles/";
+    final response = await get(actualRoleUrl, expectedStatusCode: 200);
 
     if (!response.successful()) {
       return false;
