@@ -1,6 +1,7 @@
 ## 0.24.2 - May 2026
 ---
 
+- Support "creation_date" field for stock items
 - Moves notifications to the top of the screen
 - Updated translations
 
