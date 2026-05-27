@@ -50,15 +50,24 @@ class _PaginatedStockItemListState
   String get prefix => "stock_";
 
   @override
-  Map<String, String> get orderingOptions => {
-    "part__name": L10().name,
-    "part__IPN": L10().internalPartNumber,
-    "stock": L10().quantity,
-    "status": L10().status,
-    "batch": L10().batchCode,
-    "updated": L10().lastUpdated,
-    "stocktake_date": L10().lastStocktake,
-  };
+  Map<String, String> get orderingOptions {
+    Map<String, String> options = {
+      "part__name": L10().name,
+      "part__IPN": L10().internalPartNumber,
+      "stock": L10().quantity,
+      "status": L10().status,
+      "batch": L10().batchCode,
+      "creation_date": L10().creationDate,
+      "updated": L10().lastUpdated,
+      "stocktake_date": L10().lastStocktake,
+    };
+
+    if (!InvenTreeAPI().supportsStockItemCreationDate) {
+      options.remove("creation_date");
+    }
+
+    return options;
+  }
 
   @override
   Map<String, Map<String, dynamic>> get filterOptions {

@@ -303,6 +303,11 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   String get expiryDateString => getDateString("expiry_date");
 
+  // Creation date
+  DateTime? get creationDate => getDate("creation_date");
+
+  String get creationDateString => getDateString("creation_date");
+
   // Date of last update
   DateTime? get updatedDate => getDate("updated");
 

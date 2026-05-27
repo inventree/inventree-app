@@ -732,6 +732,17 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     }
 
+    if (api.supportsStockItemCreationDate &&
+        widget.item.creationDateString.isNotEmpty) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().creationDate),
+          trailing: LargeText(widget.item.creationDateString),
+          leading: Icon(TablerIcons.calendar_plus),
+        ),
+      );
+    }
+
     // Last update?
     if (widget.item.updatedDateString.isNotEmpty) {
       tiles.add(
