@@ -361,6 +361,10 @@ class InvenTreeAPI {
   // Ref: https://github.com/inventree/InvenTree/pull/11963
   bool get supportsNewUserEndpoints => apiVersion >= 490;
 
+  // Does the server support the "creation_date" field on the StockItem model?
+  // Ref: https://github.com/inventree/InvenTree/pull/12011
+  bool get supportsStockItemCreationDate => apiVersion >= 496;
+
   // Cached list of plugins (refreshed when we connect to the server)
   List<InvenTreePlugin> _plugins = [];
 
