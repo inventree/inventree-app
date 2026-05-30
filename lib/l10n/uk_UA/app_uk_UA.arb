@@ -1250,6 +1250,8 @@
   "@username": {},
   "usernameEmpty": "Ім'я користувача не може бути пустим",
   "@usernameEmpty": {},
+  "userDetails": "User Details",
+  "@userDetails": {},
   "value": "Значення",
   "@value": {
     "description": "value"
