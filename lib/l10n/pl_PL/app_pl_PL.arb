@@ -1250,6 +1250,8 @@
   "@username": {},
   "usernameEmpty": "Nazwa użytkownika nie może być pusta",
   "@usernameEmpty": {},
+  "userDetails": "User Details",
+  "@userDetails": {},
   "value": "Wartość",
   "@value": {
     "description": "value"

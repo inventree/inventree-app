@@ -1250,6 +1250,8 @@
   "@username": {},
   "usernameEmpty": "שם משתמש לא יכול להיות ריק",
   "@usernameEmpty": {},
+  "userDetails": "User Details",
+  "@userDetails": {},
   "value": "ערך",
   "@value": {
     "description": "value"

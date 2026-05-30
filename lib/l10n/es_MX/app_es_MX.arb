@@ -1250,6 +1250,8 @@
   "@username": {},
   "usernameEmpty": "El campo de nombre de usuario no puede estar vacío",
   "@usernameEmpty": {},
+  "userDetails": "User Details",
+  "@userDetails": {},
   "value": "Valor",
   "@value": {
     "description": "value"

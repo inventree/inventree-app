@@ -1250,6 +1250,8 @@
   "@username": {},
   "usernameEmpty": "Tên người dùng không được để trống",
   "@usernameEmpty": {},
+  "userDetails": "User Details",
+  "@userDetails": {},
   "value": "Giá trị",
   "@value": {
     "description": "value"

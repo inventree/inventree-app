@@ -1250,6 +1250,8 @@
   "@username": {},
   "usernameEmpty": "Το όνομα χρήστη δεν μπορεί να είναι κενό",
   "@usernameEmpty": {},
+  "userDetails": "User Details",
+  "@userDetails": {},
   "value": "Τιμή",
   "@value": {
     "description": "value"

@@ -1250,6 +1250,8 @@
   "@username": {},
   "usernameEmpty": "사용자 이름은 비어 있을 수 없습니다",
   "@usernameEmpty": {},
+  "userDetails": "User Details",
+  "@userDetails": {},
   "value": "값",
   "@value": {
     "description": "value"

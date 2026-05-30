@@ -1250,6 +1250,8 @@
   "@username": {},
   "usernameEmpty": "用户名不能為空",
   "@usernameEmpty": {},
+  "userDetails": "User Details",
+  "@userDetails": {},
   "value": "值",
   "@value": {
     "description": "value"
