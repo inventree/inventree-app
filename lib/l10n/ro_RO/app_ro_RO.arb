@@ -1250,6 +1250,8 @@
   "@username": {},
   "usernameEmpty": "Numele de utilizator nu poate fi gol",
   "@usernameEmpty": {},
+  "userDetails": "User Details",
+  "@userDetails": {},
   "value": "Valoare",
   "@value": {
     "description": "value"
