@@ -1852,6 +1852,9 @@
   "usernameEmpty": "Username cannot be empty",
   "@usernameEmpty": {},
 
+  "userDetails": "User Details",
+  "@userDetails": {},
+
   "value": "Value",
   "@value": {
     "description": "value"
