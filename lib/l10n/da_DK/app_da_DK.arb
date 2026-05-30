@@ -1250,6 +1250,8 @@
   "@username": {},
   "usernameEmpty": "Brugernavn kan ikke være tomt",
   "@usernameEmpty": {},
+  "userDetails": "User Details",
+  "@userDetails": {},
   "value": "Værdi",
   "@value": {
     "description": "value"
