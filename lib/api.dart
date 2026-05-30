@@ -277,6 +277,9 @@ class InvenTreeAPI {
   Map<String, dynamic> userInfo = {};
 
   String get username => (userInfo["username"] ?? "") as String;
+  String get userEmail => (userInfo["email"] ?? "") as String;
+  String get userFirstName => (userInfo["first_name"] ?? "") as String;
+  String get userLastName => (userInfo["last_name"] ?? "") as String;
 
   int get userId => (userInfo["pk"] ?? -1) as int;
 
