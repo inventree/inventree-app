@@ -35,7 +35,7 @@ class FilePickerDialog {
   }
 
   static Future<File?> pickFileFromDevice() async {
-    final FilePickerResult? result = await FilePicker.platform.pickFiles();
+    final FilePickerResult? result = await FilePicker.pickFiles();
 
     if (result != null) {
       String? path = result.files.single.path;
