@@ -1,3 +1,8 @@
+## 0.24.3 - May 2026
+---
+
+- Update base packages for file and image selection
+
 ## 0.24.2 - May 2026
 ---
 
