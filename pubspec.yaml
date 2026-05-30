@@ -1,7 +1,7 @@
 name: inventree
 description: InvenTree stock management
 
-version: 0.24.2+120
+version: 0.24.3+121
 
 environment:
   sdk: ^3.8.1
@@ -18,7 +18,7 @@ dependencies:
   datetime_picker_formfield: ^2.0.1       # Date / time picker
   device_info_plus: ^11.4.0               # Information about the device
   dropdown_search: ^5.0.6                 # Dropdown autocomplete form fields
-  file_picker: ^10.1.4                    # Select files from the device
+  file_picker: ^11.0.2                    # Select files from the device
   flutter:
     sdk: flutter
   flutter_cache_manager: ^3.3.0
@@ -30,7 +30,7 @@ dependencies:
   flutter_speed_dial: ^6.2.0              # Speed dial / FAB implementation
   flutter_tabler_icons: ^1.43.0           # Tabler icons
   http: ^1.4.0
-  image_picker: ^1.1.2                    # Select or take photos
+  image_picker: ^1.2.2                    # Select or take photos
   infinite_scroll_pagination: ^4.0.0      # Let the server do all the work!
   intl: ^0.20.2
   mobile_scanner: ^7.2.0                  # Barcode scanning support
