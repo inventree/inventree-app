@@ -1,6 +1,7 @@
 import "package:adaptive_theme/adaptive_theme.dart";
 import "package:flutter/material.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
+import "package:package_info_plus/package_info_plus.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
@@ -10,6 +11,7 @@ import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/l10.dart";
+import "package:inventree/settings/about.dart";
 import "package:inventree/settings/settings.dart";
 import "package:inventree/widget/build/build_list.dart";
 import "package:inventree/widget/order/sales_order_list.dart";
@@ -79,63 +81,56 @@ class ThemeSelectionDialog extends StatelessWidget {
   }
 }
 
-class InvenTreeDrawer extends StatelessWidget {
-  const InvenTreeDrawer(this.context);
+class InvenTreeDrawer extends StatefulWidget {
+  const InvenTreeDrawer(this.parentContext);
 
-  final BuildContext context;
+  final BuildContext parentContext;
 
+  @override
+  State<InvenTreeDrawer> createState() => _InvenTreeDrawerState();
+}
+
+class _InvenTreeDrawerState extends State<InvenTreeDrawer> {
   void _closeDrawer() {
-    // Close the drawer
-    Navigator.of(context).pop();
+    Navigator.of(widget.parentContext).pop();
   }
 
   bool _checkConnection() {
     return InvenTreeAPI().checkConnection();
   }
 
-  /*
-   * Return to the 'home' screen.
-   * This will empty the navigation stack.
-   */
   void _home() {
     _closeDrawer();
-
-    while (Navigator.of(context).canPop()) {
-      Navigator.of(context).pop();
+    while (Navigator.of(widget.parentContext).canPop()) {
+      Navigator.of(widget.parentContext).pop();
     }
   }
 
-  // Load "parts" page
   void _parts() {
     _closeDrawer();
-
     if (_checkConnection()) {
       Navigator.push(
-        context,
+        widget.parentContext,
         MaterialPageRoute(builder: (context) => CategoryDisplayWidget(null)),
       );
     }
   }
 
-  // Load "stock" page
   void _stock() {
     _closeDrawer();
-
     if (_checkConnection()) {
       Navigator.push(
-        context,
+        widget.parentContext,
         MaterialPageRoute(builder: (context) => LocationDisplayWidget(null)),
       );
     }
   }
 
-  // Load "sales orders" page
   void _salesOrders() {
     _closeDrawer();
-
     if (_checkConnection()) {
       Navigator.push(
-        context,
+        widget.parentContext,
         MaterialPageRoute(
           builder: (context) => SalesOrderListWidget(filters: {}),
         ),
@@ -143,13 +138,11 @@ class InvenTreeDrawer extends StatelessWidget {
     }
   }
 
-  // Load "purchase orders" page
   void _purchaseOrders() {
     _closeDrawer();
-
     if (_checkConnection()) {
       Navigator.push(
-        context,
+        widget.parentContext,
         MaterialPageRoute(
           builder: (context) => PurchaseOrderListWidget(filters: {}),
         ),
@@ -157,13 +150,11 @@ class InvenTreeDrawer extends StatelessWidget {
     }
   }
 
-  // Load "build orders" page
   void _buildOrders() {
     _closeDrawer();
-
     if (_checkConnection()) {
       Navigator.push(
-        context,
+        widget.parentContext,
         MaterialPageRoute(
           builder: (context) => BuildOrderListWidget(filters: {}),
         ),
@@ -171,28 +162,34 @@ class InvenTreeDrawer extends StatelessWidget {
     }
   }
 
-  // Load notifications screen
   void _notifications() {
     _closeDrawer();
-
     if (_checkConnection()) {
       Navigator.push(
-        context,
+        widget.parentContext,
         MaterialPageRoute(builder: (context) => NotificationWidget()),
       );
     }
   }
 
-  // Load settings widget
   void _settings() {
     _closeDrawer();
     Navigator.push(
-      context,
+      widget.parentContext,
       MaterialPageRoute(builder: (context) => InvenTreeSettingsWidget()),
     );
   }
 
-  // Return an icon representing the current theme mode
+  void _about() {
+    _closeDrawer();
+    PackageInfo.fromPlatform().then((PackageInfo info) {
+      Navigator.push(
+        widget.parentContext,
+        MaterialPageRoute(builder: (context) => InvenTreeAboutWidget(info)),
+      );
+    });
+  }
+
   Widget _getThemeModeIcon(AdaptiveThemeMode mode) {
     switch (mode) {
       case AdaptiveThemeMode.dark:
@@ -204,11 +201,23 @@ class InvenTreeDrawer extends StatelessWidget {
     }
   }
 
-  // Construct list of tiles to display in the "drawer" menu
+  Widget? _buildUserTile() {
+    if (!InvenTreeAPI().isConnected()) return null;
+
+    final String username = InvenTreeAPI().username;
+    final String email = InvenTreeAPI().userEmail;
+
+    return ListTile(
+      leading: Icon(TablerIcons.user_circle, color: COLOR_ACTION),
+      title: Text(username),
+      subtitle: email.isNotEmpty ? Text(email) : null,
+      onTap: _about,
+    );
+  }
+
   List<Widget> drawerTiles(BuildContext context) {
     List<Widget> tiles = [];
 
-    // "Home" access
     tiles.add(
       ListTile(
         leading: Image.asset("assets/image/logo_transparent.png", height: 24),
@@ -276,13 +285,13 @@ class InvenTreeDrawer extends StatelessWidget {
       tiles.add(Divider());
     }
 
-    int notification_count = InvenTreeAPI().notification_counter;
+    final int notificationCount = InvenTreeAPI().notification_counter;
 
     tiles.add(
       ListTile(
         leading: Icon(TablerIcons.bell, color: COLOR_ACTION),
-        trailing: notification_count > 0
-            ? Text(notification_count.toString())
+        trailing: notificationCount > 0
+            ? Text(notificationCount.toString())
             : null,
         title: Text(L10().notifications),
         onTap: _notifications,
@@ -320,6 +329,12 @@ class InvenTreeDrawer extends StatelessWidget {
         onTap: _settings,
       ),
     );
+
+    final Widget? userTile = _buildUserTile();
+    if (userTile != null) {
+      tiles.add(Divider());
+      tiles.add(userTile);
+    }
 
     return tiles;
   }
