@@ -1250,6 +1250,8 @@
   "@username": {},
   "usernameEmpty": "Käyttäjätunnus ei voi olla tyhjä",
   "@usernameEmpty": {},
+  "userDetails": "User Details",
+  "@userDetails": {},
   "value": "Arvo",
   "@value": {
     "description": "value"
