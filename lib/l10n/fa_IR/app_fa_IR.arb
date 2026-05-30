@@ -1250,6 +1250,8 @@
   "@username": {},
   "usernameEmpty": "نام کاربری نمی تواند خالی باشد",
   "@usernameEmpty": {},
+  "userDetails": "User Details",
+  "@userDetails": {},
   "value": "مقدار",
   "@value": {
     "description": "value"
