@@ -1264,6 +1264,8 @@
   "@variants": {},
   "version": "Sürüm",
   "@version": {},
+  "versionNewer": "New version available",
+  "@versionNewer": {},
   "viewDetails": "View Details",
   "@viewDetails": {},
   "viewSupplierPart": "Tedarikçi Parçası Görüntüle",
