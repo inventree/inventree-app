@@ -2,6 +2,8 @@
 ---
 
 - Update file and image selection packages
+- Check for app updates 
+- Updated translations
 
 ## 0.24.2 - May 2026
 ---
