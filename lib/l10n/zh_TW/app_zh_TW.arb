@@ -1264,6 +1264,8 @@
   "@variants": {},
   "version": "版本",
   "@version": {},
+  "versionNewer": "New version available",
+  "@versionNewer": {},
   "viewDetails": "檢視詳情",
   "@viewDetails": {},
   "viewSupplierPart": "查看供應商零件",
