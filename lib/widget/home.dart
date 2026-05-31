@@ -7,6 +7,7 @@ import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/inventree/part.dart";
+import "package:inventree/inventree/update_check.dart";
 import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/inventree/stock.dart";
@@ -43,6 +44,9 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
 
     // Initially load the profile and attempt server connection
     _loadProfile();
+
+    // Check GitHub for a newer app version
+    _checkForUpdate();
 
     InvenTreeAPI().registerCallback(() {
       if (mounted) {
@@ -180,6 +184,16 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
     ).then((context) {
       // Once we return
       _loadProfile();
+    });
+  }
+
+  Future<void> _checkForUpdate() async {
+    UpdateChecker().checkForUpdate().then((_) {
+      if (mounted) {
+        setState(() {
+          // Update the display if a new version is available
+        });
+      }
     });
   }
 

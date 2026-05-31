@@ -1872,6 +1872,9 @@
   "version": "Version",
   "@version": {},
 
+  "versionNewer": "New version available",
+  "@versionNewer": {},
+
   "viewDetails": "View Details",
   "@viewDetails": {},
 
