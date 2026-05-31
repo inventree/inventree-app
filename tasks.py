@@ -18,7 +18,7 @@ def clean(c):
 @task
 def update(c):
     """Update flutter dependencies."""
-    c.run("flutter pub get")
+    c.run("fvm flutter pub get")
 
 @task
 def translate(c):
