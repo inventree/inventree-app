@@ -1264,6 +1264,8 @@
   "@variants": {},
   "version": "Versie",
   "@version": {},
+  "versionNewer": "New version available",
+  "@versionNewer": {},
   "viewDetails": "View Details",
   "@viewDetails": {},
   "viewSupplierPart": "Bekijk Leverancier van Onderdeel",
