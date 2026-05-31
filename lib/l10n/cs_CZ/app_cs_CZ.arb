@@ -1264,6 +1264,8 @@
   "@variants": {},
   "version": "Verze",
   "@version": {},
+  "versionNewer": "New version available",
+  "@versionNewer": {},
   "viewDetails": "Zobrazit detaily",
   "@viewDetails": {},
   "viewSupplierPart": "Zobrazit díl dodavatele",
