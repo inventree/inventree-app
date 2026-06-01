@@ -1264,6 +1264,8 @@
   "@variants": {},
   "version": "نسخه",
   "@version": {},
+  "versionNewer": "New version available",
+  "@versionNewer": {},
   "viewDetails": "View Details",
   "@viewDetails": {},
   "viewSupplierPart": "نمایش قطعه تامین کننده",

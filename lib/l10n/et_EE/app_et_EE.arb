@@ -1264,6 +1264,8 @@
   "@variants": {},
   "version": "Versioon",
   "@version": {},
+  "versionNewer": "New version available",
+  "@versionNewer": {},
   "viewDetails": "View Details",
   "@viewDetails": {},
   "viewSupplierPart": "Vaata tarnija osa",

@@ -1264,6 +1264,8 @@
   "@variants": {},
   "version": "Versión",
   "@version": {},
+  "versionNewer": "New version available",
+  "@versionNewer": {},
   "viewDetails": "Ver detalles",
   "@viewDetails": {},
   "viewSupplierPart": "Ver Parte de Proveedor",

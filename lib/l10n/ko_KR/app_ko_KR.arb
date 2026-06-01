@@ -1264,6 +1264,8 @@
   "@variants": {},
   "version": "버전",
   "@version": {},
+  "versionNewer": "New version available",
+  "@versionNewer": {},
   "viewDetails": "View Details",
   "@viewDetails": {},
   "viewSupplierPart": "공급업체 부품 보기",

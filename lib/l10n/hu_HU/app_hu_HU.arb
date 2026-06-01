@@ -1264,6 +1264,8 @@
   "@variants": {},
   "version": "Verzió",
   "@version": {},
+  "versionNewer": "New version available",
+  "@versionNewer": {},
   "viewDetails": "View Details",
   "@viewDetails": {},
   "viewSupplierPart": "Beszállítói alkatrész megtekintése",
