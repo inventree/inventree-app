@@ -1193,7 +1193,12 @@ class InvenTreeAPI {
     return response.isValid() && response.statusCode == 200;
   }
 
-  HttpClient createClient(String url, {bool strictHttps = false}) {
+  /*
+   * Create a new HttpClient, with the appropriate certificate handling
+   * Note that for some instances, we may wish to ignore certificate errors (e.g. self-signed certificates)
+   * In this case, we will allow the user to disable "strict HTTPS" mode
+   */
+  HttpClient createClient(String url, {bool strictHttps = true}) {
     var client = HttpClient();
 
     client.badCertificateCallback =
