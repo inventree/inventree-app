@@ -3,9 +3,11 @@ import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/helpers.dart";
+import "package:inventree/inventree/build.dart";
 import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/inventree/sentry.dart";
 import "package:inventree/preferences.dart";
+import "package:inventree/widget/build/build_detail.dart";
 import "package:inventree/widget/company/manufacturer_part_detail.dart";
 import "package:inventree/widget/order/sales_order_detail.dart";
 import "package:one_context/one_context.dart";
@@ -215,6 +217,20 @@ class BarcodeScanHandler extends BarcodeHandler {
   }
 
   /*
+   * Response when a "BuildOrder" instance is scanned
+   */
+  Future<void> handleBuildOrder(int pk) async {
+    var order = await InvenTreeBuildOrder().get(pk);
+
+    if (order is InvenTreeBuildOrder) {
+      OneContext().pop();
+      OneContext().push(
+        MaterialPageRoute(builder: (context) => BuildOrderDetailWidget(order)),
+      );
+    }
+  }
+
+  /*
    * Response when a "PurchaseOrder" instance is scanned
    */
   Future<void> handlePurchaseOrder(int pk) async {
@@ -259,6 +275,7 @@ class BarcodeScanHandler extends BarcodeHandler {
     ];
 
     if (InvenTreeAPI().supportsOrderBarcodes) {
+      validModels.add(InvenTreeBuildOrder.MODEL_TYPE);
       validModels.add(InvenTreePurchaseOrder.MODEL_TYPE);
       validModels.add(InvenTreeSalesOrder.MODEL_TYPE);
     }
@@ -286,6 +303,9 @@ class BarcodeScanHandler extends BarcodeHandler {
       switch (model) {
         case InvenTreeStockItem.MODEL_TYPE:
           await handleStockItem(pk);
+          return;
+        case InvenTreeBuildOrder.MODEL_TYPE:
+          await handleBuildOrder(pk);
           return;
         case InvenTreePurchaseOrder.MODEL_TYPE:
           await handlePurchaseOrder(pk);
