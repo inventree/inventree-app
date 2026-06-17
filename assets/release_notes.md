@@ -1,3 +1,9 @@
+## 0.24.4 - June 2026
+---
+
+- Enable scanning of Build Order barcodes
+- Updated translations
+
 ## 0.24.3 - May 2026
 ---
 
