@@ -221,7 +221,11 @@ class _InvenTreeDrawerState extends State<InvenTreeDrawer> {
 
     tiles.add(
       ListTile(
-        leading: SvgPicture.asset("assets/image/inventree.svg", height: 24),
+        leading: SvgPicture.asset(
+          "assets/image/inventree.svg",
+          height: 32,
+          width: 32,
+        ),
         title: Text(
           L10().appTitle,
           style: TextStyle(fontWeight: FontWeight.bold),

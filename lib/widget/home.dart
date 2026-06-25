@@ -547,7 +547,11 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SvgPicture.asset("assets/image/inventree.svg", height: 24),
+            SvgPicture.asset(
+              "assets/image/inventree.svg",
+              height: 32,
+              width: 32,
+            ),
             SizedBox(width: 8),
             Text(L10().appTitle),
           ],
