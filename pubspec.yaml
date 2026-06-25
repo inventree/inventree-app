@@ -55,19 +55,20 @@ dev_dependencies:
   test: ^1.22.0
 
 flutter_native_splash:
-  color: "#b8a46c"
-  image: assets/image/inventree.png
+  color: "#202020"
+  image: assets/image/inventree_splash.png
+  fullscreen: true
   android_12:
-    color: "#b8a46c"
-    image: assets/image/inventree.png
+    color: "#202020"
+    # image: assets/image/inventree_splash.png
 
 flutter_icons:
   android: true
   ios: true
   image_path: "assets/image/inventree.png"
-  adaptive_icon_background: "#b8a46c"
+  adaptive_icon_background: "#FFFFFF"
   adaptive_icon_foreground: "assets/image/inventree.png"
-  adaptive_icon_foreground_inset: 0
+  adaptive_icon_foreground_inset: 20
   remove_alpha_ios: true
 
 # For information on the generic Dart part of this file, see the
