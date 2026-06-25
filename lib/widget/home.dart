@@ -477,6 +477,9 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
       leading = Spinner(icon: TablerIcons.loader_2, color: COLOR_PROGRESS);
     }
 
+    final size = MediaQuery.sizeOf(context);
+    final logoSize = min(size.width, size.height) * 0.75;
+
     return Center(
       child: Column(
         children: [
@@ -487,7 +490,8 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
               Colors.white.withValues(alpha: 0.05),
               BlendMode.modulate,
             ),
-            width: 200,
+            width: logoSize,
+            height: logoSize,
           ),
           Spacer(),
           ListTile(
