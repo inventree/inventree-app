@@ -65,6 +65,10 @@ flutter_icons:
   android: true
   ios: true
   image_path: "assets/image/inventree.png"
+  adaptive_icon_background: "#b8a46c"
+  adaptive_icon_foreground: "assets/image/inventree.png"
+  adaptive_icon_foreground_inset: 0
+  remove_alpha_ios: true
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
