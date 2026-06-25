@@ -1,5 +1,6 @@
 import "package:adaptive_theme/adaptive_theme.dart";
 import "package:flutter/material.dart";
+import "package:flutter_svg/flutter_svg.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:package_info_plus/package_info_plus.dart";
 
@@ -220,7 +221,7 @@ class _InvenTreeDrawerState extends State<InvenTreeDrawer> {
 
     tiles.add(
       ListTile(
-        leading: Image.asset("assets/image/logo_transparent.png", height: 24),
+        leading: SvgPicture.asset("assets/image/inventree.svg", height: 24),
         title: Text(
           L10().appTitle,
           style: TextStyle(fontWeight: FontWeight.bold),

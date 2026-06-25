@@ -2,6 +2,7 @@ import "dart:async";
 import "dart:math";
 
 import "package:flutter/material.dart";
+import "package:flutter_svg/flutter_svg.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/api.dart";
@@ -480,11 +481,13 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
       child: Column(
         children: [
           Spacer(),
-          Image.asset(
-            "assets/image/logo_transparent.png",
-            color: Colors.white.withValues(alpha: 0.05),
-            colorBlendMode: BlendMode.modulate,
-            scale: 0.5,
+          SvgPicture.asset(
+            "assets/image/inventree.svg",
+            colorFilter: ColorFilter.mode(
+              Colors.white.withValues(alpha: 0.05),
+              BlendMode.modulate,
+            ),
+            width: 200,
           ),
           Spacer(),
           ListTile(
@@ -540,7 +543,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset("assets/image/logo_transparent.png", height: 24),
+            SvgPicture.asset("assets/image/inventree.svg", height: 24),
             SizedBox(width: 8),
             Text(L10().appTitle),
           ],
