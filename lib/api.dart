@@ -479,10 +479,7 @@ class InvenTreeAPI {
       url = url + "/";
     }
 
-    // Cache the "strictHttps" setting, so we can use it later without async requirement
-    _strictHttps =
-        await InvenTreeSettingsManager().getValue(INV_STRICT_HTTPS, false)
-            as bool;
+    await _refreshHttpsPolicy();
 
     debug("Connecting to ${apiUrl}");
 
@@ -565,6 +562,8 @@ class InvenTreeAPI {
     debug("Fetching user token from ${userProfile.server}");
 
     profile = userProfile;
+
+    await _refreshHttpsPolicy();
 
     // Form a name to request the token with
     String platform_name = "inventree-mobile-app";
@@ -657,6 +656,8 @@ class InvenTreeAPI {
     _connected = false;
     _connecting = false;
     profile = null;
+
+    _resetHttpClient();
 
     // Clear received settings
     _globalSettings.clear();
@@ -930,17 +931,11 @@ class InvenTreeAPI {
 
     HttpClientRequest? _request;
 
-    final bool strictHttps =
-        await InvenTreeSettingsManager().getValue(INV_STRICT_HTTPS, false)
-            as bool;
-
-    var client = createClient(url, strictHttps: strictHttps);
-
     showLoadingOverlay();
 
     // Attempt to open a connection to the server
     try {
-      _request = await client
+      _request = await httpClient
           .openUrl("GET", _uri)
           .timeout(Duration(seconds: 10));
 
@@ -1013,14 +1008,6 @@ class InvenTreeAPI {
     String method = "POST",
     Map<String, dynamic>? fields,
   }) async {
-    bool strictHttps = await InvenTreeSettingsManager().getBool(
-      INV_STRICT_HTTPS,
-      false,
-    );
-
-    // Create an IOClient wrapper for sending the MultipartRequest
-    final ioClient = IOClient(createClient(url, strictHttps: strictHttps));
-
     final uri = Uri.parse(makeApiUrl(url));
     final request = http.MultipartRequest(method, uri);
 
@@ -1050,9 +1037,9 @@ class InvenTreeAPI {
     String jsondata = "";
 
     try {
-      var streamedResponse = await ioClient
-          .send(request)
-          .timeout(Duration(seconds: 120));
+      var streamedResponse = await IOClient(
+        httpClient,
+      ).send(request).timeout(Duration(seconds: 120));
       final httpResponse = await http.Response.fromStream(streamedResponse);
 
       response.statusCode = httpResponse.statusCode;
@@ -1198,14 +1185,14 @@ class InvenTreeAPI {
    * Note that for some instances, we may wish to ignore certificate errors (e.g. self-signed certificates)
    * In this case, we will allow the user to disable "strict HTTPS" mode
    */
-  HttpClient createClient(String url, {bool strictHttps = true}) {
-    var client = HttpClient();
+  HttpClient _createClient() {
+    HttpClient client = HttpClient();
 
     client.badCertificateCallback =
         (X509Certificate cert, String host, int port) {
-          if (strictHttps) {
+          if (_strictHttps) {
             showServerError(
-              url,
+              "${host}:${port}",
               L10().serverCertificateError,
               L10().serverCertificateInvalid,
             );
@@ -1220,6 +1207,40 @@ class InvenTreeAPI {
     client.connectionTimeout = Duration(seconds: 30);
 
     return client;
+  }
+
+  /*
+   * Cached, reusable HttpClient instance.
+   * Avoids doing a slow TCP + TLS handshake on each request.
+   */
+  HttpClient? _httpClient;
+
+  HttpClient get httpClient {
+    return _httpClient ??= _createClient();
+  }
+
+  void _resetHttpClient() {
+    _httpClient?.close(force: true);
+    _httpClient = null;
+    _imageCacheManager = null;
+  }
+
+  /*
+   * Notify the API that the "strictHttps" setting has been changed.
+   */
+  void onStrictHttpsChanged(bool strictHttps) {
+    if (strictHttps != _strictHttps) {
+      _strictHttps = strictHttps;
+      _resetHttpClient();
+    }
+  }
+
+  Future<void> _refreshHttpsPolicy() async {
+    final bool strictHttps =
+        await InvenTreeSettingsManager().getValue(INV_STRICT_HTTPS, false)
+            as bool;
+
+    onStrictHttpsChanged(strictHttps);
   }
 
   /*
@@ -1265,15 +1286,9 @@ class InvenTreeAPI {
 
     HttpClientRequest? _request;
 
-    final bool strictHttps =
-        await InvenTreeSettingsManager().getValue(INV_STRICT_HTTPS, false)
-            as bool;
-
-    var client = createClient(url, strictHttps: strictHttps);
-
     // Attempt to open a connection to the server
     try {
-      _request = await client
+      _request = await httpClient
           .openUrl(method, _uri)
           .timeout(Duration(seconds: 10));
 
@@ -1593,12 +1608,6 @@ class InvenTreeAPI {
 
     String url = makeUrl(imageUrl);
 
-    const key = "inventree_network_image";
-
-    CacheManager manager = CacheManager(
-      Config(key, fileService: InvenTreeFileService(strictHttps: _strictHttps)),
-    );
-
     return CachedNetworkImage(
       imageUrl: url,
       placeholder: (context, url) => CircularProgressIndicator(),
@@ -1614,7 +1623,21 @@ class InvenTreeAPI {
       httpHeaders: defaultHeaders(),
       height: height,
       width: width,
-      cacheManager: manager,
+      cacheManager: imageCacheManager,
+    );
+  }
+
+  CacheManager? _imageCacheManager;
+
+  CacheManager get imageCacheManager {
+    return _imageCacheManager ??= CacheManager(
+      Config(
+        "inventree_network_image",
+        fileService: InvenTreeFileService(
+          client: httpClient,
+          strictHttps: _strictHttps,
+        ),
+      ),
     );
   }
 
