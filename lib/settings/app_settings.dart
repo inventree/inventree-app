@@ -274,6 +274,8 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
                 value: strictHttps,
                 onChanged: (bool value) {
                   InvenTreeSettingsManager().setValue(INV_STRICT_HTTPS, value);
+                  // Rebuild the cached HTTP client with the new cert policy
+                  InvenTreeAPI().onStrictHttpsChanged(value);
                   setState(() {
                     strictHttps = value;
                   });
