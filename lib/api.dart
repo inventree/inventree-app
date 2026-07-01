@@ -479,10 +479,9 @@ class InvenTreeAPI {
       url = url + "/";
     }
 
-    // Cache the "strictHttps" setting, so we can use it later without async requirement
-    _strictHttps =
-        await InvenTreeSettingsManager().getValue(INV_STRICT_HTTPS, false)
-            as bool;
+    // Cache the "strictHttps" setting, so downstream requests can use it
+    // synchronously (rebuilding the shared client if the policy changed)
+    await _refreshHttpsPolicy();
 
     debug("Connecting to ${apiUrl}");
 
@@ -565,6 +564,9 @@ class InvenTreeAPI {
     debug("Fetching user token from ${userProfile.server}");
 
     profile = userProfile;
+
+    // Ensure the cert policy is current before the (possibly first) request
+    await _refreshHttpsPolicy();
 
     // Form a name to request the token with
     String platform_name = "inventree-mobile-app";
@@ -657,6 +659,9 @@ class InvenTreeAPI {
     _connected = false;
     _connecting = false;
     profile = null;
+
+    // Discard the cached HTTP client so a fresh connection starts clean
+    _resetHttpClient();
 
     // Clear received settings
     _globalSettings.clear();
@@ -930,11 +935,8 @@ class InvenTreeAPI {
 
     HttpClientRequest? _request;
 
-    final bool strictHttps =
-        await InvenTreeSettingsManager().getValue(INV_STRICT_HTTPS, false)
-            as bool;
-
-    var client = createClient(url, strictHttps: strictHttps);
+    // Reuse the shared client (keep-alive + TLS resumption)
+    var client = httpClient;
 
     showLoadingOverlay();
 
@@ -1013,13 +1015,9 @@ class InvenTreeAPI {
     String method = "POST",
     Map<String, dynamic>? fields,
   }) async {
-    bool strictHttps = await InvenTreeSettingsManager().getBool(
-      INV_STRICT_HTTPS,
-      false,
-    );
-
-    // Create an IOClient wrapper for sending the MultipartRequest
-    final ioClient = IOClient(createClient(url, strictHttps: strictHttps));
+    // Wrap the shared HttpClient for sending the MultipartRequest.
+    // Do NOT close ioClient: that would close the shared underlying client.
+    final ioClient = IOClient(httpClient);
 
     final uri = Uri.parse(makeApiUrl(url));
     final request = http.MultipartRequest(method, uri);
@@ -1199,13 +1197,20 @@ class InvenTreeAPI {
    * In this case, we will allow the user to disable "strict HTTPS" mode
    */
   HttpClient createClient(String url, {bool strictHttps = true}) {
-    var client = HttpClient();
+    return _configureClient(HttpClient(), strictHttps: strictHttps);
+  }
 
+  /*
+   * Configure certificate handling and timeouts on a HttpClient instance.
+   * The badCertificateCallback is deliberately independent of any single
+   * request URL, so that a single client can be shared across all requests.
+   */
+  HttpClient _configureClient(HttpClient client, {required bool strictHttps}) {
     client.badCertificateCallback =
         (X509Certificate cert, String host, int port) {
           if (strictHttps) {
             showServerError(
-              url,
+              "${host}:${port}",
               L10().serverCertificateError,
               L10().serverCertificateInvalid,
             );
@@ -1220,6 +1225,60 @@ class InvenTreeAPI {
     client.connectionTimeout = Duration(seconds: 30);
 
     return client;
+  }
+
+  /*
+   * Cached, reusable HttpClient instance.
+   *
+   * Reusing a single client across requests is critical for performance:
+   * it enables TCP connection keep-alive and TLS session resumption,
+   * avoiding a fresh handshake on every request. The client is keyed to the
+   * current "strictHttps" policy, and is discarded (see _resetHttpClient())
+   * whenever that policy changes.
+   */
+  HttpClient? _httpClient;
+
+  HttpClient get httpClient {
+    return _httpClient ??= _configureClient(
+      HttpClient(),
+      strictHttps: _strictHttps,
+    );
+  }
+
+  /*
+   * Discard the cached HttpClient (and image cache manager), so they are
+   * rebuilt lazily using the current "strictHttps" policy.
+   */
+  void _resetHttpClient() {
+    _httpClient?.close(force: true);
+    _httpClient = null;
+    _imageCacheManager = null;
+  }
+
+  /*
+   * Notify the API that the "strictHttps" setting has been changed.
+   * Called from the settings UI so the cached client picks up the new policy
+   * without requiring a reconnect.
+   */
+  void onStrictHttpsChanged(bool strictHttps) {
+    if (strictHttps != _strictHttps) {
+      _strictHttps = strictHttps;
+      _resetHttpClient();
+    }
+  }
+
+  /*
+   * Refresh the cached "strictHttps" policy from persistent settings,
+   * rebuilding the shared client if the policy changed. Called at connection
+   * entry points (checkServer / fetchToken) which may run before the cache
+   * has been warmed, so that cert enforcement always reflects the setting.
+   */
+  Future<void> _refreshHttpsPolicy() async {
+    final bool strictHttps =
+        await InvenTreeSettingsManager().getValue(INV_STRICT_HTTPS, false)
+            as bool;
+
+    onStrictHttpsChanged(strictHttps);
   }
 
   /*
@@ -1265,11 +1324,8 @@ class InvenTreeAPI {
 
     HttpClientRequest? _request;
 
-    final bool strictHttps =
-        await InvenTreeSettingsManager().getValue(INV_STRICT_HTTPS, false)
-            as bool;
-
-    var client = createClient(url, strictHttps: strictHttps);
+    // Reuse the shared client (keep-alive + TLS resumption)
+    var client = httpClient;
 
     // Attempt to open a connection to the server
     try {
@@ -1593,12 +1649,6 @@ class InvenTreeAPI {
 
     String url = makeUrl(imageUrl);
 
-    const key = "inventree_network_image";
-
-    CacheManager manager = CacheManager(
-      Config(key, fileService: InvenTreeFileService(strictHttps: _strictHttps)),
-    );
-
     return CachedNetworkImage(
       imageUrl: url,
       placeholder: (context, url) => CircularProgressIndicator(),
@@ -1614,7 +1664,27 @@ class InvenTreeAPI {
       httpHeaders: defaultHeaders(),
       height: height,
       width: width,
-      cacheManager: manager,
+      cacheManager: imageCacheManager,
+    );
+  }
+
+  /*
+   * Cached CacheManager for network images.
+   *
+   * Previously a new CacheManager (and a new HttpClient via
+   * InvenTreeFileService) was constructed for every image, i.e. once per
+   * thumbnail row. A single shared instance lets image requests reuse
+   * connections and avoids per-image allocation churn. It is discarded via
+   * _resetHttpClient() when the strictHttps policy changes.
+   */
+  CacheManager? _imageCacheManager;
+
+  CacheManager get imageCacheManager {
+    return _imageCacheManager ??= CacheManager(
+      Config(
+        "inventree_network_image",
+        fileService: InvenTreeFileService(strictHttps: _strictHttps),
+      ),
     );
   }
 
