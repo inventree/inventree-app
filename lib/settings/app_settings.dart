@@ -274,6 +274,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
                 value: strictHttps,
                 onChanged: (bool value) {
                   InvenTreeSettingsManager().setValue(INV_STRICT_HTTPS, value);
+                  InvenTreeAPI().onStrictHttpsChanged(value);
                   setState(() {
                     strictHttps = value;
                   });
