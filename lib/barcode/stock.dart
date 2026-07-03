@@ -80,7 +80,7 @@ class BarcodeScanStockItemHandler extends BarcodeHandler {
 
         await onItemScanned(_item);
       }
-    }else if (data.containsKey("stocklocation")) {
+    } else if (data.containsKey("stocklocation")) {
       int _loc = (data["stocklocation"]?["pk"] ?? -1) as int;
 
       if (_loc > 0) {
@@ -89,7 +89,6 @@ class BarcodeScanStockItemHandler extends BarcodeHandler {
         await onStockLocationScanned(_loc);
       }
     }
-
   }
 
   // Callback function which runs when a valid StockItem is scanned
@@ -184,7 +183,8 @@ class StockLocationScanInItemsHandler extends BarcodeScanStockItemHandler {
     }
 
     final scannedLocation =
-        await InvenTreeStockLocation().get(locationId) as InvenTreeStockLocation?;
+        await InvenTreeStockLocation().get(locationId)
+            as InvenTreeStockLocation?;
 
     if (scannedLocation != null) {
       if (scannedLocation.parentId == location.pk) {
