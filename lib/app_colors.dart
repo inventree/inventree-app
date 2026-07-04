@@ -17,20 +17,25 @@ bool isDarkMode() {
   return AdaptiveTheme.of(context).brightness == Brightness.dark;
 }
 
-// Return an "action" color based on the current theme
-Color get COLOR_ACTION {
-  if (isDarkMode()) {
-    return Colors.lightBlueAccent;
-  } else {
-    return Colors.blue;
+// Resolve the app's current ColorScheme, falling back to a sensible default
+// if no BuildContext is available yet (e.g. very early app startup).
+ColorScheme get _colorScheme {
+  final BuildContext? context = OneContext().context;
+
+  if (context == null) {
+    return const ColorScheme.light();
   }
+
+  return Theme.of(context).colorScheme;
 }
 
-// Set to null to use the system default
-Color? COLOR_APP_BAR;
-
-const Color COLOR_WARNING = Color.fromRGBO(250, 150, 50, 1);
-const Color COLOR_DANGER = Color.fromRGBO(200, 50, 75, 1);
-const Color COLOR_SUCCESS = Color.fromRGBO(100, 200, 75, 1);
-const Color COLOR_PROGRESS = Color.fromRGBO(50, 100, 200, 1);
-const Color COLOR_GRAY_LIGHT = Color.fromRGBO(150, 150, 150, 1);
+// Semantic colors, derived from the current theme's ColorScheme.
+// Material 3 has no dedicated "success"/"warning" roles, so those map onto
+// the nearest available accent (tertiary / secondary respectively).
+Color get COLOR_ACTION => Colors.blue;
+Color get COLOR_WARNING => Colors.orange;
+Color get COLOR_DANGER => _colorScheme.error;
+Color get COLOR_SUCCESS => Colors.lightGreen;
+Color get COLOR_PROGRESS => Colors.lightBlue;
+Color get COLOR_GRAY_LIGHT => _colorScheme.onSurfaceVariant;
+Color get COLOR_TEXT => _colorScheme.onSurface;

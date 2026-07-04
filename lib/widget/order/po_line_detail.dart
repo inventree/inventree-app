@@ -67,7 +67,7 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
       if (!widget.item.isComplete) {
         buttons.add(
           SpeedDialChild(
-            child: Icon(TablerIcons.transition_right, color: Colors.blue),
+            child: Icon(TablerIcons.transition_right, color: COLOR_ACTION),
             label: L10().receiveItem,
             onTap: () async {
               receiveLineItem(context);

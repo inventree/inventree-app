@@ -129,17 +129,17 @@ class InvenTreeStatusCode {
       case "primary":
         return COLOR_PROGRESS;
       case "secondary":
-        return Colors.grey;
+        return COLOR_GRAY_LIGHT;
       case "dark":
-        return Colors.black;
+        return COLOR_TEXT;
       case "danger":
         return COLOR_DANGER;
       case "warning":
         return COLOR_WARNING;
       case "info":
-        return Colors.lightBlue;
+        return COLOR_PROGRESS;
       default:
-        return Colors.black;
+        return COLOR_GRAY_LIGHT;
     }
   }
 }

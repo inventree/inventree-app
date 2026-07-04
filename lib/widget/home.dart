@@ -463,7 +463,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
           child: ListTile(
             leading: Icon(
               icon,
-              color: connected && allowed ? COLOR_ACTION : Colors.grey,
+              color: connected && allowed ? COLOR_ACTION : COLOR_GRAY_LIGHT,
             ),
             title: Text(label),
             trailing: trailing,
@@ -739,7 +739,6 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
             Text(L10().appTitle),
           ],
         ),
-        backgroundColor: COLOR_APP_BAR,
         actions: [
           IconButton(
             icon: Stack(

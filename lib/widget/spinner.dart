@@ -3,7 +3,7 @@ import "package:inventree/app_colors.dart";
 
 class Spinner extends StatefulWidget {
   const Spinner({
-    this.color = COLOR_GRAY_LIGHT,
+    this.color,
     Key? key,
     required this.icon,
     this.duration = const Duration(milliseconds: 1800),
@@ -11,7 +11,7 @@ class Spinner extends StatefulWidget {
 
   final IconData? icon;
   final Duration duration;
-  final Color color;
+  final Color? color;
 
   @override
   _SpinnerState createState() => _SpinnerState();
@@ -27,7 +27,7 @@ class _SpinnerState extends State<Spinner> with SingleTickerProviderStateMixin {
       vsync: this,
       duration: Duration(milliseconds: 2000),
     )..repeat();
-    _child = Icon(widget.icon, color: widget.color);
+    _child = Icon(widget.icon, color: widget.color ?? COLOR_GRAY_LIGHT);
 
     super.initState();
   }

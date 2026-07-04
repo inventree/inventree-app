@@ -1,6 +1,5 @@
 import "package:flutter/material.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
-import "package:inventree/app_colors.dart";
 
 import "package:inventree/l10.dart";
 import "package:inventree/preferences.dart";
@@ -72,10 +71,7 @@ class _HomeScreenSettingsState extends State<HomeScreenSettingsWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _settingsKey,
-      appBar: AppBar(
-        title: Text(L10().homeScreen),
-        backgroundColor: COLOR_APP_BAR,
-      ),
+      appBar: AppBar(title: Text(L10().homeScreen)),
       body: Container(
         child: ListView(
           children: [

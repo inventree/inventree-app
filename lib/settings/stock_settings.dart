@@ -1,6 +1,5 @@
 import "package:flutter/material.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
-import "package:inventree/app_colors.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/preferences.dart";
 
@@ -44,10 +43,7 @@ class _InvenTreeStockSettingsState extends State<InvenTreeStockSettingsWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(L10().stockSettings),
-        backgroundColor: COLOR_APP_BAR,
-      ),
+      appBar: AppBar(title: Text(L10().stockSettings)),
       body: Container(
         child: ListView(
           children: [

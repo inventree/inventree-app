@@ -83,7 +83,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
     if (showCameraShortcut && widget.order.canEdit) {
       actions.add(
         SpeedDialChild(
-          child: const Icon(TablerIcons.camera, color: Colors.blue),
+          child: Icon(TablerIcons.camera, color: COLOR_ACTION),
           label: L10().takePicture,
           onTap: () async {
             _uploadImage(context);
@@ -98,7 +98,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
       if (widget.order.canIssue) {
         actions.add(
           SpeedDialChild(
-            child: const Icon(TablerIcons.send, color: Colors.blue),
+            child: Icon(TablerIcons.send, color: COLOR_ACTION),
             label: L10().issueOrder,
             onTap: () async {
               _issueOrder(context);
@@ -111,7 +111,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
       if (widget.order.canCompleteOrder) {
         actions.add(
           SpeedDialChild(
-            child: const Icon(TablerIcons.check, color: Colors.green),
+            child: Icon(TablerIcons.check, color: COLOR_SUCCESS),
             label: L10().completeOrder,
             onTap: () async {
               _completeOrder(context);
@@ -124,7 +124,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
       if (widget.order.canHold) {
         actions.add(
           SpeedDialChild(
-            child: const Icon(TablerIcons.player_pause, color: Colors.orange),
+            child: Icon(TablerIcons.player_pause, color: COLOR_WARNING),
             label: L10().holdOrder,
             onTap: () async {
               _holdOrder(context);
@@ -137,9 +137,9 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
       if (widget.order.isInProgress) {
         actions.add(
           SpeedDialChild(
-            child: const Icon(
+            child: Icon(
               TablerIcons.arrow_autofit_down,
-              color: Colors.purple,
+              color: Theme.of(context).colorScheme.secondary,
             ),
             label: L10().allocateAuto,
             onTap: () async {
@@ -154,7 +154,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
           widget.order.allocatedLineItemCount > 0) {
         actions.add(
           SpeedDialChild(
-            child: const Icon(TablerIcons.arrow_autofit_up, color: Colors.red),
+            child: Icon(TablerIcons.arrow_autofit_up, color: COLOR_DANGER),
             label: L10().unallocateStock,
             onTap: () async {
               _unallocateAll(context);
@@ -167,7 +167,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
       if (widget.order.canCancel) {
         actions.add(
           SpeedDialChild(
-            child: const Icon(TablerIcons.circle_x, color: Colors.red),
+            child: Icon(TablerIcons.circle_x, color: COLOR_DANGER),
             label: L10().cancelOrder,
             onTap: () async {
               _cancelOrder(context);
@@ -192,7 +192,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
       L10().issueOrder,
       L10().issueOrderConfirm,
       icon: TablerIcons.send,
-      color: Colors.blue,
+      color: COLOR_ACTION,
       acceptText: L10().issue,
       onAccept: () async {
         widget.order.issue().then((dynamic) {
@@ -208,7 +208,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
       L10().completeOrder,
       L10().completeOrderConfirm,
       icon: TablerIcons.check,
-      color: Colors.green,
+      color: COLOR_SUCCESS,
       acceptText: L10().complete,
       onAccept: () async {
         widget.order.completeOrder().then((dynamic) {
@@ -224,7 +224,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
       L10().holdOrder,
       L10().holdOrderConfirm,
       icon: TablerIcons.player_pause,
-      color: Colors.orange,
+      color: COLOR_WARNING,
       acceptText: L10().hold,
       onAccept: () async {
         widget.order.hold().then((dynamic) {
@@ -240,7 +240,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
       L10().cancelOrder,
       L10().cancelOrderConfirm,
       icon: TablerIcons.circle_x,
-      color: Colors.red,
+      color: COLOR_DANGER,
       acceptText: L10().cancel,
       onAccept: () async {
         widget.order.cancel().then((dynamic) {
@@ -256,7 +256,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
       L10().allocateAuto,
       L10().allocateAutoDetail,
       icon: TablerIcons.arrow_autofit_down,
-      color: Colors.purple,
+      color: Theme.of(context).colorScheme.secondary,
       acceptText: L10().allocate,
       onAccept: () async {
         widget.order.autoAllocate().then((dynamic) {
@@ -272,7 +272,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
       L10().unallocateStock,
       L10().buildOrderUnallocateDetail,
       icon: TablerIcons.trash,
-      color: Colors.orange,
+      color: COLOR_WARNING,
       acceptText: L10().unallocate,
       onAccept: () async {
         widget.order.unallocateAll().then((dynamic) {
@@ -399,7 +399,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
                   height: 32,
                   child: InvenTreeAPI().getThumbnail(part.thumbnail),
                 )
-              : const Icon(TablerIcons.box, color: Colors.blue),
+              : Icon(TablerIcons.box, color: COLOR_ACTION),
           onTap: () {
             part.goToDetailPage(context);
           },
@@ -419,14 +419,14 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
     );
 
     // Progress bar
-    Color progressColor = Colors.blue;
+    Color progressColor = COLOR_PROGRESS;
 
     if (widget.order.isComplete) {
-      progressColor = Colors.green;
+      progressColor = COLOR_SUCCESS;
     } else if (widget.order.targetDate.isNotEmpty &&
         DateTime.tryParse(widget.order.targetDate) != null &&
         DateTime.tryParse(widget.order.targetDate)!.isBefore(DateTime.now())) {
-      progressColor = Colors.red;
+      progressColor = COLOR_DANGER;
     }
 
     tiles.add(
@@ -434,7 +434,9 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
         title: LinearProgressIndicator(
           value: widget.order.progressPercent / 100.0,
           color: progressColor,
-          backgroundColor: const Color(0xFFEEEEEE),
+          backgroundColor: Theme.of(
+            context,
+          ).colorScheme.surfaceContainerHighest,
         ),
         leading: const Icon(TablerIcons.chart_bar),
         trailing: Text(

@@ -224,7 +224,7 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
                           confirmationDialog(
                             L10().delete,
                             L10().profileDelete + "?",
-                            color: Colors.red,
+                            color: COLOR_DANGER,
                             icon: TablerIcons.trash,
                             onAccept: () {
                               _deleteProfile(profile);
@@ -234,9 +234,9 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
                         child: ListTile(
                           title: Text(
                             L10().profileDelete,
-                            style: TextStyle(color: Colors.red),
+                            style: TextStyle(color: COLOR_DANGER),
                           ),
-                          leading: Icon(TablerIcons.trash, color: Colors.red),
+                          leading: Icon(TablerIcons.trash, color: COLOR_DANGER),
                         ),
                       ),
                     ],
@@ -256,7 +256,6 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
       key: _loginKey,
       appBar: AppBar(
         title: Text(L10().profileSelect),
-        backgroundColor: COLOR_APP_BAR,
         actions: [
           IconButton(
             icon: Icon(TablerIcons.circle_plus),
@@ -305,7 +304,6 @@ class _ProfileEditState extends State<ProfileEditWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: COLOR_APP_BAR,
         title: Text(
           widget.profile == null ? L10().profileAdd : L10().profileEdit,
         ),
