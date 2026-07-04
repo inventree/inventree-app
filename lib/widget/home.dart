@@ -169,6 +169,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
   int? _poOutstandingCount;
   int? _soOverdueCount;
   int? _soOutstandingCount;
+  int? _shipmentsPendingCount;
 
   void _showParts(BuildContext context) {
     if (!InvenTreeAPI().checkConnection()) return;
@@ -354,6 +355,8 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
         homeShowBuild && InvenTreeAPI().checkRole("build", "view");
     final bool loadPo = homeShowPo && InvenTreePurchaseOrder().canView;
     final bool loadSo = homeShowSo && InvenTreeSalesOrder().canView;
+    final bool loadShipments =
+        homeShowShipments && InvenTreeSalesOrderShipment().canView;
 
     int? buildOverdue;
     int? buildOutstanding;
@@ -361,6 +364,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
     int? poOutstanding;
     int? soOverdue;
     int? soOutstanding;
+    int? shipmentsPending;
 
     final List<Future<void>> requests = [];
 
@@ -405,6 +409,16 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
       );
     }
 
+    if (loadShipments) {
+      requests.add(
+        InvenTreeSalesOrderShipment()
+            .count(filters: {"order_outstanding": "true", "shipped": "false"})
+            .then((c) {
+              shipmentsPending = c;
+            }),
+      );
+    }
+
     await Future.wait(requests);
 
     if (!mounted) {
@@ -418,6 +432,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
       _poOutstandingCount = poOutstanding;
       _soOverdueCount = soOverdue;
       _soOutstandingCount = soOutstanding;
+      _shipmentsPendingCount = shipmentsPending;
     });
   }
 
@@ -603,6 +618,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
           callback: () {
             _showPendingShipments(context);
           },
+          trailing: buildOutstandingBadge(context, _shipmentsPendingCount),
         ),
       );
     }
