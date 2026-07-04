@@ -6,6 +6,7 @@ import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
+import "package:inventree/inventree/build.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/update_check.dart";
 import "package:inventree/inventree/purchase_order.dart";
@@ -28,6 +29,94 @@ import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/spinner.dart";
 import "package:inventree/widget/company/company_list.dart";
+
+/*
+ * Build a small count badge with the given background/foreground colors,
+ * or null if there is nothing to show.
+ * Extracted as a top-level function (rather than a private State method) so it
+ * can be unit tested in isolation, without needing a live API connection.
+ */
+Widget? _buildCountBadge(
+  int? count, {
+  required IconData icon,
+  required Color background,
+  required Color foreground,
+}) {
+  if (count == null || count <= 0) {
+    return null;
+  }
+
+  return Container(
+    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+    decoration: BoxDecoration(
+      color: background,
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 14, color: foreground),
+        const SizedBox(width: 4),
+        Text(count.toString(), style: TextStyle(color: foreground)),
+      ],
+    ),
+  );
+}
+
+// "Overdue" is the urgent case - use the theme's error colors
+Widget? buildOverdueBadge(BuildContext context, int? count) {
+  final ColorScheme colors = Theme.of(context).colorScheme;
+
+  return _buildCountBadge(
+    count,
+    icon: TablerIcons.calendar_exclamation,
+    background: colors.errorContainer,
+    foreground: colors.onErrorContainer,
+  );
+}
+
+// "Outstanding" is informational rather than urgent - use a less serious color
+Widget? buildOutstandingBadge(BuildContext context, int? count) {
+  final ColorScheme colors = Theme.of(context).colorScheme;
+
+  return _buildCountBadge(
+    count,
+    icon: TablerIcons.progress,
+    background: colors.secondaryContainer,
+    foreground: colors.onSecondaryContainer,
+  );
+}
+
+/*
+ * Combine the "outstanding" and "overdue" badges for a single tile into one
+ * widget (side by side), or null if neither has anything to show.
+ */
+Widget? buildOrderBadges(
+  BuildContext context, {
+  int? outstandingCount,
+  int? overdueCount,
+}) {
+  final List<Widget> badges = [];
+
+  final Widget? outstanding = buildOutstandingBadge(context, outstandingCount);
+  if (outstanding != null) {
+    badges.add(outstanding);
+  }
+
+  final Widget? overdue = buildOverdueBadge(context, overdueCount);
+  if (overdue != null) {
+    if (badges.isNotEmpty) {
+      badges.add(const SizedBox(width: 6));
+    }
+    badges.add(overdue);
+  }
+
+  if (badges.isEmpty) {
+    return null;
+  }
+
+  return Row(mainAxisSize: MainAxisSize.min, children: badges);
+}
 
 class InvenTreeHomePage extends StatefulWidget {
   const InvenTreeHomePage({Key? key}) : super(key: key);
@@ -54,6 +143,8 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
           // Reload the widget
         });
       }
+
+      _loadOrderCounts();
     });
   }
 
@@ -70,6 +161,14 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
 
   // Selected user profile
   UserProfile? _profile;
+
+  // Order counts (null = not loaded / not visible)
+  int? _buildOverdueCount;
+  int? _buildOutstandingCount;
+  int? _poOverdueCount;
+  int? _poOutstandingCount;
+  int? _soOverdueCount;
+  int? _soOutstandingCount;
 
   void _showParts(BuildContext context) {
     if (!InvenTreeAPI().checkConnection()) return;
@@ -233,6 +332,89 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
             as bool;
 
     setState(() {});
+
+    _loadOrderCounts();
+  }
+
+  /*
+   * Load the "overdue" and "outstanding" counts for build / purchase / sales orders,
+   * to be displayed as badges against the relevant home screen tiles.
+   * Only requests counts for tiles which are actually visible to the user.
+   */
+  Future<void> _loadOrderCounts() async {
+    if (!InvenTreeAPI().isConnected()) {
+      return;
+    }
+
+    final bool loadBuild =
+        homeShowBuild && InvenTreeAPI().checkRole("build", "view");
+    final bool loadPo = homeShowPo && InvenTreePurchaseOrder().canView;
+    final bool loadSo = homeShowSo && InvenTreeSalesOrder().canView;
+
+    int? buildOverdue;
+    int? buildOutstanding;
+    int? poOverdue;
+    int? poOutstanding;
+    int? soOverdue;
+    int? soOutstanding;
+
+    final List<Future<void>> requests = [];
+
+    if (loadBuild) {
+      requests.add(
+        InvenTreeBuildOrder().count(filters: {"overdue": "true"}).then((c) {
+          buildOverdue = c;
+        }),
+      );
+      requests.add(
+        InvenTreeBuildOrder().count(filters: {"outstanding": "true"}).then((c) {
+          buildOutstanding = c;
+        }),
+      );
+    }
+
+    if (loadPo) {
+      requests.add(
+        InvenTreePurchaseOrder().count(filters: {"overdue": "true"}).then((c) {
+          poOverdue = c;
+        }),
+      );
+      requests.add(
+        InvenTreePurchaseOrder().count(filters: {"outstanding": "true"}).then((
+          c,
+        ) {
+          poOutstanding = c;
+        }),
+      );
+    }
+
+    if (loadSo) {
+      requests.add(
+        InvenTreeSalesOrder().count(filters: {"overdue": "true"}).then((c) {
+          soOverdue = c;
+        }),
+      );
+      requests.add(
+        InvenTreeSalesOrder().count(filters: {"outstanding": "true"}).then((c) {
+          soOutstanding = c;
+        }),
+      );
+    }
+
+    await Future.wait(requests);
+
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _buildOverdueCount = buildOverdue;
+      _buildOutstandingCount = buildOutstanding;
+      _poOverdueCount = poOverdue;
+      _poOutstandingCount = poOutstanding;
+      _soOverdueCount = soOverdue;
+      _soOutstandingCount = soOutstanding;
+    });
   }
 
   Future<void> _loadProfile() async {
@@ -362,6 +544,11 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
           },
           role: "build",
           permission: "view",
+          trailing: buildOrderBadges(
+            context,
+            outstandingCount: _buildOutstandingCount,
+            overdueCount: _buildOverdueCount,
+          ),
         ),
       );
     }
@@ -376,6 +563,11 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
           callback: () {
             _showPurchaseOrders(context);
           },
+          trailing: buildOrderBadges(
+            context,
+            outstandingCount: _poOutstandingCount,
+            overdueCount: _poOverdueCount,
+          ),
         ),
       );
     }
@@ -389,6 +581,11 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
           callback: () {
             _showSalesOrders(context);
           },
+          trailing: buildOrderBadges(
+            context,
+            outstandingCount: _soOutstandingCount,
+            overdueCount: _soOverdueCount,
+          ),
         ),
       );
     }
@@ -523,10 +720,19 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
       children: getListTiles(context),
       childAspectRatio: aspect,
       primary: false,
+      // Ensure the grid is always draggable, even if the tiles don't fill the viewport,
+      // so that "pull down to refresh" works regardless of screen size / tile count
+      physics: const AlwaysScrollableScrollPhysics(),
       crossAxisSpacing: padding,
       mainAxisSpacing: padding,
       padding: EdgeInsets.all(padding),
     );
+  }
+
+  // Refresh handler for "pull down to refresh" on the home screen
+  Future<void> _onRefresh() async {
+    await _loadProfile();
+    await _loadOrderCounts();
   }
 
   @override
@@ -576,7 +782,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
         ],
       ),
       drawer: InvenTreeDrawer(context),
-      body: getBody(context),
+      body: RefreshIndicator(onRefresh: _onRefresh, child: getBody(context)),
       bottomNavigationBar: InvenTreeAPI().isConnected()
           ? buildBottomAppBar(context, homeKey)
           : null,
