@@ -340,6 +340,10 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
    * Load the "overdue" and "outstanding" counts for build / purchase / sales orders,
    * to be displayed as badges against the relevant home screen tiles.
    * Only requests counts for tiles which are actually visible to the user.
+   *
+   * Each count is a separate cheap query (count() uses limit=1 server-side),
+   * rather than fetching the full outstanding order list and counting locally -
+   * that would require fetching *all* outstanding orders to be accurate.
    */
   Future<void> _loadOrderCounts() async {
     if (!InvenTreeAPI().isConnected()) {
@@ -617,22 +621,6 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
       );
     }
 
-    // TODO: Add these tiles back in once the features are fleshed out
-    /*
-
-
-    // Manufacturers
-    if (homeShowManufacturers) {
-      tiles.add(_listTile(
-          context,
-          L10().manufacturers,
-          TablerIcons.building_factory_2,
-          callback: () {
-            _showManufacturers(context);
-          }
-      ));
-    }
-    */
     // Customers
     if (homeShowCustomers) {
       tiles.add(

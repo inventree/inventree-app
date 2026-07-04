@@ -123,7 +123,10 @@ void main() {
 
       expect(find.text("7"), findsOneWidget);
       expect(find.text("2"), findsOneWidget);
-      expect(find.byType(Row), findsOneWidget);
+      expect(find.byIcon(TablerIcons.progress), findsOneWidget);
+      expect(find.byIcon(TablerIcons.calendar_exclamation), findsOneWidget);
+      // One outer Row combining the badges, plus one inner Row per badge
+      expect(find.byType(Row), findsNWidgets(3));
     });
 
     testWidgets("renders only the overdue badge when outstanding is zero", (
