@@ -27,7 +27,6 @@ import "package:inventree/widget/order/sales_order_list.dart";
 import "package:inventree/widget/build/build_list.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
-import "package:inventree/widget/spinner.dart";
 import "package:inventree/widget/company/company_list.dart";
 
 /*
@@ -674,7 +673,11 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
     } else if (connecting) {
       title = L10().serverConnecting;
       subtitle = serverAddress;
-      leading = Spinner(icon: TablerIcons.loader_2, color: COLOR_PROGRESS);
+      leading = SizedBox(
+        width: 24,
+        height: 24,
+        child: CircularProgressIndicator(color: COLOR_PROGRESS, strokeWidth: 2),
+      );
     }
 
     return Center(

@@ -6,7 +6,6 @@ import "package:inventree/settings/login.dart";
 
 import "package:inventree/app_colors.dart";
 import "package:inventree/widget/dialogs.dart";
-import "package:inventree/widget/spinner.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/api.dart";
 import "package:inventree/user_profile.dart";
@@ -151,7 +150,11 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
     if (InvenTreeAPI().isConnected()) {
       return Icon(TablerIcons.circle_check, color: COLOR_SUCCESS);
     } else if (InvenTreeAPI().isConnecting()) {
-      return Spinner(icon: TablerIcons.loader_2, color: COLOR_PROGRESS);
+      return SizedBox(
+        width: 24,
+        height: 24,
+        child: CircularProgressIndicator(color: COLOR_PROGRESS, strokeWidth: 2),
+      );
     } else {
       return Icon(TablerIcons.circle_x, color: COLOR_DANGER);
     }
