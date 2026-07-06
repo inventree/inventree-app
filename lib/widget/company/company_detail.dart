@@ -239,6 +239,10 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
       ),
     );
 
+    if (showPk) {
+      tiles.add(pkTile(widget.company.pk));
+    }
+
     if (!widget.company.active) {
       tiles.add(
         ListTile(

@@ -344,6 +344,10 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
   List<Widget> orderTiles(BuildContext context) {
     List<Widget> tiles = [headerTile(context)];
 
+    if (showPk) {
+      tiles.add(pkTile(widget.order.pk));
+    }
+
     InvenTreeCompany? customer = widget.order.customer;
 
     if (supportsProjectCodes && widget.order.hasProjectCode) {

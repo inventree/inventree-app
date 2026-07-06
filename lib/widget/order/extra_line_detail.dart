@@ -68,6 +68,10 @@ class _ExtraLineDetailWidgetState
   List<Widget> getTiles(BuildContext context) {
     List<Widget> tiles = [];
 
+    if (showPk) {
+      tiles.add(pkTile(widget.item.pk));
+    }
+
     tiles.add(
       ListTile(
         title: Text(L10().reference),

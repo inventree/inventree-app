@@ -17,6 +17,7 @@ const String INV_HOME_SHOW_CUSTOMERS = "homeShowCustomers";
 const String INV_HOME_SHOW_SUPPLIERS = "homeShowSuppliers";
 
 const String INV_SCREEN_ORIENTATION = "appScreenOrientation";
+const String INV_SHOW_PK = "showPk";
 
 // Available screen orientation values
 const int SCREEN_ORIENTATION_SYSTEM = 0;

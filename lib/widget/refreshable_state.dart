@@ -5,9 +5,12 @@ import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/barcode/barcode.dart";
+import "package:inventree/l10.dart";
+import "package:inventree/preferences.dart";
 
 import "package:inventree/widget/back.dart";
 import "package:inventree/widget/drawer.dart";
+import "package:inventree/widget/link_icon.dart";
 import "package:inventree/widget/search.dart";
 
 /*
@@ -204,8 +207,21 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T>
 
   bool get loaded => !loading;
 
+  // Whether to display the "pk" (primary key / ID) value of the loaded model
+  bool showPk = false;
+
   // Helper function to return API instance
   InvenTreeAPI get api => InvenTreeAPI();
+
+  // Construct a tile to display the "pk" (primary key / ID) value of a model
+  // Only rendered by callers when the "showPk" setting is enabled
+  Widget pkTile(int pk) {
+    return ListTile(
+      title: Text(L10().pk),
+      leading: Icon(TablerIcons.hash),
+      trailing: LargeText(pk.toString()),
+    );
+  }
 
   @override
   void initState() {
@@ -233,6 +249,8 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T>
     setState(() {
       loading = true;
     });
+
+    showPk = await InvenTreeSettingsManager().getBool(INV_SHOW_PK, false);
 
     await request(context);
 

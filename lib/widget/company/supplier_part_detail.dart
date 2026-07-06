@@ -146,6 +146,10 @@ class _SupplierPartDisplayState
       return tiles;
     }
 
+    if (showPk) {
+      tiles.add(pkTile(widget.supplierPart.pk));
+    }
+
     // Internal Part
     tiles.add(
       ListTile(

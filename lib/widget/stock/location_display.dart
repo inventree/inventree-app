@@ -366,6 +366,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
     List<Widget> tiles = [
       locationDescriptionCard(),
+      if (showPk && location != null) pkTile(location!.pk),
       Expanded(
         child: PaginatedStockLocationList(filters, title: L10().sublocations),
         flex: 10,

@@ -125,6 +125,10 @@ class _BuildItemDetailWidgetState
   List<Widget> getTiles(BuildContext context) {
     List<Widget> tiles = [];
 
+    if (showPk) {
+      tiles.add(pkTile(widget.item.pk));
+    }
+
     // Stock item information
     if (widget.item.stockItem != null) {
       tiles.add(

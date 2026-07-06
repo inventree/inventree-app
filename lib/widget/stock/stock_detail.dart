@@ -525,6 +525,10 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       return tiles;
     }
 
+    if (showPk) {
+      tiles.add(pkTile(widget.item.pk));
+    }
+
     // Location information
     if ((widget.item.locationId > 0) && (widget.item.locationName.isNotEmpty)) {
       tiles.add(

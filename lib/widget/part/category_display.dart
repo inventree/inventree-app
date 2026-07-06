@@ -198,6 +198,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
     List<Widget> tiles = <Widget>[
       getCategoryDescriptionCard(),
+      if (showPk && widget.category != null) pkTile(widget.category!.pk),
       Expanded(
         child: PaginatedPartCategoryList(filters, title: L10().subcategories),
         flex: 10,

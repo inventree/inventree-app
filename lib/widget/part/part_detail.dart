@@ -355,6 +355,10 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       return tiles;
     }
 
+    if (showPk) {
+      tiles.add(pkTile(part.pk));
+    }
+
     if (!part.isActive) {
       tiles.add(
         ListTile(

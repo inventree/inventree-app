@@ -125,6 +125,10 @@ class _ManufacturerPartDisplayState
   List<Widget> getTiles(BuildContext context) {
     List<Widget> tiles = [];
 
+    if (showPk) {
+      tiles.add(pkTile(widget.manufacturerPart.pk));
+    }
+
     // Internal Part
     tiles.add(
       ListTile(

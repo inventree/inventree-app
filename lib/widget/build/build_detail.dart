@@ -385,6 +385,10 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
     // Header tile
     tiles.add(headerTile(context));
 
+    if (showPk) {
+      tiles.add(pkTile(widget.order.pk));
+    }
+
     // Part information
     if (widget.order.partDetail != null) {
       InvenTreePart part = widget.order.partDetail!;

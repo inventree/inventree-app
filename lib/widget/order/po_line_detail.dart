@@ -139,6 +139,10 @@ class _POLineDetailWidgetState extends RefreshableState<POLineDetailWidget> {
   List<Widget> getTiles(BuildContext context) {
     List<Widget> tiles = [];
 
+    if (showPk) {
+      tiles.add(pkTile(widget.item.pk));
+    }
+
     // Reference to the part
     tiles.add(
       ListTile(

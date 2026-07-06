@@ -404,6 +404,10 @@ class _PurchaseOrderDetailState
 
     tiles.add(headerTile(context));
 
+    if (showPk) {
+      tiles.add(pkTile(widget.order.pk));
+    }
+
     if (supportProjectCodes && widget.order.hasProjectCode) {
       tiles.add(
         ListTile(

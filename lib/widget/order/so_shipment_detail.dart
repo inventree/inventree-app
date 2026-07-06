@@ -218,6 +218,10 @@ class _SOShipmentDetailWidgetState
   List<Widget> shipmentTiles(BuildContext context) {
     List<Widget> tiles = [];
 
+    if (showPk) {
+      tiles.add(pkTile(widget.shipment.pk));
+    }
+
     final bool checked = widget.shipment.isChecked;
     final bool shipped = widget.shipment.isShipped;
     final bool delivered = widget.shipment.isDelivered;

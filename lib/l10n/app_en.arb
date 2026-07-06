@@ -406,6 +406,15 @@
   "darkModeEnable": "Enable dark mode",
   "@darkModeEnable": {},
 
+  "showPkValue": "Show ID",
+  "@showPkValue": {},
+
+  "showPkValueDetail": "Display the internal ID (PK) value for parts, stock items and other objects",
+  "@showPkValueDetail": {},
+
+  "pk": "ID",
+  "@pk": {},
+
   "delete": "Delete",
   "@delete": {},
 
