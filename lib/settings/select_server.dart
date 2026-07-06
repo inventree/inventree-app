@@ -450,6 +450,14 @@ class _ProfileEditState extends State<ProfileEditWidget> {
                 },
               ),
               Divider(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: Text(
+                  L10().connectionCheckDetail,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ),
+              const SizedBox(height: 8),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(

@@ -192,8 +192,11 @@ class InvenTreeAPI {
     }
   }
 
-  // Minimum required API version for server
-  // 2023-03-04
+  // Minimum required API version for server.
+  // Deliberately kept low/permissive: individual features are gated by their
+  // own apiVersion checks below (up to 496 at last count), so this floor
+  // only needs to reject servers old enough to predate those checks
+  // entirely, not enforce feature parity. Last reviewed 2026-07-06.
   static const _minApiVersion = 100;
 
   bool _strictHttps = false;
@@ -970,7 +973,11 @@ class InvenTreeAPI {
       });
     } on SocketException catch (error) {
       debug("SocketException at ${url}: ${error.toString()}");
-      showServerError(url, L10().connectionRefused, error.toString());
+      showServerError(
+        url,
+        L10().connectionRefused,
+        L10().connectionRefusedDetail,
+      );
       return;
     } on TimeoutException {
       debug("TimeoutException at ${url}");
@@ -1005,8 +1012,12 @@ class InvenTreeAPI {
       } else {
         showStatusCodeError(url, response.statusCode);
       }
-    } on SocketException catch (error) {
-      showServerError(url, L10().connectionRefused, error.toString());
+    } on SocketException {
+      showServerError(
+        url,
+        L10().connectionRefused,
+        L10().connectionRefusedDetail,
+      );
     } on TimeoutException {
       showTimeoutError(url);
     } catch (error, stackTrace) {
@@ -1088,7 +1099,11 @@ class InvenTreeAPI {
         );
       }
     } on SocketException catch (error) {
-      showServerError(url, L10().connectionRefused, error.toString());
+      showServerError(
+        url,
+        L10().connectionRefused,
+        L10().connectionRefusedDetail,
+      );
       response.error = "SocketException";
       response.errorDetail = error.toString();
     } on FormatException {
@@ -1313,10 +1328,10 @@ class InvenTreeAPI {
     HttpClientRequest? _request;
 
     // Attempt to open a connection to the server
+    // (retries once after a short delay on a transient network blip -
+    // nothing has been sent yet at this point, so a retry here is safe)
     try {
-      _request = await httpClient
-          .openUrl(method, _uri)
-          .timeout(Duration(seconds: 10));
+      _request = await _openUrlWithRetry(method, _uri);
 
       // Default headers
       defaultHeaders().forEach((key, value) {
@@ -1331,7 +1346,11 @@ class InvenTreeAPI {
       return _request;
     } on SocketException catch (error) {
       debug("SocketException at ${url}: ${error.toString()}");
-      showServerError(url, L10().connectionRefused, error.toString());
+      showServerError(
+        url,
+        L10().connectionRefused,
+        L10().connectionRefusedDetail,
+      );
       return null;
     } on TimeoutException {
       debug("TimeoutException at ${url}");
@@ -1339,7 +1358,11 @@ class InvenTreeAPI {
       return null;
     } on OSError catch (error) {
       debug("OSError at ${url}: ${error.toString()}");
-      showServerError(url, L10().connectionRefused, error.toString());
+      showServerError(
+        url,
+        L10().connectionRefused,
+        L10().connectionRefusedDetail,
+      );
       return null;
     } on CertificateException catch (error) {
       final HttpClientRequest? retried = await _retryAfterCertificateTrust(
@@ -1380,6 +1403,31 @@ class InvenTreeAPI {
       );
 
       return null;
+    }
+  }
+
+  /*
+   * Open a connection to the given URL, retrying once after a short delay
+   * if the first attempt fails with a transient network error. Nothing has
+   * been sent to the server yet at this point, so a retry here is safe
+   * regardless of HTTP method (unlike retrying after a response has already
+   * started being read/sent).
+   */
+  Future<HttpClientRequest> _openUrlWithRetry(String method, Uri uri) async {
+    try {
+      return await httpClient
+          .openUrl(method, uri)
+          .timeout(Duration(seconds: 10));
+    } on SocketException {
+      await Future.delayed(const Duration(seconds: 2));
+      return await httpClient
+          .openUrl(method, uri)
+          .timeout(Duration(seconds: 10));
+    } on TimeoutException {
+      await Future.delayed(const Duration(seconds: 2));
+      return await httpClient
+          .openUrl(method, uri)
+          .timeout(Duration(seconds: 10));
     }
   }
 
@@ -1534,7 +1582,11 @@ class InvenTreeAPI {
       response.error = "HTTPException";
       response.errorDetail = error.toString();
     } on SocketException catch (error) {
-      showServerError(url, L10().connectionRefused, error.toString());
+      showServerError(
+        url,
+        L10().connectionRefused,
+        L10().connectionRefusedDetail,
+      );
       response.error = "SocketException";
       response.errorDetail = error.toString();
     } on CertificateException catch (error) {
