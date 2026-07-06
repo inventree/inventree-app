@@ -63,10 +63,6 @@ class InvenTreePurchaseOrder extends InvenTreeOrder {
       },
     };
 
-    if (!InvenTreeAPI().supportsProjectCodes) {
-      fields.remove("project_code");
-    }
-
     if (!InvenTreeAPI().supportsPurchaseOrderDestination) {
       fields.remove("destination");
     }

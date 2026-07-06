@@ -168,12 +168,6 @@ class InvenTreeStockItem extends InvenTreeModel {
       fields["quantity"]?["hidden"] = true;
     }
 
-    // Old API does not support these fields
-    if (!api.supportsStockAdjustExtraFields) {
-      fields.remove("packaging");
-      fields.remove("status");
-    }
-
     return fields;
   }
 

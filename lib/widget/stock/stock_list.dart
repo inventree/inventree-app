@@ -112,10 +112,6 @@ class _PaginatedStockItemListState
       },
     };
 
-    if (!InvenTreeAPI().supportsStatusLabelEndpoints) {
-      filters.remove("status");
-    }
-
     return filters;
   }
 

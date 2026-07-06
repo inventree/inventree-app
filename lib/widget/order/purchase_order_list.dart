@@ -79,17 +79,15 @@ class _PurchaseOrderListWidgetState
   List<SpeedDialChild> barcodeButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
-    if (api.supportsBarcodePOReceiveEndpoint) {
-      actions.add(
-        SpeedDialChild(
-          child: Icon(Icons.barcode_reader),
-          label: L10().scanReceivedParts,
-          onTap: () async {
-            scanBarcode(context, handler: POReceiveBarcodeHandler());
-          },
-        ),
-      );
-    }
+    actions.add(
+      SpeedDialChild(
+        child: Icon(Icons.barcode_reader),
+        label: L10().scanReceivedParts,
+        onTap: () async {
+          scanBarcode(context, handler: POReceiveBarcodeHandler());
+        },
+      ),
+    );
 
     return actions;
   }

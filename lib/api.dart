@@ -291,24 +291,6 @@ class InvenTreeAPI {
   String get serverVersion => (serverInfo["version"] ?? "") as String;
   int get apiVersion => (serverInfo["apiVersion"] ?? 1) as int;
 
-  // Status label endpoints API v105 or newer
-  bool get supportsStatusLabelEndpoints => apiVersion >= 105;
-
-  // Regex search API v106 or newer
-  bool get supportsRegexSearch => apiVersion >= 106;
-
-  // Order barcodes API v107 or newer
-  bool get supportsOrderBarcodes => apiVersion >= 107;
-
-  // Project codes require v109 or newer
-  bool get supportsProjectCodes => apiVersion >= 109;
-
-  // Does the server support extra fields on stock adjustment actions?
-  bool get supportsStockAdjustExtraFields => apiVersion >= 133;
-
-  // Does the server support receiving items against a PO using barcodes?
-  bool get supportsBarcodePOReceiveEndpoint => apiVersion >= 139;
-
   // Does the server support adding line items to a PO using barcodes?
   bool get supportsBarcodePOAddLineEndpoint => apiVersion >= 153;
 

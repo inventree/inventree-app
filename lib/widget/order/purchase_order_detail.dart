@@ -241,7 +241,7 @@ class _PurchaseOrderDetailState
   List<SpeedDialChild> barcodeButtons(BuildContext context) {
     List<SpeedDialChild> actions = [];
 
-    if (api.supportsBarcodePOReceiveEndpoint && widget.order.isPlaced) {
+    if (widget.order.isPlaced) {
       actions.add(
         SpeedDialChild(
           child: Icon(Icons.barcode_reader),
@@ -288,12 +288,10 @@ class _PurchaseOrderDetailState
       INV_PO_SHOW_CAMERA,
       true,
     );
-    supportProjectCodes =
-        api.supportsProjectCodes &&
-        await api.getGlobalBooleanSetting(
-          "PROJECT_CODES_ENABLED",
-          backup: true,
-        );
+    supportProjectCodes = await api.getGlobalBooleanSetting(
+      "PROJECT_CODES_ENABLED",
+      backup: true,
+    );
 
     completedLines = 0;
 
