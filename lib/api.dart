@@ -557,8 +557,9 @@ class InvenTreeAPI {
   Future<APIResponse> fetchToken(
     UserProfile userProfile,
     String username,
-    String password,
-  ) async {
+    String password, {
+    bool showDialog = true,
+  }) async {
     debug("Fetching user token from ${userProfile.server}");
 
     profile = userProfile;
@@ -609,18 +610,22 @@ class InvenTreeAPI {
       headers: {HttpHeaders.authorizationHeader: authHeader},
     );
 
+    final data = response.asMap();
+
     // Invalid response
     if (!response.successful()) {
-      switch (response.statusCode) {
-        case 401:
-        case 403:
-          showServerError(
-            apiUrl,
-            L10().serverAuthenticationError,
-            L10().invalidUsernamePassword,
-          );
-        default:
-          showStatusCodeError(apiUrl, response.statusCode);
+      if (showDialog) {
+        switch (response.statusCode) {
+          case 401:
+          case 403:
+            showServerError(
+              apiUrl,
+              L10().serverAuthenticationError,
+              L10().invalidUsernamePassword,
+            );
+          default:
+            showStatusCodeError(apiUrl, response.statusCode);
+        }
       }
 
       debug("Token request failed: STATUS ${response.statusCode}");
@@ -628,16 +633,17 @@ class InvenTreeAPI {
       if (response.data != null) {
         debug("Response data: ${response.data.toString()}");
       }
-    }
-
-    final data = response.asMap();
-
-    if (!data.containsKey("token")) {
-      showServerError(
-        apiUrl,
-        L10().tokenMissing,
-        L10().tokenMissingFromResponse,
-      );
+    } else if (!data.containsKey("token")) {
+      // The request was otherwise successful, but the response is missing
+      // the expected token field - a distinct (and much rarer) problem from
+      // an authentication failure, so only reachable when that did NOT occur
+      if (showDialog) {
+        showServerError(
+          apiUrl,
+          L10().tokenMissing,
+          L10().tokenMissingFromResponse,
+        );
+      }
     }
 
     // Save the token to the user profile

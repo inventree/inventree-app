@@ -187,29 +187,39 @@ class UserProfileDBManager {
       }
     }
 
-    // If there are no available profiles, create a demo profile
-    if (profileList.isEmpty) {
-      bool added = await InvenTreeSettingsManager().getBool(
-        "demo_profile_added",
-        false,
-      );
+    return profileList;
+  }
 
-      // Don't add a new profile if we have added it previously
-      if (!added) {
-        await InvenTreeSettingsManager().setValue("demo_profile_added", true);
+  /*
+   * Seed a demo server profile, if this is the first time the app has been
+   * run with zero profiles configured. Explicit (called once from app
+   * startup) rather than a side effect of reading the profile list.
+   */
+  Future<void> seedDemoProfileIfNeeded() async {
+    final profiles = await getAllProfiles();
 
-        UserProfile demoProfile = UserProfile(
-          name: "InvenTree Demo",
-          server: "https://demo.inventree.org",
-        );
-
-        await addProfile(demoProfile);
-
-        profileList.add(demoProfile);
-      }
+    if (profiles.isNotEmpty) {
+      return;
     }
 
-    return profileList;
+    bool added = await InvenTreeSettingsManager().getBool(
+      "demo_profile_added",
+      false,
+    );
+
+    // Don't add a new profile if we have added it previously
+    if (added) {
+      return;
+    }
+
+    await InvenTreeSettingsManager().setValue("demo_profile_added", true);
+
+    UserProfile demoProfile = UserProfile(
+      name: "InvenTree Demo",
+      server: "https://demo.inventree.org",
+    );
+
+    await addProfile(demoProfile);
   }
 
   /*
