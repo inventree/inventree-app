@@ -291,18 +291,9 @@ class InvenTreeAPI {
   String get serverVersion => (serverInfo["version"] ?? "") as String;
   int get apiVersion => (serverInfo["apiVersion"] ?? 1) as int;
 
-  // Does the server support adding line items to a PO using barcodes?
-  bool get supportsBarcodePOAddLineEndpoint => apiVersion >= 153;
-
-  // Does the server support allocating stock to sales order using barcodes?
-  bool get supportsBarcodeSOAllocateEndpoint => apiVersion >= 160;
-
-  // Does the server support the "modern" test results API
-  // Ref: https://github.com/inventree/InvenTree/pull/6430/
-  bool get supportsModernTestResults => apiVersion >= 169;
-
-  // Does the server support "null" top-level filtering for PartCategory and StockLocation endpoints?
-  bool get supportsNullTopLevelFiltering => apiVersion < 174;
+  /* API Version Checks
+   * These functions are used to determine if the server supports a particular feature
+   */
 
   // Does the server support "active" status on Company and SupplierPart API endpoints?
   bool get supportsCompanyActiveStatus => apiVersion >= 189;

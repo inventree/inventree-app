@@ -258,7 +258,7 @@ class _PurchaseOrderDetailState
       );
     }
 
-    if (widget.order.isPending && api.supportsBarcodePOAddLineEndpoint) {
+    if (widget.order.isPending) {
       actions.add(
         SpeedDialChild(
           child: Icon(TablerIcons.circle_plus, color: COLOR_SUCCESS),

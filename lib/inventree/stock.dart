@@ -34,7 +34,6 @@ class InvenTreeStockItemTestResult extends InvenTreeModel {
   Map<String, Map<String, dynamic>> formFields() {
     Map<String, Map<String, dynamic>> fields = {
       "stock_item": {"hidden": true},
-      "test": {},
       "template": {
         "filters": {"enabled": "true"},
       },
@@ -43,12 +42,6 @@ class InvenTreeStockItemTestResult extends InvenTreeModel {
       "notes": {},
       "attachment": {},
     };
-
-    if (InvenTreeAPI().supportsModernTestResults) {
-      fields.remove("test");
-    } else {
-      fields.remove("template");
-    }
 
     return fields;
   }
