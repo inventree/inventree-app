@@ -1121,6 +1121,9 @@
   "profileConnect": "Connect to Server",
   "@profileConnect": {},
 
+  "profileSwitchConfirm": "This will disconnect your current session. Switch server profile?",
+  "@profileSwitchConfirm": {},
+
   "profileEdit": "Edit Server Profile",
   "@profileEdit": {},
 

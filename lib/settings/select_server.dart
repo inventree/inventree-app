@@ -69,7 +69,34 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
     });
   }
 
+  /*
+   * Select the given profile as "active".
+   * If a *different* server is currently connected, confirm with the
+   * user first, since this immediately tears down the active session.
+   */
   Future<void> _selectProfile(BuildContext context, UserProfile profile) async {
+    final bool switchingAwayFromActiveSession =
+        InvenTreeAPI().isConnected() &&
+        InvenTreeAPI().profile?.key != profile.key;
+
+    if (switchingAwayFromActiveSession) {
+      confirmationDialog(
+        L10().profileConnect,
+        L10().profileSwitchConfirm,
+        icon: TablerIcons.server,
+        onAccept: () {
+          _doSelectProfile(context, profile);
+        },
+      );
+    } else {
+      _doSelectProfile(context, profile);
+    }
+  }
+
+  Future<void> _doSelectProfile(
+    BuildContext context,
+    UserProfile profile,
+  ) async {
     // Disconnect InvenTree
     InvenTreeAPI().disconnectFromServer();
 
@@ -160,6 +187,76 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
     }
   }
 
+  /*
+   * Show the profile action menu (Connect / Edit / Logout / Delete).
+   * Reachable via the always-visible trailing "more" button, or long-press
+   * as a bonus shortcut.
+   */
+  void _showProfileActions(BuildContext context, UserProfile profile) {
+    OneContext().showDialog(
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: Text(profile.name),
+          children: <Widget>[
+            Divider(),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _selectProfile(context, profile);
+              },
+              child: ListTile(
+                title: Text(L10().profileConnect),
+                leading: Icon(TablerIcons.server),
+              ),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _editProfile(context, userProfile: profile);
+              },
+              child: ListTile(
+                title: Text(L10().profileEdit),
+                leading: Icon(TablerIcons.edit),
+              ),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _logoutProfile(context, userProfile: profile);
+              },
+              child: ListTile(
+                title: Text(L10().profileLogout),
+                leading: Icon(TablerIcons.logout),
+              ),
+            ),
+            Divider(),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.of(context).pop();
+                confirmationDialog(
+                  L10().delete,
+                  L10().profileDelete + "?",
+                  color: COLOR_DANGER,
+                  icon: TablerIcons.trash,
+                  onAccept: () {
+                    _deleteProfile(profile);
+                  },
+                );
+              },
+              child: ListTile(
+                title: Text(
+                  L10().profileDelete,
+                  style: TextStyle(color: COLOR_DANGER),
+                ),
+                leading: Icon(TablerIcons.trash, color: COLOR_DANGER),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [];
@@ -178,74 +275,24 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
             leading: profile.hasToken
                 ? Icon(TablerIcons.user_check, color: COLOR_SUCCESS)
                 : Icon(TablerIcons.user_cancel, color: COLOR_WARNING),
-            trailing: _getProfileIcon(profile),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (_getProfileIcon(profile) != null) _getProfileIcon(profile)!,
+                IconButton(
+                  icon: Icon(Icons.more_vert),
+                  tooltip: L10().actions,
+                  onPressed: () {
+                    _showProfileActions(context, profile);
+                  },
+                ),
+              ],
+            ),
             onTap: () {
               _selectProfile(context, profile);
             },
             onLongPress: () {
-              OneContext().showDialog(
-                builder: (BuildContext context) {
-                  return SimpleDialog(
-                    title: Text(profile.name),
-                    children: <Widget>[
-                      Divider(),
-                      SimpleDialogOption(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          _selectProfile(context, profile);
-                        },
-                        child: ListTile(
-                          title: Text(L10().profileConnect),
-                          leading: Icon(TablerIcons.server),
-                        ),
-                      ),
-                      SimpleDialogOption(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          _editProfile(context, userProfile: profile);
-                        },
-                        child: ListTile(
-                          title: Text(L10().profileEdit),
-                          leading: Icon(TablerIcons.edit),
-                        ),
-                      ),
-                      SimpleDialogOption(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          _logoutProfile(context, userProfile: profile);
-                        },
-                        child: ListTile(
-                          title: Text(L10().profileLogout),
-                          leading: Icon(TablerIcons.logout),
-                        ),
-                      ),
-                      Divider(),
-                      SimpleDialogOption(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          // Navigator.of(context, rootNavigator: true).pop();
-                          confirmationDialog(
-                            L10().delete,
-                            L10().profileDelete + "?",
-                            color: COLOR_DANGER,
-                            icon: TablerIcons.trash,
-                            onAccept: () {
-                              _deleteProfile(profile);
-                            },
-                          );
-                        },
-                        child: ListTile(
-                          title: Text(
-                            L10().profileDelete,
-                            style: TextStyle(color: COLOR_DANGER),
-                          ),
-                          leading: Icon(TablerIcons.trash, color: COLOR_DANGER),
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              );
+              _showProfileActions(context, profile);
             },
           ),
         );

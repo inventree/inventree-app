@@ -759,31 +759,52 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
           ],
         ),
         actions: [
-          IconButton(
-            icon: Stack(
-              children: [
-                Icon(TablerIcons.server),
-                Positioned(
-                  right: 0,
-                  bottom: 0,
-                  child: Container(
-                    width: 10,
-                    height: 10,
-                    decoration: BoxDecoration(
-                      color: connected
-                          ? COLOR_SUCCESS
-                          : (connecting ? COLOR_PROGRESS : COLOR_DANGER),
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        width: 1.5,
+          InkWell(
+            onTap: _selectProfile,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (connected &&
+                      (InvenTreeAPI().profile?.name ?? "").isNotEmpty)
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 120),
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 6),
+                        child: Text(
+                          InvenTreeAPI().profile!.name,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
                       ),
                     ),
+                  Stack(
+                    children: [
+                      Icon(TablerIcons.server),
+                      Positioned(
+                        right: 0,
+                        bottom: 0,
+                        child: Container(
+                          width: 10,
+                          height: 10,
+                          decoration: BoxDecoration(
+                            color: connected
+                                ? COLOR_SUCCESS
+                                : (connecting ? COLOR_PROGRESS : COLOR_DANGER),
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              width: 1.5,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-            onPressed: _selectProfile,
           ),
         ],
       ),
