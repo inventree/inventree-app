@@ -291,9 +291,6 @@ class InvenTreeAPI {
   String get serverVersion => (serverInfo["version"] ?? "") as String;
   int get apiVersion => (serverInfo["apiVersion"] ?? 1) as int;
 
-  // Consolidated search request API v102 or newer
-  bool get supportsConsolidatedSearch => apiVersion >= 102;
-
   // ReturnOrder supports API v104 or newer
   bool get supportsReturnOrders => apiVersion >= 104;
 

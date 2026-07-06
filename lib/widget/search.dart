@@ -255,124 +255,37 @@ class _SearchDisplayState extends RefreshableState<SearchWidget> {
       return;
     }
 
-    // Consolidated search allows us to perform *all* searches in a single query
-    if (api.supportsConsolidatedSearch) {
-      Map<String, dynamic> body = {
-        "limit": 1,
-        "search": term,
+    Map<String, dynamic> body = {
+      "limit": 1,
+      "search": term,
 
-        InvenTreePart.MODEL_TYPE: {},
-        InvenTreePartCategory.MODEL_TYPE: {},
-        InvenTreeStockItem.MODEL_TYPE: {},
-        InvenTreeStockLocation.MODEL_TYPE: {},
-        InvenTreePurchaseOrder.MODEL_TYPE: {},
-        InvenTreeSalesOrder.MODEL_TYPE: {},
-        InvenTreeSupplierPart.MODEL_TYPE: {},
-        InvenTreeManufacturerPart.MODEL_TYPE: {},
-      };
+      InvenTreePart.MODEL_TYPE: {},
+      InvenTreePartCategory.MODEL_TYPE: {},
+      InvenTreeStockItem.MODEL_TYPE: {},
+      InvenTreeStockLocation.MODEL_TYPE: {},
+      InvenTreePurchaseOrder.MODEL_TYPE: {},
+      InvenTreeSalesOrder.MODEL_TYPE: {},
+      InvenTreeSupplierPart.MODEL_TYPE: {},
+      InvenTreeManufacturerPart.MODEL_TYPE: {},
+    };
 
-      if (api.supportsSplitCompanySearch) {
-        body["supplier"] = {};
-        body["manufacturer"] = {};
-        body["customer"] = {};
-      } else {
-        // All "company" results are returned in a single query
-        body[InvenTreeCompany.MODEL_TYPE] = {};
-      }
-
-      if (body.isNotEmpty) {
-        if (mounted) {
-          setState(() {
-            nPendingSearches = 1;
-          });
-
-          _search_query = CancelableOperation.fromFuture(_perform_search(body));
-        }
-      }
+    if (api.supportsSplitCompanySearch) {
+      body["supplier"] = {};
+      body["manufacturer"] = {};
+      body["customer"] = {};
     } else {
-      legacySearch(term);
-    }
-  }
-
-  /*
-   * Perform "legacy" search (without consolidated search API endpoint
-   */
-  Future<void> legacySearch(String term) async {
-    // Search parts
-    if (InvenTreePart().canView) {
-      nPendingSearches++;
-      InvenTreePart().count(searchQuery: term).then((int n) {
-        if (term == searchController.text) {
-          if (mounted) {
-            decrementPendingSearches();
-            setState(() {
-              nPartResults = n;
-            });
-          }
-        }
-      });
+      // All "company" results are returned in a single query
+      body[InvenTreeCompany.MODEL_TYPE] = {};
     }
 
-    // Search part categories
-    if (InvenTreePartCategory().canView) {
-      nPendingSearches++;
-      InvenTreePartCategory().count(searchQuery: term).then((int n) {
-        if (term == searchController.text) {
-          if (mounted) {
-            decrementPendingSearches();
-            setState(() {
-              nCategoryResults = n;
-            });
-          }
-        }
-      });
-    }
+    if (body.isNotEmpty) {
+      if (mounted) {
+        setState(() {
+          nPendingSearches = 1;
+        });
 
-    // Search stock items
-    if (InvenTreeStockItem().canView) {
-      nPendingSearches++;
-      InvenTreeStockItem().count(searchQuery: term).then((int n) {
-        if (term == searchController.text) {
-          if (mounted) {
-            decrementPendingSearches();
-            setState(() {
-              nStockResults = n;
-            });
-          }
-        }
-      });
-    }
-
-    // Search stock locations
-    if (InvenTreeStockLocation().canView) {
-      nPendingSearches++;
-      InvenTreeStockLocation().count(searchQuery: term).then((int n) {
-        if (term == searchController.text) {
-          if (mounted) {
-            decrementPendingSearches();
-            setState(() {
-              nLocationResults = n;
-            });
-          }
-        }
-      });
-    }
-
-    // Search purchase orders
-    if (InvenTreePurchaseOrder().canView) {
-      nPendingSearches++;
-      InvenTreePurchaseOrder()
-          .count(searchQuery: term, filters: {"outstanding": "true"})
-          .then((int n) {
-            if (term == searchController.text) {
-              if (mounted) {
-                decrementPendingSearches();
-                setState(() {
-                  nPurchaseOrderResults = n;
-                });
-              }
-            }
-          });
+        _search_query = CancelableOperation.fromFuture(_perform_search(body));
+      }
     }
   }
 
