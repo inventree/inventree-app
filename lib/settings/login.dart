@@ -54,8 +54,9 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
       hideLoadingOverlay();
 
       if (response.successful()) {
-        // Return to the server selector screen
-        Navigator.of(context).pop();
+        // Return directly to the home screen, rather than leaving the user
+        // on the server-selector screen to navigate back manually
+        Navigator.of(context).popUntil((route) => route.isFirst);
       } else {
         var data = response.asMap();
 
