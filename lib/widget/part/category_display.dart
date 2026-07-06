@@ -192,7 +192,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
 
     if (parent != null) {
       filters["parent"] = parent.toString();
-    } else if (api.supportsNullTopLevelFiltering) {
+    } else {
       filters["parent"] = "null";
     }
 

@@ -360,7 +360,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
 
     if (parent != null) {
       filters["parent"] = parent.toString();
-    } else if (api.supportsNullTopLevelFiltering) {
+    } else {
       filters["parent"] = "null";
     }
 
