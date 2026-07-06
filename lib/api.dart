@@ -291,12 +291,6 @@ class InvenTreeAPI {
   String get serverVersion => (serverInfo["version"] ?? "") as String;
   int get apiVersion => (serverInfo["apiVersion"] ?? 1) as int;
 
-  // ReturnOrder supports API v104 or newer
-  bool get supportsReturnOrders => apiVersion >= 104;
-
-  // "Contact" model exposed to API
-  bool get supportsContactModel => apiVersion >= 104;
-
   // Status label endpoints API v105 or newer
   bool get supportsStatusLabelEndpoints => apiVersion >= 105;
 

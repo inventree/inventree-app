@@ -367,11 +367,6 @@ class _PurchaseOrderDetailState
     // Cannot edit supplier field from here
     fields.remove("supplier");
 
-    // Contact model not supported by server
-    if (!api.supportsContactModel) {
-      fields.remove("contact");
-    }
-
     // ProjectCode model not supported by server
     if (!supportProjectCodes) {
       fields.remove("project_code");

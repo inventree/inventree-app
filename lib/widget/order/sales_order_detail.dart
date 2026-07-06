@@ -312,11 +312,6 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
 
     fields.remove("customer");
 
-    // Contact model not supported by server
-    if (!api.supportsContactModel) {
-      fields.remove("contact");
-    }
-
     // ProjectCode model not supported by server
     if (!supportsProjectCodes) {
       fields.remove("project_code");
