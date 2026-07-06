@@ -471,11 +471,7 @@ class InvenTreeAPI {
 
     if (!response.successful()) {
       debug("Server returned invalid response: ${response.statusCode}");
-      showStatusCodeError(
-        apiUrl,
-        response.statusCode,
-        details: response.data.toString(),
-      );
+      showStatusCodeError(apiUrl, response.statusCode, details: response.data);
       return false;
     }
 
@@ -1535,7 +1531,7 @@ class InvenTreeAPI {
           showStatusCodeError(
             url,
             _response.statusCode,
-            details: response.data.toString(),
+            details: response.data,
           );
         }
       }

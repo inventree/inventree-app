@@ -310,17 +310,59 @@ Future<void> showServerError(
 Future<void> showStatusCodeError(
   String url,
   int status, {
-  String details = "",
+  dynamic details,
 }) async {
   String msg = statusCodeToString(status);
   String extra = url + "\n" + "${L10().statusCode}: ${status}";
 
-  if (details.isNotEmpty) {
+  String errorDetails = extractErrorDetails(details);
+
+  if (errorDetails.isNotEmpty) {
     extra += "\n";
-    extra += details;
+    extra += errorDetails;
   }
 
   showServerError(url, msg, extra);
+}
+
+/*
+ * Attempt to extract a human-readable error message from API response data.
+ * The server commonly returns error information under a "detail", "error"
+ * or "errors" key - prefer displaying that over the raw JSON.
+ * Falls back to displaying the raw data as a list of key : value pairs.
+ */
+String extractErrorDetails(dynamic data) {
+  if (data is Map) {
+    for (final key in ["detail", "error", "errors"]) {
+      var value = data[key];
+
+      if (value == null) {
+        continue;
+      }
+
+      if (value is List) {
+        return value.map((e) => e.toString()).join("\n");
+      }
+
+      return value.toString();
+    }
+
+    if (data.isNotEmpty) {
+      return data.entries.map((e) => "${e.key}: ${e.value}").join("\n");
+    }
+
+    return "";
+  }
+
+  if (data is List && data.isNotEmpty) {
+    return data.map((e) => e.toString()).join("\n");
+  }
+
+  if (data is String) {
+    return data;
+  }
+
+  return "";
 }
 
 /*

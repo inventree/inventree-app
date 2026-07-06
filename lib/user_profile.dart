@@ -112,9 +112,11 @@ class UserProfileDBManager {
       profile.token = secureToken;
     } else if (profile.token.isNotEmpty) {
       // Legacy profile - migrate its plaintext token into secure storage,
-      // and strip it from the Sembast record on next write
+      // and strip it from the Sembast record now. Must use put() (full
+      // replace) rather than update() (merge), otherwise the stale legacy
+      // "token" field survives and gets re-migrated on every future read.
       await _saveToken(key, profile.token);
-      await store.record(key).update(await _db, profile.toJson());
+      await store.record(key).put(await _db, profile.toJson());
     }
 
     return profile;
@@ -185,7 +187,10 @@ class UserProfileDBManager {
       return result;
     }
 
-    await store.record(profile.key).update(await _db, profile.toJson());
+    // put() (full replace) rather than update() (merge) - a legacy record's
+    // stale "token" field must not survive a write, or it will be
+    // re-migrated into secure storage on the next read (see _loadToken)
+    await store.record(profile.key).put(await _db, profile.toJson());
     await _saveToken(profile.key!, profile.token);
 
     return true;
