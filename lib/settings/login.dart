@@ -44,19 +44,28 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
 
       showLoadingOverlay();
 
-      // Attempt login
+      // Attempt login - suppress the generic error dialog, since this screen
+      // shows its own contextual inline error message below
       final response = await InvenTreeAPI().fetchToken(
         widget.profile,
         username,
         password,
+        showDialog: false,
       );
 
-      hideLoadingOverlay();
-
       if (response.successful()) {
-        // Return to the server selector screen
-        Navigator.of(context).pop();
+        // A token was issued - immediately connect using it, then return
+        // directly to the home screen (rather than leaving the user on the
+        // server-selector screen to navigate back manually)
+        await InvenTreeAPI().connectToServer(widget.profile);
+
+        hideLoadingOverlay();
+
+        if (context.mounted) {
+          Navigator.of(context).popUntil((route) => route.isFirst);
+        }
       } else {
+        hideLoadingOverlay();
         var data = response.asMap();
 
         String err;
@@ -104,7 +113,6 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
     return Scaffold(
       appBar: AppBar(
         title: Text(L10().login),
-        backgroundColor: COLOR_APP_BAR,
         actions: [
           IconButton(
             icon: Icon(TablerIcons.transition_right, color: COLOR_SUCCESS),

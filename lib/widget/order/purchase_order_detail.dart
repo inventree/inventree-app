@@ -95,7 +95,7 @@ class _PurchaseOrderDetailState
     if (showCameraShortcut && widget.order.canEdit) {
       actions.add(
         SpeedDialChild(
-          child: Icon(TablerIcons.camera, color: Colors.blue),
+          child: Icon(TablerIcons.camera, color: COLOR_ACTION),
           label: L10().takePicture,
           onTap: () async {
             _uploadImage(context);
@@ -108,7 +108,7 @@ class _PurchaseOrderDetailState
       if (widget.order.isPending) {
         actions.add(
           SpeedDialChild(
-            child: Icon(TablerIcons.circle_plus, color: Colors.green),
+            child: Icon(TablerIcons.circle_plus, color: COLOR_SUCCESS),
             label: L10().lineItemAdd,
             onTap: () async {
               _addLineItem(context);
@@ -118,7 +118,7 @@ class _PurchaseOrderDetailState
 
         actions.add(
           SpeedDialChild(
-            child: Icon(TablerIcons.send, color: Colors.blue),
+            child: Icon(TablerIcons.send, color: COLOR_ACTION),
             label: L10().issueOrder,
             onTap: () async {
               _issueOrder(context);
@@ -130,7 +130,7 @@ class _PurchaseOrderDetailState
       if (widget.order.isOpen && !widget.order.isPending) {
         actions.add(
           SpeedDialChild(
-            child: Icon(TablerIcons.circle_check, color: Colors.green),
+            child: Icon(TablerIcons.circle_check, color: COLOR_SUCCESS),
             label: L10().completeOrder,
             onTap: () async {
               _completeOrder(context);
@@ -142,7 +142,7 @@ class _PurchaseOrderDetailState
       if (widget.order.isOpen) {
         actions.add(
           SpeedDialChild(
-            child: Icon(TablerIcons.circle_x, color: Colors.red),
+            child: Icon(TablerIcons.circle_x, color: COLOR_DANGER),
             label: L10().cancelOrder,
             onTap: () async {
               _cancelOrder(context);
@@ -193,7 +193,7 @@ class _PurchaseOrderDetailState
       L10().issueOrder,
       L10().issueOrderConfirm,
       icon: TablerIcons.send,
-      color: Colors.blue,
+      color: COLOR_ACTION,
       acceptText: L10().issue,
       onAccept: () async {
         widget.order.issueOrder().then((dynamic) {
@@ -227,7 +227,7 @@ class _PurchaseOrderDetailState
       L10().cancelOrder,
       L10().cancelOrderConfirm,
       icon: TablerIcons.circle_x,
-      color: Colors.red,
+      color: COLOR_DANGER,
       acceptText: L10().cancel,
       onAccept: () async {
         widget.order.cancelOrder().then((dynamic) {

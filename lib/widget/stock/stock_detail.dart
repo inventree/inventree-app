@@ -94,7 +94,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       if (!widget.item.isSerialized()) {
         actions.add(
           SpeedDialChild(
-            child: Icon(TablerIcons.circle_check, color: Colors.blue),
+            child: Icon(TablerIcons.circle_check, color: COLOR_ACTION),
             label: L10().countStock,
             onTap: _countStockDialog,
           ),
@@ -102,7 +102,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
         actions.add(
           SpeedDialChild(
-            child: Icon(TablerIcons.circle_minus, color: Colors.red),
+            child: Icon(TablerIcons.circle_minus, color: COLOR_DANGER),
             label: L10().removeStock,
             onTap: _removeStockDialog,
           ),
@@ -110,7 +110,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
         actions.add(
           SpeedDialChild(
-            child: Icon(TablerIcons.circle_plus, color: Colors.green),
+            child: Icon(TablerIcons.circle_plus, color: COLOR_SUCCESS),
             label: L10().addStock,
             onTap: _addStockDialog,
           ),
@@ -144,7 +144,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
     if (widget.item.canDelete) {
       actions.add(
         SpeedDialChild(
-          child: Icon(TablerIcons.trash, color: Colors.red),
+          child: Icon(TablerIcons.trash, color: COLOR_DANGER),
           label: L10().stockItemDelete,
           onTap: () {
             _deleteItem(context);
@@ -322,7 +322,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       L10().stockItemDelete,
       L10().stockItemDeleteConfirm,
       icon: TablerIcons.trash,
-      color: Colors.red,
+      color: COLOR_DANGER,
       acceptText: L10().delete,
       onAccept: () async {
         final bool result = await widget.item.delete();

@@ -3,6 +3,7 @@ import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/api.dart";
+import "package:inventree/app_colors.dart";
 import "package:inventree/l10.dart";
 
 import "package:inventree/inventree/company.dart";
@@ -55,7 +56,7 @@ class _CompanyListWidgetState extends RefreshableState<CompanyListWidget> {
     if (InvenTreeAPI().checkPermission("company", "add")) {
       actions.add(
         SpeedDialChild(
-          child: Icon(TablerIcons.circle_plus, color: Colors.green),
+          child: Icon(TablerIcons.circle_plus, color: COLOR_SUCCESS),
           label: L10().companyAdd,
           onTap: () {
             _addCompany(context);

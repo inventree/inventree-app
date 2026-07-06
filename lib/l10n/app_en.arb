@@ -351,8 +351,14 @@
   "connectionCheck": "Check Connection",
   "@connectionCheck": {},
 
+  "connectionCheckDetail": "Checks that the server address is reachable. This does not verify your username or password.",
+  "@connectionCheckDetail": {},
+
   "connectionRefused": "Connection Refused",
   "@connectionRefused": {},
+
+  "connectionRefusedDetail": "Could not reach the server. Check that the address is correct and the server is running.",
+  "@connectionRefusedDetail": {},
 
   "count": "Count",
   "@count": {
@@ -1121,6 +1127,9 @@
   "profileConnect": "Connect to Server",
   "@profileConnect": {},
 
+  "profileSwitchConfirm": "This will disconnect your current session. Switch server profile?",
+  "@profileSwitchConfirm": {},
+
   "profileEdit": "Edit Server Profile",
   "@profileEdit": {},
 
@@ -1463,11 +1472,20 @@
   "serverAuthenticationError": "Authentication Error",
   "@serverAuthenticationError": {},
 
+  "sessionExpired": "Session Expired",
+  "@sessionExpired": {},
+
+  "sessionExpiredDetail": "Your session has expired. Please sign in again.",
+  "@sessionExpiredDetail": {},
+
   "serverCertificateError": "Cerficate Error",
   "@serverCertificateError": {},
 
   "serverCertificateInvalid": "Server HTTPS certificate is invalid",
   "@serverCertificateInvalid": {},
+
+  "serverCertificateTrust": "This server's certificate could not be verified. Trust it anyway?",
+  "@serverCertificateTrust": {},
 
   "serverConnected": "Connected to Server",
   "@serverConnected": {},

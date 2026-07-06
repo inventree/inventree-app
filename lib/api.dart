@@ -25,6 +25,7 @@ import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/notification.dart";
 import "package:inventree/inventree/status_codes.dart";
 import "package:inventree/inventree/sentry.dart";
+import "package:inventree/settings/login.dart";
 import "package:inventree/user_profile.dart";
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/snacks.dart";
@@ -395,16 +396,34 @@ class InvenTreeAPI {
     }
 
     if (!await _checkAuth()) {
-      showServerError(
-        _URL_ME,
-        L10().serverNotConnected,
-        L10().serverAuthenticationError,
-      );
+      final UserProfile? expiredProfile = profile;
 
       // Invalidate the token
-      if (profile != null) {
-        profile!.token = "";
-        await UserProfileDBManager().updateProfile(profile!);
+      if (expiredProfile != null) {
+        expiredProfile.token = "";
+        await UserProfileDBManager().updateProfile(expiredProfile);
+      }
+
+      if (expiredProfile != null) {
+        showServerError(
+          _URL_ME,
+          L10().sessionExpired,
+          "${L10().sessionExpiredDetail}\n${expiredProfile.name}",
+        );
+
+        // Take the user straight to the login screen for this profile,
+        // rather than leaving them to work out why Home shows disconnected
+        OneContext().push(
+          MaterialPageRoute(
+            builder: (context) => InvenTreeLoginWidget(expiredProfile),
+          ),
+        );
+      } else {
+        showServerError(
+          _URL_ME,
+          L10().serverNotConnected,
+          L10().serverAuthenticationError,
+        );
       }
 
       return false;
@@ -522,8 +541,9 @@ class InvenTreeAPI {
   Future<APIResponse> fetchToken(
     UserProfile userProfile,
     String username,
-    String password,
-  ) async {
+    String password, {
+    bool showDialog = true,
+  }) async {
     debug("Fetching user token from ${userProfile.server}");
 
     profile = userProfile;
@@ -574,18 +594,22 @@ class InvenTreeAPI {
       headers: {HttpHeaders.authorizationHeader: authHeader},
     );
 
+    final data = response.asMap();
+
     // Invalid response
     if (!response.successful()) {
-      switch (response.statusCode) {
-        case 401:
-        case 403:
-          showServerError(
-            apiUrl,
-            L10().serverAuthenticationError,
-            L10().invalidUsernamePassword,
-          );
-        default:
-          showStatusCodeError(apiUrl, response.statusCode);
+      if (showDialog) {
+        switch (response.statusCode) {
+          case 401:
+          case 403:
+            showServerError(
+              apiUrl,
+              L10().serverAuthenticationError,
+              L10().invalidUsernamePassword,
+            );
+          default:
+            showStatusCodeError(apiUrl, response.statusCode);
+        }
       }
 
       debug("Token request failed: STATUS ${response.statusCode}");
@@ -593,16 +617,17 @@ class InvenTreeAPI {
       if (response.data != null) {
         debug("Response data: ${response.data.toString()}");
       }
-    }
-
-    final data = response.asMap();
-
-    if (!data.containsKey("token")) {
-      showServerError(
-        apiUrl,
-        L10().tokenMissing,
-        L10().tokenMissingFromResponse,
-      );
+    } else if (!data.containsKey("token")) {
+      // The request was otherwise successful, but the response is missing
+      // the expected token field - a distinct (and much rarer) problem from
+      // an authentication failure, so only reachable when that did NOT occur
+      if (showDialog) {
+        showServerError(
+          apiUrl,
+          L10().tokenMissing,
+          L10().tokenMissingFromResponse,
+        );
+      }
     }
 
     // Save the token to the user profile
@@ -910,7 +935,11 @@ class InvenTreeAPI {
       });
     } on SocketException catch (error) {
       debug("SocketException at ${url}: ${error.toString()}");
-      showServerError(url, L10().connectionRefused, error.toString());
+      showServerError(
+        url,
+        L10().connectionRefused,
+        L10().connectionRefusedDetail,
+      );
       return;
     } on TimeoutException {
       debug("TimeoutException at ${url}");
@@ -945,8 +974,12 @@ class InvenTreeAPI {
       } else {
         showStatusCodeError(url, response.statusCode);
       }
-    } on SocketException catch (error) {
-      showServerError(url, L10().connectionRefused, error.toString());
+    } on SocketException {
+      showServerError(
+        url,
+        L10().connectionRefused,
+        L10().connectionRefusedDetail,
+      );
     } on TimeoutException {
       showTimeoutError(url);
     } catch (error, stackTrace) {
@@ -1028,7 +1061,11 @@ class InvenTreeAPI {
         );
       }
     } on SocketException catch (error) {
-      showServerError(url, L10().connectionRefused, error.toString());
+      showServerError(
+        url,
+        L10().connectionRefused,
+        L10().connectionRefusedDetail,
+      );
       response.error = "SocketException";
       response.errorDetail = error.toString();
     } on FormatException {
@@ -1155,12 +1192,13 @@ class InvenTreeAPI {
 
     client.badCertificateCallback =
         (X509Certificate cert, String host, int port) {
+          // The active profile may have been explicitly trusted by the user
+          // (in-flow, after a prior certificate failure) - honor that first
+          if (profile?.trustedCertificate ?? false) {
+            return true;
+          }
+
           if (_strictHttps) {
-            showServerError(
-              "${host}:${port}",
-              L10().serverCertificateError,
-              L10().serverCertificateInvalid,
-            );
             return false;
           }
 
@@ -1252,10 +1290,10 @@ class InvenTreeAPI {
     HttpClientRequest? _request;
 
     // Attempt to open a connection to the server
+    // (retries once after a short delay on a transient network blip -
+    // nothing has been sent yet at this point, so a retry here is safe)
     try {
-      _request = await httpClient
-          .openUrl(method, _uri)
-          .timeout(Duration(seconds: 10));
+      _request = await _openUrlWithRetry(method, _uri);
 
       // Default headers
       defaultHeaders().forEach((key, value) {
@@ -1270,7 +1308,11 @@ class InvenTreeAPI {
       return _request;
     } on SocketException catch (error) {
       debug("SocketException at ${url}: ${error.toString()}");
-      showServerError(url, L10().connectionRefused, error.toString());
+      showServerError(
+        url,
+        L10().connectionRefused,
+        L10().connectionRefusedDetail,
+      );
       return null;
     } on TimeoutException {
       debug("TimeoutException at ${url}");
@@ -1278,14 +1320,36 @@ class InvenTreeAPI {
       return null;
     } on OSError catch (error) {
       debug("OSError at ${url}: ${error.toString()}");
-      showServerError(url, L10().connectionRefused, error.toString());
+      showServerError(
+        url,
+        L10().connectionRefused,
+        L10().connectionRefusedDetail,
+      );
       return null;
     } on CertificateException catch (error) {
+      final HttpClientRequest? retried = await _retryAfterCertificateTrust(
+        url,
+        method,
+        _uri,
+        headers,
+      );
+      if (retried != null) {
+        return retried;
+      }
       debug("CertificateException at ${url}:");
       debug(error.toString());
       showServerError(url, L10().serverCertificateError, error.toString());
       return null;
     } on HandshakeException catch (error) {
+      final HttpClientRequest? retried = await _retryAfterCertificateTrust(
+        url,
+        method,
+        _uri,
+        headers,
+      );
+      if (retried != null) {
+        return retried;
+      }
       debug("HandshakeException at ${url}:");
       debug(error.toString());
       showServerError(url, L10().serverCertificateError, error.toString());
@@ -1302,6 +1366,107 @@ class InvenTreeAPI {
 
       return null;
     }
+  }
+
+  /*
+   * Open a connection to the given URL, retrying once after a short delay
+   * if the first attempt fails with a transient network error. Nothing has
+   * been sent to the server yet at this point, so a retry here is safe
+   * regardless of HTTP method (unlike retrying after a response has already
+   * started being read/sent).
+   */
+  Future<HttpClientRequest> _openUrlWithRetry(String method, Uri uri) async {
+    try {
+      return await httpClient
+          .openUrl(method, uri)
+          .timeout(Duration(seconds: 10));
+    } on SocketException {
+      await Future.delayed(const Duration(seconds: 2));
+      return await httpClient
+          .openUrl(method, uri)
+          .timeout(Duration(seconds: 10));
+    } on TimeoutException {
+      await Future.delayed(const Duration(seconds: 2));
+      return await httpClient
+          .openUrl(method, uri)
+          .timeout(Duration(seconds: 10));
+    }
+  }
+
+  /*
+   * A certificate error occurred while connecting to the active profile's
+   * server. If the user hasn't already trusted this profile's certificate,
+   * prompt them in-flow; if they accept, persist that decision against the
+   * profile and retry the connection once.
+   */
+  Future<HttpClientRequest?> _retryAfterCertificateTrust(
+    String url,
+    String method,
+    Uri uri,
+    Map<String, String> headers,
+  ) async {
+    final UserProfile? prf = profile;
+
+    if (prf == null || prf.trustedCertificate) {
+      // Nothing new to prompt for - surface the original error as-is
+      return null;
+    }
+
+    final bool trust = await _promptTrustCertificate(uri.host);
+
+    if (!trust) {
+      return null;
+    }
+
+    prf.trustedCertificate = true;
+    await UserProfileDBManager().updateProfile(prf);
+
+    try {
+      final HttpClientRequest request = await httpClient
+          .openUrl(method, uri)
+          .timeout(Duration(seconds: 10));
+
+      defaultHeaders().forEach((key, value) {
+        request.headers.set(key, value);
+      });
+
+      headers.forEach((key, value) {
+        request.headers.set(key, value);
+      });
+
+      return request;
+    } catch (error) {
+      debug(
+        "Retry after certificate trust failed at ${url}: ${error.toString()}",
+      );
+      return null;
+    }
+  }
+
+  /*
+   * Ask the user whether to trust an otherwise-invalid TLS certificate for
+   * the given host. Returns true if they accept.
+   */
+  Future<bool> _promptTrustCertificate(String host) async {
+    final Completer<bool> completer = Completer<bool>();
+
+    confirmationDialog(
+      L10().serverCertificateError,
+      "${L10().serverCertificateTrust}\n${host}",
+      icon: TablerIcons.shield_exclamation,
+      onAccept: () {
+        if (!completer.isCompleted) {
+          completer.complete(true);
+        }
+      },
+      onReject: () {
+        if (!completer.isCompleted) {
+          completer.complete(false);
+        }
+      },
+    );
+
+    return completer.future;
   }
 
   /*
@@ -1379,7 +1544,11 @@ class InvenTreeAPI {
       response.error = "HTTPException";
       response.errorDetail = error.toString();
     } on SocketException catch (error) {
-      showServerError(url, L10().connectionRefused, error.toString());
+      showServerError(
+        url,
+        L10().connectionRefused,
+        L10().connectionRefusedDetail,
+      );
       response.error = "SocketException";
       response.errorDetail = error.toString();
     } on CertificateException catch (error) {

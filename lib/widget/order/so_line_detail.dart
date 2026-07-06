@@ -111,7 +111,7 @@ class _SOLineDetailWidgetState extends RefreshableState<SoLineDetailWidget> {
     if (order != null && order!.isOpen) {
       buttons.add(
         SpeedDialChild(
-          child: Icon(TablerIcons.transition_right, color: Colors.blue),
+          child: Icon(TablerIcons.transition_right, color: COLOR_ACTION),
           label: L10().allocateStock,
           onTap: () async {
             _allocateStock(context);

@@ -16,6 +16,7 @@ import "package:inventree/inventree/sentry.dart";
 import "package:inventree/l10n/supported_locales.dart";
 import "package:inventree/l10n/collected/app_localizations.dart";
 import "package:inventree/settings/release.dart";
+import "package:inventree/user_profile.dart";
 import "package:inventree/widget/home.dart";
 
 Future<void> main() async {
@@ -122,6 +123,9 @@ class InvenTreeAppState extends State<StatefulWidget> {
     // Set the app locale (language)
     Locale? locale = await InvenTreeSettingsManager().getSelectedLocale();
     setLocale(locale);
+
+    // First-run only: seed a demo server profile if none are configured
+    await UserProfileDBManager().seedDemoProfileIfNeeded();
 
     // Display release notes if this is a new version
     final String version =

@@ -154,7 +154,7 @@ class _SOShipmentDetailWidgetState
     if (showCameraShortcut) {
       actions.add(
         SpeedDialChild(
-          child: Icon(TablerIcons.camera, color: Colors.blue),
+          child: Icon(TablerIcons.camera, color: COLOR_ACTION),
           label: L10().takePicture,
           onTap: () async {
             _uploadImage(context);
@@ -167,7 +167,7 @@ class _SOShipmentDetailWidgetState
     if (!widget.shipment.isChecked && !widget.shipment.isShipped) {
       actions.add(
         SpeedDialChild(
-          child: Icon(TablerIcons.check, color: Colors.green),
+          child: Icon(TablerIcons.check, color: COLOR_SUCCESS),
           label: L10().shipmentCheck,
           onTap: () async {
             widget.shipment
@@ -185,7 +185,7 @@ class _SOShipmentDetailWidgetState
     if (widget.shipment.isChecked && !widget.shipment.isShipped) {
       actions.add(
         SpeedDialChild(
-          child: Icon(TablerIcons.x, color: Colors.red),
+          child: Icon(TablerIcons.x, color: COLOR_DANGER),
           label: L10().shipmentUncheck,
           onTap: () async {
             widget.shipment.update(values: {"checked_by": null}).then((_) {
@@ -201,7 +201,7 @@ class _SOShipmentDetailWidgetState
     if (!widget.shipment.isShipped) {
       actions.add(
         SpeedDialChild(
-          child: Icon(TablerIcons.truck_delivery, color: Colors.green),
+          child: Icon(TablerIcons.truck_delivery, color: COLOR_SUCCESS),
           label: L10().shipmentSend,
           onTap: () async {
             _sendShipment(context);

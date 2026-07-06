@@ -8,6 +8,7 @@ import "package:flutter/material.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/api.dart";
+import "package:inventree/app_colors.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/orders.dart";
 import "package:inventree/inventree/part.dart";
@@ -380,17 +381,17 @@ class BuildOrderStatus {
   static Color getStatusColor(int status) {
     switch (status) {
       case PENDING:
-        return Colors.blue;
+        return COLOR_GRAY_LIGHT;
       case PRODUCTION:
-        return Colors.green;
+        return COLOR_PROGRESS;
       case COMPLETE:
-        return Colors.purple;
+        return COLOR_SUCCESS;
       case CANCELLED:
-        return Colors.red;
+        return COLOR_DANGER;
       case ON_HOLD:
-        return Colors.orange;
+        return COLOR_WARNING;
       default:
-        return Colors.grey;
+        return COLOR_GRAY_LIGHT;
     }
   }
 

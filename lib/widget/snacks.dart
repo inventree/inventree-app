@@ -4,6 +4,7 @@ import "package:flutter/material.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:one_context/one_context.dart";
 
+import "package:inventree/app_colors.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/l10.dart";
 
@@ -33,16 +34,16 @@ void showSnackIcon(
   _currentSnackOverlay?.remove();
   _currentSnackOverlay = null;
 
-  Color backgroundColor = Colors.deepOrange;
+  Color backgroundColor = COLOR_DANGER;
 
   if (success != null && success == true) {
-    backgroundColor = Colors.lightGreen;
+    backgroundColor = COLOR_SUCCESS;
 
     if (icon == null && onAction == null) {
       icon = TablerIcons.circle_check;
     }
   } else if (success != null && success == false) {
-    backgroundColor = Colors.deepOrange;
+    backgroundColor = COLOR_DANGER;
 
     if (icon == null && onAction == null) {
       icon = TablerIcons.exclamation_circle;

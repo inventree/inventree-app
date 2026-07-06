@@ -3,6 +3,7 @@ import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/widget/progress.dart";
 
 import "package:inventree/api.dart";
+import "package:inventree/app_colors.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/inventree/build.dart";
 
@@ -149,7 +150,7 @@ class BuildOrderListItem extends StatelessWidget {
                                   DateTime.tryParse(
                                     order.targetDate,
                                   )!.isBefore(DateTime.now()))
-                              ? Colors.red
+                              ? COLOR_DANGER
                               : null,
                         ),
                       ),

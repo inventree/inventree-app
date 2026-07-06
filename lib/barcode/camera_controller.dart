@@ -370,10 +370,7 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: COLOR_APP_BAR,
-        title: Text(L10().scanBarcode),
-      ),
+      appBar: AppBar(title: Text(L10().scanBarcode)),
       floatingActionButton: buildActions(context),
       body: GestureDetector(
         onTap: () async {

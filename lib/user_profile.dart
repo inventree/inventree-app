@@ -1,3 +1,4 @@
+import "package:flutter_secure_storage/flutter_secure_storage.dart";
 import "package:sembast/sembast.dart";
 
 import "package:inventree/helpers.dart";
@@ -10,6 +11,7 @@ class UserProfile {
     this.server = "",
     this.token = "",
     this.selected = false,
+    this.trustedCertificate = false,
   });
 
   factory UserProfile.fromJson(
@@ -20,8 +22,11 @@ class UserProfile {
     key: key,
     name: (json["name"] ?? "") as String,
     server: (json["server"] ?? "") as String,
+    // Legacy field - profiles saved before the token moved to secure storage
+    // may still have it here. UserProfileDBManager migrates this on read.
     token: (json["token"] ?? "") as String,
     selected: isSelected,
+    trustedCertificate: (json["trustedCertificate"] ?? false) as bool,
   );
 
   // Return true if this profile has a token
@@ -36,10 +41,15 @@ class UserProfile {
   // Base address of the InvenTree server
   String server = "";
 
-  // API token
+  // API token - held in memory only; persisted separately in secure storage
+  // (see UserProfileDBManager), never written to the plain profile record
   String token = "";
 
   bool selected = false;
+
+  // Whether the user has explicitly chosen to trust this server's TLS
+  // certificate despite it failing validation (e.g. self-signed)
+  bool trustedCertificate = false;
 
   // User ID (will be provided by the server on log-in)
   int user_id = -1;
@@ -47,7 +57,7 @@ class UserProfile {
   Map<String, dynamic> toJson() => {
     "name": name,
     "server": server,
-    "token": token,
+    "trustedCertificate": trustedCertificate,
   };
 
   @override
@@ -62,7 +72,53 @@ class UserProfile {
 class UserProfileDBManager {
   final store = StoreRef("profiles");
 
+  static const _secureStorage = FlutterSecureStorage();
+
   Future<Database> get _db async => InvenTreePreferencesDB.instance.database;
+
+  // Key used to store a profile's API token in secure storage
+  String _tokenStorageKey(int key) => "profile_token_${key}";
+
+  /*
+   * Persist (or clear) a profile's token in secure storage, keyed by its
+   * database record id. The token never lives in the plain Sembast record.
+   */
+  Future<void> _saveToken(int key, String token) async {
+    if (token.isEmpty) {
+      await _secureStorage.delete(key: _tokenStorageKey(key));
+    } else {
+      await _secureStorage.write(key: _tokenStorageKey(key), value: token);
+    }
+  }
+
+  /*
+   * Populate a profile's in-memory token from secure storage.
+   * If secure storage has nothing for this profile, but the (legacy)
+   * Sembast record still has a plaintext token from before this migration,
+   * adopt it once and move it into secure storage.
+   */
+  Future<UserProfile> _loadToken(UserProfile profile) async {
+    final int? key = profile.key;
+
+    if (key == null) {
+      return profile;
+    }
+
+    final String? secureToken = await _secureStorage.read(
+      key: _tokenStorageKey(key),
+    );
+
+    if (secureToken != null) {
+      profile.token = secureToken;
+    } else if (profile.token.isNotEmpty) {
+      // Legacy profile - migrate its plaintext token into secure storage,
+      // and strip it from the Sembast record on next write
+      await _saveToken(key, profile.token);
+      await store.record(key).update(await _db, profile.toJson());
+    }
+
+    return profile;
+  }
 
   /*
    * Check if a profile with the specified name exists in the database
@@ -106,6 +162,10 @@ class UserProfileDBManager {
     // Record the key
     profile.key = key;
 
+    if (key != null) {
+      await _saveToken(key, profile.token);
+    }
+
     return true;
   }
 
@@ -126,6 +186,7 @@ class UserProfileDBManager {
     }
 
     await store.record(profile.key).update(await _db, profile.toJson());
+    await _saveToken(profile.key!, profile.token);
 
     return true;
   }
@@ -137,6 +198,10 @@ class UserProfileDBManager {
     debug("deleteProfile: ${profile.name}");
 
     await store.record(profile.key).delete(await _db);
+
+    if (profile.key != null) {
+      await _secureStorage.delete(key: _tokenStorageKey(profile.key!));
+    }
   }
 
   /*
@@ -154,11 +219,13 @@ class UserProfileDBManager {
 
     for (int idx = 0; idx < profiles.length; idx++) {
       if (profiles[idx].key is int && profiles[idx].key == selected) {
-        return UserProfile.fromJson(
+        final profile = UserProfile.fromJson(
           profiles[idx].key! as int,
           profiles[idx].value! as Map<String, dynamic>,
           profiles[idx].key == selected,
         );
+
+        return _loadToken(profile);
       }
     }
 
@@ -177,39 +244,49 @@ class UserProfileDBManager {
 
     for (int idx = 0; idx < profiles.length; idx++) {
       if (profiles[idx].key is int) {
-        profileList.add(
-          UserProfile.fromJson(
-            profiles[idx].key! as int,
-            profiles[idx].value! as Map<String, dynamic>,
-            profiles[idx].key == selected,
-          ),
-        );
-      }
-    }
-
-    // If there are no available profiles, create a demo profile
-    if (profileList.isEmpty) {
-      bool added = await InvenTreeSettingsManager().getBool(
-        "demo_profile_added",
-        false,
-      );
-
-      // Don't add a new profile if we have added it previously
-      if (!added) {
-        await InvenTreeSettingsManager().setValue("demo_profile_added", true);
-
-        UserProfile demoProfile = UserProfile(
-          name: "InvenTree Demo",
-          server: "https://demo.inventree.org",
+        final profile = UserProfile.fromJson(
+          profiles[idx].key! as int,
+          profiles[idx].value! as Map<String, dynamic>,
+          profiles[idx].key == selected,
         );
 
-        await addProfile(demoProfile);
-
-        profileList.add(demoProfile);
+        profileList.add(await _loadToken(profile));
       }
     }
 
     return profileList;
+  }
+
+  /*
+   * Seed a demo server profile, if this is the first time the app has been
+   * run with zero profiles configured. Explicit (called once from app
+   * startup) rather than a side effect of reading the profile list.
+   */
+  Future<void> seedDemoProfileIfNeeded() async {
+    final profiles = await getAllProfiles();
+
+    if (profiles.isNotEmpty) {
+      return;
+    }
+
+    bool added = await InvenTreeSettingsManager().getBool(
+      "demo_profile_added",
+      false,
+    );
+
+    // Don't add a new profile if we have added it previously
+    if (added) {
+      return;
+    }
+
+    await InvenTreeSettingsManager().setValue("demo_profile_added", true);
+
+    UserProfile demoProfile = UserProfile(
+      name: "InvenTree Demo",
+      server: "https://demo.inventree.org",
+    );
+
+    await addProfile(demoProfile);
   }
 
   /*

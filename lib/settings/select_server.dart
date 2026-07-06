@@ -6,7 +6,6 @@ import "package:inventree/settings/login.dart";
 
 import "package:inventree/app_colors.dart";
 import "package:inventree/widget/dialogs.dart";
-import "package:inventree/widget/spinner.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/api.dart";
 import "package:inventree/user_profile.dart";
@@ -70,7 +69,34 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
     });
   }
 
+  /*
+   * Select the given profile as "active".
+   * If a *different* server is currently connected, confirm with the
+   * user first, since this immediately tears down the active session.
+   */
   Future<void> _selectProfile(BuildContext context, UserProfile profile) async {
+    final bool switchingAwayFromActiveSession =
+        InvenTreeAPI().isConnected() &&
+        InvenTreeAPI().profile?.key != profile.key;
+
+    if (switchingAwayFromActiveSession) {
+      confirmationDialog(
+        L10().profileConnect,
+        L10().profileSwitchConfirm,
+        icon: TablerIcons.server,
+        onAccept: () {
+          _doSelectProfile(context, profile);
+        },
+      );
+    } else {
+      _doSelectProfile(context, profile);
+    }
+  }
+
+  Future<void> _doSelectProfile(
+    BuildContext context,
+    UserProfile profile,
+  ) async {
     // Disconnect InvenTree
     InvenTreeAPI().disconnectFromServer();
 
@@ -90,22 +116,13 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
 
     // First check if the profile has an associate token
     if (!prf.hasToken) {
-      // Redirect user to login screen
-      Navigator.push(
+      // Redirect user to the login screen - it connects on success itself
+      await Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => InvenTreeLoginWidget(profile)),
-      ).then((value) async {
-        _reload();
-        // Reload profile
-        prf = await UserProfileDBManager().getProfileByKey(key);
-        if (prf?.hasToken ?? false) {
-          InvenTreeAPI().connectToServer(prf!).then((result) {
-            _reload();
-          });
-        }
-      });
+      );
 
-      // Exit now, login handled by next widget
+      _reload();
       return;
     }
 
@@ -113,12 +130,8 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
       return;
     }
 
-    _reload();
-
-    // Attempt server login (this will load the newly selected profile
-    InvenTreeAPI().connectToServer(prf).then((result) {
-      _reload();
-    });
+    // Attempt server connection using the existing token
+    await InvenTreeAPI().connectToServer(prf);
 
     _reload();
   }
@@ -151,10 +164,84 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
     if (InvenTreeAPI().isConnected()) {
       return Icon(TablerIcons.circle_check, color: COLOR_SUCCESS);
     } else if (InvenTreeAPI().isConnecting()) {
-      return Spinner(icon: TablerIcons.loader_2, color: COLOR_PROGRESS);
+      return SizedBox(
+        width: 24,
+        height: 24,
+        child: CircularProgressIndicator(color: COLOR_PROGRESS, strokeWidth: 2),
+      );
     } else {
       return Icon(TablerIcons.circle_x, color: COLOR_DANGER);
     }
+  }
+
+  /*
+   * Show the profile action menu (Connect / Edit / Logout / Delete).
+   * Reachable via the always-visible trailing "more" button, or long-press
+   * as a bonus shortcut.
+   */
+  void _showProfileActions(BuildContext context, UserProfile profile) {
+    OneContext().showDialog(
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: Text(profile.name),
+          children: <Widget>[
+            Divider(),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _selectProfile(context, profile);
+              },
+              child: ListTile(
+                title: Text(L10().profileConnect),
+                leading: Icon(TablerIcons.server),
+              ),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _editProfile(context, userProfile: profile);
+              },
+              child: ListTile(
+                title: Text(L10().profileEdit),
+                leading: Icon(TablerIcons.edit),
+              ),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _logoutProfile(context, userProfile: profile);
+              },
+              child: ListTile(
+                title: Text(L10().profileLogout),
+                leading: Icon(TablerIcons.logout),
+              ),
+            ),
+            Divider(),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.of(context).pop();
+                confirmationDialog(
+                  L10().delete,
+                  L10().profileDelete + "?",
+                  color: COLOR_DANGER,
+                  icon: TablerIcons.trash,
+                  onAccept: () {
+                    _deleteProfile(profile);
+                  },
+                );
+              },
+              child: ListTile(
+                title: Text(
+                  L10().profileDelete,
+                  style: TextStyle(color: COLOR_DANGER),
+                ),
+                leading: Icon(TablerIcons.trash, color: COLOR_DANGER),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -175,74 +262,24 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
             leading: profile.hasToken
                 ? Icon(TablerIcons.user_check, color: COLOR_SUCCESS)
                 : Icon(TablerIcons.user_cancel, color: COLOR_WARNING),
-            trailing: _getProfileIcon(profile),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (_getProfileIcon(profile) != null) _getProfileIcon(profile)!,
+                IconButton(
+                  icon: Icon(Icons.more_vert),
+                  tooltip: L10().actions,
+                  onPressed: () {
+                    _showProfileActions(context, profile);
+                  },
+                ),
+              ],
+            ),
             onTap: () {
               _selectProfile(context, profile);
             },
             onLongPress: () {
-              OneContext().showDialog(
-                builder: (BuildContext context) {
-                  return SimpleDialog(
-                    title: Text(profile.name),
-                    children: <Widget>[
-                      Divider(),
-                      SimpleDialogOption(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          _selectProfile(context, profile);
-                        },
-                        child: ListTile(
-                          title: Text(L10().profileConnect),
-                          leading: Icon(TablerIcons.server),
-                        ),
-                      ),
-                      SimpleDialogOption(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          _editProfile(context, userProfile: profile);
-                        },
-                        child: ListTile(
-                          title: Text(L10().profileEdit),
-                          leading: Icon(TablerIcons.edit),
-                        ),
-                      ),
-                      SimpleDialogOption(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          _logoutProfile(context, userProfile: profile);
-                        },
-                        child: ListTile(
-                          title: Text(L10().profileLogout),
-                          leading: Icon(TablerIcons.logout),
-                        ),
-                      ),
-                      Divider(),
-                      SimpleDialogOption(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          // Navigator.of(context, rootNavigator: true).pop();
-                          confirmationDialog(
-                            L10().delete,
-                            L10().profileDelete + "?",
-                            color: Colors.red,
-                            icon: TablerIcons.trash,
-                            onAccept: () {
-                              _deleteProfile(profile);
-                            },
-                          );
-                        },
-                        child: ListTile(
-                          title: Text(
-                            L10().profileDelete,
-                            style: TextStyle(color: Colors.red),
-                          ),
-                          leading: Icon(TablerIcons.trash, color: Colors.red),
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              );
+              _showProfileActions(context, profile);
             },
           ),
         );
@@ -256,7 +293,6 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
       key: _loginKey,
       appBar: AppBar(
         title: Text(L10().profileSelect),
-        backgroundColor: COLOR_APP_BAR,
         actions: [
           IconButton(
             icon: Icon(TablerIcons.circle_plus),
@@ -305,7 +341,6 @@ class _ProfileEditState extends State<ProfileEditWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: COLOR_APP_BAR,
         title: Text(
           widget.profile == null ? L10().profileAdd : L10().profileEdit,
         ),
@@ -415,6 +450,14 @@ class _ProfileEditState extends State<ProfileEditWidget> {
                 },
               ),
               Divider(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: Text(
+                  L10().connectionCheckDetail,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ),
+              const SizedBox(height: 8),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(

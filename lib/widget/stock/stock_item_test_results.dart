@@ -189,7 +189,7 @@ class _StockItemTestResultDisplayState
       String _value = "";
       String _date = "";
 
-      Widget _icon = Icon(TablerIcons.help_circle, color: Colors.lightBlue);
+      Widget _icon = Icon(TablerIcons.help_circle, color: COLOR_GRAY_LIGHT);
       bool _valueRequired = false;
       bool _attachmentRequired = false;
 
@@ -214,7 +214,7 @@ class _StockItemTestResultDisplayState
       }
 
       if (!_hasResult) {
-        _icon = Icon(TablerIcons.help_circle, color: Colors.blue);
+        _icon = Icon(TablerIcons.help_circle, color: COLOR_GRAY_LIGHT);
       } else if (_result == true) {
         _icon = Icon(TablerIcons.circle_check, color: COLOR_SUCCESS);
       } else if (_result == false) {

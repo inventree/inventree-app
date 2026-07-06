@@ -75,27 +75,30 @@ class BarcodeScanStockItemHandler extends BarcodeHandler {
     if (data.containsKey("stockitem")) {
       int _item = (data["stockitem"]?["pk"] ?? -1) as int;
 
-      // A valid stock location!
       if (_item > 0) {
         barcodeSuccessTone();
 
-        bool result = await onItemScanned(_item);
+        await onItemScanned(_item);
+      }
+    } else if (data.containsKey("stocklocation")) {
+      int _loc = (data["stocklocation"]?["pk"] ?? -1) as int;
 
-        if (result && OneContext.hasContext) {
-          OneContext().pop();
-          return;
-        }
+      if (_loc > 0) {
+        barcodeSuccessTone();
+
+        await onStockLocationScanned(_loc);
       }
     }
-
-    // If we get to this point, something went wrong during the scan process
-    barcodeFailureTone();
-
-    showSnackIcon(L10().invalidStockItem, success: false);
   }
 
   // Callback function which runs when a valid StockItem is scanned
   Future<bool> onItemScanned(int itemId) async {
+    // Re-implement this for particular subclass
+    return false;
+  }
+
+  // Callback function which runs when a valid StockLocation is scanned
+  Future<bool> onStockLocationScanned(int locationId) async {
     // Re-implement this for particular subclass
     return false;
   }
@@ -172,6 +175,56 @@ class StockLocationScanInItemsHandler extends BarcodeScanStockItemHandler {
   String getOverlayText(BuildContext context) => L10().barcodeScanItem;
 
   @override
+  Future<bool> onStockLocationScanned(int locationId) async {
+    if (locationId == location.pk) {
+      barcodeFailureTone();
+      showSnackIcon(L10().invalidStockLocation, success: false);
+      return false;
+    }
+
+    final scannedLocation =
+        await InvenTreeStockLocation().get(locationId)
+            as InvenTreeStockLocation?;
+
+    if (scannedLocation != null) {
+      if (scannedLocation.parentId == location.pk) {
+        barcodeFailureTone();
+        showSnackIcon(L10().itemInLocation, success: false);
+        return false;
+      }
+
+      final response = await scannedLocation.update(
+        values: {"parent": location.pk.toString()},
+        expectedStatusCode: null,
+      );
+
+      switch (response.statusCode) {
+        case 200:
+        case 201:
+          barcodeSuccess(L10().barcodeScanIntoLocationSuccess);
+          return true;
+        case 400:
+          barcodeFailureTone();
+          showSnackIcon(L10().invalidStockLocation, success: false);
+          return false;
+        default:
+          barcodeFailureTone();
+          showSnackIcon(
+            L10().barcodeScanIntoLocationFailure,
+            success: false,
+            actionText: L10().details,
+            onAction: () {
+              showErrorDialog(L10().barcodeError, response: response);
+            },
+          );
+          return false;
+      }
+    }
+
+    return false;
+  }
+
+  @override
   Future<bool> onItemScanned(int itemId) async {
     final InvenTreeStockItem? item =
         await InvenTreeStockItem().get(itemId) as InvenTreeStockItem?;
@@ -186,7 +239,7 @@ class StockLocationScanInItemsHandler extends BarcodeScanStockItemHandler {
       // Item is already *in* the specified location
       if (item.locationId == location.pk) {
         barcodeFailureTone();
-        showSnackIcon(L10().itemInLocation, success: true);
+        showSnackIcon(L10().itemInLocation, success: false);
         return false;
       } else {
         if (confirm) {

@@ -3,11 +3,11 @@ import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:one_context/one_context.dart";
 
 import "package:inventree/api.dart";
+import "package:inventree/app_colors.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/l10.dart";
 
 import "package:inventree/preferences.dart";
-import "package:inventree/widget/snacks.dart";
 
 /*
  * Launch a dialog allowing the user to select from a list of options
@@ -114,84 +114,152 @@ Future<void> confirmationDialog(
 }
 
 /*
+ * Convert a raw API field name (snake_case) into a human-readable label,
+ * e.g. "target_date" -> "Target Date"
+ */
+String _humanizeFieldName(String field) {
+  return field
+      .split("_")
+      .where((word) => word.isNotEmpty)
+      .map((word) => word[0].toUpperCase() + word.substring(1))
+      .join(" ");
+}
+
+/*
+ * Build the body content for an error dialog, given either a plain
+ * description string or a structured APIResponse.
+ */
+Widget _buildErrorContent(String description, APIResponse? response) {
+  List<Widget> children = [];
+
+  if (description.isNotEmpty) {
+    children.add(Text(description));
+  } else if (response != null) {
+    final Map<String, dynamic> data = response.isMap() ? response.asMap() : {};
+
+    if (data["detail"] is String) {
+      // Standard DRF shape for auth / permission / not-found / throttle errors
+      children.add(Text(data["detail"] as String));
+    } else {
+      // Non-field errors (form-level validation failures)
+      List<String> nonFieldErrors = [];
+      for (String key in ["detail", "non_field_errors", "__all__", "errors"]) {
+        dynamic value = data[key];
+        if (value is String) {
+          nonFieldErrors.add(value);
+        } else if (value is List) {
+          nonFieldErrors.addAll(value.map((e) => e.toString()));
+        }
+      }
+
+      for (String error in nonFieldErrors) {
+        children.add(
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text(error),
+          ),
+        );
+      }
+
+      // Per-field validation errors (typically a 400 response)
+      if (response.statusCode == 400 && response.data is Map<String, dynamic>) {
+        for (String field in data.keys) {
+          if ([
+            "detail",
+            "non_field_errors",
+            "__all__",
+            "errors",
+          ].contains(field)) {
+            continue;
+          }
+
+          dynamic error = data[field];
+          List<String> messages = error is List
+              ? error.map((e) => e.toString()).toList()
+              : [error.toString()];
+
+          children.add(
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    _humanizeFieldName(field),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  for (String message in messages) Text(message),
+                ],
+              ),
+            ),
+          );
+        }
+      }
+
+      // Nothing recognized above - fall back to a labeled raw diagnostic dump
+      if (children.isEmpty) {
+        children.add(Text(statusCodeToString(response.statusCode)));
+        children.add(const SizedBox(height: 8));
+        children.add(
+          Text(
+            L10().responseData,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+        );
+        children.add(
+          Text(
+            response.data.toString(),
+            style: const TextStyle(fontFamily: "monospace", fontSize: 12),
+          ),
+        );
+      }
+    }
+  }
+
+  return ConstrainedBox(
+    constraints: const BoxConstraints(maxWidth: 400),
+    child: SingleChildScrollView(
+      child: Column(mainAxisSize: MainAxisSize.min, children: children),
+    ),
+  );
+}
+
+/*
  * Construct an error dialog showing information to the user
  *
  * @title = Title to be displayed at the top of the dialog
  * @description = Simple string description of error
- * @data = Error response (e.g from server)
+ * @response = Error response (e.g from server)
  */
 Future<void> showErrorDialog(
   String title, {
   String description = "",
   APIResponse? response,
   IconData icon = TablerIcons.exclamation_circle,
+  Color? color,
   Function? onDismissed,
 }) async {
-  List<Widget> children = [];
-
-  if (description.isNotEmpty) {
-    children.add(ListTile(title: Text(description)));
-  } else if (response != null) {
-    // Look for extra error information in the provided APIResponse object
-    switch (response.statusCode) {
-      case 400: // Bad request (typically bad input)
-        if (response.data is Map<String, dynamic>) {
-          for (String field in response.asMap().keys) {
-            dynamic error = response.data[field];
-
-            if (error is List) {
-              for (int ii = 0; ii < error.length; ii++) {
-                children.add(
-                  ListTile(
-                    title: Text(field),
-                    subtitle: Text(error[ii].toString()),
-                  ),
-                );
-              }
-            } else {
-              children.add(
-                ListTile(
-                  title: Text(field),
-                  subtitle: Text(response.data[field].toString()),
-                ),
-              );
-            }
-          }
-        } else {
-          children.add(
-            ListTile(
-              title: Text(L10().responseInvalid),
-              subtitle: Text(response.data.toString()),
-            ),
-          );
-        }
-      default:
-        // Unhandled server response
-        children.add(
-          ListTile(
-            title: Text(L10().statusCode),
-            subtitle: Text(response.statusCode.toString()),
-          ),
-        );
-
-        children.add(
-          ListTile(
-            title: Text(L10().responseData),
-            subtitle: Text(response.data.toString()),
-          ),
-        );
-    }
-  }
-
   if (!hasContext()) {
     return;
   }
 
+  final Color dialogColor = color ?? COLOR_DANGER;
+
   OneContext()
       .showDialog(
-        builder: (context) => SimpleDialog(
-          title: ListTile(title: Text(title), leading: Icon(icon)),
-          children: children,
+        builder: (context) => AlertDialog(
+          icon: Icon(icon, color: dialogColor),
+          iconColor: dialogColor,
+          title: Text(title),
+          content: _buildErrorContent(description, response),
+          actions: [
+            TextButton(
+              child: Text(L10().ok),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
         ),
       )
       .then((value) {
@@ -233,18 +301,7 @@ Future<void> showServerError(
 
   description += "\nURL: $url";
 
-  showSnackIcon(
-    title,
-    success: false,
-    actionText: L10().details,
-    onAction: () {
-      showErrorDialog(
-        title,
-        description: description,
-        icon: TablerIcons.server,
-      );
-    },
-  );
+  showErrorDialog(title, description: description, icon: TablerIcons.server);
 }
 
 /*

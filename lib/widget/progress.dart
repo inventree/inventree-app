@@ -22,7 +22,7 @@ Widget ProgressBar(double value, {double maximum = 1.0}) {
 
   return LinearProgressIndicator(
     value: v,
-    backgroundColor: Colors.grey,
+    backgroundColor: COLOR_GRAY_LIGHT,
     color: v >= 1 ? COLOR_SUCCESS : COLOR_WARNING,
   );
 }

@@ -22,6 +22,42 @@ void setupTestEnv() {
       .setMockMethodCallHandler(channel, (MethodCall methodCall) async {
         return ".";
       });
+
+  // Mock secure storage (used for storing profile API tokens) with a
+  // simple in-memory map, since there's no real platform keychain available
+  // in the test harness
+  final Map<String, String> secureStorageMock = {};
+  const MethodChannel secureStorageChannel = MethodChannel(
+    "plugins.it_nomads.com/flutter_secure_storage",
+  );
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+      .setMockMethodCallHandler(secureStorageChannel, (
+        MethodCall methodCall,
+      ) async {
+        final Map<dynamic, dynamic> args =
+            (methodCall.arguments as Map<dynamic, dynamic>?) ?? {};
+        final String? key = args["key"] as String?;
+
+        switch (methodCall.method) {
+          case "write":
+            secureStorageMock[key!] = args["value"] as String;
+            return null;
+          case "read":
+            return secureStorageMock[key];
+          case "containsKey":
+            return secureStorageMock.containsKey(key);
+          case "delete":
+            secureStorageMock.remove(key);
+            return null;
+          case "deleteAll":
+            secureStorageMock.clear();
+            return null;
+          case "readAll":
+            return secureStorageMock;
+          default:
+            return null;
+        }
+      });
 }
 
 // Accessors for default testing values

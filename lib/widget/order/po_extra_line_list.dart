@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
+import "package:inventree/app_colors.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/purchase_order.dart";
@@ -53,7 +54,7 @@ class _PurchaseOrderExtraLineListWidgetState
     if (widget.order.canEdit) {
       actions.add(
         SpeedDialChild(
-          child: Icon(TablerIcons.circle_plus, color: Colors.green),
+          child: Icon(TablerIcons.circle_plus, color: COLOR_SUCCESS),
           label: L10().lineItemAdd,
           onTap: () {
             _addLineItem(context);

@@ -42,10 +42,7 @@ class _InvenTreeSettingsState extends State<InvenTreeSettingsWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text(L10().settings),
-        backgroundColor: COLOR_APP_BAR,
-      ),
+      appBar: AppBar(title: Text(L10().settings)),
       body: Center(
         child: ListView(
           children: [
