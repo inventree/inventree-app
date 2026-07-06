@@ -192,8 +192,9 @@ class InvenTreeAPI {
   }
 
   // Minimum required API version for server
-  // 2023-03-04
-  static const _minApiVersion = 100;
+  // 2024-03-02 (release 0.14.0)
+  // Ref: https://github.com/inventree/InvenTree/releases/tag/0.14.0
+  static const _minApiVersion = 180;
 
   bool _strictHttps = false;
 
