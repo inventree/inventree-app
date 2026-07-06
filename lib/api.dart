@@ -25,6 +25,7 @@ import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/notification.dart";
 import "package:inventree/inventree/status_codes.dart";
 import "package:inventree/inventree/sentry.dart";
+import "package:inventree/settings/login.dart";
 import "package:inventree/user_profile.dart";
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/snacks.dart";
@@ -430,16 +431,34 @@ class InvenTreeAPI {
     }
 
     if (!await _checkAuth()) {
-      showServerError(
-        _URL_ME,
-        L10().serverNotConnected,
-        L10().serverAuthenticationError,
-      );
+      final UserProfile? expiredProfile = profile;
 
       // Invalidate the token
-      if (profile != null) {
-        profile!.token = "";
-        await UserProfileDBManager().updateProfile(profile!);
+      if (expiredProfile != null) {
+        expiredProfile.token = "";
+        await UserProfileDBManager().updateProfile(expiredProfile);
+      }
+
+      if (expiredProfile != null) {
+        showServerError(
+          _URL_ME,
+          L10().sessionExpired,
+          "${L10().sessionExpiredDetail}\n${expiredProfile.name}",
+        );
+
+        // Take the user straight to the login screen for this profile,
+        // rather than leaving them to work out why Home shows disconnected
+        OneContext().push(
+          MaterialPageRoute(
+            builder: (context) => InvenTreeLoginWidget(expiredProfile),
+          ),
+        );
+      } else {
+        showServerError(
+          _URL_ME,
+          L10().serverNotConnected,
+          L10().serverAuthenticationError,
+        );
       }
 
       return false;
@@ -1196,12 +1215,13 @@ class InvenTreeAPI {
 
     client.badCertificateCallback =
         (X509Certificate cert, String host, int port) {
+          // The active profile may have been explicitly trusted by the user
+          // (in-flow, after a prior certificate failure) - honor that first
+          if (profile?.trustedCertificate ?? false) {
+            return true;
+          }
+
           if (_strictHttps) {
-            showServerError(
-              "${host}:${port}",
-              L10().serverCertificateError,
-              L10().serverCertificateInvalid,
-            );
             return false;
           }
 
@@ -1322,11 +1342,29 @@ class InvenTreeAPI {
       showServerError(url, L10().connectionRefused, error.toString());
       return null;
     } on CertificateException catch (error) {
+      final HttpClientRequest? retried = await _retryAfterCertificateTrust(
+        url,
+        method,
+        _uri,
+        headers,
+      );
+      if (retried != null) {
+        return retried;
+      }
       debug("CertificateException at ${url}:");
       debug(error.toString());
       showServerError(url, L10().serverCertificateError, error.toString());
       return null;
     } on HandshakeException catch (error) {
+      final HttpClientRequest? retried = await _retryAfterCertificateTrust(
+        url,
+        method,
+        _uri,
+        headers,
+      );
+      if (retried != null) {
+        return retried;
+      }
       debug("HandshakeException at ${url}:");
       debug(error.toString());
       showServerError(url, L10().serverCertificateError, error.toString());
@@ -1343,6 +1381,82 @@ class InvenTreeAPI {
 
       return null;
     }
+  }
+
+  /*
+   * A certificate error occurred while connecting to the active profile's
+   * server. If the user hasn't already trusted this profile's certificate,
+   * prompt them in-flow; if they accept, persist that decision against the
+   * profile and retry the connection once.
+   */
+  Future<HttpClientRequest?> _retryAfterCertificateTrust(
+    String url,
+    String method,
+    Uri uri,
+    Map<String, String> headers,
+  ) async {
+    final UserProfile? prf = profile;
+
+    if (prf == null || prf.trustedCertificate) {
+      // Nothing new to prompt for - surface the original error as-is
+      return null;
+    }
+
+    final bool trust = await _promptTrustCertificate(uri.host);
+
+    if (!trust) {
+      return null;
+    }
+
+    prf.trustedCertificate = true;
+    await UserProfileDBManager().updateProfile(prf);
+
+    try {
+      final HttpClientRequest request = await httpClient
+          .openUrl(method, uri)
+          .timeout(Duration(seconds: 10));
+
+      defaultHeaders().forEach((key, value) {
+        request.headers.set(key, value);
+      });
+
+      headers.forEach((key, value) {
+        request.headers.set(key, value);
+      });
+
+      return request;
+    } catch (error) {
+      debug(
+        "Retry after certificate trust failed at ${url}: ${error.toString()}",
+      );
+      return null;
+    }
+  }
+
+  /*
+   * Ask the user whether to trust an otherwise-invalid TLS certificate for
+   * the given host. Returns true if they accept.
+   */
+  Future<bool> _promptTrustCertificate(String host) async {
+    final Completer<bool> completer = Completer<bool>();
+
+    confirmationDialog(
+      L10().serverCertificateError,
+      "${L10().serverCertificateTrust}\n${host}",
+      icon: TablerIcons.shield_exclamation,
+      onAccept: () {
+        if (!completer.isCompleted) {
+          completer.complete(true);
+        }
+      },
+      onReject: () {
+        if (!completer.isCompleted) {
+          completer.complete(false);
+        }
+      },
+    );
+
+    return completer.future;
   }
 
   /*
