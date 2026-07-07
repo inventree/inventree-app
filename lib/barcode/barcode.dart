@@ -6,10 +6,12 @@ import "package:inventree/helpers.dart";
 import "package:inventree/inventree/build.dart";
 import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/inventree/sentry.dart";
+import "package:inventree/inventree/transfer_order.dart";
 import "package:inventree/preferences.dart";
 import "package:inventree/widget/build/build_detail.dart";
 import "package:inventree/widget/company/manufacturer_part_detail.dart";
 import "package:inventree/widget/order/sales_order_detail.dart";
+import "package:inventree/widget/order/transfer_order_detail.dart";
 import "package:one_context/one_context.dart";
 
 import "package:inventree/api.dart";
@@ -231,6 +233,23 @@ class BarcodeScanHandler extends BarcodeHandler {
   }
 
   /*
+    * Response when a "TransferOrder" instance is scanned
+  */
+  Future<void> handleTransferOrder(int pk) async {
+    var order = await InvenTreeTransferOrder().get(pk);
+
+    if (order is InvenTreeTransferOrder &&
+        InvenTreeAPI().supportsTransferOrders) {
+      OneContext().pop();
+      OneContext().push(
+        MaterialPageRoute(
+          builder: (context) => TransferOrderDetailWidget(order),
+        ),
+      );
+    }
+  }
+
+  /*
    * Response when a "PurchaseOrder" instance is scanned
    */
   Future<void> handlePurchaseOrder(int pk) async {
@@ -273,6 +292,7 @@ class BarcodeScanHandler extends BarcodeHandler {
       InvenTreeStockLocation.MODEL_TYPE,
       InvenTreeCompany.MODEL_TYPE,
       InvenTreeBuildOrder.MODEL_TYPE,
+      InvenTreeTransferOrder.MODEL_TYPE,
       InvenTreePurchaseOrder.MODEL_TYPE,
       InvenTreeSalesOrder.MODEL_TYPE,
     ];
@@ -303,6 +323,9 @@ class BarcodeScanHandler extends BarcodeHandler {
           return;
         case InvenTreeBuildOrder.MODEL_TYPE:
           await handleBuildOrder(pk);
+          return;
+        case InvenTreeTransferOrder.MODEL_TYPE:
+          await handleTransferOrder(pk);
           return;
         case InvenTreePurchaseOrder.MODEL_TYPE:
           await handlePurchaseOrder(pk);
