@@ -8,7 +8,9 @@ import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/transfer_order.dart";
 
 import "package:inventree/widget/link_icon.dart";
+import "package:inventree/widget/order/transfer_order_line_detail.dart";
 import "package:inventree/widget/paginator.dart";
+import "package:inventree/widget/progress.dart";
 
 /*
  * Paginated widget class for displaying a list of parts assigned to a Transfer Order
@@ -82,11 +84,15 @@ class _PaginatedTransferOrderLineListState
         color: item.isComplete ? COLOR_SUCCESS : COLOR_WARNING,
       ),
       onTap: () async {
-        var part = item.part;
-
-        if (part != null) {
-          part.goToDetailPage(context);
-        }
+        showLoadingOverlay();
+        await item.reload();
+        hideLoadingOverlay();
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TransferOrderLineDetailWidget(item),
+          ),
+        );
       },
     );
   }

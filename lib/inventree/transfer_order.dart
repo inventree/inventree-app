@@ -10,6 +10,8 @@ import "package:inventree/app_colors.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/orders.dart";
+import "package:inventree/inventree/part.dart";
+import "package:inventree/inventree/stock.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/widget/order/transfer_order_detail.dart";
 
@@ -236,6 +238,90 @@ class InvenTreeTransferOrderLineItem extends InvenTreeOrderLine {
       return null;
     } else {
       return InvenTreeTransferOrder.fromJson(detail as Map<String, dynamic>);
+    }
+  }
+}
+
+/*
+ * Class representing a single stock allocation against a Transfer Order line item
+ */
+class InvenTreeTransferOrderAllocation extends InvenTreeModel {
+  InvenTreeTransferOrderAllocation() : super();
+
+  InvenTreeTransferOrderAllocation.fromJson(Map<String, dynamic> json)
+    : super.fromJson(json);
+
+  @override
+  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
+      InvenTreeTransferOrderAllocation.fromJson(json);
+
+  @override
+  String get URL => "order/transfer-order-allocation/";
+
+  static const String MODEL_TYPE = "transferorderallocation";
+
+  @override
+  List<String> get rolesRequired => ["transfer_order"];
+
+  @override
+  Map<String, String> defaultFilters() {
+    return {
+      "part_detail": "true",
+      "order_detail": "true",
+      "item_detail": "true",
+      "location_detail": "true",
+    };
+  }
+
+  double get quantity => getDouble("quantity");
+
+  int get lineId => getInt("line");
+
+  int get orderId => getInt("order");
+
+  InvenTreeTransferOrder? get order {
+    dynamic detail = jsondata["order_detail"];
+
+    if (detail == null) {
+      return null;
+    } else {
+      return InvenTreeTransferOrder.fromJson(detail as Map<String, dynamic>);
+    }
+  }
+
+  int get stockItemId => getInt("item");
+
+  InvenTreeStockItem? get stockItem {
+    dynamic detail = jsondata["item_detail"];
+
+    if (detail == null) {
+      return null;
+    } else {
+      return InvenTreeStockItem.fromJson(detail as Map<String, dynamic>);
+    }
+  }
+
+  int get partId => getInt("part");
+
+  InvenTreePart? get part {
+    dynamic detail = jsondata["part_detail"];
+
+    if (detail == null) {
+      return null;
+    } else {
+      return InvenTreePart.fromJson(detail as Map<String, dynamic>);
+    }
+  }
+
+  int get locationId => getInt("location");
+
+  InvenTreeStockLocation? get location {
+    dynamic detail = jsondata["location_detail"];
+
+    if (detail == null) {
+      return null;
+    } else {
+      return InvenTreeStockLocation.fromJson(detail as Map<String, dynamic>);
     }
   }
 }
