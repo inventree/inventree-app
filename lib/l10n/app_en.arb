@@ -345,7 +345,7 @@
   "consume": "Consume",
   "@consume": {},
 
-  "consumeDetail": "Consume allocated stock instead of transferring it",
+  "consumeDetail": "Allocated stock will be consumed, not transferred",
   "@consumeDetail": {},
 
   "confirmScan": "Confirm Transfer",

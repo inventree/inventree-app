@@ -321,19 +321,15 @@ class _TransferOrderDetailState
       );
     }
 
-    tiles.add(
-      ListTile(
-        title: Text(L10().consume),
-        subtitle: Text(L10().consumeDetail),
-        leading: Icon(
-          TablerIcons.flame,
-          color: widget.order.consume ? COLOR_WARNING : COLOR_GRAY_LIGHT,
+    if (widget.order.consume) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().consume),
+          subtitle: Text(L10().consumeDetail),
+          leading: Icon(TablerIcons.flame, color: COLOR_WARNING),
         ),
-        trailing: Icon(
-          widget.order.consume ? TablerIcons.check : TablerIcons.x,
-        ),
-      ),
-    );
+      );
+    }
 
     Color lineColor = completedLines < widget.order.lineItemCount
         ? COLOR_WARNING

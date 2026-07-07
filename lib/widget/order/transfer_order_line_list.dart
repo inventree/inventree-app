@@ -77,7 +77,13 @@ class _PaginatedTransferOrderLineListState
 
     return ListTile(
       title: Text(item.partName),
-      subtitle: Text(item.partDescription),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (item.partDescription.isNotEmpty) Text(item.partDescription),
+          ProgressBar(item.transferred, maximum: item.quantity),
+        ],
+      ),
       leading: InvenTreeAPI().getThumbnail(item.partImage),
       trailing: LargeText(
         item.progressString,
