@@ -179,7 +179,7 @@ class InvenTreeTransferOrderLineItem extends InvenTreeOrderLine {
 
   // API endpoint URL
   @override
-  String get URL => "transfer-order-line/";
+  String get URL => "order/transfer-order-line/";
 
   @override
   List<String> get rolesRequired => ["transfer_order"];

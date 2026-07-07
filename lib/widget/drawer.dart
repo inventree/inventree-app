@@ -10,11 +10,13 @@ import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/inventree/stock.dart";
+import "package:inventree/inventree/transfer_order.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/settings/about.dart";
 import "package:inventree/settings/settings.dart";
 import "package:inventree/widget/build/build_list.dart";
 import "package:inventree/widget/order/sales_order_list.dart";
+import "package:inventree/widget/order/transfer_order_list.dart";
 import "package:inventree/widget/part/category_display.dart";
 import "package:inventree/widget/notifications.dart";
 import "package:inventree/widget/order/purchase_order_list.dart";
@@ -162,6 +164,18 @@ class _InvenTreeDrawerState extends State<InvenTreeDrawer> {
     }
   }
 
+  void _transferOrders() {
+    _closeDrawer();
+    if (_checkConnection()) {
+      Navigator.push(
+        widget.parentContext,
+        MaterialPageRoute(
+          builder: (context) => TransferOrderListWidget(filters: {}),
+        ),
+      );
+    }
+  }
+
   void _notifications() {
     _closeDrawer();
     if (_checkConnection()) {
@@ -257,6 +271,17 @@ class _InvenTreeDrawerState extends State<InvenTreeDrawer> {
           title: Text(L10().buildOrders),
           leading: Icon(TablerIcons.building_factory, color: COLOR_ACTION),
           onTap: _buildOrders,
+        ),
+      );
+    }
+
+    if (InvenTreeAPI().supportsTransferOrders &&
+        InvenTreeTransferOrder().canView) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().transferOrders),
+          leading: Icon(TablerIcons.transfer, color: COLOR_ACTION),
+          onTap: _transferOrders,
         ),
       );
     }
