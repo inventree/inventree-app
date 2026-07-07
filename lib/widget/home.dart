@@ -12,6 +12,7 @@ import "package:inventree/inventree/update_check.dart";
 import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/inventree/stock.dart";
+import "package:inventree/inventree/transfer_order.dart";
 import "package:inventree/preferences.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/settings/select_server.dart";
@@ -24,6 +25,7 @@ import "package:inventree/widget/stock/location_display.dart";
 import "package:inventree/widget/part/part_list.dart";
 import "package:inventree/widget/order/purchase_order_list.dart";
 import "package:inventree/widget/order/sales_order_list.dart";
+import "package:inventree/widget/order/transfer_order_list.dart";
 import "package:inventree/widget/build/build_list.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
@@ -157,6 +159,7 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
   bool homeShowManufacturers = false;
   bool homeShowCustomers = false;
   bool homeShowSuppliers = false;
+  bool homeShowTransfer = false;
 
   // Selected user profile
   UserProfile? _profile;
@@ -169,6 +172,8 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
   int? _soOverdueCount;
   int? _soOutstandingCount;
   int? _shipmentsPendingCount;
+  int? _transferOverdueCount;
+  int? _transferOutstandingCount;
 
   void _showParts(BuildContext context) {
     if (!InvenTreeAPI().checkConnection()) return;
@@ -229,6 +234,17 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
           title: L10().shipmentsPending,
           filters: {"order_outstanding": "true", "shipped": "false"},
         ),
+      ),
+    );
+  }
+
+  void _showTransferOrders(BuildContext context) {
+    if (!InvenTreeAPI().checkConnection()) return;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TransferOrderListWidget(filters: {}),
       ),
     );
   }
@@ -330,6 +346,9 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
     homeShowSuppliers =
         await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_SUPPLIERS, true)
             as bool;
+    homeShowTransfer =
+        await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_TRANSFER, true)
+            as bool;
 
     setState(() {});
 
@@ -356,6 +375,10 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
     final bool loadSo = homeShowSo && InvenTreeSalesOrder().canView;
     final bool loadShipments =
         homeShowShipments && InvenTreeSalesOrderShipment().canView;
+    final bool loadTransfer =
+        homeShowTransfer &&
+        InvenTreeAPI().supportsTransferOrders &&
+        InvenTreeTransferOrder().canView;
 
     int? buildOverdue;
     int? buildOutstanding;
@@ -364,6 +387,8 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
     int? soOverdue;
     int? soOutstanding;
     int? shipmentsPending;
+    int? transferOverdue;
+    int? transferOutstanding;
 
     final List<Future<void>> requests = [];
 
@@ -418,6 +443,21 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
       );
     }
 
+    if (loadTransfer) {
+      requests.add(
+        InvenTreeTransferOrder().count(filters: {"overdue": "true"}).then((c) {
+          transferOverdue = c;
+        }),
+      );
+      requests.add(
+        InvenTreeTransferOrder().count(filters: {"outstanding": "true"}).then((
+          c,
+        ) {
+          transferOutstanding = c;
+        }),
+      );
+    }
+
     await Future.wait(requests);
 
     if (!mounted) {
@@ -432,6 +472,8 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
       _soOverdueCount = soOverdue;
       _soOutstandingCount = soOutstanding;
       _shipmentsPendingCount = shipmentsPending;
+      _transferOverdueCount = transferOverdue;
+      _transferOutstandingCount = transferOutstanding;
     });
   }
 
@@ -618,6 +660,27 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
             _showPendingShipments(context);
           },
           trailing: buildOutstandingBadge(context, _shipmentsPendingCount),
+        ),
+      );
+    }
+
+    // Transfer orders
+    if (homeShowTransfer &&
+        InvenTreeAPI().supportsTransferOrders &&
+        InvenTreeTransferOrder().canView) {
+      tiles.add(
+        _listTile(
+          context,
+          L10().transferOrders,
+          TablerIcons.transfer,
+          callback: () {
+            _showTransferOrders(context);
+          },
+          trailing: buildOrderBadges(
+            context,
+            outstandingCount: _transferOutstandingCount,
+            overdueCount: _transferOverdueCount,
+          ),
         ),
       );
     }

@@ -23,6 +23,7 @@ class _HomeScreenSettingsState extends State<HomeScreenSettingsWidget> {
   bool homeShowSuppliers = true;
   bool homeShowManufacturers = true;
   bool homeShowCustomers = true;
+  bool homeShowTransfer = true;
 
   @override
   void initState() {
@@ -62,6 +63,9 @@ class _HomeScreenSettingsState extends State<HomeScreenSettingsWidget> {
             as bool;
     homeShowSuppliers =
         await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_SUPPLIERS, true)
+            as bool;
+    homeShowTransfer =
+        await InvenTreeSettingsManager().getValue(INV_HOME_SHOW_TRANSFER, true)
             as bool;
 
     setState(() {});
@@ -150,6 +154,23 @@ class _HomeScreenSettingsState extends State<HomeScreenSettingsWidget> {
                   );
                   setState(() {
                     homeShowSuppliers = value;
+                  });
+                },
+              ),
+            ),
+            ListTile(
+              title: Text(L10().homeShowTransfer),
+              subtitle: Text(L10().homeShowTransferDescription),
+              leading: Icon(TablerIcons.transfer),
+              trailing: Switch(
+                value: homeShowTransfer,
+                onChanged: (bool value) {
+                  InvenTreeSettingsManager().setValue(
+                    INV_HOME_SHOW_TRANSFER,
+                    value,
+                  );
+                  setState(() {
+                    homeShowTransfer = value;
                   });
                 },
               ),

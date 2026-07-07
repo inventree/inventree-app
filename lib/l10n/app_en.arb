@@ -342,6 +342,12 @@
   "configureServer": "Configure server settings",
   "@configureServer": {},
 
+  "consume": "Consume",
+  "@consume": {},
+
+  "consumeDetail": "Consume allocated stock instead of transferring it",
+  "@consumeDetail": {},
+
   "confirmScan": "Confirm Transfer",
   "@confirmScan": {},
 
@@ -700,6 +706,12 @@
 
   "homeShowCustomersDescription": "Show customers button on home screen",
   "@homeShowCustomersDescription": {},
+
+  "homeShowTransfer": "Show Transfer Orders",
+  "@homeShowTransfer": {},
+
+  "homeShowTransferDescription": "Show transfer order button on home screen",
+  "@homeShowTransferDescription": {},
 
   "imageUploadFailure": "Image upload failed",
   "@imageUploadFailure": {},
@@ -1096,6 +1108,15 @@
 
   "pending": "Pending",
   "@pending": {},
+
+  "issued": "Issued",
+  "@issued": {},
+
+  "cancelled": "Cancelled",
+  "@cancelled": {},
+
+  "onHold": "On Hold",
+  "@onHold": {},
 
   "permissionAccountDenied": "Your account does not have the required permissions to perform this action",
   "@permissionAccountDenied": {},
@@ -1811,6 +1832,21 @@
     "description": "transfer"
   },
 
+  "transferOrder": "Transfer Order",
+  "@transferOrder": {},
+
+  "transferOrders": "Transfer Orders",
+  "@transferOrders": {},
+
+  "transferOrderCreate": "New Transfer Order",
+  "@transferOrderCreate": {},
+
+  "transferOrderEdit": "Edit Transfer Order",
+  "@transferOrderEdit": {},
+
+  "transferOrderUpdated": "Transfer order updated",
+  "@transferOrderUpdated": {},
+
   "transferStock": "Transfer Stock",
   "@transferStock": {
     "description": "transfer stock"
@@ -1851,6 +1887,9 @@
 
   "units": "Units",
   "@units": {},
+
+  "unknown": "Unknown",
+  "@unknown": {},
 
   "unknownResponse": "Unknown Response",
   "@unknownResponse": {},
