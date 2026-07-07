@@ -613,6 +613,27 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
       );
     }
 
+    // Transfer orders
+    if (homeShowTransfer &&
+        InvenTreeAPI().supportsTransferOrders &&
+        InvenTreeTransferOrder().canView) {
+      tiles.add(
+        _listTile(
+          context,
+          L10().transferOrders,
+          TablerIcons.transfer,
+          callback: () {
+            _showTransferOrders(context);
+          },
+          trailing: buildOrderBadges(
+            context,
+            outstandingCount: _transferOutstandingCount,
+            overdueCount: _transferOverdueCount,
+          ),
+        ),
+      );
+    }
+
     // Purchase orders
     if (homeShowPo && InvenTreePurchaseOrder().canView) {
       tiles.add(
@@ -660,27 +681,6 @@ class _InvenTreeHomePageState extends State<InvenTreeHomePage>
             _showPendingShipments(context);
           },
           trailing: buildOutstandingBadge(context, _shipmentsPendingCount),
-        ),
-      );
-    }
-
-    // Transfer orders
-    if (homeShowTransfer &&
-        InvenTreeAPI().supportsTransferOrders &&
-        InvenTreeTransferOrder().canView) {
-      tiles.add(
-        _listTile(
-          context,
-          L10().transferOrders,
-          TablerIcons.transfer,
-          callback: () {
-            _showTransferOrders(context);
-          },
-          trailing: buildOrderBadges(
-            context,
-            outstandingCount: _transferOutstandingCount,
-            overdueCount: _transferOverdueCount,
-          ),
         ),
       );
     }
