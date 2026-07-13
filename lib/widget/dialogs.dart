@@ -224,6 +224,11 @@ Widget _buildErrorContent(String description, APIResponse? response) {
   );
 }
 
+// Track whether an error dialog is currently being displayed,
+// so that we do not stack multiple error dialogs on top of each other
+// (e.g. when several API requests fail in quick succession on startup)
+bool _errorDialogVisible = false;
+
 /*
  * Construct an error dialog showing information to the user
  *
@@ -242,6 +247,13 @@ Future<void> showErrorDialog(
   if (!hasContext()) {
     return;
   }
+
+  // Do not show a new error dialog if one is already visible
+  if (_errorDialogVisible) {
+    return;
+  }
+
+  _errorDialogVisible = true;
 
   final Color dialogColor = color ?? COLOR_DANGER;
 
@@ -263,6 +275,7 @@ Future<void> showErrorDialog(
         ),
       )
       .then((value) {
+        _errorDialogVisible = false;
         if (onDismissed != null) {
           onDismissed();
         }
