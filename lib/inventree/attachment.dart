@@ -7,6 +7,7 @@ import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/sentry.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/widget/fields.dart";
+import "package:inventree/widget/image_upload.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:path/path.dart" as path;
 
@@ -136,7 +137,7 @@ class InvenTreeAttachment extends InvenTreeModel {
   }) async {
     bool result = false;
 
-    await FilePickerDialog.pickImageFromCamera().then((File? file) {
+    await FilePickerDialog.pickImageFromCamera().then((File? file) async {
       if (file != null) {
         String dir = path.dirname(file.path);
         String ext = path.extension(file.path);
@@ -146,17 +147,22 @@ class InvenTreeAttachment extends InvenTreeModel {
         String filename = "${dir}/${prefix}_image_${now}${ext}";
 
         try {
-          return file.rename(filename).then((File renamed) {
-            return uploadAttachment(renamed, modelType, modelId).then((
-              success,
-            ) {
-              result = success;
-              showSnackIcon(
-                result ? L10().imageUploadSuccess : L10().imageUploadFailure,
-                success: result,
-              );
-            });
-          });
+          final File renamed = await file.rename(filename);
+          final File processed = await preProcessImage(renamed);
+
+          final bool success = await uploadAttachment(
+            processed,
+            modelType,
+            modelId,
+          );
+
+          await cleanupProcessedImage(renamed, processed);
+
+          result = success;
+          showSnackIcon(
+            result ? L10().imageUploadSuccess : L10().imageUploadFailure,
+            success: result,
+          );
         } catch (error, stackTrace) {
           sentryReportError("uploadImage", error, stackTrace);
           showSnackIcon(L10().imageUploadFailure, success: false);

@@ -10,6 +10,7 @@ import "package:one_context/one_context.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/widget/fields.dart";
+import "package:inventree/widget/image_upload.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/refreshable_state.dart";
@@ -80,13 +81,17 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
   Future<void> upload(BuildContext context, File? file) async {
     if (file == null) return;
 
+    final File processed = await preProcessImage(file);
+
     showLoadingOverlay();
 
     final bool result = await InvenTreeAttachment().uploadAttachment(
-      file,
+      processed,
       widget.modelType,
       widget.modelId,
     );
+
+    await cleanupProcessedImage(file, processed);
 
     hideLoadingOverlay();
 

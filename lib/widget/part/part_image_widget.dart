@@ -1,14 +1,12 @@
 import "dart:io";
-import "dart:typed_data";
 
 import "package:flutter/material.dart";
-import "package:path_provider/path_provider.dart" as path_provider;
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:inventree/api.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/widget/fields.dart";
-import "package:inventree/widget/part/image_cropper.dart";
+import "package:inventree/widget/image_upload.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 
@@ -34,50 +32,13 @@ class _PartImageState extends RefreshableState<PartImageWidget> {
   @override
   String getAppBarTitle() => part.fullname;
 
-  Future<void> _processImageWithCropping(File imageFile) async {
+  Future<void> _uploadImage(File imageFile) async {
     try {
-      Uint8List imageBytes = await imageFile.readAsBytes();
+      final File processed = await preProcessImage(imageFile);
 
-      // Show the cropping dialog
-      final Uint8List? croppedBytes = await showDialog<Uint8List>(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => Dialog(
-          insetPadding: const EdgeInsets.all(16),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  L10().cropImage,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                const SizedBox(height: 8),
-                Expanded(child: ImageCropperWidget(imageBytes: imageBytes)),
-              ],
-            ),
-          ),
-        ),
-      );
+      final bool result = await part.uploadImage(processed);
 
-      if (croppedBytes != null) {
-        imageBytes = croppedBytes;
-      }
-
-      // Save cropped bytes to a proper temporary file for upload
-      final tempDir = await path_provider.getTemporaryDirectory();
-      final timestamp = DateTime.now().millisecondsSinceEpoch;
-      final tempFile = File("${tempDir.path}/cropped_image_$timestamp.jpg");
-      await tempFile.writeAsBytes(imageBytes);
-
-      // Upload the cropped file
-      final result = await part.uploadImage(tempFile);
-
-      // Delete temporary file
-      if (await tempFile.exists()) {
-        await tempFile.delete().catchError((_) => tempFile);
-      }
+      await cleanupProcessedImage(imageFile, processed);
 
       if (!result) {
         showSnackIcon(L10().uploadFailed, success: false);
@@ -152,7 +113,7 @@ class _PartImageState extends RefreshableState<PartImageWidget> {
           onPressed: () async {
             FilePickerDialog.pickFile(
               onPicked: (File file) async {
-                await _processImageWithCropping(file);
+                await _uploadImage(file);
               },
             );
           },
