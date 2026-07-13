@@ -31,6 +31,7 @@ dependencies:
   flutter_speed_dial: ^6.2.0              # Speed dial / FAB implementation
   flutter_tabler_icons: ^1.43.0           # Tabler icons
   http: ^1.4.0
+  image: ^4.5.4                           # Re-encode/compress images before upload
   image_picker: ^1.2.2                    # Select or take photos
   infinite_scroll_pagination: ^4.0.0      # Let the server do all the work!
   intl: ^0.20.2
