@@ -34,7 +34,12 @@ class _PartImageState extends RefreshableState<PartImageWidget> {
 
   Future<void> _uploadImage(File imageFile) async {
     try {
-      final File processed = await preProcessImage(imageFile);
+      final File? processed = await preProcessImage(imageFile);
+
+      if (processed == null) {
+        // User cancelled the upload
+        return;
+      }
 
       final bool result = await part.uploadImage(processed);
 

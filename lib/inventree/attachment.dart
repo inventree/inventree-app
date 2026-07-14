@@ -148,7 +148,15 @@ class InvenTreeAttachment extends InvenTreeModel {
 
         try {
           final File renamed = await file.rename(filename);
-          final File processed = await preProcessImage(renamed);
+          final File? processed = await preProcessImage(renamed);
+
+          if (processed == null) {
+            // User cancelled the upload - clean up the renamed capture
+            if (await renamed.exists()) {
+              await renamed.delete().catchError((_) => renamed);
+            }
+            return;
+          }
 
           final bool success = await uploadAttachment(
             processed,

@@ -24,17 +24,53 @@ bool isImageFile(File file) {
   return _kImageExtensions.any((ext) => path.endsWith(ext));
 }
 
+enum _ImageProcessChoice { crop, useOriginal }
+
 /*
  * Common "pre-processing" step for any image file, applied before upload
  * (regardless of whether the image is destined for a Part, an Attachment, or elsewhere).
  *
  * - Files which are not images are returned unchanged.
- * - Image files are offered to the user for interactive cropping.
- *   If the user crops the image, the result is saved to a new temporary file and returned.
- *   Otherwise, the original file is returned unchanged.
+ * - Image files prompt the user to either crop the image, or upload it as-is.
+ * - If the user cancels at any point (the initial prompt, or the crop screen itself),
+ *   this returns null, and the caller must abort the upload entirely.
  */
-Future<File> preProcessImage(File imageFile) async {
+Future<File?> preProcessImage(File imageFile) async {
   if (!isImageFile(imageFile)) {
+    return imageFile;
+  }
+
+  final _ImageProcessChoice? choice = await OneContext()
+      .showDialog<_ImageProcessChoice>(
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+          title: Text(L10().cropImage),
+          content: Text(L10().cropImagePrompt),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(L10().cancel),
+            ),
+            TextButton(
+              onPressed: () =>
+                  Navigator.of(context).pop(_ImageProcessChoice.useOriginal),
+              child: Text(L10().useOriginal),
+            ),
+            ElevatedButton(
+              onPressed: () =>
+                  Navigator.of(context).pop(_ImageProcessChoice.crop),
+              child: Text(L10().crop),
+            ),
+          ],
+        ),
+      );
+
+  if (choice == null) {
+    // User cancelled - abort the upload entirely
+    return null;
+  }
+
+  if (choice == _ImageProcessChoice.useOriginal) {
     return imageFile;
   }
 
@@ -62,7 +98,8 @@ Future<File> preProcessImage(File imageFile) async {
   );
 
   if (croppedBytes == null) {
-    return imageFile;
+    // User cancelled the crop screen - abort the upload entirely
+    return null;
   }
 
   // The crop widget always hands back uncompressed PNG data,

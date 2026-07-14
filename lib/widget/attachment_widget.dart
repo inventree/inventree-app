@@ -81,7 +81,12 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
   Future<void> upload(BuildContext context, File? file) async {
     if (file == null) return;
 
-    final File processed = await preProcessImage(file);
+    final File? processed = await preProcessImage(file);
+
+    if (processed == null) {
+      // User cancelled the upload
+      return;
+    }
 
     showLoadingOverlay();
 
