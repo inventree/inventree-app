@@ -1,6 +1,7 @@
 import "dart:io";
 import "dart:typed_data";
 
+import "package:flutter/foundation.dart" show compute;
 import "package:flutter/material.dart";
 import "package:image/image.dart" as img;
 import "package:one_context/one_context.dart";
@@ -104,11 +105,10 @@ Future<File?> preProcessImage(File imageFile) async {
 
   // The crop widget always hands back uncompressed PNG data,
   // regardless of the source format - re-encode as JPEG so we
-  // don't upload a file many times larger than the original photo
-  final img.Image? decoded = img.decodeImage(croppedBytes);
-  final List<int> jpegBytes = decoded != null
-      ? img.encodeJpg(decoded, quality: 90)
-      : croppedBytes;
+  // don't upload a file many times larger than the original photo.
+  // Run this on a background isolate: decode/encode are synchronous,
+  // CPU-heavy calls that would otherwise freeze the UI thread.
+  final List<int> jpegBytes = await compute(_encodeAsJpeg, croppedBytes);
 
   final tempDir = await path_provider.getTemporaryDirectory();
   final timestamp = DateTime.now().millisecondsSinceEpoch;
@@ -116,6 +116,12 @@ Future<File?> preProcessImage(File imageFile) async {
   await tempFile.writeAsBytes(jpegBytes);
 
   return tempFile;
+}
+
+/// Decode [pngBytes] and re-encode as JPEG. Runs on a background isolate via [compute].
+List<int> _encodeAsJpeg(Uint8List pngBytes) {
+  final img.Image? decoded = img.decodeImage(pngBytes);
+  return decoded != null ? img.encodeJpg(decoded, quality: 90) : pngBytes;
 }
 
 /// Delete [processed] if it is a distinct temporary file created by [preProcessImage]
