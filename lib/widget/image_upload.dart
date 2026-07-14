@@ -54,13 +54,13 @@ Future<File?> preProcessImage(File imageFile) async {
             ),
             TextButton(
               onPressed: () =>
-                  Navigator.of(context).pop(_ImageProcessChoice.useOriginal),
-              child: Text(L10().useOriginal),
+                  Navigator.of(context).pop(_ImageProcessChoice.crop),
+              child: Text(L10().crop),
             ),
             ElevatedButton(
               onPressed: () =>
-                  Navigator.of(context).pop(_ImageProcessChoice.crop),
-              child: Text(L10().crop),
+                  Navigator.of(context).pop(_ImageProcessChoice.useOriginal),
+              child: Text(L10().useOriginal),
             ),
           ],
         ),
