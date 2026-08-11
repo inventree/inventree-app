@@ -1,3 +1,8 @@
+## 0.25.1 - August 2026
+---
+
+- Improvements for build order display
+
 ## 0.25.0 - July 2026
 ---
 
