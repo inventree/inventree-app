@@ -111,11 +111,13 @@ class InvenTreeBuildOrder extends InvenTreeOrder {
 
   // Status code handling
   // Note: These map to BuildStatus in backend/status_codes.py
-  bool get isWaitingForBuild => status == BuildOrderStatus.PENDING;
-  bool get isInProgress => status == BuildOrderStatus.PRODUCTION;
-  bool get isComplete => status == BuildOrderStatus.COMPLETE;
-  bool get isCancelled => status == BuildOrderStatus.CANCELLED;
-  bool get isOnHold => status == BuildOrderStatus.ON_HOLD;
+  bool get isWaitingForBuild =>
+      api.BuildOrderStatus.isNameIn(status, ["PENDING"]);
+  bool get isInProgress =>
+      api.BuildOrderStatus.isNameIn(status, ["PRODUCTION"]);
+  bool get isComplete => api.BuildOrderStatus.isNameIn(status, ["COMPLETE"]);
+  bool get isCancelled => api.BuildOrderStatus.isNameIn(status, ["CANCELLED"]);
+  bool get isOnHold => api.BuildOrderStatus.isNameIn(status, ["ON_HOLD"]);
 
   // Can this build order be completed?
   bool get canCompleteOrder {
@@ -363,55 +365,5 @@ class InvenTreeBuildItem extends InvenTreeModel {
       "quantity": {"required": true},
       "install_into": {"hidden": true},
     };
-  }
-}
-
-/*
- * Build Order Status Codes
- */
-class BuildOrderStatus {
-  // Status codes as defined in backend status_codes.py
-  static const int PENDING = 10; // Build is pending / inactive
-  static const int PRODUCTION = 20; // Build is active
-  static const int ON_HOLD = 25; // Build is on hold
-  static const int CANCELLED = 30; // Build was cancelled
-  static const int COMPLETE = 40; // Build is complete
-
-  // Return a color based on the build status
-  static Color getStatusColor(int status) {
-    switch (status) {
-      case PENDING:
-        return COLOR_GRAY_LIGHT;
-      case PRODUCTION:
-        return COLOR_PROGRESS;
-      case COMPLETE:
-        return COLOR_SUCCESS;
-      case CANCELLED:
-        return COLOR_DANGER;
-      case ON_HOLD:
-        return COLOR_WARNING;
-      default:
-        return COLOR_GRAY_LIGHT;
-    }
-  }
-
-  // Return a string based on the build status
-  static String getStatusText(int status) {
-    // TODO: This can be pulled from the API
-
-    switch (status) {
-      case PENDING:
-        return "Pending";
-      case PRODUCTION:
-        return "In Progress";
-      case COMPLETE:
-        return "Complete";
-      case CANCELLED:
-        return "Cancelled";
-      case ON_HOLD:
-        return "On Hold";
-      default:
-        return "Unknown";
-    }
   }
 }

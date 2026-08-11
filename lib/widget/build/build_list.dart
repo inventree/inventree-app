@@ -168,9 +168,9 @@ class _PaginatedBuildOrderListState
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                BuildOrderStatus.getStatusText(order.status),
+                InvenTreeAPI().BuildOrderStatus.label(order.status),
                 style: TextStyle(
-                  color: BuildOrderStatus.getStatusColor(order.status),
+                  color: InvenTreeAPI().BuildOrderStatus.color(order.status),
                   fontWeight: FontWeight.bold,
                 ),
               ),

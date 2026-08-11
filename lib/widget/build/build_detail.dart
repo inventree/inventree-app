@@ -356,23 +356,12 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
   /// Header tile for the build order
   Widget headerTile(BuildContext context) {
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              widget.order.reference,
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            Text(
-              BuildOrderStatus.getStatusText(widget.order.status),
-              style: TextStyle(
-                color: BuildOrderStatus.getStatusColor(widget.order.status),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
+      child: ListTile(
+        title: Text(widget.order.reference),
+        subtitle: Text(widget.order.description),
+        trailing: LargeText(
+          api.BuildOrderStatus.label(widget.order.status),
+          color: api.BuildOrderStatus.color(widget.order.status),
         ),
       ),
     );
