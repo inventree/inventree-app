@@ -61,15 +61,17 @@ class BuildOrderListItem extends StatelessWidget {
                       vertical: 4.0,
                     ),
                     decoration: BoxDecoration(
-                      color: BuildOrderStatus.getStatusColor(
-                        order.status,
-                      ).withValues(alpha: 0.2),
+                      color: InvenTreeAPI().BuildOrderStatus
+                          .color(order.status)
+                          .withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12.0),
                     ),
                     child: Text(
-                      BuildOrderStatus.getStatusText(order.status),
+                      InvenTreeAPI().BuildOrderStatus.label(order.status),
                       style: TextStyle(
-                        color: BuildOrderStatus.getStatusColor(order.status),
+                        color: InvenTreeAPI().BuildOrderStatus.color(
+                          order.status,
+                        ),
                         fontWeight: FontWeight.bold,
                         fontSize: 12,
                       ),

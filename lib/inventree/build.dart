@@ -8,7 +8,6 @@ import "package:flutter/material.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/api.dart";
-import "package:inventree/app_colors.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/orders.dart";
 import "package:inventree/inventree/part.dart";
