@@ -18,6 +18,7 @@ import "package:inventree/api.dart";
 import "package:inventree/l10.dart";
 
 import "package:inventree/barcode/camera_controller.dart";
+import "package:inventree/barcode/intent_controller.dart";
 import "package:inventree/barcode/wedge_controller.dart";
 import "package:inventree/barcode/controller.dart";
 import "package:inventree/barcode/handler.dart";
@@ -68,6 +69,53 @@ Future<void> barcodeFailure(String msg, dynamic extra) async {
   );
 }
 
+void initGlobalIntentListener() {
+  bool _processing = false;
+
+  datawedgeStream.listen((event) async {
+    if (intentScannerActive) return;
+    if (_processing) return;
+
+    _processing = true;
+
+    try {
+      final int controllerType =
+          await InvenTreeSettingsManager().getValue(
+                INV_BARCODE_SCAN_TYPE,
+                BARCODE_CONTROLLER_CAMERA,
+              )
+              as int;
+      if (controllerType != BARCODE_CONTROLLER_INTENT) return;
+
+      if (!InvenTreeAPI().isConnected()) return;
+
+      String barcode = "";
+      if (event is Map) {
+        final map = Map<String, dynamic>.from(event);
+        barcode = (map["data"] ?? "").toString();
+      } else if (event is String) {
+        barcode = event;
+      }
+
+      if (barcode.isEmpty) return;
+
+      if (!OneContext.hasContext) return;
+
+      await OneContext().navigator.push(
+        PageRouteBuilder(
+          pageBuilder: (context, _, _) => IntentBarcodeController(
+            BarcodeScanHandler(),
+            initialBarcode: barcode,
+          ),
+          opaque: false,
+        ),
+      );
+    } finally {
+      _processing = false;
+    }
+  });
+}
+
 /*
  * Launch a barcode scanner with a particular context and handler.
  * 
@@ -93,6 +141,8 @@ Future<Object?> scanBarcode(
           as int;
 
   switch (barcodeControllerType) {
+    case BARCODE_CONTROLLER_INTENT:
+      controller = IntentBarcodeController(handler);
     case BARCODE_CONTROLLER_WEDGE:
       controller = WedgeBarcodeController(handler);
     case BARCODE_CONTROLLER_CAMERA:

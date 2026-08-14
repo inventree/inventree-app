@@ -94,4 +94,5 @@ dependencies {
     androidTestImplementation 'com.android.support:multidex:2.0.1'
     implementation "androidx.core:core:1.9.0"
     implementation 'androidx.appcompat:appcompat:1.6.0'
+    compileOnly 'com.datalogic:datalogic-android-sdk:1.50'
 }

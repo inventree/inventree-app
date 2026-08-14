@@ -1,16 +1,21 @@
 import "dart:async";
+import "dart:io";
 
+import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 
 import "package:adaptive_theme/adaptive_theme.dart";
 import "package:flutter_localizations/flutter_localizations.dart";
 import "package:flutter_localized_locales/flutter_localized_locales.dart";
+import "package:inventree/barcode/barcode.dart";
+import "package:inventree/barcode/wedge_detect.dart";
 import "package:one_context/one_context.dart";
 import "package:package_info_plus/package_info_plus.dart";
 import "package:sentry_flutter/sentry_flutter.dart";
 import "package:inventree/dsn.dart";
 
+import "package:inventree/managed_config.dart";
 import "package:inventree/preferences.dart";
 import "package:inventree/inventree/sentry.dart";
 import "package:inventree/l10n/supported_locales.dart";
@@ -22,7 +27,7 @@ import "package:inventree/widget/home.dart";
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final savedThemeMode = await AdaptiveTheme.getThemeMode();
+  AdaptiveThemeMode? savedThemeMode = await AdaptiveTheme.getThemeMode();
 
   await runZonedGuarded<Future<void>>(
     () async {
@@ -57,6 +62,14 @@ Future<void> main() async {
           },
         );
       };
+
+      // Get any config provided by the MDM server
+      await initManagedConfiguration();
+
+      final AdaptiveThemeMode? managedThemeMode =
+          await getPendingManagedThemeMode();
+
+      if (managedThemeMode != null) savedThemeMode = managedThemeMode;
 
       final int orientation =
           await InvenTreeSettingsManager().getValue(
@@ -116,6 +129,27 @@ class InvenTreeAppState extends State<StatefulWidget> {
 
     // Run some async init tasks
     runInitTasks();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      applyPendingThemeMode();
+    });
+  }
+
+  Future<void> applyPendingThemeMode() async {
+    final AdaptiveThemeMode? mode = await getPendingManagedThemeMode();
+
+    if (mode == null) return;
+
+    final BuildContext? ctx = OneContext().context;
+
+    if (ctx == null) return;
+
+    final manager = AdaptiveTheme.maybeOf(ctx);
+
+    if (manager == null) return;
+
+    manager.setThemeMode(mode);
+    await clearPendingManagedThemeMode();
   }
 
   // Run app init routines in the background
@@ -123,6 +157,12 @@ class InvenTreeAppState extends State<StatefulWidget> {
     // Set the app locale (language)
     Locale? locale = await InvenTreeSettingsManager().getSelectedLocale();
     setLocale(locale);
+
+    await initWedgeScannerDefault();
+
+    if (!kIsWeb && Platform.isAndroid) {
+      initGlobalIntentListener();
+    }
 
     // First-run only: seed a demo server profile if none are configured
     await UserProfileDBManager().seedDemoProfileIfNeeded();

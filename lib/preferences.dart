@@ -64,6 +64,10 @@ const String INV_BARCODE_SCAN_SINGLE = "barcodeScanSingle";
 // Barcode scanner types
 const int BARCODE_CONTROLLER_CAMERA = 0;
 const int BARCODE_CONTROLLER_WEDGE = 1;
+const int BARCODE_CONTROLLER_INTENT = 2;
+
+// Whether one-time intent wedge detection has run
+const String INV_BARCODE_WEDGE_DETECTED = "barcodeWedgeDetected";
 
 /*
  * Class for storing InvenTree preferences in a NoSql DB

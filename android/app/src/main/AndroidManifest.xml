@@ -15,11 +15,22 @@
             <action android:name="android.intent.action.VIEW" />
             <data android:scheme="https" />
         </intent>
+
+        <!-- For intent wedge detection -->
+        <package android:name="com.symbol.datawedge" />
+        <package android:name="com.datalogic.decode" />
+        <package android:name="com.datalogic.decodewedge" />
+        <package android:name="com.datalogic.systemsettings" />
     </queries>
 
     <application
         android:label="InvenTree"
         android:icon="@mipmap/ic_launcher">
+
+        <uses-library
+            android:name="com.datalogic.device"
+            android:required="false" />
+
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
