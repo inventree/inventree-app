@@ -1,6 +1,7 @@
-## 0.25.1 - August 2026
+## 0.xx.y - August 2026
 ---
 
+- Additional barcode support using data intents
 - Improvements for build order display
 
 ## 0.25.0 - July 2026
