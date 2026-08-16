@@ -1440,6 +1440,12 @@
   "scannerExternalDetail": "Use external scanner to read barcodes (wedge mode)",
   "@scannerExternalDetail": {},
 
+  "scannerIntent": "Intent Wedge",
+  "@scannerIntent": {},
+
+  "scannerIntentDetail": "Receive scans via Android intents",
+  "@scannerIntentDetail": {},
+
   "scanReceivedParts": "Scan Received Parts",
   "@scanReceivedParts": {},
 
