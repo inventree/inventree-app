@@ -440,7 +440,7 @@
   "@history": {
     "description": "history"
   },
-  "hold": "Hold",
+  "hold": "Wstrzymaj",
   "@hold": {},
   "holdOrder": "Hold Order",
   "@holdOrder": {},
