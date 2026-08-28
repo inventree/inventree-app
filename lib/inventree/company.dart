@@ -157,6 +157,10 @@ class InvenTreeSupplierPart extends InvenTreeModel {
       fields["active"] = {};
     }
 
+    if (InvenTreeAPI().supportsSupplierPartPrimaryField) {
+      fields["primary"] = {};
+    }
+
     return fields;
   }
 
