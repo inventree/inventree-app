@@ -65,6 +65,14 @@ class _PaginatedSupplierPartListState
       };
     }
 
+    if (InvenTreeAPI().supportsSupplierPartPrimaryField) {
+      filters["primary"] = {
+        "label": L10().filterPrimary,
+        "help_text": L10().filterPrimaryDetail,
+        "tristate": true,
+      };
+    }
+
     return filters;
   }
 

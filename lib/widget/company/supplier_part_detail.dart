@@ -182,6 +182,21 @@ class _SupplierPartDisplayState
       );
     }
 
+    if (api.supportsSupplierPartPrimaryField) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().primary),
+          leading: Icon(TablerIcons.star, color: COLOR_ACTION),
+          trailing: Text(
+            widget.supplierPart.primary ? L10().yes : L10().no,
+            style: widget.supplierPart.primary
+                ? TextStyle(color: COLOR_SUCCESS)
+                : null,
+          ),
+        ),
+      );
+    }
+
     // Stock levels associated with this SupplierPart
     tiles.add(
       ListTile(

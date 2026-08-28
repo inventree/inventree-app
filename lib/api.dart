@@ -326,6 +326,9 @@ class InvenTreeAPI {
   // Ref: https://github.com/inventree/InvenTree/pull/10699
   bool get supportsModernParameters => apiVersion >= 429;
 
+  // Does the support support the "primary" field on SupplierPart model?
+  bool get supportsSupplierPartPrimaryField => apiVersion >= 456;
+
   // Does the server use the new "user/me/" endpoints?
   // Ref: https://github.com/inventree/InvenTree/pull/11963
   bool get supportsNewUserEndpoints => apiVersion >= 490;

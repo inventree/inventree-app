@@ -157,6 +157,10 @@ class InvenTreeSupplierPart extends InvenTreeModel {
       fields["active"] = {};
     }
 
+    if (InvenTreeAPI().supportsSupplierPartPrimaryField) {
+      fields["primary"] = {};
+    }
+
     return fields;
   }
 
@@ -197,6 +201,8 @@ class InvenTreeSupplierPart extends InvenTreeModel {
   String get SKU => getString("SKU");
 
   bool get active => getBool("active", backup: true);
+
+  bool get primary => getBool("primary", backup: false);
 
   int get partId => getInt("part");
 
