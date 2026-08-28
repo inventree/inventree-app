@@ -198,6 +198,8 @@ class InvenTreeSupplierPart extends InvenTreeModel {
 
   bool get active => getBool("active", backup: true);
 
+  bool get primary => getBool("primary", backup: false);
+
   int get partId => getInt("part");
 
   double get inStock => getDouble("in_stock");
