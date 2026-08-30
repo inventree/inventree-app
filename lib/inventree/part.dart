@@ -254,8 +254,6 @@ class InvenTreePart extends InvenTreeModel {
     return null;
   }
 
-  int get supplierCount => getInt("suppliers", backup: 0);
-
   // Request supplier parts for this part
   Future<List<InvenTreeSupplierPart>> getSupplierParts() async {
     List<InvenTreeSupplierPart> _supplierParts = [];
