@@ -1,4 +1,4 @@
-## 0.xx.y - August 2026
+## 0.25.1 - August 2026
 ---
 
 - Additional filtering options for supplier parts
