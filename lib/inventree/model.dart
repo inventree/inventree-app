@@ -752,6 +752,12 @@ class InvenTreeModel {
       return null;
     }
 
+    // A client error (e.g. 400 Bad Request) was returned - notify the user
+    if (response.clientError()) {
+      showStatusCodeError(URL, response.statusCode, details: response.data);
+      return null;
+    }
+
     // Construct the response
     InvenTreePageResponse page = InvenTreePageResponse();
 

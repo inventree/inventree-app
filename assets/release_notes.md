@@ -1,3 +1,10 @@
+## 0.25.2 - August 2026
+---
+
+- Bug fix for part location display
+- Bug fix for stock location display
+- Updated translations
+
 ## 0.25.1 - August 2026
 ---
 
