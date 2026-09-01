@@ -193,7 +193,7 @@ class _CategoryDisplayState extends RefreshableState<CategoryDisplayWidget> {
     if (parent != null) {
       filters["parent"] = parent.toString();
     } else {
-      filters["parent"] = "null";
+      filters["top_level"] = "true";
     }
 
     List<Widget> tiles = <Widget>[
