@@ -308,6 +308,9 @@ class InvenTreeAPI {
 
   bool get supportsUserPermissions => apiVersion >= 207;
 
+  // Ref: https://github.com/inventree/InvenTree/pull/7514
+  bool get supportsTopLevelFiltering => apiVersion >= 209;
+
   // Does the server support the "destination" field on the PurchaseOrder model?
   // Ref: https://github.com/inventree/InvenTree/pull/8403
   bool get supportsPurchaseOrderDestination => apiVersion >= 276;
