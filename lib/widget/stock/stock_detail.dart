@@ -459,7 +459,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
    * Launches an API Form to transfer this stock item to a new location
    */
   Future<void> _transferStockDialog(BuildContext context) async {
-    Map<String, dynamic> fields = widget.item.transferFields();
+    Map<String, dynamic> fields = await widget.item.transferFields();
 
     launchApiForm(
       context,

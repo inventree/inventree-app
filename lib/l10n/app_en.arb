@@ -1882,6 +1882,12 @@
   "transferStockLocationDetail": "Transfer this stock location into another",
   "@transferStockLocationDetail": {},
 
+  "mergeStockOnTransfer": "Merge stock on transfer",
+  "@mergeStockOnTransfer": {},
+
+  "mergeStockOnTransferDetail": "Merge transferred stock into existing stock at destination if possible",
+  "@mergeStockOnTransferDetail": {},
+
   "translate": "Translate",
   "@translate": {},
 

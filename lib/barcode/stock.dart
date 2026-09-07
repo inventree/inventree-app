@@ -126,7 +126,7 @@ class StockItemScanIntoLocationHandler extends BarcodeScanStockLocationHandler {
     bool result = false;
 
     if (confirm) {
-      Map<String, dynamic> fields = item.transferFields();
+      Map<String, dynamic> fields = await item.transferFields();
 
       // Override location with scanned value
       fields["location"]?["value"] = locationId;
@@ -243,7 +243,7 @@ class StockLocationScanInItemsHandler extends BarcodeScanStockItemHandler {
         return false;
       } else {
         if (confirm) {
-          Map<String, dynamic> fields = item.transferFields();
+          Map<String, dynamic> fields = await item.transferFields();
 
           // Override location with provided location value
           fields["location"]?["value"] = location.pk;

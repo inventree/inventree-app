@@ -146,13 +146,26 @@ class InvenTreeStockItem extends InvenTreeModel {
   }
 
   // Return a set of fields to transfer this stock item via dialog
-  Map<String, dynamic> transferFields() {
+  Future<Map<String, dynamic>> transferFields() async {
+    // Read the server-side global default for merge-on-transfer
+    final bool mergeDefault = await InvenTreeAPI().getGlobalBooleanSetting(
+      "STOCK_MERGE_ON_TRANSFER",
+    );
+
     Map<String, dynamic> fields = {
       "pk": {"parent": "items", "nested": true, "hidden": true, "value": pk},
       "quantity": {"parent": "items", "nested": true, "value": quantity},
       "location": {"value": locationId},
       "status": {"parent": "items", "nested": true, "value": status},
       "packaging": {"parent": "items", "nested": true, "value": packaging},
+      "merge": {
+        "parent": "items",
+        "nested": true,
+        "type": "boolean",
+        "label": L10().mergeStockOnTransfer,
+        "help_text": L10().mergeStockOnTransferDetail,
+        "value": mergeDefault,
+      },
       "notes": {},
     };
 
