@@ -1,9 +1,9 @@
-## 0.25.2 - August 2026
+
+## 0.25.3 - September 2026
 ---
 
-- Bug fix for part location display
-- Bug fix for stock location display
-- Updated translations
+- On stock transfer, add a merge option.
+- For merge option, check default value from server.
 
 ## 0.25.1 - August 2026
 ---
