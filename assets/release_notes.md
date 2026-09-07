@@ -1,9 +1,11 @@
 
-## 0.25.3 - September 2026
+## 0.25.2 - September 2026
 ---
 
 - On stock transfer, add a merge option.
 - For merge option, check default value from server.
+- Bug fix for top level stock display
+- Bug fix for top level location display
 
 ## 0.25.1 - August 2026
 ---
