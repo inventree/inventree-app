@@ -58,7 +58,7 @@ android {
     defaultConfig {
         applicationId "inventree.inventree_app"
         minSdkVersion flutter.minSdkVersion // Flutter now requires API 24+; hardcoding a lower value gets auto-rewritten on every build
-        targetSdkVersion 35
+        targetSdkVersion 36
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
