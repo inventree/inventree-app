@@ -953,6 +953,9 @@
     "description": "Notes"
   },
 
+  "noNotesFound": "No notes found",
+  "@noNotesFound": {},
+
   "notifications": "Notifications",
   "@notifications": {},
 

@@ -30,6 +30,7 @@ dependencies:
   flutter_secure_storage: ^10.3.1
   flutter_speed_dial: ^6.2.0              # Speed dial / FAB implementation
   flutter_tabler_icons: ^1.43.0           # Tabler icons
+  flutter_widget_from_html: ^0.17.4       # Rendering HTML (multi-notes)
   http: ^1.4.0
   image: ^4.5.4                           # Re-encode/compress images before upload
   image_picker: ^1.2.2                    # Select or take photos

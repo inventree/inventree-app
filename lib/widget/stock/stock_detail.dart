@@ -27,7 +27,7 @@ import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/stock/stock_item_history.dart";
 import "package:inventree/widget/stock/stock_item_test_results.dart";
-import "package:inventree/widget/notes_widget.dart";
+import "package:inventree/widget/notes_list_widget.dart";
 
 class StockDetailWidget extends StatefulWidget {
   const StockDetailWidget(this.item, {Key? key}) : super(key: key);
@@ -840,17 +840,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     // Notes field
     tiles.add(
-      ListTile(
-        title: Text(L10().notes),
-        leading: Icon(TablerIcons.note, color: COLOR_ACTION),
-        trailing: LinkIcon(),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => NotesWidget(widget.item)),
-          );
-        },
-      ),
+      ShowNotesItem(context, widget.item, InvenTreeStockItem.MODEL_TYPE),
     );
 
     ListTile? attachmentTile = ShowAttachmentsItem(

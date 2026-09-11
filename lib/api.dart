@@ -344,6 +344,11 @@ class InvenTreeAPI {
   // Ref: https://github.com/inventree/InvenTree/pull/12011
   bool get supportsStockItemCreationDate => apiVersion >= 496;
 
+  // Does the server support the "multi notes" API?
+  // (Multiple HTML notes may be attached to a single model instance)
+  // Ref: https://github.com/inventree/InvenTree/pull/11971
+  bool get supportsMultiNotes => apiVersion >= 537;
+
   // Cached list of plugins (refreshed when we connect to the server)
   List<InvenTreePlugin> _plugins = [];
 
