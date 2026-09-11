@@ -113,7 +113,7 @@ class _PaginatedBomListState extends PaginatedSearchState<PaginatedBomList> {
   _PaginatedBomListState() : super();
 
   @override
-  String get prefix => "bom_";
+  String get prefix => widget.isParentPart ? "bom_" : "used_in_";
 
   @override
   Map<String, String> get orderingOptions => {
@@ -122,24 +122,39 @@ class _PaginatedBomListState extends PaginatedSearchState<PaginatedBomList> {
   };
 
   @override
-  Map<String, Map<String, dynamic>> get filterOptions => {
-    "sub_part_active": {
-      "label": L10().filterActive,
-      "help_text": L10().filterActiveDetail,
-      "tristate": true,
-      "default": true,
-    },
-    "sub_part_assembly": {
-      "label": L10().filterAssembly,
-      "help_text": L10().filterAssemblyDetail,
-    },
-    "sub_part_virtual": {
-      "label": L10().filterVirtual,
-      "help_text": L10().filterVirtualDetail,
-      "tristate": true,
-      "default": true,
-    },
-  };
+  Map<String, Map<String, dynamic>> get filterOptions {
+    Map<String, Map<String, dynamic>> filters = {};
+
+    if (widget.isParentPart) {
+      // We are displaying a list of components used in this assembly
+      filters["sub_part_active"] = {
+        "label": L10().filterActive,
+        "help_text": L10().filterActiveDetail,
+        "tristate": true,
+        "default": true,
+      };
+      filters["sub_part_assembly"] = {
+        "label": L10().filterAssembly,
+        "help_text": L10().filterAssemblyDetail,
+      };
+      filters["sub_part_virtual"] = {
+        "label": L10().filterVirtual,
+        "help_text": L10().filterVirtualDetail,
+        "tristate": true,
+        "default": true,
+      };
+    } else {
+      // We are displaying a list of assemblies where this part is used
+      filters["part_active"] = {
+        "label": L10().filterActive,
+        "help_text": L10().filterActiveDetail,
+        "tristate": true,
+        "default": true,
+      };
+    }
+
+    return filters;
+  }
 
   @override
   Future<InvenTreePageResponse?> requestPage(
