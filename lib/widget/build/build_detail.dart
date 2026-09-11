@@ -13,7 +13,7 @@ import "package:inventree/widget/attachment_widget.dart";
 
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/link_icon.dart";
-import "package:inventree/widget/notes_widget.dart";
+import "package:inventree/widget/notes_list_widget.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/build/build_line_list.dart";
 import "package:inventree/widget/build/build_item_list.dart";
@@ -553,17 +553,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
 
     // Notes tile
     tiles.add(
-      ListTile(
-        title: Text(L10().notes),
-        leading: Icon(TablerIcons.notes, color: COLOR_ACTION),
-        trailing: LinkIcon(),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => NotesWidget(widget.order)),
-          );
-        },
-      ),
+      ShowNotesItem(context, widget.order, InvenTreeBuildOrder.MODEL_TYPE),
     );
 
     // Attachments tile

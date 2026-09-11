@@ -14,7 +14,7 @@ import "package:inventree/l10.dart";
 import "package:inventree/preferences.dart";
 import "package:inventree/widget/attachment_widget.dart";
 import "package:inventree/widget/link_icon.dart";
-import "package:inventree/widget/notes_widget.dart";
+import "package:inventree/widget/notes_list_widget.dart";
 import "package:inventree/widget/order/so_allocation_list.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
@@ -336,18 +336,10 @@ class _SOShipmentDetailWidgetState
 
     // Notes tile
     tiles.add(
-      ListTile(
-        title: Text(L10().notes),
-        leading: Icon(TablerIcons.note, color: COLOR_ACTION),
-        trailing: LinkIcon(),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => NotesWidget(widget.shipment),
-            ),
-          );
-        },
+      ShowNotesItem(
+        context,
+        widget.shipment,
+        InvenTreeSalesOrderShipment.MODEL_TYPE,
       ),
     );
 

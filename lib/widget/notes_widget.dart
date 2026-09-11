@@ -6,26 +6,27 @@ import "package:flutter_markdown/flutter_markdown.dart";
 import "package:inventree/l10.dart";
 
 /*
- * A widget for displaying the notes associated with a given model.
+ * A widget for displaying the single (markdown) notes field associated with
+ * a given model, for servers which do not support the "multi notes" API.
  * We need to pass in the following parameters:
- * 
+ *
  * - Model instance
  * - Title for the app bar
  */
-class NotesWidget extends StatefulWidget {
-  const NotesWidget(this.model, {Key? key}) : super(key: key);
+class LegacyNotesWidget extends StatefulWidget {
+  const LegacyNotesWidget(this.model, {Key? key}) : super(key: key);
 
   final InvenTreeModel model;
 
   @override
-  _NotesState createState() => _NotesState();
+  _LegacyNotesState createState() => _LegacyNotesState();
 }
 
 /*
- * Class representing the state of the NotesWidget
+ * Class representing the state of the LegacyNotesWidget
  */
-class _NotesState extends RefreshableState<NotesWidget> {
-  _NotesState();
+class _LegacyNotesState extends RefreshableState<LegacyNotesWidget> {
+  _LegacyNotesState();
 
   @override
   Future<void> request(BuildContext context) async {

@@ -13,6 +13,7 @@ import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/widget/attachment_widget.dart";
 import "package:inventree/widget/link_icon.dart";
+import "package:inventree/widget/notes_list_widget.dart";
 import "package:inventree/widget/order/purchase_order_list.dart";
 import "package:inventree/widget/order/sales_order_list.dart";
 import "package:inventree/widget/parameter_widget.dart";
@@ -400,16 +401,9 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
       );
     }
 
-    if (widget.company.notes.isNotEmpty) {
-      tiles.add(
-        ListTile(
-          title: Text(L10().notes),
-          subtitle: Text(widget.company.notes),
-          leading: Icon(TablerIcons.note),
-          onTap: null,
-        ),
-      );
-    }
+    tiles.add(
+      ShowNotesItem(context, widget.company, InvenTreeCompany.MODEL_TYPE),
+    );
 
     ListTile? parameterTile = ShowParametersItem(
       context,

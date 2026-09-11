@@ -1,3 +1,9 @@
+## xx.yy.z - Month Year
+---
+
+- Supports new multi-note API for model instances
+- Implement rendering for HTML note content
+
 
 ## 0.25.2 - September 2026
 ---
