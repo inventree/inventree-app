@@ -640,6 +640,8 @@
   "@notes": {
     "description": "Notes"
   },
+  "noNotesFound": "No notes found",
+  "@noNotesFound": {},
   "notifications": "Ειδοποιήσεις",
   "@notifications": {},
   "notificationsEmpty": "Καμία μη αναγνωσμένη ειδοποίηση",
