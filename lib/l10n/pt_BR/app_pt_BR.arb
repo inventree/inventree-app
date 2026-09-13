@@ -640,7 +640,7 @@
   "@notes": {
     "description": "Notes"
   },
-  "noNotesFound": "No notes found",
+  "noNotesFound": "Nenhuma nota encontrada",
   "@noNotesFound": {},
   "notifications": "Notificacoes",
   "@notifications": {},
