@@ -640,6 +640,8 @@
   "@notes": {
     "description": "Notes"
   },
+  "noNotesFound": "No notes found",
+  "@noNotesFound": {},
   "notifications": "Varsler",
   "@notifications": {},
   "notificationsEmpty": "Ingen uleste varsler",
