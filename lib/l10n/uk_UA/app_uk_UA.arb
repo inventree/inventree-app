@@ -724,7 +724,7 @@
   "@pricingSettingDetail": {},
   "partRequirements": "Part Requirements",
   "@partRequirements": {},
-  "partRequirementsSettingDetail": "Display part requirements",
+  "partRequirementsSettingDetail": "Показати вимоги до деталей",
   "@partRequirementsSettingDetail": {},
   "partSettings": "Налаштування позиції",
   "@partSettings": {},
@@ -904,7 +904,7 @@
   "@required": {
     "description": "This field is required"
   },
-  "requiredParts": "Required Parts",
+  "requiredParts": "Необхідні деталі",
   "@requiredParts": {},
   "response400": "Некоректний запит",
   "@response400": {},
