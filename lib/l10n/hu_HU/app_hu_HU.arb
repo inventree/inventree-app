@@ -640,6 +640,8 @@
   "@notes": {
     "description": "Notes"
   },
+  "noNotesFound": "No notes found",
+  "@noNotesFound": {},
   "notifications": "Értesítések",
   "@notifications": {},
   "notificationsEmpty": "Nincsenek olvasatlan értesítések",

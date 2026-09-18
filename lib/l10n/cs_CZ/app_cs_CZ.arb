@@ -640,6 +640,8 @@
   "@notes": {
     "description": "Notes"
   },
+  "noNotesFound": "No notes found",
+  "@noNotesFound": {},
   "notifications": "Notifikace",
   "@notifications": {},
   "notificationsEmpty": "Žádná nepřečtená oznámení",

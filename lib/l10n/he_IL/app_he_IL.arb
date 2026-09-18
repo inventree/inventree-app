@@ -640,6 +640,8 @@
   "@notes": {
     "description": "Notes"
   },
+  "noNotesFound": "No notes found",
+  "@noNotesFound": {},
   "notifications": "התראות",
   "@notifications": {},
   "notificationsEmpty": "אין התראות שלא נקראו",
