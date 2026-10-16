@@ -102,7 +102,7 @@ class _PaginatedPartCategoryListState
     InvenTreePartCategory category = model as InvenTreePartCategory;
 
     return ListTile(
-      title: Text(category.name),
+      title: Text(category.description == "" ? (category.name) : (category.name + " - " + category.description)),
       subtitle: Text(category.pathstring),
       trailing: LargeText("${category.partcount}", size: 14),
       leading: category.customIcon == null ? null : Icon(category.customIcon),
