@@ -559,7 +559,12 @@ class InvenTreeAPI {
 
     profile = userProfile;
 
-    await _refreshHttpsPolicy();
+    // Query the server info first, so that the correct token endpoint is used.
+    // Newer servers only re-issue an existing (hashed) token via user/me/token/
+    if (!await checkServer()) {
+      debug("Token request failed: server not available");
+      return APIResponse(error: "Server not available");
+    }
 
     // Form a name to request the token with
     String platform_name = "inventree-mobile-app";
@@ -651,6 +656,24 @@ class InvenTreeAPI {
     return response;
   }
 
+  /*
+   * Called when a request fails because the server could not be reached.
+   * Mark the connection as lost, so that no further requests are attempted
+   * (e.g. status code data) until the connection is re-established.
+   */
+  void _connectionLost() {
+    if (!_connected) {
+      return;
+    }
+
+    debug("API : connection lost");
+
+    _connected = false;
+    _notification_timer?.cancel();
+    _notification_timer = null;
+    _connectionStatusChanged();
+  }
+
   void disconnectFromServer() {
     debug("API : disconnectFromServer()");
 
@@ -710,11 +733,12 @@ class InvenTreeAPI {
           _refreshNotifications();
         });
       }
+
+      // Status code data can only be loaded once the connection is confirmed
+      fetchStatusCodeData();
     }
 
     _connectionStatusChanged();
-
-    fetchStatusCodeData();
 
     return _connected;
   }
@@ -1319,6 +1343,7 @@ class InvenTreeAPI {
       return _request;
     } on SocketException catch (error) {
       debug("SocketException at ${url}: ${error.toString()}");
+      _connectionLost();
       showServerError(
         url,
         L10().connectionRefused,
@@ -1331,6 +1356,7 @@ class InvenTreeAPI {
       return null;
     } on OSError catch (error) {
       debug("OSError at ${url}: ${error.toString()}");
+      _connectionLost();
       showServerError(
         url,
         L10().connectionRefused,
@@ -1555,6 +1581,7 @@ class InvenTreeAPI {
       response.error = "HTTPException";
       response.errorDetail = error.toString();
     } on SocketException catch (error) {
+      _connectionLost();
       showServerError(
         url,
         L10().connectionRefused,
@@ -1950,11 +1977,20 @@ class InvenTreeAPI {
   }
 
   Future<void> fetchStatusCodeData({bool forceReload = true}) async {
-    StockHistoryStatus.load(forceReload: forceReload);
-    StockStatus.load(forceReload: forceReload);
-    PurchaseOrderStatus.load(forceReload: forceReload);
-    SalesOrderStatus.load(forceReload: forceReload);
-    BuildOrderStatus.load(forceReload: forceReload);
+    // Load sequentially, and stop at the first connection failure,
+    // rather than firing off every request before any can fail
+    for (final status in [
+      StockHistoryStatus,
+      StockStatus,
+      PurchaseOrderStatus,
+      SalesOrderStatus,
+      BuildOrderStatus,
+    ]) {
+      if (!await status.load(forceReload: forceReload)) {
+        debug("fetchStatusCodeData: stopping at ${status.URL}");
+        return;
+      }
+    }
   }
 
   int notification_counter = 0;

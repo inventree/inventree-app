@@ -40,10 +40,16 @@ class InvenTreeStatusCode {
   }
 
   // Load status code information from the server
-  Future<void> load({bool forceReload = false}) async {
+  // Returns false if the server could not be reached
+  Future<bool> load({bool forceReload = false}) async {
     // Return internally cached data
     if (data.isNotEmpty && !forceReload) {
-      return;
+      return true;
+    }
+
+    // Do not query the server until the connection has been confirmed
+    if (!InvenTreeAPI().isConnected()) {
+      return false;
     }
 
     debug("Loading status codes from ${URL}");
@@ -57,6 +63,9 @@ class InvenTreeStatusCode {
         data = results["values"] as Map<String, dynamic>;
       }
     }
+
+    // An invalid response indicates a connection failure (e.g. refused)
+    return response.isValid();
   }
 
   // Return the entry associated with the provided integer status
