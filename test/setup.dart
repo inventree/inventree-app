@@ -63,8 +63,8 @@ void setupTestEnv() {
 // Accessors for default testing values
 const String testServerAddress = "http://localhost:8000/";
 const String testServerName = "Test Server";
-const String testUsername = "testuser";
-const String testPassword = "testpassword";
+const String testUsername = "admin";
+const String testPassword = "inventree";
 
 /*
  * Request an API token for the given profile
