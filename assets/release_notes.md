@@ -3,7 +3,7 @@
 
 - Supports new multi-note API for model instances
 - Implement rendering for HTML note content
-
+- Adds support for separate "pricing" permission set
 
 ## 0.25.2 - September 2026
 ---
