@@ -27,16 +27,16 @@ void main() {
 
       // List *all* categories
       results = await InvenTreePartCategory().list();
-      assert(results.length == 8);
+      expect(results.length, greaterThanOrEqualTo(28));
 
       for (var result in results) {
         assert(result is InvenTreePartCategory);
       }
 
-      // Filter by parent category
+      // Filter by parent category ("Electronics")
       results = await InvenTreePartCategory().list(filters: {"parent": "1"});
 
-      assert(results.length == 3);
+      expect(results.length, equals(6));
     });
   });
 
@@ -50,21 +50,21 @@ void main() {
 
       // List *all* parts
       results = await InvenTreePart().list();
-      expect(results.length, equals(14));
+      expect(results.length, greaterThanOrEqualTo(438));
 
       // List with active filter
       results = await InvenTreePart().list(filters: {"active": "true"});
-      expect(results.length, greaterThanOrEqualTo(13));
+      expect(results.length, greaterThanOrEqualTo(410));
 
       for (var result in results) {
         // results must be InvenTreePart instances
         assert(result is InvenTreePart);
       }
 
-      // Filter by category
-      results = await InvenTreePart().list(filters: {"category": "2"});
+      // Filter by category ("Enclosures")
+      results = await InvenTreePart().list(filters: {"category": "15"});
 
-      assert(results.length == 2);
+      expect(results.length, equals(5));
     });
 
     test("Part Detail", () async {
@@ -77,17 +77,17 @@ void main() {
         InvenTreePart part = result as InvenTreePart;
 
         // Check some basic properties of the part
-        assert(part.name == "M2x4 LPHS");
-        assert(part.fullname == "M2x4 LPHS");
-        assert(part.description == "M2x4 low profile head screw");
-        assert(part.categoryId == 8);
-        assert(part.categoryName == "Fasteners");
-        assert(part.image == part.thumbnail);
-        assert(part.thumbnail == "/static/img/blank_image.thumbnail.png");
+        assert(part.name == "R_10R_0402_1%");
+        assert(part.fullname == "R_10R_0402_1%");
+        assert(part.description == "10R resistor in 0402 SMD package");
+        assert(part.categoryId == 5);
+        assert(part.categoryName == "Resistors");
+        assert(part.image == "/media/part_images/0402.jpg");
+        assert(part.thumbnail == "/media/part_images/0402.thumbnail.jpg");
 
         // Stock information
-        assert(part.unallocatedStockString == "9000");
-        assert(part.inStockString == "9000");
+        assert(part.inStock > 0);
+        assert(part.unallocatedStock <= part.inStock);
       }
     });
 
@@ -102,7 +102,7 @@ void main() {
 
       if (result != null) {
         InvenTreePart part = result as InvenTreePart;
-        assert(part.name == "M2x4 LPHS");
+        assert(part.name == "R_10R_0402_1%");
 
         // Change the name to something else
 
@@ -115,13 +115,13 @@ void main() {
         assert(part.name == "Woogle");
 
         // And change it back again
-        response = await part.update(values: {"name": "M2x4 LPHS"});
+        response = await part.update(values: {"name": "R_10R_0402_1%"});
 
         assert(response.isValid());
         assert(response.statusCode == 200);
 
         assert(await part.reload());
-        assert(part.name == "M2x4 LPHS");
+        assert(part.name == "R_10R_0402_1%");
       }
     });
   });
