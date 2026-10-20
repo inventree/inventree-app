@@ -16,11 +16,8 @@ env:
   INVENTREE_MEDIA_ROOT: ../test_inventree_media
   INVENTREE_STATIC_ROOT: ../test_inventree_static
   INVENTREE_BACKUP_DIR: ../test_inventree_backup
-  INVENTREE_ADMIN_USER: testuser
-  INVENTREE_ADMIN_PASSWORD: testpassword
-  INVENTREE_ADMIN_EMAIL: test@test.com
-jobs:
 
+jobs:
   test:
     runs-on: ubuntu-latest
 
@@ -78,7 +75,7 @@ jobs:
           cd inventree_server
           invoke install
           invoke migrate
-          invoke dev.import-fixtures
+          invoke dev.setup-test -i
           invoke dev.server -a 127.0.0.1:8000 &
           invoke wait
           sleep 30

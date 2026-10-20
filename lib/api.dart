@@ -595,6 +595,17 @@ class InvenTreeAPI {
       platform_name += "-" + (deviceInfo["systemVersion"] as String);
     }
 
+    // The token endpoint depends on the server API version, which may not be
+    // known yet (first login), or may belong to a different server profile.
+    // Note: newer servers will not re-issue an existing token via the legacy endpoint
+    final infoResponse = await get(_makeUrl("/api/", base: userProfile.server));
+
+    if (!infoResponse.successful()) {
+      return infoResponse;
+    }
+
+    serverInfo = {...infoResponse.asMap()};
+
     // Construct auth header from username and password
     String authHeader =
         "Basic " + base64Encode(utf8.encode("${username}:${password}"));
@@ -649,7 +660,7 @@ class InvenTreeAPI {
     // Save the token to the user profile
     userProfile.token = (data["token"] ?? "") as String;
 
-    debug("Received token from server: ${userProfile.token}");
+    debug("Received token from server");
 
     await UserProfileDBManager().updateProfile(userProfile);
 

@@ -69,12 +69,14 @@ void main() {
     // Tests for scanning a stock item into a location
 
     test("Scan Into Location", () async {
-      final item = await InvenTreeStockItem().get(1) as InvenTreeStockItem?;
+      final item = await InvenTreeStockItem().get(2) as InvenTreeStockItem?;
       assert(item != null);
 
-      assert(item!.pk == 1);
+      assert(item!.pk == 2);
 
-      var handler = StockItemScanIntoLocationHandler(item!);
+      final int originalLocation = item!.locationId;
+
+      var handler = StockItemScanIntoLocationHandler(item);
 
       await handler.processBarcode('{"stocklocation": 7}');
       // Check the location has been updated
@@ -87,6 +89,11 @@ void main() {
       await handler.processBarcode('{"stocklocation": 1}');
       await item.reload();
       assert(item.locationId == 1);
+
+      // Return to the original location
+      await handler.processBarcode('{"stocklocation": ${originalLocation}}');
+      await item.reload();
+      assert(item.locationId == originalLocation);
     });
   });
 
@@ -103,7 +110,7 @@ void main() {
       var handler = StockLocationScanInItemsHandler(location!);
 
       // Scan multiple items into this location
-      for (int id in [1, 2, 11]) {
+      for (int id in [2, 3, 11]) {
         await handler.processBarcode('{"stockitem": ${id}}');
 
         var item = await InvenTreeStockItem().get(id) as InvenTreeStockItem?;
@@ -120,10 +127,10 @@ void main() {
 
     test("Scan Parent", () async {
       final location =
-          await InvenTreeStockLocation().get(7) as InvenTreeStockLocation?;
+          await InvenTreeStockLocation().get(5) as InvenTreeStockLocation?;
 
       assert(location != null);
-      assert(location!.pk == 7);
+      assert(location!.pk == 5);
       assert(location!.parentId == 4);
 
       var handler = ScanParentLocationHandler(location!);
