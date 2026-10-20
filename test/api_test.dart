@@ -138,6 +138,9 @@ void main() {
       assert(!api.checkRole("part", "weirdpermission"));
       assert(api.checkRole("blah", "bloo"));
 
+      // Pricing role (or legacy server with no pricing role)
+      assert(api.canViewPricing);
+
       debugContains("Received token from server");
       debugContains("showSnackIcon: 'Connected to Server'");
     });

@@ -349,6 +349,16 @@ class InvenTreeAPI {
   // Ref: https://github.com/inventree/InvenTree/pull/11971
   bool get supportsMultiNotes => apiVersion >= 537;
 
+  // Does the server support the "pricing" user role?
+  // (Pricing endpoints also moved to the /api/pricing/ namespace)
+  // Ref: https://github.com/inventree/InvenTree/pull/13034
+  bool get supportsPricingRole => apiVersion >= 561;
+
+  // Can the current user view part pricing information?
+  // Older servers do not have a separate "pricing" role, so no check is performed
+  bool get canViewPricing =>
+      !supportsPricingRole || checkRole("pricing", "view");
+
   // Cached list of plugins (refreshed when we connect to the server)
   List<InvenTreePlugin> _plugins = [];
 
