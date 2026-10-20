@@ -158,10 +158,9 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       false,
     );
 
-    showPricing = await InvenTreeSettingsManager().getBool(
-      INV_PART_SHOW_PRICING,
-      true,
-    );
+    showPricing =
+        api.canViewPricing &&
+        await InvenTreeSettingsManager().getBool(INV_PART_SHOW_PRICING, true);
     showBom = await InvenTreeSettingsManager().getBool(INV_PART_SHOW_BOM, true);
     allowLabelPrinting = await InvenTreeSettingsManager().getBool(
       INV_ENABLE_LABEL_PRINTING,
