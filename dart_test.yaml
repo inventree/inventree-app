@@ -1,0 +1,4 @@
+# Test files share a single server account, and each requests an API token
+# with the same name - which revokes any token previously issued under that name.
+# Run test files sequentially to prevent them invalidating each other's tokens
+concurrency: 1
