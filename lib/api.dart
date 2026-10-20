@@ -655,7 +655,7 @@ class InvenTreeAPI {
     // Save the token to the user profile
     userProfile.token = (data["token"] ?? "") as String;
 
-    debug("Received token from server: ${userProfile.token}");
+    debug("Received token from server");
 
     await UserProfileDBManager().updateProfile(userProfile);
 
