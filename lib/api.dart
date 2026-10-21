@@ -352,7 +352,7 @@ class InvenTreeAPI {
   // Does the server support the "pricing" user role?
   // (Pricing endpoints also moved to the /api/pricing/ namespace)
   // Ref: https://github.com/inventree/InvenTree/pull/13034
-  bool get supportsPricingRole => apiVersion >= 561;
+  bool get supportsPricingRole => apiVersion >= 562;
 
   // Can the current user view part pricing information?
   // Older servers do not have a separate "pricing" role, so no check is performed
