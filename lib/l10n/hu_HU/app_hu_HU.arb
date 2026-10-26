@@ -444,6 +444,8 @@
   "@history": {
     "description": "history"
   },
+  "historyDetail": "Display change history (audit log) information",
+  "@historyDetail": {},
   "hold": "Hold",
   "@hold": {},
   "holdOrder": "Hold Order",
@@ -1138,10 +1140,6 @@
   "@stockItemDeleteFailure": {},
   "stockItemDeleteSuccess": "Készlet tétel törölve",
   "@stockItemDeleteSuccess": {},
-  "stockItemHistory": "Készlettörténet",
-  "@stockItemHistory": {},
-  "stockItemHistoryDetail": "Készlettörténet megjelenítése",
-  "@stockItemHistoryDetail": {},
   "stockItemTransferred": "Készlet áthelyezve",
   "@stockItemTransferred": {},
   "stockItemUpdated": "Készlet tétel feltöltve",
