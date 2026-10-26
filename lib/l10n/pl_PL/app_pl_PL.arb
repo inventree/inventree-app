@@ -444,6 +444,8 @@
   "@history": {
     "description": "history"
   },
+  "historyDetail": "Display change history (audit log) information",
+  "@historyDetail": {},
   "hold": "Wstrzymaj",
   "@hold": {},
   "holdOrder": "Hold Order",
@@ -1138,10 +1140,6 @@
   "@stockItemDeleteFailure": {},
   "stockItemDeleteSuccess": "Przedmiot magazynowy usunięty",
   "@stockItemDeleteSuccess": {},
-  "stockItemHistory": "Historia zapasów",
-  "@stockItemHistory": {},
-  "stockItemHistoryDetail": "Wyświetl historyczne informacje o śledzeniu stanów magazynowych",
-  "@stockItemHistoryDetail": {},
   "stockItemTransferred": "Element magazynowy przeniesiony",
   "@stockItemTransferred": {},
   "stockItemUpdated": "Zaktualizowano element magazynowy",
