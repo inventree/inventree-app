@@ -444,6 +444,8 @@
   "@history": {
     "description": "history"
   },
+  "historyDetail": "Display change history (audit log) information",
+  "@historyDetail": {},
   "hold": "Hold",
   "@hold": {},
   "holdOrder": "Hold Order",
@@ -1138,10 +1140,6 @@
   "@stockItemDeleteFailure": {},
   "stockItemDeleteSuccess": "Lagerbestand gelöscht",
   "@stockItemDeleteSuccess": {},
-  "stockItemHistory": "Historie des Artikels",
-  "@stockItemHistory": {},
-  "stockItemHistoryDetail": "Zeige historische Bestandsverfolgungsdaten",
-  "@stockItemHistoryDetail": {},
   "stockItemTransferred": "Artikel umgezogen",
   "@stockItemTransferred": {},
   "stockItemUpdated": "Artikel aktualisiert",
