@@ -36,6 +36,7 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
   bool enableLabelPrinting = true;
   bool darkMode = false;
   bool showPk = false;
+  bool showHistory = false;
 
   int screenOrientation = SCREEN_ORIENTATION_SYSTEM;
 
@@ -77,6 +78,10 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
             as bool;
     showPk =
         await InvenTreeSettingsManager().getValue(INV_SHOW_PK, false) as bool;
+    showHistory = await InvenTreeSettingsManager().getBool(
+      INV_SHOW_HISTORY,
+      false,
+    );
 
     darkMode = AdaptiveTheme.of(context).mode.isDark;
 
@@ -207,6 +212,20 @@ class _InvenTreeAppSettingsState extends State<InvenTreeAppSettingsWidget> {
                   InvenTreeSettingsManager().setValue(INV_SHOW_PK, value);
                   setState(() {
                     showPk = value;
+                  });
+                },
+              ),
+            ),
+            ListTile(
+              title: Text(L10().history),
+              subtitle: Text(L10().historyDetail),
+              leading: Icon(TablerIcons.history),
+              trailing: Switch(
+                value: showHistory,
+                onChanged: (bool value) {
+                  InvenTreeSettingsManager().setValue(INV_SHOW_HISTORY, value);
+                  setState(() {
+                    showHistory = value;
                   });
                 },
               ),

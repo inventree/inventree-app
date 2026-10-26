@@ -15,6 +15,7 @@ import "package:inventree/preferences.dart";
 import "package:inventree/widget/attachment_widget.dart";
 import "package:inventree/widget/link_icon.dart";
 import "package:inventree/widget/notes_list_widget.dart";
+import "package:inventree/widget/history_widget.dart";
 import "package:inventree/widget/order/so_allocation_list.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
@@ -342,6 +343,16 @@ class _SOShipmentDetailWidgetState
         InvenTreeSalesOrderShipment.MODEL_TYPE,
       ),
     );
+
+    if (showHistory) {
+      tiles.add(
+        ShowHistoryItem(
+          context,
+          InvenTreeSalesOrderShipment.MODEL_TYPE,
+          widget.shipment.pk,
+        ),
+      );
+    }
 
     ListTile? attachmentTile = ShowAttachmentsItem(
       context,

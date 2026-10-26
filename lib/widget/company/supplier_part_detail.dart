@@ -15,6 +15,7 @@ import "package:inventree/barcode/barcode.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/company.dart";
 import "package:inventree/widget/parameter_widget.dart";
+import "package:inventree/widget/history_widget.dart";
 
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
@@ -335,6 +336,16 @@ class _SupplierPartDisplayState
           title: Text(L10().notes),
           subtitle: Text(widget.supplierPart.note),
           leading: Icon(TablerIcons.pencil),
+        ),
+      );
+    }
+
+    if (showHistory) {
+      tiles.add(
+        ShowHistoryItem(
+          context,
+          InvenTreeSupplierPart.MODEL_TYPE,
+          widget.supplierPart.pk,
         ),
       );
     }

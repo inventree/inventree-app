@@ -130,6 +130,7 @@ const List<ManagedSetting> MANAGED_SETTINGS = [
   ManagedSetting(INV_SOUNDS_BARCODE, ManagedSettingType.boolean),
   ManagedSetting(INV_SOUNDS_SERVER, ManagedSettingType.boolean),
   ManagedSetting(INV_SHOW_PK, ManagedSettingType.boolean),
+  ManagedSetting(INV_SHOW_HISTORY, ManagedSettingType.boolean),
 
   // Home Screen settings
   ManagedSetting(INV_HOME_SHOW_SUBSCRIBED, ManagedSettingType.boolean),
@@ -166,7 +167,6 @@ const List<ManagedSetting> MANAGED_SETTINGS = [
   ManagedSetting(INV_PART_SHOW_REQUIREMENTS, ManagedSettingType.boolean),
 
   // Stock settings
-  ManagedSetting(INV_STOCK_SHOW_HISTORY, ManagedSettingType.boolean),
   ManagedSetting(INV_STOCK_SHOW_TESTS, ManagedSettingType.boolean),
   ManagedSetting(INV_STOCK_CONFIRM_SCAN, ManagedSettingType.boolean),
 

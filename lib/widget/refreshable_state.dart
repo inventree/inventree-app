@@ -210,6 +210,10 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T>
   // Whether to display the "pk" (primary key / ID) value of the loaded model
   bool showPk = false;
 
+  // Whether to display the "history" (audit log) for the loaded model
+  // Requires both the app setting, and server support for the audit log
+  bool showHistory = false;
+
   // Helper function to return API instance
   InvenTreeAPI get api => InvenTreeAPI();
 
@@ -251,6 +255,9 @@ abstract class RefreshableState<T extends StatefulWidget> extends State<T>
     });
 
     showPk = await InvenTreeSettingsManager().getBool(INV_SHOW_PK, false);
+    showHistory =
+        api.supportsAuditLog &&
+        await InvenTreeSettingsManager().getBool(INV_SHOW_HISTORY, false);
 
     await request(context);
 

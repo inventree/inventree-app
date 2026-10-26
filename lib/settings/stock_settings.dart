@@ -11,7 +11,6 @@ class InvenTreeStockSettingsWidget extends StatefulWidget {
 class _InvenTreeStockSettingsState extends State<InvenTreeStockSettingsWidget> {
   _InvenTreeStockSettingsState();
 
-  bool stockShowHistory = false;
   bool stockShowTests = false;
   bool stockConfirmScan = false;
 
@@ -22,10 +21,6 @@ class _InvenTreeStockSettingsState extends State<InvenTreeStockSettingsWidget> {
   }
 
   Future<void> loadSettings() async {
-    stockShowHistory = await InvenTreeSettingsManager().getBool(
-      INV_STOCK_SHOW_HISTORY,
-      false,
-    );
     stockShowTests = await InvenTreeSettingsManager().getBool(
       INV_STOCK_SHOW_TESTS,
       true,
@@ -47,23 +42,6 @@ class _InvenTreeStockSettingsState extends State<InvenTreeStockSettingsWidget> {
       body: Container(
         child: ListView(
           children: [
-            ListTile(
-              title: Text(L10().stockItemHistory),
-              subtitle: Text(L10().stockItemHistoryDetail),
-              leading: Icon(TablerIcons.history),
-              trailing: Switch(
-                value: stockShowHistory,
-                onChanged: (bool value) {
-                  InvenTreeSettingsManager().setValue(
-                    INV_STOCK_SHOW_HISTORY,
-                    value,
-                  );
-                  setState(() {
-                    stockShowHistory = value;
-                  });
-                },
-              ),
-            ),
             ListTile(
               title: Text(L10().testResults),
               subtitle: Text(L10().testResultsDetail),

@@ -23,6 +23,7 @@ import "package:inventree/widget/order/po_line_list.dart";
 
 import "package:inventree/widget/attachment_widget.dart";
 import "package:inventree/widget/notes_list_widget.dart";
+import "package:inventree/widget/history_widget.dart";
 import "package:inventree/widget/parameter_widget.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
@@ -569,6 +570,16 @@ class _PurchaseOrderDetailState
     tiles.add(
       ShowNotesItem(context, widget.order, InvenTreePurchaseOrder.MODEL_TYPE),
     );
+
+    if (showHistory) {
+      tiles.add(
+        ShowHistoryItem(
+          context,
+          InvenTreePurchaseOrder.MODEL_TYPE,
+          widget.order.pk,
+        ),
+      );
+    }
 
     ListTile? parameterTile = ShowParametersItem(
       context,
