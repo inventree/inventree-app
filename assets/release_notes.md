@@ -1,4 +1,4 @@
-## xx.yy.z - Month Year
+## 0.26.0 - October 2026
 ---
 
 - Supports new multi-note API for model instances
