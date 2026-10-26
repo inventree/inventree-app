@@ -2,8 +2,11 @@
 ---
 
 - Supports new multi-note API for model instances
+- Supports read-only audit log for historical changes
+- Removes legacy StockItemTracking functionality (replaced by audit log)
 - Implement rendering for HTML note content
 - Adds support for separate "pricing" permission set
+- Updated translations
 
 ## 0.25.2 - September 2026
 ---
