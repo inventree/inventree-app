@@ -359,6 +359,11 @@ class InvenTreeAPI {
   bool get canViewPricing =>
       !supportsPricingRole || checkRole("pricing", "view");
 
+  // Does the server support the "AuditLog" model?
+  // Ref: https://github.com/inventree/InvenTree/pull/13069
+  // Ref: https://github.com/inventree/InvenTree/pull/13101
+  bool get supportsAuditLog => apiVersion >= 566;
+
   // Cached list of plugins (refreshed when we connect to the server)
   List<InvenTreePlugin> _plugins = [];
 
@@ -1951,8 +1956,6 @@ class InvenTreeAPI {
   }
 
   // Accessors methods for various status code classes
-  InvenTreeStatusCode get StockHistoryStatus =>
-      _get_status_class("stock/track/status/");
   InvenTreeStatusCode get StockStatus => _get_status_class("stock/status/");
   InvenTreeStatusCode get PurchaseOrderStatus =>
       _get_status_class("order/po/status/");
@@ -1963,7 +1966,6 @@ class InvenTreeAPI {
       _get_status_class("build/status/");
 
   void clearStatusCodeData() {
-    StockHistoryStatus.data.clear();
     StockStatus.data.clear();
     PurchaseOrderStatus.data.clear();
     SalesOrderStatus.data.clear();
@@ -1971,7 +1973,6 @@ class InvenTreeAPI {
   }
 
   Future<void> fetchStatusCodeData({bool forceReload = true}) async {
-    StockHistoryStatus.load(forceReload: forceReload);
     StockStatus.load(forceReload: forceReload);
     PurchaseOrderStatus.load(forceReload: forceReload);
     SalesOrderStatus.load(forceReload: forceReload);

@@ -25,9 +25,9 @@ import "package:inventree/widget/link_icon.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
-import "package:inventree/widget/stock/stock_item_history.dart";
 import "package:inventree/widget/stock/stock_item_test_results.dart";
 import "package:inventree/widget/notes_list_widget.dart";
+import "package:inventree/widget/history_widget.dart";
 
 class StockDetailWidget extends StatefulWidget {
   const StockDetailWidget(this.item, {Key? key}) : super(key: key);
@@ -44,7 +44,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   @override
   String getAppBarTitle() => L10().stockItem;
 
-  bool stockShowHistory = false;
   bool stockShowTests = true;
   bool expiryEnabled = false;
 
@@ -205,9 +204,6 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
   @override
   Future<void> request(BuildContext context) async {
     await api.StockStatus.load();
-    stockShowHistory =
-        await InvenTreeSettingsManager().getValue(INV_STOCK_SHOW_HISTORY, false)
-            as bool;
     stockShowTests =
         await InvenTreeSettingsManager().getValue(INV_STOCK_SHOW_TESTS, true)
             as bool;
@@ -818,30 +814,16 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
 
     // TODO - Is this stock item linked to a PurchaseOrder?
 
-    if (stockShowHistory && widget.item.trackingItemCount > 0) {
-      tiles.add(
-        ListTile(
-          title: Text(L10().history),
-          leading: Icon(TablerIcons.history, color: COLOR_ACTION),
-          trailing: LinkIcon(text: "${widget.item.trackingItemCount}"),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => StockItemHistoryWidget(widget.item),
-              ),
-            ).then((ctx) {
-              refresh(context);
-            });
-          },
-        ),
-      );
-    }
-
     // Notes field
     tiles.add(
       ShowNotesItem(context, widget.item, InvenTreeStockItem.MODEL_TYPE),
     );
+
+    if (showHistory) {
+      tiles.add(
+        ShowHistoryItem(context, InvenTreeStockItem.MODEL_TYPE, widget.item.pk),
+      );
+    }
 
     ListTile? attachmentTile = ShowAttachmentsItem(
       context,

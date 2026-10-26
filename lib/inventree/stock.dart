@@ -69,58 +69,6 @@ class InvenTreeStockItemTestResult extends InvenTreeModel {
   }
 }
 
-class InvenTreeStockItemHistory extends InvenTreeModel {
-  InvenTreeStockItemHistory() : super();
-
-  InvenTreeStockItemHistory.fromJson(Map<String, dynamic> json)
-    : super.fromJson(json);
-
-  @override
-  InvenTreeModel createFromJson(Map<String, dynamic> json) =>
-      InvenTreeStockItemHistory.fromJson(json);
-
-  @override
-  String get URL => "stock/track/";
-
-  @override
-  Map<String, String> defaultFilters() {
-    // By default, order by decreasing date
-    return {"ordering": "-date", "user_detail": "true"};
-  }
-
-  DateTime? get date => getDate("date");
-
-  String get dateString => getDateString("date");
-
-  String get label => getString("label");
-
-  // Return the "deltas" associated with this historical object
-  Map<String, dynamic> get deltas => getMap("deltas");
-
-  // Return the quantity string for this historical object
-  String get quantityString {
-    var _deltas = deltas;
-
-    if (_deltas.containsKey("quantity")) {
-      double q = double.tryParse(_deltas["quantity"].toString()) ?? 0;
-
-      return simpleNumberString(q);
-    } else {
-      return "";
-    }
-  }
-
-  int? get user => getValue("user") as int?;
-
-  String get userString {
-    if (user != null) {
-      return getString("username", subKey: "user_detail");
-    } else {
-      return "";
-    }
-  }
-}
-
 /*
  * Class representing a StockItem database instance
  */
@@ -282,8 +230,6 @@ class InvenTreeStockItem extends InvenTreeModel {
   }
 
   int get purchaseOrderId => getInt("purchase_order");
-
-  int get trackingItemCount => getInt("tracking_items", backup: 0);
 
   bool get isBuilding => getBool("is_building");
 

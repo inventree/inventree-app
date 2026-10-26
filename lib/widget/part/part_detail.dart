@@ -22,6 +22,7 @@ import "package:inventree/widget/parameter_widget.dart";
 import "package:inventree/widget/part/bom_list.dart";
 import "package:inventree/widget/part/part_list.dart";
 import "package:inventree/widget/notes_list_widget.dart";
+import "package:inventree/widget/history_widget.dart";
 import "package:inventree/widget/part/part_pricing.dart";
 import "package:inventree/widget/progress.dart";
 import "package:inventree/widget/part/category_display.dart";
@@ -726,6 +727,10 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
 
     // Notes field
     tiles.add(ShowNotesItem(context, part, InvenTreePart.MODEL_TYPE));
+
+    if (showHistory) {
+      tiles.add(ShowHistoryItem(context, InvenTreePart.MODEL_TYPE, part.pk));
+    }
 
     ListTile? parameterTile = ShowParametersItem(
       context,

@@ -12,6 +12,7 @@ import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/widget/attachment_widget.dart";
 import "package:inventree/widget/parameter_widget.dart";
+import "package:inventree/widget/history_widget.dart";
 
 import "package:inventree/widget/refreshable_state.dart";
 import "package:inventree/widget/snacks.dart";
@@ -203,6 +204,16 @@ class _ManufacturerPartDisplayState
           onTap: () async {
             widget.manufacturerPart.openLink();
           },
+        ),
+      );
+    }
+
+    if (showHistory) {
+      tiles.add(
+        ShowHistoryItem(
+          context,
+          InvenTreeManufacturerPart.MODEL_TYPE,
+          widget.manufacturerPart.pk,
         ),
       );
     }

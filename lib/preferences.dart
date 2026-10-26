@@ -19,6 +19,7 @@ const String INV_HOME_SHOW_TRANSFER = "homeShowTransfer";
 
 const String INV_SCREEN_ORIENTATION = "appScreenOrientation";
 const String INV_SHOW_PK = "showPk";
+const String INV_SHOW_HISTORY = "showHistory";
 
 // Available screen orientation values
 const int SCREEN_ORIENTATION_SYSTEM = 0;
@@ -40,7 +41,6 @@ const String INV_PART_SHOW_PRICING = "partShowPricing";
 const String INV_PART_SHOW_REQUIREMENTS = "partShowRequirements";
 
 // Stock settings
-const String INV_STOCK_SHOW_HISTORY = "stockShowHistory";
 const String INV_STOCK_SHOW_TESTS = "stockShowTests";
 const String INV_STOCK_CONFIRM_SCAN = "stockConfirmScan";
 
