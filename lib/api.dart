@@ -359,6 +359,11 @@ class InvenTreeAPI {
   bool get canViewPricing =>
       !supportsPricingRole || checkRole("pricing", "view");
 
+  // Does the server support the "AuditLog" model?
+  // Ref: https://github.com/inventree/InvenTree/pull/13069
+  // Ref: https://github.com/inventree/InvenTree/pull/13101
+  bool get supportsAuditLog => apiVersion >= 566;
+
   // Cached list of plugins (refreshed when we connect to the server)
   List<InvenTreePlugin> _plugins = [];
 
