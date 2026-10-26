@@ -444,6 +444,8 @@
   "@history": {
     "description": "history"
   },
+  "historyDetail": "Display change history (audit log) information",
+  "@historyDetail": {},
   "hold": "Hold",
   "@hold": {},
   "holdOrder": "Hold Order",
@@ -1138,10 +1140,6 @@
   "@stockItemDeleteFailure": {},
   "stockItemDeleteSuccess": "Το αντικείμενο αποθέματος διαγράφηκε",
   "@stockItemDeleteSuccess": {},
-  "stockItemHistory": "Ιστορικό Αποθέματος",
-  "@stockItemHistory": {},
-  "stockItemHistoryDetail": "Εμφάνιση ιστορικών πληροφοριών παρακολούθησης αποθέματος",
-  "@stockItemHistoryDetail": {},
   "stockItemTransferred": "Το αντικείμενο αποθέματος μεταφέρθηκε",
   "@stockItemTransferred": {},
   "stockItemUpdated": "Το αντικείμενο αποθέματος ενημερώθηκε",
