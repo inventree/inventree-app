@@ -444,6 +444,8 @@
   "@history": {
     "description": "history"
   },
+  "historyDetail": "Display change history (audit log) information",
+  "@historyDetail": {},
   "hold": "Hold",
   "@hold": {},
   "holdOrder": "Hold Order",
@@ -1138,10 +1140,6 @@
   "@stockItemDeleteFailure": {},
   "stockItemDeleteSuccess": "Varastotuote poistettu",
   "@stockItemDeleteSuccess": {},
-  "stockItemHistory": "Varastohistoria",
-  "@stockItemHistory": {},
-  "stockItemHistoryDetail": "Display historical stock tracking information",
-  "@stockItemHistoryDetail": {},
   "stockItemTransferred": "Varastotuote siirretty",
   "@stockItemTransferred": {},
   "stockItemUpdated": "Varastotuote päivitetty",
