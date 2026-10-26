@@ -444,6 +444,8 @@
   "@history": {
     "description": "history"
   },
+  "historyDetail": "Display change history (audit log) information",
+  "@historyDetail": {},
   "hold": "Hold",
   "@hold": {},
   "holdOrder": "Hold Order",
@@ -1138,10 +1140,6 @@
   "@stockItemDeleteFailure": {},
   "stockItemDeleteSuccess": "Articol șters",
   "@stockItemDeleteSuccess": {},
-  "stockItemHistory": "Istoric Stoc",
-  "@stockItemHistory": {},
-  "stockItemHistoryDetail": "Afişează informaţii istorice de urmărire stoc",
-  "@stockItemHistoryDetail": {},
   "stockItemTransferred": "Articol stoc transferat",
   "@stockItemTransferred": {},
   "stockItemUpdated": "Articol stoc actualizat",

@@ -444,6 +444,8 @@
   "@history": {
     "description": "history"
   },
+  "historyDetail": "Display change history (audit log) information",
+  "@historyDetail": {},
   "hold": "Podržet",
   "@hold": {},
   "holdOrder": "Pozdržet objednávku",
@@ -1138,10 +1140,6 @@
   "@stockItemDeleteFailure": {},
   "stockItemDeleteSuccess": "Skladová položka odstraněna",
   "@stockItemDeleteSuccess": {},
-  "stockItemHistory": "Historie skladu",
-  "@stockItemHistory": {},
-  "stockItemHistoryDetail": "Zobrazit historické informace o sledování zásob",
-  "@stockItemHistoryDetail": {},
   "stockItemTransferred": "Skladová položka převedena",
   "@stockItemTransferred": {},
   "stockItemUpdated": "Skladová položka upravena",

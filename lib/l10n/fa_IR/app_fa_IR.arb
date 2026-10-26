@@ -444,6 +444,8 @@
   "@history": {
     "description": "history"
   },
+  "historyDetail": "Display change history (audit log) information",
+  "@historyDetail": {},
   "hold": "نگه داشتن",
   "@hold": {},
   "holdOrder": "سفارش را نگه دارید",
@@ -1138,10 +1140,6 @@
   "@stockItemDeleteFailure": {},
   "stockItemDeleteSuccess": "موجودی کالا حذف شد",
   "@stockItemDeleteSuccess": {},
-  "stockItemHistory": "تاریخچه موجودی",
-  "@stockItemHistory": {},
-  "stockItemHistoryDetail": "نمایش تاریخچه اطلاعات ردیابی موجودی",
-  "@stockItemHistoryDetail": {},
   "stockItemTransferred": "موجودی کالا منتقل شد",
   "@stockItemTransferred": {},
   "stockItemUpdated": "موجودی کالا به روز رسانی شد",
