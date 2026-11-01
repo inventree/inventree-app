@@ -321,6 +321,9 @@ void main() {
       expect(sessionId, isNotEmpty);
       expect(await userStatusWithSession(sessionId), equals(200));
 
+      // Copy of the full cookie jar (session + CSRF) from before logout
+      final String sessionCopy = api.session.toJson();
+
       await InvenTreeAuth().logout(profile);
 
       expect(api.isConnected(), equals(false));
@@ -332,6 +335,25 @@ void main() {
 
       // The session has been ended on the server
       expect(await userStatusWithSession(sessionId), isIn([401, 403]));
+
+      // Restoring the old session must not log the user back in
+      await UserProfileDBManager().saveSession(
+        profile,
+        SessionStore.fromJson(authServer, sessionCopy),
+      );
+      expect(
+        (await UserProfileDBManager().loadSession(profile)).hasSession,
+        equals(true),
+      );
+
+      expect(await api.connectToServer(profile), equals(false));
+      expect(api.isConnected(), equals(false));
+
+      // ... and the rejected session is discarded
+      expect(
+        (await UserProfileDBManager().loadSession(profile)).hasSession,
+        equals(false),
+      );
 
       // Username is retained after logout
       final UserProfile? saved = await UserProfileDBManager().getProfileByName(
