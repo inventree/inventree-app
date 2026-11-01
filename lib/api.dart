@@ -665,6 +665,9 @@ class InvenTreeAPI {
 
     debug("API : Session expired while connected");
 
+    // The user is no longer authenticated
+    userInfo = {};
+
     // Expire the session and direct the user to login again
     await _handleAuthFailure(response);
 
@@ -767,11 +770,13 @@ class InvenTreeAPI {
   /*
    * Check that the user is authenticated
    * Fetch the user information
+   *
+   * The user information is only replaced if the check succeeds - a failed check
+   * (e.g. network error while connected) must not discard the current identity.
+   * It is cleared on disconnect, and when the session expires.
    */
   Future<APIResponse> _checkAuth() async {
     debug("Checking user auth @ ${_URL_ME}");
-
-    userInfo.clear();
 
     // Do not display an error for an unexpected status code here,
     // the caller determines what to show the user
@@ -833,6 +838,7 @@ class InvenTreeAPI {
     roles.clear();
     _plugins.clear();
     serverInfo.clear();
+    userInfo = {};
     _connectionStatusChanged();
   }
 

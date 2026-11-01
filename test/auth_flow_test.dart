@@ -665,6 +665,57 @@ void main() {
       await first;
     });
 
+    test("Failed session check keeps the user identity", () async {
+      expect(api.userId, equals(1));
+      expect(api.username, equals("user"));
+
+      for (final failure in [FakeResponse(503), FakeResponse.drop()]) {
+        server.once("GET", "api/part/", unauthorized);
+        server.once("GET", "api/user/me/", (_) => failure);
+
+        await api.get("part/");
+
+        // Session retained - so the identity must be too
+        // (e.g. used as "checked_by" when checking a shipment)
+        expect(api.isConnected(), equals(true));
+        expect(api.userId, equals(1));
+        expect(api.username, equals("user"));
+      }
+    });
+
+    test("Successful session check refreshes the user identity", () async {
+      server.once("GET", "api/part/", unauthorized);
+      server.once(
+        "GET",
+        "api/user/me/",
+        (_) => FakeResponse(200, body: {"pk": 1, "username": "renamed"}),
+      );
+
+      await api.get("part/");
+
+      expect(api.isConnected(), equals(true));
+      expect(api.username, equals("renamed"));
+    });
+
+    test("Expired session clears the user identity", () async {
+      server.endAllSessions();
+
+      await api.get("part/");
+
+      expect(api.isConnected(), equals(false));
+      expect(api.userId, equals(-1));
+      expect(api.username, isEmpty);
+    });
+
+    test("Disconnect clears the user identity", () async {
+      expect(api.userId, equals(1));
+
+      api.disconnectFromServer();
+
+      expect(api.userId, equals(-1));
+      expect(api.username, isEmpty);
+    });
+
     test("Concurrent requests check the session once", () async {
       final int before = userChecks();
 
