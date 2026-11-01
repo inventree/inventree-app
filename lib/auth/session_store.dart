@@ -178,6 +178,9 @@ class SessionStore {
       store._cookies.clear();
     }
 
+    // These cookies are already stored
+    store._persisted = Map.of(store._cookies);
+
     return store;
   }
 
@@ -190,6 +193,9 @@ class SessionStore {
   bool rejected = false;
 
   final Map<String, StoredCookie> _cookies = {};
+
+  // Cookies as last written to storage (see markPersisted)
+  Map<String, StoredCookie> _persisted = {};
 
   // Callback when the contents of the jar change (e.g. to persist it)
   void Function()? onChanged;
@@ -293,12 +299,12 @@ class SessionStore {
       expires = DateTime.now().add(Duration(seconds: cookie.maxAge!));
     }
 
-    final StoredCookie? existing = _cookies[cookie.name];
-
     // Deleted (or expired) by the server
     if (cookie.value.isEmpty ||
         (expires != null && !expires.isAfter(DateTime.now()))) {
-      return _cookies.remove(cookie.name) != null;
+      final bool removed = _cookies.remove(cookie.name) != null;
+
+      return removed || _persisted.containsKey(cookie.name);
     }
 
     final stored = StoredCookie(
@@ -313,16 +319,51 @@ class SessionStore {
 
     _cookies[cookie.name] = stored;
 
-    // Only report a change when something meaningful changed,
-    // to avoid re-writing secure storage on every request
-    if (existing == null || existing.value != stored.value) return true;
+    return _differsFromPersisted(stored);
+  }
 
-    final DateTime? a = existing.expires;
-    final DateTime? b = stored.expires;
+  /*
+   * Return true if the cookie differs meaningfully from the copy last persisted.
+   *
+   * Compared against the persisted copy (not the previous in-memory value),
+   * so that small changes accumulate - e.g. a sliding expiry which is extended
+   * slightly on each request is persisted once it has moved by an hour.
+   * Expiry changes of less than an hour are ignored, to avoid re-writing
+   * secure storage on every request.
+   */
+  bool _differsFromPersisted(StoredCookie cookie) {
+    final StoredCookie? persisted = _persisted[cookie.name];
+
+    if (persisted == null ||
+        persisted.value != cookie.value ||
+        persisted.domain != cookie.domain ||
+        persisted.hostOnly != cookie.hostOnly ||
+        persisted.path != cookie.path ||
+        persisted.secure != cookie.secure) {
+      return true;
+    }
+
+    final DateTime? a = persisted.expires;
+    final DateTime? b = cookie.expires;
 
     if ((a == null) != (b == null)) return true;
 
     return a != null && b != null && a.difference(b).abs().inHours >= 1;
+  }
+
+  /*
+   * Return a copy of the current cookies, to pass to markPersisted()
+   * once they have been written to storage
+   */
+  Map<String, StoredCookie> snapshot() => Map.of(_cookies);
+
+  /*
+   * Record the cookies which have been written to storage.
+   * Only called once the write succeeds - so after a failed write, the next
+   * change is reported again (and the write retried)
+   */
+  void markPersisted(Map<String, StoredCookie> snapshot) {
+    _persisted = Map.of(snapshot);
   }
 
   /*

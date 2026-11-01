@@ -134,22 +134,171 @@ void main() {
       expect(store.cookieHeader(Uri.parse("${server}/web/")), "");
     });
 
-    test("Change notification", () {
+    // A store which counts change notifications, and simulates each one being
+    // persisted successfully (as saveSession() does)
+    (SessionStore, int Function()) persistingStore() {
       final store = SessionStore(server: server);
 
       int changes = 0;
-      store.onChanged = () => changes++;
+
+      store.onChanged = () {
+        changes++;
+        store.markPersisted(store.snapshot());
+      };
+
+      return (store, () => changes);
+    }
+
+    test("Change notification", () {
+      final (store, changes) = persistingStore();
 
       store.capture(serverUri, [_cookie(CSRF_COOKIE_NAME, "xyz", maxAge: 60)]);
-      expect(changes, equals(1));
+      expect(changes(), equals(1));
 
       // Same value (and similar expiry) - no change reported
       store.capture(serverUri, [_cookie(CSRF_COOKIE_NAME, "xyz", maxAge: 61)]);
-      expect(changes, equals(1));
+      expect(changes(), equals(1));
 
       // New value
       store.capture(serverUri, [_cookie(CSRF_COOKIE_NAME, "abc", maxAge: 60)]);
+      expect(changes(), equals(2));
+
+      // Deleted
+      store.capture(serverUri, [_cookie(CSRF_COOKIE_NAME, "", maxAge: 0)]);
+      expect(changes(), equals(3));
+    });
+
+    test("Sliding expiry is persisted once it has moved by an hour", () {
+      final (store, changes) = persistingStore();
+      final DateTime base = DateTime.now().add(Duration(days: 14));
+
+      store.capture(serverUri, [
+        _cookie(SESSION_COOKIE_NAME, "abc", expires: base),
+      ]);
+      expect(changes(), equals(1));
+
+      // Each renewal is less than an hour after the previous one...
+      store.capture(serverUri, [
+        _cookie(
+          SESSION_COOKIE_NAME,
+          "abc",
+          expires: base.add(Duration(minutes: 40)),
+        ),
+      ]);
+      expect(changes(), equals(1));
+
+      // ... but more than an hour after the persisted expiry
+      store.capture(serverUri, [
+        _cookie(
+          SESSION_COOKIE_NAME,
+          "abc",
+          expires: base.add(Duration(minutes: 80)),
+        ),
+      ]);
+      expect(changes(), equals(2));
+
+      // Now compared against the new persisted expiry
+      store.capture(serverUri, [
+        _cookie(
+          SESSION_COOKIE_NAME,
+          "abc",
+          expires: base.add(Duration(minutes: 120)),
+        ),
+      ]);
+      expect(changes(), equals(2));
+    });
+
+    test("Cookie attribute changes are persisted", () {
+      for (final changed in [
+        _cookie(CSRF_COOKIE_NAME, "xyz", path: "/api/"),
+        _cookie(CSRF_COOKIE_NAME, "xyz", secure: true),
+        _cookie(CSRF_COOKIE_NAME, "xyz", domain: "example.com"),
+      ]) {
+        final (store, changes) = persistingStore();
+
+        store.capture(serverUri, [_cookie(CSRF_COOKIE_NAME, "xyz")]);
+        expect(changes(), equals(1));
+
+        // Same value - but different path / secure / domain
+        store.capture(serverUri, [changed]);
+        expect(changes(), equals(2), reason: changed.toString());
+      }
+    });
+
+    test("Changes are reported again after a failed write", () {
+      final store = SessionStore(server: server);
+
+      int changes = 0;
+      bool writeSucceeds = false;
+
+      store.onChanged = () {
+        changes++;
+
+        if (writeSucceeds) {
+          store.markPersisted(store.snapshot());
+        }
+      };
+
+      store.capture(serverUri, [_cookie(CSRF_COOKIE_NAME, "xyz")]);
+      expect(changes, equals(1));
+
+      // Not persisted - so the same cookie is reported again (write retried)
+      writeSucceeds = true;
+      store.capture(serverUri, [_cookie(CSRF_COOKIE_NAME, "xyz")]);
       expect(changes, equals(2));
+
+      // Persisted - no further change
+      store.capture(serverUri, [_cookie(CSRF_COOKIE_NAME, "xyz")]);
+      expect(changes, equals(2));
+    });
+
+    test("Restored cookies are treated as persisted", () {
+      final (original, _) = persistingStore();
+      original.capture(serverUri, [
+        _cookie(SESSION_COOKIE_NAME, "abc", maxAge: 3600),
+      ]);
+
+      final restored = SessionStore.fromJson(server, original.toJson());
+
+      int changes = 0;
+      restored.onChanged = () => changes++;
+
+      // Same cookie as stored - no write required
+      restored.capture(serverUri, [
+        _cookie(SESSION_COOKIE_NAME, "abc", maxAge: 3600),
+      ]);
+      expect(changes, equals(0));
+    });
+
+    test("saveSession records the persisted cookies", () async {
+      final manager = UserProfileDBManager();
+
+      final profile = UserProfile(name: "Persist Test", server: server);
+      await manager.addProfile(profile);
+      final loaded = (await manager.getProfileByName("Persist Test"))!;
+
+      final session = SessionStore(server: server);
+      int changes = 0;
+      session.onChanged = () => changes++;
+
+      session.capture(serverUri, [_cookie(SESSION_COOKIE_NAME, "abc")]);
+      expect(changes, equals(1));
+
+      // Failed write - still reported as changed
+      secureStorageFailures.add("write");
+      expect(await manager.saveSession(loaded, session), equals(false));
+      secureStorageFailures.clear();
+
+      session.capture(serverUri, [_cookie(SESSION_COOKIE_NAME, "abc")]);
+      expect(changes, equals(2));
+
+      // Successful write - no longer reported
+      expect(await manager.saveSession(loaded, session), equals(true));
+
+      session.capture(serverUri, [_cookie(SESSION_COOKIE_NAME, "abc")]);
+      expect(changes, equals(2));
+
+      await manager.deleteProfile(loaded);
     });
 
     test("Clear auth cookies retains other cookies", () {

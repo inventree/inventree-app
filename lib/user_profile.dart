@@ -134,6 +134,10 @@ class UserProfileDBManager {
       return false;
     }
 
+    // Cookies being written - taken before the (asynchronous) write,
+    // in case the jar changes in the meantime
+    final snapshot = session.snapshot();
+
     try {
       if (session.isEmpty) {
         await _secureStorage.delete(key: _sessionStorageKey(key));
@@ -147,6 +151,8 @@ class UserProfileDBManager {
       debug("saveSession() : Error writing secure storage - ${error}");
       return false;
     }
+
+    session.markPersisted(snapshot);
 
     return true;
   }
