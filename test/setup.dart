@@ -1,5 +1,6 @@
 import "package:flutter/services.dart";
 import "package:flutter_test/flutter_test.dart";
+import "package:package_info_plus/package_info_plus.dart";
 import "package:inventree/api.dart";
 import "package:inventree/auth/auth_manager.dart";
 import "package:inventree/auth/auth_method.dart";
@@ -15,6 +16,15 @@ class CustomBinding extends AutomatedTestWidgetsFlutterBinding {
 void setupTestEnv() {
   // Uses custom binding to not override the http client
   CustomBinding();
+
+  // Package information is used when building error reports
+  PackageInfo.setMockInitialValues(
+    appName: "InvenTree",
+    packageName: "inventree.inventree_app",
+    version: "0.0.0",
+    buildNumber: "0",
+    buildSignature: "",
+  );
 
   // Mock the path provider
   const MethodChannel channel = MethodChannel(

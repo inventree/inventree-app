@@ -18,6 +18,8 @@ class FakeRequest {
   FakeRequest({
     required this.method,
     required this.path,
+    required this.query,
+    required this.rawQuery,
     required this.headers,
     required this.cookies,
     required this.body,
@@ -25,6 +27,10 @@ class FakeRequest {
 
   final String method;
   final String path;
+
+  // Decoded query parameters, and the query string as received
+  final Map<String, String> query;
+  final String rawQuery;
 
   // Header names are lower case
   final Map<String, String> headers;
@@ -47,6 +53,7 @@ class FakeResponse {
   FakeResponse(
     this.status, {
     this.body,
+    this.rawBody,
     this.setCookies = const [],
     this.dropConnection = false,
   });
@@ -56,6 +63,9 @@ class FakeResponse {
 
   final int status;
   final Object? body;
+
+  // Raw (non-JSON) response body, e.g. an HTML error page
+  final String? rawBody;
   final List<String> setCookies;
   final bool dropConnection;
 }
@@ -150,6 +160,8 @@ class FakeInvenTreeServer {
     final fake = FakeRequest(
       method: request.method,
       path: request.uri.path,
+      query: request.uri.queryParameters,
+      rawQuery: request.uri.query,
       headers: headers,
       cookies: cookies,
       body: await utf8.decoder.bind(request).join(),
@@ -176,13 +188,17 @@ class FakeInvenTreeServer {
     }
 
     request.response.statusCode = response.status;
-    request.response.headers.contentType = ContentType.json;
+    request.response.headers.contentType = response.rawBody == null
+        ? ContentType.json
+        : ContentType.html;
 
     for (final cookie in response.setCookies) {
       request.response.headers.add(HttpHeaders.setCookieHeader, cookie);
     }
 
-    if (response.body != null) {
+    if (response.rawBody != null) {
+      request.response.write(response.rawBody);
+    } else if (response.body != null) {
       request.response.write(jsonEncode(response.body));
     }
 

@@ -1207,13 +1207,6 @@ class InvenTreeAPI {
 
       jsondata = httpResponse.body;
 
-      response.data = json.decode(jsondata);
-
-      if (_isUnauthorized(uri, response.statusCode) &&
-          await _handleUnauthorized(url)) {
-        _markLoginRequired(response);
-      }
-
       // Report a server-side error
       if (response.statusCode == 500) {
         sentryReportMessage(
@@ -1225,8 +1218,16 @@ class InvenTreeAPI {
             "statusCode": response.statusCode.toString(),
             "requestHeaders": redactHeaders(request.headers),
             "responseHeaders": redactHeaders(httpResponse.headers),
+            "responseData": _truncate(httpResponse.body),
           },
         );
+      }
+
+      response.data = json.decode(jsondata);
+
+      if (_isUnauthorized(uri, response.statusCode) &&
+          await _handleUnauthorized(url)) {
+        _markLoginRequired(response);
       }
     } on SocketException catch (error) {
       showServerError(
@@ -1243,15 +1244,18 @@ class InvenTreeAPI {
         L10().formatExceptionJson + ":\n${jsondata}",
       );
 
-      sentryReportMessage(
-        "Error decoding JSON response from server",
-        context: {
-          "method": "uploadFile",
-          "url": url,
-          "statusCode": response.statusCode.toString(),
-          "data": jsondata,
-        },
-      );
+      // Server errors have already been reported (including the response data)
+      if (response.statusCode < 500) {
+        sentryReportMessage(
+          "Error decoding JSON response from server",
+          context: {
+            "method": "uploadFile",
+            "url": url,
+            "statusCode": response.statusCode.toString(),
+            "data": jsondata,
+          },
+        );
+      }
     } on TimeoutException {
       showTimeoutError(url);
       response.error = "TimeoutException";
@@ -1434,25 +1438,22 @@ class InvenTreeAPI {
       return null;
     }
 
-    // Add any required query parameters to the URL using ?key=value notation
-    if (urlParams.isNotEmpty) {
-      String query = "?";
-
-      urlParams.forEach((k, v) => query += "${k}=${v}&");
-
-      _url += query;
-    }
-
-    // Remove extraneous character if present
-    if (_url.endsWith("&")) {
-      _url = _url.substring(0, _url.length - 1);
-    }
-
     Uri? _uri = Uri.tryParse(_url);
 
     if (_uri == null || _uri.host.isEmpty) {
       showServerError(_url, L10().invalidHost, L10().invalidHostDetails);
       return null;
+    }
+
+    // Add any required query parameters to the URL (merged with any already present).
+    // Values are URL encoded - e.g. a search for "M3 & M4" or "C++"
+    if (urlParams.isNotEmpty) {
+      _uri = _uri.replace(
+        queryParameters: <String, dynamic>{
+          ..._uri.queryParametersAll,
+          ...urlParams,
+        },
+      );
     }
 
     HttpClientRequest? _request;
@@ -1681,7 +1682,21 @@ class InvenTreeAPI {
 
       // If the server returns a server error code, alert the user
       if (_response.statusCode >= 500) {
-        showStatusCodeError(url, _response.statusCode);
+        // Read the response body, which may describe the error
+        // (not necessarily JSON - e.g. an HTML error page from a proxy)
+        final String body = ignoreResponse
+            ? ""
+            : await _response
+                  .transform(const Utf8Decoder(allowMalformed: true))
+                  .join();
+
+        try {
+          response.data = body.isEmpty ? {} : json.decode(body) ?? {};
+        } on FormatException {
+          response.data = {};
+        }
+
+        showStatusCodeError(url, _response.statusCode, details: response.data);
 
         // Some server errors are not ones for us to worry about!
         switch (_response.statusCode) {
@@ -1698,7 +1713,7 @@ class InvenTreeAPI {
                 "statusCode": _response.statusCode.toString(),
                 "requestHeaders": redactHttpHeaders(request.headers),
                 "responseHeaders": redactHttpHeaders(_response.headers),
-                "responseData": response.data.toString(),
+                "responseData": _truncate(body),
               },
             );
         }
@@ -1748,6 +1763,10 @@ class InvenTreeAPI {
 
     return response;
   }
+
+  // Limit the size of response data included in error reports
+  String _truncate(String data, {int length = 2000}) =>
+      data.length > length ? "${data.substring(0, length)}..." : data;
 
   /*
    * Convert a HttpClientResponse response object to JSON

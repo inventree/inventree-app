@@ -5,6 +5,7 @@
  * to reproduce against a real InvenTree server. No running server is required.
  */
 
+import "dart:async";
 import "dart:io";
 
 import "package:flutter_secure_storage/flutter_secure_storage.dart";
@@ -91,6 +92,31 @@ Future<void> eventually(Future<bool> Function() check) async {
 }
 
 bool logged(String msg) => debugContains(msg, raiseAssert: false);
+
+/*
+ * Run [body], returning everything printed (including by asynchronous
+ * work started within it, e.g. error reports)
+ */
+Future<List<String>> capturePrints(Future<void> Function() body) async {
+  final List<String> printed = [];
+
+  await runZoned(
+    () async {
+      await body();
+
+      // Allow error reports (not awaited by the API) to complete
+      await Future<void>.delayed(Duration(milliseconds: 200));
+    },
+    zoneSpecification: ZoneSpecification(
+      print: (self, parent, zone, line) {
+        printed.add(line);
+        parent.print(zone, line);
+      },
+    ),
+  );
+
+  return printed;
+}
 
 FakeResponse unauthorized(FakeRequest _) => FakeResponse(
   401,
@@ -618,6 +644,101 @@ void main() {
     setUp(() async {
       profile = await fakeProfile(server);
       await loginAndConnect(profile);
+    });
+
+    test("Query parameters are URL encoded", () async {
+      final Map<String, String> params = {
+        "search": "M3 & M4 C++ #1?",
+        "name": "a=b",
+        "unicode": "Ø 10µF",
+      };
+
+      await api.get("part/", params: params);
+
+      final FakeRequest request = server.received("GET", "api/part/").last;
+      expect(request.query, equals(params));
+    });
+
+    test("Query parameters are merged with an existing query", () async {
+      await api.get("part/?category=1", params: {"search": "x y"});
+
+      final FakeRequest request = server.received("GET", "api/part/").last;
+      expect(request.query, equals({"category": "1", "search": "x y"}));
+    });
+
+    test("No query string without parameters", () async {
+      await api.get("part/");
+
+      expect(server.received("GET", "api/part/").last.rawQuery, isEmpty);
+    });
+
+    test("Server error response is read and reported", () async {
+      server.once(
+        "GET",
+        "api/part/1/",
+        (_) => FakeResponse(500, body: {"detail": "Database unavailable"}),
+      );
+
+      late APIResponse response;
+
+      final List<String> printed = await capturePrints(() async {
+        response = await api.get("part/1/");
+      });
+
+      expect(response.statusCode, equals(500));
+      expect(response.asMap()["detail"], equals("Database unavailable"));
+
+      // The error is displayed, including the server's description
+      expect(logged("showServerError: '${L10().response500}'"), equals(true));
+
+      // ... and reported, including the response data
+      final String report = printed.firstWhere(
+        (line) =>
+            line.startsWith("Sending user message to Sentry: Server error"),
+      );
+      expect(report, contains("Database unavailable"));
+    });
+
+    test("Server error page (not JSON) is reported once", () async {
+      const String page = "<html><h1>Internal Server Error</h1></html>";
+
+      server.once(
+        "GET",
+        "api/part/1/",
+        (_) => FakeResponse(500, rawBody: page),
+      );
+
+      final File file = File(
+        "${Directory.systemTemp.path}/inventree-auth-upload.txt",
+      )..writeAsStringSync("test");
+
+      server.once(
+        "POST",
+        "api/part/attachment/",
+        (_) => FakeResponse(500, rawBody: page),
+      );
+
+      late APIResponse response;
+
+      final List<String> printed = await capturePrints(() async {
+        response = await api.get("part/1/");
+        await api.uploadFile("part/attachment/", file);
+      });
+
+      file.deleteSync();
+
+      expect(response.statusCode, equals(500));
+      expect(response.asMap(), isEmpty);
+
+      final List<String> reports = printed
+          .where((line) => line.startsWith("Sending user message to Sentry"))
+          .toList();
+
+      expect(reports.length, equals(2));
+      expect(reports[0], contains("Server error"));
+      expect(reports[0], contains("Internal Server Error"));
+      expect(reports[1], contains("Server error in uploadFile()"));
+      expect(reports[1], contains("Internal Server Error"));
     });
 
     test("CSRF headers on unsafe requests", () async {
