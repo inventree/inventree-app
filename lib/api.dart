@@ -494,11 +494,15 @@ class InvenTreeAPI {
 
       // Take the user straight to the login screen for this profile,
       // rather than leaving them to work out why Home shows disconnected
-      OneContext().push(
-        MaterialPageRoute(
-          builder: (context) => InvenTreeLoginWidget(expiredProfile),
-        ),
-      );
+      debug("API : Opening login screen for '${expiredProfile.name}'");
+
+      if (hasContext()) {
+        OneContext().push(
+          MaterialPageRoute(
+            builder: (context) => InvenTreeLoginWidget(expiredProfile),
+          ),
+        );
+      }
     } else {
       showServerError(
         _URL_ME,

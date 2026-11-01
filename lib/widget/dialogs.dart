@@ -290,6 +290,8 @@ Future<void> showServerError(
   String title,
   String description,
 ) async {
+  debug("showServerError: '${title}'");
+
   if (!hasContext()) {
     return;
   }
