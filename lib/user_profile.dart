@@ -215,6 +215,9 @@ class UserProfileDBManager {
     final db = await _db;
     final records = await store.find(db);
 
+    // Only mark the migration as complete if every token was removed
+    bool complete = true;
+
     for (final record in records) {
       if (record.key is! int) {
         continue;
@@ -228,6 +231,9 @@ class UserProfileDBManager {
         debug(
           "migrateLegacyTokens() : Error writing secure storage - ${error}",
         );
+
+        // Continue with the remaining profiles - but retry on next startup
+        complete = false;
       }
 
       final value = record.value;
@@ -240,6 +246,11 @@ class UserProfileDBManager {
       }
     }
 
+    if (!complete) {
+      debug("migrateLegacyTokens() : Incomplete - will retry on next startup");
+      return;
+    }
+
     await InvenTreeSettingsManager().setValue(MIGRATION_KEY, true);
   }
 
@@ -249,6 +260,7 @@ class UserProfileDBManager {
    * Secure storage can outlive the profile database - e.g. iOS keychain items
    * survive an app uninstall. Profile keys restart after a reinstall, so a new
    * profile could otherwise inherit the session of an old (unrelated) profile.
+   * Legacy API tokens are also removed (for any profile).
    * Must be called before any profiles are created on startup.
    */
   Future<void> removeOrphanedSessions() async {
@@ -258,26 +270,41 @@ class UserProfileDBManager {
     )).whereType<int>().toSet();
 
     // Session (and legacy token) entries - see _sessionStorageKey()
-    final RegExp keyPattern = RegExp(r"^profile_(?:session|token)_(\d+)$");
+    final RegExp keyPattern = RegExp(r"^profile_(session|token)_(\d+)$");
+
+    List<String> names = [];
 
     try {
-      final List<String> names = (await _secureStorage.readAll()).keys.toList();
-
-      for (final String name in names) {
-        final match = keyPattern.firstMatch(name);
-
-        if (match == null) {
-          continue;
-        }
-
-        if (!profileKeys.contains(int.tryParse(match.group(1)!))) {
-          await _secureStorage.delete(key: name);
-        }
-      }
+      names = (await _secureStorage.readAll()).keys.toList();
     } catch (error) {
       debug(
         "removeOrphanedSessions() : Error accessing secure storage - ${error}",
       );
+    }
+
+    for (final String name in names) {
+      final match = keyPattern.firstMatch(name);
+
+      if (match == null) {
+        continue;
+      }
+
+      // Legacy API tokens are never used, so are always removed (even if
+      // migrateLegacyTokens() could not remove them for an existing profile)
+      final bool legacyToken = match.group(1) == "token";
+
+      if (!legacyToken && profileKeys.contains(int.tryParse(match.group(2)!))) {
+        continue;
+      }
+
+      // Each entry is removed separately, so one failure does not prevent the rest
+      try {
+        await _secureStorage.delete(key: name);
+      } catch (error) {
+        debug(
+          "removeOrphanedSessions() : Error writing secure storage - ${error}",
+        );
+      }
     }
   }
 

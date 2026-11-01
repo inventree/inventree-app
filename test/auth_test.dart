@@ -534,6 +534,109 @@ void main() {
       await manager.store.record(key).delete(db);
     });
 
+    test("Legacy token migration retries after a storage failure", () async {
+      final manager = UserProfileDBManager();
+      final db = await InvenTreePreferencesDB.instance.database;
+      const storage = FlutterSecureStorage();
+
+      final List<int> keys = [];
+
+      for (final name in ["Legacy Retry A", "Legacy Retry B"]) {
+        keys.add(
+          (await manager.store.add(db, {
+                "name": name,
+                "server": server,
+                "token": "legacy-plaintext-token",
+              }))!
+              as int,
+        );
+      }
+
+      for (final key in keys) {
+        await storage.write(key: "profile_token_${key}", value: "legacy-token");
+      }
+
+      await InvenTreeSettingsManager().setValue("legacy_tokens_removed", false);
+
+      // Secure storage deletion fails
+      secureStorageFailures.add("delete");
+
+      try {
+        await manager.migrateLegacyTokens();
+      } finally {
+        secureStorageFailures.clear();
+      }
+
+      // Migration is not marked complete, so runs again on next startup
+      expect(
+        await InvenTreeSettingsManager().getBool(
+          "legacy_tokens_removed",
+          false,
+        ),
+        equals(false),
+      );
+
+      // Plaintext tokens are still stripped from *all* profiles in the meantime
+      for (final key in keys) {
+        final record = (await manager.store.record(key).get(db))! as Map;
+        expect(record.containsKey("token"), equals(false));
+        expect(await storage.read(key: "profile_token_${key}"), isNotNull);
+      }
+
+      // Next startup - storage is available again
+      await manager.migrateLegacyTokens();
+
+      for (final key in keys) {
+        expect(await storage.read(key: "profile_token_${key}"), isNull);
+      }
+
+      expect(
+        await InvenTreeSettingsManager().getBool(
+          "legacy_tokens_removed",
+          false,
+        ),
+        equals(true),
+      );
+
+      for (final key in keys) {
+        await manager.store.record(key).delete(db);
+      }
+    });
+
+    test("Startup cleanup removes legacy tokens for existing profiles", () async {
+      final manager = UserProfileDBManager();
+      const storage = FlutterSecureStorage();
+
+      final profile = UserProfile(name: "Legacy Cleanup", server: server);
+      await manager.addProfile(profile);
+
+      final loaded = (await manager.getProfileByName("Legacy Cleanup"))!;
+
+      // Token left behind for an existing profile (e.g. migration could not remove it)
+      await storage.write(
+        key: "profile_token_${loaded.key}",
+        value: "legacy-token",
+      );
+
+      // ... alongside the profile's (valid) session
+      final session = SessionStore(server: server);
+      session.capture(serverUri, [_cookie(SESSION_COOKIE_NAME, "abc")]);
+      await manager.saveSession(loaded, session);
+
+      // Token for a profile which no longer exists
+      await storage.write(key: "profile_token_99998", value: "legacy-token");
+
+      await manager.removeOrphanedSessions();
+
+      expect(await storage.read(key: "profile_token_${loaded.key}"), isNull);
+      expect(await storage.read(key: "profile_token_99998"), isNull);
+
+      // The session for the existing profile is retained
+      expect((await manager.loadSession(loaded)).hasSession, equals(true));
+
+      await manager.deleteProfile(loaded);
+    });
+
     test("Logout keeps the username", () async {
       final manager = UserProfileDBManager();
 
