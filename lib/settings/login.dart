@@ -166,17 +166,7 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
       );
     }
     return Scaffold(
-      appBar: AppBar(
-        title: Text(L10().login),
-        actions: [
-          IconButton(
-            icon: Icon(TablerIcons.transition_right, color: COLOR_SUCCESS),
-            onPressed: () async {
-              _doLogin(context);
-            },
-          ),
-        ],
-      ),
+      appBar: AppBar(title: Text(L10().login)),
       body: Form(
         key: formKey,
         child: SingleChildScrollView(
@@ -229,6 +219,10 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
                 keyboardType: TextInputType.visiblePassword,
                 autofillHints: [AutofillHints.password],
                 obscureText: _obscured,
+                textInputAction: TextInputAction.done,
+                onFieldSubmitted: (value) {
+                  _doLogin(context);
+                },
                 onSaved: (value) {
                   // Do not trim - whitespace is a valid password character
                   password = value ?? "";
@@ -240,6 +234,23 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
 
                   return null;
                 },
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(52),
+                    backgroundColor: COLOR_SUCCESS,
+                    foregroundColor: Colors.black87,
+                    textStyle: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  icon: Icon(TablerIcons.login),
+                  label: Text(L10().login),
+                  onPressed: () async {
+                    _doLogin(context);
+                  },
+                ),
               ),
               ...after,
             ],
