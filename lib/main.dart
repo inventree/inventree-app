@@ -164,6 +164,12 @@ class InvenTreeAppState extends State<StatefulWidget> {
       initGlobalIntentListener();
     }
 
+    // Remove API tokens stored by earlier (token authentication) versions of the app
+    await UserProfileDBManager().migrateLegacyTokens();
+
+    // Discard stored sessions which no longer belong to a profile (e.g. after a reinstall)
+    await UserProfileDBManager().removeOrphanedSessions();
+
     // First-run only: seed a demo server profile if none are configured
     await UserProfileDBManager().seedDemoProfileIfNeeded();
 

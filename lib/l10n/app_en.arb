@@ -6,6 +6,57 @@
     "description": "InvenTree application title string"
   },
 
+  "authFlowUnsupported": "The server requires an additional login step which is not supported by the app",
+  "@authFlowUnsupported": {},
+
+  "authSessionConflict": "A conflicting session existed on the server and has been cleared. Please try again.",
+  "@authSessionConflict": {},
+
+  "csrfTokenMissing": "Server did not provide a CSRF token",
+  "@csrfTokenMissing": {},
+
+  "insecureConnection": "Insecure Connection",
+  "@insecureConnection": {},
+
+  "insecureConnectionDetail": "This server does not use HTTPS. Your password and session are sent without encryption.",
+  "@insecureConnectionDetail": {},
+
+  "mfaCode": "Authentication Code",
+  "@mfaCode": {},
+
+  "mfaCodeEmpty": "Code cannot be empty",
+  "@mfaCodeEmpty": {},
+
+  "mfaEnterCode": "Enter the code from your authenticator app",
+  "@mfaEnterCode": {},
+
+  "mfaEnterRecoveryCode": "Enter one of your recovery codes",
+  "@mfaEnterRecoveryCode": {},
+
+  "mfaRecoveryCode": "Recovery Code",
+  "@mfaRecoveryCode": {},
+
+  "mfaRegistrationRequired": "Multi-Factor Authentication Required",
+  "@mfaRegistrationRequired": {},
+
+  "mfaRegistrationRequiredDetail": "This server requires multi-factor authentication. Set up an authenticator using the web interface, then login again.",
+  "@mfaRegistrationRequiredDetail": {},
+
+  "mfaTitle": "Multi-Factor Authentication",
+  "@mfaTitle": {},
+
+  "mfaTrustDevice": "Trust this device",
+  "@mfaTrustDevice": {},
+
+  "mfaTrustDeviceDetail": "Skip multi-factor authentication on this device for a period of time",
+  "@mfaTrustDeviceDetail": {},
+
+  "mfaUnsupported": "None of the multi-factor authentication methods for this account are supported by the app. Login using the web interface instead.",
+  "@mfaUnsupported": {},
+
+  "mfaUseRecoveryCode": "Use a recovery code",
+  "@mfaUseRecoveryCode": {},
+
   "ok": "OK",
   "@ok": {
     "description": "OK"
@@ -1832,15 +1883,6 @@
 
   "toggleTorch": "Toggle Torch",
   "@toggleTorch": {},
-
-  "tokenError": "Token Error",
-  "@tokenError": {},
-
-  "tokenMissing": "Missing Token",
-  "@tokenMissing": {},
-
-  "tokenMissingFromResponse": "Access token missing from response",
-  "@tokenMissingFromResponse": {},
 
   "totalPrice": "Total Price",
   "@totalPrice": {},

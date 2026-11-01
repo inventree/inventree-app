@@ -18,6 +18,8 @@ import "package:path_provider/path_provider.dart";
 
 import "package:inventree/api_form.dart";
 import "package:inventree/app_colors.dart";
+import "package:inventree/auth/auth_result.dart";
+import "package:inventree/auth/session_store.dart";
 import "package:inventree/preferences.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/helpers.dart";
@@ -117,16 +119,20 @@ class APIResponse {
  */
 class InvenTreeFileService extends FileService {
   InvenTreeFileService({HttpClient? client, bool strictHttps = false}) {
-    _client = client ?? HttpClient();
+    if (client != null) {
+      // Shared client - certificate handling is already configured by its owner.
+      // Overriding the callback here would discard per-profile certificate trust.
+      _client = client;
+    } else {
+      _client = HttpClient();
 
-    if (_client != null) {
-      _client!.badCertificateCallback = (cert, host, port) {
+      _client.badCertificateCallback = (cert, host, port) {
         return !strictHttps;
       };
     }
   }
 
-  HttpClient? _client;
+  late final HttpClient _client;
 
   @override
   Future<FileServiceResponse> get(
@@ -135,7 +141,7 @@ class InvenTreeFileService extends FileService {
   }) async {
     final Uri resolved = Uri.base.resolve(url);
 
-    final HttpClientRequest req = await _client!.getUrl(resolved);
+    final HttpClientRequest req = await _client.getUrl(resolved);
 
     if (headers != null) {
       headers.forEach((key, value) {
@@ -162,8 +168,8 @@ class InvenTreeFileService extends FileService {
 /*
  * InvenTree API - Access to the InvenTree REST interface.
  *
- * InvenTree implements token-based authentication, which is
- * initialised using a username:password combination.
+ * Requests are authenticated using a server session (cookie based),
+ * which is established by logging in via the allauth API (see lib/auth/).
  */
 
 /*
@@ -193,14 +199,12 @@ class InvenTreeAPI {
   }
 
   // Minimum required API version for server
-  // 2024-03-02 (release 0.14.0)
-  // Ref: https://github.com/inventree/InvenTree/releases/tag/0.14.0
-  static const _minApiVersion = 180;
+  // Session authentication requires the allauth "headless" API
+  // Ref: https://github.com/inventree/InvenTree/pull/6293
+  static const _minApiVersion = 314;
 
   bool _strictHttps = false;
 
-  // Endpoint for requesting an API token
-  static const _URL_TOKEN = "user/me/token/";
   static const _URL_ROLES = "user/me/roles/";
   static const _URL_ME = "user/me/";
 
@@ -246,10 +250,10 @@ class InvenTreeAPI {
   // Available user permissions are loaded when connecting to the server
   Map<String, dynamic> permissions = {};
 
-  // Profile authentication token
-  String get token => profile?.token ?? "";
+  // Session cookies for the active profile
+  SessionStore session = SessionStore();
 
-  bool get hasToken => token.isNotEmpty;
+  bool get hasSession => session.hasSession;
 
   String? get serverAddress {
     return profile?.server;
@@ -396,7 +400,7 @@ class InvenTreeAPI {
   bool _connecting = false;
 
   bool isConnected() {
-    return profile != null && _connected && baseUrl.isNotEmpty && hasToken;
+    return profile != null && _connected && baseUrl.isNotEmpty && hasSession;
   }
 
   bool isConnecting() {
@@ -410,52 +414,25 @@ class InvenTreeAPI {
    * Performs the following steps:
    *
    * 1. Check the api/ endpoint to see if the sever exists
-   * 2. If no token available, perform user authentication
-   * 2. Check the api/user/me/ endpoint to see if the user is authenticated
-   * 3. If not authenticated, purge token, and exit
-   * 4. Request user roles
-   * 5. Request information on available plugins
+   * 2. If no session available, exit (user must login)
+   * 3. Check the api/user/me/ endpoint to see if the session is valid
+   * 4. If not authenticated, purge the session, and exit
+   * 5. Request user roles
+   * 6. Request information on available plugins
    */
   Future<bool> _connectToServer() async {
     if (!await checkServer()) {
       return false;
     }
 
-    if (!hasToken) {
+    if (!hasSession) {
       return false;
     }
 
-    if (!await _checkAuth()) {
-      final UserProfile? expiredProfile = profile;
+    final APIResponse authResponse = await _checkAuth();
 
-      // Invalidate the token
-      if (expiredProfile != null) {
-        expiredProfile.token = "";
-        await UserProfileDBManager().updateProfile(expiredProfile);
-      }
-
-      if (expiredProfile != null) {
-        showServerError(
-          _URL_ME,
-          L10().sessionExpired,
-          "${L10().sessionExpiredDetail}\n${expiredProfile.name}",
-        );
-
-        // Take the user straight to the login screen for this profile,
-        // rather than leaving them to work out why Home shows disconnected
-        OneContext().push(
-          MaterialPageRoute(
-            builder: (context) => InvenTreeLoginWidget(expiredProfile),
-          ),
-        );
-      } else {
-        showServerError(
-          _URL_ME,
-          L10().serverNotConnected,
-          L10().serverAuthenticationError,
-        );
-      }
-
+    if (!authResponse.successful()) {
+      await _handleAuthFailure(authResponse);
       return false;
     }
 
@@ -469,6 +446,79 @@ class InvenTreeAPI {
 
     // Finally, connected
     return true;
+  }
+
+  /*
+   * The user/me/ request failed - determine why, and what to do about it
+   */
+  Future<void> _handleAuthFailure(APIResponse response) async {
+    final UserProfile? expiredProfile = profile;
+
+    // Not an authentication problem (e.g. network error, server error)
+    // Retain the session, as it may still be valid
+    if (response.statusCode != 401 && response.statusCode != 403) {
+      if (response.isValid()) {
+        showStatusCodeError(_URL_ME, response.statusCode);
+      }
+      return;
+    }
+
+    // The server requires MFA to be configured for this user,
+    // which must be done via the web interface
+    if (response.asMap()["id"] == FLOW_MFA_REGISTER) {
+      String detail = L10().mfaRegistrationRequiredDetail;
+
+      final String serverMessage = (response.asMap()["error"] ?? "").toString();
+
+      if (serverMessage.isNotEmpty) {
+        detail = "${serverMessage}\n\n${detail}";
+      }
+
+      // End the (restricted) server session
+      await delete("auth/v1/auth/session");
+
+      await _expireSession(expiredProfile);
+
+      showServerError(_URL_ME, L10().mfaRegistrationRequired, detail);
+      return;
+    }
+
+    await _expireSession(expiredProfile);
+
+    if (expiredProfile != null) {
+      showServerError(
+        _URL_ME,
+        L10().sessionExpired,
+        "${L10().sessionExpiredDetail}\n${expiredProfile.name}",
+      );
+
+      // Take the user straight to the login screen for this profile,
+      // rather than leaving them to work out why Home shows disconnected
+      OneContext().push(
+        MaterialPageRoute(
+          builder: (context) => InvenTreeLoginWidget(expiredProfile),
+        ),
+      );
+    } else {
+      showServerError(
+        _URL_ME,
+        L10().serverNotConnected,
+        L10().serverAuthenticationError,
+      );
+    }
+  }
+
+  /*
+   * Discard the session and CSRF cookies for the provided profile.
+   * Other cookies (e.g. MFA "trusted device") are retained.
+   */
+  Future<void> _expireSession(UserProfile? prf) async {
+    session.clearAuthCookies();
+
+    if (prf != null) {
+      await UserProfileDBManager().saveSession(prf, session);
+      prf.hasSession = false;
+    }
   }
 
   /*
@@ -538,16 +588,17 @@ class InvenTreeAPI {
    * Check that the user is authenticated
    * Fetch the user information
    */
-  Future<bool> _checkAuth() async {
+  Future<APIResponse> _checkAuth() async {
     debug("Checking user auth @ ${_URL_ME}");
 
     userInfo.clear();
 
-    final response = await get(_URL_ME);
+    // Do not display an error for an unexpected status code here,
+    // the caller determines what to show the user
+    final response = await get(_URL_ME, expectedStatusCode: null);
 
     if (response.successful() && response.statusCode == 200) {
       userInfo = response.asMap();
-      return true;
     } else {
       debug(
         "Auth request failed: Server returned status ${response.statusCode}",
@@ -555,126 +606,30 @@ class InvenTreeAPI {
       if (response.data != null) {
         debug("Server response: ${response.data.toString()}");
       }
-
-      return false;
     }
+
+    return response;
   }
 
   /*
-   * Fetch a token from the server,
-   * with a temporary authentication header
+   * Prepare to authenticate against the server for the provided profile.
+   * Any stored session / CSRF cookies are discarded (in memory only),
+   * but other cookies (e.g. MFA "trusted device") are retained.
+   * The session is not persisted until authentication succeeds (see InvenTreeAuth).
    */
-  Future<APIResponse> fetchToken(
-    UserProfile userProfile,
-    String username,
-    String password, {
-    bool showDialog = true,
-  }) async {
-    debug("Fetching user token from ${userProfile.server}");
+  Future<void> beginAuthentication(UserProfile userProfile) async {
+    disconnectFromServer();
 
-    profile = userProfile;
-
-    await _refreshHttpsPolicy();
-
-    // Form a name to request the token with
-    String platform_name = "inventree-mobile-app";
-
-    final deviceInfo = await getDeviceInfo();
-
-    if (Platform.isAndroid) {
-      platform_name += "-android";
-    } else if (Platform.isIOS) {
-      platform_name += "-ios";
-    } else if (Platform.isMacOS) {
-      platform_name += "-macos";
-    } else if (Platform.isLinux) {
-      platform_name += "-linux";
-    } else if (Platform.isWindows) {
-      platform_name += "-windows";
-    }
-
-    if (deviceInfo.containsKey("name")) {
-      platform_name += "-" + (deviceInfo["name"] as String);
-    }
-
-    if (deviceInfo.containsKey("model")) {
-      platform_name += "-" + (deviceInfo["model"] as String);
-    }
-
-    if (deviceInfo.containsKey("systemVersion")) {
-      platform_name += "-" + (deviceInfo["systemVersion"] as String);
-    }
-
-    // The token endpoint depends on the server API version, which may not be
-    // known yet (first login), or may belong to a different server profile.
-    // Note: newer servers will not re-issue an existing token via the legacy endpoint
-    final infoResponse = await get(_makeUrl("/api/", base: userProfile.server));
-
-    if (!infoResponse.successful()) {
-      return infoResponse;
-    }
-
-    serverInfo = {...infoResponse.asMap()};
-
-    // Construct auth header from username and password
-    String authHeader =
-        "Basic " + base64Encode(utf8.encode("${username}:${password}"));
-
-    String actualTokenUrl = supportsNewUserEndpoints
-        ? _URL_TOKEN
-        : "user/token/";
-
-    // Perform request to get a token
-    final response = await get(
-      actualTokenUrl,
-      params: {"name": platform_name},
-      headers: {HttpHeaders.authorizationHeader: authHeader},
+    final SessionStore store = await UserProfileDBManager().loadSession(
+      userProfile,
     );
 
-    final data = response.asMap();
+    store.clearAuthCookies();
 
-    // Invalid response
-    if (!response.successful()) {
-      if (showDialog) {
-        switch (response.statusCode) {
-          case 401:
-          case 403:
-            showServerError(
-              apiUrl,
-              L10().serverAuthenticationError,
-              L10().invalidUsernamePassword,
-            );
-          default:
-            showStatusCodeError(apiUrl, response.statusCode);
-        }
-      }
+    profile = userProfile;
+    session = store;
 
-      debug("Token request failed: STATUS ${response.statusCode}");
-
-      if (response.data != null) {
-        debug("Response data: ${response.data.toString()}");
-      }
-    } else if (!data.containsKey("token")) {
-      // The request was otherwise successful, but the response is missing
-      // the expected token field - a distinct (and much rarer) problem from
-      // an authentication failure, so only reachable when that did NOT occur
-      if (showDialog) {
-        showServerError(
-          apiUrl,
-          L10().tokenMissing,
-          L10().tokenMissingFromResponse,
-        );
-      }
-    }
-
-    // Save the token to the user profile
-    userProfile.token = (data["token"] ?? "") as String;
-
-    debug("Received token from server");
-
-    await UserProfileDBManager().updateProfile(userProfile);
-
-    return response;
+    await _refreshHttpsPolicy();
   }
 
   void disconnectFromServer() {
@@ -683,6 +638,10 @@ class InvenTreeAPI {
     _connected = false;
     _connecting = false;
     profile = null;
+
+    // Drop the in-memory session (it remains in secure storage)
+    session.onChanged = null;
+    session = SessionStore();
 
     _resetHttpClient();
 
@@ -712,6 +671,15 @@ class InvenTreeAPI {
       );
       return false;
     }
+
+    // Load the stored session, and persist any changes the server makes to it
+    final SessionStore store = await UserProfileDBManager().loadSession(prf);
+
+    store.onChanged = () {
+      UserProfileDBManager().saveSession(prf, store);
+    };
+
+    session = store;
 
     // Cancel notification timer
     _notification_timer?.cancel();
@@ -967,7 +935,7 @@ class InvenTreeAPI {
           .timeout(Duration(seconds: 10));
 
       // Set headers
-      defaultHeaders().forEach((key, value) {
+      defaultHeaders(url: _uri.toString()).forEach((key, value) {
         _request?.headers.set(key, value);
       });
     } on SocketException catch (error) {
@@ -1047,7 +1015,7 @@ class InvenTreeAPI {
     final request = http.MultipartRequest(method, uri);
 
     // Default headers
-    defaultHeaders().forEach((key, value) {
+    defaultHeaders(method: method, url: uri.toString()).forEach((key, value) {
       request.headers[key] = value;
     });
 
@@ -1079,6 +1047,13 @@ class InvenTreeAPI {
 
       response.statusCode = httpResponse.statusCode;
 
+      // package:http folds multiple Set-Cookie headers into a single value
+      final String? setCookie = httpResponse.headers["set-cookie"];
+
+      if (setCookie != null) {
+        session.captureHeaders(uri, splitSetCookieHeader(setCookie));
+      }
+
       jsondata = httpResponse.body;
 
       response.data = json.decode(jsondata);
@@ -1092,8 +1067,8 @@ class InvenTreeAPI {
             "method": request.method,
             "name": name,
             "statusCode": response.statusCode.toString(),
-            "requestHeaders": request.headers.toString(),
-            "responseHeaders": httpResponse.headers.toString(),
+            "requestHeaders": redactHeaders(request.headers),
+            "responseHeaders": redactHeaders(httpResponse.headers),
           },
         );
       }
@@ -1333,7 +1308,10 @@ class InvenTreeAPI {
       _request = await _openUrlWithRetry(method, _uri);
 
       // Default headers
-      defaultHeaders().forEach((key, value) {
+      defaultHeaders(method: method, url: _uri.toString()).forEach((
+        key,
+        value,
+      ) {
         _request?.headers.set(key, value);
       });
 
@@ -1463,7 +1441,7 @@ class InvenTreeAPI {
           .openUrl(method, uri)
           .timeout(Duration(seconds: 10));
 
-      defaultHeaders().forEach((key, value) {
+      defaultHeaders(method: method, url: uri.toString()).forEach((key, value) {
         request.headers.set(key, value);
       });
 
@@ -1539,6 +1517,12 @@ class InvenTreeAPI {
 
       response.statusCode = _response.statusCode;
 
+      // Store any cookies provided by the server (e.g. session, CSRF token)
+      session.captureHeaders(
+        request.uri,
+        _response.headers[HttpHeaders.setCookieHeader],
+      );
+
       // If the server returns a server error code, alert the user
       if (_response.statusCode >= 500) {
         showStatusCodeError(url, _response.statusCode);
@@ -1556,8 +1540,8 @@ class InvenTreeAPI {
                 "url": request.uri.toString(),
                 "method": request.method,
                 "statusCode": _response.statusCode.toString(),
-                "requestHeaders": request.headers.toString(),
-                "responseHeaders": _response.headers.toString(),
+                "requestHeaders": redactHttpHeaders(request.headers),
+                "responseHeaders": redactHttpHeaders(_response.headers),
                 "responseData": response.data.toString(),
               },
             );
@@ -1632,7 +1616,7 @@ class InvenTreeAPI {
           sentryReportMessage(
             "Error decoding JSON response from server",
             context: {
-              "headers": response.headers.toString(),
+              "headers": redactHttpHeaders(response.headers),
               "statusCode": response.statusCode.toString(),
               "data": body.toString(),
               "endpoint": url,
@@ -1717,28 +1701,48 @@ class InvenTreeAPI {
     return Intl.getCurrentLocale();
   }
 
-  // Return a list of request headers
-  Map<String, String> defaultHeaders() {
-    Map<String, String> headers = {};
+  // HTTP methods which require CSRF protection
+  static const List<String> _unsafeMethods = ["POST", "PUT", "PATCH", "DELETE"];
 
-    if (hasToken) {
-      headers[HttpHeaders.authorizationHeader] = _authorizationHeader();
-    }
+  /*
+   * Return a list of request headers.
+   *
+   * Session credentials (cookies, CSRF token) are only included
+   * if [url] points at the active server - never for a foreign host.
+   * If [url] is not provided, the request is assumed to be to the server.
+   */
+  Map<String, String> defaultHeaders({String method = "GET", String? url}) {
+    Map<String, String> headers = {};
 
     headers[HttpHeaders.acceptHeader] = "application/json";
     headers[HttpHeaders.contentTypeHeader] = "application/json";
     headers[HttpHeaders.acceptLanguageHeader] = currentLocale;
 
-    return headers;
-  }
+    final Uri? target = Uri.tryParse(
+      (url == null || url.isEmpty) ? baseUrl : makeUrl(url),
+    );
 
-  // Construct a token authorization header
-  String _authorizationHeader() {
-    if (token.isNotEmpty) {
-      return "Token ${token}";
-    } else {
-      return "";
+    if (target == null || !session.isServerUri(target)) {
+      return headers;
     }
+
+    final String cookies = session.cookieHeader(target);
+
+    if (cookies.isNotEmpty) {
+      headers[HttpHeaders.cookieHeader] = cookies;
+    }
+
+    if (_unsafeMethods.contains(method.toUpperCase())) {
+      if (session.hasCsrfToken) {
+        headers["X-CSRFToken"] = session.csrfToken;
+      }
+
+      // Django CSRF protection checks the Origin (or Referer, for HTTPS)
+      headers["Origin"] = target.origin;
+      headers[HttpHeaders.refererHeader] = baseUrl;
+    }
+
+    return headers;
   }
 
   static String get staticImage => "/static/img/blank_image.png";
@@ -1791,7 +1795,7 @@ class InvenTreeAPI {
           },
         );
       },
-      httpHeaders: defaultHeaders(),
+      httpHeaders: defaultHeaders(url: url),
       height: height,
       width: width,
       cacheManager: imageCacheManager,
@@ -1995,4 +1999,38 @@ class InvenTreeAPI {
       notification_counter = n;
     });
   }
+}
+
+// Headers which contain credentials, and must never be logged or reported
+const List<String> _SENSITIVE_HEADERS = [
+  "authorization",
+  "cookie",
+  "set-cookie",
+  "x-csrftoken",
+];
+
+/*
+ * Return a string representation of the provided headers,
+ * with any credentials removed (e.g. for error reporting)
+ */
+String redactHeaders(Map<String, String> headers) {
+  return headers.entries
+      .map((entry) {
+        final bool sensitive = _SENSITIVE_HEADERS.contains(
+          entry.key.toLowerCase(),
+        );
+
+        return "${entry.key}: ${sensitive ? "<redacted>" : entry.value}";
+      })
+      .join("\n");
+}
+
+String redactHttpHeaders(HttpHeaders headers) {
+  Map<String, String> values = {};
+
+  headers.forEach((name, value) {
+    values[name] = value.join(", ");
+  });
+
+  return redactHeaders(values);
 }
