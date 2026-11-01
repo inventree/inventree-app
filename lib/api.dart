@@ -1266,7 +1266,18 @@ class InvenTreeAPI {
         );
       }
 
-      response.data = json.decode(jsondata);
+      try {
+        response.data = json.decode(jsondata);
+      } on FormatException {
+        // An authentication failure may not have a JSON body (e.g. empty,
+        // or an HTML page from a proxy) - it is handled below, rather than
+        // reported as an invalid response
+        if (!_isUnauthorized(uri, response.statusCode)) {
+          rethrow;
+        }
+
+        response.data = {};
+      }
 
       if (_isUnauthorized(uri, response.statusCode) &&
           await _handleUnauthorized(url)) {
@@ -1846,11 +1857,18 @@ class InvenTreeAPI {
           );
       }
 
-      showServerError(
-        url,
-        L10().formatException,
-        L10().formatExceptionJson + ":\n${body}",
-      );
+      // An authentication failure may not have a JSON body (e.g. from a proxy).
+      // It is handled as such by the caller (see _handleUnauthorized),
+      // rather than reported as an invalid response
+      final Uri? uri = Uri.tryParse(url);
+
+      if (uri == null || !_isUnauthorized(uri, response.statusCode)) {
+        showServerError(
+          url,
+          L10().formatException,
+          L10().formatExceptionJson + ":\n${body}",
+        );
+      }
 
       // Return an empty map
       return {};

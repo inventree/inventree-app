@@ -665,6 +665,92 @@ void main() {
       await first;
     });
 
+    // 401 responses without a JSON body (e.g. from a proxy)
+    final Map<String, String> nonJson = {
+      "HTML": "<html><body><h1>401 Unauthorized</h1></body></html>",
+      "Empty": "",
+    };
+
+    bool formatError() => logged("showServerError: '${L10().formatException}'");
+
+    Future<APIResponse> upload() async {
+      final File file = File(
+        "${Directory.systemTemp.path}/inventree-auth-upload.txt",
+      )..writeAsStringSync("test");
+
+      try {
+        return await api.uploadFile("part/attachment/", file);
+      } finally {
+        file.deleteSync();
+      }
+    }
+
+    for (final body in nonJson.entries) {
+      test("Upload - ${body.key} 401 with an expired session", () async {
+        server.endAllSessions();
+        server.once(
+          "POST",
+          "api/part/attachment/",
+          (_) => FakeResponse(401, rawBody: body.value),
+        );
+
+        final response = await upload();
+
+        expect(response.statusCode, equals(401));
+        expect(response.errorDetail, isNotEmpty);
+        expect(api.isConnected(), equals(false));
+        expect(loginPrompts(), equals(1));
+        expect(formatError(), equals(false));
+      });
+
+      test("Request - ${body.key} 401 with an expired session", () async {
+        server.endAllSessions();
+        server.once(
+          "GET",
+          "api/part/",
+          (_) => FakeResponse(401, rawBody: body.value),
+        );
+
+        final response = await api.get("part/");
+
+        expect(response.statusCode, equals(401));
+        expect(response.errorDetail, isNotEmpty);
+        expect(api.isConnected(), equals(false));
+        expect(loginPrompts(), equals(1));
+        expect(formatError(), equals(false));
+      });
+    }
+
+    test("Upload - HTML 401 with a valid session", () async {
+      server.once(
+        "POST",
+        "api/part/attachment/",
+        (_) => FakeResponse(401, rawBody: nonJson["HTML"]),
+      );
+
+      final response = await upload();
+
+      // Session checked and found valid - reported as a 401 (not a format error)
+      expect(response.statusCode, equals(401));
+      expect(response.errorDetail, isEmpty);
+      expect(api.isConnected(), equals(true));
+      expect(loginPrompts(), equals(0));
+      expect(formatError(), equals(false));
+    });
+
+    test("Upload - other non-JSON responses are still reported", () async {
+      server.once(
+        "POST",
+        "api/part/attachment/",
+        (_) => FakeResponse(400, rawBody: nonJson["HTML"]),
+      );
+
+      await upload();
+
+      expect(formatError(), equals(true));
+      expect(api.isConnected(), equals(true));
+    });
+
     test("Failed session check keeps the user identity", () async {
       expect(api.userId, equals(1));
       expect(api.username, equals("user"));
