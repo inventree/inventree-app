@@ -1,3 +1,14 @@
+## 1.0.0 - November 2026
+---
+
+- Login now uses secure sessions, matching the web interface (API tokens are no longer used)
+- Supports two-factor authentication (TOTP and recovery codes), with "trust this device"
+- Session data is stored in secure device storage
+- Username is remembered after logout
+- Expired sessions now return the user to the login screen
+- Credentials are removed from error reports
+- Requires InvenTree server API version 314 or newer - existing users must log in again
+
 ## 0.26.0 - October 2026
 ---
 
