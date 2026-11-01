@@ -13,6 +13,10 @@ class CustomBinding extends AutomatedTestWidgetsFlutterBinding {
   bool get overrideHttpClient => false;
 }
 
+// Secure storage operations (e.g. "write", "delete") which should fail,
+// to test handling of storage errors
+final Set<String> secureStorageFailures = {};
+
 void setupTestEnv() {
   // Uses custom binding to not override the http client
   CustomBinding();
@@ -46,6 +50,13 @@ void setupTestEnv() {
       .setMockMethodCallHandler(secureStorageChannel, (
         MethodCall methodCall,
       ) async {
+        if (secureStorageFailures.contains(methodCall.method)) {
+          throw PlatformException(
+            code: "SecureStorageFailure",
+            message: "Simulated secure storage failure",
+          );
+        }
+
         final Map<dynamic, dynamic> args =
             (methodCall.arguments as Map<dynamic, dynamic>?) ?? {};
         final String? key = args["key"] as String?;

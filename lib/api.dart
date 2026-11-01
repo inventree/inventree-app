@@ -659,7 +659,12 @@ class InvenTreeAPI {
     session.clearAuthCookies();
 
     if (prf != null) {
-      await UserProfileDBManager().saveSession(prf, session);
+      // The session is no longer valid on the server, so a stored copy cannot
+      // be used to reconnect - but it should still not be left in storage
+      if (!await UserProfileDBManager().removeStoredSession(prf, session)) {
+        debug("API : Expired session could not be removed from storage");
+      }
+
       prf.hasSession = false;
     }
   }

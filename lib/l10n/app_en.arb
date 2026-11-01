@@ -1586,6 +1586,15 @@
   "sessionExpiredDetail": "Your session has expired. Please sign in again.",
   "@sessionExpiredDetail": {},
 
+  "sessionRemoveFailed": "Logout Incomplete",
+  "@sessionRemoveFailed": {},
+
+  "sessionRemoveFailedDetail": "The stored login session could not be removed from this device. Please try to log out again.",
+  "@sessionRemoveFailedDetail": {},
+
+  "sessionSaveFailed": "Login succeeded, but the session could not be saved on this device. Please try again.",
+  "@sessionSaveFailed": {},
+
   "serverCertificateError": "Cerficate Error",
   "@serverCertificateError": {},
 

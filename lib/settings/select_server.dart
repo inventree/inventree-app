@@ -44,7 +44,14 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
     UserProfile? userProfile,
   }) async {
     if (userProfile != null) {
-      await InvenTreeAuth().logout(userProfile);
+      // The stored session could not be removed - the profile may still be logged in
+      if (!await InvenTreeAuth().logout(userProfile)) {
+        showErrorDialog(
+          L10().sessionRemoveFailed,
+          description: L10().sessionRemoveFailedDetail,
+          icon: TablerIcons.lock_exclamation,
+        );
+      }
     } else {
       InvenTreeAPI().disconnectFromServer();
     }

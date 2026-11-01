@@ -132,6 +132,8 @@ void main() {
   });
 
   tearDown(() async {
+    secureStorageFailures.clear();
+
     api.disconnectFromServer();
 
     for (final name in _profiles) {
@@ -1062,6 +1064,138 @@ void main() {
       // The user must login themselves
       expect(await api.connectToServer(profile), equals(false));
       expect((await login(profile)).authenticated, equals(true));
+    });
+  });
+
+  group("Storage failures:", () {
+    test("Login fails if the session cannot be saved", () async {
+      final profile = await fakeProfile(server);
+
+      secureStorageFailures.addAll(["write", "delete"]);
+
+      final AuthResult result = await login(profile);
+
+      expect(result.status, equals(AuthStatus.failed));
+      expect(result.errorMessage, equals(L10().sessionSaveFailed));
+      expect(profile.hasSession, equals(false));
+
+      // The new session is ended on the server, and discarded in memory
+      expect(server.received("DELETE", "api/auth/v1/auth/session").length, 1);
+      expect(server.sessions, isEmpty);
+      expect(api.session.hasSession, equals(false));
+
+      // The username is only remembered for a successful login
+      expect((await manager.getProfileByName(profileName))!.username, isEmpty);
+
+      // Once storage is available again, login succeeds
+      secureStorageFailures.clear();
+      expect((await login(profile)).authenticated, equals(true));
+      expect((await stored(profile)).hasSession, equals(true));
+    });
+
+    test("MFA login fails if the session cannot be saved", () async {
+      final profile = await fakeProfile(server);
+
+      expect(
+        (await login(profile, username: "mfa")).status,
+        equals(AuthStatus.flowPending),
+      );
+
+      secureStorageFailures.addAll(["write", "delete"]);
+
+      final AuthResult result = await InvenTreeAuth().submitMfaCode(
+        server.validCode,
+      );
+
+      expect(result.status, equals(AuthStatus.failed));
+      expect(result.errorMessage, equals(L10().sessionSaveFailed));
+      expect(profile.hasSession, equals(false));
+      expect(server.sessions, isEmpty);
+    });
+
+    test("Successful logout reports success", () async {
+      final profile = await fakeProfile(server);
+      await loginAndConnect(profile);
+
+      expect(await InvenTreeAuth().logout(profile), equals(true));
+      expect(profile.hasSession, equals(false));
+    });
+
+    test("Inactive profile logout reports failure", () async {
+      final profile = await fakeProfile(server);
+      expect((await login(profile)).authenticated, equals(true));
+      api.disconnectFromServer();
+
+      secureStorageFailures.addAll(["write", "delete"]);
+
+      expect(await InvenTreeAuth().logout(profile), equals(false));
+
+      // The (still valid) session remains stored - so is not reported as removed
+      expect(profile.hasSession, equals(true));
+
+      secureStorageFailures.clear();
+      expect((await stored(profile)).hasSession, equals(true));
+
+      // Retry succeeds
+      expect(await InvenTreeAuth().logout(profile), equals(true));
+      expect(profile.hasSession, equals(false));
+      expect((await stored(profile)).hasSession, equals(false));
+    });
+
+    test("Offline logout reports failure", () async {
+      final profile = await fakeProfile(server);
+      await loginAndConnect(profile);
+
+      await server.close();
+      secureStorageFailures.addAll(["write", "delete"]);
+
+      expect(await InvenTreeAuth().logout(profile), equals(false));
+      expect(profile.hasSession, equals(true));
+      expect(api.isConnected(), equals(false));
+
+      secureStorageFailures.clear();
+      expect((await stored(profile)).hasSession, equals(true));
+    });
+
+    test("Logout falls back to deleting all stored cookies", () async {
+      final profile = await fakeProfile(server);
+      expect((await login(profile)).authenticated, equals(true));
+
+      // Add a "trusted device" cookie, so the jar is not empty after logout
+      final session = await stored(profile);
+      session.captureHeaders(Uri.parse(server.url), [
+        "mfa_trusted=trusted; Path=/",
+      ]);
+      expect(await manager.saveSession(profile, session), equals(true));
+
+      api.disconnectFromServer();
+
+      // Cookies cannot be re-written, but can be deleted
+      secureStorageFailures.add("write");
+
+      expect(await InvenTreeAuth().logout(profile), equals(true));
+      expect(profile.hasSession, equals(false));
+
+      secureStorageFailures.clear();
+      expect((await stored(profile)).isEmpty, equals(true));
+    });
+
+    test("Session expiry with storage failure", () async {
+      final profile = await fakeProfile(server);
+      await loginAndConnect(profile);
+
+      server.endAllSessions();
+      secureStorageFailures.addAll(["write", "delete"]);
+
+      await api.get("part/");
+
+      // The user is still directed to login - the stored copy is no longer valid
+      expect(api.isConnected(), equals(false));
+      expect(logged("Opening login screen"), equals(true));
+      expect(
+        logged("Expired session could not be removed from storage"),
+        equals(true),
+      );
     });
   });
 }

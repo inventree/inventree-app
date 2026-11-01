@@ -84,7 +84,9 @@ class InvenTreeAuth {
 
     switch (result.status) {
       case AuthStatus.authenticated:
-        await _completeLogin();
+        if (!await _completeLogin()) {
+          return AuthResult.failed(L10().sessionSaveFailed);
+        }
       case AuthStatus.flowPending:
         break;
       case AuthStatus.failed:
@@ -98,17 +100,38 @@ class InvenTreeAuth {
     return result;
   }
 
-  // Login completed - persist the session cookies against the profile
-  Future<void> _completeLogin() async {
+  /*
+   * Login completed - persist the session cookies against the profile.
+   *
+   * Returns false if the session could not be saved. In that case the login is
+   * treated as failed: the new session is ended on the server and discarded,
+   * rather than leaving the user apparently logged in without a stored session.
+   */
+  Future<bool> _completeLogin() async {
     final UserProfile? profile = _profile;
 
     if (profile == null) {
-      return;
+      return true;
     }
 
-    await UserProfileDBManager().saveSession(profile, InvenTreeAPI().session);
+    final InvenTreeAPI api = InvenTreeAPI();
 
-    profile.hasSession = InvenTreeAPI().session.hasSession;
+    if (!await UserProfileDBManager().saveSession(profile, api.session)) {
+      debug(
+        "InvenTreeAuth: Login succeeded, but the session could not be saved",
+      );
+
+      await client.logout();
+      api.session.clearAuthCookies();
+
+      profile.hasSession = false;
+      _profile = null;
+      _username = "";
+
+      return false;
+    }
+
+    profile.hasSession = api.session.hasSession;
 
     if (_username.isNotEmpty && _username != profile.username) {
       profile.username = _username;
@@ -117,13 +140,18 @@ class InvenTreeAuth {
 
     _profile = null;
     _username = "";
+
+    return true;
   }
 
   /*
    * Logout the provided profile.
    * If the profile is currently connected, the server session is also ended.
+   *
+   * Returns false if the stored session could not be removed from the device -
+   * the profile may still be logged in, and the user must be told.
    */
-  Future<void> logout(UserProfile profile) async {
+  Future<bool> logout(UserProfile profile) async {
     final InvenTreeAPI api = InvenTreeAPI();
 
     final bool active = api.profile?.key == profile.key;
@@ -138,14 +166,21 @@ class InvenTreeAuth {
         ? api.session
         : await UserProfileDBManager().loadSession(profile);
 
-    session.clearAuthCookies();
+    final bool removed = await UserProfileDBManager().removeStoredSession(
+      profile,
+      session,
+    );
 
-    await UserProfileDBManager().saveSession(profile, session);
+    if (!removed) {
+      debug("InvenTreeAuth: Logout - stored session could not be removed");
+    }
 
-    profile.hasSession = false;
+    profile.hasSession = !removed;
 
     if (active) {
       api.disconnectFromServer();
     }
+
+    return removed;
   }
 }

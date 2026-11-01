@@ -126,11 +126,12 @@ class UserProfileDBManager {
    * Persist the session cookies for the provided profile.
    * The cookies are only ever stored in secure storage, never in the profile record.
    */
-  Future<void> saveSession(UserProfile profile, SessionStore session) async {
+  Future<bool> saveSession(UserProfile profile, SessionStore session) async {
     final int? key = profile.key;
 
+    // Profile is not stored - so there is nowhere to store the session
     if (key == null) {
-      return;
+      return false;
     }
 
     try {
@@ -144,24 +145,52 @@ class UserProfileDBManager {
       }
     } catch (error) {
       debug("saveSession() : Error writing secure storage - ${error}");
+      return false;
     }
+
+    return true;
   }
 
   /*
-   * Remove all stored session cookies for the provided profile
+   * Remove all stored session cookies for the provided profile.
+   * Returns false if the stored cookies could not be removed.
    */
-  Future<void> clearSession(UserProfile profile) async {
+  Future<bool> clearSession(UserProfile profile) async {
     final int? key = profile.key;
 
     if (key == null) {
-      return;
+      return true;
     }
 
     try {
       await _secureStorage.delete(key: _sessionStorageKey(key));
     } catch (error) {
       debug("clearSession() : Error writing secure storage - ${error}");
+      return false;
     }
+
+    return true;
+  }
+
+  /*
+   * Remove the session (and CSRF) cookies from storage for the provided profile.
+   * Other cookies (e.g. MFA "trusted device") are retained where possible.
+   *
+   * Returns false if a stored session may remain - the caller must not report
+   * the session as removed (e.g. on logout).
+   */
+  Future<bool> removeStoredSession(
+    UserProfile profile,
+    SessionStore session,
+  ) async {
+    session.clearAuthCookies();
+
+    if (await saveSession(profile, session)) {
+      return true;
+    }
+
+    // Could not update the stored cookies - remove them all instead
+    return clearSession(profile);
   }
 
   // Populate the "hasSession" flag for the provided profile
