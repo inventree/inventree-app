@@ -507,8 +507,12 @@ class InvenTreeAPI {
     }
   }
 
-  // Set while checking whether the session is still valid (see _handleUnauthorized)
-  bool _checkingSession = false;
+  // Pending check of whether the session is still valid (see _handleUnauthorized).
+  // Requests rejected while the check is running share its result
+  Future<bool>? _sessionCheck;
+
+  // Zone value which identifies the session check request itself
+  static const Symbol _SESSION_CHECK_ZONE = #inventreeSessionCheck;
 
   // Set once the session has been found to be invalid, until the user logs in
   // again (or leaves the login screen)
@@ -524,9 +528,11 @@ class InvenTreeAPI {
    * Errors caused by an expired session are not displayed to the user -
    * they are directed to the login screen instead.
    * Checked by showServerError() before displaying an error.
+   *
+   * Only applies once the session is known to be invalid - requests rejected
+   * while the session is being checked wait for the result (_handleUnauthorized)
    */
-  bool get suppressServerErrors =>
-      (_checkingSession || _loginRequired) && !_showingAuthError;
+  bool get suppressServerErrors => _loginRequired && !_showingAuthError;
 
   void _showAuthError(String title, String description) {
     _showingAuthError = true;
@@ -604,9 +610,18 @@ class InvenTreeAPI {
       return false;
     }
 
-    // Another request is already checking the session
-    if (_checkingSession) {
-      return true;
+    // This is the session check request itself - the check handles the result
+    // (waiting for the check here would never complete)
+    if (Zone.current[_SESSION_CHECK_ZONE] == true) {
+      return false;
+    }
+
+    // Another request is already checking the session - share its result,
+    // so this request is only treated as handled if login is actually required
+    final Future<bool>? pending = _sessionCheck;
+
+    if (pending != null) {
+      return pending;
     }
 
     if (!_connected) {
@@ -617,31 +632,48 @@ class InvenTreeAPI {
       return true;
     }
 
-    _checkingSession = true;
+    final Future<bool> check = _checkSession();
+    _sessionCheck = check;
 
     try {
-      final APIResponse response = await _checkAuth();
-
-      if (response.statusCode != 401 && response.statusCode != 403) {
-        // Session is still valid (or the server could not be reached),
-        // so report the original error as normal
-        return false;
-      }
-
-      debug("API : Session expired while connected");
-
-      // Expire the session and direct the user to login again
-      await _handleAuthFailure(response);
-
-      _connected = false;
-      _notification_timer?.cancel();
-      _notification_timer = null;
-      _connectionStatusChanged();
-
-      return true;
+      return await check;
     } finally {
-      _checkingSession = false;
+      if (identical(_sessionCheck, check)) {
+        _sessionCheck = null;
+      }
     }
+  }
+
+  /*
+   * Check whether the session is still valid (after a request was rejected).
+   * If not, expire the session and direct the user to login again.
+   *
+   * Returns true if the session has expired (login is required).
+   */
+  Future<bool> _checkSession() async {
+    // Run the request in a zone which identifies it as the session check
+    final APIResponse response = await runZoned(
+      _checkAuth,
+      zoneValues: {_SESSION_CHECK_ZONE: true},
+    );
+
+    if (response.statusCode != 401 && response.statusCode != 403) {
+      // Session is still valid (or the server could not be reached),
+      // so report the original error as normal
+      return false;
+    }
+
+    debug("API : Session expired while connected");
+
+    // Expire the session and direct the user to login again
+    await _handleAuthFailure(response);
+
+    _connected = false;
+    _notification_timer?.cancel();
+    _notification_timer = null;
+    _connectionStatusChanged();
+
+    return true;
   }
 
   // Mark a response which was rejected because the user must login again

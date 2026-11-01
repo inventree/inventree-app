@@ -534,6 +534,137 @@ void main() {
       expect(loginPrompts(), equals(0));
     });
 
+    /*
+     * Start a request which is rejected (triggering a session check), and hold
+     * the session check response until [release] completes. A second request
+     * is then rejected while the check is still running (overlapping).
+     *
+     * Returns the overlapping request's response.
+     */
+    Future<(APIResponse, APIResponse)> overlapping({
+      required Completer<void> release,
+      required FutureOr<FakeResponse> Function() checkResponse,
+    }) async {
+      final int checks = userChecks();
+
+      server.once("GET", "api/part/", unauthorized);
+      server.once("PATCH", "api/part/1/", unauthorized);
+
+      server.once("GET", "api/user/me/", (_) async {
+        await release.future;
+        return checkResponse();
+      });
+
+      // First request - starts the session check
+      final Future<APIResponse> first = api.get("part/");
+      await eventually(() async => userChecks() == checks + 1);
+
+      // Second request - rejected while the check is running.
+      // (PATCH reports an unexpected status code itself, unlike GET)
+      final Future<APIResponse> second = api.patch(
+        "part/1/",
+        body: {"name": "A"},
+        expectedStatusCode: 200,
+      );
+      await eventually(
+        () async => server.received("PATCH", "api/part/1/").isNotEmpty,
+      );
+
+      // Allow the second response to be processed, then complete the check
+      await Future<void>.delayed(Duration(milliseconds: 50));
+      release.complete();
+
+      return (await first, await second);
+    }
+
+    test("Overlapping 401 - session valid", () async {
+      final (_, second) = await overlapping(
+        release: Completer<void>(),
+        checkResponse: () =>
+            FakeResponse(200, body: {"pk": 1, "username": "user"}),
+      );
+
+      // The session is valid, so the overlapping request is a real error
+      expect(second.statusCode, equals(401));
+      expect(second.errorDetail, isEmpty);
+      expect(api.isConnected(), equals(true));
+      expect(api.suppressServerErrors, equals(false));
+
+      // ... and is reported as such
+      expect(logged("showServerError: '${L10().response401}'"), equals(true));
+      expect(logged("showServerError: suppressed"), equals(false));
+      expect(loginPrompts(), equals(0));
+    });
+
+    test("Overlapping 401 - session check fails (transient)", () async {
+      final (_, second) = await overlapping(
+        release: Completer<void>(),
+        checkResponse: () => FakeResponse(503),
+      );
+
+      // Unable to determine the session state - the session is retained,
+      // and the overlapping request's error is not hidden
+      expect(second.errorDetail, isEmpty);
+      expect(api.isConnected(), equals(true));
+      expect((await stored(profile)).hasSession, equals(true));
+      expect(logged("showServerError: '${L10().response401}'"), equals(true));
+      expect(loginPrompts(), equals(0));
+    });
+
+    test("Overlapping 401 - session expired", () async {
+      server.endAllSessions();
+
+      final (first, second) = await overlapping(
+        release: Completer<void>(),
+        checkResponse: () => unauthorized(
+          FakeRequest(
+            method: "GET",
+            path: "/api/user/me/",
+            query: {},
+            rawQuery: "",
+            headers: {},
+            cookies: {},
+            body: "",
+          ),
+        ),
+      );
+
+      // Both requests are handled by directing the user to login
+      expect(first.errorDetail, isNotEmpty);
+      expect(second.errorDetail, isNotEmpty);
+      expect(api.isConnected(), equals(false));
+      expect(displayedErrors(), isEmpty);
+      expect(loginPrompts(), equals(1));
+    });
+
+    test("Other errors are displayed while the session is checked", () async {
+      final Completer<void> release = Completer<void>();
+      final int checks = userChecks();
+
+      server.once("GET", "api/part/", unauthorized);
+      server.once("GET", "api/user/me/", (_) async {
+        await release.future;
+        return FakeResponse(200, body: {"pk": 1, "username": "user"});
+      });
+
+      final Future<APIResponse> first = api.get("part/");
+      await eventually(() async => userChecks() == checks + 1);
+
+      // An unrelated error, while the session check is running
+      server.once(
+        "GET",
+        "api/stock/",
+        (_) => FakeResponse(400, body: {"detail": "Bad request"}),
+      );
+      await InvenTreeStockItem().listPaginated(10, 0);
+
+      expect(api.suppressServerErrors, equals(false));
+      expect(logged("showServerError: '${L10().response400}'"), equals(true));
+
+      release.complete();
+      await first;
+    });
+
     test("Concurrent requests check the session once", () async {
       final int before = userChecks();
 
