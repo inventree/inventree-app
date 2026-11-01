@@ -2,6 +2,7 @@ import "package:inventree/api.dart";
 import "package:inventree/auth/allauth_client.dart";
 import "package:inventree/auth/auth_method.dart";
 import "package:inventree/auth/auth_result.dart";
+import "package:inventree/auth/session_store.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/user_profile.dart";
@@ -131,7 +132,15 @@ class InvenTreeAuth {
       await client.logout();
     }
 
-    await UserProfileDBManager().clearSession(profile);
+    // Remove the session, but keep any other cookies (e.g. the MFA "trusted device"
+    // cookie) - as a browser does on logout
+    final SessionStore session = active
+        ? api.session
+        : await UserProfileDBManager().loadSession(profile);
+
+    session.clearAuthCookies();
+
+    await UserProfileDBManager().saveSession(profile, session);
 
     profile.hasSession = false;
 
