@@ -12,6 +12,7 @@ import "package:inventree/api.dart";
 import "package:inventree/auth/auth_manager.dart";
 import "package:inventree/auth/auth_result.dart";
 import "package:inventree/auth/session_store.dart";
+import "package:inventree/inventree/redact.dart";
 import "package:inventree/preferences.dart";
 import "package:inventree/user_profile.dart";
 

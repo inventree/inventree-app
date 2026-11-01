@@ -26,6 +26,7 @@ import "package:inventree/helpers.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/notification.dart";
 import "package:inventree/inventree/status_codes.dart";
+import "package:inventree/inventree/redact.dart";
 import "package:inventree/inventree/sentry.dart";
 import "package:inventree/settings/login.dart";
 import "package:inventree/user_profile.dart";
@@ -2069,38 +2070,4 @@ class InvenTreeAPI {
       notification_counter = n;
     });
   }
-}
-
-// Headers which contain credentials, and must never be logged or reported
-const List<String> _SENSITIVE_HEADERS = [
-  "authorization",
-  "cookie",
-  "set-cookie",
-  "x-csrftoken",
-];
-
-/*
- * Return a string representation of the provided headers,
- * with any credentials removed (e.g. for error reporting)
- */
-String redactHeaders(Map<String, String> headers) {
-  return headers.entries
-      .map((entry) {
-        final bool sensitive = _SENSITIVE_HEADERS.contains(
-          entry.key.toLowerCase(),
-        );
-
-        return "${entry.key}: ${sensitive ? "<redacted>" : entry.value}";
-      })
-      .join("\n");
-}
-
-String redactHttpHeaders(HttpHeaders headers) {
-  Map<String, String> values = {};
-
-  headers.forEach((name, value) {
-    values[name] = value.join(", ");
-  });
-
-  return redactHeaders(values);
 }
