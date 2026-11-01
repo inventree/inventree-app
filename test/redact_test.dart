@@ -18,6 +18,10 @@ const List<String> secrets = [
   "TRUST-SECRET-3",
   "url-pass-4",
   "query-token-5",
+  // Second word of a password containing whitespace
+  "SECOND-WORD-6",
+  // Password with a leading space
+  "LEADING-SPACE-7",
 ];
 
 /*
@@ -78,6 +82,56 @@ void main() {
 
     for (final entry in cases.entries) {
       test(entry.key, () {
+        expect(redactString(entry.key), equals(entry.value));
+      });
+    }
+
+    // Values containing whitespace, delimiters or escaped quotes must be
+    // redacted entirely - not just up to the first space / delimiter
+    final Map<String, String> quoted = {
+      // Whitespace
+      '{"password": "first second"}': '{"password": "<redacted>"}',
+      '{"password": " leading-space"}': '{"password": "<redacted>"}',
+      '{"password": "trailing-space "}': '{"password": "<redacted>"}',
+      '{"password": "  "}': '{"password": "<redacted>"}',
+      '{"password": "tab\tand\nnewline"}': '{"password": "<redacted>"}',
+      // Delimiters
+      '{"password": "a,b;c&d}e]f", "username": "user"}':
+          '{"password": "<redacted>", "username": "user"}',
+      '{"password": "key: value, other: 1"}': '{"password": "<redacted>"}',
+      // Escaped quotes and backslashes
+      r'{"password": "a\"b c\"d", "username": "user"}':
+          '{"password": "<redacted>", "username": "user"}',
+      r'{"password": "ends with backslash\\", "username": "user"}':
+          '{"password": "<redacted>", "username": "user"}',
+      // Single quotes (e.g. Python repr)
+      "{'password': 'first second', 'username': 'user'}":
+          "{'password': '<redacted>', 'username': 'user'}",
+      r"{'password': 'it\'s a secret'}": "{'password': '<redacted>'}",
+      // Unquoted (e.g. Dart Map.toString())
+      "{password: first second, username: user}":
+          "{password: <redacted>, username: user}",
+      "{username: user, password: first second}":
+          "{username: user, password: <redacted>}",
+      // Pretty-printed JSON
+      '{\n  "password": "first second",\n  "username": "user"\n}':
+          '{\n  "password": "<redacted>",\n  "username": "user"\n}',
+      // Truncated data - unterminated value is redacted to the end
+      '{"username": "user", "password": "first second third':
+          '{"username": "user", "password": "<redacted>',
+      // key=value forms
+      'password="first second" next=1': 'password="<redacted>" next=1',
+      "token='a b' next=1": "token='<redacted>' next=1",
+      "password=first+second&next=1": "password=<redacted>&next=1",
+      // Headers with quoted values
+      r'"Cookie": "a=\"b c\"; sessionid=SESSION-SECRET-1", "Accept": "json"':
+          '"Cookie": "<redacted>", "Accept": "json"',
+      '"Authorization": "Token abc def", "Accept": "json"':
+          '"Authorization": "<redacted>", "Accept": "json"',
+    };
+
+    for (final entry in quoted.entries) {
+      test("Quoted: ${entry.key}", () {
         expect(redactString(entry.key), equals(entry.value));
       });
     }
@@ -188,7 +242,8 @@ void main() {
           "requestHeaders":
               "Cookie: sessionid=SESSION-SECRET-1; csrftoken=CSRF-SECRET-2",
           "responseHeaders": "set-cookie: mfa_trusted=TRUST-SECRET-3; Path=/",
-          "responseData": '{"password": "hunter2-password"}',
+          "responseData":
+              '{"password": "hunter2-password", "secret": "first SECOND-WORD-6"}',
           "url": "https://example.com/api/?token=query-token-5",
         });
       });
@@ -205,7 +260,9 @@ void main() {
       );
 
       await Sentry.captureException(
-        Exception("Request failed - Cookie: sessionid=SESSION-SECRET-1"),
+        Exception(
+          'Request failed - Cookie: sessionid=SESSION-SECRET-1 - {"password": " LEADING-SPACE-7"}',
+        ),
         stackTrace: StackTrace.current,
       );
 

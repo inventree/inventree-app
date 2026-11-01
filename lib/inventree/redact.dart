@@ -42,15 +42,46 @@ bool isSensitiveKey(String key) {
   return _SENSITIVE_KEY_PARTS.any(k.contains);
 }
 
+// A complete quoted value, including escaped characters (e.g. "a \"b\" c").
+// An unterminated value (e.g. truncated response data) extends to the end of the text
+const String _QUOTED_VALUE =
+    r'''"(?:[^"\\]|\\.)*(?:"|$)|'(?:[^'\\]|\\.)*(?:'|$)''';
+
+// Names of keys whose values are credentials
+const String _SENSITIVE_NAMES =
+    "password|passwd|secret|token|api[_-]?key|access_token|refresh_token|id_token|csrftoken|csrfmiddlewaretoken|sessionid|mfa_trusted";
+
+/*
+ * Replace a value with REDACTED, retaining any surrounding quotes
+ */
+String _redactedValue(String value) {
+  if (value.isEmpty) {
+    return REDACTED;
+  }
+
+  final String quote = value[0];
+
+  if (quote == '"' || quote == "'") {
+    final bool closed = value.length > 1 && value.endsWith(quote);
+
+    return "${quote}${REDACTED}${closed ? quote : ""}";
+  }
+
+  return REDACTED;
+}
+
 // Patterns for credentials embedded in free text (log messages, headers, JSON, URLs)
 final List<(RegExp, String Function(Match))> _PATTERNS = [
   // Header values: "Cookie: ...", "Authorization: ...", "X-CSRFToken: ..."
+  // A quoted value is redacted entirely - otherwise, to the end of the line
   (
     RegExp(
-      r"""\b((?:set-)?cookies?|authorization|x-csrftoken)(["']?\s*[:=]\s*["']?)[^\n"']*""",
+      r"""\b((?:set-)?cookies?|authorization|x-csrftoken)(["']?\s*[:=]\s*)(""" +
+          _QUOTED_VALUE +
+          r"""|[^\n]*)""",
       caseSensitive: false,
     ),
-    (m) => "${m[1]}${m[2]}${REDACTED}",
+    (m) => "${m[1]}${m[2]}${_redactedValue(m[3]!)}",
   ),
   // Session / CSRF cookies: "sessionid=abc"
   (
@@ -61,13 +92,31 @@ final List<(RegExp, String Function(Match))> _PATTERNS = [
     ),
     (m) => "${m[1]}=${REDACTED}",
   ),
-  // Key / value pairs (JSON, maps, form data): "password": "abc", token=abc
+  // Key: value pairs (JSON, Python / Dart maps): "password": "a b", {password: a b, ...}
+  // A quoted value is redacted entirely. An unquoted value extends to the next
+  // "key:" pair, closing bracket or end of line (so may include whitespace)
   (
     RegExp(
-      r"""(["']?\b(?:password|passwd|secret|token|api[_-]?key|access_token|refresh_token|id_token|csrftoken|csrfmiddlewaretoken|sessionid|mfa_trusted)\b["']?\s*[:=]\s*)(["']?)[^"'\s,;&}\]\n]+""",
+      r"""(["']?\b(?:""" +
+          _SENSITIVE_NAMES +
+          r""")\b["']?\s*:\s*)(""" +
+          _QUOTED_VALUE +
+          r"""|(?:(?!,\s*["']?[\w-]+["']?\s*[:=])[^}\]\n])+)""",
       caseSensitive: false,
     ),
-    (m) => "${m[1]}${m[2]}${REDACTED}",
+    (m) => "${m[1]}${_redactedValue(m[2]!)}",
+  ),
+  // Key=value pairs (form data, cookies, log messages): password=abc, token="a b"
+  (
+    RegExp(
+      r"""(["']?\b(?:""" +
+          _SENSITIVE_NAMES +
+          r""")\b["']?\s*=\s*)(""" +
+          _QUOTED_VALUE +
+          r"""|[^\s&;,"'}\]]+)""",
+      caseSensitive: false,
+    ),
+    (m) => "${m[1]}${_redactedValue(m[2]!)}",
   ),
   // Authorization schemes in free text: "Token abc123..."
   (
