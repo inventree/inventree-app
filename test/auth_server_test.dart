@@ -196,6 +196,33 @@ Future<int> userStatusWithSession(String sessionId) async {
   }
 }
 
+/*
+ * End the provided session on the server, independent of the app's API client
+ * (e.g. as if the session was ended from another device, or the web interface)
+ */
+Future<void> endSessionExternally(SessionStore session) async {
+  final Uri server = Uri.parse(authServer);
+  final Uri url = server.resolve("api/auth/v1/auth/session");
+  final client = HttpClient();
+
+  try {
+    final request = await client.deleteUrl(url);
+    request.headers.set(HttpHeaders.acceptHeader, "application/json");
+    request.headers.set(HttpHeaders.cookieHeader, session.cookieHeader(url));
+    request.headers.set("X-CSRFToken", session.csrfToken);
+    request.headers.set("Origin", server.origin);
+    request.headers.set(HttpHeaders.refererHeader, authServer);
+
+    final response = await request.close();
+    await response.drain<void>();
+
+    // allauth responds with 401 once the session has ended
+    expect(response.statusCode, equals(401));
+  } finally {
+    client.close(force: true);
+  }
+}
+
 String storedSessionId(SessionStore session) {
   final RegExp pattern = RegExp("${SESSION_COOKIE_NAME}=([^;]+)");
 
@@ -377,6 +404,53 @@ void main() {
         (await UserProfileDBManager().loadSession(profile)).hasSession,
         equals(false),
       );
+    });
+
+    test("Session expires while connected", () async {
+      final api = InvenTreeAPI();
+
+      final AuthResult result = await InvenTreeAuth().beginLogin(
+        profile,
+        PasswordAuthMethod(basicUsername, basicPassword),
+      );
+      expect(result.status, equals(AuthStatus.authenticated));
+
+      expect(await api.connectToServer(profile), equals(true));
+
+      // Requests succeed while the session is valid
+      expect((await api.get("part/", params: {"limit": "1"})).statusCode, 200);
+
+      // The session is ended elsewhere
+      await endSessionExternally(api.session);
+
+      // The next request detects the expired session
+      final response = await api.get("part/", params: {"limit": "1"});
+      expect(response.statusCode, equals(401));
+
+      expect(api.isConnected(), equals(false));
+      expect(profile.hasSession, equals(false));
+      expect(
+        (await UserProfileDBManager().loadSession(profile)).hasSession,
+        equals(false),
+      );
+
+      // Username is retained, ready to login again
+      final UserProfile? saved = await UserProfileDBManager().getProfileByName(
+        basicProfileName,
+      );
+      expect(saved!.username, equals(basicUsername));
+
+      // ... and logging in again restores the connection
+      expect(
+        (await InvenTreeAuth().beginLogin(
+          profile,
+          PasswordAuthMethod(basicUsername, basicPassword),
+        )).authenticated,
+        equals(true),
+      );
+      expect(await api.connectToServer(profile), equals(true));
+
+      await InvenTreeAuth().logout(profile);
     });
   });
 

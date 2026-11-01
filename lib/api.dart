@@ -508,6 +508,64 @@ class InvenTreeAPI {
     }
   }
 
+  // Set while checking whether the session is still valid (see _handleUnauthorized)
+  bool _checkingSession = false;
+
+  /*
+   * Return true if a 401 response for [uri] indicates that the session may
+   * have expired while the app was connected (e.g. session timeout, or the
+   * session was ended from the web interface).
+   *
+   * Responses from the allauth endpoints are excluded - these return 401
+   * as part of normal operation (e.g. logout, pending login flows)
+   */
+  bool _isSessionExpiry(Uri uri, int statusCode) {
+    if (statusCode != 401 || !_connected || _checkingSession) {
+      return false;
+    }
+
+    if (!session.isServerUri(uri)) {
+      return false;
+    }
+
+    return !uri.path.contains("/api/auth/");
+  }
+
+  /*
+   * A request was rejected with 401 while connected.
+   * Confirm that the session is no longer valid (a single request could be
+   * rejected for other reasons), and if so, end the connection and take the
+   * user to the login screen.
+   */
+  Future<void> _handleUnauthorized(String url) async {
+    _checkingSession = true;
+
+    try {
+      final APIResponse response = await _checkAuth();
+
+      if (response.statusCode != 401) {
+        // Session is still valid (or the server could not be reached),
+        // so report the original error as normal
+        if (response.statusCode == 200) {
+          showStatusCodeError(url, 401);
+        }
+        return;
+      }
+
+      debug("API : Session expired while connected");
+
+      // Expire the session and direct the user to login again
+      await _handleAuthFailure(response);
+
+      _connected = false;
+      _notification_timer?.cancel();
+      _notification_timer = null;
+      _connectionStatusChanged();
+    } finally {
+      _checkingSession = false;
+    }
+  }
+
   /*
    * Discard the session and CSRF cookies for the provided profile.
    * Other cookies (e.g. MFA "trusted device") are retained.
@@ -683,6 +741,7 @@ class InvenTreeAPI {
 
     // Cancel notification timer
     _notification_timer?.cancel();
+    _notification_timer = null;
 
     _connecting = true;
     _connectionStatusChanged();
@@ -1057,6 +1116,10 @@ class InvenTreeAPI {
       jsondata = httpResponse.body;
 
       response.data = json.decode(jsondata);
+
+      if (_isSessionExpiry(uri, response.statusCode)) {
+        await _handleUnauthorized(url);
+      }
 
       // Report a server-side error
       if (response.statusCode == 500) {
@@ -1551,8 +1614,11 @@ class InvenTreeAPI {
             ? {}
             : await responseToJson(url, _response) ?? {};
 
-        // First check that the returned status code is what we expected
-        if (statusCode != null && statusCode != _response.statusCode) {
+        if (_isSessionExpiry(request.uri, _response.statusCode)) {
+          // Reported by _handleUnauthorized, rather than as a status code error
+          await _handleUnauthorized(url);
+        } else if (statusCode != null && statusCode != _response.statusCode) {
+          // Check that the returned status code is what we expected
           showStatusCodeError(
             url,
             _response.statusCode,
