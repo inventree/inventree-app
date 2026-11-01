@@ -109,7 +109,17 @@ class UserProfileDBManager {
       debug("loadSession() : Error reading secure storage - ${error}");
     }
 
-    return SessionStore.fromJson(profile.server, data);
+    final SessionStore session = SessionStore.fromJson(profile.server, data);
+
+    // Stored cookies belong to a different server address - remove them
+    if (session.rejected) {
+      debug(
+        "loadSession() : Stored session discarded - server address changed",
+      );
+      await clearSession(profile);
+    }
+
+    return session;
   }
 
   /*

@@ -191,6 +191,81 @@ void main() {
       expect(SessionStore.fromJson(server, null).isEmpty, equals(true));
     });
 
+    test("Server origin", () {
+      expect(
+        serverOrigin("https://inventree.example.com"),
+        equals("https://inventree.example.com:443"),
+      );
+      expect(
+        serverOrigin("HTTPS://InvenTree.Example.com:443/inventree/"),
+        equals("https://inventree.example.com:443"),
+      );
+      expect(
+        serverOrigin("http://127.0.0.1:8000/"),
+        equals("http://127.0.0.1:8000"),
+      );
+      expect(serverOrigin("not a url"), isEmpty);
+      expect(serverOrigin(""), isEmpty);
+    });
+
+    test("Stored cookies are only restored for the issuing origin", () {
+      final store = SessionStore(server: server);
+      store.capture(serverUri, [
+        _cookie(SESSION_COOKIE_NAME, "abc"),
+        _cookie(CSRF_COOKIE_NAME, "xyz"),
+        _cookie("mfa_trusted", "trusted"),
+      ]);
+
+      final String data = store.toJson();
+
+      // Same origin - including an explicit default port, a different path or case
+      for (final address in [
+        server,
+        "https://inventree.example.com:443",
+        "https://inventree.example.com/inventree/",
+        "https://INVENTREE.example.com/",
+      ]) {
+        final restored = SessionStore.fromJson(address, data);
+        expect(restored.rejected, equals(false), reason: address);
+        expect(restored.hasSession, equals(true), reason: address);
+      }
+
+      // Different origin - no cookies at all are restored (including MFA trust)
+      for (final address in [
+        "http://inventree.example.com",
+        "https://inventree.example.com:8443",
+        "http://inventree.example.com:443",
+        "https://other.example.com",
+        "https://example.com",
+        "",
+      ]) {
+        final restored = SessionStore.fromJson(address, data);
+        expect(restored.rejected, equals(true), reason: address);
+        expect(restored.isEmpty, equals(true), reason: address);
+        expect(
+          restored.cookieHeader(Uri.parse("${address}/api/")),
+          isEmpty,
+          reason: address,
+        );
+      }
+    });
+
+    test("Stored cookies without an origin are not restored", () {
+      // Format used before the origin was recorded
+      const String legacy =
+          '[{"name": "sessionid", "value": "abc", "domain": "inventree.example.com"}]';
+
+      final restored = SessionStore.fromJson(server, legacy);
+
+      expect(restored.rejected, equals(true));
+      expect(restored.isEmpty, equals(true));
+
+      expect(
+        SessionStore.fromJson(server, '{"cookies": []}').rejected,
+        equals(true),
+      );
+    });
+
     test("Set-Cookie header parsing", () {
       // package:http folds multiple headers into one, separated by a comma
       final values = splitSetCookieHeader(

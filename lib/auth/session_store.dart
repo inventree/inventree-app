@@ -108,17 +108,42 @@ List<String> splitSetCookieHeader(String header) {
 }
 
 /*
+ * Return the origin (scheme, host and port) of the provided server address,
+ * or an empty string if the address is not valid.
+ * Default ports are included, so "https://host" and "https://host:443" match.
+ */
+String serverOrigin(String server) {
+  final Uri? uri = Uri.tryParse(server);
+
+  if (uri == null || uri.host.isEmpty || uri.scheme.isEmpty) {
+    return "";
+  }
+
+  return "${uri.scheme.toLowerCase()}://${uri.host.toLowerCase()}:${uri.port}";
+}
+
+/*
  * Cookie jar for the session with a single InvenTree server.
  *
- * Cookies are only accepted from (and sent to) the server host,
+ * Cookies are only accepted from (and sent to) the server origin,
  * so that session credentials can never leak to another host.
- * The jar can be serialized for storage in secure storage.
+ * The jar can be serialized for storage in secure storage, and records the
+ * origin which issued the cookies - a stored jar is only ever restored for
+ * that same origin.
  */
 class SessionStore {
   SessionStore({String server = ""}) {
     _serverUri = Uri.tryParse(server);
   }
 
+  /*
+   * Restore a stored jar for the provided server.
+   *
+   * The cookies are discarded (and [rejected] is set) if they were issued by
+   * a different origin - e.g. the profile server address has since been edited
+   * (by the user, or by managed configuration). Otherwise the session could be
+   * sent to a different service on the same host, or over plain HTTP.
+   */
   factory SessionStore.fromJson(String server, String? data) {
     final store = SessionStore(server: server);
 
@@ -127,7 +152,19 @@ class SessionStore {
     }
 
     try {
-      final List<dynamic> cookies = json.decode(data) as List<dynamic>;
+      final dynamic decoded = json.decode(data);
+
+      // Data stored without an origin cannot be verified (and is never restored)
+      final String origin = decoded is Map<String, dynamic>
+          ? (decoded["origin"] ?? "").toString()
+          : "";
+
+      if (origin.isEmpty || origin != store.origin) {
+        store.rejected = true;
+        return store;
+      }
+
+      final List<dynamic> cookies = decoded["cookies"] as List<dynamic>;
 
       for (var item in cookies) {
         final cookie = StoredCookie.fromJson(item as Map<String, dynamic>);
@@ -145,6 +182,12 @@ class SessionStore {
   }
 
   Uri? _serverUri;
+
+  // Origin of the server this jar belongs to
+  String get origin => serverOrigin(_serverUri?.toString() ?? "");
+
+  // Set if stored cookies were discarded, as they were issued by a different origin
+  bool rejected = false;
 
   final Map<String, StoredCookie> _cookies = {};
 
@@ -314,10 +357,11 @@ class SessionStore {
     _changed();
   }
 
-  String toJson() => json.encode(
-    _cookies.values
+  String toJson() => json.encode({
+    "origin": origin,
+    "cookies": _cookies.values
         .where((cookie) => !cookie.isExpired)
         .map((cookie) => cookie.toJson())
         .toList(),
-  );
+  });
 }

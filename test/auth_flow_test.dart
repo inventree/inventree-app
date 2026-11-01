@@ -918,6 +918,74 @@ void main() {
       }
     });
 
+    test("Editing the server address discards the session", () async {
+      // Another service on the same host, at a different port
+      final FakeInvenTreeServer other = await FakeInvenTreeServer.start();
+
+      try {
+        final profile = await fakeProfile(server);
+        await loginAndConnect(profile);
+        api.disconnectFromServer();
+
+        final String key = "profile_session_${profile.key}";
+
+        profile.server = other.url;
+        await manager.updateProfile(profile);
+
+        final UserProfile edited = (await manager.getProfileByName(
+          profileName,
+        ))!;
+        expect(edited.hasSession, equals(false));
+
+        // Stored cookies have been removed
+        expect(await const FlutterSecureStorage().read(key: key), isNull);
+
+        // ... and are never sent to the new address
+        expect(await api.connectToServer(edited), equals(false));
+
+        for (final request in other.requests) {
+          expect(request.cookies, isEmpty, reason: request.toString());
+          expect(request.headers.containsKey("cookie"), equals(false));
+        }
+      } finally {
+        await other.close();
+      }
+    });
+
+    test(
+      "Managed configuration changing the server discards the session",
+      () async {
+        final FakeInvenTreeServer other = await FakeInvenTreeServer.start();
+
+        const String name = "${profileName} Managed Move";
+        _profiles.add(name);
+
+        try {
+          await applyManagedConfiguration({"server": server.url, "name": name});
+
+          UserProfile profile = (await manager.getProfileByName(name))!;
+          expect((await login(profile)).authenticated, equals(true));
+          expect((await stored(profile)).hasSession, equals(true));
+
+          // Administrator moves the managed profile to a different address
+          await applyManagedConfiguration({"server": other.url, "name": name});
+
+          profile = (await manager.getProfileByName(name))!;
+          expect(profile.server, equals(other.url));
+          expect(profile.hasSession, equals(false));
+
+          await api.beginAuthentication(profile);
+          await api.connectToServer(profile);
+
+          for (final request in other.requests) {
+            expect(request.cookies, isEmpty, reason: request.toString());
+          }
+        } finally {
+          await other.close();
+        }
+      },
+    );
+
     test("Deleting a profile removes its secure storage", () async {
       final profile = await fakeProfile(server);
       expect((await login(profile)).authenticated, equals(true));
