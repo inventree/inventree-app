@@ -10,7 +10,6 @@ import "package:inventree/user_profile.dart";
 
 const String MANAGED_CONFIG_SERVER_KEY = "server";
 const String MANAGED_CONFIG_NAME_KEY = "name";
-const String MANAGED_CONFIG_TOKEN_KEY = "token";
 
 const String MANAGED_CONFIG_THEME_KEY = "themeMode";
 const String MANAGED_CONFIG_LANGUAGE_KEY = "language";
@@ -222,10 +221,6 @@ Future<void> _applyManagedProfile(Map<String, dynamic> config) async {
   // Profile name is required
   if (name.isEmpty) return;
 
-  final String token = (config[MANAGED_CONFIG_TOKEN_KEY] ?? "")
-      .toString()
-      .trim();
-
   final String fingerprint = "${name}|${server}";
 
   final String applied =
@@ -236,23 +231,20 @@ Future<void> _applyManagedProfile(Map<String, dynamic> config) async {
 
   UserProfile? profile = await manager.getProfileByName(name);
 
-  // Compare token against stored token
-  final bool tokenChanged = token.isNotEmpty && profile?.token != token;
-
   // Check if anything actually changed
-  if (applied == fingerprint && !tokenChanged) return;
+  // Note: the user must login to the managed profile themselves -
+  // the app no longer supports pre-provisioned API tokens
+  if (applied == fingerprint) return;
 
   // No demo profile
   await InvenTreeSettingsManager().setValue("demo_profile_added", true);
 
   if (profile == null) {
-    profile = UserProfile(name: name, server: server, token: token);
+    profile = UserProfile(name: name, server: server);
 
     await manager.addProfile(profile);
   } else {
     profile.server = server;
-
-    if (token.isNotEmpty) profile.token = token;
 
     await manager.updateProfile(profile);
   }

@@ -2,9 +2,14 @@
  * Unit tests for the InvenTree API code
  */
 
+import "dart:io";
+
 import "package:flutter_test/flutter_test.dart";
 
 import "package:inventree/api.dart";
+import "package:inventree/auth/auth_manager.dart";
+import "package:inventree/auth/auth_method.dart";
+import "package:inventree/auth/session_store.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/user_profile.dart";
 
@@ -54,7 +59,7 @@ void main() {
       // Check expected values
       expect(api.isConnected(), equals(false));
       expect(api.isConnecting(), equals(false));
-      expect(api.hasToken, equals(false));
+      expect(api.hasSession, equals(false));
     });
 
     test("Login Failure", () async {
@@ -74,44 +79,56 @@ void main() {
       // Test incorrect login details
       profile.server = testServerAddress;
 
-      final response = await api.fetchToken(profile, "baduser", "badpassword");
-      assert(!response.successful());
-
-      debugContains("Token request failed");
+      final authResult = await InvenTreeAuth().beginLogin(
+        profile,
+        PasswordAuthMethod("baduser", "badpassword"),
+      );
+      assert(!authResult.authenticated);
+      assert(authResult.errors.isNotEmpty);
 
       assert(!api.checkConnection());
 
-      debugContains("Token request failed: STATUS 401");
+      debugContains("InvenTreeAuth: AuthResult(failed, status=400");
       debugContains("showSnackIcon: 'Not Connected'");
     });
 
-    test("Bad Token", () async {
-      // Test that login fails with a bad token
+    test("Bad Session", () async {
+      // Test that connection fails with an invalid session cookie
       var profile = await setupServerProfile();
 
-      profile.token = "bad-token";
+      final session = SessionStore(server: profile.server);
+
+      session.capture(Uri.parse(profile.server), [
+        Cookie(SESSION_COOKIE_NAME, "bad-session"),
+      ]);
+
+      await UserProfileDBManager().saveSession(profile, session);
 
       bool result = await InvenTreeAPI().connectToServer(profile);
       assert(!result);
+
+      // The invalid session should have been discarded
+      final stored = await UserProfileDBManager().loadSession(profile);
+      assert(!stored.hasSession);
     });
 
     test("Login Success", () async {
       // Test that we can login to the server successfully
       var api = InvenTreeAPI();
 
-      final profile = await setupServerProfile(select: true, fetchToken: true);
-      assert(profile.hasToken);
+      final profile = await setupServerProfile(select: true, login: true);
+      assert(profile.hasSession);
 
       // Now, connect to the server
       bool result = await api.connectToServer(profile);
 
       // Check expected values
       assert(result);
-      assert(api.hasToken);
+      assert(api.hasSession);
 
       expect(api.baseUrl, equals(testServerAddress));
 
-      assert(api.hasToken);
+      assert(api.hasSession);
       assert(api.isConnected());
       assert(!api.isConnecting());
       assert(api.checkConnection());
@@ -121,7 +138,7 @@ void main() {
       // Test server version information
       var api = InvenTreeAPI();
 
-      final profile = await setupServerProfile(fetchToken: true);
+      final profile = await setupServerProfile(login: true);
       assert(await api.connectToServer(profile));
 
       // Check supported functions
@@ -141,7 +158,6 @@ void main() {
       // Pricing role (or legacy server with no pricing role)
       assert(api.canViewPricing);
 
-      debugContains("Received token from server");
       debugContains("showSnackIcon: 'Connected to Server'");
     });
   });

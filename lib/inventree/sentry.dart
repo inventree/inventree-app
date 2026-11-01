@@ -8,6 +8,7 @@ import "package:sentry_flutter/sentry_flutter.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/dsn.dart";
+import "package:inventree/inventree/redact.dart";
 import "package:inventree/preferences.dart";
 
 Future<Map<String, dynamic>> getDeviceInfo() async {
@@ -109,7 +110,9 @@ Future<bool> sentryReportMessage(
     }
   }
 
-  print("Sending user message to Sentry: ${message}, ${context}");
+  print(
+    "Sending user message to Sentry: ${redactString(message)}, ${redactValue(context)}",
+  );
 
   if (isInDebugMode()) {
     print("----- In dev mode. Not sending message to Sentry.io -----");
@@ -162,7 +165,9 @@ Future<void> sentryReportError(
     return;
   }
 
-  print("----- Sentry Intercepted error: $error -----");
+  print(
+    "----- Sentry Intercepted error: ${redactString(error.toString())} -----",
+  );
   print(stackTrace);
 
   // Errors thrown in development mode are unlikely to be interesting. You can

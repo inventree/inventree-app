@@ -1,6 +1,7 @@
 import "package:flutter_secure_storage/flutter_secure_storage.dart";
 import "package:sembast/sembast.dart";
 
+import "package:inventree/auth/session_store.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/preferences.dart";
 
@@ -9,7 +10,7 @@ class UserProfile {
     this.key,
     this.name = "",
     this.server = "",
-    this.token = "",
+    this.username = "",
     this.selected = false,
     this.trustedCertificate = false,
   });
@@ -22,15 +23,10 @@ class UserProfile {
     key: key,
     name: (json["name"] ?? "") as String,
     server: (json["server"] ?? "") as String,
-    // Legacy field - profiles saved before the token moved to secure storage
-    // may still have it here. UserProfileDBManager migrates this on read.
-    token: (json["token"] ?? "") as String,
+    username: (json["username"] ?? "") as String,
     selected: isSelected,
     trustedCertificate: (json["trustedCertificate"] ?? false) as bool,
   );
-
-  // Return true if this profile has a token
-  bool get hasToken => token.isNotEmpty;
 
   // ID of the profile
   int? key;
@@ -41,9 +37,13 @@ class UserProfile {
   // Base address of the InvenTree server
   String server = "";
 
-  // API token - held in memory only; persisted separately in secure storage
-  // (see UserProfileDBManager), never written to the plain profile record
-  String token = "";
+  // Username (or email) used for the last successful login - pre-fills the login form.
+  // Kept on logout. The password is never stored
+  String username = "";
+
+  // Does this profile have a stored session (populated from secure storage
+  // by UserProfileDBManager). The session itself is never held on the profile
+  bool hasSession = false;
 
   bool selected = false;
 
@@ -57,6 +57,7 @@ class UserProfile {
   Map<String, dynamic> toJson() => {
     "name": name,
     "server": server,
+    "username": username,
     "trustedCertificate": trustedCertificate,
   };
 
@@ -72,54 +73,245 @@ class UserProfile {
 class UserProfileDBManager {
   final store = StoreRef("profiles");
 
-  static const _secureStorage = FlutterSecureStorage();
+  // Session cookies are only accessible on this device (not synced or restored to another device):
+  // - iOS: keychain item, "this device only" and not synchronizable
+  // - Android: AES-GCM, with the key wrapped by a non-exportable KeyStore key.
+  //   The storage files are excluded from backup (see res/xml/*_rules.xml)
+  static const _secureStorage = FlutterSecureStorage(
+    iOptions: IOSOptions(
+      accessibility: KeychainAccessibility.first_unlock_this_device,
+    ),
+  );
 
   Future<Database> get _db async => InvenTreePreferencesDB.instance.database;
 
-  // Key used to store a profile's API token in secure storage
-  String _tokenStorageKey(int key) => "profile_token_${key}";
+  // Key used to store a profile's session cookies in secure storage
+  String _sessionStorageKey(int key) => "profile_session_${key}";
+
+  // Key used to store a profile's API token (legacy - removed by migrateLegacyTokens)
+  String _legacyTokenStorageKey(int key) => "profile_token_${key}";
 
   /*
-   * Persist (or clear) a profile's token in secure storage, keyed by its
-   * database record id. The token never lives in the plain Sembast record.
+   * Load the stored session cookies for the provided profile
    */
-  Future<void> _saveToken(int key, String token) async {
-    if (token.isEmpty) {
-      await _secureStorage.delete(key: _tokenStorageKey(key));
-    } else {
-      await _secureStorage.write(key: _tokenStorageKey(key), value: token);
-    }
-  }
-
-  /*
-   * Populate a profile's in-memory token from secure storage.
-   * If secure storage has nothing for this profile, but the (legacy)
-   * Sembast record still has a plaintext token from before this migration,
-   * adopt it once and move it into secure storage.
-   */
-  Future<UserProfile> _loadToken(UserProfile profile) async {
+  Future<SessionStore> loadSession(UserProfile profile) async {
     final int? key = profile.key;
 
     if (key == null) {
-      return profile;
+      return SessionStore(server: profile.server);
     }
 
-    final String? secureToken = await _secureStorage.read(
-      key: _tokenStorageKey(key),
-    );
+    String? data;
 
-    if (secureToken != null) {
-      profile.token = secureToken;
-    } else if (profile.token.isNotEmpty) {
-      // Legacy profile - migrate its plaintext token into secure storage,
-      // and strip it from the Sembast record now. Must use put() (full
-      // replace) rather than update() (merge), otherwise the stale legacy
-      // "token" field survives and gets re-migrated on every future read.
-      await _saveToken(key, profile.token);
-      await store.record(key).put(await _db, profile.toJson());
+    try {
+      data = await _secureStorage.read(key: _sessionStorageKey(key));
+    } catch (error) {
+      debug("loadSession() : Error reading secure storage - ${error}");
     }
 
+    final SessionStore session = SessionStore.fromJson(profile.server, data);
+
+    // Stored cookies belong to a different server address - remove them
+    if (session.rejected) {
+      debug(
+        "loadSession() : Stored session discarded - server address changed",
+      );
+      await clearSession(profile);
+    }
+
+    return session;
+  }
+
+  /*
+   * Persist the session cookies for the provided profile.
+   * The cookies are only ever stored in secure storage, never in the profile record.
+   */
+  Future<bool> saveSession(UserProfile profile, SessionStore session) async {
+    final int? key = profile.key;
+
+    // Profile is not stored - so there is nowhere to store the session
+    if (key == null) {
+      return false;
+    }
+
+    // Cookies being written - taken before the (asynchronous) write,
+    // in case the jar changes in the meantime
+    final snapshot = session.snapshot();
+
+    try {
+      if (session.isEmpty) {
+        await _secureStorage.delete(key: _sessionStorageKey(key));
+      } else {
+        await _secureStorage.write(
+          key: _sessionStorageKey(key),
+          value: session.toJson(),
+        );
+      }
+    } catch (error) {
+      debug("saveSession() : Error writing secure storage - ${error}");
+      return false;
+    }
+
+    session.markPersisted(snapshot);
+
+    return true;
+  }
+
+  /*
+   * Remove all stored session cookies for the provided profile.
+   * Returns false if the stored cookies could not be removed.
+   */
+  Future<bool> clearSession(UserProfile profile) async {
+    final int? key = profile.key;
+
+    if (key == null) {
+      return true;
+    }
+
+    try {
+      await _secureStorage.delete(key: _sessionStorageKey(key));
+    } catch (error) {
+      debug("clearSession() : Error writing secure storage - ${error}");
+      return false;
+    }
+
+    return true;
+  }
+
+  /*
+   * Remove the session (and CSRF) cookies from storage for the provided profile.
+   * Other cookies (e.g. MFA "trusted device") are retained where possible.
+   *
+   * Returns false if a stored session may remain - the caller must not report
+   * the session as removed (e.g. on logout).
+   */
+  Future<bool> removeStoredSession(
+    UserProfile profile,
+    SessionStore session,
+  ) async {
+    session.clearAuthCookies();
+
+    if (await saveSession(profile, session)) {
+      return true;
+    }
+
+    // Could not update the stored cookies - remove them all instead
+    return clearSession(profile);
+  }
+
+  // Populate the "hasSession" flag for the provided profile
+  Future<UserProfile> _loadSessionState(UserProfile profile) async {
+    profile.hasSession = (await loadSession(profile)).hasSession;
     return profile;
+  }
+
+  /*
+   * One-time removal of API tokens stored by earlier versions of the app,
+   * which used token authentication (now replaced by session authentication).
+   * Tokens are removed from secure storage, and any (older) plaintext
+   * token is stripped from the profile record.
+   */
+  Future<void> migrateLegacyTokens() async {
+    const String MIGRATION_KEY = "legacy_tokens_removed";
+
+    if (await InvenTreeSettingsManager().getBool(MIGRATION_KEY, false)) {
+      return;
+    }
+
+    final db = await _db;
+    final records = await store.find(db);
+
+    // Only mark the migration as complete if every token was removed
+    bool complete = true;
+
+    for (final record in records) {
+      if (record.key is! int) {
+        continue;
+      }
+
+      final int key = record.key! as int;
+
+      try {
+        await _secureStorage.delete(key: _legacyTokenStorageKey(key));
+      } catch (error) {
+        debug(
+          "migrateLegacyTokens() : Error writing secure storage - ${error}",
+        );
+
+        // Continue with the remaining profiles - but retry on next startup
+        complete = false;
+      }
+
+      final value = record.value;
+
+      if (value is Map<String, dynamic> && value.containsKey("token")) {
+        // put() (full replace) rather than update() (merge), so the field is removed
+        await store
+            .record(key)
+            .put(db, UserProfile.fromJson(key, value, false).toJson());
+      }
+    }
+
+    if (!complete) {
+      debug("migrateLegacyTokens() : Incomplete - will retry on next startup");
+      return;
+    }
+
+    await InvenTreeSettingsManager().setValue(MIGRATION_KEY, true);
+  }
+
+  /*
+   * Remove any secure storage entries which do not belong to an existing profile.
+   *
+   * Secure storage can outlive the profile database - e.g. iOS keychain items
+   * survive an app uninstall. Profile keys restart after a reinstall, so a new
+   * profile could otherwise inherit the session of an old (unrelated) profile.
+   * Legacy API tokens are also removed (for any profile).
+   * Must be called before any profiles are created on startup.
+   */
+  Future<void> removeOrphanedSessions() async {
+    final db = await _db;
+    final Set<int> profileKeys = (await store.findKeys(
+      db,
+    )).whereType<int>().toSet();
+
+    // Session (and legacy token) entries - see _sessionStorageKey()
+    final RegExp keyPattern = RegExp(r"^profile_(session|token)_(\d+)$");
+
+    List<String> names = [];
+
+    try {
+      names = (await _secureStorage.readAll()).keys.toList();
+    } catch (error) {
+      debug(
+        "removeOrphanedSessions() : Error accessing secure storage - ${error}",
+      );
+    }
+
+    for (final String name in names) {
+      final match = keyPattern.firstMatch(name);
+
+      if (match == null) {
+        continue;
+      }
+
+      // Legacy API tokens are never used, so are always removed (even if
+      // migrateLegacyTokens() could not remove them for an existing profile)
+      final bool legacyToken = match.group(1) == "token";
+
+      if (!legacyToken && profileKeys.contains(int.tryParse(match.group(2)!))) {
+        continue;
+      }
+
+      // Each entry is removed separately, so one failure does not prevent the rest
+      try {
+        await _secureStorage.delete(key: name);
+      } catch (error) {
+        debug(
+          "removeOrphanedSessions() : Error writing secure storage - ${error}",
+        );
+      }
+    }
   }
 
   /*
@@ -164,10 +356,6 @@ class UserProfileDBManager {
     // Record the key
     profile.key = key;
 
-    if (key != null) {
-      await _saveToken(key, profile.token);
-    }
-
     return true;
   }
 
@@ -187,11 +375,9 @@ class UserProfileDBManager {
       return result;
     }
 
-    // put() (full replace) rather than update() (merge) - a legacy record's
-    // stale "token" field must not survive a write, or it will be
-    // re-migrated into secure storage on the next read (see _loadToken)
+    // put() (full replace) rather than update() (merge), so that any stale
+    // fields (e.g. a legacy "token") do not survive a write
     await store.record(profile.key).put(await _db, profile.toJson());
-    await _saveToken(profile.key!, profile.token);
 
     return true;
   }
@@ -204,9 +390,7 @@ class UserProfileDBManager {
 
     await store.record(profile.key).delete(await _db);
 
-    if (profile.key != null) {
-      await _secureStorage.delete(key: _tokenStorageKey(profile.key!));
-    }
+    await clearSession(profile);
   }
 
   /*
@@ -230,7 +414,7 @@ class UserProfileDBManager {
           profiles[idx].key == selected,
         );
 
-        return _loadToken(profile);
+        return _loadSessionState(profile);
       }
     }
 
@@ -255,7 +439,7 @@ class UserProfileDBManager {
           profiles[idx].key == selected,
         );
 
-        profileList.add(await _loadToken(profile));
+        profileList.add(await _loadSessionState(profile));
       }
     }
 
