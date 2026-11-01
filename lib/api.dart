@@ -480,30 +480,24 @@ class InvenTreeAPI {
 
       await _expireSession(expiredProfile);
 
-      showServerError(_URL_ME, L10().mfaRegistrationRequired, detail);
+      _showAuthError(L10().mfaRegistrationRequired, detail);
+
+      // Logging in again will not help - but suppress errors from other requests
+      _loginRequired = true;
       return;
     }
 
     await _expireSession(expiredProfile);
 
     if (expiredProfile != null) {
-      showServerError(
-        _URL_ME,
+      _showAuthError(
         L10().sessionExpired,
         "${L10().sessionExpiredDetail}\n${expiredProfile.name}",
       );
 
       // Take the user straight to the login screen for this profile,
       // rather than leaving them to work out why Home shows disconnected
-      debug("API : Opening login screen for '${expiredProfile.name}'");
-
-      if (hasContext()) {
-        OneContext().push(
-          MaterialPageRoute(
-            builder: (context) => InvenTreeLoginWidget(expiredProfile),
-          ),
-        );
-      }
+      _requestLogin(expiredProfile);
     } else {
       showServerError(
         _URL_ME,
@@ -516,20 +510,77 @@ class InvenTreeAPI {
   // Set while checking whether the session is still valid (see _handleUnauthorized)
   bool _checkingSession = false;
 
+  // Set once the session has been found to be invalid, until the user logs in
+  // again (or leaves the login screen)
+  bool _loginRequired = false;
+
+  // Set while the login screen is open (opened by _requestLogin)
+  bool _loginScreenOpen = false;
+
+  // Set while displaying the reason for an authentication failure
+  bool _showingAuthError = false;
+
   /*
-   * Return true if a 401 response for [uri] indicates that the session may
-   * have expired while the app was connected (e.g. session timeout, or the
-   * session was ended from the web interface).
+   * Errors caused by an expired session are not displayed to the user -
+   * they are directed to the login screen instead.
+   * Checked by showServerError() before displaying an error.
+   */
+  bool get suppressServerErrors =>
+      (_checkingSession || _loginRequired) && !_showingAuthError;
+
+  void _showAuthError(String title, String description) {
+    _showingAuthError = true;
+
+    try {
+      showServerError(_URL_ME, title, description);
+    } finally {
+      _showingAuthError = false;
+    }
+  }
+
+  /*
+   * Take the user to the login screen for the provided profile
+   * (unless it is already open)
+   */
+  void _requestLogin(UserProfile? prf) {
+    _loginRequired = true;
+
+    if (prf == null || _loginScreenOpen) {
+      return;
+    }
+
+    _loginScreenOpen = true;
+
+    debug("API : Opening login screen for '${prf.name}'");
+
+    if (hasContext()) {
+      OneContext()
+          .push(
+            MaterialPageRoute(builder: (context) => InvenTreeLoginWidget(prf)),
+          )
+          .then((_) => onLoginScreenClosed());
+    }
+  }
+
+  /*
+   * The login screen was closed (logged in, or dismissed by the user).
+   * If the user did not login, the next rejected request opens it again
+   */
+  @visibleForTesting
+  void onLoginScreenClosed() {
+    _loginScreenOpen = false;
+    _loginRequired = false;
+  }
+
+  /*
+   * Return true if a response for [uri] indicates that authentication failed
+   * (e.g. the session has expired, or was ended from the web interface).
    *
    * Responses from the allauth endpoints are excluded - these return 401
    * as part of normal operation (e.g. logout, pending login flows)
    */
-  bool _isSessionExpiry(Uri uri, int statusCode) {
-    if (statusCode != 401 || !_connected || _checkingSession) {
-      return false;
-    }
-
-    if (!session.isServerUri(uri)) {
+  bool _isUnauthorized(Uri uri, int statusCode) {
+    if (statusCode != 401 || !session.isServerUri(uri)) {
       return false;
     }
 
@@ -537,24 +588,44 @@ class InvenTreeAPI {
   }
 
   /*
-   * A request was rejected with 401 while connected.
-   * Confirm that the session is no longer valid (a single request could be
-   * rejected for other reasons), and if so, end the connection and take the
-   * user to the login screen.
+   * A request was rejected with 401.
+   *
+   * If connected, confirm that the session is no longer valid (a single request
+   * could be rejected for other reasons), and if so, end the connection and take
+   * the user to the login screen. If not connected (e.g. a screen which was open
+   * when the session expired), take the user to the login screen.
+   *
+   * Returns true if the failure has been handled, and should not be reported
+   * to the user as an error.
    */
-  Future<void> _handleUnauthorized(String url) async {
+  Future<bool> _handleUnauthorized(String url) async {
+    // The connection routine reports authentication problems itself
+    if (_connecting) {
+      return false;
+    }
+
+    // Another request is already checking the session
+    if (_checkingSession) {
+      return true;
+    }
+
+    if (!_connected) {
+      if (!_loginRequired) {
+        _requestLogin(profile);
+      }
+
+      return true;
+    }
+
     _checkingSession = true;
 
     try {
       final APIResponse response = await _checkAuth();
 
-      if (response.statusCode != 401) {
+      if (response.statusCode != 401 && response.statusCode != 403) {
         // Session is still valid (or the server could not be reached),
         // so report the original error as normal
-        if (response.statusCode == 200) {
-          showStatusCodeError(url, 401);
-        }
-        return;
+        return false;
       }
 
       debug("API : Session expired while connected");
@@ -566,9 +637,18 @@ class InvenTreeAPI {
       _notification_timer?.cancel();
       _notification_timer = null;
       _connectionStatusChanged();
+
+      return true;
     } finally {
       _checkingSession = false;
     }
+  }
+
+  // Mark a response which was rejected because the user must login again
+  // (so that it is not reported as an error - see reportModelError)
+  void _markLoginRequired(APIResponse response) {
+    response.error = "LoginRequired";
+    response.errorDetail = L10().sessionExpired;
   }
 
   /*
@@ -700,6 +780,7 @@ class InvenTreeAPI {
 
     _connected = false;
     _connecting = false;
+    _loginRequired = false;
     profile = null;
 
     // Drop the in-memory session (it remains in secure storage)
@@ -756,6 +837,8 @@ class InvenTreeAPI {
     _connecting = false;
 
     if (_connected) {
+      _loginScreenOpen = false;
+
       showSnackIcon(
         L10().serverConnected,
         icon: TablerIcons.server,
@@ -1040,6 +1123,10 @@ class InvenTreeAPI {
           hideLoadingOverlay();
           OpenFilex.open(local_path);
         }
+      } else if (_isUnauthorized(_uri, response.statusCode) &&
+          await _handleUnauthorized(url)) {
+        // User has been directed to login, rather than shown an error
+        hideLoadingOverlay();
       } else {
         showStatusCodeError(url, response.statusCode);
       }
@@ -1122,8 +1209,9 @@ class InvenTreeAPI {
 
       response.data = json.decode(jsondata);
 
-      if (_isSessionExpiry(uri, response.statusCode)) {
-        await _handleUnauthorized(url);
+      if (_isUnauthorized(uri, response.statusCode) &&
+          await _handleUnauthorized(url)) {
+        _markLoginRequired(response);
       }
 
       // Report a server-side error
@@ -1619,9 +1707,10 @@ class InvenTreeAPI {
             ? {}
             : await responseToJson(url, _response) ?? {};
 
-        if (_isSessionExpiry(request.uri, _response.statusCode)) {
-          // Reported by _handleUnauthorized, rather than as a status code error
-          await _handleUnauthorized(url);
+        if (_isUnauthorized(request.uri, _response.statusCode) &&
+            await _handleUnauthorized(url)) {
+          // User has been directed to login, rather than shown an error
+          _markLoginRequired(response);
         } else if (statusCode != null && statusCode != _response.statusCode) {
           // Check that the returned status code is what we expected
           showStatusCodeError(

@@ -244,6 +244,12 @@ Future<void> showErrorDialog(
   Color? color,
   Function? onDismissed,
 }) async {
+  // Server response rejected because the user must login again - see showServerError
+  if (response != null && InvenTreeAPI().suppressServerErrors) {
+    debug("showErrorDialog: suppressed '${title}'");
+    return;
+  }
+
   if (!hasContext()) {
     return;
   }
@@ -290,6 +296,13 @@ Future<void> showServerError(
   String title,
   String description,
 ) async {
+  // The user has been directed to login (e.g. session expired) - errors caused
+  // by the expired session are not displayed
+  if (InvenTreeAPI().suppressServerErrors) {
+    debug("showServerError: suppressed '${title}'");
+    return;
+  }
+
   debug("showServerError: '${title}'");
 
   if (!hasContext()) {

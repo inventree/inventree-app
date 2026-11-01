@@ -16,6 +16,8 @@ import "package:inventree/auth/auth_method.dart";
 import "package:inventree/auth/auth_result.dart";
 import "package:inventree/auth/session_store.dart";
 import "package:inventree/helpers.dart";
+import "package:inventree/inventree/part.dart";
+import "package:inventree/inventree/stock.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/managed_config.dart";
 import "package:inventree/user_profile.dart";
@@ -388,6 +390,122 @@ void main() {
       expect(logged("Opening login screen for '${profileName}'"), equals(true));
     });
 
+    int loginPrompts() =>
+        debug_messages.where((m) => m.contains("Opening login screen")).length;
+
+    // Errors displayed to the user, other than the "session expired" message
+    List<String> displayedErrors() => debug_messages
+        .where(
+          (m) =>
+              m.startsWith("showServerError: '") &&
+              !m.contains(L10().sessionExpired),
+        )
+        .toList();
+
+    test("Model requests redirect to login without errors", () async {
+      server.endAllSessions();
+
+      // As made by list views (paginator) and detail views
+      await Future.wait([
+        InvenTreePart().listPaginated(10, 0),
+        InvenTreePart().get(1),
+        InvenTreeStockItem().listPaginated(10, 0),
+      ]);
+
+      expect(api.isConnected(), equals(false));
+      expect(displayedErrors(), isEmpty);
+      expect(loginPrompts(), equals(1));
+
+      // Errors were suppressed (not just missing)
+      expect(logged("showServerError: suppressed"), equals(true));
+    });
+
+    test("Requests after expiry redirect to login without errors", () async {
+      server.endAllSessions();
+
+      await InvenTreePart().listPaginated(10, 0);
+      expect(api.isConnected(), equals(false));
+      expect(loginPrompts(), equals(1));
+
+      // Screens which are still open continue to make requests
+      await InvenTreePart().get(1);
+      await api.post("part/", body: {"name": "A"});
+
+      final File file = File(
+        "${Directory.systemTemp.path}/inventree-auth-upload.txt",
+      )..writeAsStringSync("test");
+
+      try {
+        await api.uploadFile("part/attachment/", file);
+      } finally {
+        file.deleteSync();
+      }
+
+      expect(displayedErrors(), isEmpty);
+
+      // The login screen is already open - it is not opened again
+      expect(loginPrompts(), equals(1));
+    });
+
+    test("Login screen dismissed - next request opens it again", () async {
+      server.endAllSessions();
+
+      await InvenTreePart().listPaginated(10, 0);
+      expect(loginPrompts(), equals(1));
+
+      // User leaves the login screen without logging in
+      api.onLoginScreenClosed();
+      expect(api.suppressServerErrors, equals(false));
+
+      // ... and continues to use a screen which is still open
+      await InvenTreePart().listPaginated(10, 0);
+
+      expect(loginPrompts(), equals(2));
+      expect(displayedErrors(), isEmpty);
+    });
+
+    test("Rejected requests are marked as handled", () async {
+      server.endAllSessions();
+
+      final response = await api.get("part/");
+
+      expect(response.statusCode, equals(401));
+      expect(response.errorDetail, isNotEmpty);
+    });
+
+    test("Download with an expired session", () async {
+      server.endAllSessions();
+
+      await api.downloadFile(
+        "${server.url}media/inventree-auth-expired.txt",
+        openOnDownload: false,
+      );
+
+      expect(api.isConnected(), equals(false));
+      expect(displayedErrors(), isEmpty);
+      expect(loginPrompts(), equals(1));
+    });
+
+    test("Errors are displayed again after login", () async {
+      server.endAllSessions();
+      await api.get("part/");
+      expect(api.isConnected(), equals(false));
+
+      await loginAndConnect(profile);
+      clearDebugMessage();
+
+      // An unrelated error is displayed as normal
+      server.once(
+        "GET",
+        "api/part/",
+        (_) => FakeResponse(400, body: {"detail": "Bad request"}),
+      );
+      await InvenTreePart().listPaginated(10, 0);
+
+      expect(displayedErrors(), isNotEmpty);
+      expect(loginPrompts(), equals(0));
+    });
+
     test("Concurrent requests check the session once", () async {
       final int before = userChecks();
 
@@ -411,11 +529,13 @@ void main() {
       final response = await api.get("part/", expectedStatusCode: null);
       expect(response.statusCode, equals(401));
 
-      // Session was checked, found to be valid, and the original error reported
+      // Session was checked and found to be valid - so the response is not
+      // treated as handled, and is reported by the caller as normal
       expect(userChecks(), equals(before + 1));
       expect(api.isConnected(), equals(true));
       expect((await stored(profile)).hasSession, equals(true));
-      expect(logged("showServerError: '${L10().response401}'"), equals(true));
+      expect(response.errorDetail, isEmpty);
+      expect(api.suppressServerErrors, equals(false));
       expect(logged("Opening login screen"), equals(false));
     });
 
