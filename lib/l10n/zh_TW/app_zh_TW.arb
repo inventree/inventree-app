@@ -444,6 +444,8 @@
   "@history": {
     "description": "history"
   },
+  "historyDetail": "Display change history (audit log) information",
+  "@historyDetail": {},
   "hold": "保留",
   "@hold": {},
   "holdOrder": "保留訂單",
@@ -1138,10 +1140,6 @@
   "@stockItemDeleteFailure": {},
   "stockItemDeleteSuccess": "庫存項已刪除",
   "@stockItemDeleteSuccess": {},
-  "stockItemHistory": "庫存歷史記錄",
-  "@stockItemHistory": {},
-  "stockItemHistoryDetail": "顯示歷史庫存追蹤信息",
-  "@stockItemHistoryDetail": {},
   "stockItemTransferred": "已轉移的庫存項",
   "@stockItemTransferred": {},
   "stockItemUpdated": "庫存項已更新",

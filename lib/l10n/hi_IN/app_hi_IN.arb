@@ -444,6 +444,8 @@
   "@history": {
     "description": "history"
   },
+  "historyDetail": "Display change history (audit log) information",
+  "@historyDetail": {},
   "hold": "Hold",
   "@hold": {},
   "holdOrder": "Hold Order",
@@ -1138,10 +1140,6 @@
   "@stockItemDeleteFailure": {},
   "stockItemDeleteSuccess": "Stock item deleted",
   "@stockItemDeleteSuccess": {},
-  "stockItemHistory": "Stock History",
-  "@stockItemHistory": {},
-  "stockItemHistoryDetail": "Display historical stock tracking information",
-  "@stockItemHistoryDetail": {},
   "stockItemTransferred": "Stock item transferred",
   "@stockItemTransferred": {},
   "stockItemUpdated": "Stock item updated",

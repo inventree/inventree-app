@@ -444,6 +444,8 @@
   "@history": {
     "description": "history"
   },
+  "historyDetail": "Display change history (audit log) information",
+  "@historyDetail": {},
   "hold": "Hold",
   "@hold": {},
   "holdOrder": "Hold Order",
@@ -1138,10 +1140,6 @@
   "@stockItemDeleteFailure": {},
   "stockItemDeleteSuccess": "Одиниця на складі видалена",
   "@stockItemDeleteSuccess": {},
-  "stockItemHistory": "Архів запасів",
-  "@stockItemHistory": {},
-  "stockItemHistoryDetail": "Відображення історичної інформації відстеження запасів",
-  "@stockItemHistoryDetail": {},
   "stockItemTransferred": "Одиницю на складі переміщено",
   "@stockItemTransferred": {},
   "stockItemUpdated": "Одиницю на складі оновлено",

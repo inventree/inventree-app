@@ -444,6 +444,8 @@
   "@history": {
     "description": "history"
   },
+  "historyDetail": "Display change history (audit log) information",
+  "@historyDetail": {},
   "hold": "Hold",
   "@hold": {},
   "holdOrder": "Hold Order",
@@ -1138,10 +1140,6 @@
   "@stockItemDeleteFailure": {},
   "stockItemDeleteSuccess": "פריט מלאי נמחק",
   "@stockItemDeleteSuccess": {},
-  "stockItemHistory": "היסטוריית מלאי",
-  "@stockItemHistory": {},
-  "stockItemHistoryDetail": "הצג מידע היסטורי על מעקב אחר מלאי",
-  "@stockItemHistoryDetail": {},
   "stockItemTransferred": "פריט המלאי הועבר",
   "@stockItemTransferred": {},
   "stockItemUpdated": "פריט המלאי עודכן",

@@ -444,6 +444,8 @@
   "@history": {
     "description": "history"
   },
+  "historyDetail": "Display change history (audit log) information",
+  "@historyDetail": {},
   "hold": "Posa en espera",
   "@hold": {},
   "holdOrder": "Posa la comanda en espera",
@@ -1138,10 +1140,6 @@
   "@stockItemDeleteFailure": {},
   "stockItemDeleteSuccess": "Article d'estoc suprimit",
   "@stockItemDeleteSuccess": {},
-  "stockItemHistory": "Historial d'estoc",
-  "@stockItemHistory": {},
-  "stockItemHistoryDetail": "Mostra l'historial de seguiment de l'estoc",
-  "@stockItemHistoryDetail": {},
   "stockItemTransferred": "Article d'estoc transferit",
   "@stockItemTransferred": {},
   "stockItemUpdated": "Article d'estoc actualitzat",

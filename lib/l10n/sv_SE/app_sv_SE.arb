@@ -444,6 +444,8 @@
   "@history": {
     "description": "history"
   },
+  "historyDetail": "Display change history (audit log) information",
+  "@historyDetail": {},
   "hold": "Hold",
   "@hold": {},
   "holdOrder": "Hold Order",
@@ -1138,10 +1140,6 @@
   "@stockItemDeleteFailure": {},
   "stockItemDeleteSuccess": "Lagerartikel borttagen",
   "@stockItemDeleteSuccess": {},
-  "stockItemHistory": "Lagerhistorik",
-  "@stockItemHistory": {},
-  "stockItemHistoryDetail": "Visa historisk lagerspårningsinformation",
-  "@stockItemHistoryDetail": {},
   "stockItemTransferred": "Lagerartikel överförd",
   "@stockItemTransferred": {},
   "stockItemUpdated": "Lagerartikel uppdaterad",

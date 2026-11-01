@@ -444,6 +444,8 @@
   "@history": {
     "description": "history"
   },
+  "historyDetail": "Display change history (audit log) information",
+  "@historyDetail": {},
   "hold": "Hold",
   "@hold": {},
   "holdOrder": "Hold Order",
@@ -1138,10 +1140,6 @@
   "@stockItemDeleteFailure": {},
   "stockItemDeleteSuccess": "在庫アイテムを削除しました",
   "@stockItemDeleteSuccess": {},
-  "stockItemHistory": "在庫履歴",
-  "@stockItemHistory": {},
-  "stockItemHistoryDetail": "過去の在庫追跡情報を表示",
-  "@stockItemHistoryDetail": {},
   "stockItemTransferred": "在庫アイテムが転送されました",
   "@stockItemTransferred": {},
   "stockItemUpdated": "在庫アイテムが更新されました",
