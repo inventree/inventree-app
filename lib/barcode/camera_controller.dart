@@ -16,6 +16,7 @@ import "package:inventree/l10.dart";
 
 import "package:inventree/barcode/handler.dart";
 import "package:inventree/barcode/controller.dart";
+import "package:inventree/barcode/eci.dart";
 
 /*
  * Barcode controller which uses the device's camera to scan barcodes.
@@ -128,7 +129,7 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
       });
     }
 
-    String barcode = result.barcodes.first.rawValue ?? "";
+    String barcode = scannedValue(result.barcodes.first);
 
     if (barcode.isEmpty) {
       // TODO: Error message "empty barcode"
@@ -154,6 +155,29 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
         scanned_code = "";
         multiple_barcodes = false;
       });
+    }
+  }
+
+  /*
+   * Text value of a scanned barcode.
+   * For 2D codes, an ECI character-set marker that the scanner left in the
+   * data is interpreted rather than passed on (see barcode/eci.dart).
+   */
+  String scannedValue(Barcode code) {
+    final decoded = switch (code.rawDecodedBytes) {
+      DecodedBarcodeBytes(:final bytes) => bytes,
+      DecodedVisionBarcodeBytes(:final bytes) => bytes,
+      null => null,
+    };
+
+    switch (code.format) {
+      case BarcodeFormat.dataMatrix:
+      case BarcodeFormat.qrCode:
+      case BarcodeFormat.aztec:
+      case BarcodeFormat.pdf417:
+        return decodeEciPrefixed(code.rawValue, decoded);
+      default:
+        return code.rawValue ?? "";
     }
   }
 
