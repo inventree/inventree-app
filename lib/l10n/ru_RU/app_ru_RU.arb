@@ -444,6 +444,8 @@
   "@history": {
     "description": "history"
   },
+  "historyDetail": "Display change history (audit log) information",
+  "@historyDetail": {},
   "hold": "Приостановить",
   "@hold": {},
   "holdOrder": "Приостановить заказ",
@@ -1138,10 +1140,6 @@
   "@stockItemDeleteFailure": {},
   "stockItemDeleteSuccess": "Складская позиция удалена",
   "@stockItemDeleteSuccess": {},
-  "stockItemHistory": "История запасов",
-  "@stockItemHistory": {},
-  "stockItemHistoryDetail": "Отображать историческую информацию о складском учете",
-  "@stockItemHistoryDetail": {},
   "stockItemTransferred": "Складская позиция перемещена",
   "@stockItemTransferred": {},
   "stockItemUpdated": "Складская позиция устарела",

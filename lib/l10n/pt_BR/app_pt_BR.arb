@@ -444,6 +444,8 @@
   "@history": {
     "description": "history"
   },
+  "historyDetail": "Exibir informações do histórico de alterações (log de auditoria)",
+  "@historyDetail": {},
   "hold": "Em espera",
   "@hold": {},
   "holdOrder": "Reter pedido",
@@ -1138,10 +1140,6 @@
   "@stockItemDeleteFailure": {},
   "stockItemDeleteSuccess": "Item de estoque excluído",
   "@stockItemDeleteSuccess": {},
-  "stockItemHistory": "Histórico de estoque",
-  "@stockItemHistory": {},
-  "stockItemHistoryDetail": "Exibir informações históricas de rastreamento de estoque",
-  "@stockItemHistoryDetail": {},
   "stockItemTransferred": "Item de estoque transferido",
   "@stockItemTransferred": {},
   "stockItemUpdated": "Item de estoque atualizado",

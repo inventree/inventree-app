@@ -444,6 +444,8 @@
   "@history": {
     "description": "history"
   },
+  "historyDetail": "Display change history (audit log) information",
+  "@historyDetail": {},
   "hold": "持有",
   "@hold": {},
   "holdOrder": "持有订单",
@@ -1138,10 +1140,6 @@
   "@stockItemDeleteFailure": {},
   "stockItemDeleteSuccess": "库存项已删除",
   "@stockItemDeleteSuccess": {},
-  "stockItemHistory": "库存历史记录",
-  "@stockItemHistory": {},
-  "stockItemHistoryDetail": "显示历史库存追踪信息",
-  "@stockItemHistoryDetail": {},
   "stockItemTransferred": "已转移的库存项",
   "@stockItemTransferred": {},
   "stockItemUpdated": "库存项已更新",

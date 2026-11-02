@@ -444,6 +444,8 @@
   "@history": {
     "description": "history"
   },
+  "historyDetail": "Display change history (audit log) information",
+  "@historyDetail": {},
   "hold": "보류",
   "@hold": {},
   "holdOrder": "주문 보류",
@@ -1138,10 +1140,6 @@
   "@stockItemDeleteFailure": {},
   "stockItemDeleteSuccess": "재고 품목이 삭제되었습니다",
   "@stockItemDeleteSuccess": {},
-  "stockItemHistory": "재고 이력",
-  "@stockItemHistory": {},
-  "stockItemHistoryDetail": "과거 재고 추적 정보 표시",
-  "@stockItemHistoryDetail": {},
   "stockItemTransferred": "재고 품목이 이동되었습니다",
   "@stockItemTransferred": {},
   "stockItemUpdated": "재고 품목이 업데이트되었습니다",

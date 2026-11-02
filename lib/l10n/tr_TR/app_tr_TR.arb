@@ -444,6 +444,8 @@
   "@history": {
     "description": "history"
   },
+  "historyDetail": "Display change history (audit log) information",
+  "@historyDetail": {},
   "hold": "Beklet",
   "@hold": {},
   "holdOrder": "Emri Beklet",
@@ -1138,10 +1140,6 @@
   "@stockItemDeleteFailure": {},
   "stockItemDeleteSuccess": "Stok kalemi silindi",
   "@stockItemDeleteSuccess": {},
-  "stockItemHistory": "Stok Geçmişi",
-  "@stockItemHistory": {},
-  "stockItemHistoryDetail": "Geçmiş stok takip bilgisini görüntüle",
-  "@stockItemHistoryDetail": {},
   "stockItemTransferred": "Stok kalemi aktarıldı",
   "@stockItemTransferred": {},
   "stockItemUpdated": "Stok kalemi güncellendi",

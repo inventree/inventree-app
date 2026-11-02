@@ -444,6 +444,8 @@
   "@history": {
     "description": "history"
   },
+  "historyDetail": "Display change history (audit log) information",
+  "@historyDetail": {},
   "hold": "Vasthouden",
   "@hold": {},
   "holdOrder": "Bestelling vasthouden",
@@ -1138,10 +1140,6 @@
   "@stockItemDeleteFailure": {},
   "stockItemDeleteSuccess": "Voorraadartikel verwijderd",
   "@stockItemDeleteSuccess": {},
-  "stockItemHistory": "Voorraad Geschiedenis",
-  "@stockItemHistory": {},
-  "stockItemHistoryDetail": "Toon historische voorraad tracking informatie",
-  "@stockItemHistoryDetail": {},
   "stockItemTransferred": "Voorraadartikel verplaatst",
   "@stockItemTransferred": {},
   "stockItemUpdated": "Voorraadartikel bijgewerkt",
