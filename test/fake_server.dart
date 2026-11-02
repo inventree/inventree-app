@@ -99,6 +99,12 @@ class FakeInvenTreeServer {
   // TOTP code accepted for MFA users
   String validCode = "123456";
 
+  // Authenticator types offered in the pending MFA flow
+  List<String> mfaTypes = ["totp", "recovery_codes"];
+
+  // After a valid MFA code, ask whether to trust the device (mfa_trust flow)
+  bool offerTrust = false;
+
   // Login methods reported by auth/v1/config
   List<String> loginMethods = ["username"];
 
@@ -110,6 +116,9 @@ class FakeInvenTreeServer {
 
   // Partially authenticated sessions, waiting for an MFA code
   final Map<String, String> _pending = {};
+
+  // Pending sessions which have entered a valid code, waiting for mfa_trust
+  final Set<String> _trustPending = {};
 
   int _counter = 0;
 
@@ -226,17 +235,17 @@ class FakeInvenTreeServer {
     "meta": {"is_authenticated": true},
   };
 
-  Map<String, dynamic> _flows({bool mfaPending = false}) => {
+  Map<String, dynamic> _flows({
+    bool mfaPending = false,
+    bool trustPending = false,
+  }) => {
     "status": 401,
     "data": {
       "flows": [
         {"id": "login"},
         if (mfaPending)
-          {
-            "id": "mfa_authenticate",
-            "is_pending": true,
-            "types": ["totp", "recovery_codes"],
-          },
+          {"id": "mfa_authenticate", "is_pending": true, "types": mfaTypes},
+        if (trustPending) {"id": "mfa_trust", "is_pending": true},
       ],
     },
     "meta": {"is_authenticated": false},
@@ -370,9 +379,22 @@ class FakeInvenTreeServer {
           );
         }
 
+        if (offerTrust) {
+          _trustPending.add(request.cookies["sessionid"]!);
+          return FakeResponse(401, body: _flows(trustPending: true));
+        }
+
         _pending.remove(request.cookies["sessionid"]);
 
         return _login(pendingUser);
+      case "POST /api/auth/v1/auth/2fa/trust":
+        final String sessionId = request.cookies["sessionid"] ?? "";
+
+        if (!_trustPending.remove(sessionId)) {
+          return FakeResponse(409, body: {"status": 409});
+        }
+
+        return _login(_pending.remove(sessionId)!);
       case "GET /api/user/me/":
         if (user == null) {
           return _unauthenticated();

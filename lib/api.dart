@@ -559,14 +559,22 @@ class InvenTreeAPI {
 
     debug("API : Opening login screen for '${prf.name}'");
 
-    if (hasContext()) {
-      OneContext()
-          .push(
-            MaterialPageRoute(builder: (context) => InvenTreeLoginWidget(prf)),
-          )
-          .then((_) => onLoginScreenClosed());
+    final route = MaterialPageRoute<void>(
+      builder: (context) => InvenTreeLoginWidget(prf),
+    );
+
+    final NavigatorState? navigator = testNavigatorKey?.currentState;
+
+    if (navigator != null) {
+      navigator.push(route).then((_) => onLoginScreenClosed());
+    } else if (hasContext()) {
+      OneContext().push(route).then((_) => onLoginScreenClosed());
     }
   }
+
+  // Navigator for the login screen in widget tests (which have no OneContext)
+  @visibleForTesting
+  GlobalKey<NavigatorState>? testNavigatorKey;
 
   /*
    * The login screen was closed (logged in, or dismissed by the user).
