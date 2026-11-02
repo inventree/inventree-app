@@ -8,6 +8,7 @@
 - Expired sessions now return the user to the login screen
 - Credentials are removed from error reports
 - Requires InvenTree server API version 314 or newer - existing users must log in again
+- Updated translations
 
 ## 0.26.0 - October 2026
 ---
