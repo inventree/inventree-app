@@ -17,6 +17,7 @@ import "package:inventree/dsn.dart";
 
 import "package:inventree/managed_config.dart";
 import "package:inventree/preferences.dart";
+import "package:inventree/inventree/redact.dart";
 import "package:inventree/inventree/sentry.dart";
 import "package:inventree/l10n/supported_locales.dart";
 import "package:inventree/l10n/collected/app_localizations.dart";
@@ -45,6 +46,9 @@ Future<void> main() async {
           options.environment = isInDebugMode() ? "debug" : "release";
           options.diagnosticLevel = SentryLevel.debug;
           options.attachStacktrace = true;
+
+          // Never send credentials (cookies, tokens, passwords) with error reports
+          configureSentryPrivacy(options);
         });
       }
 
@@ -163,6 +167,12 @@ class InvenTreeAppState extends State<StatefulWidget> {
     if (!kIsWeb && Platform.isAndroid) {
       initGlobalIntentListener();
     }
+
+    // Remove API tokens stored by earlier (token authentication) versions of the app
+    await UserProfileDBManager().migrateLegacyTokens();
+
+    // Discard stored sessions which no longer belong to a profile (e.g. after a reinstall)
+    await UserProfileDBManager().removeOrphanedSessions();
 
     // First-run only: seed a demo server profile if none are configured
     await UserProfileDBManager().seedDemoProfileIfNeeded();

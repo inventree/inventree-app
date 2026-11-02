@@ -25,7 +25,9 @@
 
     <application
         android:label="InvenTree"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:fullBackupContent="@xml/backup_rules"
+        android:dataExtractionRules="@xml/data_extraction_rules">
 
         <uses-library
             android:name="com.datalogic.device"

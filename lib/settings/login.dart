@@ -2,11 +2,71 @@ import "package:flutter/material.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/app_colors.dart";
+import "package:inventree/auth/auth_manager.dart";
+import "package:inventree/auth/auth_method.dart";
+import "package:inventree/auth/auth_result.dart";
+import "package:inventree/settings/login_mfa.dart";
 import "package:inventree/user_profile.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/api.dart";
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/progress.dart";
+
+/*
+ * Act on the result of an authentication step (login, MFA, etc).
+ * Shared between the login and MFA screens.
+ *
+ * - Authenticated: connect to the server and return to the home screen
+ * - MFA required: open the MFA screen
+ * - Otherwise: report the error via [onError]
+ */
+Future<void> handleAuthResult(
+  BuildContext context,
+  UserProfile profile,
+  AuthResult result,
+  void Function(String) onError,
+) async {
+  switch (result.status) {
+    case AuthStatus.authenticated:
+      // Connect using the new session, then return directly to the home screen
+      await InvenTreeAPI().connectToServer(profile);
+
+      hideLoadingOverlay();
+
+      if (context.mounted) {
+        Navigator.of(context).popUntil((route) => route.isFirst);
+      }
+    case AuthStatus.flowPending:
+      hideLoadingOverlay();
+
+      final AuthFlow flow = result.pendingFlow!;
+
+      if (flow.isSupportedMfa) {
+        if (context.mounted) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => InvenTreeMfaWidget(profile, flow),
+            ),
+          );
+        }
+      } else if (flow.id == FLOW_MFA_AUTHENTICATE) {
+        onError(L10().mfaUnsupported);
+      } else {
+        onError("${L10().authFlowUnsupported} (${flow.id})");
+      }
+    case AuthStatus.failed:
+      hideLoadingOverlay();
+
+      String err = result.errorMessage;
+
+      if (err.isEmpty && result.statusCode >= 0) {
+        err = statusCodeToString(result.statusCode);
+      }
+
+      onError(err);
+  }
+}
 
 class InvenTreeLoginWidget extends StatefulWidget {
   const InvenTreeLoginWidget(this.profile) : super();
@@ -44,41 +104,27 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
 
       showLoadingOverlay();
 
-      // Attempt login - suppress the generic error dialog, since this screen
-      // shows its own contextual inline error message below
-      final response = await InvenTreeAPI().fetchToken(
+      setState(() {
+        error = "";
+      });
+
+      final AuthResult result = await InvenTreeAuth().beginLogin(
         widget.profile,
-        username,
-        password,
-        showDialog: false,
+        PasswordAuthMethod(username, password),
       );
 
-      if (response.successful()) {
-        // A token was issued - immediately connect using it, then return
-        // directly to the home screen (rather than leaving the user on the
-        // server-selector screen to navigate back manually)
-        await InvenTreeAPI().connectToServer(widget.profile);
-
+      if (!context.mounted) {
         hideLoadingOverlay();
-
-        if (context.mounted) {
-          Navigator.of(context).popUntil((route) => route.isFirst);
-        }
-      } else {
-        hideLoadingOverlay();
-        var data = response.asMap();
-
-        String err;
-
-        if (data.containsKey("detail")) {
-          err = (data["detail"] ?? "") as String;
-        } else {
-          err = statusCodeToString(response.statusCode);
-        }
-        setState(() {
-          error = err;
-        });
+        return;
       }
+
+      await handleAuthResult(context, widget.profile, result, (String err) {
+        if (mounted) {
+          setState(() {
+            error = err;
+          });
+        }
+      });
     }
   }
 
@@ -95,6 +141,15 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
         subtitle: Text(widget.profile.server),
         leading: Icon(TablerIcons.server),
       ),
+      if (Uri.tryParse(widget.profile.server)?.scheme == "http")
+        ListTile(
+          title: Text(
+            L10().insecureConnection,
+            style: TextStyle(color: COLOR_WARNING),
+          ),
+          subtitle: Text(L10().insecureConnectionDetail),
+          leading: Icon(TablerIcons.lock_open, color: COLOR_WARNING),
+        ),
       Divider(),
     ];
 
@@ -111,17 +166,7 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
       );
     }
     return Scaffold(
-      appBar: AppBar(
-        title: Text(L10().login),
-        actions: [
-          IconButton(
-            icon: Icon(TablerIcons.transition_right, color: COLOR_SUCCESS),
-            onPressed: () async {
-              _doLogin(context);
-            },
-          ),
-        ],
-      ),
+      appBar: AppBar(title: Text(L10().login)),
       body: Form(
         key: formKey,
         child: SingleChildScrollView(
@@ -137,8 +182,11 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
                   labelStyle: TextStyle(fontWeight: FontWeight.bold),
                   hintText: L10().enterUsername,
                 ),
-                initialValue: "",
+                initialValue: widget.profile.username,
+                autofocus: widget.profile.username.isEmpty,
+                autocorrect: false,
                 keyboardType: TextInputType.text,
+                autofillHints: [AutofillHints.username],
                 onSaved: (value) {
                   username = value?.trim() ?? "";
                 },
@@ -167,18 +215,42 @@ class _InvenTreeLoginState extends State<InvenTreeLoginWidget> {
                   ),
                 ),
                 initialValue: "",
+                autofocus: widget.profile.username.isNotEmpty,
                 keyboardType: TextInputType.visiblePassword,
+                autofillHints: [AutofillHints.password],
                 obscureText: _obscured,
+                textInputAction: TextInputAction.done,
+                onFieldSubmitted: (value) {
+                  _doLogin(context);
+                },
                 onSaved: (value) {
-                  password = value?.trim() ?? "";
+                  // Do not trim - whitespace is a valid password character
+                  password = value ?? "";
                 },
                 validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
+                  if (value == null || value.isEmpty) {
                     return L10().passwordEmpty;
                   }
 
                   return null;
                 },
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(52),
+                    backgroundColor: COLOR_SUCCESS,
+                    foregroundColor: Colors.black87,
+                    textStyle: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  icon: Icon(TablerIcons.login),
+                  label: Text(L10().login),
+                  onPressed: () async {
+                    _doLogin(context);
+                  },
+                ),
               ),
               ...after,
             ],

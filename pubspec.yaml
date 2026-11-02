@@ -1,7 +1,7 @@
 name: inventree
 description: InvenTree stock management
 
-version: 0.26.0+127
+version: 1.0.0+128
 
 environment:
   sdk: ^3.8.1
@@ -49,6 +49,7 @@ dependencies:
   wakelock_plus: ^1.3.2                   # Prevent device from sleeping
 
 dev_dependencies:
+  crypto: ^3.0.8
   flutter_launcher_icons: ^0.14.1
   flutter_test:
     sdk: flutter

@@ -110,7 +110,7 @@ class _NoteWidgetFactory extends WidgetFactory {
 
     return CachedNetworkImageProvider(
       url,
-      headers: InvenTreeAPI().defaultHeaders(),
+      headers: InvenTreeAPI().defaultHeaders(url: url),
       cacheManager: InvenTreeAPI().imageCacheManager,
     );
   }

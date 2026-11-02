@@ -8,6 +8,7 @@ import "package:inventree/app_colors.dart";
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/api.dart";
+import "package:inventree/auth/auth_manager.dart";
 import "package:inventree/user_profile.dart";
 
 class InvenTreeSelectServerWidget extends StatefulWidget {
@@ -36,20 +37,25 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
   }
 
   /*
-   * Logout the selected profile (delete the stored token)
+   * Logout the selected profile (end the session, and delete the stored cookies)
    */
   Future<void> _logoutProfile(
     BuildContext context, {
     UserProfile? userProfile,
   }) async {
     if (userProfile != null) {
-      userProfile.token = "";
-      await UserProfileDBManager().updateProfile(userProfile);
-
-      _reload();
+      // The stored session could not be removed - the profile may still be logged in
+      if (!await InvenTreeAuth().logout(userProfile)) {
+        showErrorDialog(
+          L10().sessionRemoveFailed,
+          description: L10().sessionRemoveFailedDetail,
+          icon: TablerIcons.lock_exclamation,
+        );
+      }
+    } else {
+      InvenTreeAPI().disconnectFromServer();
     }
 
-    InvenTreeAPI().disconnectFromServer();
     _reload();
   }
 
@@ -114,8 +120,8 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
       return;
     }
 
-    // First check if the profile has an associate token
-    if (!prf.hasToken) {
+    // First check if the profile has a stored session
+    if (!prf.hasSession) {
       // Redirect user to the login screen - it connects on success itself
       await Navigator.push(
         context,
@@ -130,7 +136,7 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
       return;
     }
 
-    // Attempt server connection using the existing token
+    // Attempt server connection using the existing session
     await InvenTreeAPI().connectToServer(prf);
 
     _reload();
@@ -259,7 +265,7 @@ class _InvenTreeSelectServerState extends State<InvenTreeSelectServerWidget> {
                 ? Theme.of(context).secondaryHeaderColor
                 : null,
             subtitle: Text("${profile.server}"),
-            leading: profile.hasToken
+            leading: profile.hasSession
                 ? Icon(TablerIcons.user_check, color: COLOR_SUCCESS)
                 : Icon(TablerIcons.user_cancel, color: COLOR_WARNING),
             trailing: Row(

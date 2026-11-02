@@ -1,4 +1,4 @@
-# Test files share a single server account, and each requests an API token
-# with the same name - which revokes any token previously issued under that name.
-# Run test files sequentially to prevent them invalidating each other's tokens
+# Test files share a single server account, and a single on-disk preferences
+# database (path_provider is mocked to the working directory).
+# Run test files sequentially to prevent them interfering with each other
 concurrency: 1
