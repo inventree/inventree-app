@@ -40,7 +40,11 @@ Map<String, dynamic> extractFields(APIResponse response) {
 
   var actions = response.data["actions"] as Map<String, dynamic>;
 
-  dynamic result = actions["POST"] ?? actions["PUT"] ?? actions["PATCH"] ?? {};
+  dynamic result =
+      actions["POST"] ??
+      actions["PUT"] ??
+      actions["PATCH"] ??
+      <String, dynamic>{};
 
   return result as Map<String, dynamic>;
 }
