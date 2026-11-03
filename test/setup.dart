@@ -1,3 +1,5 @@
+import "dart:io";
+
 import "package:flutter/services.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:package_info_plus/package_info_plus.dart";
@@ -17,6 +19,20 @@ class CustomBinding extends AutomatedTestWidgetsFlutterBinding {
 // to test handling of storage errors
 final Set<String> secureStorageFailures = {};
 
+// Directory for temporary and cache files (see setupTestEnv)
+late String testTempDirectory;
+
+/*
+ * Use a new (empty) directory for temporary and cache files.
+ * Note: The image cache does not reliably save its index within a widget test,
+ *       so tests which display images should use a new directory each time.
+ */
+void useNewTempDirectory() {
+  testTempDirectory = Directory.systemTemp
+      .createTempSync("inventree_test_")
+      .path;
+}
+
 void setupTestEnv() {
   // Uses custom binding to not override the http client
   CustomBinding();
@@ -31,12 +47,23 @@ void setupTestEnv() {
   );
 
   // Mock the path provider
+  // Documents (e.g. the preferences database) are stored in the working directory,
+  // while temporary and cache files (e.g. downloaded images) go to a temporary directory
+  useNewTempDirectory();
+
   const MethodChannel channel = MethodChannel(
     "plugins.flutter.io/path_provider",
   );
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       .setMockMethodCallHandler(channel, (MethodCall methodCall) async {
-        return ".";
+        switch (methodCall.method) {
+          case "getTemporaryDirectory":
+          case "getApplicationSupportDirectory":
+          case "getApplicationCacheDirectory":
+            return testTempDirectory;
+          default:
+            return ".";
+        }
       });
 
   // Mock secure storage (used for storing profile session cookies) with a

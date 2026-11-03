@@ -2,22 +2,16 @@
  * Widget tests for the settings screens.
  *
  * Settings and profiles are stored in the on-disk preferences database,
- * so database operations are waited on with settle() (see below)
+ * so database operations are waited on with settle() (see harness.dart)
  */
 
-import "package:adaptive_theme/adaptive_theme.dart";
 import "package:flutter/material.dart";
-import "package:flutter/services.dart";
-import "package:flutter_localizations/flutter_localizations.dart";
-import "package:flutter_localized_locales/flutter_localized_locales.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:one_context/one_context.dart";
 import "package:package_info_plus/package_info_plus.dart";
 
 import "package:inventree/l10.dart";
-import "package:inventree/l10n/collected/app_localizations.dart";
-import "package:inventree/l10n/supported_locales.dart";
 import "package:inventree/preferences.dart";
 import "package:inventree/settings/about.dart";
 import "package:inventree/settings/app_settings.dart";
@@ -34,105 +28,13 @@ import "package:inventree/user_profile.dart";
 
 import "../fake_server.dart";
 import "../setup.dart";
+import "harness.dart";
 
 const String profileName = "Settings Widget Test";
 
 UserProfileDBManager get manager => UserProfileDBManager();
 
 InvenTreeSettingsManager get settings => InvenTreeSettingsManager();
-
-/*
- * Show [screen] within an app which matches the real app setup
- */
-Future<void> pumpScreen(WidgetTester tester, Widget screen) async {
-  // Tall enough to show every setting without scrolling
-  tester.view.physicalSize = const Size(800, 2400);
-  tester.view.devicePixelRatio = 1.0;
-  addTearDown(tester.view.reset);
-
-  await tester.pumpWidget(
-    AdaptiveTheme(
-      light: ThemeData.light(),
-      dark: ThemeData.dark(),
-      initial: AdaptiveThemeMode.light,
-      builder: (light, dark) => MaterialApp(
-        theme: light,
-        darkTheme: dark,
-        builder: OneContext().builder,
-        navigatorKey: OneContext().key,
-        localizationsDelegates: [
-          I18N.delegate,
-          LocaleNamesLocalizationsDelegate(),
-          GlobalMaterialLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-        ],
-        supportedLocales: supported_locales,
-        home: screen,
-      ),
-    ),
-  );
-
-  // Localizations are loaded asynchronously, before the screen is built
-  await waitUntil(tester, () => find.byWidget(screen).evaluate().isNotEmpty);
-}
-
-/*
- * Allow both real async operations (e.g. file and network access)
- * and fake time (e.g. timers, animations) to progress,
- * then rebuild the widget tree.
- *
- * Note: Database operations must be started in the test (fake async) zone,
- * as the preferences database uses short timers between operations.
- * Waiting on them inside tester.runAsync() would block forever.
- */
-Future<void> step(WidgetTester tester) async {
-  await tester.runAsync(
-    () => Future<void>.delayed(const Duration(milliseconds: 5)),
-  );
-  await tester.pump(const Duration(milliseconds: 10));
-}
-
-// Wait until [done] returns true
-Future<void> waitUntil(
-  WidgetTester tester,
-  bool Function() done, {
-  String? reason,
-}) async {
-  final Stopwatch timer = Stopwatch()..start();
-
-  while (!done() && timer.elapsed < const Duration(seconds: 10)) {
-    await step(tester);
-  }
-
-  expect(done(), isTrue, reason: reason);
-}
-
-// Wait for [future] (started in the test zone) to complete
-Future<T> settle<T>(WidgetTester tester, Future<T> future) async {
-  bool complete = false;
-  T? value;
-  Object? error;
-
-  future.then(
-    (T result) {
-      value = result;
-      complete = true;
-    },
-    onError: (Object e) {
-      error = e;
-      complete = true;
-    },
-  );
-
-  await waitUntil(tester, () => complete);
-
-  if (error != null) {
-    throw error!;
-  }
-
-  return value as T;
-}
 
 // Wait until the stored value for [key] matches [expected]
 Future<void> waitForSetting(
@@ -225,41 +127,6 @@ Future<void> checkSwitchSettings(
   }
 
   await removeSettings(tester, switches.map((s) => s.key));
-}
-
-// In-memory shared preferences (used by AdaptiveTheme to store the theme mode)
-final Map<String, Object> sharedPreferences = {};
-
-void mockSharedPreferences() {
-  const MethodChannel channel = MethodChannel(
-    "plugins.flutter.io/shared_preferences",
-  );
-
-  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-      .setMockMethodCallHandler(channel, (MethodCall call) async {
-        final Map<dynamic, dynamic> args =
-            (call.arguments as Map<dynamic, dynamic>?) ?? {};
-
-        switch (call.method) {
-          case "getAll":
-            return sharedPreferences;
-          case "remove":
-            sharedPreferences.remove(args["key"]);
-            return true;
-          case "clear":
-            sharedPreferences.clear();
-            return true;
-          default:
-            // setBool, setString, setInt, etc
-            if (call.method.startsWith("set")) {
-              sharedPreferences[args["key"] as String] =
-                  args["value"] as Object;
-              return true;
-            }
-
-            return null;
-        }
-      });
 }
 
 void main() {

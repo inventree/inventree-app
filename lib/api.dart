@@ -833,6 +833,9 @@ class InvenTreeAPI {
     _loginRequired = false;
     profile = null;
 
+    _notification_timer?.cancel();
+    _notification_timer = null;
+
     // Drop the in-memory session (it remains in secure storage)
     session.onChanged = null;
     session = SessionStore();
