@@ -42,7 +42,7 @@ class APIResponse {
     this.method = "",
     this.statusCode = -1,
     this.error = "",
-    this.data = const {},
+    this.data = const <String, dynamic>{},
   });
 
   int statusCode = -1;
@@ -1816,6 +1816,8 @@ class InvenTreeAPI {
       debug("CertificateException at ${request.uri.toString()}:");
       debug(error.toString());
       showServerError(url, L10().serverCertificateError, error.toString());
+      response.error = "CertificateException";
+      response.errorDetail = error.toString();
     } on TimeoutException {
       showTimeoutError(url);
       response.error = "TimeoutException";
