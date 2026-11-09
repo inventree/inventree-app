@@ -19,7 +19,11 @@ void main() {
 
     // Check debug output
     debugContains("scanned: abc");
-    debugContains("No match for barcode");
-    debugContains("Server Error");
+    debugContains("Scanned barcode data: 'abc'");
+
+    // No server is available, so the API layer reports the failure,
+    // and the handler exits early (rather than treating it as an unknown barcode)
+    debugContains("showServerError");
+    expect(debugContains("No match for barcode", raiseAssert: false), isFalse);
   });
 }
