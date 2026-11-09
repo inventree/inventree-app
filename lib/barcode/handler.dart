@@ -99,8 +99,16 @@ class BarcodeHandler {
 
     Map<String, dynamic> data = response.asMap();
 
+    // No usable response (connection failure, timeout, certificate error,
+    // or a 5xx server error). The API layer has already shown an error
+    // to the user, and reported any unexpected server errors to sentry.
+    if (!response.isValid()) {
+      barcodeFailureTone();
+      return;
+    }
+
     // Handle strange response from the server
-    if (!response.isValid() || !response.isMap()) {
+    if (!response.isMap()) {
       await onBarcodeUnknown({});
 
       showSnackIcon(L10().serverError, success: false);

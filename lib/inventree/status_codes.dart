@@ -50,11 +50,17 @@ class InvenTreeStatusCode {
 
     APIResponse response = await InvenTreeAPI().get(URL);
 
-    if (response.statusCode == 200) {
-      Map<String, dynamic> results = response.data as Map<String, dynamic>;
+    // Note: the request may be interrupted (e.g. by a disconnect) after the
+    // status code is received, so the response data must be type-checked
+    if (response.statusCode == 200 && response.error.isEmpty) {
+      final dynamic results = response.data;
 
-      if (results.containsKey("values")) {
-        data = results["values"] as Map<String, dynamic>;
+      if (results is Map<String, dynamic>) {
+        final dynamic values = results["values"];
+
+        if (values is Map<String, dynamic>) {
+          data = values;
+        }
       }
     }
   }
