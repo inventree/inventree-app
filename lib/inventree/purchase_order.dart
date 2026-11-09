@@ -95,18 +95,19 @@ class InvenTreePurchaseOrder extends InvenTreeOrder {
 
   int get destinationId => getInt("destination");
 
-  bool get isOpen => api.PurchaseOrderStatus.isNameIn(status, [
+  bool get isOpen => api.PurchaseOrderStatus.isNameIn(logicalStatus, [
     "PENDING",
     "PLACED",
     "ON_HOLD",
   ]);
 
   bool get isPending =>
-      api.PurchaseOrderStatus.isNameIn(status, ["PENDING", "ON_HOLD"]);
+      api.PurchaseOrderStatus.isNameIn(logicalStatus, ["PENDING", "ON_HOLD"]);
 
-  bool get isPlaced => api.PurchaseOrderStatus.isNameIn(status, ["PLACED"]);
+  bool get isPlaced =>
+      api.PurchaseOrderStatus.isNameIn(logicalStatus, ["PLACED"]);
 
-  bool get isFailed => api.PurchaseOrderStatus.isNameIn(status, [
+  bool get isFailed => api.PurchaseOrderStatus.isNameIn(logicalStatus, [
     "CANCELLED",
     "LOST",
     "RETURNED",

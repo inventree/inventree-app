@@ -340,6 +340,9 @@ class InvenTreeModel {
 
   // Return the effective status of this object
   // If a custom status is defined, return that, otherwise return the logical status
+  // Note: Use this for *display* (label / color) only.
+  // Business logic must check against logicalStatus, as custom states have
+  // user-defined names which do not match the built-in status names.
   int get status {
     if (customStatus > 0) {
       return customStatus;

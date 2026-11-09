@@ -10,8 +10,8 @@ import "package:inventree/inventree/build.dart";
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/inventree/sales_order.dart";
+import "package:inventree/inventree/status_codes.dart";
 import "package:inventree/inventree/transfer_order.dart";
-import "package:inventree/l10.dart";
 
 // Construct status code data in the format provided by the server
 Map<String, dynamic> statusData(Map<String, int> codes) {
@@ -19,6 +19,20 @@ Map<String, dynamic> statusData(Map<String, int> codes) {
     (name, key) =>
         MapEntry(name, {"key": key, "name": name, "label": name.toLowerCase()}),
   );
+}
+
+// Add a user-defined custom state to the provided status codes,
+// in the format provided by the server.
+// Custom states have their own key and name, and map to a logical key
+void addCustomState(InvenTreeStatusCode codes, int key, int logicalKey) {
+  codes.data["CUSTOM_${key}"] = {
+    "key": key,
+    "logical_key": logicalKey,
+    "name": "CUSTOM_${key}",
+    "label": "Custom ${key}",
+    "color": "info",
+    "custom": true,
+  };
 }
 
 void main() {
@@ -45,6 +59,14 @@ void main() {
       "PENDING": 10,
       "IN_PROGRESS": 15,
       "SHIPPED": 20,
+      "ON_HOLD": 25,
+      "COMPLETE": 30,
+      "CANCELLED": 40,
+    });
+
+    InvenTreeAPI().TransferOrderStatus.data = statusData({
+      "PENDING": 10,
+      "ISSUED": 20,
       "ON_HOLD": 25,
       "COMPLETE": 30,
       "CANCELLED": 40,
@@ -138,6 +160,27 @@ void main() {
       expect(cancelled.canIssue, isFalse);
     });
 
+    // Regression: a custom state must not hide the actions for its logical state
+    test("Custom Status", () async {
+      addCustomState(InvenTreeAPI().BuildOrderStatus, 101, 20);
+
+      final build = InvenTreeBuildOrder.fromJson({
+        "status": 20,
+        "status_custom_key": 101,
+        "output_count": 1,
+      });
+
+      expect(build.status, equals(101));
+      expect(build.logicalStatus, equals(20));
+      expect(build.isInProgress, isTrue);
+      expect(build.canHold, isTrue);
+      expect(build.canCancel, isTrue);
+      expect(build.canCompleteOrder, isTrue);
+
+      // Display uses the custom state
+      expect(InvenTreeAPI().BuildOrderStatus.label(build.status), "Custom 101");
+    });
+
     test("Build Line", () async {
       var line = InvenTreeBuildLine.fromJson({
         "quantity": 10,
@@ -204,6 +247,29 @@ void main() {
       }
     });
 
+    // Regression: a custom state must not hide the actions for its logical state
+    test("Custom Status", () async {
+      addCustomState(InvenTreeAPI().PurchaseOrderStatus, 101, 10);
+      addCustomState(InvenTreeAPI().PurchaseOrderStatus, 102, 20);
+
+      final pending = InvenTreePurchaseOrder.fromJson({
+        "status": 10,
+        "status_custom_key": 101,
+      });
+
+      expect(pending.isOpen, isTrue);
+      expect(pending.isPending, isTrue);
+
+      final placed = InvenTreePurchaseOrder.fromJson({
+        "status": 20,
+        "status_custom_key": 102,
+      });
+
+      expect(placed.isOpen, isTrue);
+      expect(placed.isPlaced, isTrue);
+      expect(placed.isPending, isFalse);
+    });
+
     test("Supplier", () async {
       var order = InvenTreePurchaseOrder.fromJson({
         "supplier": 2,
@@ -264,6 +330,20 @@ void main() {
       expect(order(20).isOpen, isFalse);
 
       expect(order(40).isOpen, isFalse);
+    });
+
+    // Regression: a custom state must not hide the actions for its logical state
+    test("Custom Status", () async {
+      addCustomState(InvenTreeAPI().SalesOrderStatus, 101, 15);
+
+      final order = InvenTreeSalesOrder.fromJson({
+        "status": 15,
+        "status_custom_key": 101,
+      });
+
+      expect(order.isOpen, isTrue);
+      expect(order.isInProgress, isTrue);
+      expect(order.isComplete, isFalse);
     });
 
     test("Customer", () async {
@@ -373,48 +453,74 @@ void main() {
 
   group("Transfer Order:", () {
     test("Status Codes", () async {
-      expect(TransferOrderStatus.name(10), equals("PENDING"));
-      expect(TransferOrderStatus.name(99), equals(""));
-      expect(TransferOrderStatus.isNameIn(30, ["COMPLETE"]), isTrue);
-      expect(TransferOrderStatus.isNameIn(99, ["COMPLETE"]), isFalse);
+      final codes = InvenTreeAPI().TransferOrderStatus;
 
-      expect(TransferOrderStatus.getStatusText(10), equals(L10().pending));
-      expect(TransferOrderStatus.getStatusText(20), equals(L10().issued));
-      expect(TransferOrderStatus.getStatusText(25), equals(L10().onHold));
-      expect(TransferOrderStatus.getStatusText(30), equals(L10().complete));
-      expect(TransferOrderStatus.getStatusText(40), equals(L10().cancelled));
-      expect(TransferOrderStatus.getStatusText(99), equals(L10().unknown));
+      // Status codes are loaded from the generic server endpoint
+      expect(codes.URL, equals("generic/status/TransferOrderStatus/"));
+
+      expect(codes.name(10), equals("PENDING"));
+      expect(codes.name(99), equals(""));
+      expect(codes.isNameIn(30, ["COMPLETE"]), isTrue);
+      expect(codes.isNameIn(99, ["COMPLETE"]), isFalse);
+
+      // Labels are provided by the server
+      expect(codes.label(20), equals("issued"));
+      expect(codes.label(99), equals("99"));
+
+      // Status data is cleared along with other status codes
+      InvenTreeAPI().clearStatusCodeData();
+      expect(codes.data, isEmpty);
     });
 
     test("Status", () async {
       InvenTreeTransferOrder order(int status) =>
           InvenTreeTransferOrder.fromJson({"status": status});
 
-      final pending = order(TransferOrderStatus.PENDING);
+      final pending = order(10);
       expect(pending.isOpen, isTrue);
       expect(pending.canIssue, isTrue);
       expect(pending.canHold, isTrue);
       expect(pending.canCompleteOrder, isFalse);
       expect(pending.canCancel, isTrue);
 
-      final issued = order(TransferOrderStatus.ISSUED);
+      final issued = order(20);
       expect(issued.canIssue, isFalse);
       expect(issued.canHold, isTrue);
       expect(issued.canCompleteOrder, isTrue);
 
-      final onHold = order(TransferOrderStatus.ON_HOLD);
+      final onHold = order(25);
       expect(onHold.canIssue, isTrue);
       expect(onHold.canHold, isFalse);
       expect(onHold.canCompleteOrder, isTrue);
 
-      for (final status in [
-        TransferOrderStatus.COMPLETE,
-        TransferOrderStatus.CANCELLED,
-      ]) {
+      for (final status in [30, 40]) {
         expect(order(status).isOpen, isFalse);
         expect(order(status).canCancel, isFalse);
         expect(order(status).canCompleteOrder, isFalse);
       }
+    });
+
+    // Regression: a custom state must not hide the actions for its logical state
+    test("Custom Status", () async {
+      addCustomState(InvenTreeAPI().TransferOrderStatus, 101, 20);
+
+      final order = InvenTreeTransferOrder.fromJson({
+        "status": 20,
+        "status_custom_key": 101,
+      });
+
+      expect(order.status, equals(101));
+      expect(order.isIssued, isTrue);
+      expect(order.isOpen, isTrue);
+      expect(order.canHold, isTrue);
+      expect(order.canCompleteOrder, isTrue);
+      expect(order.canCancel, isTrue);
+
+      // Display uses the custom state
+      expect(
+        InvenTreeAPI().TransferOrderStatus.label(order.status),
+        equals("Custom 101"),
+      );
     });
 
     test("Locations", () async {

@@ -2222,11 +2222,17 @@ class InvenTreeAPI {
   InvenTreeStatusCode get BuildOrderStatus =>
       _get_status_class("build/status/");
 
+  // Transfer orders have no dedicated status endpoint,
+  // so use the generic endpoint (lookup by class name requires API v405+)
+  InvenTreeStatusCode get TransferOrderStatus =>
+      _get_status_class("generic/status/TransferOrderStatus/");
+
   void clearStatusCodeData() {
     StockStatus.data.clear();
     PurchaseOrderStatus.data.clear();
     SalesOrderStatus.data.clear();
     BuildOrderStatus.data.clear();
+    TransferOrderStatus.data.clear();
   }
 
   Future<void> fetchStatusCodeData({bool forceReload = true}) async {
@@ -2234,6 +2240,10 @@ class InvenTreeAPI {
     PurchaseOrderStatus.load(forceReload: forceReload);
     SalesOrderStatus.load(forceReload: forceReload);
     BuildOrderStatus.load(forceReload: forceReload);
+
+    if (supportsTransferOrders) {
+      TransferOrderStatus.load(forceReload: forceReload);
+    }
   }
 
   int notification_counter = 0;

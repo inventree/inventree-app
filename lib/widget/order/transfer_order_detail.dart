@@ -203,6 +203,7 @@ class _TransferOrderDetailState
 
   @override
   Future<void> request(BuildContext context) async {
+    await api.TransferOrderStatus.load();
     await widget.order.reload();
 
     List<InvenTreeTransferOrderLineItem> lines = await widget.order
@@ -270,8 +271,8 @@ class _TransferOrderDetailState
         title: Text(widget.order.reference),
         subtitle: Text(widget.order.description),
         trailing: LargeText(
-          TransferOrderStatus.getStatusText(widget.order.status),
-          color: TransferOrderStatus.getStatusColor(widget.order.status),
+          api.TransferOrderStatus.label(widget.order.status),
+          color: api.TransferOrderStatus.color(widget.order.status),
         ),
       ),
     );

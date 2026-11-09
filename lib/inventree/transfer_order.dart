@@ -6,13 +6,11 @@ import "package:flutter/material.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/api.dart";
-import "package:inventree/app_colors.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/orders.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/stock.dart";
-import "package:inventree/l10.dart";
 import "package:inventree/widget/order/transfer_order_detail.dart";
 
 /*
@@ -84,15 +82,20 @@ class InvenTreeTransferOrder extends InvenTreeOrder {
   // Should allocated stock be "consumed" rather than transferred?
   bool get consume => getBool("consume");
 
-  bool get isPending => TransferOrderStatus.isNameIn(status, ["PENDING"]);
+  bool get isPending =>
+      api.TransferOrderStatus.isNameIn(logicalStatus, ["PENDING"]);
 
-  bool get isIssued => TransferOrderStatus.isNameIn(status, ["ISSUED"]);
+  bool get isIssued =>
+      api.TransferOrderStatus.isNameIn(logicalStatus, ["ISSUED"]);
 
-  bool get isOnHold => TransferOrderStatus.isNameIn(status, ["ON_HOLD"]);
+  bool get isOnHold =>
+      api.TransferOrderStatus.isNameIn(logicalStatus, ["ON_HOLD"]);
 
-  bool get isComplete => TransferOrderStatus.isNameIn(status, ["COMPLETE"]);
+  bool get isComplete =>
+      api.TransferOrderStatus.isNameIn(logicalStatus, ["COMPLETE"]);
 
-  bool get isCancelled => TransferOrderStatus.isNameIn(status, ["CANCELLED"]);
+  bool get isCancelled =>
+      api.TransferOrderStatus.isNameIn(logicalStatus, ["CANCELLED"]);
 
   // An "open" order is one which is not complete or cancelled
   bool get isOpen => !isComplete && !isCancelled;
@@ -322,71 +325,6 @@ class InvenTreeTransferOrderAllocation extends InvenTreeModel {
       return null;
     } else {
       return InvenTreeStockLocation.fromJson(detail as Map<String, dynamic>);
-    }
-  }
-}
-
-/*
- * Transfer Order Status Codes
- * Ref: https://github.com/inventree/InvenTree/blob/master/src/backend/InvenTree/order/status_codes.py
- */
-class TransferOrderStatus {
-  // Status codes as defined in backend status_codes.py
-  static const int PENDING = 10; // Transfer order is pending / inactive
-  static const int ISSUED = 20; // Transfer order has been issued
-  static const int ON_HOLD = 25; // Transfer order is on hold
-  static const int COMPLETE = 30; // Transfer order is complete
-  static const int CANCELLED = 40; // Transfer order was cancelled
-
-  static const Map<int, String> _names = {
-    PENDING: "PENDING",
-    ISSUED: "ISSUED",
-    ON_HOLD: "ON_HOLD",
-    COMPLETE: "COMPLETE",
-    CANCELLED: "CANCELLED",
-  };
-
-  // Return the (untranslated) name associated with a given status code
-  static String name(int status) => _names[status] ?? "";
-
-  // Test if the name associated with the given code is in the provided list
-  static bool isNameIn(int status, List<String> names) {
-    return names.contains(name(status));
-  }
-
-  // Return a color based on the transfer order status
-  static Color getStatusColor(int status) {
-    switch (status) {
-      case PENDING:
-        return COLOR_GRAY_LIGHT;
-      case ISSUED:
-        return COLOR_PROGRESS;
-      case COMPLETE:
-        return COLOR_SUCCESS;
-      case CANCELLED:
-        return COLOR_DANGER;
-      case ON_HOLD:
-        return COLOR_WARNING;
-      default:
-        return COLOR_GRAY_LIGHT;
-    }
-  }
-
-  // Return a (translated) string based on the transfer order status
-  static String getStatusText(int status) {
-    switch (status) {
-      case PENDING:
-        return L10().pending;
-      case ISSUED:
-        return L10().issued;
-      case COMPLETE:
-        return L10().complete;
-      case CANCELLED:
-        return L10().cancelled;
-      case ON_HOLD:
-        return L10().onHold;
-      default:
-        return L10().unknown;
     }
   }
 }
