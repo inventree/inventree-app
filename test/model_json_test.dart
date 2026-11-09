@@ -4,11 +4,19 @@
  * These tests do not require a connection to the server
  */
 
+import "package:flutter/material.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:inventree/api.dart";
+import "package:inventree/inventree/attachment.dart";
+import "package:inventree/inventree/bom.dart";
 import "package:inventree/inventree/model.dart";
+import "package:inventree/inventree/notes.dart";
+import "package:inventree/inventree/notification.dart";
 import "package:inventree/inventree/orders.dart";
+import "package:inventree/inventree/parameter.dart";
 import "package:inventree/inventree/part.dart";
+import "package:inventree/inventree/project_code.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/l10.dart";
 
@@ -578,6 +586,261 @@ void main() {
       expect(line.price, equals(10));
       expect(line.priceCurrency, equals("EUR"));
       expect(line.formFields()["order"]?["hidden"], isTrue);
+    });
+  });
+
+  group("Attachment:", () {
+    test("Empty Data", () async {
+      final attachment = InvenTreeAttachment.fromJson({});
+
+      expect(attachment.URL, equals("attachment/"));
+      expect(attachment.attachment, equals(""));
+      expect(attachment.hasAttachment, isFalse);
+      expect(attachment.filename, equals(""));
+      expect(attachment.icon, equals(TablerIcons.file));
+      expect(attachment.comment, equals(""));
+      expect(attachment.uploadDate, isNull);
+      expect(attachment.modelType, equals(""));
+      expect(attachment.modelId, equals(-1));
+
+      // No link, so the 'link' field is not displayed
+      expect(attachment.formFields().keys, equals(["comment"]));
+
+      expect(
+        attachment.createFromJson({"pk": 3}),
+        isA<InvenTreeAttachment>().having((a) => a.pk, "pk", 3),
+      );
+    });
+
+    test("File Attachment", () async {
+      final attachment = InvenTreeAttachment.fromJson({
+        "attachment": "/media/attachments/part/7/Datasheet.PDF",
+        "comment": "A datasheet",
+        "upload_date": "2024-03-15",
+        "model_type": "part",
+        "model_id": 7,
+      });
+
+      expect(attachment.hasAttachment, isTrue);
+      expect(attachment.filename, equals("Datasheet.PDF"));
+      expect(attachment.icon, equals(TablerIcons.file_type_pdf));
+      expect(attachment.comment, equals("A datasheet"));
+      expect(attachment.uploadDate, equals(DateTime(2024, 3, 15)));
+      expect(attachment.modelType, equals("part"));
+      expect(attachment.modelId, equals(7));
+      expect(attachment.formFields().keys, equals(["comment"]));
+    });
+
+    test("Link Attachment", () async {
+      final attachment = InvenTreeAttachment.fromJson({
+        "link": "https://inventree.org",
+        "upload_date": null,
+      });
+
+      expect(attachment.hasAttachment, isFalse);
+      expect(attachment.formFields().keys, equals(["link", "comment"]));
+
+      // Null (or invalid) dates are not parsed
+      expect(attachment.uploadDate, isNull);
+      expect(
+        InvenTreeAttachment.fromJson({"upload_date": "junk"}).uploadDate,
+        isNull,
+      );
+    });
+
+    test("File Icons", () async {
+      final Map<String, IconData> icons = {
+        "report.pdf": TablerIcons.file_type_pdf,
+        "data.csv": TablerIcons.file_type_csv,
+        "notes.doc": TablerIcons.file_type_doc,
+        "notes.docx": TablerIcons.file_type_doc,
+        "sheet.xls": TablerIcons.file_type_xls,
+        "sheet.XLSX": TablerIcons.file_type_xls,
+        "photo.png": TablerIcons.file_type_jpg,
+        "photo.jpg": TablerIcons.file_type_jpg,
+        "anim.gif": TablerIcons.file_type_jpg,
+        "image.bmp": TablerIcons.file_type_jpg,
+        "logo.svg": TablerIcons.file_type_jpg,
+        "archive.zip": TablerIcons.file,
+        "no_extension": TablerIcons.file,
+      };
+
+      for (final entry in icons.entries) {
+        final attachment = InvenTreeAttachment.fromJson({
+          "attachment": "/media/attachments/${entry.key}",
+        });
+
+        expect(attachment.icon, equals(entry.value), reason: entry.key);
+      }
+    });
+  });
+
+  group("Notification:", () {
+    test("Accessors", () async {
+      final notification = InvenTreeNotification.fromJson({
+        "pk": 12,
+        "message": "Stock is low",
+        "creation": "2024-05-01T10:30:00",
+      });
+
+      expect(notification.URL, equals("notifications/"));
+      expect(notification.defaultListFilters(), equals({"read": "false"}));
+      expect(notification.message, equals("Stock is low"));
+      expect(notification.creationDate, equals(DateTime(2024, 5, 1, 10, 30)));
+
+      expect(
+        notification.createFromJson({"pk": 1}),
+        isA<InvenTreeNotification>(),
+      );
+    });
+
+    test("Missing Date", () async {
+      expect(InvenTreeNotification.fromJson({}).creationDate, isNull);
+      expect(
+        InvenTreeNotification.fromJson({"creation": null}).creationDate,
+        isNull,
+      );
+      expect(
+        InvenTreeNotification.fromJson({"creation": "junk"}).creationDate,
+        isNull,
+      );
+      expect(InvenTreeNotification.fromJson({}).message, equals(""));
+    });
+  });
+
+  group("Project Code:", () {
+    test("Accessors", () async {
+      final code = InvenTreeProjectCode.fromJson({
+        "pk": 4,
+        "code": "PRJ-001",
+        "description": "Test project",
+      });
+
+      expect(InvenTreeProjectCode.MODEL_TYPE, equals("projectcode"));
+      expect(code.URL, equals("project-code/"));
+      expect(code.code, equals("PRJ-001"));
+      expect(code.description, equals("Test project"));
+      expect(code.formFields().keys, equals(["code", "description"]));
+      expect(InvenTreeProjectCode().code, equals(""));
+
+      expect(
+        code.createFromJson({"pk": 5}),
+        isA<InvenTreeProjectCode>().having((c) => c.pk, "pk", 5),
+      );
+    });
+  });
+
+  group("Parameter:", () {
+    test("Accessors", () async {
+      final parameter = InvenTreeParameter.fromJson({
+        "pk": 9,
+        "data": "12",
+        "model_type": "part",
+        "model_id": 3,
+        "template_detail": {
+          "name": "Length",
+          "description": "Overall length",
+          "units": "mm",
+          "checkbox": false,
+        },
+      });
+
+      expect(parameter.URL, equals("parameter/"));
+      expect(parameter.name, equals("Length"));
+      expect(parameter.description, equals("Overall length"));
+      expect(parameter.value, equals("12"));
+      expect(parameter.units, equals("mm"));
+      expect(parameter.valueString, equals("12 mm"));
+      expect(parameter.is_checkbox, isFalse);
+      expect(parameter.as_bool, isFalse);
+      expect(parameter.modelType, equals("part"));
+      expect(parameter.modelId, equals(3));
+
+      final fields = parameter.formFields();
+      expect(fields.keys, equals(["header", "data", "note"]));
+      expect(fields["header"]?["label"], equals("Length"));
+      expect(fields["header"]?["help_text"], equals("Overall length"));
+      expect(fields["header"]?["read_only"], isTrue);
+    });
+
+    test("Checkbox", () async {
+      final parameter = InvenTreeParameter.fromJson({
+        "data": "True",
+        "template_detail": {"name": "RoHS", "checkbox": true},
+      });
+
+      expect(parameter.is_checkbox, isTrue);
+      expect(parameter.as_bool, isTrue);
+
+      // No units, so the value is displayed alone
+      expect(parameter.valueString, equals("True"));
+
+      // No template detail
+      final empty = InvenTreeParameter.fromJson({"data": "x"});
+      expect(empty.is_checkbox, isFalse);
+      expect(empty.as_bool, isFalse);
+      expect(empty.valueString, equals("x"));
+    });
+  });
+
+  group("BOM Item:", () {
+    test("Accessors", () async {
+      final item = InvenTreeBomItem.fromJson({
+        "pk": 1,
+        "part": 10,
+        "sub_part": 20,
+        "quantity": "2.5",
+        "reference": "R1, R2",
+        "part_detail": {"pk": 10, "name": "Assembly"},
+        "sub_part_detail": {"pk": 20, "name": "Resistor"},
+      });
+
+      expect(item.URL, equals("bom/"));
+      expect(item.defaultFilters()["sub_part_detail"], equals("true"));
+      expect(item.partId, equals(10));
+      expect(item.subPartId, equals(20));
+      expect(item.quantity, equals(2.5));
+      expect(item.reference, equals("R1, R2"));
+      expect(item.part?.name, equals("Assembly"));
+      expect(item.subPart?.name, equals("Resistor"));
+      expect(item.createFromJson({"pk": 2}), isA<InvenTreeBomItem>());
+    });
+
+    test("Missing Detail", () async {
+      final item = InvenTreeBomItem.fromJson({
+        "sub_part_detail": null,
+        "part_detail": "invalid",
+      });
+
+      expect(item.part, isNull);
+      expect(item.subPart, isNull);
+      expect(InvenTreeBomItem.fromJson({}).subPart, isNull);
+      expect(InvenTreeBomItem.fromJson({}).subPartId, equals(-1));
+    });
+  });
+
+  group("Note Entry:", () {
+    test("Accessors", () async {
+      final note = InvenTreeNoteEntry.fromJson({
+        "pk": 2,
+        "title": "Assembly notes",
+        "content": "<p>Handle with care</p>",
+        "updated": "2024-06-30",
+        "model_type": "build",
+        "model_id": 8,
+      });
+
+      expect(note.URL, equals("note/"));
+      expect(note.title, equals("Assembly notes"));
+      expect(note.content, equals("<p>Handle with care</p>"));
+      expect(note.updated, equals(DateTime(2024, 6, 30)));
+      expect(note.modelType, equals("build"));
+      expect(note.modelId, equals(8));
+      expect(note.createFromJson({"pk": 3}), isA<InvenTreeNoteEntry>());
+
+      final empty = InvenTreeNoteEntry.fromJson({});
+      expect(empty.content, equals(""));
+      expect(empty.updated, isNull);
     });
   });
 }
