@@ -111,12 +111,15 @@ class InvenTreeBuildOrder extends InvenTreeOrder {
   // Status code handling
   // Note: These map to BuildStatus in backend/status_codes.py
   bool get isWaitingForBuild =>
-      api.BuildOrderStatus.isNameIn(status, ["PENDING"]);
+      api.BuildOrderStatus.isNameIn(logicalStatus, ["PENDING"]);
   bool get isInProgress =>
-      api.BuildOrderStatus.isNameIn(status, ["PRODUCTION"]);
-  bool get isComplete => api.BuildOrderStatus.isNameIn(status, ["COMPLETE"]);
-  bool get isCancelled => api.BuildOrderStatus.isNameIn(status, ["CANCELLED"]);
-  bool get isOnHold => api.BuildOrderStatus.isNameIn(status, ["ON_HOLD"]);
+      api.BuildOrderStatus.isNameIn(logicalStatus, ["PRODUCTION"]);
+  bool get isComplete =>
+      api.BuildOrderStatus.isNameIn(logicalStatus, ["COMPLETE"]);
+  bool get isCancelled =>
+      api.BuildOrderStatus.isNameIn(logicalStatus, ["CANCELLED"]);
+  bool get isOnHold =>
+      api.BuildOrderStatus.isNameIn(logicalStatus, ["ON_HOLD"]);
 
   // Can this build order be completed?
   bool get canCompleteOrder {

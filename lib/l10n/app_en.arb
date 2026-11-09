@@ -1178,15 +1178,6 @@
   "pending": "Pending",
   "@pending": {},
 
-  "issued": "Issued",
-  "@issued": {},
-
-  "cancelled": "Cancelled",
-  "@cancelled": {},
-
-  "onHold": "On Hold",
-  "@onHold": {},
-
   "permissionAccountDenied": "Your account does not have the required permissions to perform this action",
   "@permissionAccountDenied": {},
 
@@ -1965,9 +1956,6 @@
 
   "units": "Units",
   "@units": {},
-
-  "unknown": "Unknown",
-  "@unknown": {},
 
   "unknownResponse": "Unknown Response",
   "@unknownResponse": {},

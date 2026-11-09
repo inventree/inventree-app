@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
+import "package:inventree/api.dart";
 import "package:inventree/l10.dart";
 
 import "package:inventree/inventree/model.dart";
@@ -134,6 +135,7 @@ class _PaginatedTransferOrderListState
     int offset,
     Map<String, String> params,
   ) async {
+    await InvenTreeAPI().TransferOrderStatus.load();
     final page = await InvenTreeTransferOrder().listPaginated(
       limit,
       offset,
@@ -151,8 +153,8 @@ class _PaginatedTransferOrderListState
       title: Text(order.reference),
       subtitle: Text(order.description),
       trailing: LargeText(
-        TransferOrderStatus.getStatusText(order.status),
-        color: TransferOrderStatus.getStatusColor(order.status),
+        InvenTreeAPI().TransferOrderStatus.label(order.status),
+        color: InvenTreeAPI().TransferOrderStatus.color(order.status),
       ),
       onTap: () async {
         order.goToDetailPage(context);
