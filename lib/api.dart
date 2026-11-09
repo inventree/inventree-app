@@ -42,7 +42,7 @@ class APIResponse {
     this.method = "",
     this.statusCode = -1,
     this.error = "",
-    this.data = const {},
+    this.data = const <String, dynamic>{},
   });
 
   int statusCode = -1;
