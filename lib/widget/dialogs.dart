@@ -117,7 +117,8 @@ Future<void> confirmationDialog(
  * Convert a raw API field name (snake_case) into a human-readable label,
  * e.g. "target_date" -> "Target Date"
  */
-String _humanizeFieldName(String field) {
+@visibleForTesting
+String humanizeFieldName(String field) {
   return field
       .split("_")
       .where((word) => word.isNotEmpty)
@@ -129,7 +130,8 @@ String _humanizeFieldName(String field) {
  * Build the body content for an error dialog, given either a plain
  * description string or a structured APIResponse.
  */
-Widget _buildErrorContent(String description, APIResponse? response) {
+@visibleForTesting
+Widget buildErrorContent(String description, APIResponse? response) {
   List<Widget> children = [];
 
   if (description.isNotEmpty) {
@@ -185,7 +187,7 @@ Widget _buildErrorContent(String description, APIResponse? response) {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    _humanizeFieldName(field),
+                    humanizeFieldName(field),
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   for (String message in messages) Text(message),
@@ -269,7 +271,7 @@ Future<void> showErrorDialog(
           icon: Icon(icon, color: dialogColor),
           iconColor: dialogColor,
           title: Text(title),
-          content: _buildErrorContent(description, response),
+          content: buildErrorContent(description, response),
           actions: [
             TextButton(
               child: Text(L10().ok),
