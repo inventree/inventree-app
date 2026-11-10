@@ -2,6 +2,7 @@
 ---
 
 - Handle control characters for "keyboard wedge" barcode scanners
+- Ignore additional barcodes read in the same shot by "keyboard wedge" barcode scanners
 
 ## 1.0.0 - November 2026
 ---

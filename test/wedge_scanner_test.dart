@@ -36,6 +36,7 @@ Future<void> typeText(String text) async {
   for (final String c in text.split("")) {
     // Shifted symbols are sent on their physical (unshifted) key
     const Map<String, LogicalKeyboardKey> symbols = {
+      "\n": LogicalKeyboardKey.enter,
       "[": LogicalKeyboardKey.bracketLeft,
       ")": LogicalKeyboardKey.digit0,
       ">": LogicalKeyboardKey.period,
@@ -167,6 +168,94 @@ void main() {
         ),
         isTrue,
       );
+    });
+  });
+
+  group("Wedge multi-barcode blanking (#625)", () {
+    final DateTime t0 = DateTime(2026);
+    DateTime at(int ms) => t0.add(Duration(milliseconds: ms));
+
+    // Feed a string one character every [gapMs], starting at [startMs].
+    // Returns every completed barcode.
+    List<String> feed(
+      WedgeScanBuffer buffer,
+      String text, {
+      int startMs = 0,
+      int gapMs = 10,
+      bool accepting = true,
+    }) {
+      final List<String> results = [];
+      int ms = startMs;
+      for (final String c in text.split("")) {
+        final String? result = buffer.addCharacter(
+          c,
+          at(ms),
+          accepting: accepting,
+        );
+        if (result != null) results.add(result);
+        ms += gapMs;
+      }
+      return results;
+    }
+
+    test("Only the first barcode in a multi-barcode burst is returned", () {
+      final buffer = WedgeScanBuffer();
+      expect(feed(buffer, "first\nsecond\nthird\n"), ["first"]);
+    });
+
+    test("Long trailing barcodes are never resumed part-way", () {
+      // The trailing burst (300 chars @ 10ms = 3s) far outlasts the
+      // blanking period, but keeps extending it, so no fragment leaks out
+      final buffer = WedgeScanBuffer();
+      final String trailing = "${"x" * 150}\n${"y" * 150}\n";
+      expect(feed(buffer, "first\n$trailing"), ["first"]);
+    });
+
+    test("A new scan after the quiet period is accepted", () {
+      final buffer = WedgeScanBuffer();
+      expect(feed(buffer, "first\nsecond\n"), ["first"]);
+
+      // Last key at 120ms; blanking ends at 620ms
+      expect(feed(buffer, "early\n", startMs: 400), isEmpty);
+      expect(feed(buffer, "next\n", startMs: 1200), ["next"]);
+    });
+
+    test("Input while paused is discarded and blanks its continuation", () {
+      final buffer = WedgeScanBuffer();
+
+      // Scanner paused part-way through a barcode, then resumed
+      expect(feed(buffer, "abcdef", accepting: false), isEmpty);
+      expect(feed(buffer, "ghij\n", startMs: 60), isEmpty);
+
+      expect(feed(buffer, "fresh\n", startMs: 1000), ["fresh"]);
+    });
+
+    test("Characters within a barcode still time out", () {
+      final buffer = WedgeScanBuffer();
+      expect(feed(buffer, "stale"), isEmpty);
+      expect(feed(buffer, "new\n", startMs: 1000), ["new"]);
+    });
+
+    test("Empty lines do not start blanking", () {
+      final buffer = WedgeScanBuffer();
+      expect(feed(buffer, "\n\nabc\n"), ["abc"]);
+    });
+
+    testWidgets("Controller submits only the first of several barcodes", (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(home: WedgeBarcodeController(BarcodeScanHandler())),
+      );
+
+      await typeText("multia\n");
+      await typeText("multib\n");
+
+      expect(debugContains("scanned: multia", raiseAssert: false), isTrue);
+      expect(debugContains("multib", raiseAssert: false), isFalse);
+
+      // Let the controller's resume timer complete
+      await tester.pump(const Duration(seconds: 1));
     });
   });
 }

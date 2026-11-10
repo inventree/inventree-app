@@ -8,6 +8,7 @@ import "package:inventree/barcode/handler.dart";
 
 import "package:inventree/l10.dart";
 import "package:inventree/helpers.dart";
+import "package:inventree/preferences.dart";
 
 /*
  * Control characters produced by Ctrl+<key>, keyed by logical key.
@@ -78,6 +79,83 @@ String? wedgeCharacterForEvent(KeyEvent event, {required bool ctrlPressed}) {
 }
 
 /*
+ * Assembles keyboard-wedge characters into complete barcodes.
+ *
+ * A wedge scanner can read several barcodes in one shot (e.g. an InvenTree
+ * label next to a DigiKey label) and types them all, separated by newlines.
+ * Only the first barcode is wanted (#625), so after a barcode is completed
+ * all further input is discarded until the keyboard has been quiet for
+ * [blankingPeriod]. The window is extended by every discarded key, so a long
+ * trailing barcode cannot be resumed part-way through and submitted as a
+ * fragment.
+ *
+ * Input received while the scanner is paused (processing a barcode) is
+ * treated the same way.
+ */
+class WedgeScanBuffer {
+  WedgeScanBuffer({
+    this.blankingPeriod = const Duration(milliseconds: 500),
+    this.characterTimeout = const Duration(milliseconds: 250),
+  });
+
+  // Quiet time required after a completed scan before accepting new input
+  Duration blankingPeriod;
+
+  // Maximum gap between characters of a single barcode
+  final Duration characterTimeout;
+
+  final List<String> _characters = [];
+
+  DateTime? _lastKeyTime;
+
+  DateTime? _blankUntil;
+
+  bool isBlanking(DateTime now) =>
+      _blankUntil != null && now.isBefore(_blankUntil!);
+
+  /*
+   * Add a single character received at [now].
+   * Returns the completed barcode when a newline terminates one, else null.
+   * Set [accepting] to false while the scanner is paused.
+   */
+  String? addCharacter(
+    String character,
+    DateTime now, {
+    bool accepting = true,
+  }) {
+    if (!accepting || isBlanking(now)) {
+      _blankUntil = now.add(blankingPeriod);
+      _characters.clear();
+      _lastKeyTime = now;
+      return null;
+    }
+
+    // Throw away stale characters from an earlier, incomplete scan
+    if (_lastKeyTime == null ||
+        now.difference(_lastKeyTime!) > characterTimeout) {
+      _characters.clear();
+    }
+
+    _lastKeyTime = now;
+
+    if (character != "\n") {
+      _characters.add(character);
+      return null;
+    }
+
+    final String data = _characters.join();
+    _characters.clear();
+
+    if (data.isEmpty) {
+      return null;
+    }
+
+    _blankUntil = now.add(blankingPeriod);
+    return data;
+  }
+}
+
+/*
  * Barcode controller which acts as a keyboard wedge,
  * intercepting barcode data which is entered as rapid keyboard presses
  */
@@ -98,9 +176,33 @@ class _WedgeBarcodeControllerState extends InvenTreeBarcodeControllerState {
 
   final FocusNode _focusNode = FocusNode();
 
-  List<String> _scannedCharacters = [];
+  final WedgeScanBuffer _buffer = WedgeScanBuffer();
 
-  DateTime? _lastScanTime;
+  @override
+  void initState() {
+    super.initState();
+    _loadScanDelay();
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  // Blank further input for the user's scan delay (never shorter than the
+  // inter-character timeout, so trailing barcodes are always discarded)
+  Future<void> _loadScanDelay() async {
+    final int delay =
+        await InvenTreeSettingsManager().getValue(INV_BARCODE_SCAN_DELAY, 500)
+            as int;
+
+    final Duration period = Duration(milliseconds: delay);
+
+    _buffer.blankingPeriod = period > _buffer.characterTimeout
+        ? period
+        : _buffer.characterTimeout;
+  }
 
   @override
   Future<void> pauseScan() async {
@@ -122,10 +224,6 @@ class _WedgeBarcodeControllerState extends InvenTreeBarcodeControllerState {
 
   // Callback for a single key press / scan
   void handleKeyEvent(KeyEvent event) {
-    if (!scanning) {
-      return;
-    }
-
     // Look only for key-down events
     if (event is! KeyDownEvent) {
       return;
@@ -142,26 +240,18 @@ class _WedgeBarcodeControllerState extends InvenTreeBarcodeControllerState {
       return;
     }
 
-    DateTime now = DateTime.now();
+    // Input is still tracked while paused, so that the blanking window
+    // covers barcodes which are typed while the previous one is processed
+    final String? barcode = _buffer.addCharacter(
+      character,
+      DateTime.now(),
+      accepting: scanning,
+    );
 
-    // Throw away old characters
-    if (_lastScanTime == null ||
-        _lastScanTime!.isBefore(now.subtract(Duration(milliseconds: 250)))) {
-      _scannedCharacters.clear();
-    }
-
-    _lastScanTime = now;
-
-    if (character == "\n") {
-      if (_scannedCharacters.isNotEmpty) {
-        // Debug output required for unit testing
-        debug("scanned: ${_scannedCharacters.join()}");
-        handleBarcodeData(_scannedCharacters.join());
-      }
-
-      _scannedCharacters.clear();
-    } else {
-      _scannedCharacters.add(character);
+    if (barcode != null) {
+      // Debug output required for unit testing
+      debug("scanned: ${barcode}");
+      handleBarcodeData(barcode);
     }
   }
 
