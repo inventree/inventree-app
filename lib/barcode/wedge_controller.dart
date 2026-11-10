@@ -10,6 +10,74 @@ import "package:inventree/l10.dart";
 import "package:inventree/helpers.dart";
 
 /*
+ * Control characters produced by Ctrl+<key>, keyed by logical key.
+ *
+ * Keyboard-wedge scanners have no HID keycode for ASCII control characters,
+ * so they type them as Ctrl combinations (e.g. GS = Ctrl+], RS = Ctrl+^).
+ * On Android, KeyEvent.getUnicodeChar() returns 0 for any Ctrl combination,
+ * so Flutter reports KeyEvent.character == null and the character is lost
+ * unless we rebuild it here.
+ */
+final Map<LogicalKeyboardKey, String> _ctrlCharacters = {
+  // Ctrl+@ / Ctrl+2 -> NUL is deliberately omitted (a NUL would truncate data)
+  LogicalKeyboardKey.keyA: "\x01",
+  LogicalKeyboardKey.keyB: "\x02",
+  LogicalKeyboardKey.keyC: "\x03",
+  LogicalKeyboardKey.keyD: "\x04", // EOT
+  LogicalKeyboardKey.keyE: "\x05",
+  LogicalKeyboardKey.keyF: "\x06",
+  LogicalKeyboardKey.keyG: "\x07",
+  LogicalKeyboardKey.keyH: "\x08",
+  LogicalKeyboardKey.keyI: "\x09",
+  LogicalKeyboardKey.keyJ: "\x0A",
+  LogicalKeyboardKey.keyK: "\x0B",
+  LogicalKeyboardKey.keyL: "\x0C",
+  LogicalKeyboardKey.keyM: "\x0D",
+  LogicalKeyboardKey.keyN: "\x0E",
+  LogicalKeyboardKey.keyO: "\x0F",
+  LogicalKeyboardKey.keyP: "\x10",
+  LogicalKeyboardKey.keyQ: "\x11",
+  LogicalKeyboardKey.keyR: "\x12",
+  LogicalKeyboardKey.keyS: "\x13",
+  LogicalKeyboardKey.keyT: "\x14",
+  LogicalKeyboardKey.keyU: "\x15",
+  LogicalKeyboardKey.keyV: "\x16",
+  LogicalKeyboardKey.keyW: "\x17",
+  LogicalKeyboardKey.keyX: "\x18",
+  LogicalKeyboardKey.keyY: "\x19",
+  LogicalKeyboardKey.keyZ: "\x1A",
+  LogicalKeyboardKey.bracketLeft: "\x1B", // ESC
+  LogicalKeyboardKey.backslash: "\x1C", // FS
+  LogicalKeyboardKey.bracketRight: "\x1D", // GS
+  LogicalKeyboardKey.caret: "\x1E", // RS
+  LogicalKeyboardKey.digit6: "\x1E", // RS (Ctrl+Shift+6 on US layout)
+  LogicalKeyboardKey.underscore: "\x1F", // US
+  LogicalKeyboardKey.minus: "\x1F", // US (Ctrl+Shift+- on US layout)
+};
+
+/*
+ * Resolve the character a wedge scanner meant to send for a key-down event.
+ *
+ * Returns null when the event produces no character (e.g. a bare modifier).
+ */
+String? wedgeCharacterForEvent(KeyEvent event, {required bool ctrlPressed}) {
+  if (ctrlPressed) {
+    final String? ctrlChar = _ctrlCharacters[event.logicalKey];
+    if (ctrlChar != null) {
+      return ctrlChar;
+    }
+  }
+
+  final String? character = event.character;
+
+  if (character == null || character.isEmpty) {
+    return null;
+  }
+
+  return character;
+}
+
+/*
  * Barcode controller which acts as a keyboard wedge,
  * intercepting barcode data which is entered as rapid keyboard presses
  */
@@ -64,7 +132,13 @@ class _WedgeBarcodeControllerState extends InvenTreeBarcodeControllerState {
     }
 
     // Ignore events without a character code
-    if (event.character == null) {
+    // (control characters are rebuilt from Ctrl+<key> combinations)
+    final String? character = wedgeCharacterForEvent(
+      event,
+      ctrlPressed: HardwareKeyboard.instance.isControlPressed,
+    );
+
+    if (character == null) {
       return;
     }
 
@@ -78,7 +152,7 @@ class _WedgeBarcodeControllerState extends InvenTreeBarcodeControllerState {
 
     _lastScanTime = now;
 
-    if (event.character == "\n") {
+    if (character == "\n") {
       if (_scannedCharacters.isNotEmpty) {
         // Debug output required for unit testing
         debug("scanned: ${_scannedCharacters.join()}");
@@ -87,7 +161,7 @@ class _WedgeBarcodeControllerState extends InvenTreeBarcodeControllerState {
 
       _scannedCharacters.clear();
     } else {
-      _scannedCharacters.add(event.character!);
+      _scannedCharacters.add(character);
     }
   }
 
