@@ -1,7 +1,10 @@
 import "package:flutter/material.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
+import "package:inventree/l10.dart";
 import "package:inventree/preferences.dart";
 import "package:inventree/barcode/handler.dart";
+import "package:inventree/widget/barcode_scan_log.dart";
 import "package:inventree/widget/progress.dart";
 
 /*
@@ -91,6 +94,55 @@ class InvenTreeBarcodeControllerState
   // Hook function to "resume" the barcode scanner
   Future<void> resumeScan() async {
     // Implement this function in subclass
+  }
+
+  // Hook function: return true if scanning is currently paused
+  bool get isScanPaused => false;
+
+  /*
+   * Open a page over the scanner, pausing scanning while it is displayed.
+   * Scanning is only resumed if it was running beforehand.
+   */
+  Future<void> _openOverScanner(Widget page) async {
+    final bool wasPaused = isScanPaused;
+
+    if (!wasPaused) {
+      await pauseScan();
+    }
+
+    if (!mounted) return;
+
+    await Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
+
+    if (!wasPaused && mounted && !processingBarcode) {
+      await resumeScan();
+    }
+  }
+
+  // Open the barcode scan log
+  Future<void> showScanLog() => _openOverScanner(const BarcodeScanLogWidget());
+
+  // When this scanner was opened
+  final DateTime openedAt = DateTime.now();
+
+  // Bar at the bottom of the scanner which shows the most recent scan
+  // (starts empty - only scans made since this scanner opened are shown)
+  Widget buildLastScanBar() {
+    return BarcodeLastScanBar(
+      since: openedAt,
+      onTap: (entry) =>
+          _openOverScanner(BarcodeScanLogDetailWidget(entry: entry)),
+    );
+  }
+
+  // App bar action which opens the barcode scan log
+  Widget buildScanLogAction() {
+    return IconButton(
+      key: const Key("barcodeScanLog"),
+      icon: const Icon(TablerIcons.history),
+      tooltip: L10().barcodeScanLog,
+      onPressed: showScanLog,
+    );
   }
 
   /*

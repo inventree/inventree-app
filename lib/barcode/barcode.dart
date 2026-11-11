@@ -479,6 +479,15 @@ class UniqueBarcodeHandler extends BarcodeHandler {
   Future<void> onBarcodeUnknown(Map<String, dynamic> data) async {
     await onBarcodeMatched(data);
   }
+
+  // An "unknown" barcode is the expected result here - success is
+  // receiving the barcode hash and data back from the server
+  @override
+  bool isScanSuccessful(APIResponse response, Map<String, dynamic> data) {
+    return response.isValid() &&
+        (data.containsKey("hash") || data.containsKey("barcode_hash")) &&
+        ((data["barcode_data"] ?? "") as String).isNotEmpty;
+  }
 }
 
 SpeedDialChild customBarcodeAction(

@@ -97,6 +97,9 @@ class _IntentBarcodeControllerState extends InvenTreeBarcodeControllerState {
   }
 
   @override
+  bool get isScanPaused => !canScan;
+
+  @override
   Future<void> pauseScan() async {
     if (!mounted) return;
     setState(() {
@@ -119,7 +122,11 @@ class _IntentBarcodeControllerState extends InvenTreeBarcodeControllerState {
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text(L10().scanBarcode)),
+      appBar: AppBar(
+        title: Text(L10().scanBarcode),
+        actions: [buildScanLogAction()],
+      ),
+      bottomNavigationBar: buildLastScanBar(),
       backgroundColor: Colors.black.withValues(alpha: 0.9),
       body: Center(
         child: Column(
