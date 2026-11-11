@@ -1,3 +1,5 @@
+import "dart:async";
+
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
@@ -96,13 +98,22 @@ class WedgeScanBuffer {
   WedgeScanBuffer({
     this.blankingPeriod = const Duration(milliseconds: 500),
     this.characterTimeout = const Duration(milliseconds: 250),
+    this.minimumFlushLength = 4,
   });
 
   // Quiet time required after a completed scan before accepting new input
   Duration blankingPeriod;
 
-  // Maximum gap between characters of a single barcode
+  // Maximum gap between characters of a single barcode.
+  // Also the time after the last character at which a scan with no
+  // terminating newline is submitted (see [flush])
   final Duration characterTimeout;
+
+  // Shortest unterminated input which [flush] will submit, so that stray
+  // key presses on a hardware keyboard do not trigger barcode lookups
+  final int minimumFlushLength;
+
+  bool get hasPendingCharacters => _characters.isNotEmpty;
 
   final List<String> _characters = [];
 
@@ -153,6 +164,26 @@ class WedgeScanBuffer {
     _blankUntil = now.add(blankingPeriod);
     return data;
   }
+
+  /*
+   * Complete a scan which was not terminated by a newline.
+   *
+   * Call once [characterTimeout] has passed since the last character.
+   * Returns the buffered barcode, or null if there is none (or it is shorter
+   * than [minimumFlushLength], in which case it is discarded).
+   * A returned barcode starts the blanking period, as for a newline.
+   */
+  String? flush(DateTime now) {
+    final String data = _characters.join();
+    _characters.clear();
+
+    if (data.length < minimumFlushLength) {
+      return null;
+    }
+
+    _blankUntil = now.add(blankingPeriod);
+    return data;
+  }
 }
 
 /*
@@ -178,6 +209,9 @@ class _WedgeBarcodeControllerState extends InvenTreeBarcodeControllerState {
 
   final WedgeScanBuffer _buffer = WedgeScanBuffer();
 
+  // Submits a scan which is not terminated by a newline
+  Timer? _flushTimer;
+
   @override
   void initState() {
     super.initState();
@@ -186,8 +220,25 @@ class _WedgeBarcodeControllerState extends InvenTreeBarcodeControllerState {
 
   @override
   void dispose() {
+    _flushTimer?.cancel();
     _focusNode.dispose();
     super.dispose();
+  }
+
+  void _submitBarcode(String barcode) {
+    // Debug output required for unit testing
+    debug("scanned: ${barcode}");
+    handleBarcodeData(barcode);
+  }
+
+  void _flushPendingScan() {
+    _flushTimer = null;
+
+    final String? barcode = _buffer.flush(DateTime.now());
+
+    if (barcode != null && scanning) {
+      _submitBarcode(barcode);
+    }
   }
 
   // Blank further input for the user's scan delay (never shorter than the
@@ -248,10 +299,14 @@ class _WedgeBarcodeControllerState extends InvenTreeBarcodeControllerState {
       accepting: scanning,
     );
 
+    // Restart the timeout for scanners which send no terminating newline
+    _flushTimer?.cancel();
+    _flushTimer = _buffer.hasPendingCharacters
+        ? Timer(_buffer.characterTimeout, _flushPendingScan)
+        : null;
+
     if (barcode != null) {
-      // Debug output required for unit testing
-      debug("scanned: ${barcode}");
-      handleBarcodeData(barcode);
+      _submitBarcode(barcode);
     }
   }
 

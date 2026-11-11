@@ -257,5 +257,70 @@ void main() {
       // Let the controller's resume timer complete
       await tester.pump(const Duration(seconds: 1));
     });
+
+    group("Scans without a terminating newline", () {
+      test("Flush returns the buffered barcode", () {
+        final buffer = WedgeScanBuffer();
+        expect(feed(buffer, "noenter"), isEmpty);
+        expect(buffer.hasPendingCharacters, isTrue);
+        expect(buffer.flush(at(400)), "noenter");
+        expect(buffer.hasPendingCharacters, isFalse);
+
+        // Nothing left to flush
+        expect(buffer.flush(at(500)), isNull);
+      });
+
+      test("Flushed barcode starts the blanking period", () {
+        final buffer = WedgeScanBuffer();
+        feed(buffer, "first");
+        expect(buffer.flush(at(300)), "first");
+
+        // Trailing input is discarded, and keeps the window open
+        expect(feed(buffer, "second\n", startMs: 400), isEmpty);
+        expect(buffer.flush(at(600)), isNull);
+
+        expect(feed(buffer, "third\n", startMs: 1500), ["third"]);
+      });
+
+      test("Short input is discarded rather than submitted", () {
+        final buffer = WedgeScanBuffer();
+        feed(buffer, "abc");
+        expect(buffer.flush(at(300)), isNull);
+        expect(buffer.hasPendingCharacters, isFalse);
+
+        // ...and does not start the blanking period
+        expect(feed(buffer, "next\n", startMs: 310), ["next"]);
+      });
+
+      testWidgets("Controller submits after the character timeout", (
+        tester,
+      ) async {
+        await tester.pumpWidget(
+          MaterialApp(home: WedgeBarcodeController(BarcodeScanHandler())),
+        );
+
+        await typeText("timeoutscan");
+        expect(debugContains("timeoutscan", raiseAssert: false), isFalse);
+
+        await tester.pump(const Duration(milliseconds: 300));
+        expect(
+          debugContains("scanned: timeoutscan", raiseAssert: false),
+          isTrue,
+        );
+
+        // Let the controller's resume timer complete
+        await tester.pump(const Duration(seconds: 1));
+      });
+
+      testWidgets("Controller ignores a short stray key press", (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(home: WedgeBarcodeController(BarcodeScanHandler())),
+        );
+
+        await typeText("qz");
+        await tester.pump(const Duration(milliseconds: 300));
+        expect(debugContains("scanned: qz", raiseAssert: false), isFalse);
+      });
+    });
   });
 }
