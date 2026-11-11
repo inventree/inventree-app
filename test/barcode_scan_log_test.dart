@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_test/flutter_test.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/barcode/barcode.dart";
@@ -24,9 +25,10 @@ BarcodeScanLogEntry _entry(
   bool success = true,
   int? statusCode = 200,
   dynamic response = const {"success": "Match found"},
+  DateTime? timestamp,
 }) {
   return BarcodeScanLogEntry(
-    timestamp: DateTime(2026, 11, 11, 9, 30),
+    timestamp: timestamp ?? DateTime.now(),
     context: "Scan stock location",
     barcode: barcode,
     success: success,
@@ -229,6 +231,90 @@ void main() {
 
       expect(BarcodeScanLog().isEmpty, isTrue);
       expect(find.text("No barcodes scanned"), findsOneWidget);
+    });
+
+    testWidgets("Last scan bar starts empty each time the scanner opens", (
+      tester,
+    ) async {
+      // Scanned during an earlier visit to the scanner
+      BarcodeScanLog().add(
+        _entry(
+          "PREVIOUS",
+          timestamp: DateTime.now().subtract(const Duration(minutes: 1)),
+        ),
+      );
+
+      await pumpScreen(tester, WedgeBarcodeController(BarcodeScanHandler()));
+
+      expect(find.byKey(const Key("barcodeLastScan")), findsNothing);
+      expect(find.text("PREVIOUS"), findsNothing);
+
+      // ...but is still in the scan log
+      expect(BarcodeScanLog().latest?.barcode, "PREVIOUS");
+
+      // A scan made on this visit is shown
+      BarcodeScanLog().add(_entry("THISVISIT"));
+      await tester.pump();
+      expect(find.byKey(const Key("barcodeLastScan")), findsOneWidget);
+      expect(find.text("THISVISIT"), findsOneWidget);
+
+      // Let the scanner's pending timers complete
+      await tester.pump(const Duration(seconds: 1));
+    });
+
+    testWidgets("Scanner shows the most recent scan at the bottom", (
+      tester,
+    ) async {
+      await pumpScreen(tester, WedgeBarcodeController(BarcodeScanHandler()));
+
+      // Nothing scanned yet
+      expect(find.byKey(const Key("barcodeLastScan")), findsNothing);
+
+      BarcodeScanLog().add(_entry("OLDER\x1E1"));
+      BarcodeScanLog().add(_entry("NEWEST\x1E2", success: false));
+      await tester.pump();
+
+      final bar = find.byKey(const Key("barcodeLastScan"));
+      expect(bar, findsOneWidget);
+
+      // Only the latest scan is shown, with its context and status
+      expect(
+        find.descendant(of: bar, matching: find.text("NEWEST␞2")),
+        findsOneWidget,
+      );
+      expect(find.text("OLDER␞1"), findsNothing);
+      expect(
+        find.descendant(
+          of: bar,
+          matching: find.textContaining("Scan stock location"),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(of: bar, matching: find.byIcon(TablerIcons.circle_x)),
+        findsOneWidget,
+      );
+
+      // Updates live as new scans arrive
+      BarcodeScanLog().add(_entry("LATEST"));
+      await tester.pump();
+      expect(find.text("NEWEST␞2"), findsNothing);
+      expect(
+        find.descendant(
+          of: bar,
+          matching: find.byIcon(TablerIcons.circle_check),
+        ),
+        findsOneWidget,
+      );
+
+      // Tapping opens the detail view for that scan
+      await tester.tap(bar);
+      await tester.pump(const Duration(seconds: 1));
+      expect(find.byType(BarcodeScanLogDetailWidget), findsOneWidget);
+      expect(find.textContaining('"success": "Match found"'), findsOneWidget);
+
+      await tester.pageBack();
+      await tester.pump(const Duration(seconds: 1));
     });
 
     testWidgets("Opened from the scanner, which keeps working after", (

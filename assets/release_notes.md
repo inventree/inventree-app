@@ -5,6 +5,7 @@
 - Ignore additional barcodes read in the same shot by "keyboard wedge" barcode scanners
 - Support "keyboard wedge" barcode scanners which do not send an Enter key after each scan
 - Adds barcode scan log, showing recent scans and server responses
+- Barcode scanner displays the most recently scanned code
 
 ## 1.0.0 - November 2026
 ---

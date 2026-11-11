@@ -259,6 +259,9 @@
   "barcodeScanLog": "Barcode Scan Log",
   "@barcodeScanLog": {},
 
+  "barcodeScanLast": "Last Scan",
+  "@barcodeScanLast": {},
+
   "barcodeScanLogClear": "Clear scan log",
   "@barcodeScanLogClear": {},
 

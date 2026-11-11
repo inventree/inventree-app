@@ -96,6 +96,9 @@ class BarcodeScanLog extends ChangeNotifier {
   // Scans, most recent first
   List<BarcodeScanLogEntry> get entries => List.unmodifiable(_entries.reversed);
 
+  // Most recent scan, or null if the log is empty
+  BarcodeScanLogEntry? get latest => _entries.isEmpty ? null : _entries.last;
+
   int get length => _entries.length;
 
   bool get isEmpty => _entries.isEmpty;

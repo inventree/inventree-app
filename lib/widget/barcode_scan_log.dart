@@ -117,6 +117,113 @@ class BarcodeScanLogWidget extends StatelessWidget {
 }
 
 /*
+ * Bar displayed at the bottom of the barcode scanner views,
+ * showing the most recent scan. Hidden when nothing has been scanned.
+ *
+ * Uses fixed light-on-dark colours, as the scanner views are dark.
+ */
+class BarcodeLastScanBar extends StatelessWidget {
+  const BarcodeLastScanBar({this.since, this.onTap, super.key});
+
+  // Only show scans made at or after this time (e.g. when the scanner opened)
+  final DateTime? since;
+
+  // Called with the displayed entry when the bar is tapped
+  final void Function(BarcodeScanLogEntry entry)? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: BarcodeScanLog(),
+      builder: (context, _) {
+        final BarcodeScanLogEntry? entry = BarcodeScanLog().latest;
+
+        if (entry == null ||
+            (since != null && entry.timestamp.isBefore(since!))) {
+          return const SizedBox.shrink();
+        }
+
+        final Color statusColor = entry.success
+            ? COLOR_SUCCESS
+            : Colors.redAccent;
+
+        final String detail = [
+          L10().barcodeScanLast,
+          if (entry.context.isNotEmpty) entry.context,
+          DateFormat("HH:mm:ss").format(entry.timestamp),
+        ].join("  •  ");
+
+        return Material(
+          key: const Key("barcodeLastScan"),
+          color: Colors.black,
+          child: InkWell(
+            onTap: onTap == null ? null : () => onTap!(entry),
+            child: SafeArea(
+              top: false,
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border(top: BorderSide(color: statusColor, width: 3)),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      entry.success
+                          ? TablerIcons.circle_check
+                          : TablerIcons.circle_x,
+                      color: statusColor,
+                      size: 36,
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            entry.displayBarcode,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontFamily: "monospace",
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            detail,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: Colors.white70,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (onTap != null)
+                      const Icon(
+                        TablerIcons.chevron_right,
+                        color: Colors.white70,
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+/*
  * Full detail for a single barcode scan, including the server response
  */
 class BarcodeScanLogDetailWidget extends StatelessWidget {

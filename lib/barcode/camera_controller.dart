@@ -401,6 +401,7 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
         title: Text(L10().scanBarcode),
         actions: [buildScanLogAction()],
       ),
+      bottomNavigationBar: buildLastScanBar(),
       floatingActionButton: buildActions(context),
       body: GestureDetector(
         onTap: () async {

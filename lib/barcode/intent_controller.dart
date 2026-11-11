@@ -126,6 +126,7 @@ class _IntentBarcodeControllerState extends InvenTreeBarcodeControllerState {
         title: Text(L10().scanBarcode),
         actions: [buildScanLogAction()],
       ),
+      bottomNavigationBar: buildLastScanBar(),
       backgroundColor: Colors.black.withValues(alpha: 0.9),
       body: Center(
         child: Column(

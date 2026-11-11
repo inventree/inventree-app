@@ -100,10 +100,10 @@ class InvenTreeBarcodeControllerState
   bool get isScanPaused => false;
 
   /*
-   * Open the barcode scan log, pausing scanning while it is displayed.
+   * Open a page over the scanner, pausing scanning while it is displayed.
    * Scanning is only resumed if it was running beforehand.
    */
-  Future<void> showScanLog() async {
+  Future<void> _openOverScanner(Widget page) async {
     final bool wasPaused = isScanPaused;
 
     if (!wasPaused) {
@@ -112,13 +112,27 @@ class InvenTreeBarcodeControllerState
 
     if (!mounted) return;
 
-    await Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (_) => const BarcodeScanLogWidget()));
+    await Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
 
     if (!wasPaused && mounted && !processingBarcode) {
       await resumeScan();
     }
+  }
+
+  // Open the barcode scan log
+  Future<void> showScanLog() => _openOverScanner(const BarcodeScanLogWidget());
+
+  // When this scanner was opened
+  final DateTime openedAt = DateTime.now();
+
+  // Bar at the bottom of the scanner which shows the most recent scan
+  // (starts empty - only scans made since this scanner opened are shown)
+  Widget buildLastScanBar() {
+    return BarcodeLastScanBar(
+      since: openedAt,
+      onTap: (entry) =>
+          _openOverScanner(BarcodeScanLogDetailWidget(entry: entry)),
+    );
   }
 
   // App bar action which opens the barcode scan log
