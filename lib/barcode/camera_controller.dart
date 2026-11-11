@@ -85,6 +85,9 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
   }
 
   @override
+  bool get isScanPaused => scanning_paused;
+
+  @override
   Future<void> pauseScan() async {
     if (mounted) {
       setState(() {
@@ -394,7 +397,10 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(L10().scanBarcode)),
+      appBar: AppBar(
+        title: Text(L10().scanBarcode),
+        actions: [buildScanLogAction()],
+      ),
       floatingActionButton: buildActions(context),
       body: GestureDetector(
         onTap: () async {
