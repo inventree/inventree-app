@@ -6,6 +6,8 @@
 - Support "keyboard wedge" barcode scanners which do not send an Enter key after each scan
 - Adds barcode scan log, showing recent scans and server responses
 - Barcode scanner displays the most recently scanned code
+- Add "reference" ordering for BOM list
+- Bug fix for list widget ordering
 
 ## 1.0.0 - November 2026
 ---
