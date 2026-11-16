@@ -139,7 +139,9 @@ abstract class PaginatedSearchState<T extends PaginatedSearchWidget>
   // Return string for determining 'ordering' of paginated list
   Future<String> get orderingString async {
     dynamic field = await orderingField();
-    dynamic order = await orderingOrder();
+
+    // Positive ordering is just an empty string
+    String order = await orderingOrder() == "-" ? "-" : "";
 
     // Return an empty string if no field is provided
     if (field.toString().isEmpty) {

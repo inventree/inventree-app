@@ -118,6 +118,7 @@ class _PaginatedBomListState extends PaginatedSearchState<PaginatedBomList> {
   @override
   Map<String, String> get orderingOptions => {
     "quantity": L10().quantity,
+    "reference": L10().reference,
     "sub_part": L10().part,
   };
 
