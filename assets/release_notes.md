@@ -1,4 +1,4 @@
-### x.x.x - November 2026
+### 1.1.0 - November 2026
 ---
 
 - Handle control characters for "keyboard wedge" barcode scanners
