@@ -1,5 +1,4 @@
 import "package:flutter/material.dart";
-import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/helpers.dart";
@@ -34,8 +33,6 @@ class BillOfMaterialsWidget extends StatefulWidget {
 class _BillOfMaterialsState extends RefreshableState<BillOfMaterialsWidget> {
   _BillOfMaterialsState();
 
-  bool showFilterOptions = false;
-
   @override
   String getAppBarTitle() {
     if (widget.isParentComponent) {
@@ -44,18 +41,6 @@ class _BillOfMaterialsState extends RefreshableState<BillOfMaterialsWidget> {
       return L10().usedIn;
     }
   }
-
-  @override
-  List<Widget> appBarActions(BuildContext context) => [
-    IconButton(
-      icon: Icon(TablerIcons.filter),
-      onPressed: () async {
-        setState(() {
-          showFilterOptions = !showFilterOptions;
-        });
-      },
-    ),
-  ];
 
   @override
   Widget getBody(BuildContext context) {
