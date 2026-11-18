@@ -37,6 +37,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
 
   // Track state of the build order
   int allocatedLineCount = 0;
+  int allocatedItemCount = 0;
   int totalLineCount = 0;
   int outputCount = 0;
   int attachmentCount = 0;
@@ -302,6 +303,17 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
       return;
     }
 
+    // Count the stock items allocated against this build order
+    InvenTreeBuildItem()
+        .count(filters: {"build": widget.order.pk.toString()})
+        .then((int n) {
+          if (mounted) {
+            setState(() {
+              allocatedItemCount = n;
+            });
+          }
+        });
+
     if (widget.order.sourceLocationId != null) {
       InvenTreeStockLocation().get(widget.order.sourceLocationId!).then((
         value,
@@ -473,7 +485,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
       ListTile(
         title: Text(L10().allocatedStock),
         leading: Icon(TablerIcons.box_model_2, color: COLOR_ACTION),
-        trailing: LinkIcon(text: widget.order.outputCount.toString()),
+        trailing: LinkIcon(text: allocatedItemCount.toString()),
         onTap: () => {
           Navigator.push(
             context,
