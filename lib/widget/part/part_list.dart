@@ -28,8 +28,6 @@ class _PartListState extends RefreshableState<PartList> {
 
   final Map<String, String> filters;
 
-  bool showFilterOptions = false;
-
   @override
   String getAppBarTitle() => title.isNotEmpty ? title : L10().parts;
 
