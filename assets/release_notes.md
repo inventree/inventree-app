@@ -1,3 +1,8 @@
+### 1.1.1 - November 2026
+---
+
+- Fix incorrect allocation count in build detail widget
+
 ### 1.1.0 - November 2026
 ---
 
