@@ -90,7 +90,8 @@ class _PaginatedStockLocationListState
     InvenTreeStockLocation location = model as InvenTreeStockLocation;
 
     return ListTile(
-      title: Text(location.name),
+      title: Text(location.description == "" ? (location.name) :
+      (location.name + " - " + location.description)),
       subtitle: Text(location.pathstring),
       trailing: LargeText("${location.itemcount}", size: 14),
       leading: location.customIcon == null ? null : Icon(location.customIcon),
