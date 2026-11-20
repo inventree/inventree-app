@@ -2,6 +2,7 @@
 ---
 
 - Fix incorrect allocation count in build detail widget
+- Fix "new version available" notice showing in "About" view when app is up to date
 
 ### 1.1.0 - November 2026
 ---

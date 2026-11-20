@@ -218,7 +218,7 @@ class InvenTreeAboutWidget extends StatelessWidget {
 
     UpdateChecker().checkForUpdate();
 
-    if (!UpdateChecker().newVersionAvailable) {
+    if (UpdateChecker().newVersionAvailable) {
       tiles.add(
         ListTile(
           title: Text(L10().versionNewer),
