@@ -72,6 +72,11 @@ class _PaginatedStockItemListState
   @override
   Map<String, Map<String, dynamic>> get filterOptions {
     Map<String, Map<String, dynamic>> filters = {
+      "status": {
+        "label": L10().status,
+        "help_text": L10().statusCode,
+        "choices": InvenTreeAPI().StockStatus.choices,
+      },
       "available": {
         "default": null,
         "label": L10().available,
@@ -105,12 +110,18 @@ class _PaginatedStockItemListState
         "label": L10().filterSerialized,
         "help_text": L10().filterSerializedDetail,
       },
-      "status": {
-        "label": L10().status,
-        "help_text": L10().statusCode,
-        "choices": InvenTreeAPI().StockStatus.choices,
-      },
     };
+
+    // Filter by stock item cost (modern servers only)
+    // Note: The server ignores this filter for users without the "pricing" view role
+    if (InvenTreeStockItem.showCostDetail) {
+      filters["has_unit_cost"] = {
+        "default": null,
+        "label": L10().filterHasUnitCost,
+        "help_text": L10().filterHasUnitCostDetail,
+        "tristate": true,
+      };
+    }
 
     return filters;
   }
