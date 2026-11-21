@@ -797,7 +797,52 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     }
 
-    if (widget.item.hasPurchasePrice) {
+    if (api.supportsStockItemCost) {
+      // Modern stock item cost model
+      // Note: Cost data is only returned if the user has the "pricing" view role
+      if (InvenTreeStockItem.showCostDetail && widget.item.hasUnitCost) {
+        final double? minCost = widget.item.unitCostMin;
+        final double? maxCost = widget.item.unitCostMax;
+        final String currency = widget.item.costCurrency;
+        final double quantity = widget.item.quantity;
+
+        tiles.add(
+          ListTile(
+            title: Text(L10().unitCost),
+            subtitle: widget.item.costIncomplete
+                ? Text(
+                    L10().unitCostIncomplete,
+                    style: TextStyle(color: COLOR_WARNING),
+                  )
+                : null,
+            leading: Icon(
+              TablerIcons.currency_dollar,
+              color: widget.item.costIncomplete ? COLOR_WARNING : null,
+            ),
+            trailing: LargeText(
+              formatPriceRange(minCost, maxCost, currency: currency),
+            ),
+          ),
+        );
+
+        if (quantity > 0 && quantity != 1) {
+          tiles.add(
+            ListTile(
+              title: Text(L10().totalCost),
+              leading: Icon(TablerIcons.calculator),
+              trailing: LargeText(
+                formatPriceRange(
+                  minCost == null ? null : minCost * quantity,
+                  maxCost == null ? null : maxCost * quantity,
+                  currency: currency,
+                ),
+              ),
+            ),
+          );
+        }
+      }
+    } else if (widget.item.hasPurchasePrice) {
+      // Legacy "purchase price" field
       tiles.add(
         ListTile(
           title: Text(L10().purchasePrice),

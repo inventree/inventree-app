@@ -484,6 +484,113 @@ void main() {
       expect(item.hasPurchasePrice, isFalse);
     });
 
+    test("Unit Cost", () async {
+      // Field absent (not requested, or no "pricing" role)
+      var item = InvenTreeStockItem.fromJson({});
+      expect(item.hasUnitCost, isFalse);
+      expect(item.unitCostMin, isNull);
+      expect(item.costCurrency, equals(""));
+      expect(item.costIncomplete, isFalse);
+
+      // Field present, but no cost recorded
+      item = InvenTreeStockItem.fromJson({"pricing_detail": null});
+      expect(item.hasUnitCost, isFalse);
+
+      item = InvenTreeStockItem.fromJson({
+        "pricing_detail": {
+          "currency": "AUD",
+          "min_cost": "1.25",
+          "max_cost": "2.5",
+          "incomplete": true,
+          "date": "2026-11-16",
+        },
+      });
+
+      expect(item.hasUnitCost, isTrue);
+      expect(item.unitCostMin, equals(1.25));
+      expect(item.unitCostMax, equals(2.5));
+      expect(item.costCurrency, equals("AUD"));
+      expect(item.costIncomplete, isTrue);
+
+      // Only one bound available
+      item = InvenTreeStockItem.fromJson({
+        "pricing_detail": {"currency": "USD", "min_cost": null, "max_cost": 3},
+      });
+      expect(item.hasUnitCost, isTrue);
+      expect(item.unitCostMin, isNull);
+      expect(item.unitCostMax, equals(3.0));
+    });
+
+    test("Cost Detail Request", () async {
+      final api = InvenTreeAPI();
+
+      try {
+        api.connectedForTesting = true;
+
+        // Legacy server: purchase price fields retained, no pricing_detail
+        api.serverInfo = {"apiVersion": 582};
+        api.roles = {
+          "pricing": ["view"],
+        };
+
+        expect(InvenTreeStockItem.showCostDetail, isFalse);
+        expect(
+          InvenTreeStockItem().defaultGetFilters().containsKey(
+            "pricing_detail",
+          ),
+          isFalse,
+        );
+        expect(
+          InvenTreeStockItem().formFields().containsKey("purchase_price"),
+          isTrue,
+        );
+
+        // Modern server, user has pricing view role
+        api.serverInfo = {"apiVersion": 583};
+
+        expect(InvenTreeStockItem.showCostDetail, isTrue);
+        expect(
+          InvenTreeStockItem().defaultGetFilters()["pricing_detail"],
+          equals("true"),
+        );
+        // Detail field is not requested for list views
+        expect(
+          InvenTreeStockItem().defaultListFilters().containsKey(
+            "pricing_detail",
+          ),
+          isFalse,
+        );
+        expect(
+          InvenTreeStockItem().formFields().containsKey("purchase_price"),
+          isFalse,
+        );
+        expect(
+          InvenTreeStockItem().formFields().containsKey(
+            "purchase_price_currency",
+          ),
+          isFalse,
+        );
+
+        // Modern server, user lacks pricing view role
+        api.roles = {
+          "pricing": <String>[],
+          "stock": ["view"],
+        };
+
+        expect(InvenTreeStockItem.showCostDetail, isFalse);
+        expect(
+          InvenTreeStockItem().defaultGetFilters().containsKey(
+            "pricing_detail",
+          ),
+          isFalse,
+        );
+      } finally {
+        api.serverInfo = {};
+        api.roles = {};
+        api.connectedForTesting = false;
+      }
+    });
+
     test("Attributes", () async {
       var item = InvenTreeStockItem.fromJson({});
 

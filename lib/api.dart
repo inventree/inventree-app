@@ -369,6 +369,12 @@ class InvenTreeAPI {
   // Ref: https://github.com/inventree/InvenTree/pull/13101
   bool get supportsAuditLog => apiVersion >= 566;
 
+  // Does the server support the "modern" stock item cost model?
+  // - StockItem "purchase_price" fields are removed
+  // - Cost summary is available via the optional "pricing_detail" field
+  // Ref: https://github.com/inventree/InvenTree/pull/13294
+  bool get supportsStockItemCost => apiVersion >= 583;
+
   // Cached list of plugins (refreshed when we connect to the server)
   List<InvenTreePlugin> _plugins = [];
 
@@ -571,6 +577,13 @@ class InvenTreeAPI {
       OneContext().push(route).then((_) => onLoginScreenClosed());
     }
   }
+
+  // Simulate a connected server (for unit tests which check user roles)
+  @visibleForTesting
+  bool get connectedForTesting => _connected;
+
+  @visibleForTesting
+  set connectedForTesting(bool value) => _connected = value;
 
   // Navigator for the login screen in widget tests (which have no OneContext)
   @visibleForTesting

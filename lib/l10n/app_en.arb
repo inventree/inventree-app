@@ -702,6 +702,12 @@
   "filterPrimaryDetail": "Show primary supplier parts",
   "@filterPrimaryDetail": {},
 
+  "filterHasUnitCost": "Has Unit Cost",
+  "@filterHasUnitCost": {},
+
+  "filterHasUnitCostDetail": "Show stock items which have cost information",
+  "@filterHasUnitCostDetail": {},
+
   "filterSerialized": "Serialized",
   "@filterSerialized": {},
 
@@ -1917,6 +1923,9 @@
   "toggleTorch": "Toggle Torch",
   "@toggleTorch": {},
 
+  "totalCost": "Total Cost",
+  "@totalCost": {},
+
   "totalPrice": "Total Price",
   "@totalPrice": {},
 
@@ -1983,6 +1992,12 @@
 
   "unavailableDetail": "Item is not available",
   "@unavailableDetail": {},
+
+  "unitCost": "Unit Cost",
+  "@unitCost": {},
+
+  "unitCostIncomplete": "One or more costs could not be included",
+  "@unitCostIncomplete": {},
 
   "unitPrice": "Unit Price",
   "@unitPrice": {},
