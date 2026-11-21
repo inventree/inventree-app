@@ -139,11 +139,13 @@ void main() {
       expect(production.canHold, isTrue);
       expect(production.canCompleteOrder, isTrue);
 
-      // Cannot complete without any outputs
+      // Completion is offered without output counts (the server validates)
       expect(
         InvenTreeBuildOrder.fromJson({"status": 20}).canCompleteOrder,
-        isFalse,
+        isTrue,
       );
+
+      expect(production.finishUrl, endsWith("/finish/"));
 
       final onHold = build(25);
       expect(onHold.isOnHold, isTrue);

@@ -3,6 +3,7 @@ import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/api.dart";
+import "package:inventree/api_form.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/l10.dart";
@@ -205,17 +206,24 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
   }
 
   /// Complete this build order
+  /// Uses a form so the user can choose how to handle unallocated,
+  /// over-allocated and incomplete stock, and sees any server validation errors
   Future<void> _completeOrder(BuildContext context) async {
-    confirmationDialog(
+    Map<String, Map<String, dynamic>> fields = {
+      "accept_overallocated": {},
+      "accept_unallocated": {},
+      "accept_incomplete": {},
+    };
+
+    launchApiForm(
+      context,
       L10().completeOrder,
-      L10().completeOrderConfirm,
+      widget.order.finishUrl,
+      fields,
+      method: "POST",
       icon: TablerIcons.check,
-      color: COLOR_SUCCESS,
-      acceptText: L10().complete,
-      onAccept: () async {
-        widget.order.completeOrder().then((dynamic) {
-          refresh(context);
-        });
+      onSuccess: (data) async {
+        refresh(context);
       },
     );
   }

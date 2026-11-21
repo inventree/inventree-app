@@ -122,9 +122,12 @@ class InvenTreeBuildOrder extends InvenTreeOrder {
       api.BuildOrderStatus.isNameIn(logicalStatus, ["ON_HOLD"]);
 
   // Can this build order be completed?
-  bool get canCompleteOrder {
-    return isInProgress && outputCount > 0;
-  }
+  // Matches the server web UI: offered for any in-production build,
+  // and the server validates the rest (incomplete outputs, child builds, etc)
+  bool get canCompleteOrder => isInProgress;
+
+  // API endpoint for marking this build order as complete
+  String get finishUrl => "${URL}${pk}/finish/";
 
   // Can this build order be issued?
   bool get canIssue {
@@ -169,25 +172,6 @@ class InvenTreeBuildOrder extends InvenTreeOrder {
     return await InvenTreeAPI().post(
       "${URL}${pk}/issue/",
       body: {},
-      expectedStatusCode: 201,
-    );
-  }
-
-  // Complete a build order
-  Future<APIResponse> completeOrder({
-    bool acceptIncomplete = false,
-    bool acceptUnallocated = false,
-    bool acceptOverallocated = false,
-  }) async {
-    Map<String, String> data = {
-      "accept_incomplete": acceptIncomplete.toString(),
-      "accept_unallocated": acceptUnallocated.toString(),
-      "accept_overallocated": acceptOverallocated.toString(),
-    };
-
-    return await InvenTreeAPI().post(
-      "${URL}${pk}/complete/",
-      body: data,
       expectedStatusCode: 201,
     );
   }
