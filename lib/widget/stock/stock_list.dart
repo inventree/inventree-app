@@ -66,6 +66,12 @@ class _PaginatedStockItemListState
       options.remove("creation_date");
     }
 
+    // Order by stock item cost (modern servers only)
+    // Note: The server ignores this ordering for users without the "pricing" view role
+    if (InvenTreeStockItem.showCostDetail) {
+      options["unit_cost"] = L10().unitCost;
+    }
+
     return options;
   }
 
