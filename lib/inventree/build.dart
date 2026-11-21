@@ -86,27 +86,20 @@ class InvenTreeBuildOrder extends InvenTreeOrder {
   // External build
   bool get external => getBool("external");
 
-  // Return the location where the items will be sourced from
-  int? get sourceLocationId => getInt("take_from");
+  // Return the location where the items will be sourced from (null if not set)
+  int? get sourceLocationId {
+    final int id = getInt("take_from");
+    return id > 0 ? id : null;
+  }
 
-  // Return the location where the completed items will be stored
-  int? get destinationId => getInt("destination");
+  // Return the location where the completed items will be stored (null if not set)
+  int? get destinationId {
+    final int id = getInt("destination");
+    return id > 0 ? id : null;
+  }
 
-  String get destinationName => getString("name", subKey: "destination_detail");
-
-  // Line item information
-  @override
-  int get lineItemCount => getInt("item_count", backup: 0);
-
-  // Allocated line item count
-  int get allocatedLineItemCount => getInt("allocated_line_count", backup: 0);
-
-  // All line items are allocated
-  bool get areAllLinesAllocated =>
-      lineItemCount > 0 && lineItemCount == allocatedLineItemCount;
-
-  // Output count
-  int get outputCount => getInt("output_count", backup: 0);
+  // Note: The server's BuildSerializer does not provide line or output counts.
+  // These are queried separately (see BuildOrderDetailWidget).
 
   // Status code handling
   // Note: These map to BuildStatus in backend/status_codes.py

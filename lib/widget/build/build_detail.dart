@@ -40,7 +40,6 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
   int allocatedLineCount = 0;
   int allocatedItemCount = 0;
   int totalLineCount = 0;
-  int outputCount = 0;
   int attachmentCount = 0;
 
   bool showCameraShortcut = true;
@@ -153,8 +152,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
       }
 
       // Unallocate action (if there are allocated items)
-      if (widget.order.isInProgress &&
-          widget.order.allocatedLineItemCount > 0) {
+      if (widget.order.isInProgress && allocatedItemCount > 0) {
         actions.add(
           SpeedDialChild(
             child: Icon(TablerIcons.arrow_autofit_up, color: COLOR_DANGER),
@@ -311,13 +309,33 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
       return;
     }
 
+    final String buildId = widget.order.pk.toString();
+
     // Count the stock items allocated against this build order
-    InvenTreeBuildItem()
-        .count(filters: {"build": widget.order.pk.toString()})
+    InvenTreeBuildItem().count(filters: {"build": buildId}).then((int n) {
+      if (mounted) {
+        setState(() {
+          allocatedItemCount = n;
+        });
+      }
+    });
+
+    // Count the required line items for this build order
+    InvenTreeBuildLine().count(filters: {"build": buildId}).then((int n) {
+      if (mounted) {
+        setState(() {
+          totalLineCount = n;
+        });
+      }
+    });
+
+    // Count the fully allocated line items for this build order
+    InvenTreeBuildLine()
+        .count(filters: {"build": buildId, "allocated": "true"})
         .then((int n) {
           if (mounted) {
             setState(() {
-              allocatedItemCount = n;
+              allocatedLineCount = n;
             });
           }
         });
@@ -460,33 +478,34 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
       ),
     );
 
-    // Line items tile
-    /*
-     * TODO: Reimplement this item
-    Color lineColor = Colors.red;
-    if (widget.order.areAllLinesAllocated) {
-      lineColor = Colors.green;
-    } else if (widget.order.allocatedLineItemCount > 0) {
-      lineColor = Colors.orange;
-    }
+    // Line items tile (fully allocated lines / total lines)
+    if (totalLineCount > 0) {
+      Color lineColor = COLOR_DANGER;
 
-    tiles.add(
-      ListTile(
-        title: Text(L10().requiredParts),
-        subtitle: LinearProgressIndicator(
-          value: widget.order.lineItemCount > 0
-              ? widget.order.allocatedLineItemCount / widget.order.lineItemCount
-              : 0,
-          color: lineColor,
+      if (allocatedLineCount >= totalLineCount) {
+        lineColor = COLOR_SUCCESS;
+      } else if (allocatedLineCount > 0) {
+        lineColor = COLOR_WARNING;
+      }
+
+      tiles.add(
+        ListTile(
+          title: Text(L10().requiredParts),
+          subtitle: LinearProgressIndicator(
+            value: allocatedLineCount / totalLineCount,
+            color: lineColor,
+            backgroundColor: Theme.of(
+              context,
+            ).colorScheme.surfaceContainerHighest,
+          ),
+          leading: const Icon(TablerIcons.clipboard_check),
+          trailing: Text(
+            "${allocatedLineCount} / ${totalLineCount}",
+            style: TextStyle(color: lineColor),
+          ),
         ),
-        leading: const Icon(TablerIcons.clipboard_check),
-        trailing: Text(
-          "${widget.order.allocatedLineItemCount} / ${widget.order.lineItemCount}",
-          style: TextStyle(color: lineColor),
-        ),
-      ),
-    );
-    */
+      );
+    }
 
     // Output items
     tiles.add(
