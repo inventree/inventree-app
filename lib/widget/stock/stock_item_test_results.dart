@@ -81,9 +81,8 @@ class _StockItemTestResultDisplayState
       L10().testResultAdd,
       fields: fields,
       data: {
-        "template": "${templateId}",
         "stock_item": "${item.pk}",
-        "test": "${name}",
+        if (templateId > 0) "template": "${templateId}",
       },
       onSuccess: (data) {
         refresh(context);
@@ -93,51 +92,8 @@ class _StockItemTestResultDisplayState
   }
 
   // Squish together templates and results
-  List<InvenTreeModel> getTestResults() {
-    var templates = item.testTemplates;
-    var results = item.testResults;
-
-    List<InvenTreeModel> outputs = [];
-
-    // Add each template to the list
-    for (var t in templates) {
-      outputs.add(t);
-    }
-
-    // Add each result (compare to existing items / templates
-    for (var result in results) {
-      bool match = false;
-
-      for (var ii = 0; ii < outputs.length; ii++) {
-        // Check against templates
-        if (outputs[ii] is InvenTreePartTestTemplate) {
-          var template = outputs[ii] as InvenTreePartTestTemplate;
-
-          // Match the result to a template
-          if (result.templateId == template.pk || result.key == template.key) {
-            template.results.add(result);
-            match = true;
-            break;
-          }
-        } else if (outputs[ii] is InvenTreeStockItemTestResult) {
-          var r = outputs[ii] as InvenTreeStockItemTestResult;
-
-          if (r.key == result.key) {
-            // Overwrite with a newer result
-            outputs[ii] = result;
-            match = true;
-            break;
-          }
-        }
-      }
-
-      if (!match) {
-        outputs.add(result);
-      }
-    }
-
-    return outputs;
-  }
+  List<InvenTreeModel> getTestResults() =>
+      mergeTestResults(item.testTemplates, item.testResults);
 
   @override
   List<Widget> getTiles(BuildContext context) {

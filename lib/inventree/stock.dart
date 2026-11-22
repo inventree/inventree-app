@@ -46,11 +46,12 @@ class InvenTreeStockItemTestResult extends InvenTreeModel {
     return fields;
   }
 
-  String get key => getString("key");
+  // The test key and name are provided by the linked test template
+  String get key => getString("key", subKey: "template_detail");
 
   int get templateId => getInt("template");
 
-  String get testName => getString("test");
+  String get testName => getString("test_name", subKey: "template_detail");
 
   bool get result => getBool("result");
 
@@ -67,6 +68,64 @@ class InvenTreeStockItemTestResult extends InvenTreeModel {
     var result = InvenTreeStockItemTestResult.fromJson(json);
     return result;
   }
+}
+
+/*
+ * Combine test templates and test results for display.
+ *
+ * - Each result is attached to its template (matched by template ID,
+ *   or by test key when the result has one)
+ * - Results without a listed template (e.g. a disabled or deleted template)
+ *   are displayed separately, keeping only the latest result for each template
+ *
+ * Results are expected in date order, oldest first (the server default)
+ */
+List<InvenTreeModel> mergeTestResults(
+  List<InvenTreePartTestTemplate> templates,
+  List<InvenTreeStockItemTestResult> results,
+) {
+  final List<InvenTreeModel> outputs = [];
+
+  for (final template in templates) {
+    // Results are re-attached on each call
+    template.results.clear();
+    outputs.add(template);
+  }
+
+  // Template ID -> position in outputs, for results without a listed template
+  final Map<int, int> unlisted = {};
+
+  for (final result in results) {
+    InvenTreePartTestTemplate? template;
+
+    for (final t in templates) {
+      if ((result.templateId > 0 && result.templateId == t.pk) ||
+          (result.key.isNotEmpty && result.key == t.key)) {
+        template = t;
+        break;
+      }
+    }
+
+    if (template != null) {
+      template.results.add(result);
+      continue;
+    }
+
+    final int id = result.templateId;
+
+    if (id > 0 && unlisted.containsKey(id)) {
+      // A newer result for the same template
+      outputs[unlisted[id]!] = result;
+    } else {
+      if (id > 0) {
+        unlisted[id] = outputs.length;
+      }
+
+      outputs.add(result);
+    }
+  }
+
+  return outputs;
 }
 
 /*
