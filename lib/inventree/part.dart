@@ -28,8 +28,9 @@ class InvenTreePartCategory extends InvenTreeModel {
 
   static const String MODEL_TYPE = "partcategory";
 
+  // Part categories have a separate role (all supported server versions)
   @override
-  List<String> get rolesRequired => ["part"];
+  List<String> get rolesRequired => ["part_category"];
 
   // Navigate to a detail page for this item
   @override
@@ -510,7 +511,8 @@ class InvenTreePartPricing extends InvenTreeModel {
     : super.fromJson(json);
 
   @override
-  List<String> get rolesRequired => ["part"];
+  List<String> get rolesRequired =>
+      InvenTreeAPI().supportsPricingRole ? ["pricing"] : ["part"];
 
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) =>

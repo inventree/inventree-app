@@ -1,3 +1,4 @@
+import "package:inventree/api.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/inventree/part.dart";
 
@@ -15,6 +16,10 @@ class InvenTreeBomItem extends InvenTreeModel {
 
   @override
   String get URL => "bom/";
+
+  @override
+  List<String> get rolesRequired =>
+      InvenTreeAPI().supportsBomRole ? ["bom"] : ["part"];
 
   @override
   Map<String, String> defaultFilters() {

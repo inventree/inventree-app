@@ -162,7 +162,10 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     showPricing =
         api.canViewPricing &&
         await InvenTreeSettingsManager().getBool(INV_PART_SHOW_PRICING, true);
-    showBom = await InvenTreeSettingsManager().getBool(INV_PART_SHOW_BOM, true);
+    // BOM data requires the "bom" role (or "part" role for older servers)
+    showBom =
+        InvenTreeBomItem().canView &&
+        await InvenTreeSettingsManager().getBool(INV_PART_SHOW_BOM, true);
     allowLabelPrinting = await InvenTreeSettingsManager().getBool(
       INV_ENABLE_LABEL_PRINTING,
       true,
@@ -277,27 +280,29 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       }
     }
 
-    // Request the number of BOM items
-    InvenTreePart().count(filters: {"in_bom_for": part.pk.toString()}).then((
-      int value,
-    ) {
-      if (mounted) {
-        setState(() {
-          bomCount = value;
-        });
-      }
-    });
+    if (InvenTreeBomItem().canView) {
+      // Request the number of BOM items
+      InvenTreePart().count(filters: {"in_bom_for": part.pk.toString()}).then((
+        int value,
+      ) {
+        if (mounted) {
+          setState(() {
+            bomCount = value;
+          });
+        }
+      });
 
-    // Request number of "used in" parts
-    InvenTreeBomItem().count(filters: {"uses": part.pk.toString()}).then((
-      int value,
-    ) {
-      if (mounted) {
-        setState(() {
-          usedInCount = value;
-        });
-      }
-    });
+      // Request number of "used in" parts
+      InvenTreeBomItem().count(filters: {"uses": part.pk.toString()}).then((
+        int value,
+      ) {
+        if (mounted) {
+          setState(() {
+            usedInCount = value;
+          });
+        }
+      });
+    }
 
     // Request the number of variant items
     InvenTreePart().count(filters: {"variant_of": part.pk.toString()}).then((
