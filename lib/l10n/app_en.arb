@@ -1764,6 +1764,15 @@
   "stockItemCreate": "New Stock Item",
   "@stockItemCreate": {},
 
+  "stockItemsCreated": "{count} stock items created",
+  "@stockItemsCreated": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
   "stockItemCreateDetail": "Create new stock item in this location",
   "@stockItemCreateDetail": {},
 

@@ -276,12 +276,11 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       data: data,
       fields: fields,
       onSuccess: (result) async {
-        Map<String, dynamic> data = result as Map<String, dynamic>;
-
-        if (data.containsKey("pk")) {
-          var item = InvenTreeStockItem.fromJson(data);
-          item.goToDetailPage(context);
-        }
+        InvenTreeStockItem.onCreated(
+          context,
+          result as Map<String, dynamic>,
+          onMultiple: () => refresh(context),
+        );
       },
     );
   }

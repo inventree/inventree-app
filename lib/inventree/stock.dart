@@ -9,6 +9,7 @@ import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/widget/stock/location_display.dart";
 import "package:inventree/widget/stock/stock_detail.dart";
+import "package:inventree/widget/snacks.dart";
 
 /*
  * Class representing a test result for a single stock item
@@ -127,6 +128,30 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   // URLs for performing stock actions
   static String transferStockUrl() => "stock/transfer/";
+
+  /*
+   * Handle the response after creating new stock item(s)
+   * (see formResponseData for the response format):
+   * - A single item: open its detail page
+   * - Multiple items (e.g. serialized): notify the user and call onMultiple
+   */
+  static void onCreated(
+    BuildContext context,
+    Map<String, dynamic> result, {
+    Function()? onMultiple,
+  }) {
+    if (result.containsKey("pk")) {
+      InvenTreeStockItem.fromJson(result).goToDetailPage(context);
+      return;
+    }
+
+    final dynamic results = result["results"];
+
+    if (results is List && results.isNotEmpty) {
+      showSnackIcon(L10().stockItemsCreated(results.length), success: true);
+      onMultiple?.call();
+    }
+  }
 
   static String countStockUrl() => "stock/count/";
 
