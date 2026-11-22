@@ -208,7 +208,9 @@ class InvenTreeAboutWidget extends StatelessWidget {
     tiles.add(
       ListTile(
         title: Text(L10().version),
-        subtitle: Text("${info.version} - Build ${info.buildNumber}"),
+        subtitle: Text(
+          "${info.version} - ${L10().appBuild} ${info.buildNumber}",
+        ),
         leading: Icon(TablerIcons.info_circle),
         trailing: UpdateChecker().newVersionAvailable
             ? Icon(TablerIcons.alert_circle, color: COLOR_WARNING)

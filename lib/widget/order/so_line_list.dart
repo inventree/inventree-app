@@ -86,7 +86,7 @@ class _PaginatedSOLineListState
       return ListTile(
         title: Text(L10().error),
         subtitle: Text(
-          "Missing part detail",
+          L10().partDetailMissing,
           style: TextStyle(color: COLOR_DANGER),
         ),
       );

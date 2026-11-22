@@ -238,6 +238,21 @@ void main() {
     });
   });
 
+  group("Stock Location:", () {
+    test("Path", () async {
+      var location = InvenTreeStockLocation.fromJson({
+        "pathstring": "Warehouse/Shelf/Bin",
+      });
+
+      expect(location.parentPathString, equals("Warehouse/Shelf"));
+
+      location = InvenTreeStockLocation.fromJson({"pathstring": "Warehouse"});
+
+      // Translated string (previously hard-coded)
+      expect(location.parentPathString, equals(L10().stockTopLevel));
+    });
+  });
+
   group("Part:", () {
     test("Full Name", () async {
       expect(
