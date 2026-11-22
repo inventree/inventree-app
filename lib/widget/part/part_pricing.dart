@@ -67,12 +67,12 @@ class _PartPricingWidgetState extends RefreshableState<PartPricingWidget> {
       ),
     );
 
-    if (pricing.overallMin != null) {
+    if (pricing.overrideMin != null) {
       tiles.add(
         ListTile(
           title: Text(L10().priceOverrideMin),
           trailing: Text(
-            renderCurrency(pricing.overallMin, pricing.overrideMinCurrency),
+            renderCurrency(pricing.overrideMin, pricing.overrideMinCurrency),
           ),
         ),
       );
@@ -83,7 +83,7 @@ class _PartPricingWidgetState extends RefreshableState<PartPricingWidget> {
         ListTile(
           title: Text(L10().priceOverrideMax),
           trailing: Text(
-            renderCurrency(pricing.overallMax, pricing.overrideMaxCurrency),
+            renderCurrency(pricing.overrideMax, pricing.overrideMaxCurrency),
           ),
         ),
       );
