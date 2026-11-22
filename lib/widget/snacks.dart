@@ -12,6 +12,9 @@ OverlayEntry? _currentSnackOverlay;
 
 /*
  * Display a configurable 'snackbar' at the top of the screen
+ *
+ * If both [icon] and [onAction] are provided, tapping the icon runs the action
+ * (and the text action button is only shown if [actionText] is provided)
  */
 void showSnackIcon(
   String text, {
@@ -50,17 +53,22 @@ void showSnackIcon(
     }
   }
 
-  final String actionLabel = actionText ?? L10().details;
+  // An action icon replaces the default text action button
+  final bool iconAction = onAction != null && icon != null;
+  final String? actionLabel = (iconAction && actionText == null)
+      ? null
+      : actionText ?? L10().details;
   final Duration duration = Duration(seconds: onAction == null ? 5 : 10);
 
   late OverlayEntry entry;
   entry = OverlayEntry(
-    builder: (ctx) => _TopSnackBar(
+    builder: (ctx) => TopSnackBar(
       text: text,
       icon: icon,
       backgroundColor: backgroundColor,
       onAction: onAction,
       actionText: actionLabel,
+      iconAction: iconAction,
       duration: duration,
       onDismiss: () {
         entry.remove();
@@ -75,8 +83,12 @@ void showSnackIcon(
   Overlay.of(context).insert(entry);
 }
 
-class _TopSnackBar extends StatefulWidget {
-  const _TopSnackBar({
+/*
+ * Snackbar widget displayed by showSnackIcon()
+ * (public for testing, as snackbars are not displayed in tests)
+ */
+class TopSnackBar extends StatefulWidget {
+  const TopSnackBar({
     required this.text,
     required this.backgroundColor,
     required this.duration,
@@ -84,6 +96,7 @@ class _TopSnackBar extends StatefulWidget {
     this.icon,
     this.onAction,
     this.actionText,
+    this.iconAction = false,
   });
 
   final String text;
@@ -91,6 +104,10 @@ class _TopSnackBar extends StatefulWidget {
   final Color backgroundColor;
   final Function()? onAction;
   final String? actionText;
+
+  // Tapping the icon runs the action
+  final bool iconAction;
+
   final Duration duration;
   final VoidCallback onDismiss;
 
@@ -98,7 +115,7 @@ class _TopSnackBar extends StatefulWidget {
   _TopSnackBarState createState() => _TopSnackBarState();
 }
 
-class _TopSnackBarState extends State<_TopSnackBar>
+class _TopSnackBarState extends State<TopSnackBar>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<Offset> _slideAnimation;
@@ -128,6 +145,11 @@ class _TopSnackBarState extends State<_TopSnackBar>
     _timer?.cancel();
     _controller.dispose();
     super.dispose();
+  }
+
+  void _runAction() {
+    _dismiss();
+    widget.onAction?.call();
   }
 
   void _dismiss() {
@@ -170,7 +192,7 @@ class _TopSnackBarState extends State<_TopSnackBar>
                                 style: const TextStyle(color: Colors.white),
                               ),
                             ),
-                            if (widget.icon != null)
+                            if (widget.icon != null && !widget.iconAction)
                               Padding(
                                 padding: const EdgeInsets.only(left: 8),
                                 child: Icon(widget.icon, color: Colors.white),
@@ -179,12 +201,15 @@ class _TopSnackBarState extends State<_TopSnackBar>
                         ),
                       ),
                     ),
-                    if (widget.onAction != null)
+                    if (widget.iconAction)
+                      IconButton(
+                        icon: Icon(widget.icon, color: Colors.white),
+                        tooltip: widget.actionText ?? L10().details,
+                        onPressed: _runAction,
+                      ),
+                    if (widget.onAction != null && widget.actionText != null)
                       TextButton(
-                        onPressed: () {
-                          _dismiss();
-                          widget.onAction!();
-                        },
+                        onPressed: _runAction,
                         child: Text(
                           widget.actionText ?? "",
                           style: const TextStyle(color: Colors.white),
