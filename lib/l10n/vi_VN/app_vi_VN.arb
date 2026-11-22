@@ -74,6 +74,8 @@
   "@allocateAuto": {},
   "allocateAutoDetail": "Automatically allocate required stock items to this order",
   "@allocateAutoDetail": {},
+  "allocateAutoInProgress": "Auto-allocate task in progress",
+  "@allocateAutoInProgress": {},
   "allocateStock": "Phân kho",
   "@allocateStock": {},
   "allocated": "Được phân bố",
@@ -836,6 +838,12 @@
   "@printLabelFailure": {},
   "printLabelSuccess": "Tem nhãn được gửi đến máy in",
   "@printLabelSuccess": {},
+  "printLabelInProgress": "Label printing in progress",
+  "@printLabelInProgress": {},
+  "printLabelTimeout": "Label printing timed out",
+  "@printLabelTimeout": {},
+  "printLabelWorkerNotRunning": "Label printing timed out: the server's background worker is not running",
+  "@printLabelWorkerNotRunning": {},
   "profile": "Hồ sơ",
   "@profile": {},
   "profileAdd": "Thêm mới cấu hình máy chủ",
@@ -1186,6 +1194,14 @@
   "@stockItems": {},
   "stockItemCreate": "Thêm kho hàng",
   "@stockItemCreate": {},
+  "stockItemsCreated": "{count} stock items created",
+  "@stockItemsCreated": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "stockItemCreateDetail": "Tạo kho hàng mới trong điểm bán này",
   "@stockItemCreateDetail": {},
   "stockItemDelete": "Xóa kho hàng",
