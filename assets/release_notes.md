@@ -4,6 +4,8 @@
 - Fix incorrect allocation count in build detail widget
 - Fix "new version available" notice showing in "About" view when app is up to date
 - Bug fix for part pricing display
+- Improved allocation display for build orders
+- Multiple bug fixes for build order support
 
 ### 1.1.0 - November 2026
 ---
