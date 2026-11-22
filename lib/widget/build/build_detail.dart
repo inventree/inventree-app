@@ -17,6 +17,7 @@ import "package:inventree/widget/link_icon.dart";
 import "package:inventree/widget/notes_list_widget.dart";
 import "package:inventree/widget/history_widget.dart";
 import "package:inventree/widget/refreshable_state.dart";
+import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/build/build_line_list.dart";
 import "package:inventree/widget/build/build_item_list.dart";
 import "package:inventree/widget/build/build_output_list.dart";
@@ -267,9 +268,38 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
       color: Theme.of(context).colorScheme.secondary,
       acceptText: L10().allocate,
       onAccept: () async {
-        widget.order.autoAllocate().then((dynamic) {
+        final APIResponse response = await widget.order.autoAllocate();
+
+        // No response (e.g. connection error) - already reported
+        if (!response.isValid()) {
+          return;
+        }
+
+        switch (InvenTreeBuildOrder.autoAllocateOutcome(response)) {
+          case BuildTaskOutcome.complete:
+            showSnackIcon(L10().requestSuccessful, success: true);
+          case BuildTaskOutcome.queued:
+            showSnackIcon(
+              L10().allocateAutoInProgress,
+              icon: TablerIcons.clock,
+              success: true,
+            );
+          case BuildTaskOutcome.failed:
+            if (response.successful()) {
+              // Task ran, but did not succeed
+              showSnackIcon(L10().requestFailed, success: false);
+            } else {
+              showStatusCodeError(
+                response.url,
+                response.statusCode,
+                details: response.data,
+              );
+            }
+        }
+
+        if (mounted) {
           refresh(context);
-        });
+        }
       },
     );
   }

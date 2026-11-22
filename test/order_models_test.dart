@@ -96,6 +96,41 @@ void main() {
       expect(build.progressPercent, equals(0));
     });
 
+    test("Auto-allocate outcome", () async {
+      BuildTaskOutcome outcome(int code, [Map<String, dynamic>? data]) =>
+          InvenTreeBuildOrder.autoAllocateOutcome(
+            APIResponse(statusCode: code, data: data ?? {}),
+          );
+
+      // Older servers (API < 465) complete synchronously with 201
+      expect(outcome(201), equals(BuildTaskOutcome.complete));
+
+      // Task offloaded to the background worker
+      expect(
+        outcome(200, {
+          "task_id": "abc",
+          "pending": true,
+          "complete": false,
+          "success": false,
+        }),
+        equals(BuildTaskOutcome.queued),
+      );
+
+      // Task run synchronously
+      expect(
+        outcome(200, {"task_id": "", "complete": true, "success": true}),
+        equals(BuildTaskOutcome.complete),
+      );
+      expect(
+        outcome(200, {"task_id": "", "complete": true, "success": false}),
+        equals(BuildTaskOutcome.failed),
+      );
+
+      // Task could not be run, or request rejected
+      expect(outcome(404, {"complete": false}), BuildTaskOutcome.failed);
+      expect(outcome(400), equals(BuildTaskOutcome.failed));
+    });
+
     test("Details", () async {
       var build = InvenTreeBuildOrder.fromJson({
         "parent": 3,

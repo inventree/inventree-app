@@ -14,6 +14,9 @@ import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/widget/build/build_detail.dart";
 
+/// Result of a build order action which may run as a background task
+enum BuildTaskOutcome { complete, queued, failed }
+
 /*
  * Class representing a Build Order
  */
@@ -188,12 +191,39 @@ class InvenTreeBuildOrder extends InvenTreeOrder {
   }
 
   // Auto-allocate stock items for this build order
+  // The status code is checked by the caller (see autoAllocateOutcome)
   Future<APIResponse> autoAllocate() async {
     return await InvenTreeAPI().post(
       "${URL}${pk}/auto-allocate/",
       body: {},
-      expectedStatusCode: 201,
+      expectedStatusCode: null,
     );
+  }
+
+  /*
+   * Interpret the response from the auto-allocate endpoint:
+   * - API < 465: returns 201 once allocation has completed
+   * - API >= 465: returns task details (200) - the task is either
+   *   offloaded to the background worker, or run synchronously
+   */
+  static BuildTaskOutcome autoAllocateOutcome(APIResponse response) {
+    if (response.statusCode == 201) {
+      return BuildTaskOutcome.complete;
+    }
+
+    if (response.statusCode != 200) {
+      return BuildTaskOutcome.failed;
+    }
+
+    final Map<String, dynamic> data = response.asMap();
+
+    if (data["complete"] == true) {
+      return data["success"] == true
+          ? BuildTaskOutcome.complete
+          : BuildTaskOutcome.failed;
+    }
+
+    return BuildTaskOutcome.queued;
   }
 
   // Unallocate all stock from this build order
