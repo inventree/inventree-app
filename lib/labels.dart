@@ -164,42 +164,156 @@ class LabelFormWidgetState extends APIFormWidgetState {
   }
 }
 
-Future<void> handlePrintingSuccess(
-  BuildContext context,
-  Map<String, dynamic> data,
-  int repeatCount,
-) async {
-  const int MAX_REPEATS = 60;
+// Maximum number of times to poll the server for print job status
+const int PRINT_MAX_POLLS = 60;
 
-  int id = (data["pk"] ?? -1) as int;
-  bool complete = (data["complete"] ?? false) as bool;
-  bool error = data["errors"] != null;
-  String? output = data["output"] as String?;
+// Delay between successive polls of the print job status
+const Duration PRINT_POLL_INTERVAL = Duration(seconds: 1);
 
-  if (complete) {
-    if (output != null && output.isNotEmpty) {
-      // An output was generated - we can download it!
-      showSnackIcon(L10().downloading, success: true);
-      InvenTreeAPI().downloadFile(output);
-    } else {
-      // Label was offloaded, likely to an external printer
-      showSnackIcon(L10().printLabelSuccess, success: true);
+// Final state of a label print job
+enum LabelPrintStatus {
+  complete, // Job completed (output may be available for download)
+  failed, // Server reported an error, or the job cannot be tracked
+  timedOut, // Job did not complete within the polling window
+}
+
+class LabelPrintResult {
+  const LabelPrintResult(this.status, {this.data = const {}, this.error});
+
+  final LabelPrintStatus status;
+
+  // Most recent DataOutput data received from the server
+  final Map<String, dynamic> data;
+
+  // Error message (if available)
+  final String? error;
+
+  String get output => (data["output"] ?? "").toString();
+}
+
+/*
+ * Extract an error message from the "errors" field of a DataOutput object.
+ * Returns null if no errors are reported.
+ */
+String? printOutputError(Map<String, dynamic> data) {
+  final dynamic errors = data["errors"];
+
+  if (errors == null) {
+    return null;
+  }
+
+  dynamic error = errors;
+
+  // e.g. {"error": "message"} or {"field": ["message"]}
+  if (error is Map) {
+    if (error.isEmpty) return null;
+    error = error["error"] ?? error.values.first;
+  }
+
+  if (error is List) {
+    if (error.isEmpty) return null;
+    error = error.first;
+  }
+
+  final String message = error.toString().trim();
+
+  return message.isEmpty ? null : message;
+}
+
+/*
+ * Wait for a label print job (DataOutput) to complete on the server.
+ *
+ * Polls the job status at [interval], up to [maxPolls] times.
+ * Transient request failures are retried until the polling window expires.
+ */
+Future<LabelPrintResult> waitForPrintOutput(
+  Map<String, dynamic> data, {
+  Future<APIResponse> Function(String url)? fetch,
+  int maxPolls = PRINT_MAX_POLLS,
+  Duration interval = PRINT_POLL_INTERVAL,
+}) async {
+  final request = fetch ?? (String url) => InvenTreeAPI().get(url);
+
+  final int id = (data["pk"] is int) ? data["pk"] as int : -1;
+
+  for (int poll = 0; ; poll++) {
+    final String? error = printOutputError(data);
+
+    if (error != null) {
+      return LabelPrintResult(
+        LabelPrintStatus.failed,
+        data: data,
+        error: error,
+      );
     }
-  } else if (error) {
-    showSnackIcon(L10().printLabelFailure, success: false);
-  } else if (repeatCount < MAX_REPEATS && id > 0) {
-    // Printing is not yet complete, but we have a valid output ID
-    Future.delayed(Duration(milliseconds: 1000), () async {
-      // Re-query the printing status
-      InvenTreeAPI().get("data-output/$id/").then((response) {
-        if (response.statusCode == 200) {
-          if (response.data is Map<String, dynamic>) {
-            final responseData = response.data as Map<String, dynamic>;
-            handlePrintingSuccess(context, responseData, repeatCount + 1);
-          }
-        }
-      });
-    });
+
+    if (data["complete"] == true) {
+      return LabelPrintResult(LabelPrintStatus.complete, data: data);
+    }
+
+    if (id <= 0) {
+      // No job ID - cannot track progress
+      return LabelPrintResult(LabelPrintStatus.failed, data: data);
+    }
+
+    if (poll >= maxPolls) {
+      return LabelPrintResult(LabelPrintStatus.timedOut, data: data);
+    }
+
+    await Future.delayed(interval);
+
+    final APIResponse response = await request("data-output/${id}/");
+
+    if (response.successful() && response.data is Map) {
+      data = Map<String, dynamic>.from(response.data as Map);
+    } else if (response.isValid() && response.statusCode >= 400) {
+      // Client error (e.g. job deleted, or permission denied) - stop polling
+      return LabelPrintResult(LabelPrintStatus.failed, data: data);
+    }
+
+    // Otherwise (no response or server error), try again
+  }
+}
+
+/*
+ * Handle the server response after a label print request is submitted.
+ * Waits for the print job to complete, and notifies the user of the outcome.
+ */
+Future<void> handlePrintingSuccess(Map<String, dynamic> data) async {
+  if (data["complete"] != true && printOutputError(data) == null) {
+    // Let the user know that the job has been queued
+    showSnackIcon(L10().printLabelInProgress, success: true);
+  }
+
+  final LabelPrintResult result = await waitForPrintOutput(data);
+
+  switch (result.status) {
+    case LabelPrintStatus.complete:
+      if (result.output.isNotEmpty) {
+        // An output was generated - we can download it!
+        showSnackIcon(L10().downloading, success: true);
+        InvenTreeAPI().downloadFile(result.output);
+      } else {
+        // Label was offloaded, likely to an external printer
+        showSnackIcon(L10().printLabelSuccess, success: true);
+      }
+    case LabelPrintStatus.failed:
+      showSnackIcon(
+        result.error == null
+            ? L10().printLabelFailure
+            : "${L10().printLabelFailure}: ${result.error}",
+        success: false,
+      );
+    case LabelPrintStatus.timedOut:
+      // Check whether the background worker is processing tasks
+      final bool? running = await InvenTreeAPI().refreshWorkerStatus();
+
+      showSnackIcon(
+        running == false
+            ? L10().printLabelWorkerNotRunning
+            : L10().printLabelTimeout,
+        success: false,
+      );
   }
 }
 
@@ -276,7 +390,7 @@ Future<void> selectAndPrintLabel(
     modelData: {"plugin": defaultPlugin, "template": defaultTemplate},
     formHandler: formHandler,
     onSuccess: (data) async {
-      handlePrintingSuccess(context, data, 0);
+      handlePrintingSuccess(data);
     },
   );
 }

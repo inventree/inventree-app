@@ -10,6 +10,7 @@
 - Improved role management for BOM items
 - Bug fix for stock item test results display
 - Bug fixes for stock adjustment actions
+- Handle timeout of label printing and notify the user
 
 ### 1.1.0 - November 2026
 ---

@@ -1247,6 +1247,15 @@
   "printLabelSuccess": "Label sent to printer",
   "@printLabelSuccess": {},
 
+  "printLabelInProgress": "Label printing in progress",
+  "@printLabelInProgress": {},
+
+  "printLabelTimeout": "Label printing timed out",
+  "@printLabelTimeout": {},
+
+  "printLabelWorkerNotRunning": "Label printing timed out: the server's background worker is not running",
+  "@printLabelWorkerNotRunning": {},
+
   "profile": "Profile",
   "@profile": {},
 

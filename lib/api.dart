@@ -297,6 +297,31 @@ class InvenTreeAPI {
   String get serverVersion => (serverInfo["version"] ?? "") as String;
   int get apiVersion => (serverInfo["apiVersion"] ?? 1) as int;
 
+  // Background worker status (as last reported by the server)
+  // Assume the worker is running if the server does not report it
+  bool get workerRunning => serverInfo["worker_running"] != false;
+
+  /*
+   * Re-query the background worker status from the server.
+   * Returns the current status, or null if the server could not be queried.
+   */
+  Future<bool?> refreshWorkerStatus() async {
+    final APIResponse response = await get("", expectedStatusCode: null);
+
+    if (!response.successful() || response.data is! Map) {
+      return null;
+    }
+
+    final dynamic running = (response.data as Map)["worker_running"];
+
+    if (running is! bool) {
+      return null;
+    }
+
+    serverInfo["worker_running"] = running;
+    return running;
+  }
+
   /* API Version Checks
    * These functions are used to determine if the server supports a particular feature
    */
