@@ -368,6 +368,10 @@
   "@destination": {},
   "destroyed": "Destruido",
   "@destroyed": {},
+  "copiedToClipboard": "Copied to clipboard",
+  "@copiedToClipboard": {},
+  "copyToClipboard": "Copy",
+  "@copyToClipboard": {},
   "details": "Detalles",
   "@details": {
     "description": "details"
@@ -1427,5 +1431,59 @@
   "currency": "Moneda",
   "@currency": {},
   "priceBreaks": "Desglose de Precio",
-  "@priceBreaks": {}
+  "@priceBreaks": {},
+  "appBuild": "Build",
+  "@appBuild": {
+    "description": "Application build number label (e.g. 1.2.3 - Build 45)"
+  },
+  "locationUnknown": "Unknown Location",
+  "@locationUnknown": {},
+  "partDetailMissing": "Missing part detail",
+  "@partDetailMissing": {},
+  "quantityExceedsMax": "Quantity must not exceed {max}",
+  "@quantityExceedsMax": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "reset": "Reset",
+  "@reset": {},
+  "serialNumberShort": "SN {serial}",
+  "@serialNumberShort": {
+    "description": "Abbreviated serial number",
+    "placeholders": {
+      "serial": {
+        "type": "String"
+      }
+    }
+  },
+  "supplierPartMissing": "Supplier part not defined",
+  "@supplierPartMissing": {},
+  "unsupportedFieldType": "Unsupported field type: '{type}' for field '{field}'",
+  "@unsupportedFieldType": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      },
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "unsupportedModel": "Unsupported model",
+  "@unsupportedModel": {},
+  "unsupportedModelDetail": "Rendering not supported for model '{model}'",
+  "@unsupportedModelDetail": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "zoomIn": "Zoom In",
+  "@zoomIn": {},
+  "zoomOut": "Zoom Out",
+  "@zoomOut": {}
 }
