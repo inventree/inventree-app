@@ -74,6 +74,8 @@
   "@allocateAuto": {},
   "allocateAutoDetail": "Bu emir için gereken stok kalemlerini otomatik olarak tahsis et",
   "@allocateAutoDetail": {},
+  "allocateAutoInProgress": "Auto-allocate task in progress",
+  "@allocateAutoInProgress": {},
   "allocateStock": "Stoku Tahsis Et",
   "@allocateStock": {},
   "allocated": "Tahsis Edildi",
@@ -836,6 +838,12 @@
   "@printLabelFailure": {},
   "printLabelSuccess": "Etiket yazıcıya gönderildi",
   "@printLabelSuccess": {},
+  "printLabelInProgress": "Label printing in progress",
+  "@printLabelInProgress": {},
+  "printLabelTimeout": "Label printing timed out",
+  "@printLabelTimeout": {},
+  "printLabelWorkerNotRunning": "Label printing timed out: the server's background worker is not running",
+  "@printLabelWorkerNotRunning": {},
   "profile": "Profil",
   "@profile": {},
   "profileAdd": "Yeni Sunucu Profili Ekle",
@@ -1186,6 +1194,14 @@
   "@stockItems": {},
   "stockItemCreate": "Yeni Stok Kalemi",
   "@stockItemCreate": {},
+  "stockItemsCreated": "{count} stock items created",
+  "@stockItemsCreated": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "stockItemCreateDetail": "Bu konumda yeni stok kalemi oluştur",
   "@stockItemCreateDetail": {},
   "stockItemDelete": "Stok parçasını sil",

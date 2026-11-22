@@ -74,6 +74,8 @@
   "@allocateAuto": {},
   "allocateAutoDetail": "Automatically allocate required stock items to this order",
   "@allocateAutoDetail": {},
+  "allocateAutoInProgress": "Auto-allocate task in progress",
+  "@allocateAutoInProgress": {},
   "allocateStock": "Виділити запас",
   "@allocateStock": {},
   "allocated": "Виділено",
@@ -836,6 +838,12 @@
   "@printLabelFailure": {},
   "printLabelSuccess": "Ярлик надіслано до принтера",
   "@printLabelSuccess": {},
+  "printLabelInProgress": "Label printing in progress",
+  "@printLabelInProgress": {},
+  "printLabelTimeout": "Label printing timed out",
+  "@printLabelTimeout": {},
+  "printLabelWorkerNotRunning": "Label printing timed out: the server's background worker is not running",
+  "@printLabelWorkerNotRunning": {},
   "profile": "Профіль",
   "@profile": {},
   "profileAdd": "Додати профіль сервера",
@@ -1186,6 +1194,14 @@
   "@stockItems": {},
   "stockItemCreate": "Нова одиниця на складі",
   "@stockItemCreate": {},
+  "stockItemsCreated": "{count} stock items created",
+  "@stockItemsCreated": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "stockItemCreateDetail": "Створити нову одиницю на цій локації",
   "@stockItemCreateDetail": {},
   "stockItemDelete": "Видалити одиницю на складі",

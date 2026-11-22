@@ -74,6 +74,8 @@
   "@allocateAuto": {},
   "allocateAutoDetail": "Automatically allocate required stock items to this order",
   "@allocateAutoDetail": {},
+  "allocateAutoInProgress": "Auto-allocate task in progress",
+  "@allocateAutoInProgress": {},
   "allocateStock": "Alokasikan Stok",
   "@allocateStock": {},
   "allocated": "Dialokasikan",
@@ -836,6 +838,12 @@
   "@printLabelFailure": {},
   "printLabelSuccess": "Label dikirim ke printer",
   "@printLabelSuccess": {},
+  "printLabelInProgress": "Label printing in progress",
+  "@printLabelInProgress": {},
+  "printLabelTimeout": "Label printing timed out",
+  "@printLabelTimeout": {},
+  "printLabelWorkerNotRunning": "Label printing timed out: the server's background worker is not running",
+  "@printLabelWorkerNotRunning": {},
   "profile": "Profil",
   "@profile": {},
   "profileAdd": "Tambah Profil Server",
@@ -1186,6 +1194,14 @@
   "@stockItems": {},
   "stockItemCreate": "Unit Persediaan Baru",
   "@stockItemCreate": {},
+  "stockItemsCreated": "{count} stock items created",
+  "@stockItemsCreated": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "stockItemCreateDetail": "Buat item stok baru di lokasi ini",
   "@stockItemCreateDetail": {},
   "stockItemDelete": "Hapus item stok",

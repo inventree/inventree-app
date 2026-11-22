@@ -74,6 +74,8 @@
   "@allocateAuto": {},
   "allocateAutoDetail": "Automatically allocate required stock items to this order",
   "@allocateAutoDetail": {},
+  "allocateAutoInProgress": "Auto-allocate task in progress",
+  "@allocateAutoInProgress": {},
   "allocateStock": "在庫の割り当て",
   "@allocateStock": {},
   "allocated": "割り当て",
@@ -836,6 +838,12 @@
   "@printLabelFailure": {},
   "printLabelSuccess": "ラベルをプリンタに送信しました",
   "@printLabelSuccess": {},
+  "printLabelInProgress": "Label printing in progress",
+  "@printLabelInProgress": {},
+  "printLabelTimeout": "Label printing timed out",
+  "@printLabelTimeout": {},
+  "printLabelWorkerNotRunning": "Label printing timed out: the server's background worker is not running",
+  "@printLabelWorkerNotRunning": {},
   "profile": "プロフィール",
   "@profile": {},
   "profileAdd": "サーバープロファイルを追加",
@@ -1186,6 +1194,14 @@
   "@stockItems": {},
   "stockItemCreate": "新しい在庫アイテム",
   "@stockItemCreate": {},
+  "stockItemsCreated": "{count} stock items created",
+  "@stockItemsCreated": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "stockItemCreateDetail": "この場所に新しい在庫アイテムを作成",
   "@stockItemCreateDetail": {},
   "stockItemDelete": "在庫アイテムを削除",

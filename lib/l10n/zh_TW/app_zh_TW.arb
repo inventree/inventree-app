@@ -74,6 +74,8 @@
   "@allocateAuto": {},
   "allocateAutoDetail": "自動分配所需的庫存項目至此訂單",
   "@allocateAutoDetail": {},
+  "allocateAutoInProgress": "Auto-allocate task in progress",
+  "@allocateAutoInProgress": {},
   "allocateStock": "分配庫存",
   "@allocateStock": {},
   "allocated": "已分配",
@@ -836,6 +838,12 @@
   "@printLabelFailure": {},
   "printLabelSuccess": "標籤已發送到打印機",
   "@printLabelSuccess": {},
+  "printLabelInProgress": "Label printing in progress",
+  "@printLabelInProgress": {},
+  "printLabelTimeout": "Label printing timed out",
+  "@printLabelTimeout": {},
+  "printLabelWorkerNotRunning": "Label printing timed out: the server's background worker is not running",
+  "@printLabelWorkerNotRunning": {},
   "profile": "檔案",
   "@profile": {},
   "profileAdd": "添加服務器配置文件",
@@ -1186,6 +1194,14 @@
   "@stockItems": {},
   "stockItemCreate": "新建庫存項",
   "@stockItemCreate": {},
+  "stockItemsCreated": "{count} stock items created",
+  "@stockItemsCreated": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "stockItemCreateDetail": "在此位置創建新的庫存項",
   "@stockItemCreateDetail": {},
   "stockItemDelete": "刪除庫存項",
