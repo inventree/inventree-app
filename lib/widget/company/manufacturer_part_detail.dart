@@ -230,18 +230,16 @@ class _ManufacturerPartDisplayState
       tiles.add(parameterTile);
     }
 
-    ListTile? attachmentTile = ShowAttachmentsItem(
-      context,
-      InvenTreeManufacturerPart.MODEL_TYPE,
-      widget.manufacturerPart.pk,
-      widget.manufacturerPart.MPN,
-      attachmentCount,
-      widget.manufacturerPart.canEdit,
+    tiles.add(
+      ShowAttachmentsItem(
+        context,
+        InvenTreeManufacturerPart.MODEL_TYPE,
+        widget.manufacturerPart.pk,
+        widget.manufacturerPart.MPN,
+        attachmentCount,
+        widget.manufacturerPart.canEdit,
+      ),
     );
-
-    if (attachmentTile != null) {
-      tiles.add(attachmentTile);
-    }
 
     return tiles;
   }

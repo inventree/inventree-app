@@ -648,9 +648,6 @@ void main() {
     });
 
     test("Company Form Fields", () async {
-      expect(InvenTreeCompany().formFields().containsKey("active"), isFalse);
-
-      InvenTreeAPI().serverInfo = {"apiVersion": 189};
       expect(InvenTreeCompany().formFields().containsKey("active"), isTrue);
     });
 
@@ -677,14 +674,16 @@ void main() {
       expect(sp.active, isTrue);
       expect(sp.primary, isFalse);
 
-      // Older API versions use "pack_size"
-      expect(sp.pack_quantity, equals("10"));
-      expect(sp.formFields().containsKey("pack_size"), isTrue);
+      expect(sp.pack_quantity, equals("1 reel"));
+      expect(sp.formFields().containsKey("pack_quantity"), isTrue);
+      expect(sp.formFields().containsKey("pack_size"), isFalse);
+      expect(sp.formFields().containsKey("active"), isTrue);
+
+      // The "primary" field requires API v456
+      InvenTreeAPI().serverInfo = {"apiVersion": 455};
       expect(sp.formFields().containsKey("primary"), isFalse);
 
       InvenTreeAPI().serverInfo = {"apiVersion": 456};
-      expect(sp.pack_quantity, equals("1 reel"));
-      expect(sp.formFields().containsKey("pack_quantity"), isTrue);
       expect(sp.formFields().containsKey("primary"), isTrue);
 
       // Missing images

@@ -128,7 +128,7 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     }
 
-    if (allowLabelPrinting && api.supportsModernLabelPrinting) {
+    if (allowLabelPrinting) {
       actions.add(
         SpeedDialChild(
           child: Icon(TablerIcons.printer),
@@ -825,18 +825,16 @@ class _StockItemDisplayState extends RefreshableState<StockDetailWidget> {
       );
     }
 
-    ListTile? attachmentTile = ShowAttachmentsItem(
-      context,
-      InvenTreeStockItem.MODEL_TYPE,
-      widget.item.pk,
-      L10().stockItem,
-      attachmentCount,
-      widget.item.canEdit,
+    tiles.add(
+      ShowAttachmentsItem(
+        context,
+        InvenTreeStockItem.MODEL_TYPE,
+        widget.item.pk,
+        L10().stockItem,
+        attachmentCount,
+        widget.item.canEdit,
+      ),
     );
-
-    if (attachmentTile != null) {
-      tiles.add(attachmentTile);
-    }
 
     return tiles;
   }

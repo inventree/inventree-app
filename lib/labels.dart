@@ -217,12 +217,6 @@ Future<void> selectAndPrintLabel(
     return;
   }
 
-  if (!InvenTreeAPI().supportsModernLabelPrinting) {
-    // Legacy label printing API not supported
-    showSnackIcon("Label printing not supported by server", success: false);
-    return;
-  }
-
   // Fetch default values for label printing
 
   // Default template

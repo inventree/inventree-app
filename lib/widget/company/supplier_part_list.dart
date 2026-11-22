@@ -57,13 +57,11 @@ class _PaginatedSupplierPartListState
   Map<String, Map<String, dynamic>> get filterOptions {
     Map<String, Map<String, dynamic>> filters = {};
 
-    if (InvenTreeAPI().supportsCompanyActiveStatus) {
-      filters["active"] = {
-        "label": L10().filterActive,
-        "help_text": L10().filterActiveDetail,
-        "tristate": true,
-      };
-    }
+    filters["active"] = {
+      "label": L10().filterActive,
+      "help_text": L10().filterActiveDetail,
+      "tristate": true,
+    };
 
     if (InvenTreeAPI().supportsSupplierPartPrimaryField) {
       filters["primary"] = {

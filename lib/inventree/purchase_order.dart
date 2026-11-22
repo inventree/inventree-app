@@ -1,6 +1,5 @@
 import "package:flutter/material.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
-import "package:inventree/api.dart";
 import "package:inventree/helpers.dart";
 import "package:inventree/inventree/company.dart";
 import "package:inventree/inventree/model.dart";
@@ -62,14 +61,6 @@ class InvenTreePurchaseOrder extends InvenTreeOrder {
         "filters": {"company": supplierId},
       },
     };
-
-    if (!InvenTreeAPI().supportsPurchaseOrderDestination) {
-      fields.remove("destination");
-    }
-
-    if (!InvenTreeAPI().supportsStartDate) {
-      fields.remove("start_date");
-    }
 
     return fields;
   }

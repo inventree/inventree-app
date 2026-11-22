@@ -2,7 +2,6 @@ import "dart:io";
 
 import "package:flutter/material.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
-import "package:inventree/api.dart";
 import "package:inventree/inventree/attachment.dart";
 import "package:inventree/widget/link_icon.dart";
 import "package:one_context/one_context.dart";
@@ -253,7 +252,7 @@ class _AttachmentWidgetState extends RefreshableState<AttachmentWidget> {
 /*
  * Return a ListTile to display attachments for the specified model
  */
-ListTile? ShowAttachmentsItem(
+ListTile ShowAttachmentsItem(
   BuildContext context,
   String modelType,
   int modelId,
@@ -261,10 +260,6 @@ ListTile? ShowAttachmentsItem(
   int attachmentCount,
   bool hasUploadPermission,
 ) {
-  if (!InvenTreeAPI().supportsModernAttachments) {
-    return null;
-  }
-
   return ListTile(
     title: Text(L10().attachments),
     leading: Icon(TablerIcons.file, color: COLOR_ACTION),

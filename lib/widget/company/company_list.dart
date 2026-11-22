@@ -94,13 +94,11 @@ class _CompanyListState extends PaginatedSearchState<PaginatedCompanyList> {
   Map<String, Map<String, dynamic>> get filterOptions {
     Map<String, Map<String, dynamic>> filters = {};
 
-    if (InvenTreeAPI().supportsCompanyActiveStatus) {
-      filters["active"] = {
-        "label": L10().filterActive,
-        "help_text": L10().filterActiveDetail,
-        "tristate": true,
-      };
-    }
+    filters["active"] = {
+      "label": L10().filterActive,
+      "help_text": L10().filterActiveDetail,
+      "tristate": true,
+    };
 
     return filters;
   }

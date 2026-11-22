@@ -124,7 +124,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       );
     }
 
-    if (allowLabelPrinting && api.supportsModernLabelPrinting) {
+    if (allowLabelPrinting) {
       actions.add(
         SpeedDialChild(
           child: Icon(TablerIcons.printer),
@@ -221,17 +221,15 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     }
 
     // Request the number of attachments
-    if (api.supportsModernAttachments) {
-      InvenTreeAttachment()
-          .countAttachments(InvenTreePart.MODEL_TYPE, part.pk)
-          .then((int value) {
-            if (mounted) {
-              setState(() {
-                attachmentCount = value;
-              });
-            }
-          });
-    }
+    InvenTreeAttachment()
+        .countAttachments(InvenTreePart.MODEL_TYPE, part.pk)
+        .then((int value) {
+          if (mounted) {
+            setState(() {
+              attachmentCount = value;
+            });
+          }
+        });
 
     // Request the number of parameters
     if (api.supportsModernParameters) {
@@ -749,18 +747,16 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       tiles.add(parameterTile);
     }
 
-    ListTile? attachmentTile = ShowAttachmentsItem(
-      context,
-      InvenTreePart.MODEL_TYPE,
-      part.pk,
-      L10().part,
-      attachmentCount,
-      part.canEdit,
+    tiles.add(
+      ShowAttachmentsItem(
+        context,
+        InvenTreePart.MODEL_TYPE,
+        part.pk,
+        L10().part,
+        attachmentCount,
+        part.canEdit,
+      ),
     );
-
-    if (attachmentTile != null) {
-      tiles.add(attachmentTile);
-    }
 
     return tiles;
   }
