@@ -14,6 +14,9 @@ import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/widget/build/build_detail.dart";
 
+/// Result of a build order action which may run as a background task
+enum BuildTaskOutcome { complete, queued, failed }
+
 /*
  * Class representing a Build Order
  */
@@ -86,27 +89,20 @@ class InvenTreeBuildOrder extends InvenTreeOrder {
   // External build
   bool get external => getBool("external");
 
-  // Return the location where the items will be sourced from
-  int? get sourceLocationId => getInt("take_from");
+  // Return the location where the items will be sourced from (null if not set)
+  int? get sourceLocationId {
+    final int id = getInt("take_from");
+    return id > 0 ? id : null;
+  }
 
-  // Return the location where the completed items will be stored
-  int? get destinationId => getInt("destination");
+  // Return the location where the completed items will be stored (null if not set)
+  int? get destinationId {
+    final int id = getInt("destination");
+    return id > 0 ? id : null;
+  }
 
-  String get destinationName => getString("name", subKey: "destination_detail");
-
-  // Line item information
-  @override
-  int get lineItemCount => getInt("item_count", backup: 0);
-
-  // Allocated line item count
-  int get allocatedLineItemCount => getInt("allocated_line_count", backup: 0);
-
-  // All line items are allocated
-  bool get areAllLinesAllocated =>
-      lineItemCount > 0 && lineItemCount == allocatedLineItemCount;
-
-  // Output count
-  int get outputCount => getInt("output_count", backup: 0);
+  // Note: The server's BuildSerializer does not provide line or output counts.
+  // These are queried separately (see BuildOrderDetailWidget).
 
   // Status code handling
   // Note: These map to BuildStatus in backend/status_codes.py
@@ -122,9 +118,12 @@ class InvenTreeBuildOrder extends InvenTreeOrder {
       api.BuildOrderStatus.isNameIn(logicalStatus, ["ON_HOLD"]);
 
   // Can this build order be completed?
-  bool get canCompleteOrder {
-    return isInProgress && outputCount > 0;
-  }
+  // Matches the server web UI: offered for any in-production build,
+  // and the server validates the rest (incomplete outputs, child builds, etc)
+  bool get canCompleteOrder => isInProgress;
+
+  // API endpoint for marking this build order as complete
+  String get finishUrl => "${URL}${pk}/finish/";
 
   // Can this build order be issued?
   bool get canIssue {
@@ -173,25 +172,6 @@ class InvenTreeBuildOrder extends InvenTreeOrder {
     );
   }
 
-  // Complete a build order
-  Future<APIResponse> completeOrder({
-    bool acceptIncomplete = false,
-    bool acceptUnallocated = false,
-    bool acceptOverallocated = false,
-  }) async {
-    Map<String, String> data = {
-      "accept_incomplete": acceptIncomplete.toString(),
-      "accept_unallocated": acceptUnallocated.toString(),
-      "accept_overallocated": acceptOverallocated.toString(),
-    };
-
-    return await InvenTreeAPI().post(
-      "${URL}${pk}/complete/",
-      body: data,
-      expectedStatusCode: 201,
-    );
-  }
-
   // Put a build order on hold
   Future<APIResponse> hold() async {
     return await InvenTreeAPI().post(
@@ -211,12 +191,39 @@ class InvenTreeBuildOrder extends InvenTreeOrder {
   }
 
   // Auto-allocate stock items for this build order
+  // The status code is checked by the caller (see autoAllocateOutcome)
   Future<APIResponse> autoAllocate() async {
     return await InvenTreeAPI().post(
       "${URL}${pk}/auto-allocate/",
       body: {},
-      expectedStatusCode: 201,
+      expectedStatusCode: null,
     );
+  }
+
+  /*
+   * Interpret the response from the auto-allocate endpoint:
+   * - API < 465: returns 201 once allocation has completed
+   * - API >= 465: returns task details (200) - the task is either
+   *   offloaded to the background worker, or run synchronously
+   */
+  static BuildTaskOutcome autoAllocateOutcome(APIResponse response) {
+    if (response.statusCode == 201) {
+      return BuildTaskOutcome.complete;
+    }
+
+    if (response.statusCode != 200) {
+      return BuildTaskOutcome.failed;
+    }
+
+    final Map<String, dynamic> data = response.asMap();
+
+    if (data["complete"] == true) {
+      return data["success"] == true
+          ? BuildTaskOutcome.complete
+          : BuildTaskOutcome.failed;
+    }
+
+    return BuildTaskOutcome.queued;
   }
 
   // Unallocate all stock from this build order
