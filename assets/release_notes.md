@@ -6,6 +6,7 @@
 - Fix handling of form response data for stock item creation
 - Improved allocation display for build orders
 - Multiple bug fixes for build order support
+- Improved role management for BOM items
 
 ### 1.1.0 - November 2026
 ---
