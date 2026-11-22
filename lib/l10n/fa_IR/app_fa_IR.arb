@@ -74,6 +74,8 @@
   "@allocateAuto": {},
   "allocateAutoDetail": "تخصیص خودکار اقلام موجودی مورد نیاز به این سفارش",
   "@allocateAutoDetail": {},
+  "allocateAutoInProgress": "Auto-allocate task in progress",
+  "@allocateAutoInProgress": {},
   "allocateStock": "موجودی اختصاص داده شده",
   "@allocateStock": {},
   "allocated": "اختصاص داده شده",
@@ -836,6 +838,12 @@
   "@printLabelFailure": {},
   "printLabelSuccess": "برچسب به چاپگر ارسال شد",
   "@printLabelSuccess": {},
+  "printLabelInProgress": "Label printing in progress",
+  "@printLabelInProgress": {},
+  "printLabelTimeout": "Label printing timed out",
+  "@printLabelTimeout": {},
+  "printLabelWorkerNotRunning": "Label printing timed out: the server's background worker is not running",
+  "@printLabelWorkerNotRunning": {},
   "profile": "نمایه",
   "@profile": {},
   "profileAdd": "افزودن نمایه سرور",
@@ -1186,6 +1194,14 @@
   "@stockItems": {},
   "stockItemCreate": "موجود کالا جدید",
   "@stockItemCreate": {},
+  "stockItemsCreated": "{count} stock items created",
+  "@stockItemsCreated": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "stockItemCreateDetail": "موجودی کالای جدید در این مکان ایجاد کنید",
   "@stockItemCreateDetail": {},
   "stockItemDelete": "حذف موجودی کالا",
