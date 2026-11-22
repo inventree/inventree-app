@@ -808,7 +808,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       // read the next available serial number
       showLoadingOverlay();
       var response = await api.get(
-        "/api/part/${part.pk}/serial-numbers/",
+        part.serialNumbersUrl,
         expectedStatusCode: null,
       );
       hideLoadingOverlay();
@@ -817,18 +817,10 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         data["serial_numbers"] =
             response.data["next"] ?? response.data["latest"];
       }
-
-      print(
-        "response: " +
-            response.statusCode.toString() +
-            response.data.toString(),
-      );
     } else {
       // Cannot set serial numbers for non-trackable parts
       fields.remove("serial_numbers");
     }
-
-    print("data: ${data.toString()}");
 
     InvenTreeStockItem().createForm(
       context,
