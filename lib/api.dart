@@ -331,8 +331,8 @@ class InvenTreeAPI {
   bool get supportsPartRequirements => apiVersion >= 350;
 
   // Does the server support the "modern" (consolidated) parameter API?
-  // Ref: https://github.com/inventree/InvenTree/pull/10699
-  bool get supportsModernParameters => apiVersion >= 429;
+  // Ref: https://github.com/inventree/InvenTree/pull/10699 (API v430)
+  bool get supportsModernParameters => apiVersion >= 430;
 
   // Does the support support the "primary" field on SupplierPart model?
   bool get supportsSupplierPartPrimaryField => apiVersion >= 456;
@@ -2196,7 +2196,7 @@ class InvenTreeAPI {
       body["location"] = location.toString();
     }
 
-    post("/api/locate/", body: body, expectedStatusCode: 200).then((
+    post("locate/", body: body, expectedStatusCode: 200).then((
       APIResponse response,
     ) {
       if (response.successful()) {

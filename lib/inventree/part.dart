@@ -215,12 +215,19 @@ class InvenTreePart extends InvenTreeModel {
         });
   }
 
+  // API endpoints for this part (relative to the API root)
+  String get serialNumbersUrl => "${URL}${pk}/serial-numbers/";
+
+  String get requirementsUrl => "${URL}${pk}/requirements/";
+
+  String get pricingUrl => InvenTreeAPI().supportsPricingRole
+      ? "pricing/part/${pk}/"
+      : "${URL}${pk}/pricing/";
+
   // Request requirements information for this part
   Future<InvenTreePartRequirements?> getRequirements() async {
     try {
-      final response = await InvenTreeAPI().get(
-        "/api/part/${pk}/requirements/",
-      );
+      final response = await InvenTreeAPI().get(requirementsUrl);
       if (response.isValid()) {
         final requirementsData = response.data;
 
@@ -244,12 +251,8 @@ class InvenTreePart extends InvenTreeModel {
       return null;
     }
 
-    final String url = api.supportsPricingRole
-        ? "/api/pricing/part/${pk}/"
-        : "/api/part/${pk}/pricing/";
-
     try {
-      final response = await api.get(url);
+      final response = await api.get(pricingUrl);
       if (response.isValid()) {
         final pricingData = response.data;
 
