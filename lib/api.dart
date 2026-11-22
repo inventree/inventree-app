@@ -743,7 +743,8 @@ class InvenTreeAPI {
 
     debug("Connecting to ${apiUrl}");
 
-    APIResponse response = await get(url, expectedStatusCode: 200);
+    // Note: Unexpected status codes are reported below
+    APIResponse response = await get(url);
 
     if (!response.successful()) {
       debug("Server returned invalid response: ${response.statusCode}");
@@ -851,10 +852,16 @@ class InvenTreeAPI {
     _globalSettings.clear();
     _userSettings.clear();
 
+    // Clear data received from the server
+    // (so it is not shown while connecting to a different server)
     roles.clear();
+    permissions.clear();
     _plugins.clear();
     serverInfo.clear();
     userInfo = {};
+    notification_counter = 0;
+    clearStatusCodeData();
+
     _connectionStatusChanged();
   }
 
@@ -924,6 +931,7 @@ class InvenTreeAPI {
    */
   Future<bool> _fetchRoles() async {
     roles.clear();
+    permissions.clear();
 
     debug("API: Requesting user role data");
     String actualRoleUrl = supportsNewUserEndpoints
@@ -1901,7 +1909,9 @@ class InvenTreeAPI {
     String url, {
     Map<String, String> params = const {},
     Map<String, String> headers = const {},
-    int? expectedStatusCode = 200,
+    // If provided, the user is alerted when a different status code is returned
+    // (by default, callers handle unexpected responses, e.g. 404, themselves)
+    int? expectedStatusCode,
   }) async {
     HttpClientRequest? request = await apiRequest(
       url,
@@ -1919,7 +1929,7 @@ class InvenTreeAPI {
       );
     }
 
-    return completeRequest(request);
+    return completeRequest(request, statusCode: expectedStatusCode);
   }
 
   /*
@@ -2181,9 +2191,14 @@ class InvenTreeAPI {
         fields,
         icon: TablerIcons.location_search,
         onSuccess: (Map<String, dynamic> data) async {
-          plugin_name = (data["plugin"] ?? "") as String;
+          plugin_name = (data["plugin"] ?? "").toString();
         },
       );
+
+      // Form was cancelled (no plugin selected)
+      if (plugin_name.isEmpty) {
+        return;
+      }
     }
 
     Map<String, dynamic> body = {"plugin": plugin_name};
@@ -2196,13 +2211,15 @@ class InvenTreeAPI {
       body["location"] = location.toString();
     }
 
-    post("locate/", body: body, expectedStatusCode: 200).then((
-      APIResponse response,
-    ) {
-      if (response.successful()) {
-        showSnackIcon(L10().requestSuccessful, success: true);
-      }
-    });
+    final APIResponse response = await post(
+      "locate/",
+      body: body,
+      expectedStatusCode: 200,
+    );
+
+    if (response.successful()) {
+      showSnackIcon(L10().requestSuccessful, success: true);
+    }
   }
 
   // Keep an internal map of status codes

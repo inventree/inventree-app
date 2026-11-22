@@ -1123,6 +1123,11 @@ Map<String, dynamic> formResponseData(APIResponse response) {
   return Map<String, dynamic>.from(response.asMap());
 }
 
+/*
+ * Launch an API form.
+ * The returned future completes once the form is closed
+ * (after onSuccess has been called, if the form was submitted).
+ */
 Future<void> launchApiForm(
   BuildContext context,
   String title,
@@ -1208,7 +1213,9 @@ Future<void> launchApiForm(
   hideLoadingOverlay();
 
   // Now, launch a new widget!
-  Navigator.push(
+  // Wait until the form is closed (submitted or cancelled),
+  // so that callers can await the outcome of the form
+  await Navigator.push(
     context,
     MaterialPageRoute(
       builder: (context) => APIFormWidget(
