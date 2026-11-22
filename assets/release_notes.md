@@ -3,6 +3,7 @@
 
 - Fix incorrect allocation count in build detail widget
 - Fix "new version available" notice showing in "About" view when app is up to date
+- Fix handling of form response data for stock item creation
 
 ### 1.1.0 - November 2026
 ---
