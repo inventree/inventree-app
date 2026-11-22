@@ -74,6 +74,8 @@
   "@allocateAuto": {},
   "allocateAutoDetail": "Automatically allocate required stock items to this order",
   "@allocateAutoDetail": {},
+  "allocateAutoInProgress": "Auto-allocate task in progress",
+  "@allocateAutoInProgress": {},
   "allocateStock": "Κατανομή Αποθέματος",
   "@allocateStock": {},
   "allocated": "Κατανεμημένο",
@@ -836,6 +838,12 @@
   "@printLabelFailure": {},
   "printLabelSuccess": "Η ετικέτα στάλθηκε στον εκτυπωτή",
   "@printLabelSuccess": {},
+  "printLabelInProgress": "Label printing in progress",
+  "@printLabelInProgress": {},
+  "printLabelTimeout": "Label printing timed out",
+  "@printLabelTimeout": {},
+  "printLabelWorkerNotRunning": "Label printing timed out: the server's background worker is not running",
+  "@printLabelWorkerNotRunning": {},
   "profile": "Προφίλ",
   "@profile": {},
   "profileAdd": "Προσθήκη Προφίλ Διακομιστή",
@@ -1186,6 +1194,14 @@
   "@stockItems": {},
   "stockItemCreate": "Νέο Αντικείμενο Αποθέματος",
   "@stockItemCreate": {},
+  "stockItemsCreated": "{count} stock items created",
+  "@stockItemsCreated": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "stockItemCreateDetail": "Δημιουργία νέου αντικειμένου αποθέματος σε αυτή την τοποθεσία",
   "@stockItemCreateDetail": {},
   "stockItemDelete": "Διαγραφή Αντικειμένου Αποθέματος",
