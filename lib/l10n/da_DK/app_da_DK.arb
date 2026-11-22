@@ -74,6 +74,8 @@
   "@allocateAuto": {},
   "allocateAutoDetail": "Automatically allocate required stock items to this order",
   "@allocateAutoDetail": {},
+  "allocateAutoInProgress": "Auto-allocate task in progress",
+  "@allocateAutoInProgress": {},
   "allocateStock": "Tildel lager",
   "@allocateStock": {},
   "allocated": "Tildelt",
@@ -836,6 +838,12 @@
   "@printLabelFailure": {},
   "printLabelSuccess": "Label sendt til printer",
   "@printLabelSuccess": {},
+  "printLabelInProgress": "Label printing in progress",
+  "@printLabelInProgress": {},
+  "printLabelTimeout": "Label printing timed out",
+  "@printLabelTimeout": {},
+  "printLabelWorkerNotRunning": "Label printing timed out: the server's background worker is not running",
+  "@printLabelWorkerNotRunning": {},
   "profile": "Profil",
   "@profile": {},
   "profileAdd": "Tilføj Serverprofil",
@@ -1186,6 +1194,14 @@
   "@stockItems": {},
   "stockItemCreate": "Ny Lagervare",
   "@stockItemCreate": {},
+  "stockItemsCreated": "{count} stock items created",
+  "@stockItemsCreated": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "stockItemCreateDetail": "Opret ny lagervare på denne lokation",
   "@stockItemCreateDetail": {},
   "stockItemDelete": "Slet Lagervare",
