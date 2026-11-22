@@ -83,6 +83,8 @@ class _StockItemTestResultDisplayState
       data: {
         "stock_item": "${item.pk}",
         if (templateId > 0) "template": "${templateId}",
+        // New results default to "pass"
+        "result": true,
       },
       onSuccess: (data) {
         refresh(context);
