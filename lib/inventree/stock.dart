@@ -553,7 +553,8 @@ class InvenTreeStockItem extends InvenTreeModel {
 
     data = {
       "items": [
-        {"pk": "${pk}", "quantity": "${quantity}"},
+        // The quantity to count / add / remove / transfer
+        {"pk": "${pk}", "quantity": "${q}"},
       ],
       "notes": notes ?? "",
     };
