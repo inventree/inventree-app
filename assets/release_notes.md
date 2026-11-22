@@ -5,6 +5,7 @@
 - Fix "new version available" notice showing in "About" view when app is up to date
 - Improved allocation display for build orders
 - Multiple bug fixes for build order support
+- Bug fix for stock item test results display
 
 ### 1.1.0 - November 2026
 ---
