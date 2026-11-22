@@ -107,6 +107,9 @@
   "allocateAutoDetail": "Automatically allocate required stock items to this order",
   "@allocateAutoDetail": {},
 
+  "allocateAutoInProgress": "Auto-allocate task in progress",
+  "@allocateAutoInProgress": {},
+
   "allocateStock": "Allocate Stock",
   "@allocateStock": {},
 
