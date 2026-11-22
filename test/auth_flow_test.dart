@@ -365,6 +365,64 @@ void main() {
       expect(logged("Opening login screen"), equals(false));
     });
 
+    test("Role request failure is reported", () async {
+      final profile = await fakeProfile(server);
+
+      expect((await login(profile)).authenticated, equals(true));
+
+      server.once(
+        "GET",
+        "api/user/me/roles/",
+        (_) => FakeResponse(403, body: {"detail": "Permission denied."}),
+      );
+
+      expect(await api.connectToServer(profile), equals(false));
+
+      // Previously the connection failed without any message (B20)
+      expect(
+        logged("showServerError: '${statusCodeToString(403)}'"),
+        equals(true),
+      );
+    });
+
+    test("Disconnect clears server data", () async {
+      final profile = await fakeProfile(server);
+
+      server.always(
+        "GET",
+        "api/user/me/roles/",
+        (_) => FakeResponse(
+          200,
+          body: {
+            "roles": {
+              "part": ["view"],
+            },
+            "permissions": {
+              "part": ["view"],
+            },
+          },
+        ),
+      );
+
+      await loginAndConnect(profile);
+
+      expect(api.roles, isNotEmpty);
+      expect(api.permissions, isNotEmpty);
+
+      api.notification_counter = 3;
+      api.StockStatus.data["OK"] = {"key": 10, "name": "OK", "label": "OK"};
+
+      api.disconnectFromServer();
+
+      // Nothing from the previous server is shown while connecting to another
+      expect(api.roles, isEmpty);
+      expect(api.permissions, isEmpty);
+      expect(api.serverInfo, isEmpty);
+      expect(api.userInfo, isEmpty);
+      expect(api.notification_counter, equals(0));
+      expect(api.StockStatus.data, isEmpty);
+    });
+
     final Map<String, FakeResponse> failures = {
       "Service unavailable (503)": FakeResponse(503),
       "Connection dropped": FakeResponse.drop(),
@@ -934,6 +992,40 @@ void main() {
 
       final FakeRequest request = server.received("GET", "api/part/").last;
       expect(request.query, equals({"category": "1", "search": "x y"}));
+    });
+
+    test("Unexpected status code is reported if requested", () async {
+      server.once(
+        "GET",
+        "api/part/1/",
+        (_) => FakeResponse(404, body: {"detail": "Not found."}),
+      );
+
+      clearDebugMessage();
+
+      final response = await api.get("part/1/", expectedStatusCode: 200);
+
+      expect(response.statusCode, equals(404));
+      expect(
+        logged("showServerError: '${statusCodeToString(404)}'"),
+        equals(true),
+      );
+    });
+
+    test("Unexpected status code is not reported by default", () async {
+      // e.g. a 404 when checking whether an object still exists
+      server.once(
+        "GET",
+        "api/part/1/",
+        (_) => FakeResponse(404, body: {"detail": "Not found."}),
+      );
+
+      clearDebugMessage();
+
+      final response = await api.get("part/1/");
+
+      expect(response.statusCode, equals(404));
+      expect(logged("showServerError:"), equals(false));
     });
 
     test("No query string without parameters", () async {

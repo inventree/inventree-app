@@ -550,6 +550,12 @@
   "destroyed": "Destroyed",
   "@destroyed": {},
 
+  "copiedToClipboard": "Copied to clipboard",
+  "@copiedToClipboard": {},
+
+  "copyToClipboard": "Copy",
+  "@copyToClipboard": {},
+
   "details": "Details",
   "@details": {
     "description": "details"

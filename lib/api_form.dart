@@ -1123,6 +1123,11 @@ Map<String, dynamic> formResponseData(APIResponse response) {
   return Map<String, dynamic>.from(response.asMap());
 }
 
+/*
+ * Launch an API form.
+ * The returned future completes once the form is closed
+ * (after onSuccess has been called, if the form was submitted).
+ */
 Future<void> launchApiForm(
   BuildContext context,
   String title,
@@ -1208,7 +1213,9 @@ Future<void> launchApiForm(
   hideLoadingOverlay();
 
   // Now, launch a new widget!
-  Navigator.push(
+  // Wait until the form is closed (submitted or cancelled),
+  // so that callers can await the outcome of the form
+  await Navigator.push(
     context,
     MaterialPageRoute(
       builder: (context) => APIFormWidget(
@@ -1369,6 +1376,21 @@ class APIFormWidgetState extends State<APIFormWidget> {
     }
 
     return widgets;
+  }
+
+  /*
+   * Notify the user that the form submission failed.
+   * Tapping the info icon displays the full response from the server.
+   */
+  void showErrorSnack(String message, APIResponse response) {
+    showSnackIcon(
+      message,
+      success: false,
+      icon: TablerIcons.info_circle,
+      onAction: () {
+        showResponseDataDialog(message, response);
+      },
+    );
   }
 
   Future<APIResponse> _submit(Map<String, dynamic> data) async {
@@ -1577,7 +1599,8 @@ class APIFormWidgetState extends State<APIFormWidget> {
         return;
       case 400:
         // Form submission / validation error
-        showSnackIcon(L10().formError, success: false);
+        print("error: ${response.toString()}");
+        showErrorSnack(L10().formError, response);
 
         // Update field errors
         for (var field in formFields) {
@@ -1587,19 +1610,19 @@ class APIFormWidgetState extends State<APIFormWidget> {
         extractNonFieldErrors(response);
         checkInvalidErrors(response);
       case 401:
-        showSnackIcon("401: " + L10().response401, success: false);
+        showErrorSnack("401: " + L10().response401, response);
       case 403:
-        showSnackIcon("403: " + L10().response403, success: false);
+        showErrorSnack("403: " + L10().response403, response);
       case 404:
-        showSnackIcon("404: " + L10().response404, success: false);
+        showErrorSnack("404: " + L10().response404, response);
       case 405:
-        showSnackIcon("405: " + L10().response405, success: false);
+        showErrorSnack("405: " + L10().response405, response);
       case 500:
-        showSnackIcon("500: " + L10().response500, success: false);
+        showErrorSnack("500: " + L10().response500, response);
       default:
-        showSnackIcon(
+        showErrorSnack(
           "${response.statusCode}: " + L10().responseInvalid,
-          success: false,
+          response,
         );
     }
 
