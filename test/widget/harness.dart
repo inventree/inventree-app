@@ -17,6 +17,7 @@ import "package:flutter_test/flutter_test.dart";
 import "package:one_context/one_context.dart";
 
 import "package:inventree/api.dart";
+import "package:inventree/inventree/model.dart";
 import "package:inventree/l10n/collected/app_localizations.dart";
 import "package:inventree/l10n/supported_locales.dart";
 import "package:inventree/preferences.dart";
@@ -153,13 +154,55 @@ Future<T> settle<T>(WidgetTester tester, Future<T> future) async {
 }
 
 /*
+ * Find the first object matching [filters] on the test server,
+ * and load its full details
+ */
+Future<T> fetchFirst<T extends InvenTreeModel>(
+  WidgetTester tester,
+  T model, {
+  Map<String, String> filters = const {},
+}) async {
+  final results = await settle(
+    tester,
+    model.list(filters: {...filters, "limit": "1"}),
+  );
+
+  expect(
+    results,
+    isNotEmpty,
+    reason: "No ${T} matching ${filters} in the demo dataset",
+  );
+
+  final InvenTreeModel? instance = await settle(
+    tester,
+    model.get(results.first.pk),
+  );
+
+  expect(instance, isA<T>());
+
+  return instance! as T;
+}
+
+/*
  * Connect to the test server (see setup.dart) from within a widget test.
  *
  * Call disconnectInWidgetTest() at the end of the test,
  * to stop the timers started by the connection.
  */
 Future<void> connectInWidgetTest(WidgetTester tester) async {
-  await settle(tester, connectToTestServer());
+  // The development server may close a kept-alive connection which is then
+  // reused ("Connection closed before full header was received") - so retry
+  for (int attempt = 0; attempt < 3; attempt++) {
+    final profile = await settle(tester, setupServerProfile(login: true));
+
+    if (await settle(tester, InvenTreeAPI().connectToServer(profile))) {
+      break;
+    }
+
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 500)),
+    );
+  }
 
   expect(InvenTreeAPI().isConnected(), isTrue);
 }
