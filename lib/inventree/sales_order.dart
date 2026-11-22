@@ -1,5 +1,4 @@
 import "package:flutter/material.dart";
-import "package:inventree/api.dart";
 import "package:inventree/helpers.dart";
 
 import "package:inventree/inventree/company.dart";
@@ -61,10 +60,6 @@ class InvenTreeSalesOrder extends InvenTreeOrder {
         "filters": {"company": customerId},
       },
     };
-
-    if (!InvenTreeAPI().supportsStartDate) {
-      fields.remove("start_date");
-    }
 
     return fields;
   }

@@ -322,8 +322,7 @@ class _PurchaseOrderDetailState
           }
         });
 
-    if (api.supportsPurchaseOrderDestination &&
-        widget.order.destinationId > 0) {
+    if (widget.order.destinationId > 0) {
       InvenTreeStockLocation().get(widget.order.destinationId).then((
         InvenTreeModel? loc,
       ) {
@@ -593,18 +592,16 @@ class _PurchaseOrderDetailState
       tiles.add(parameterTile);
     }
 
-    ListTile? attachmentTile = ShowAttachmentsItem(
-      context,
-      InvenTreePurchaseOrder.MODEL_TYPE,
-      widget.order.pk,
-      widget.order.reference,
-      attachmentCount,
-      widget.order.canEdit,
+    tiles.add(
+      ShowAttachmentsItem(
+        context,
+        InvenTreePurchaseOrder.MODEL_TYPE,
+        widget.order.pk,
+        widget.order.reference,
+        attachmentCount,
+        widget.order.canEdit,
+      ),
     );
-
-    if (attachmentTile != null) {
-      tiles.add(attachmentTile);
-    }
 
     return tiles;
   }

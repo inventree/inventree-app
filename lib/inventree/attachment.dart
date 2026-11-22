@@ -90,10 +90,6 @@ class InvenTreeAttachment extends InvenTreeModel {
   Future<int> countAttachments(String modelType, int modelId) async {
     Map<String, String> filters = {};
 
-    if (!api.supportsModernAttachments) {
-      return 0;
-    }
-
     filters["model_type"] = modelType;
     filters["model_id"] = modelId.toString();
 

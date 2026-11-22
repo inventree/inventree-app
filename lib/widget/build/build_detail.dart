@@ -637,18 +637,16 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
     }
 
     // Attachments tile
-    ListTile? attachmentTile = ShowAttachmentsItem(
-      context,
-      InvenTreeBuildOrder.MODEL_TYPE,
-      widget.order.pk,
-      widget.order.reference,
-      attachmentCount,
-      widget.order.canEdit,
+    tiles.add(
+      ShowAttachmentsItem(
+        context,
+        InvenTreeBuildOrder.MODEL_TYPE,
+        widget.order.pk,
+        widget.order.reference,
+        attachmentCount,
+        widget.order.canEdit,
+      ),
     );
-
-    if (attachmentTile != null) {
-      tiles.add(attachmentTile);
-    }
 
     return tiles;
   }

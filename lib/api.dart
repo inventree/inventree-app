@@ -326,28 +326,8 @@ class InvenTreeAPI {
    * These functions are used to determine if the server supports a particular feature
    */
 
-  // Does the server support "active" status on Company and SupplierPart API endpoints?
-  bool get supportsCompanyActiveStatus => apiVersion >= 189;
-
-  // Does the server support the "modern" (consolidated) label printing API?
-  bool get supportsModernLabelPrinting => apiVersion >= 201;
-
-  // Does the server support the "modern" (consolidated) attachment API?
-  // Ref: https://github.com/inventree/InvenTree/pull/7420
-  bool get supportsModernAttachments => apiVersion >= 207;
-
-  bool get supportsUserPermissions => apiVersion >= 207;
-
-  // Ref: https://github.com/inventree/InvenTree/pull/7514
-  bool get supportsTopLevelFiltering => apiVersion >= 209;
-
-  // Does the server support the "destination" field on the PurchaseOrder model?
-  // Ref: https://github.com/inventree/InvenTree/pull/8403
-  bool get supportsPurchaseOrderDestination => apiVersion >= 276;
-
-  // Does the server support the "start_date" field for orders?
-  // Ref: https://github.com/inventree/InvenTree/pull/8966
-  bool get supportsStartDate => apiVersion >= 306;
+  // Note: Features available at the minimum supported API version
+  // (see _minApiVersion) do not require a version check
 
   // Supports separate search against "supplier" / "customer" / "manufacturer"
   bool get supportsSplitCompanySearch => apiVersion >= 315;
@@ -972,7 +952,7 @@ class InvenTreeAPI {
 
     roles = (data["roles"] ?? {}) as Map<String, dynamic>;
 
-    if (supportsUserPermissions && data.containsKey("permissions")) {
+    if (data.containsKey("permissions")) {
       permissions = (data["permissions"] ?? {}) as Map<String, dynamic>;
     } else {
       permissions = {};

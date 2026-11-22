@@ -518,18 +518,16 @@ class _SalesOrderDetailState extends RefreshableState<SalesOrderDetailWidget> {
       tiles.add(parameterTile);
     }
 
-    ListTile? attachmentTile = ShowAttachmentsItem(
-      context,
-      InvenTreeSalesOrder.MODEL_TYPE,
-      widget.order.pk,
-      widget.order.reference,
-      attachmentCount,
-      widget.order.canEdit,
+    tiles.add(
+      ShowAttachmentsItem(
+        context,
+        InvenTreeSalesOrder.MODEL_TYPE,
+        widget.order.pk,
+        widget.order.reference,
+        attachmentCount,
+        widget.order.canEdit,
+      ),
     );
-
-    if (attachmentTile != null) {
-      tiles.add(attachmentTile);
-    }
 
     return tiles;
   }
