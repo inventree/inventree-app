@@ -359,11 +359,6 @@ class InvenTreeAPI {
   // Ref: https://github.com/inventree/InvenTree/pull/13034
   bool get supportsPricingRole => apiVersion >= 562;
 
-  // Does the server support the separate "part_category" user role?
-  // (Previously, part categories were covered by the "part" role)
-  // Ref: https://github.com/inventree/InvenTree/pull/9476
-  bool get supportsPartCategoryRole => apiVersion >= 335;
-
   // Does the server support the separate "bom" user role?
   // (Previously, BOM items were covered by the "part" role)
   // Ref: https://github.com/inventree/InvenTree/pull/11825

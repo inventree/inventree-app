@@ -28,9 +28,9 @@ class InvenTreePartCategory extends InvenTreeModel {
 
   static const String MODEL_TYPE = "partcategory";
 
+  // Part categories have a separate role (all supported server versions)
   @override
-  List<String> get rolesRequired =>
-      InvenTreeAPI().supportsPartCategoryRole ? ["part_category"] : ["part"];
+  List<String> get rolesRequired => ["part_category"];
 
   // Navigate to a detail page for this item
   @override
