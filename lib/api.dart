@@ -331,8 +331,8 @@ class InvenTreeAPI {
   bool get supportsPartRequirements => apiVersion >= 350;
 
   // Does the server support the "modern" (consolidated) parameter API?
-  // Ref: https://github.com/inventree/InvenTree/pull/10699
-  bool get supportsModernParameters => apiVersion >= 429;
+  // Ref: https://github.com/inventree/InvenTree/pull/10699 (API v430)
+  bool get supportsModernParameters => apiVersion >= 430;
 
   // Does the support support the "primary" field on SupplierPart model?
   bool get supportsSupplierPartPrimaryField => apiVersion >= 456;
@@ -358,6 +358,11 @@ class InvenTreeAPI {
   // (Pricing endpoints also moved to the /api/pricing/ namespace)
   // Ref: https://github.com/inventree/InvenTree/pull/13034
   bool get supportsPricingRole => apiVersion >= 562;
+
+  // Does the server support the separate "bom" user role?
+  // (Previously, BOM items were covered by the "part" role)
+  // Ref: https://github.com/inventree/InvenTree/pull/11825
+  bool get supportsBomRole => apiVersion >= 481;
 
   // Can the current user view part pricing information?
   // Older servers do not have a separate "pricing" role, so no check is performed
@@ -2191,7 +2196,7 @@ class InvenTreeAPI {
       body["location"] = location.toString();
     }
 
-    post("/api/locate/", body: body, expectedStatusCode: 200).then((
+    post("locate/", body: body, expectedStatusCode: 200).then((
       APIResponse response,
     ) {
       if (response.successful()) {

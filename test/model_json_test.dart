@@ -21,6 +21,44 @@ import "package:inventree/inventree/stock.dart";
 import "package:inventree/l10.dart";
 
 void main() {
+  // InvenTreeModel.create() response handling
+  group("Created Object Data:", () {
+    Map<String, dynamic>? created(dynamic data) =>
+        InvenTreeModel.createdObjectData(
+          APIResponse(statusCode: 201, data: data),
+        );
+
+    test("Single object", () {
+      expect(created({"pk": 3}), equals({"pk": 3}));
+    });
+
+    // Stock item creation returns a list (API v383+)
+    test("List of objects", () {
+      expect(
+        created([
+          {"pk": 7},
+        ]),
+        equals({"pk": 7}),
+      );
+
+      // Multiple (serialized) items: the first is returned
+      expect(
+        created([
+          {"pk": 7},
+          {"pk": 8},
+        ]),
+        equals({"pk": 7}),
+      );
+    });
+
+    test("Invalid data", () {
+      expect(created(null), isNull);
+      expect(created([]), isNull);
+      expect(created(["x"]), isNull);
+      expect(created("x"), isNull);
+    });
+  });
+
   group("Model Accessors:", () {
     test("Empty Data", () async {
       final model = InvenTreeModel.fromJson({});
@@ -339,6 +377,118 @@ void main() {
       expect(pricing.currency, equals("AUD"));
       expect(pricing.overallMin, equals(1.25));
       expect(pricing.overallMax, equals(3));
+    });
+  });
+
+  // Regression tests for B7: test results provide the key and name
+  // via template_detail (there are no "key" / "test" fields on the result)
+  group("Stock Item Test Results:", () {
+    InvenTreePartTestTemplate template(int pk, String key, String name) =>
+        InvenTreePartTestTemplate.fromJson({
+          "pk": pk,
+          "key": key,
+          "test_name": name,
+        });
+
+    InvenTreeStockItemTestResult result(
+      int pk,
+      int templateId, {
+      String key = "",
+      String name = "",
+      bool passed = true,
+      String date = "2026-01-01",
+    }) => InvenTreeStockItemTestResult.fromJson({
+      "pk": pk,
+      "template": templateId,
+      "result": passed,
+      "date": date,
+      "template_detail": {"pk": templateId, "key": key, "test_name": name},
+    });
+
+    test("Accessors", () async {
+      final r = result(1, 7, key: "firmware", name: "Firmware");
+
+      expect(r.templateId, equals(7));
+      expect(r.key, equals("firmware"));
+      expect(r.testName, equals("Firmware"));
+      expect(r.result, isTrue);
+
+      // Missing or null template detail
+      final empty = InvenTreeStockItemTestResult.fromJson({
+        "pk": 2,
+        "template": null,
+        "template_detail": null,
+      });
+
+      expect(empty.key, isEmpty);
+      expect(empty.testName, isEmpty);
+      expect(InvenTreeStockItemTestResult.fromJson({}).testName, isEmpty);
+    });
+
+    test("Results attach to templates", () async {
+      final templates = [
+        template(1, "firmware", "Firmware"),
+        template(2, "voltage", "Voltage"),
+      ];
+
+      final outputs = mergeTestResults(templates, [
+        result(10, 1, passed: false, date: "2026-01-01"),
+        result(11, 1, passed: true, date: "2026-02-01"),
+        // Matched by key (e.g. a different template ID for the same test)
+        result(12, 99, key: "voltage", name: "Voltage"),
+      ]);
+
+      expect(outputs, equals(templates));
+      expect(templates[0].results.map((r) => r.pk), equals([10, 11]));
+      expect(templates[0].latestResult()?.pk, equals(11));
+      expect(templates[0].passFailStatus(), isTrue);
+      expect(templates[1].results.map((r) => r.pk), equals([12]));
+    });
+
+    test("Results without a listed template", () async {
+      final outputs = mergeTestResults(
+        [template(1, "firmware", "Firmware")],
+        [
+          result(10, 5, key: "old_a", name: "Old Test A", date: "2026-01-01"),
+          result(11, 6, key: "old_b", name: "Old Test B"),
+          result(12, 5, key: "old_a", name: "Old Test A", date: "2026-02-01"),
+        ],
+      );
+
+      // One row per template: separate tests are not collapsed together,
+      // and the latest result is shown for a repeated test
+      final unlisted = outputs.whereType<InvenTreeStockItemTestResult>();
+
+      expect(unlisted.map((r) => r.pk), equals([12, 11]));
+      expect(
+        unlisted.map((r) => r.testName),
+        equals(["Old Test A", "Old Test B"]),
+      );
+    });
+
+    test("Results without a template are not merged", () async {
+      final outputs = mergeTestResults(
+        [template(1, "firmware", "Firmware")],
+        [
+          InvenTreeStockItemTestResult.fromJson({"pk": 20, "template": null}),
+          InvenTreeStockItemTestResult.fromJson({"pk": 21, "template": null}),
+        ],
+      );
+
+      expect(outputs, hasLength(3));
+
+      // Templates have no results, and do not match an empty key
+      expect((outputs.first as InvenTreePartTestTemplate).results, isEmpty);
+    });
+
+    test("Repeated merge does not duplicate results", () async {
+      final templates = [template(1, "firmware", "Firmware")];
+      final results = [result(10, 1)];
+
+      mergeTestResults(templates, results);
+      mergeTestResults(templates, results);
+
+      expect(templates.first.results, hasLength(1));
     });
   });
 

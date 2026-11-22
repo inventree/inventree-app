@@ -9,6 +9,7 @@ import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/model.dart";
 import "package:inventree/widget/stock/location_display.dart";
 import "package:inventree/widget/stock/stock_detail.dart";
+import "package:inventree/widget/snacks.dart";
 
 /*
  * Class representing a test result for a single stock item
@@ -46,11 +47,12 @@ class InvenTreeStockItemTestResult extends InvenTreeModel {
     return fields;
   }
 
-  String get key => getString("key");
+  // The test key and name are provided by the linked test template
+  String get key => getString("key", subKey: "template_detail");
 
   int get templateId => getInt("template");
 
-  String get testName => getString("test");
+  String get testName => getString("test_name", subKey: "template_detail");
 
   bool get result => getBool("result");
 
@@ -67,6 +69,64 @@ class InvenTreeStockItemTestResult extends InvenTreeModel {
     var result = InvenTreeStockItemTestResult.fromJson(json);
     return result;
   }
+}
+
+/*
+ * Combine test templates and test results for display.
+ *
+ * - Each result is attached to its template (matched by template ID,
+ *   or by test key when the result has one)
+ * - Results without a listed template (e.g. a disabled or deleted template)
+ *   are displayed separately, keeping only the latest result for each template
+ *
+ * Results are expected in date order, oldest first (the server default)
+ */
+List<InvenTreeModel> mergeTestResults(
+  List<InvenTreePartTestTemplate> templates,
+  List<InvenTreeStockItemTestResult> results,
+) {
+  final List<InvenTreeModel> outputs = [];
+
+  for (final template in templates) {
+    // Results are re-attached on each call
+    template.results.clear();
+    outputs.add(template);
+  }
+
+  // Template ID -> position in outputs, for results without a listed template
+  final Map<int, int> unlisted = {};
+
+  for (final result in results) {
+    InvenTreePartTestTemplate? template;
+
+    for (final t in templates) {
+      if ((result.templateId > 0 && result.templateId == t.pk) ||
+          (result.key.isNotEmpty && result.key == t.key)) {
+        template = t;
+        break;
+      }
+    }
+
+    if (template != null) {
+      template.results.add(result);
+      continue;
+    }
+
+    final int id = result.templateId;
+
+    if (id > 0 && unlisted.containsKey(id)) {
+      // A newer result for the same template
+      outputs[unlisted[id]!] = result;
+    } else {
+      if (id > 0) {
+        unlisted[id] = outputs.length;
+      }
+
+      outputs.add(result);
+    }
+  }
+
+  return outputs;
 }
 
 /*
@@ -127,6 +187,30 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   // URLs for performing stock actions
   static String transferStockUrl() => "stock/transfer/";
+
+  /*
+   * Handle the response after creating new stock item(s)
+   * (see formResponseData for the response format):
+   * - A single item: open its detail page
+   * - Multiple items (e.g. serialized): notify the user and call onMultiple
+   */
+  static void onCreated(
+    BuildContext context,
+    Map<String, dynamic> result, {
+    Function()? onMultiple,
+  }) {
+    if (result.containsKey("pk")) {
+      InvenTreeStockItem.fromJson(result).goToDetailPage(context);
+      return;
+    }
+
+    final dynamic results = result["results"];
+
+    if (results is List && results.isNotEmpty) {
+      showSnackIcon(L10().stockItemsCreated(results.length), success: true);
+      onMultiple?.call();
+    }
+  }
 
   static String countStockUrl() => "stock/count/";
 
@@ -469,7 +553,8 @@ class InvenTreeStockItem extends InvenTreeModel {
 
     data = {
       "items": [
-        {"pk": "${pk}", "quantity": "${quantity}"},
+        // The quantity to count / add / remove / transfer
+        {"pk": "${pk}", "quantity": "${q}"},
       ],
       "notes": notes ?? "",
     };
@@ -535,8 +620,9 @@ class InvenTreeStockLocation extends InvenTreeModel {
 
   static const String MODEL_TYPE = "stocklocation";
 
+  // Stock locations have a separate role (all supported server versions)
   @override
-  List<String> get rolesRequired => ["stock"];
+  List<String> get rolesRequired => ["stock_location"];
 
   String get pathstring => getString("pathstring");
 

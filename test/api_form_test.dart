@@ -7,6 +7,53 @@ import "package:inventree/api.dart";
 import "package:inventree/api_form.dart";
 
 void main() {
+  group("Form Response Data:", () {
+    test("Object", () async {
+      expect(
+        formResponseData(APIResponse(statusCode: 201, data: {"pk": 1})),
+        equals({"pk": 1}),
+      );
+    });
+
+    // Stock item creation returns a list (API v383+)
+    test("Single Item List", () async {
+      expect(
+        formResponseData(
+          APIResponse(
+            statusCode: 201,
+            data: [
+              {"pk": 7, "quantity": 5},
+            ],
+          ),
+        ),
+        equals({"pk": 7, "quantity": 5}),
+      );
+    });
+
+    test("Multiple Item List", () async {
+      final result = formResponseData(
+        APIResponse(
+          statusCode: 201,
+          data: [
+            {"pk": 7},
+            {"pk": 8},
+          ],
+        ),
+      );
+
+      expect(result.containsKey("pk"), isFalse);
+      expect(result["results"], hasLength(2));
+    });
+
+    test("Empty", () async {
+      expect(formResponseData(APIResponse(statusCode: 201)), isEmpty);
+      expect(
+        formResponseData(APIResponse(statusCode: 201, data: [])),
+        equals({"results": []}),
+      );
+    });
+  });
+
   group("Extract Fields:", () {
     test("Invalid Response", () async {
       expect(extractFields(APIResponse()), isEmpty);

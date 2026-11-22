@@ -1101,6 +1101,28 @@ Map<String, dynamic> extractFieldDefinition(
  * @param method is the HTTP method to use to send the form data to the server (e.g. POST / PATCH)
  */
 
+/*
+ * Convert a successful form response into a JSON map for the onSuccess callback.
+ *
+ * Some endpoints return a list of created objects (e.g. stock item creation
+ * returns a list since API v383, as multiple serialized items can be created):
+ * - A single-item list is unwrapped to that item
+ * - A multi-item list is returned as {"results": [...]}
+ */
+Map<String, dynamic> formResponseData(APIResponse response) {
+  if (response.isList()) {
+    final List<dynamic> items = response.asList();
+
+    if (items.length == 1 && items.first is Map) {
+      return Map<String, dynamic>.from(items.first as Map);
+    }
+
+    return {"results": items};
+  }
+
+  return Map<String, dynamic>.from(response.asMap());
+}
+
 Future<void> launchApiForm(
   BuildContext context,
   String title,
@@ -1550,16 +1572,7 @@ class APIFormWidgetState extends State<APIFormWidget> {
       case 200:
       case 201:
         // Form was successfully validated by the server
-        // Ensure the response is a valid JSON structure
-        Map<String, dynamic> json = {};
-
-        var responseData = response.asMap();
-
-        for (String key in responseData.keys) {
-          json[key.toString()] = responseData[key];
-        }
-
-        handleSuccess(data, json);
+        handleSuccess(data, formResponseData(response));
 
         return;
       case 400:

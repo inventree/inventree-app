@@ -4,8 +4,12 @@
 - Fix incorrect allocation count in build detail widget
 - Fix "new version available" notice showing in "About" view when app is up to date
 - Bug fix for part pricing display
+- Fix handling of form response data for stock item creation
 - Improved allocation display for build orders
 - Multiple bug fixes for build order support
+- Improved role management for BOM items
+- Bug fix for stock item test results display
+- Bug fixes for stock adjustment actions
 
 ### 1.1.0 - November 2026
 ---

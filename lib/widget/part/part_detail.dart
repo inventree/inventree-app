@@ -162,7 +162,10 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
     showPricing =
         api.canViewPricing &&
         await InvenTreeSettingsManager().getBool(INV_PART_SHOW_PRICING, true);
-    showBom = await InvenTreeSettingsManager().getBool(INV_PART_SHOW_BOM, true);
+    // BOM data requires the "bom" role (or "part" role for older servers)
+    showBom =
+        InvenTreeBomItem().canView &&
+        await InvenTreeSettingsManager().getBool(INV_PART_SHOW_BOM, true);
     allowLabelPrinting = await InvenTreeSettingsManager().getBool(
       INV_ENABLE_LABEL_PRINTING,
       true,
@@ -277,27 +280,29 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       }
     }
 
-    // Request the number of BOM items
-    InvenTreePart().count(filters: {"in_bom_for": part.pk.toString()}).then((
-      int value,
-    ) {
-      if (mounted) {
-        setState(() {
-          bomCount = value;
-        });
-      }
-    });
+    if (InvenTreeBomItem().canView) {
+      // Request the number of BOM items
+      InvenTreePart().count(filters: {"in_bom_for": part.pk.toString()}).then((
+        int value,
+      ) {
+        if (mounted) {
+          setState(() {
+            bomCount = value;
+          });
+        }
+      });
 
-    // Request number of "used in" parts
-    InvenTreeBomItem().count(filters: {"uses": part.pk.toString()}).then((
-      int value,
-    ) {
-      if (mounted) {
-        setState(() {
-          usedInCount = value;
-        });
-      }
-    });
+      // Request number of "used in" parts
+      InvenTreeBomItem().count(filters: {"uses": part.pk.toString()}).then((
+        int value,
+      ) {
+        if (mounted) {
+          setState(() {
+            usedInCount = value;
+          });
+        }
+      });
+    }
 
     // Request the number of variant items
     InvenTreePart().count(filters: {"variant_of": part.pk.toString()}).then((
@@ -808,7 +813,7 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       // read the next available serial number
       showLoadingOverlay();
       var response = await api.get(
-        "/api/part/${part.pk}/serial-numbers/",
+        part.serialNumbersUrl,
         expectedStatusCode: null,
       );
       hideLoadingOverlay();
@@ -817,18 +822,10 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
         data["serial_numbers"] =
             response.data["next"] ?? response.data["latest"];
       }
-
-      print(
-        "response: " +
-            response.statusCode.toString() +
-            response.data.toString(),
-      );
     } else {
       // Cannot set serial numbers for non-trackable parts
       fields.remove("serial_numbers");
     }
-
-    print("data: ${data.toString()}");
 
     InvenTreeStockItem().createForm(
       context,
@@ -836,12 +833,11 @@ class _PartDisplayState extends RefreshableState<PartDetailWidget> {
       fields: fields,
       data: data,
       onSuccess: (result) async {
-        Map<String, dynamic> data = result as Map<String, dynamic>;
-
-        if (data.containsKey("pk")) {
-          var item = InvenTreeStockItem.fromJson(data);
-          item.goToDetailPage(context);
-        }
+        InvenTreeStockItem.onCreated(
+          context,
+          result as Map<String, dynamic>,
+          onMultiple: () => refresh(context),
+        );
       },
     );
   }
