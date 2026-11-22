@@ -21,6 +21,44 @@ import "package:inventree/inventree/stock.dart";
 import "package:inventree/l10.dart";
 
 void main() {
+  // InvenTreeModel.create() response handling
+  group("Created Object Data:", () {
+    Map<String, dynamic>? created(dynamic data) =>
+        InvenTreeModel.createdObjectData(
+          APIResponse(statusCode: 201, data: data),
+        );
+
+    test("Single object", () {
+      expect(created({"pk": 3}), equals({"pk": 3}));
+    });
+
+    // Stock item creation returns a list (API v383+)
+    test("List of objects", () {
+      expect(
+        created([
+          {"pk": 7},
+        ]),
+        equals({"pk": 7}),
+      );
+
+      // Multiple (serialized) items: the first is returned
+      expect(
+        created([
+          {"pk": 7},
+          {"pk": 8},
+        ]),
+        equals({"pk": 7}),
+      );
+    });
+
+    test("Invalid data", () {
+      expect(created(null), isNull);
+      expect(created([]), isNull);
+      expect(created(["x"]), isNull);
+      expect(created("x"), isNull);
+    });
+  });
+
   group("Model Accessors:", () {
     test("Empty Data", () async {
       final model = InvenTreeModel.fromJson({});

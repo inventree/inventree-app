@@ -8,6 +8,7 @@
 - Multiple bug fixes for build order support
 - Improved role management for BOM items
 - Bug fix for stock item test results display
+- Bug fixes for stock adjustment actions
 
 ### 1.1.0 - November 2026
 ---
