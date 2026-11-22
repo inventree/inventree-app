@@ -315,7 +315,7 @@ class APIFormField {
       default:
         return ListTile(
           title: Text(
-            "Unsupported field type: '${type}' for field '${name}'",
+            L10().unsupportedFieldType(type, name),
             style: TextStyle(color: COLOR_DANGER, fontStyle: FontStyle.italic),
           ),
         );
@@ -833,10 +833,10 @@ class APIFormField {
       default:
         return ListTile(
           title: Text(
-            "Unsupported model",
+            L10().unsupportedModel,
             style: TextStyle(fontWeight: FontWeight.bold, color: COLOR_DANGER),
           ),
-          subtitle: Text("Model '${model}' rendering not supported"),
+          subtitle: Text(L10().unsupportedModelDetail(model)),
         );
     }
   }

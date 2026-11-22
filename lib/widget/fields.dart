@@ -208,7 +208,7 @@ class QuantityField extends TextFormField {
 
            if (quantity <= 0) return L10().quantityPositive;
            if ((max != null) && (quantity > max)) {
-             return "Quantity must not exceed ${max}";
+             return L10().quantityExceedsMax(max.toString());
            }
 
            return null;

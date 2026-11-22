@@ -470,7 +470,7 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   String serialOrQuantityDisplay() {
     if (isSerialized()) {
-      return "SN ${serialNumber}";
+      return L10().serialNumberShort(serialNumber);
     } else if (allocated > 0) {
       return "${available} / ${quantity}";
     } else {
@@ -480,7 +480,7 @@ class InvenTreeStockItem extends InvenTreeModel {
 
   String get locationName {
     if (locationId == -1 || !jsondata.containsKey("location_detail")) {
-      return "Unknown Location";
+      return L10().locationUnknown;
     }
 
     String loc = getString("name", subKey: "location_detail");
@@ -656,7 +656,7 @@ class InvenTreeStockLocation extends InvenTreeModel {
     String p = psplit.join("/");
 
     if (p.isEmpty) {
-      p = "Top level stock location";
+      p = L10().stockTopLevel;
     }
 
     return p;
