@@ -74,7 +74,7 @@
   "@allocateAuto": {},
   "allocateAutoDetail": "自动将所需库存项分配到此订单",
   "@allocateAutoDetail": {},
-  "allocateAutoInProgress": "Auto-allocate task in progress",
+  "allocateAutoInProgress": "自动分配任务进行中",
   "@allocateAutoInProgress": {},
   "allocateStock": "分配库存",
   "@allocateStock": {},
@@ -368,9 +368,9 @@
   "@destination": {},
   "destroyed": "销毁",
   "@destroyed": {},
-  "copiedToClipboard": "Copied to clipboard",
+  "copiedToClipboard": "已复制到剪贴板",
   "@copiedToClipboard": {},
-  "copyToClipboard": "Copy",
+  "copyToClipboard": "复制",
   "@copyToClipboard": {},
   "details": "详情",
   "@details": {
@@ -842,11 +842,11 @@
   "@printLabelFailure": {},
   "printLabelSuccess": "标签已发送到打印机",
   "@printLabelSuccess": {},
-  "printLabelInProgress": "Label printing in progress",
+  "printLabelInProgress": "标签打印进行中",
   "@printLabelInProgress": {},
-  "printLabelTimeout": "Label printing timed out",
+  "printLabelTimeout": "标签打印超时",
   "@printLabelTimeout": {},
-  "printLabelWorkerNotRunning": "Label printing timed out: the server's background worker is not running",
+  "printLabelWorkerNotRunning": "标签打印超时：服务器的后台工作进程未运行",
   "@printLabelWorkerNotRunning": {},
   "profile": "配置文件",
   "@profile": {},
@@ -1198,7 +1198,7 @@
   "@stockItems": {},
   "stockItemCreate": "新建库存项",
   "@stockItemCreate": {},
-  "stockItemsCreated": "{count} stock items created",
+  "stockItemsCreated": "已创建 {count} 个库存项",
   "@stockItemsCreated": {
     "placeholders": {
       "count": {
@@ -1432,15 +1432,15 @@
   "@currency": {},
   "priceBreaks": "阶梯价格",
   "@priceBreaks": {},
-  "appBuild": "Build",
+  "appBuild": "构建号",
   "@appBuild": {
     "description": "Application build number label (e.g. 1.2.3 - Build 45)"
   },
-  "locationUnknown": "Unknown Location",
+  "locationUnknown": "未知库存地点",
   "@locationUnknown": {},
-  "partDetailMissing": "Missing part detail",
+  "partDetailMissing": "缺少零件详情",
   "@partDetailMissing": {},
-  "quantityExceedsMax": "Quantity must not exceed {max}",
+  "quantityExceedsMax": "数量不得超过 {max}",
   "@quantityExceedsMax": {
     "placeholders": {
       "max": {
@@ -1448,9 +1448,9 @@
       }
     }
   },
-  "reset": "Reset",
+  "reset": "重置",
   "@reset": {},
-  "serialNumberShort": "SN {serial}",
+  "serialNumberShort": "序列号 {serial}",
   "@serialNumberShort": {
     "description": "Abbreviated serial number",
     "placeholders": {
@@ -1459,9 +1459,9 @@
       }
     }
   },
-  "supplierPartMissing": "Supplier part not defined",
+  "supplierPartMissing": "未定义供应商零件",
   "@supplierPartMissing": {},
-  "unsupportedFieldType": "Unsupported field type: '{type}' for field '{field}'",
+  "unsupportedFieldType": "字段“{field}”的类型“{type}”不受支持",
   "@unsupportedFieldType": {
     "placeholders": {
       "type": {
@@ -1472,9 +1472,9 @@
       }
     }
   },
-  "unsupportedModel": "Unsupported model",
+  "unsupportedModel": "不支持的模型",
   "@unsupportedModel": {},
-  "unsupportedModelDetail": "Rendering not supported for model '{model}'",
+  "unsupportedModelDetail": "不支持渲染模型“{model}”",
   "@unsupportedModelDetail": {
     "placeholders": {
       "model": {
@@ -1482,8 +1482,8 @@
       }
     }
   },
-  "zoomIn": "Zoom In",
+  "zoomIn": "放大",
   "@zoomIn": {},
-  "zoomOut": "Zoom Out",
+  "zoomOut": "缩小",
   "@zoomOut": {}
 }
