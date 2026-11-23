@@ -74,7 +74,7 @@
   "@allocateAuto": {},
   "allocateAutoDetail": "Alocar automaticamente os itens de estoque necessários para este pedido",
   "@allocateAutoDetail": {},
-  "allocateAutoInProgress": "Auto-allocate task in progress",
+  "allocateAutoInProgress": "Tarefa de alocação automática em andamento",
   "@allocateAutoInProgress": {},
   "allocateStock": "Alocar estoque",
   "@allocateStock": {},
@@ -368,9 +368,9 @@
   "@destination": {},
   "destroyed": "Destruído",
   "@destroyed": {},
-  "copiedToClipboard": "Copied to clipboard",
+  "copiedToClipboard": "Copiado para a área de transferência",
   "@copiedToClipboard": {},
-  "copyToClipboard": "Copy",
+  "copyToClipboard": "Copiar",
   "@copyToClipboard": {},
   "details": "Detalhes",
   "@details": {
@@ -842,11 +842,11 @@
   "@printLabelFailure": {},
   "printLabelSuccess": "Etiqueta enviada à impressora",
   "@printLabelSuccess": {},
-  "printLabelInProgress": "Label printing in progress",
+  "printLabelInProgress": "Impressão de etiquetas em andamento",
   "@printLabelInProgress": {},
-  "printLabelTimeout": "Label printing timed out",
+  "printLabelTimeout": "A impressão de etiquetas excedeu o tempo limite",
   "@printLabelTimeout": {},
-  "printLabelWorkerNotRunning": "Label printing timed out: the server's background worker is not running",
+  "printLabelWorkerNotRunning": "A impressão de etiquetas excedeu o tempo limite: o worker em segundo plano do servidor não está em execução",
   "@printLabelWorkerNotRunning": {},
   "profile": "Perfil",
   "@profile": {},
@@ -1198,7 +1198,7 @@
   "@stockItems": {},
   "stockItemCreate": "Novo item de estoque",
   "@stockItemCreate": {},
-  "stockItemsCreated": "{count} stock items created",
+  "stockItemsCreated": "{count} itens de estoque criados",
   "@stockItemsCreated": {
     "placeholders": {
       "count": {
@@ -1436,11 +1436,11 @@
   "@appBuild": {
     "description": "Application build number label (e.g. 1.2.3 - Build 45)"
   },
-  "locationUnknown": "Unknown Location",
+  "locationUnknown": "Local desconhecido",
   "@locationUnknown": {},
-  "partDetailMissing": "Missing part detail",
+  "partDetailMissing": "Detalhe da peça ausente",
   "@partDetailMissing": {},
-  "quantityExceedsMax": "Quantity must not exceed {max}",
+  "quantityExceedsMax": "A quantidade não deve exceder {max}",
   "@quantityExceedsMax": {
     "placeholders": {
       "max": {
@@ -1448,9 +1448,9 @@
       }
     }
   },
-  "reset": "Reset",
+  "reset": "Redefinir",
   "@reset": {},
-  "serialNumberShort": "SN {serial}",
+  "serialNumberShort": "N/S {serial}",
   "@serialNumberShort": {
     "description": "Abbreviated serial number",
     "placeholders": {
@@ -1459,9 +1459,9 @@
       }
     }
   },
-  "supplierPartMissing": "Supplier part not defined",
+  "supplierPartMissing": "Peça de fornecedor não definida",
   "@supplierPartMissing": {},
-  "unsupportedFieldType": "Unsupported field type: '{type}' for field '{field}'",
+  "unsupportedFieldType": "Tipo de campo não suportado: '{type}' para o campo '{field}'",
   "@unsupportedFieldType": {
     "placeholders": {
       "type": {
@@ -1472,9 +1472,9 @@
       }
     }
   },
-  "unsupportedModel": "Unsupported model",
+  "unsupportedModel": "Modelo não suportado",
   "@unsupportedModel": {},
-  "unsupportedModelDetail": "Rendering not supported for model '{model}'",
+  "unsupportedModelDetail": "Renderização não suportada para o modelo '{model}'",
   "@unsupportedModelDetail": {
     "placeholders": {
       "model": {
@@ -1482,8 +1482,8 @@
       }
     }
   },
-  "zoomIn": "Zoom In",
+  "zoomIn": "Aumentar zoom",
   "@zoomIn": {},
-  "zoomOut": "Zoom Out",
+  "zoomOut": "Diminuir zoom",
   "@zoomOut": {}
 }
