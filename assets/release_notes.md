@@ -11,6 +11,9 @@
 - Bug fix for stock item test results display
 - Bug fixes for stock adjustment actions
 - Handle timeout of label printing and notify the user
+- Add "linear barcode" scan mode to the camera scanner, for labels with multiple stacked barcodes
+- Camera scanner selects the barcode closest to the center when multiple barcodes are in view
+- Fix camera scan area not matching the displayed overlay
 
 ### 1.1.0 - November 2026
 ---

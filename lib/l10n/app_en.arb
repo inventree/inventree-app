@@ -1892,6 +1892,12 @@
   "switchCamera": "Switch Camera",
   "@switchCamera": {},
 
+  "scanModeLinear": "Linear barcode mode",
+  "@scanModeLinear": {},
+
+  "scanModeSquare": "QR / 2D code mode",
+  "@scanModeSquare": {},
+
   "system": "System",
   "@system": {},
 
