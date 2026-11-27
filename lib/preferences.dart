@@ -60,6 +60,7 @@ const String INV_STRICT_HTTPS = "strictHttps";
 const String INV_BARCODE_SCAN_DELAY = "barcodeScanDelay";
 const String INV_BARCODE_SCAN_TYPE = "barcodeScanType";
 const String INV_BARCODE_SCAN_SINGLE = "barcodeScanSingle";
+const String INV_BARCODE_SCAN_LINEAR = "barcodeScanLinear";
 
 // Barcode scanner types
 const int BARCODE_CONTROLLER_CAMERA = 0;

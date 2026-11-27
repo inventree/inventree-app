@@ -1,5 +1,3 @@
-import "dart:math";
-
 import "package:camera/camera.dart";
 import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
@@ -17,6 +15,7 @@ import "package:inventree/l10.dart";
 import "package:inventree/barcode/handler.dart";
 import "package:inventree/barcode/controller.dart";
 import "package:inventree/barcode/eci.dart";
+import "package:inventree/barcode/scan_selection.dart";
 
 /*
  * Barcode controller which uses the device's camera to scan barcodes.
@@ -39,6 +38,10 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
   bool single_scanning = false;
   bool scanning_paused = false;
   bool multiple_barcodes = false;
+
+  // Linear (1D) mode: use a narrow horizontal strip as the scan window,
+  // so that only one of several stacked barcodes fits inside it
+  bool linear_mode = false;
 
   String scanned_code = "";
 
@@ -75,14 +78,43 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
         await InvenTreeSettingsManager().getValue(INV_BARCODE_SCAN_DELAY, 500)
             as int;
 
+    bool _linear = await InvenTreeSettingsManager().getBool(
+      INV_BARCODE_SCAN_LINEAR,
+      false,
+    );
+
     if (mounted) {
       setState(() {
         scan_delay = _delay;
         single_scanning = _single;
+        linear_mode = _linear;
         scanning_paused = false;
       });
     }
   }
+
+  /*
+   * Switch between the square (QR / 2D) and strip (linear barcode) scan window
+   */
+  Future<void> toggleLinearMode() async {
+    final bool value = !linear_mode;
+
+    if (mounted) {
+      setState(() {
+        linear_mode = value;
+        multiple_barcodes = false;
+      });
+    }
+
+    await InvenTreeSettingsManager().setValue(INV_BARCODE_SCAN_LINEAR, value);
+  }
+
+  /*
+   * Compute the scan window, in the coordinate space of the scanner widget.
+   * The same rectangle is used for the overlay, so what is drawn is what is scanned.
+   */
+  Rect scanWindowRect(Size size) =>
+      barcodeScanWindow(size, linear: linear_mode);
 
   @override
   bool get isScanPaused => scanning_paused;
@@ -121,18 +153,24 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
       setState(() {
         multiple_barcodes = false;
       });
-    } else if (result.barcodes.length > 1) {
+      return;
+    }
+
+    // With several barcodes in view, use the one the user is aiming at
+    Barcode? selected = selectCenteredBarcode(result);
+
+    if (selected == null) {
       setState(() {
         multiple_barcodes = true;
       });
       return;
-    } else {
-      setState(() {
-        multiple_barcodes = false;
-      });
     }
 
-    String barcode = scannedValue(result.barcodes.first);
+    setState(() {
+      multiple_barcodes = false;
+    });
+
+    String barcode = scannedValue(selected);
 
     if (barcode.isEmpty) {
       // TODO: Error message "empty barcode"
@@ -206,12 +244,8 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
     }
   }
 
-  Widget BarcodeOverlay(BuildContext context) {
-    final Size screenSize = MediaQuery.of(context).size;
-    final double width = screenSize.width;
-    final double height = screenSize.height;
-
-    final double D = min(width, height) * 0.8;
+  Widget BarcodeOverlay(BuildContext context, Size size) {
+    final Rect window = scanWindowRect(size);
 
     // Color for the barcode scan?
     Color overlayColor = COLOR_ACTION;
@@ -226,13 +260,21 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
 
     return Stack(
       children: [
-        Center(
+        Positioned.fromRect(
+          rect: window,
           child: Container(
-            width: D,
-            height: D,
             decoration: BoxDecoration(
               border: Border.all(color: overlayColor, width: 4),
             ),
+            // Aiming line across the strip in linear mode
+            child: linear_mode
+                ? Center(
+                    child: Container(
+                      height: 2,
+                      color: overlayColor.withValues(alpha: 0.7),
+                    ),
+                  )
+                : null,
           ),
         ),
       ],
@@ -243,24 +285,22 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
    * Build the barcode reader widget
    */
   Widget BarcodeReader(BuildContext context) {
-    final Size screenSize = MediaQuery.of(context).size;
-    final double width = screenSize.width;
-    final double height = screenSize.height;
+    // Use the actual size of the scanner widget (not the whole screen),
+    // otherwise the scan window is offset by the app bar height
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final Size size = constraints.biggest;
 
-    final double D = min(width, height) * 0.8;
-
-    return MobileScanner(
-      controller: controller,
-      overlayBuilder: (context, constraints) {
-        return BarcodeOverlay(context);
-      },
-      scanWindow: Rect.fromCenter(
-        center: Offset(width / 2, height / 2),
-        width: D,
-        height: D,
-      ),
-      onDetect: (result) {
-        onScanSuccess(result);
+        return MobileScanner(
+          controller: controller,
+          overlayBuilder: (context, constraints) {
+            return BarcodeOverlay(context, constraints.biggest);
+          },
+          scanWindow: scanWindowRect(size),
+          onDetect: (result) {
+            onScanSuccess(result);
+          },
+        );
       },
     );
   }
@@ -399,7 +439,14 @@ class _CameraBarcodeControllerState extends InvenTreeBarcodeControllerState {
     return Scaffold(
       appBar: AppBar(
         title: Text(L10().scanBarcode),
-        actions: [buildScanLogAction()],
+        actions: [
+          IconButton(
+            icon: Icon(linear_mode ? TablerIcons.qrcode : TablerIcons.barcode),
+            tooltip: linear_mode ? L10().scanModeSquare : L10().scanModeLinear,
+            onPressed: toggleLinearMode,
+          ),
+          buildScanLogAction(),
+        ],
       ),
       bottomNavigationBar: buildLastScanBar(),
       floatingActionButton: buildActions(context),
