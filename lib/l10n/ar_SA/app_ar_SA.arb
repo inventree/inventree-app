@@ -74,6 +74,8 @@
   "@allocateAuto": {},
   "allocateAutoDetail": "تخصيص عناصر المخزون المطلوبة لهذا الطلب تلقائياً",
   "@allocateAutoDetail": {},
+  "allocateAutoInProgress": "Auto-allocate task in progress",
+  "@allocateAutoInProgress": {},
   "allocateStock": "خصص المخزون",
   "@allocateStock": {},
   "allocated": "محدد",
@@ -836,6 +838,12 @@
   "@printLabelFailure": {},
   "printLabelSuccess": "ملصق تم الإرسال إلى طابعة",
   "@printLabelSuccess": {},
+  "printLabelInProgress": "Label printing in progress",
+  "@printLabelInProgress": {},
+  "printLabelTimeout": "Label printing timed out",
+  "@printLabelTimeout": {},
+  "printLabelWorkerNotRunning": "Label printing timed out: the server's background worker is not running",
+  "@printLabelWorkerNotRunning": {},
   "profile": "ملف شخصي",
   "@profile": {},
   "profileAdd": "إضافة خادم ملف شخصي",
@@ -1186,6 +1194,14 @@
   "@stockItems": {},
   "stockItemCreate": "عنصر مخزون جديد",
   "@stockItemCreate": {},
+  "stockItemsCreated": "{count} stock items created",
+  "@stockItemsCreated": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "stockItemCreateDetail": "إنشاء عنصر المخزون في هذا موقع جديد",
   "@stockItemCreateDetail": {},
   "stockItemDelete": "حذف عنصر مخزون",

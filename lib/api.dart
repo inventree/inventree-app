@@ -297,32 +297,37 @@ class InvenTreeAPI {
   String get serverVersion => (serverInfo["version"] ?? "") as String;
   int get apiVersion => (serverInfo["apiVersion"] ?? 1) as int;
 
+  // Background worker status (as last reported by the server)
+  // Assume the worker is running if the server does not report it
+  bool get workerRunning => serverInfo["worker_running"] != false;
+
+  /*
+   * Re-query the background worker status from the server.
+   * Returns the current status, or null if the server could not be queried.
+   */
+  Future<bool?> refreshWorkerStatus() async {
+    final APIResponse response = await get("", expectedStatusCode: null);
+
+    if (!response.successful() || response.data is! Map) {
+      return null;
+    }
+
+    final dynamic running = (response.data as Map)["worker_running"];
+
+    if (running is! bool) {
+      return null;
+    }
+
+    serverInfo["worker_running"] = running;
+    return running;
+  }
+
   /* API Version Checks
    * These functions are used to determine if the server supports a particular feature
    */
 
-  // Does the server support "active" status on Company and SupplierPart API endpoints?
-  bool get supportsCompanyActiveStatus => apiVersion >= 189;
-
-  // Does the server support the "modern" (consolidated) label printing API?
-  bool get supportsModernLabelPrinting => apiVersion >= 201;
-
-  // Does the server support the "modern" (consolidated) attachment API?
-  // Ref: https://github.com/inventree/InvenTree/pull/7420
-  bool get supportsModernAttachments => apiVersion >= 207;
-
-  bool get supportsUserPermissions => apiVersion >= 207;
-
-  // Ref: https://github.com/inventree/InvenTree/pull/7514
-  bool get supportsTopLevelFiltering => apiVersion >= 209;
-
-  // Does the server support the "destination" field on the PurchaseOrder model?
-  // Ref: https://github.com/inventree/InvenTree/pull/8403
-  bool get supportsPurchaseOrderDestination => apiVersion >= 276;
-
-  // Does the server support the "start_date" field for orders?
-  // Ref: https://github.com/inventree/InvenTree/pull/8966
-  bool get supportsStartDate => apiVersion >= 306;
+  // Note: Features available at the minimum supported API version
+  // (see _minApiVersion) do not require a version check
 
   // Supports separate search against "supplier" / "customer" / "manufacturer"
   bool get supportsSplitCompanySearch => apiVersion >= 315;
@@ -331,8 +336,8 @@ class InvenTreeAPI {
   bool get supportsPartRequirements => apiVersion >= 350;
 
   // Does the server support the "modern" (consolidated) parameter API?
-  // Ref: https://github.com/inventree/InvenTree/pull/10699
-  bool get supportsModernParameters => apiVersion >= 429;
+  // Ref: https://github.com/inventree/InvenTree/pull/10699 (API v430)
+  bool get supportsModernParameters => apiVersion >= 430;
 
   // Does the support support the "primary" field on SupplierPart model?
   bool get supportsSupplierPartPrimaryField => apiVersion >= 456;
@@ -358,6 +363,11 @@ class InvenTreeAPI {
   // (Pricing endpoints also moved to the /api/pricing/ namespace)
   // Ref: https://github.com/inventree/InvenTree/pull/13034
   bool get supportsPricingRole => apiVersion >= 562;
+
+  // Does the server support the separate "bom" user role?
+  // (Previously, BOM items were covered by the "part" role)
+  // Ref: https://github.com/inventree/InvenTree/pull/11825
+  bool get supportsBomRole => apiVersion >= 481;
 
   // Can the current user view part pricing information?
   // Older servers do not have a separate "pricing" role, so no check is performed
@@ -751,7 +761,8 @@ class InvenTreeAPI {
 
     debug("Connecting to ${apiUrl}");
 
-    APIResponse response = await get(url, expectedStatusCode: 200);
+    // Note: Unexpected status codes are reported below
+    APIResponse response = await get(url);
 
     if (!response.successful()) {
       debug("Server returned invalid response: ${response.statusCode}");
@@ -859,10 +870,16 @@ class InvenTreeAPI {
     _globalSettings.clear();
     _userSettings.clear();
 
+    // Clear data received from the server
+    // (so it is not shown while connecting to a different server)
     roles.clear();
+    permissions.clear();
     _plugins.clear();
     serverInfo.clear();
     userInfo = {};
+    notification_counter = 0;
+    clearStatusCodeData();
+
     _connectionStatusChanged();
   }
 
@@ -932,6 +949,7 @@ class InvenTreeAPI {
    */
   Future<bool> _fetchRoles() async {
     roles.clear();
+    permissions.clear();
 
     debug("API: Requesting user role data");
     String actualRoleUrl = supportsNewUserEndpoints
@@ -955,7 +973,7 @@ class InvenTreeAPI {
 
     roles = (data["roles"] ?? {}) as Map<String, dynamic>;
 
-    if (supportsUserPermissions && data.containsKey("permissions")) {
+    if (data.containsKey("permissions")) {
       permissions = (data["permissions"] ?? {}) as Map<String, dynamic>;
     } else {
       permissions = {};
@@ -1909,7 +1927,9 @@ class InvenTreeAPI {
     String url, {
     Map<String, String> params = const {},
     Map<String, String> headers = const {},
-    int? expectedStatusCode = 200,
+    // If provided, the user is alerted when a different status code is returned
+    // (by default, callers handle unexpected responses, e.g. 404, themselves)
+    int? expectedStatusCode,
   }) async {
     HttpClientRequest? request = await apiRequest(
       url,
@@ -1927,7 +1947,7 @@ class InvenTreeAPI {
       );
     }
 
-    return completeRequest(request);
+    return completeRequest(request, statusCode: expectedStatusCode);
   }
 
   /*
@@ -2189,9 +2209,14 @@ class InvenTreeAPI {
         fields,
         icon: TablerIcons.location_search,
         onSuccess: (Map<String, dynamic> data) async {
-          plugin_name = (data["plugin"] ?? "") as String;
+          plugin_name = (data["plugin"] ?? "").toString();
         },
       );
+
+      // Form was cancelled (no plugin selected)
+      if (plugin_name.isEmpty) {
+        return;
+      }
     }
 
     Map<String, dynamic> body = {"plugin": plugin_name};
@@ -2204,13 +2229,15 @@ class InvenTreeAPI {
       body["location"] = location.toString();
     }
 
-    post("/api/locate/", body: body, expectedStatusCode: 200).then((
-      APIResponse response,
-    ) {
-      if (response.successful()) {
-        showSnackIcon(L10().requestSuccessful, success: true);
-      }
-    });
+    final APIResponse response = await post(
+      "locate/",
+      body: body,
+      expectedStatusCode: 200,
+    );
+
+    if (response.successful()) {
+      showSnackIcon(L10().requestSuccessful, success: true);
+    }
   }
 
   // Keep an internal map of status codes

@@ -101,7 +101,7 @@ class _PaginatedPOLineListState
       return ListTile(
         title: Text(L10().error),
         subtitle: Text(
-          "supplier part not defined",
+          L10().supplierPartMissing,
           style: TextStyle(color: COLOR_DANGER),
         ),
       );

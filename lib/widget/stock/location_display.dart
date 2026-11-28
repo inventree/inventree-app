@@ -1,7 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
-import "package:inventree/api.dart";
 
 import "package:inventree/app_colors.dart";
 import "package:inventree/barcode/barcode.dart";
@@ -178,9 +177,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       );
     }
 
-    if (widget.location != null &&
-        allowLabelPrinting &&
-        api.supportsModernLabelPrinting) {
+    if (widget.location != null && allowLabelPrinting) {
       actions.add(
         SpeedDialChild(
           child: Icon(TablerIcons.printer),
@@ -276,12 +273,11 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
       data: data,
       fields: fields,
       onSuccess: (result) async {
-        Map<String, dynamic> data = result as Map<String, dynamic>;
-
-        if (data.containsKey("pk")) {
-          var item = InvenTreeStockItem.fromJson(data);
-          item.goToDetailPage(context);
-        }
+        InvenTreeStockItem.onCreated(
+          context,
+          result as Map<String, dynamic>,
+          onMultiple: () => refresh(context),
+        );
       },
     );
   }
@@ -362,11 +358,7 @@ class _LocationDisplayState extends RefreshableState<LocationDisplayWidget> {
     if (parent != null) {
       filters["parent"] = parent.toString();
     } else {
-      if (InvenTreeAPI().supportsTopLevelFiltering) {
-        filters["top_level"] = "true";
-      } else {
-        filters["parent"] = "null";
-      }
+      filters["top_level"] = "true";
     }
 
     List<Widget> tiles = [

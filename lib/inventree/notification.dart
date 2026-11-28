@@ -38,11 +38,6 @@ class InvenTreeNotification extends InvenTreeModel {
    * Dismiss this notification (mark as read)
    */
   Future<void> dismiss() async {
-    if (api.apiVersion >= 82) {
-      // "Modern" API endpoint operates a little differently
-      await update(values: {"read": "true"});
-    } else {
-      await api.post("${url}read/");
-    }
+    await update(values: {"read": "true"});
   }
 }

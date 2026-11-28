@@ -107,6 +107,9 @@
   "allocateAutoDetail": "Automatically allocate required stock items to this order",
   "@allocateAutoDetail": {},
 
+  "allocateAutoInProgress": "Auto-allocate task in progress",
+  "@allocateAutoInProgress": {},
+
   "allocateStock": "Allocate Stock",
   "@allocateStock": {},
 
@@ -546,6 +549,12 @@
 
   "destroyed": "Destroyed",
   "@destroyed": {},
+
+  "copiedToClipboard": "Copied to clipboard",
+  "@copiedToClipboard": {},
+
+  "copyToClipboard": "Copy",
+  "@copyToClipboard": {},
 
   "details": "Details",
   "@details": {
@@ -1250,6 +1259,15 @@
   "printLabelSuccess": "Label sent to printer",
   "@printLabelSuccess": {},
 
+  "printLabelInProgress": "Label printing in progress",
+  "@printLabelInProgress": {},
+
+  "printLabelTimeout": "Label printing timed out",
+  "@printLabelTimeout": {},
+
+  "printLabelWorkerNotRunning": "Label printing timed out: the server's background worker is not running",
+  "@printLabelWorkerNotRunning": {},
+
   "profile": "Profile",
   "@profile": {},
 
@@ -1767,6 +1785,15 @@
   "stockItemCreate": "New Stock Item",
   "@stockItemCreate": {},
 
+  "stockItemsCreated": "{count} stock items created",
+  "@stockItemsCreated": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
   "stockItemCreateDetail": "Create new stock item in this location",
   "@stockItemCreateDetail": {},
 
@@ -2107,5 +2134,71 @@
   "@currency": {},
 
   "priceBreaks": "Price Breaks",
-  "@priceBreaks": {}
+  "@priceBreaks": {},
+
+  "appBuild": "Build",
+  "@appBuild": {
+    "description": "Application build number label (e.g. 1.2.3 - Build 45)"
+  },
+
+  "locationUnknown": "Unknown Location",
+  "@locationUnknown": {},
+
+  "partDetailMissing": "Missing part detail",
+  "@partDetailMissing": {},
+
+  "quantityExceedsMax": "Quantity must not exceed {max}",
+  "@quantityExceedsMax": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+
+  "reset": "Reset",
+  "@reset": {},
+
+  "serialNumberShort": "SN {serial}",
+  "@serialNumberShort": {
+    "description": "Abbreviated serial number",
+    "placeholders": {
+      "serial": {
+        "type": "String"
+      }
+    }
+  },
+
+  "supplierPartMissing": "Supplier part not defined",
+  "@supplierPartMissing": {},
+
+  "unsupportedFieldType": "Unsupported field type: '{type}' for field '{field}'",
+  "@unsupportedFieldType": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      },
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+
+  "unsupportedModel": "Unsupported model",
+  "@unsupportedModel": {},
+
+  "unsupportedModelDetail": "Rendering not supported for model '{model}'",
+  "@unsupportedModelDetail": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+
+  "zoomIn": "Zoom In",
+  "@zoomIn": {},
+
+  "zoomOut": "Zoom Out",
+  "@zoomOut": {}
 }

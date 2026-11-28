@@ -705,8 +705,15 @@ class InvenTreeModel {
 
     var response = await api.post(URL, body: data);
 
+    // Request rejected (e.g. validation errors) - already reported by post()
+    if (response.isValid() && !response.successful()) {
+      return null;
+    }
+
+    final Map<String, dynamic>? created = createdObjectData(response);
+
     // Invalid response returned from server
-    if (!response.isValid() || response.data == null || response.data is! Map) {
+    if (!response.isValid() || created == null) {
       reportModelError(
         "InvenTreeModel.create() returned invalid response",
         response,
@@ -718,7 +725,28 @@ class InvenTreeModel {
       return null;
     }
 
-    return createFromJson(response.asMap());
+    return createFromJson(created);
+  }
+
+  /*
+   * Extract the data for a newly created object from a "create" response.
+   *
+   * Most endpoints return the created object, but some return a list of
+   * created objects (e.g. stock items since API v383, as multiple serialized
+   * items can be created at once). In that case, the first item is returned.
+   */
+  static Map<String, dynamic>? createdObjectData(APIResponse response) {
+    final dynamic data = response.data;
+
+    if (data is Map) {
+      return Map<String, dynamic>.from(data);
+    }
+
+    if (data is List && data.isNotEmpty && data.first is Map) {
+      return Map<String, dynamic>.from(data.first as Map);
+    }
+
+    return null;
   }
 
   Future<InvenTreePageResponse?> listPaginated(
@@ -884,18 +912,7 @@ class InvenTreePlugin extends InvenTreeModel {
       InvenTreePlugin.fromJson(json);
 
   @override
-  String get URL {
-    /* Note: The plugin API endpoint changed at API version 90,
-     * <  90 = 'plugin'
-     * >= 90 = 'plugins'
-     * Ref: https://github.com/inventree/InvenTree/pull/4186
-     */
-    if (api.isConnected() && api.apiVersion < 90) {
-      return "plugin/";
-    } else {
-      return "plugins/";
-    }
-  }
+  String get URL => "plugins/";
 
   String get key => getString("key");
 

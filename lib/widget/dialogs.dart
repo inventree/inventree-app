@@ -1,4 +1,7 @@
+import "dart:convert";
+
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:one_context/one_context.dart";
 
@@ -8,6 +11,7 @@ import "package:inventree/helpers.dart";
 import "package:inventree/l10.dart";
 
 import "package:inventree/preferences.dart";
+import "package:inventree/widget/snacks.dart";
 
 /*
  * Launch a dialog allowing the user to select from a list of options
@@ -288,6 +292,87 @@ Future<void> showErrorDialog(
           onDismissed();
         }
       });
+}
+
+/*
+ * Format the data returned in an API response for display
+ * (JSON data is pretty-printed)
+ */
+String formatResponseData(dynamic data) {
+  if (data is Map || data is List) {
+    try {
+      return const JsonEncoder.withIndent("  ").convert(data);
+    } catch (_) {
+      // Fall through to the string representation
+    }
+  }
+
+  return data?.toString() ?? "";
+}
+
+/*
+ * Construct a view of the full data returned in an API response
+ */
+Widget buildResponseDataContent(APIResponse response) {
+  return ConstrainedBox(
+    constraints: const BoxConstraints(maxWidth: 400),
+    child: SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "${L10().statusCode}: ${response.statusCode}",
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          if (response.url.isNotEmpty) Text(response.url),
+          const SizedBox(height: 8),
+          Text(
+            L10().responseData,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          SelectableText(
+            formatResponseData(response.data),
+            style: const TextStyle(fontFamily: "monospace", fontSize: 12),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+/*
+ * Display the full data returned in an API response (e.g. form errors)
+ */
+Future<void> showResponseDataDialog(String title, APIResponse response) async {
+  if (!hasContext()) {
+    return;
+  }
+
+  final String data = formatResponseData(response.data);
+
+  OneContext().showDialog(
+    builder: (context) => AlertDialog(
+      icon: Icon(TablerIcons.info_circle, color: COLOR_DANGER),
+      title: Text(title),
+      content: buildResponseDataContent(response),
+      actions: [
+        TextButton(
+          child: Text(L10().copyToClipboard),
+          onPressed: () {
+            Clipboard.setData(ClipboardData(text: data));
+            showSnackIcon(L10().copiedToClipboard, success: true);
+          },
+        ),
+        TextButton(
+          child: Text(L10().ok),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ],
+    ),
+  );
 }
 
 /*

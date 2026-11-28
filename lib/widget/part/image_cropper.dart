@@ -69,7 +69,7 @@ class _ImageCropperWidgetState extends State<ImageCropperWidget> {
               IconButton(
                 icon: Icon(TablerIcons.refresh),
                 onPressed: () => cropController.reset(),
-                tooltip: "Reset",
+                tooltip: L10().reset,
               ),
 
               // Zoom out button - scales to 75% of current size
@@ -77,7 +77,7 @@ class _ImageCropperWidgetState extends State<ImageCropperWidget> {
                 icon: Icon(TablerIcons.zoom_out),
                 onPressed: () =>
                     cropController.addTransition(CropImageData(scale: 0.75)),
-                tooltip: "Zoom Out",
+                tooltip: L10().zoomOut,
               ),
 
               // Zoom in button - scales to 133% of current size
@@ -85,7 +85,7 @@ class _ImageCropperWidgetState extends State<ImageCropperWidget> {
                 icon: Icon(TablerIcons.zoom_in),
                 onPressed: () =>
                     cropController.addTransition(CropImageData(scale: 1.33)),
-                tooltip: "Zoom In",
+                tooltip: L10().zoomIn,
               ),
 
               // Rotate button

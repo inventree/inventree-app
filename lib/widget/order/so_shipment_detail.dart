@@ -354,18 +354,16 @@ class _SOShipmentDetailWidgetState
       );
     }
 
-    ListTile? attachmentTile = ShowAttachmentsItem(
-      context,
-      InvenTreeSalesOrderShipment.MODEL_TYPE,
-      widget.shipment.pk,
-      widget.shipment.reference,
-      attachmentCount,
-      widget.shipment.canEdit,
+    tiles.add(
+      ShowAttachmentsItem(
+        context,
+        InvenTreeSalesOrderShipment.MODEL_TYPE,
+        widget.shipment.pk,
+        widget.shipment.reference,
+        attachmentCount,
+        widget.shipment.canEdit,
+      ),
     );
-
-    if (attachmentTile != null) {
-      tiles.add(attachmentTile);
-    }
 
     return tiles;
   }

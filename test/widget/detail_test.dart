@@ -46,35 +46,6 @@ import "../setup.dart";
 import "harness.dart";
 
 /*
- * Find the first object matching [filters], and load its full details
- */
-Future<T> fetchFirst<T extends InvenTreeModel>(
-  WidgetTester tester,
-  T model, {
-  Map<String, String> filters = const {},
-}) async {
-  final results = await settle(
-    tester,
-    model.list(filters: {...filters, "limit": "1"}),
-  );
-
-  expect(
-    results,
-    isNotEmpty,
-    reason: "No ${T} matching ${filters} in the demo dataset",
-  );
-
-  final InvenTreeModel? instance = await settle(
-    tester,
-    model.get(results.first.pk),
-  );
-
-  expect(instance, isA<T>());
-
-  return instance! as T;
-}
-
-/*
  * Display a detail [screen], and wait for it to load.
  * Then display each tab, and return to the first tab.
  */

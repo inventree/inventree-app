@@ -362,18 +362,16 @@ class _SupplierPartDisplayState
       tiles.add(parameterTile);
     }
 
-    ListTile? attachmentTile = ShowAttachmentsItem(
-      context,
-      InvenTreeSupplierPart.MODEL_TYPE,
-      widget.supplierPart.pk,
-      widget.supplierPart.SKU,
-      attachmentCount,
-      widget.supplierPart.canEdit,
+    tiles.add(
+      ShowAttachmentsItem(
+        context,
+        InvenTreeSupplierPart.MODEL_TYPE,
+        widget.supplierPart.pk,
+        widget.supplierPart.SKU,
+        attachmentCount,
+        widget.supplierPart.canEdit,
+      ),
     );
-
-    if (attachmentTile != null) {
-      tiles.add(attachmentTile);
-    }
 
     return tiles;
   }

@@ -74,6 +74,8 @@
   "@allocateAuto": {},
   "allocateAutoDetail": "Automatically allocate required stock items to this order",
   "@allocateAutoDetail": {},
+  "allocateAutoInProgress": "Auto-allocate task in progress",
+  "@allocateAutoInProgress": {},
   "allocateStock": "Készlet foglalása",
   "@allocateStock": {},
   "allocated": "Lefoglalva",
@@ -836,6 +838,12 @@
   "@printLabelFailure": {},
   "printLabelSuccess": "Címke nyomtatónak elküldve",
   "@printLabelSuccess": {},
+  "printLabelInProgress": "Label printing in progress",
+  "@printLabelInProgress": {},
+  "printLabelTimeout": "Label printing timed out",
+  "@printLabelTimeout": {},
+  "printLabelWorkerNotRunning": "Label printing timed out: the server's background worker is not running",
+  "@printLabelWorkerNotRunning": {},
   "profile": "Profil",
   "@profile": {},
   "profileAdd": "Kiszolgáló profil hozzáadása",
@@ -1186,6 +1194,14 @@
   "@stockItems": {},
   "stockItemCreate": "Új készlet tétel",
   "@stockItemCreate": {},
+  "stockItemsCreated": "{count} stock items created",
+  "@stockItemsCreated": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "stockItemCreateDetail": "Új készlet tétel létrehozása ezen a helyen",
   "@stockItemCreateDetail": {},
   "stockItemDelete": "Készlet tétel törlése",

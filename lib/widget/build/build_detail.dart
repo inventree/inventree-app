@@ -3,6 +3,7 @@ import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/api.dart";
+import "package:inventree/api_form.dart";
 import "package:inventree/app_colors.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/l10.dart";
@@ -16,6 +17,7 @@ import "package:inventree/widget/link_icon.dart";
 import "package:inventree/widget/notes_list_widget.dart";
 import "package:inventree/widget/history_widget.dart";
 import "package:inventree/widget/refreshable_state.dart";
+import "package:inventree/widget/snacks.dart";
 import "package:inventree/widget/build/build_line_list.dart";
 import "package:inventree/widget/build/build_item_list.dart";
 import "package:inventree/widget/build/build_output_list.dart";
@@ -39,7 +41,6 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
   int allocatedLineCount = 0;
   int allocatedItemCount = 0;
   int totalLineCount = 0;
-  int outputCount = 0;
   int attachmentCount = 0;
 
   bool showCameraShortcut = true;
@@ -152,8 +153,7 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
       }
 
       // Unallocate action (if there are allocated items)
-      if (widget.order.isInProgress &&
-          widget.order.allocatedLineItemCount > 0) {
+      if (widget.order.isInProgress && allocatedItemCount > 0) {
         actions.add(
           SpeedDialChild(
             child: Icon(TablerIcons.arrow_autofit_up, color: COLOR_DANGER),
@@ -205,17 +205,24 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
   }
 
   /// Complete this build order
+  /// Uses a form so the user can choose how to handle unallocated,
+  /// over-allocated and incomplete stock, and sees any server validation errors
   Future<void> _completeOrder(BuildContext context) async {
-    confirmationDialog(
+    Map<String, Map<String, dynamic>> fields = {
+      "accept_overallocated": {},
+      "accept_unallocated": {},
+      "accept_incomplete": {},
+    };
+
+    launchApiForm(
+      context,
       L10().completeOrder,
-      L10().completeOrderConfirm,
+      widget.order.finishUrl,
+      fields,
+      method: "POST",
       icon: TablerIcons.check,
-      color: COLOR_SUCCESS,
-      acceptText: L10().complete,
-      onAccept: () async {
-        widget.order.completeOrder().then((dynamic) {
-          refresh(context);
-        });
+      onSuccess: (data) async {
+        refresh(context);
       },
     );
   }
@@ -261,9 +268,38 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
       color: Theme.of(context).colorScheme.secondary,
       acceptText: L10().allocate,
       onAccept: () async {
-        widget.order.autoAllocate().then((dynamic) {
+        final APIResponse response = await widget.order.autoAllocate();
+
+        // No response (e.g. connection error) - already reported
+        if (!response.isValid()) {
+          return;
+        }
+
+        switch (InvenTreeBuildOrder.autoAllocateOutcome(response)) {
+          case BuildTaskOutcome.complete:
+            showSnackIcon(L10().requestSuccessful, success: true);
+          case BuildTaskOutcome.queued:
+            showSnackIcon(
+              L10().allocateAutoInProgress,
+              icon: TablerIcons.clock,
+              success: true,
+            );
+          case BuildTaskOutcome.failed:
+            if (response.successful()) {
+              // Task ran, but did not succeed
+              showSnackIcon(L10().requestFailed, success: false);
+            } else {
+              showStatusCodeError(
+                response.url,
+                response.statusCode,
+                details: response.data,
+              );
+            }
+        }
+
+        if (mounted) {
           refresh(context);
-        });
+        }
       },
     );
   }
@@ -303,13 +339,33 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
       return;
     }
 
+    final String buildId = widget.order.pk.toString();
+
     // Count the stock items allocated against this build order
-    InvenTreeBuildItem()
-        .count(filters: {"build": widget.order.pk.toString()})
+    InvenTreeBuildItem().count(filters: {"build": buildId}).then((int n) {
+      if (mounted) {
+        setState(() {
+          allocatedItemCount = n;
+        });
+      }
+    });
+
+    // Count the required line items for this build order
+    InvenTreeBuildLine().count(filters: {"build": buildId}).then((int n) {
+      if (mounted) {
+        setState(() {
+          totalLineCount = n;
+        });
+      }
+    });
+
+    // Count the fully allocated line items for this build order
+    InvenTreeBuildLine()
+        .count(filters: {"build": buildId, "allocated": "true"})
         .then((int n) {
           if (mounted) {
             setState(() {
-              allocatedItemCount = n;
+              allocatedLineCount = n;
             });
           }
         });
@@ -452,33 +508,34 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
       ),
     );
 
-    // Line items tile
-    /*
-     * TODO: Reimplement this item
-    Color lineColor = Colors.red;
-    if (widget.order.areAllLinesAllocated) {
-      lineColor = Colors.green;
-    } else if (widget.order.allocatedLineItemCount > 0) {
-      lineColor = Colors.orange;
-    }
+    // Line items tile (fully allocated lines / total lines)
+    if (totalLineCount > 0) {
+      Color lineColor = COLOR_DANGER;
 
-    tiles.add(
-      ListTile(
-        title: Text(L10().requiredParts),
-        subtitle: LinearProgressIndicator(
-          value: widget.order.lineItemCount > 0
-              ? widget.order.allocatedLineItemCount / widget.order.lineItemCount
-              : 0,
-          color: lineColor,
+      if (allocatedLineCount >= totalLineCount) {
+        lineColor = COLOR_SUCCESS;
+      } else if (allocatedLineCount > 0) {
+        lineColor = COLOR_WARNING;
+      }
+
+      tiles.add(
+        ListTile(
+          title: Text(L10().requiredParts),
+          subtitle: LinearProgressIndicator(
+            value: allocatedLineCount / totalLineCount,
+            color: lineColor,
+            backgroundColor: Theme.of(
+              context,
+            ).colorScheme.surfaceContainerHighest,
+          ),
+          leading: const Icon(TablerIcons.clipboard_check),
+          trailing: Text(
+            "${allocatedLineCount} / ${totalLineCount}",
+            style: TextStyle(color: lineColor),
+          ),
         ),
-        leading: const Icon(TablerIcons.clipboard_check),
-        trailing: Text(
-          "${widget.order.allocatedLineItemCount} / ${widget.order.lineItemCount}",
-          style: TextStyle(color: lineColor),
-        ),
-      ),
-    );
-    */
+      );
+    }
 
     // Output items
     tiles.add(
@@ -580,18 +637,16 @@ class _BuildOrderDetailState extends RefreshableState<BuildOrderDetailWidget> {
     }
 
     // Attachments tile
-    ListTile? attachmentTile = ShowAttachmentsItem(
-      context,
-      InvenTreeBuildOrder.MODEL_TYPE,
-      widget.order.pk,
-      widget.order.reference,
-      attachmentCount,
-      widget.order.canEdit,
+    tiles.add(
+      ShowAttachmentsItem(
+        context,
+        InvenTreeBuildOrder.MODEL_TYPE,
+        widget.order.pk,
+        widget.order.reference,
+        attachmentCount,
+        widget.order.canEdit,
+      ),
     );
-
-    if (attachmentTile != null) {
-      tiles.add(attachmentTile);
-    }
 
     return tiles;
   }

@@ -428,18 +428,16 @@ class _CompanyDetailState extends RefreshableState<CompanyDetailWidget> {
       tiles.add(parameterTile);
     }
 
-    ListTile? attachmentTile = ShowAttachmentsItem(
-      context,
-      InvenTreeCompany.MODEL_TYPE,
-      widget.company.pk,
-      widget.company.name,
-      attachmentCount,
-      widget.company.canEdit,
+    tiles.add(
+      ShowAttachmentsItem(
+        context,
+        InvenTreeCompany.MODEL_TYPE,
+        widget.company.pk,
+        widget.company.name,
+        attachmentCount,
+        widget.company.canEdit,
+      ),
     );
-
-    if (attachmentTile != null) {
-      tiles.add(attachmentTile);
-    }
 
     return tiles;
   }

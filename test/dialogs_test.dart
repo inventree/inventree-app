@@ -5,11 +5,13 @@
  */
 
 import "package:flutter/material.dart";
+import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 import "package:flutter_test/flutter_test.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/widget/dialogs.dart";
+import "package:inventree/widget/snacks.dart";
 
 // Display the error content for the given description / response
 Future<void> pumpErrorContent(
@@ -232,6 +234,129 @@ void main() {
         displayedText(tester),
         equals([L10().response400, L10().responseData, "{}"]),
       );
+    });
+  });
+
+  group("Response Data:", () {
+    test("JSON data is pretty-printed", () {
+      expect(
+        formatResponseData({
+          "name": ["This field is required."],
+          "quantity": ["Must be positive"],
+        }),
+        equals(
+          [
+            "{",
+            '  "name": [',
+            '    "This field is required."',
+            "  ],",
+            '  "quantity": [',
+            '    "Must be positive"',
+            "  ]",
+            "}",
+          ].join("\n"),
+        ),
+      );
+
+      expect(formatResponseData(["a"]), equals('[\n  "a"\n]'));
+    });
+
+    test("Other data", () {
+      expect(
+        formatResponseData("<html>Bad Gateway</html>"),
+        equals("<html>Bad Gateway</html>"),
+      );
+      expect(formatResponseData(null), isEmpty);
+    });
+
+    testWidgets("Full response is displayed", (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: buildResponseDataContent(
+              APIResponse(
+                url: "https://server/api/part/",
+                statusCode: 400,
+                data: {
+                  "name": ["This field is required."],
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text("${L10().statusCode}: 400"), findsOneWidget);
+      expect(find.text("https://server/api/part/"), findsOneWidget);
+      expect(
+        find.textContaining('"This field is required."', findRichText: true),
+        findsOneWidget,
+      );
+    });
+  });
+
+  group("Snackbar Actions:", () {
+    Future<void> pumpSnack(
+      WidgetTester tester, {
+      IconData? icon,
+      String? actionText,
+      required void Function() onAction,
+    }) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Stack(
+              children: [
+                TopSnackBar(
+                  text: L10().formError,
+                  icon: icon,
+                  backgroundColor: Colors.red,
+                  duration: const Duration(seconds: 10),
+                  onDismiss: () {},
+                  onAction: onAction,
+                  actionText: actionText,
+                  iconAction: icon != null && actionText == null,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      await tester.pump(const Duration(milliseconds: 500));
+    }
+
+    testWidgets("Tapping the icon runs the action", (tester) async {
+      int actions = 0;
+
+      await pumpSnack(
+        tester,
+        icon: TablerIcons.info_circle,
+        onAction: () => actions++,
+      );
+
+      // The icon replaces the text action button
+      expect(find.byType(TextButton), findsNothing);
+
+      await tester.tap(find.byIcon(TablerIcons.info_circle));
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(actions, equals(1));
+    });
+
+    testWidgets("Text action button", (tester) async {
+      int actions = 0;
+
+      await pumpSnack(
+        tester,
+        actionText: L10().details,
+        onAction: () => actions++,
+      );
+
+      await tester.tap(find.text(L10().details));
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(actions, equals(1));
     });
   });
 }

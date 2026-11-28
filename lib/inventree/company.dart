@@ -46,11 +46,8 @@ class InvenTreeCompany extends InvenTreeModel {
       "is_manufacturer": {},
       "is_customer": {},
       "currency": {},
+      "active": {},
     };
-
-    if (InvenTreeAPI().supportsCompanyActiveStatus) {
-      fields["active"] = {};
-    }
 
     return fields;
   }
@@ -144,18 +141,9 @@ class InvenTreeSupplierPart extends InvenTreeModel {
       "link": {},
       "note": {},
       "packaging": {},
+      "pack_quantity": {},
+      "active": {},
     };
-
-    // At some point, pack_size was changed to pack_quantity
-    if (InvenTreeAPI().apiVersion < 117) {
-      fields["pack_size"] = {};
-    } else {
-      fields["pack_quantity"] = {};
-    }
-
-    if (InvenTreeAPI().supportsCompanyActiveStatus) {
-      fields["active"] = {};
-    }
 
     if (InvenTreeAPI().supportsSupplierPartPrimaryField) {
       fields["primary"] = {};
@@ -224,13 +212,7 @@ class InvenTreeSupplierPart extends InvenTreeModel {
 
   String get packaging => getString("packaging");
 
-  String get pack_quantity {
-    if (InvenTreeAPI().apiVersion < 117) {
-      return getString("pack_size");
-    } else {
-      return getString("pack_quantity");
-    }
-  }
+  String get pack_quantity => getString("pack_quantity");
 
   @override
   InvenTreeModel createFromJson(Map<String, dynamic> json) =>

@@ -74,6 +74,8 @@
   "@allocateAuto": {},
   "allocateAutoDetail": "Automaticky přiřadit požadované položky k této objednávce",
   "@allocateAutoDetail": {},
+  "allocateAutoInProgress": "Auto-allocate task in progress",
+  "@allocateAutoInProgress": {},
   "allocateStock": "Přidělit zásoby",
   "@allocateStock": {},
   "allocated": "Přiděleno",
@@ -836,6 +838,12 @@
   "@printLabelFailure": {},
   "printLabelSuccess": "Štítek odeslán do tiskárny",
   "@printLabelSuccess": {},
+  "printLabelInProgress": "Label printing in progress",
+  "@printLabelInProgress": {},
+  "printLabelTimeout": "Label printing timed out",
+  "@printLabelTimeout": {},
+  "printLabelWorkerNotRunning": "Label printing timed out: the server's background worker is not running",
+  "@printLabelWorkerNotRunning": {},
   "profile": "Profil",
   "@profile": {},
   "profileAdd": "Přidat profil serveru",
@@ -1186,6 +1194,14 @@
   "@stockItems": {},
   "stockItemCreate": "Nová skladová položka",
   "@stockItemCreate": {},
+  "stockItemsCreated": "{count} stock items created",
+  "@stockItemsCreated": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "stockItemCreateDetail": "Vytvořit novou skladovou položku na tomto místě",
   "@stockItemCreateDetail": {},
   "stockItemDelete": "Odstranit skladovou položku",

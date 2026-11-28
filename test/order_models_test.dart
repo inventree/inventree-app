@@ -83,16 +83,10 @@ void main() {
       var build = InvenTreeBuildOrder.fromJson({
         "quantity": 10,
         "completed": 4,
-        "item_count": 3,
-        "allocated_line_count": 3,
-        "output_count": 2,
       });
 
       expect(build.progressPercent, equals(40));
       expect(build.remaining, equals(6));
-      expect(build.lineItemCount, equals(3));
-      expect(build.areAllLinesAllocated, isTrue);
-      expect(build.outputCount, equals(2));
 
       // Progress is clamped
       build = InvenTreeBuildOrder.fromJson({"quantity": 10, "completed": 15});
@@ -100,22 +94,64 @@ void main() {
 
       build = InvenTreeBuildOrder.fromJson({"quantity": 0, "completed": 1});
       expect(build.progressPercent, equals(0));
+    });
 
-      // No line items
-      expect(InvenTreeBuildOrder.fromJson({}).areAllLinesAllocated, isFalse);
+    test("Auto-allocate outcome", () async {
+      BuildTaskOutcome outcome(int code, [Map<String, dynamic>? data]) =>
+          InvenTreeBuildOrder.autoAllocateOutcome(
+            APIResponse(statusCode: code, data: data ?? {}),
+          );
+
+      // Older servers (API < 465) complete synchronously with 201
+      expect(outcome(201), equals(BuildTaskOutcome.complete));
+
+      // Task offloaded to the background worker
+      expect(
+        outcome(200, {
+          "task_id": "abc",
+          "pending": true,
+          "complete": false,
+          "success": false,
+        }),
+        equals(BuildTaskOutcome.queued),
+      );
+
+      // Task run synchronously
+      expect(
+        outcome(200, {"task_id": "", "complete": true, "success": true}),
+        equals(BuildTaskOutcome.complete),
+      );
+      expect(
+        outcome(200, {"task_id": "", "complete": true, "success": false}),
+        equals(BuildTaskOutcome.failed),
+      );
+
+      // Task could not be run, or request rejected
+      expect(outcome(404, {"complete": false}), BuildTaskOutcome.failed);
+      expect(outcome(400), equals(BuildTaskOutcome.failed));
     });
 
     test("Details", () async {
       var build = InvenTreeBuildOrder.fromJson({
         "parent": 3,
         "part_detail": {"name": "Assembly"},
-        "destination_detail": {"name": "Store"},
+        "take_from": 5,
+        "destination": 7,
       });
 
       expect(build.isParentBuild, isTrue);
       expect(build.parentBuildId, equals(3));
       expect(build.partDetail?.name, equals("Assembly"));
-      expect(build.destinationName, equals("Store"));
+      expect(build.sourceLocationId, equals(5));
+      expect(build.destinationId, equals(7));
+
+      // Unset locations are null (not 0 or -1)
+      build = InvenTreeBuildOrder.fromJson({
+        "take_from": null,
+        "destination": null,
+      });
+      expect(build.sourceLocationId, isNull);
+      expect(build.destinationId, isNull);
 
       build = InvenTreeBuildOrder.fromJson({});
       expect(build.isParentBuild, isFalse);
@@ -139,11 +175,13 @@ void main() {
       expect(production.canHold, isTrue);
       expect(production.canCompleteOrder, isTrue);
 
-      // Cannot complete without any outputs
+      // Completion is offered without output counts (the server validates)
       expect(
         InvenTreeBuildOrder.fromJson({"status": 20}).canCompleteOrder,
-        isFalse,
+        isTrue,
       );
+
+      expect(production.finishUrl, endsWith("/finish/"));
 
       final onHold = build(25);
       expect(onHold.isOnHold, isTrue);
@@ -610,9 +648,6 @@ void main() {
     });
 
     test("Company Form Fields", () async {
-      expect(InvenTreeCompany().formFields().containsKey("active"), isFalse);
-
-      InvenTreeAPI().serverInfo = {"apiVersion": 189};
       expect(InvenTreeCompany().formFields().containsKey("active"), isTrue);
     });
 
@@ -639,14 +674,16 @@ void main() {
       expect(sp.active, isTrue);
       expect(sp.primary, isFalse);
 
-      // Older API versions use "pack_size"
-      expect(sp.pack_quantity, equals("10"));
-      expect(sp.formFields().containsKey("pack_size"), isTrue);
+      expect(sp.pack_quantity, equals("1 reel"));
+      expect(sp.formFields().containsKey("pack_quantity"), isTrue);
+      expect(sp.formFields().containsKey("pack_size"), isFalse);
+      expect(sp.formFields().containsKey("active"), isTrue);
+
+      // The "primary" field requires API v456
+      InvenTreeAPI().serverInfo = {"apiVersion": 455};
       expect(sp.formFields().containsKey("primary"), isFalse);
 
       InvenTreeAPI().serverInfo = {"apiVersion": 456};
-      expect(sp.pack_quantity, equals("1 reel"));
-      expect(sp.formFields().containsKey("pack_quantity"), isTrue);
       expect(sp.formFields().containsKey("primary"), isTrue);
 
       // Missing images
