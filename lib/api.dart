@@ -373,7 +373,7 @@ class InvenTreeAPI {
   // - StockItem "purchase_price" fields are removed
   // - Cost summary is available via the optional "pricing_detail" field
   // Ref: https://github.com/inventree/InvenTree/pull/13294
-  bool get supportsStockItemCost => apiVersion >= 583;
+  bool get supportsStockItemCost => apiVersion >= 585;
 
   // Cached list of plugins (refreshed when we connect to the server)
   List<InvenTreePlugin> _plugins = [];
