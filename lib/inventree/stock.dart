@@ -237,6 +237,13 @@ class InvenTreeStockItem extends InvenTreeModel {
       "link": {},
     };
 
+    // Modern servers manage stock item costs separately,
+    // and no longer provide the "purchase_price" fields
+    if (InvenTreeAPI().supportsStockItemCost) {
+      fields.remove("purchase_price");
+      fields.remove("purchase_price_currency");
+    }
+
     return fields;
   }
 
@@ -250,6 +257,23 @@ class InvenTreeStockItem extends InvenTreeModel {
       "cascade": "false",
     };
   }
+
+  @override
+  Map<String, String> defaultGetFilters() {
+    Map<String, String> filters = defaultFilters();
+
+    // Request the stock item cost summary (detail view only)
+    // Note: The server will also omit this field if the user lacks the "pricing" view role
+    if (showCostDetail) {
+      filters["pricing_detail"] = "true";
+    }
+
+    return filters;
+  }
+
+  // Can (and should) the stock item cost summary be requested / displayed?
+  static bool get showCostDetail =>
+      InvenTreeAPI().supportsStockItemCost && InvenTreeAPI().canViewPricing;
 
   List<InvenTreePartTestTemplate> testTemplates = [];
 
@@ -312,6 +336,35 @@ class InvenTreeStockItem extends InvenTreeModel {
     double? pp = purchasePrice;
     return pp != null && pp > 0;
   }
+
+  /*
+   * Stock item cost summary (modern servers only)
+   * Provided via the "pricing_detail" field, which may be:
+   * - absent: not requested, or user does not have "pricing" view role
+   * - null: no cost information recorded for this stock item
+   */
+  Map<String, dynamic> get _costDetail {
+    dynamic detail = jsondata["pricing_detail"];
+    return detail is Map<String, dynamic> ? detail : {};
+  }
+
+  double? _costValue(String key) {
+    dynamic value = _costDetail[key];
+    if (value == null) return null;
+    return double.tryParse(value.toString());
+  }
+
+  double? get unitCostMin => _costValue("min_cost");
+
+  double? get unitCostMax => _costValue("max_cost");
+
+  String get costCurrency => (_costDetail["currency"] ?? "").toString();
+
+  // One or more cost entries could not be included (e.g. missing exchange rate)
+  bool get costIncomplete => _costDetail["incomplete"] == true;
+
+  bool get hasUnitCost =>
+      isValidNumber(unitCostMin) || isValidNumber(unitCostMax);
 
   int get purchaseOrderId => getInt("purchase_order");
 

@@ -1,8 +1,11 @@
-### 1.1.1 - November 2026
+### 1.2.0 - November 2026
 ---
 
 - Fix incorrect allocation count in build detail widget
 - Fix "new version available" notice showing in "About" view when app is up to date
+- Support new stock item cost model (requires server API version 583 or newer)
+- Display unit cost and total cost on stock item detail page (requires "pricing" view role)
+- Add "has unit cost" filter and "unit cost" ordering to stock item list
 - Bug fix for part pricing display
 - Fix handling of form response data for stock item creation
 - Improved allocation display for build orders
